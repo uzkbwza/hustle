@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/Window/Window.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+
+[node name="Window" type="PanelContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -135.0
+margin_top = -7.0
+margin_right = 135.0
+margin_bottom = 27.0
+size_flags_horizontal = 12
+size_flags_vertical = 12
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 269.0
+margin_bottom = 111.0
+
+[node name="TitleBar" type="Panel" parent="VBoxContainer"]
+margin_right = 268.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 0, 9 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="VBoxContainer/TitleBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = 2.0
+mouse_filter = 1
+text = "Test"
+align = 1
+
+[node name="Contents" type="PanelContainer" parent="VBoxContainer"]
+margin_top = 10.0
+margin_right = 268.0
+margin_bottom = 110.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3

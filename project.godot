@@ -1,0 +1,272 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Reference",
+"class": "Array2D",
+"language": "GDScript",
+"path": "res://framework/Array2d.gd"
+}, {
+"base": "Node2D",
+"class": "BaseObj",
+"language": "GDScript",
+"path": "res://obj/BaseObj.gd"
+}, {
+"base": "RandomNumberGenerator",
+"class": "BetterRng",
+"language": "GDScript",
+"path": "res://framework/BetterRng.gd"
+}, {
+"base": "CharacterState",
+"class": "CharacterHurtState",
+"language": "GDScript",
+"path": "res://characters/CharacterHurtState.gd"
+}, {
+"base": "ObjectState",
+"class": "CharacterState",
+"language": "GDScript",
+"path": "res://characters/states/CharState.gd"
+}, {
+"base": "Node2D",
+"class": "CollisionBox",
+"language": "GDScript",
+"path": "res://mechanics/CollisionBox.gd"
+}, {
+"base": "EditorProperty",
+"class": "EC_CreateCategory",
+"language": "GDScript",
+"path": "res://addons/export_categories/ec_create_category.gd"
+}, {
+"base": "",
+"class": "FGCharacter",
+"language": "NativeScript",
+"path": "res://bin/FGCharacter.gdns"
+}, {
+"base": "",
+"class": "FGObject",
+"language": "NativeScript",
+"path": "res://bin/FGObject.gdns"
+}, {
+"base": "BaseObj",
+"class": "Fighter",
+"language": "GDScript",
+"path": "res://characters/BaseChar.gd"
+}, {
+"base": "",
+"class": "FixedMath",
+"language": "NativeScript",
+"path": "res://bin/FixedMath.gdns"
+}, {
+"base": "Reference",
+"class": "FixedVec2String",
+"language": "GDScript",
+"path": "res://framework/FixedVec2String.gd"
+}, {
+"base": "Node2D",
+"class": "Game",
+"language": "GDScript",
+"path": "res://game.gd"
+}, {
+"base": "Reference",
+"class": "GameSimulation",
+"language": "NativeScript",
+"path": "res://bin/Simulation.gdns"
+}, {
+"base": "Camera2D",
+"class": "GoodCamera",
+"language": "GDScript",
+"path": "res://framework/BetterCamera.gd"
+}, {
+"base": "",
+"class": "HelloWorld",
+"language": "NativeScript",
+"path": "res://bin/HelloWorld.gdns"
+}, {
+"base": "CollisionBox",
+"class": "Hitbox",
+"language": "GDScript",
+"path": "res://mechanics/Hitbox.gd"
+}, {
+"base": "Node",
+"class": "HolePunchState",
+"language": "GDScript",
+"path": "res://addons/rabidholepuncher/utils/HolePunchState.gd"
+}, {
+"base": "Node",
+"class": "HolePunchStateMachine",
+"language": "GDScript",
+"path": "res://addons/rabidholepuncher/utils/HolePunchStateMachine.gd"
+}, {
+"base": "Node",
+"class": "HolePuncher",
+"language": "GDScript",
+"path": "res://addons/rabidholepuncher/RabidHolePuncher.gd"
+}, {
+"base": "StateInterface",
+"class": "ObjectState",
+"language": "GDScript",
+"path": "res://ObjectState.gd"
+}, {
+"base": "CharacterState",
+"class": "ParryState",
+"language": "GDScript",
+"path": "res://characters/states/Parry.gd"
+}, {
+"base": "Node2D",
+"class": "ParticleEffect",
+"language": "GDScript",
+"path": "res://fx/ParticleEffect.gd"
+}, {
+"base": "Reference",
+"class": "QuadTree",
+"language": "GDScript",
+"path": "res://framework/QuadTree.gd"
+}, {
+"base": "Node",
+"class": "StateInterface",
+"language": "GDScript",
+"path": "res://framework/FiniteStateMachine/StateInterface.gd"
+}, {
+"base": "Node",
+"class": "StateMachine",
+"language": "GDScript",
+"path": "res://framework/FiniteStateMachine/StateMachine.gd"
+}, {
+"base": "CharacterState",
+"class": "SuperMove",
+"language": "GDScript",
+"path": "res://characters/states/SuperMove.gd"
+}, {
+"base": "Node",
+"class": "Utils",
+"language": "GDScript",
+"path": "res://framework/utils.gd"
+}, {
+"base": "AudioStreamPlayer2D",
+"class": "VariableSound2D",
+"language": "GDScript",
+"path": "res://framework/VariableSound2D.gd"
+}, {
+"base": "Control",
+"class": "Window",
+"language": "GDScript",
+"path": "res://ui/Window/Window.gd"
+} ]
+_global_script_class_icons={
+"Array2D": "",
+"BaseObj": "",
+"BetterRng": "",
+"CharacterHurtState": "",
+"CharacterState": "",
+"CollisionBox": "",
+"EC_CreateCategory": "",
+"FGCharacter": "",
+"FGObject": "",
+"Fighter": "",
+"FixedMath": "",
+"FixedVec2String": "",
+"Game": "",
+"GameSimulation": "",
+"GoodCamera": "",
+"HelloWorld": "",
+"Hitbox": "",
+"HolePunchState": "res://addons/rabidholepuncher/assets/state.svg",
+"HolePunchStateMachine": "res://addons/rabidholepuncher/assets/state_machine.svg",
+"HolePuncher": "res://addons/rabidholepuncher/assets/punch.svg",
+"ObjectState": "",
+"ParryState": "",
+"ParticleEffect": "",
+"QuadTree": "",
+"StateInterface": "",
+"StateMachine": "",
+"SuperMove": "",
+"Utils": "",
+"VariableSound2D": "",
+"Window": ""
+}
+
+[application]
+
+config/name="tbfg"
+run/main_scene="res://Main.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+ReplayManager="*res://ReplayManager.gd"
+Network="*res://Network.gd"
+
+[display]
+
+window/size/width=640
+window/size/height=360
+window/size/test_width=1280
+window/size/test_height=720
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/export_categories/plugin.cfg" )
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[importer_defaults]
+
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": true,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": true,
+"process/invert_color": false,
+"process/normal_map_invert_y": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
+}
+
+[input]
+
+playback={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":82,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+frame_advance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":70,"unicode":0,"echo":false,"script":null)
+ ]
+}
+submit_action={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+2d/snapping/use_gpu_pixel_snap=true
+environment/default_environment="res://default_env.tres"

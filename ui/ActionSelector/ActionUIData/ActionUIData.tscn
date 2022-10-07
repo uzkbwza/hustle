@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+
+[node name="ActionUIData" type="VBoxContainer"]
+mouse_filter = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource( 2 )
+script = ExtResource( 1 )

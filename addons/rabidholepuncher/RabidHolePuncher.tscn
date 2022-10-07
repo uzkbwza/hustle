@@ -1,0 +1,58 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://addons/rabidholepuncher/RabidHolePuncher.gd" type="Script" id=1]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/Confirmations.gd" type="Script" id=2]
+[ext_resource path="res://addons/rabidholepuncher/utils/HolePunchStateMachine.gd" type="Script" id=3]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/Greetings.gd" type="Script" id=4]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/InSession.gd" type="Script" id=5]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/None.gd" type="Script" id=6]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/InitRequestSent.gd" type="Script" id=7]
+[ext_resource path="res://addons/rabidholepuncher/holepunchstates/ServerFinishWait.gd" type="Script" id=8]
+[ext_resource path="res://addons/rabidholepuncher/utils/Logger.tscn" type="PackedScene" id=9]
+
+[node name="RabidHolePuncher" type="Node"]
+script = ExtResource( 1 )
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 3 )
+initial_state = NodePath("None")
+
+[node name="None" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+
+[node name="InitRequestSent" type="Node" parent="StateMachine"]
+script = ExtResource( 7 )
+
+[node name="MessageTimer" type="Timer" parent="StateMachine/InitRequestSent"]
+
+[node name="ServerTimer" type="Timer" parent="StateMachine/InitRequestSent"]
+
+[node name="InSession" type="Node" parent="StateMachine"]
+script = ExtResource( 5 )
+
+[node name="PingTimer" type="Timer" parent="StateMachine/InSession"]
+
+[node name="ServerTimer" type="Timer" parent="StateMachine/InSession"]
+
+[node name="ServerFinishWait" type="Node" parent="StateMachine"]
+script = ExtResource( 8 )
+
+[node name="FinishTimer" type="Timer" parent="StateMachine/ServerFinishWait"]
+
+[node name="Greetings" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+
+[node name="SendGreetingTimer" type="Timer" parent="StateMachine/Greetings"]
+
+[node name="WaitGreetingsTimer" type="Timer" parent="StateMachine/Greetings"]
+
+[node name="Confirmations" type="Node" parent="StateMachine"]
+script = ExtResource( 2 )
+
+[node name="SendConfirmationTimer" type="Timer" parent="StateMachine/Confirmations"]
+
+[node name="HostConfirmationTimer" type="Timer" parent="StateMachine/Confirmations"]
+
+[node name="StartTimer" type="Timer" parent="StateMachine/Confirmations"]
+
+[node name="Logger" parent="." instance=ExtResource( 9 )]

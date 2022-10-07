@@ -1,0 +1,112 @@
+[gd_resource type="Theme" load_steps=17 format=2]
+
+[ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_bottom = 1
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.164706, 0.164706, 0.164706, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=18]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 8
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=17]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 8
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.776471, 0.462745, 0.462745, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color( 0.431373, 0.266667, 0.266667, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 4
+border_width_right = 2
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[resource]
+default_font = ExtResource( 1 )
+Button/styles/disabled = SubResource( 9 )
+Button/styles/focus = SubResource( 15 )
+Button/styles/hover = SubResource( 11 )
+Button/styles/normal = SubResource( 3 )
+Button/styles/pressed = SubResource( 8 )
+HBoxContainer/constants/separation = 1
+HSlider/icons/grabber = ExtResource( 2 )
+HSlider/icons/grabber_disabled = ExtResource( 2 )
+HSlider/icons/grabber_highlight = ExtResource( 2 )
+HSlider/icons/tick = null
+HSlider/styles/grabber_area = SubResource( 18 )
+HSlider/styles/grabber_area_highlight = SubResource( 18 )
+HSlider/styles/slider = SubResource( 17 )
+Panel/styles/panel = SubResource( 4 )
+PanelContainer/styles/panel = SubResource( 2 )
+SelectButton/base_type = "Button"
+SelectButton/styles/hover = SubResource( 13 )
+SelectButton/styles/normal = SubResource( 14 )
+VBoxContainer/constants/separation = 1
+VScrollBar/styles/grabber = SubResource( 5 )
+VScrollBar/styles/grabber_highlight = SubResource( 7 )
+VScrollBar/styles/grabber_pressed = SubResource( 5 )
+VScrollBar/styles/scroll = SubResource( 6 )
+VScrollBar/styles/scroll_focus = SubResource( 6 )

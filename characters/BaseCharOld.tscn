@@ -1,0 +1,372 @@
+[gd_scene load_steps=42 format=2]
+
+[ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
+[ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
+[ext_resource path="res://framework/FiniteStateMachine/StateMachine.gd" type="Script" id=3]
+[ext_resource path="res://characters/states/Idle.gd" type="Script" id=4]
+[ext_resource path="res://characters/states/AirDash.gd" type="Script" id=5]
+[ext_resource path="res://characters/states/Dash.gd" type="Script" id=6]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=7]
+[ext_resource path="res://characters/states/Jump.gd" type="Script" id=8]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/JumpActionUIData.tscn" type="PackedScene" id=9]
+[ext_resource path="res://characters/states/Fall.gd" type="Script" id=10]
+[ext_resource path="res://mechanics/CollisionBox.gd" type="Script" id=11]
+[ext_resource path="res://characters/BoxDraw.gd" type="Script" id=12]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/AirdashActionUIData.tscn" type="PackedScene" id=13]
+[ext_resource path="res://characters/stickman/sprites/stickman2.png" type="Texture" id=14]
+[ext_resource path="res://characters/stickman/sprites/stickman3.png" type="Texture" id=15]
+[ext_resource path="res://characters/stickman/sprites/stickman6.png" type="Texture" id=16]
+[ext_resource path="res://characters/stickman/sprites/stickman8.png" type="Texture" id=17]
+[ext_resource path="res://characters/stickman/sprites/stickman7.png" type="Texture" id=18]
+[ext_resource path="res://characters/stickman/sprites/stickman5.png" type="Texture" id=19]
+[ext_resource path="res://characters/stickman/sprites/stickman4.png" type="Texture" id=20]
+[ext_resource path="res://characters/stickman/sprites/stickman11.png" type="Texture" id=21]
+[ext_resource path="res://characters/stickman/sprites/stickman12.png" type="Texture" id=22]
+[ext_resource path="res://characters/stickman/sprites/stickman13.png" type="Texture" id=23]
+[ext_resource path="res://characters/stickman/sprites/stickman14.png" type="Texture" id=24]
+[ext_resource path="res://characters/stickman/sprites/stickman15.png" type="Texture" id=25]
+[ext_resource path="res://characters/stickman/sprites/stickman16.png" type="Texture" id=26]
+[ext_resource path="res://characters/states/HurtAerial.gd" type="Script" id=27]
+[ext_resource path="res://characters/states/HurtGrounded.gd" type="Script" id=28]
+[ext_resource path="res://characters/stickman/sprites/stickman9.png" type="Texture" id=29]
+[ext_resource path="res://characters/stickman/sprites/stickman10.png" type="Texture" id=30]
+[ext_resource path="res://theme.tres" type="Theme" id=31]
+[ext_resource path="res://characters/stickman/sprites/stickman17.png" type="Texture" id=32]
+[ext_resource path="res://characters/stickman/sprites/stickman18.png" type="Texture" id=33]
+[ext_resource path="res://characters/stickman/sprites/stickman19.png" type="Texture" id=34]
+[ext_resource path="res://characters/stickman/sprites/stickman20.png" type="Texture" id=35]
+[ext_resource path="res://characters/stickman/sprites/stickman21.png" type="Texture" id=36]
+[ext_resource path="res://characters/stickman/sprites/stickman22.png" type="Texture" id=37]
+[ext_resource path="res://characters/stickman/sprites/stickman23.png" type="Texture" id=38]
+[ext_resource path="res://characters/stickman/states/Uppercut.gd" type="Script" id=39]
+[ext_resource path="res://characters/stickman/sprites/stickman24.png" type="Texture" id=40]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 24 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 26 ) ],
+"loop": true,
+"name": "AirAttack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 15 ) ],
+"loop": true,
+"name": "DashBackward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 14 ) ],
+"loop": true,
+"name": "DashForward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 19 ), ExtResource( 16 ), ExtResource( 18 ), ExtResource( 17 ) ],
+"loop": true,
+"name": "DoubleJump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 21 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 22 ), ExtResource( 23 ) ],
+"loop": true,
+"name": "GroundAttack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 32 ) ],
+"loop": true,
+"name": "HurtAerial",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 30 ) ],
+"loop": true,
+"name": "HurtGroundedHigh",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 33 ) ],
+"loop": true,
+"name": "HurtGroundedLow",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 29 ) ],
+"loop": true,
+"name": "HurtGroundedMid",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 20 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 40 ) ],
+"loop": true,
+"name": "Landing",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 34 ), ExtResource( 34 ), ExtResource( 35 ), ExtResource( 35 ), ExtResource( 36 ), ExtResource( 36 ), ExtResource( 36 ), ExtResource( 37 ), ExtResource( 38 ) ],
+"loop": true,
+"name": "Uppercut",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "Wait",
+"speed": 30.0
+} ]
+
+[node name="P1" type="Node2D" groups=["player"]]
+script = ExtResource( 1 )
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "Wait"
+offset = Vector2( 0, -18 )
+
+[node name="CollisionBox" type="Node" parent="."]
+script = ExtResource( 11 )
+y = -16
+width = 16
+height = 16
+
+[node name="Hurtbox" type="Node" parent="."]
+script = ExtResource( 11 )
+y = -14
+width = 14
+height = 14
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Start" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+title = "Wait"
+show_in_menu = false
+interrupt_into_string = "Grounded"
+
+[node name="Wait" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+anim_length = 30
+title = "Wait"
+interrupt_from_string = "GroundedIdle
+Grounded"
+interrupt_into_string = "Grounded"
+
+[node name="GroundAttack" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+anim_length = 15
+title = "Ground Attack"
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedMovement
+GroundedAttack
+GroundedSpecial"
+
+[node name="Hitbox" type="Node" parent="StateMachine/GroundAttack"]
+script = ExtResource( 7 )
+x = 11
+y = -23
+width = 19
+height = 4
+hitstun_ticks = 15
+hitlag_ticks = 5
+start_tick = 4
+active_ticks = 2
+hit_height = 0
+
+[node name="Uppercut" type="Node" parent="StateMachine"]
+script = ExtResource( 39 )
+__meta__ = {
+"_editor_description_": ""
+}
+anim_length = 30
+force_dir_x = "0.5"
+force_dir_y = "-1"
+force_speed = "10.0"
+force_tick = 3
+reset_momentum = true
+title = "Uppercut"
+type = 3
+interrupt_from_string = "GroundedSpecial
+Grounded"
+
+[node name="Hitbox" type="Node" parent="StateMachine/Uppercut"]
+script = ExtResource( 7 )
+x = 18
+y = -14
+width = 12
+height = 14
+hitstun_ticks = 900
+dir_x = "8.0"
+dir_y = "-10.0"
+knockback = "20.0"
+pushback_x = "-1.0"
+start_tick = 3
+active_ticks = 3
+grounded_hit_state = "HurtAerial"
+knockdown = true
+
+[node name="Hitbox2" type="Node" parent="StateMachine/Uppercut"]
+script = ExtResource( 7 )
+x = 16
+y = -29
+width = 18
+height = 23
+hitstun_ticks = 900
+dir_x = "5.0"
+dir_y = "-10.0"
+knockback = "30.0"
+pushback_x = "-1.0"
+start_tick = 6
+active_ticks = 3
+grounded_hit_state = "HurtAerial"
+knockdown = true
+
+[node name="UppercutLanding" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+sprite_animation = "Landing"
+anim_length = 30
+title = "UppercutLanding"
+type = 3
+interrupt_into_string = "Grounded"
+
+[node name="AirAttack" type="Node" parent="StateMachine"]
+script = ExtResource( 10 )
+fallback_state = "Fall"
+anim_length = 40
+title = "Air Attack"
+type = 2
+aerial = true
+interrupt_from_string = "AerialAttack
+Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "AerialAttack
+AerialMovement"
+
+[node name="Hitbox" type="Node" parent="StateMachine/AirAttack"]
+script = ExtResource( 7 )
+x = 20
+y = -11
+width = 14
+height = 9
+hitstun_ticks = 50
+dir_x = "0.5"
+knockback = "5.0"
+start_tick = 5
+hit_height = 0
+
+[node name="Fall" type="Node" parent="StateMachine"]
+script = ExtResource( 10 )
+fallback_state = "Fall"
+sprite_animation = "Wait"
+anim_length = 30
+
+[node name="Landing" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+anim_length = 3
+title = "Landing"
+interrupt_into_string = "Grounded"
+
+[node name="DashForward" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+anim_length = 15
+reset_momentum = true
+title = "Dash Forward"
+type = 1
+interrupt_frames = [ 7 ]
+interrupt_from_string = "GroundedMovement
+Grounded"
+interrupt_into_string = "Grounded"
+dash_speed = 10
+fric = "0.02"
+
+[node name="DashBackward" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+anim_length = 18
+reset_momentum = true
+title = "Dash Back"
+type = 1
+iasa_at = 7
+interrupt_from_string = "GroundedMovement
+Grounded"
+interrupt_into_string = "Grounded"
+dir_x = -1
+dash_speed = 7
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource( 8 )
+title = "Jump"
+type = 1
+reset_momentum = true
+anim_length = 1000
+fallback_state = "Fall"
+data_ui_scene = ExtResource( 9 )
+interrupt_frames = [ 7, 18 ]
+interrupt_from_string = "GroundedMovement
+Grounded"
+interrupt_into_string = "Aerial"
+speed = "8"
+
+[node name="DoubleJump" type="Node" parent="StateMachine"]
+script = ExtResource( 8 )
+title = "Air Jump"
+type = 1
+aerial = true
+reset_momentum = true
+anim_length = 1000
+sprite_anim_length = 4
+fallback_state = "Fall"
+loop_animation = true
+data_ui_scene = ExtResource( 9 )
+uses_air_movement = true
+interrupt_frames = [ 7, 25 ]
+interrupt_from_string = "AerialMovement
+Aerial"
+interrupt_into_string = "Aerial"
+speed = "8"
+
+[node name="AirDash" type="Node" parent="StateMachine"]
+script = ExtResource( 5 )
+fallback_state = "Fall"
+anim_length = 15
+reset_momentum = true
+title = "Air Dash"
+type = 1
+data_ui_scene = ExtResource( 13 )
+aerial = true
+uses_air_movement = true
+interrupt_frames = [ 7 ]
+interrupt_from_string = "AerialMovement
+Aerial"
+interrupt_into_string = "AerialAttack
+AerialMovement"
+speed = "10.0"
+
+[node name="HurtGrounded" type="Node" parent="StateMachine"]
+script = ExtResource( 28 )
+title = "Hurt Grounded"
+type = 4
+reset_momentum = true
+anim_length = 100000
+interrupt_into_string = "Grounded"
+
+[node name="HurtAerial" type="Node" parent="StateMachine"]
+script = ExtResource( 27 )
+title = "Hurt Aerial"
+type = 4
+aerial = true
+reset_momentum = true
+anim_length = 100000
+fallback_state = "Fall"
+interrupt_into_string = "Aerial"
+
+[node name="DebugLabel" type="Label" parent="."]
+visible = false
+margin_left = -102.0
+margin_top = -176.0
+margin_right = 102.0
+margin_bottom = -38.0
+theme = ExtResource( 31 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="BoxDraw" type="Node2D" parent="."]
+visible = false
+z_index = 4096
+script = ExtResource( 12 )

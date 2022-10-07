@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/8Way/8Way.tscn" type="PackedScene" id=2]
+
+[node name="ActionUIData" instance=ExtResource( 1 )]
+display_offset = Vector2( 0, 16 )
+
+[node name="Direction" parent="." index="0" instance=ExtResource( 2 )]
+margin_bottom = 62.0
+NW = false
+N = false
+NE = false
+W = false
+Neutral = false
+SW = false
