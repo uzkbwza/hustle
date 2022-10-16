@@ -2,6 +2,8 @@ extends Control
 
 const SNAP_AMOUNT = 0.15
 
+signal data_changed()
+
 var mouse_over = false
 var mouse_clicked = false
 var parent
@@ -9,6 +11,9 @@ var mpos = Vector2()
 
 var x_value_float = 0.0
 var y_value_float = 0.0
+
+func init():
+	call_deferred("update_value", Vector2())
 
 func _ready():
 	rect_size.y = rect_size.x
@@ -42,12 +47,11 @@ func _input(event: InputEvent):
 				if mouse_over:
 					update_value(Vector2())
 
-
-
 func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
 
 func update_value(p=null):
+	emit_signal("data_changed")
 	mpos = get_local_mouse_position()
 	var point
 	if p == null:
@@ -73,9 +77,9 @@ func update_value(p=null):
 
 		if abs(closest) > parent.limit_range / 2:
 			var real_point = point
-			point = point.rotated(closest).rotated((parent.limit_range / 2) * sign(-closest)).normalized()
+			point = point.rotated(closest).rotated((parent.limit_range / 2) * sign(-closest))
 			angle = point.angle()
-			point = real_point.rotated(parent.limit_center)
+			point = point.normalized() * point.length()
 	
 	if point.length() >= (rect_size.x / 2) - SNAP_AMOUNT * (rect_size.x / 2):
 		point = point.normalized() * (rect_size.x / 2)

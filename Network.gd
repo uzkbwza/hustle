@@ -74,6 +74,8 @@ signal game_ended()
 signal game_error(what)
 signal start_game()
 
+
+
 # Callback from SceneTree.
 func _player_connected(id):
 	# Registration of a client beings here, tell the connected player that we are here.
@@ -111,13 +113,13 @@ func reset_action_inputs():
 # Callback from SceneTree.
 func _player_disconnected(id):
 	multiplayer_active = false
-	if has_node("/root/Main/GameLayer/Game"): # Game is in progress.
-		if get_tree().is_network_server():
-			emit_signal("game_error", "Player " + players[id] + " disconnected")
-			end_game()
+	if get_tree().is_network_server():
+		emit_signal("game_error", "Player " + players[id] + " disconnected")
 	else: # Game is not in progress.
 		# Unregister this player.
 		unregister_player(id)
+	end_game()
+	get_tree().reload_current_scene()
 
 # Callback from SceneTree, only for clients (not server).
 func _connected_ok():
@@ -156,7 +158,7 @@ func turn_ready(id):
 	if ticks[1] != ticks[2]:
 		print("desync? ticks[1] = " + str(ticks[1]) + ", ticks[2] = " + str(ticks[2]))
 		return false
-	return Network.turns_ready[id] and (Network.turns_ready[opponent_player_id(id)] or !player_objects[opponent_player_id(id)].any_available_actions)
+	return Network.turns_ready[id] and (Network.turns_ready[opponent_player_id(id)])
 
 remotesync func multiplayer_turn_ready(id):
 	Network.turns_ready[id] = true
@@ -170,7 +172,7 @@ remote func send_action(action, data, extra, id):
 		action_inputs[id]["action"] = null
 		action_inputs[id]["data"] = null
 		action_inputs[id]["extra"] = null
-		player_objects[id].on_action_selected(action, data)
+		player_objects[id].on_action_selected(action, data, extra)
 
 remotesync func register_player(new_player_name):
 	var id = get_tree().get_rpc_sender_id()
@@ -239,11 +241,11 @@ func begin_game():
 	rpc("game_start", match_data)
 
 func end_game():
-	if has_node("/root/World"): # Game is in progress.
-		# End it
-		get_node("/root/World").queue_free()
-	emit_signal("game_ended")
-	players.clear()
+	stop_multiplayer()
+
+func stop_multiplayer():
+	multiplayer_active = false
+	peer.close_connection()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")

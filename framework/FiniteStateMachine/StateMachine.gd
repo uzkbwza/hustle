@@ -13,6 +13,7 @@ var queued_data = []
 var initialized = false
 
 signal state_changed(states_stack)
+signal state_exited(state)
 
 export var starting_state: String = ""
 export var host_node_path: NodePath
@@ -118,6 +119,7 @@ func auto_transition(_anim_name):
 func queue_state(new_state, data=null, old_state=state):
 	if old_state.active:
 		queued_states = []
+		queued_data = []
 		queued_states.push_back(new_state)
 		queued_data.append(data)
 
@@ -140,13 +142,18 @@ func tick():
 	var next_state_name = state._tick_shared()
 	if next_state_name == null:
 		next_state_name = state._tick()
+	if next_state_name == null:
+		next_state_name = state._tick_after()
 	if next_state_name:
 		queue_state(next_state_name)
+
 
 func deactivate():
 	state.active = false
 	state._exit_shared()
 	state._exit()
+	emit_signal("state_exited", state)
+	
 
 func integrate(st):
 	state._integrate_shared(st)
@@ -160,10 +167,11 @@ func _change_state(state_name: String, data=null) -> void:
 	if state:
 		state._exit_shared()
 		state._exit()
+		emit_signal("state_exited", state)
 		state.active = false
 		state.set_physics_process(false)
 		state.set_process(false)
-	
+
 	state = next_state
 	states_stack.push_back(state)
 	if states_stack.size() > STACK_SIZE:

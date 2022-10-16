@@ -8,7 +8,7 @@ const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 
 const HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
-const DAMAGE_SUPER_GAIN_DIVISOR = 2
+const DAMAGE_SUPER_GAIN_DIVISOR = 1
 
 signal hit_something(obj, hitbox)
 
@@ -23,7 +23,7 @@ export var damage: int = 0
 
 export var _c_Hit_Properties = 0
 export var hitstun_ticks: int = 30
-export var hitlag_ticks: int = 8
+export var hitlag_ticks: int = 4
 export var cancellable = true
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -66,7 +66,9 @@ export var loop_inactive_ticks: int = 2
 var tick: int = 1
 var host
 var active = false # is the hitbox started
-var enabled = true # will it actually hit you
+var enabled = false # will it actually hit you
+var spawn_particle_effect = true
+var throw = false
 
 var grouped_hitboxes = []
 
@@ -84,24 +86,31 @@ func deactivate():
 	enabled = false
 	hit_objects = []
 
+func to_data():
+	return HitboxData.new(self)
+
 func hit(obj):
-	if !obj in hit_objects and !obj.invulnerable:
+	if !(obj.name in hit_objects) and !obj.invulnerable:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		var dir = get_dir_float(true)
+		if grounded_hit_state == "HurtGrounded" and obj.is_grounded():
+				dir.y *= 0
 		for hitbox in grouped_hitboxes:
-			hitbox.hit_objects.append(obj)
-		obj.hit_by(self)
-		var can_hit = true 
+			hitbox.hit_objects.append(obj.name)
+		obj.hit_by(self.to_data())
+		var can_hit = true
 		if obj.is_in_group("Fighter"):
-			camera.bump(Vector2(), screenshake_amount, Utils.frames(hitlag_ticks if screenshake_frames < 0 else screenshake_frames))
-			if obj.can_parry_hitbox(self) or self in obj.parried_hitboxes:
+			if !host.is_ghost:
+				camera.bump(Vector2(), screenshake_amount, Utils.frames(hitlag_ticks if screenshake_frames < 0 else screenshake_frames))
+			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
-			if can_hit:
+			if can_hit and spawn_particle_effect:
 				host.spawn_particle_effect(HIT_PARTICLE, get_overlap_center_float(obj.hurtbox), dir)
-		
-		host.hitlag_ticks = hitlag_ticks
+
+		if host.hitlag_ticks < hitlag_ticks:
+			host.hitlag_ticks = hitlag_ticks
 		if can_hit:
-			var pushback = host.fixed_math.mul(host.fixed_math.add(pushback_x, host.fixed_math.mul(str(host.combo_count), COMBO_PUSHBACK_COEFFICIENT)), "-1")
+			var pushback = host.fixed.mul(host.fixed.add(pushback_x, host.fixed.mul(str(host.combo_count), COMBO_PUSHBACK_COEFFICIENT)), "-1")
 			host.add_pushback(pushback)
 	#		obj.add_pushback(pushback)
 			var opponent = obj.get("opponent")
@@ -111,8 +120,6 @@ func hit(obj):
 				if opponent != host:
 					opponent.add_pushback(pushback)
 				opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
-			if grounded_hit_state == "HurtGrounded" and obj.is_grounded():
-				dir.y *= 0
 			emit_signal("hit_something", obj, self)
 		
 func get_facing_int():
@@ -127,11 +134,18 @@ func get_dir_float(facing=false):
 	# for aesthetic purposes
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
+func can_draw_box():
+	return .can_draw_box() or (active and enabled)
+#	return .can_draw_box()
 
 func tick():
 	if looping:
 		var loop_tick = tick % (loop_active_ticks + loop_inactive_ticks)
+		var prev_enabled = enabled
 		enabled = loop_tick < loop_active_ticks
+		if !enabled and prev_enabled:
+			for hitbox in grouped_hitboxes:
+				hitbox.hit_objects.clear()
 	tick += 1
 	if tick > active_ticks:
 		if !always_on:

@@ -49,7 +49,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://bin/FGCharacter.gdns"
 }, {
-"base": "",
+"base": "Reference",
 "class": "FGObject",
 "language": "NativeScript",
 "path": "res://bin/FGObject.gdns"
@@ -59,7 +59,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/BaseChar.gd"
 }, {
-"base": "",
+"base": "Reference",
 "class": "FixedMath",
 "language": "NativeScript",
 "path": "res://bin/FixedMath.gdns"
@@ -94,20 +94,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://mechanics/Hitbox.gd"
 }, {
-"base": "Node",
-"class": "HolePunchState",
+"base": "Reference",
+"class": "HitboxData",
 "language": "GDScript",
-"path": "res://addons/rabidholepuncher/utils/HolePunchState.gd"
-}, {
-"base": "Node",
-"class": "HolePunchStateMachine",
-"language": "GDScript",
-"path": "res://addons/rabidholepuncher/utils/HolePunchStateMachine.gd"
-}, {
-"base": "Node",
-"class": "HolePuncher",
-"language": "GDScript",
-"path": "res://addons/rabidholepuncher/RabidHolePuncher.gd"
+"path": "res://mechanics/HitboxData.gd"
 }, {
 "base": "StateInterface",
 "class": "ObjectState",
@@ -144,6 +134,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/states/SuperMove.gd"
 }, {
+"base": "Hitbox",
+"class": "ThrowBox",
+"language": "GDScript",
+"path": "res://characters/ThrowBox.gd"
+}, {
 "base": "Node",
 "class": "Utils",
 "language": "GDScript",
@@ -177,9 +172,7 @@ _global_script_class_icons={
 "GoodCamera": "",
 "HelloWorld": "",
 "Hitbox": "",
-"HolePunchState": "res://addons/rabidholepuncher/assets/state.svg",
-"HolePunchStateMachine": "res://addons/rabidholepuncher/assets/state_machine.svg",
-"HolePuncher": "res://addons/rabidholepuncher/assets/punch.svg",
+"HitboxData": "",
 "ObjectState": "",
 "ParryState": "",
 "ParticleEffect": "",
@@ -187,6 +180,7 @@ _global_script_class_icons={
 "StateInterface": "",
 "StateMachine": "",
 "SuperMove": "",
+"ThrowBox": "",
 "Utils": "",
 "VariableSound2D": "",
 "Window": ""
@@ -219,6 +213,7 @@ enabled=PoolStringArray( "res://addons/export_categories/plugin.cfg" )
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+timers/tooltip_delay_sec=0.25
 
 [importer_defaults]
 
@@ -261,6 +256,10 @@ submit_action={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[memory]
+
+limits/message_queue/max_size_kb=58324
 
 [physics]
 

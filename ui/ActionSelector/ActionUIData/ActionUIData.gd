@@ -1,8 +1,15 @@
 extends VBoxContainer
 
+signal data_changed()
+
 export var display_offset = Vector2()
 
 var facing = -1
+
+func _ready():
+	for child in get_children():
+		if child.has_signal("data_changed"):
+			child.connect("data_changed", self, "emit_signal", ["data_changed"])
 
 func get_data():
 	var children = get_children()
@@ -20,7 +27,8 @@ func set_facing(facing: int):
 	for child in get_children():
 		if child.get("facing") != null:
 			child.facing = facing
-			child.init()
+			if child.has_method("init"):
+				child.init()
 
 func init():
 	for child in get_children():

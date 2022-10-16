@@ -9,9 +9,9 @@ var active_button = null
 
 var game = null
 var player_id = null
-
-func _ready():
-	connect("draw", self, "snap_to_boundaries")
+#
+#func _ready():
+#	connect("draw", self, "snap_to_boundaries")
 
 func init(name):
 	label_text = name
@@ -32,7 +32,7 @@ func any_buttons_visible():
 func _process(_delta):
 #	if visible:
 #		snap_to_boundaries()
-	if action_data_panel_container.visible:
+	if action_data_panel_container.visible and game:
 		var screen_pos = game.get_screen_position(player_id)
 		var center_pos = get_viewport_rect().size/2 - action_data_panel_container.rect_size/2
 		action_data_panel_container.rect_global_position = screen_pos + center_pos
@@ -80,13 +80,13 @@ func hide_data_container():
 func add_data_node(node):
 	action_data_container.add_child(node)
 
-func snap_to_boundaries():
-	var viewport_size = get_viewport_rect().size
-	if rect_global_position.x < 0:
-		rect_global_position.x = 0
-	if rect_global_position.y < 0:
-		rect_global_position.y = 0
-	if rect_global_position.x + rect_size.x > viewport_size.x:
-		rect_global_position.x = viewport_size.x - rect_size.x
-	if rect_global_position.y + rect_size.y > viewport_size.y:
-		rect_global_position.y = viewport_size.y - rect_size.y
+#func snap_to_boundaries():
+#	var viewport_size = get_viewport_rect().size
+#	if rect_global_position.x < 0:
+#		rect_global_position.x = 0
+#	if rect_global_position.y < 0:
+#		rect_global_position.y = 0
+#	if rect_global_position.x + rect_size.x > viewport_size.x:
+#		rect_global_position.x = viewport_size.x - rect_size.x
+#	if rect_global_position.y + rect_size.y > viewport_size.y:
+#		rect_global_position.y = viewport_size.y - rect_size.y

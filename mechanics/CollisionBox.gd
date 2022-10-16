@@ -84,6 +84,8 @@ func box_draw():
 			color = Color.blue
 		elif "Hurtbox" in name:
 			color = Color.yellow
+		elif "ThrowBox" in name:
+			color = Color.purple
 		var rect = get_rect_float()
 		var fill = color
 		var stroke = color
@@ -93,11 +95,13 @@ func box_draw():
 		draw_rect(rect, stroke, false)
 
 func can_draw_box():
-	return Engine.editor_hint and (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
+	if Engine.editor_hint:
+		return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
+		pass
+	return false
 
 func _process(delta):
-	if Engine.editor_hint:
-		update()
+	update()
 
 func _draw():
 	if !can_draw_box():

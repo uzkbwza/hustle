@@ -15,7 +15,7 @@ var moving = false
 
 func _enter():
 	var vel = host.get_vel()
-	var new_vel = fixed_math.mul(vel.x, MOMENTUM_REDUCTION)
+	var new_vel = fixed.mul(vel.x, MOMENTUM_REDUCTION)
 	host.set_vel(new_vel, "0")
 	moving = false
 	move_x_modifier = abs(data.x) * x_modifier_amount

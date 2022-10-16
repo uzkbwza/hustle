@@ -7,7 +7,7 @@ const SPEED_REDUCTION = "50.0"
 func _enter():
 #	host.move_directly_relative(0, -)
 	var force = xy_to_dir(data["x"], data["y"], speed)
-	force.y = fixed_math.mul(force.y, y_modifier)
+	force.y = fixed.mul(force.y, y_modifier)
 	host.apply_force(force.x, force.y)
 	if "-" in force.x:
 		if host.get_facing() == "Right":

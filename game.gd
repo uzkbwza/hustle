@@ -2,6 +2,8 @@ extends Node2D
 
 class_name Game
 
+const GHOST_FRAMES = 90
+
 export(int) var char_distance = 200
 export(int) var stage_width = 2000
 export(int) var max_char_distance = 640
@@ -12,8 +14,10 @@ export(int) var time = 3000
 # var b = "text"
 
 signal player_actionable()
+signal simulation_continue()
 signal playback_requested()
 signal game_ended()
+signal ghost_finished()
 
 var p1_data
 var p2_data
@@ -33,19 +37,32 @@ var game_started = false
 var undoing = false
 var singleplayer = false
 
+var buffer_playback = false
+
 var game_end_tick = 0
 
 var game_finished = false
 
+var ghost_cleaned = true
+
+var is_ghost = false
+var ghost_hidden = false
+
+var ghost_game
+
 var snapping_camera = false 
+var waiting_for_player_prev = false
 
 var objects = []
+var objs_map = {
+	
+}
 var effects = []
 
 var drag_position = null
 
 func get_ticks_left():
-	return time - min(current_tick, time)
+	return time - Utils.int_min(current_tick, time)
 
 func _ready():
 	p1.connect("undo", self, "set", ["undoing", true])
@@ -54,10 +71,37 @@ func _ready():
 	connect_signals(p2)
 	camera.limit_left = -stage_width - 20
 	camera.limit_right = stage_width + 20
+	if is_ghost:
+		hide()
+		for object in objects_node.get_children():
+			object.free()
+		for fx in fx_node.get_children():
+			fx.free()
+	if !is_ghost:
+		emit_signal("simulation_continue")
+	
+	objs_map = {
+		"P1": p1,
+		"P2": p2,
+	}
+	p1.objs_map = objs_map
+	p2.objs_map = objs_map
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
 	object.connect("particle_effect_spawned", self, "on_particle_effect_spawned")
+
+func copy_to(game: Game):
+	p1.copy_to(game.p1)
+	p2.copy_to(game.p2)
+	clean_objects()
+	for object in game.objects:
+		object.free()
+	for object in objects:
+		if is_instance_valid(object) and !object.disabled:
+			var new_obj = load(object.filename).instance()
+			game.on_object_spawned(new_obj)
+			object.copy_to(new_obj)
 
 func get_screen_position(player_id):
 	var screen_center = camera.get_camera_screen_center()
@@ -82,6 +126,8 @@ func on_particle_effect_spawned(fx: ParticleEffect):
 func on_object_spawned(obj: BaseObj):
 	objects.append(obj)
 	objects_node.add_child(obj)
+	obj.obj_name = str(objs_map.size() + 1)
+	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
 	connect_signals(obj)
 
@@ -92,19 +138,23 @@ func _on_obj_exit_tree(obj):
 	objects.erase(obj)
 
 func start_game(singleplayer: bool):
+
 	snapping_camera = true
 	self.singleplayer = singleplayer
-	game_started = true
 	current_tick = -1
-	if ReplayManager.playback:
-		get_max_replay_tick()
-	else:
-		ReplayManager.init()
+	if !is_ghost:
+		if ReplayManager.playback:
+			get_max_replay_tick()
+		else:
+			ReplayManager.init()
 	if singleplayer:
-		p2.dummy = true
+#		p2.dummy = true
 		pass
-	else:
+	elif !is_ghost:
 		Network.game = self
+	if is_ghost:
+		p1.is_ghost = true
+		p2.is_ghost = true
 	p1.init()
 	p2.init()
 	p1.set_pos(-char_distance, 0)
@@ -123,6 +173,9 @@ func start_game(singleplayer: bool):
 	p2_data = p2.data
 	if !ReplayManager.resimulating:
 		show_state()
+	if ReplayManager.playback and !ReplayManager.resimulating:
+		yield(get_tree().create_timer(0.25), "timeout")
+	game_started = true
 
 func update_data():
 	p1.update_data()
@@ -150,9 +203,12 @@ func clean_objects():
 
 func tick():
 	if !singleplayer:
-		Network.reset_action_inputs()
+		if !is_ghost:
+			Network.reset_action_inputs()
 	clean_objects()
 	for object in objects:
+#		if object.disabled:
+#			continue
 		object.tick()
 	for fx in effects:
 		fx.tick()
@@ -167,11 +223,16 @@ func tick():
 	apply_hitboxes()
 	p1_data = p1.data
 	p2_data = p2.data
+	if is_ghost:
+		if !ghost_hidden:
+			if !visible and current_tick >= 0:
+				show()
+		return
 	if !game_finished:
 		if ReplayManager.playback:
 			if !ReplayManager.resimulating:
 				if current_tick > max_replay_tick:
-					ReplayManager.playback = false
+					ReplayManager.set_deferred("playback", false)
 			else:
 				if current_tick > ReplayManager.resim_tick:
 					ReplayManager.playback = false
@@ -179,6 +240,10 @@ func tick():
 					camera.reset_shake()
 	if should_game_end():
 		end_game()
+	if p1.state_interruptable and !p1.busy_interrupt:
+		p2.reset_combo()
+	if p2.state_interruptable and !p2.busy_interrupt:
+		p1.reset_combo()
 
 func int_abs(n: int):
 	if n < 0:
@@ -267,16 +332,72 @@ func resolve_collisions(step=0):
 			return resolve_collisions(step+1)
 
 func apply_hitboxes():
+	if !is_ghost:
+		pass
 	var p1_hitboxes = p1.get_active_hitboxes()
 	var p2_hitboxes = p2.get_active_hitboxes()
-	var p2_hit_by = get_colliding_hitbox(p1_hitboxes, p2.hurtbox)
-	var p1_hit_by = get_colliding_hitbox(p2_hitboxes, p1.hurtbox)
+	var p2_hit_by = get_colliding_hitbox(p1_hitboxes, p2.hurtbox) if !p2.invulnerable else null
+	var p1_hit_by = get_colliding_hitbox(p2_hitboxes, p1.hurtbox) if !p1.invulnerable else null
+	var p1_hit = false
+	var p2_hit = false
+	var p1_throwing = false
+	var p2_throwing = false
+	
 	if p1_hit_by:
-		p1_hit_by.hit(p1)
+		if !(p1_hit_by is ThrowBox):
+			p1_hit_by.hit(p1)
+			p1_hit = true
+		else:
+			p2_throwing = true
 	if p2_hit_by:
-		p2_hit_by.hit(p2)
+		if !(p2_hit_by is ThrowBox):
+			p2_hit_by.hit(p2)
+			p2_hit = true
+		else:
+			p1_throwing = true
+	
+	
+	if !p2_hit and !p1_hit:
+		if p2_throwing and p1_throwing:
+			p1.state_machine.queue_state("ThrowTech")
+			p2.state_machine.queue_state("ThrowTech")
+
+		elif p1_throwing:
+			if p1.current_state().throw_techable and p2.current_state().throw_techable:
+				p1.state_machine.queue_state("ThrowTech")
+				p2.state_machine.queue_state("ThrowTech")
+				return
+			var can_hit = true
+			if p2.is_grounded() and !p2_hit_by.hits_grounded:
+				can_hit = false
+			if !p2.is_grounded() and !p2_hit_by.hits_aerial:
+				can_hit = false
+			if can_hit:
+				p2_hit_by.hit(p2)
+				p1.state_machine.queue_state(p2_hit_by.throw_state)
+				return
+
+		elif p2_throwing:
+			if p1.current_state().throw_techable and p2.current_state().throw_techable:
+				p1.state_machine.queue_state("ThrowTech")
+				p2.state_machine.queue_state("ThrowTech")
+				return
+			var can_hit = true
+			if p1.is_grounded() and !p1_hit_by.hits_grounded:
+				can_hit = false
+			if !p1.is_grounded() and !p1_hit_by.hits_aerial:
+				can_hit = false
+			if can_hit:
+				p1_hit_by.hit(p1)
+				p2.state_machine.queue_state(p1_hit_by.throw_state)
+				return
+
+	var objects_to_hit = []
+	var objects_hit_each_other = false
 
 	for object in objects:
+		if object.disabled:
+			continue
 		var p
 		var p_hit_by
 		if object.id == 1:
@@ -285,6 +406,8 @@ func apply_hitboxes():
 			p = p1
 
 		if p:
+			if p.projectile_invulnerable:
+				continue
 			var hitboxes = object.get_active_hitboxes()
 			p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
 			if p_hit_by:
@@ -302,7 +425,12 @@ func apply_hitboxes():
 			var obj_hitboxes = opp_object.get_active_hitboxes()
 			obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
 			if obj_hit_by:
-				obj_hit_by.hit(object)
+				objects_hit_each_other = true
+				objects_to_hit.append([obj_hit_by, object])
+	
+	if objects_hit_each_other:
+		for pair in objects_to_hit:
+			pair[0].hit(pair[1])
 
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
@@ -313,7 +441,7 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	return hit_by
 
 func is_waiting_on_player():
-	return p1.state_interruptable or p2.state_interruptable
+	return (p1.state_interruptable or p2.state_interruptable)
 
 func simulate_until_ready():
 	while !is_waiting_on_player():
@@ -362,65 +490,86 @@ func end_game():
 
 func _process(delta):
 	update()
+	if !is_ghost:
+		if Input.is_action_just_pressed("playback"):
+			if !game_finished and singleplayer and !ReplayManager.playback:
+				if is_waiting_on_player() and current_tick > 0:
+					buffer_playback = true
 
-
-func _physics_process(_delta):
-	if undoing:
-		undo()
-	if !game_started:
-		return
-	if !game_finished:
-		if !ReplayManager.playback:
-			if !is_waiting_on_player():
+func process_tick():
+	if !ReplayManager.playback:
+		if !is_waiting_on_player():
+#				if Input.is_action_just_pressed("frame_advance"):
 					snapping_camera = true
 					call_deferred("simulate_one_tick")
 					p1_turn = false
 					p2_turn = false
-			else:
-				if p1.state_interruptable and !p1_turn:
-					p2.busy_interrupt = !p2.state_interruptable
-					p2.state_interruptable = true
-					p1.show_you_label()
-					p1_turn = true
-					if singleplayer:
-						emit_signal("player_actionable")
-					else:
-						Network.rpc("end_turn_simulation", current_tick, Network.player_id)
-
-				elif p2.state_interruptable and !p2_turn:
-					p1.busy_interrupt = !p1.state_interruptable
-					p1.state_interruptable = true
-					p2.show_you_label()
-					p2_turn = true
-					if singleplayer:
-						emit_signal("player_actionable")
-					else:
-						Network.rpc("end_turn_simulation", current_tick, Network.player_id)
 		else:
-			if ReplayManager.resimulating:
-				snapping_camera = true
-				call_deferred("resimulate")
-				yield(get_tree(), "idle_frame")
+			if p1.state_interruptable and !p1_turn:
+				p2.busy_interrupt = (!p2.state_interruptable and !p2.current_state().interruptible_on_opponent_turn)
+				p2.state_interruptable = true
+				p1.show_you_label()
+				p1_turn = true
+				if singleplayer:
+					emit_signal("player_actionable")
+				elif !is_ghost:
+					Network.rpc("end_turn_simulation", current_tick, Network.player_id)
+
+			elif p2.state_interruptable and !p2_turn:
+				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
+				p1.state_interruptable = true
+				p2.show_you_label()
+				p2_turn = true
+				if singleplayer:
+					emit_signal("player_actionable")
+				elif !is_ghost:
+					Network.rpc("end_turn_simulation", current_tick, Network.player_id)
+	else:
+		if ReplayManager.resimulating:
+			snapping_camera = true
+			call_deferred("resimulate")
+			yield(get_tree(), "idle_frame")
 #				camera.reset_smoothing()
-			else:
-				call_deferred("simulate_one_tick")
+		else:
+			call_deferred("simulate_one_tick")
+
+func _physics_process(_delta):
+	if undoing:
+		undo()
+		return
+	if !game_started:
+		return
+	if !is_ghost:
+		if !game_finished:
+			process_tick()
+		else:
+			call_deferred("simulate_one_tick")
+			if current_tick >= game_end_tick + 120:
+				start_playback()
 	else:
 		call_deferred("simulate_one_tick")
-		if current_tick >= game_end_tick + 120:
-			start_playback()
+		if current_tick > GHOST_FRAMES:
+			emit_signal("ghost_finished")
 
-	if snapping_camera:
-		var target = (p1.global_position + p2.global_position) / 2 - Vector2(0, 50)
-		if camera.global_position.distance_squared_to(target) > 10:
-			camera.global_position = lerp(camera.global_position, target, 0.28)
+	if !is_waiting_on_player():
+		emit_signal("simulation_continue")
 	
+	if !is_ghost:
+		if snapping_camera:
+			var target = (p1.global_position + p2.global_position) / 2
+			if camera.global_position.distance_squared_to(target) > 10:
+				camera.global_position = lerp(camera.global_position, target, 0.28)
+	if is_instance_valid(ghost_game):
+		ghost_game.camera.global_position = camera.global_position
 
-	if !game_finished and singleplayer and Input.is_action_just_pressed("playback") and !ReplayManager.playback:
-		if p1_turn or p2_turn:
-			ReplayManager.resimulating = false
-			game_finished = false
-			start_playback()
-#		undo()
+	#		undo()
+	waiting_for_player_prev = is_waiting_on_player()
+	
+	if !is_ghost and buffer_playback:
+		ReplayManager.resimulating = false
+		game_finished = false
+		emit_signal("simulation_continue")
+		start_playback()
 
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -441,6 +590,8 @@ func _unhandled_input(event: InputEvent):
 
 
 func _draw():
+	if is_ghost:
+		return
 	if !snapping_camera:
 		draw_circle(camera.position, 3, Color.white * 0.5)
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), Color.black, 2.0)

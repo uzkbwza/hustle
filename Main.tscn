@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -10,6 +10,9 @@
 [ext_resource path="res://ui/HUD/HudLayer.gd" type="Script" id=8]
 [ext_resource path="res://ui/HUD/BurstMeter.gd" type="Script" id=9]
 [ext_resource path="res://ui/PixeloidSans.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://BottomBar.gd" type="Script" id=11]
+
+[sub_resource type="CanvasItemMaterial" id=10]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0 )
@@ -55,9 +58,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 0.164706, 0.164706, 0.164706, 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="GameLayer" type="CanvasLayer" parent="."]
 follow_viewport_enable = true
+
+[node name="GhostLayer" type="CanvasLayer" parent="."]
+
+[node name="ViewportContainer" type="ViewportContainer" parent="GhostLayer"]
+modulate = Color( 1, 1, 1, 0.372549 )
+material = SubResource( 10 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+stretch = true
+
+[node name="GhostViewport" type="Viewport" parent="GhostLayer/ViewportContainer"]
+unique_name_in_owner = true
+size = Vector2( 640, 360 )
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 3
 
 [node name="HudLayer" type="CanvasLayer" parent="."]
 script = ExtResource( 8 )
@@ -67,14 +90,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudLayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 37.0
-margin_top = 11.0
+margin_top = 19.0
 margin_right = -37.0
-margin_bottom = -244.0
+margin_bottom = -236.0
 mouse_filter = 2
 
 [node name="TopBar" type="HBoxContainer" parent="HudLayer/HudLayer/VBoxContainer"]
@@ -246,7 +272,7 @@ __meta__ = {
 [node name="DebugLabelP1" type="Label" parent="UILayer/DebugContainer"]
 unique_name_in_owner = true
 visible = false
-margin_right = 318.0
+margin_right = 640.0
 margin_bottom = 360.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
@@ -258,6 +284,7 @@ __meta__ = {
 [node name="DebugLabelP2" type="Label" parent="UILayer/DebugContainer"]
 unique_name_in_owner = true
 visible = false
+margin_left = 322.0
 margin_right = 640.0
 margin_bottom = 360.0
 size_flags_horizontal = 3
@@ -448,106 +475,176 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 7 )
 
-[node name="BottomBar" type="Control" parent="UILayer"]
+[node name="BottomBar" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
-anchor_right = 1.0
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
+margin_left = -320.0
+margin_top = -123.0
+margin_right = 320.0
+margin_bottom = -8.0
 mouse_filter = 2
+theme = ExtResource( 4 )
+alignment = 1
+script = ExtResource( 11 )
 
 [node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/BottomBar"]
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 34.0
-margin_top = -78.0
-margin_right = -34.0
-margin_bottom = -63.0
+visible = false
+margin_top = 3.0
+margin_right = 640.0
+margin_bottom = 18.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 
-[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/BottomSuperBar"]
-unique_name_in_owner = true
-margin_right = 100.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 100, 0 )
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-max_value = 1000.0
-texture_under = SubResource( 6 )
-texture_progress = SubResource( 8 )
-nine_patch_stretch = true
-
-[node name="P1NumSupers" type="Label" parent="UILayer/BottomBar/BottomSuperBar"]
-unique_name_in_owner = true
-margin_left = 101.0
-margin_top = 2.0
-margin_right = 111.0
-margin_bottom = 13.0
-rect_min_size = Vector2( 10, 0 )
-text = "9"
-align = 1
-
 [node name="Timer" type="Control" parent="UILayer/BottomBar/BottomSuperBar"]
-margin_left = 112.0
-margin_right = 460.0
+margin_right = 640.0
 margin_bottom = 15.0
 rect_min_size = Vector2( 40, 15 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.79
 
-[node name="P2NumSupers" type="Label" parent="UILayer/BottomBar/BottomSuperBar"]
+[node name="ActionButtons" type="HBoxContainer" parent="UILayer/BottomBar"]
 unique_name_in_owner = true
-margin_left = 461.0
-margin_top = 2.0
-margin_right = 471.0
-margin_bottom = 13.0
-rect_min_size = Vector2( 10, 0 )
-text = "9"
-align = 1
-
-[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/BottomSuperBar"]
-unique_name_in_owner = true
-margin_left = 472.0
-margin_right = 572.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 100, 0 )
+margin_right = 640.0
+margin_bottom = 102.0
+rect_min_size = Vector2( 0, 100 )
 mouse_filter = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
+margin_right = 319.0
+margin_bottom = 102.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer"]
+margin_top = 8.0
+margin_right = 319.0
+margin_bottom = 28.0
+mouse_filter = 2
+
+[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
+margin_right = 20.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 21.0
+margin_right = 121.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
 size_flags_vertical = 3
 max_value = 1000.0
 texture_under = SubResource( 6 )
 texture_progress = SubResource( 8 )
-fill_mode = 1
 nine_patch_stretch = true
 
-[node name="P1ActionButtons" parent="UILayer/BottomBar" instance=ExtResource( 3 )]
+[node name="P1NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
-margin_left = 0.0
-margin_top = -60.0
-margin_right = 640.0
-margin_bottom = 0.0
-rect_min_size = Vector2( 0, 60 )
-alignment = 0
+margin_left = 122.0
+margin_top = 4.0
+margin_right = 132.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 10, 0 )
+text = "9"
+align = 1
 
-[node name="P2ActionButtons" parent="UILayer/BottomBar" instance=ExtResource( 3 )]
+[node name="P1ActionButtons" parent="UILayer/BottomBar/ActionButtons/VBoxContainer" instance=ExtResource( 3 )]
 unique_name_in_owner = true
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -640.0
-margin_top = -60.0
-margin_right = 0.0
-margin_bottom = 0.0
-rect_min_size = Vector2( 0, 60 )
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 29.0
+margin_right = 319.0
+margin_bottom = 102.0
+rect_min_size = Vector2( 0, 73 )
+size_flags_horizontal = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
+margin_left = 320.0
+margin_right = 640.0
+margin_bottom = 102.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2"]
+margin_top = 8.0
+margin_right = 320.0
+margin_bottom = 28.0
+mouse_filter = 2
+alignment = 2
+
+[node name="P2NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 188.0
+margin_top = 4.0
+margin_right = 198.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 10, 0 )
+text = "9"
+align = 1
+
+[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 199.0
+margin_right = 299.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+max_value = 1000.0
+texture_under = SubResource( 6 )
+texture_progress = SubResource( 8 )
+nine_patch_stretch = true
+
+[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+margin_left = 300.0
+margin_right = 320.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="P2ActionButtons" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 29.0
+margin_right = 320.0
+margin_bottom = 102.0
+rect_min_size = Vector2( 0, 73 )
+size_flags_horizontal = 3
 player_id = 2
+
+[node name="OptionsBar" type="HBoxContainer" parent="UILayer/BottomBar"]
+unique_name_in_owner = true
+margin_top = 103.0
+margin_right = 640.0
+margin_bottom = 115.0
+alignment = 1
+
+[node name="GhostButton" type="CheckButton" parent="UILayer/BottomBar/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 280.0
+margin_right = 359.0
+margin_bottom = 12.0
+theme = ExtResource( 4 )
+pressed = true
+action_mode = 0
+text = "show prediction (experimental)"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
 visible = false

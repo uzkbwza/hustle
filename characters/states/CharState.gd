@@ -40,26 +40,39 @@ export var uses_air_movement = false
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
 export var interrupt_frames = []
+export var throw_techable = false
 
+export var interruptible_on_opponent_turn = false
 
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
 export var burst_cancellable = true
+export var burstable = true
+export var self_hit_cancellable = true
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
 export(String, MULTILINE) var hit_cancel_into_string
+
+export var _c_Stances = 0
+export(String, MULTILINE) var allowed_stances_string = "Normal"
+export(String) var change_stance_to = ""
 
 var interrupt_into = []
 var interrupt_from = []
 var hit_cancel_into = []
 var busy_interrupt_into = []
 
+var allowed_stances = []
+
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
 	connect("state_hit_cancellable", host, "on_state_hit_cancellable", [self])
-	interrupt_into.append_array(get_cancel_categories(interrupt_into_string))
-	interrupt_from.append_array(get_cancel_categories(interrupt_from_string))
-	hit_cancel_into.append_array(get_cancel_categories(hit_cancel_into_string))
+
+	interrupt_into.append_array(get_categories(interrupt_into_string))
+	interrupt_from.append_array(get_categories(interrupt_from_string))
+	hit_cancel_into.append_array(get_categories(hit_cancel_into_string))
+	allowed_stances.append_array(get_categories(allowed_stances_string))
+
 	if burst_cancellable:
 		hit_cancel_into.append("OffensiveBurst")
 	hit_cancel_into.append("InstantCancel")
@@ -69,7 +82,8 @@ func init():
 		BusyInterrupt.Normal:
 			busy_interrupt_into.append("BusyNormal")
 		BusyInterrupt.Hurt:
-			busy_interrupt_into.append("BusyHurt")
+			if burstable:
+				busy_interrupt_into.append("BusyHurt")
 	
 	if iasa_at < 0:
 		iasa_at = anim_length + iasa_at
@@ -90,7 +104,7 @@ func is_usable():
 			return false
 	return true
 
-func get_cancel_categories(string: String):
+func get_categories(string: String):
 	var categories = []
 	for s in string.split("\n"):
 		var category = s.strip_edges()
@@ -100,13 +114,17 @@ func get_cancel_categories(string: String):
 
 func _enter_shared():
 	._enter_shared()
+	if change_stance_to:
+		host.change_stance_to(change_stance_to)
 	if uses_air_movement:
 		host.air_movements_left -= 1
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		host.gain_super_meter(WHIFF_SUPER_GAIN)
 
-
+func allowed_in_stance():
+	return "All" in allowed_stances or host.stance in allowed_stances
+	
 func enable_interrupt():
 	emit_signal("state_interruptable")
 	
@@ -129,6 +147,7 @@ func can_interrupt():
 func _exit_shared():
 	terminate_hitboxes()
 	host.end_invulnerability()
+	host.end_projectile_invulnerability()
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
 	host.state_hit_cancellable = false

@@ -3,6 +3,7 @@ extends CharacterState
 var left_ground = false
 
 func _enter():
+	host.start_projectile_invulnerability()
 	left_ground = false
 
 func _frame_6():

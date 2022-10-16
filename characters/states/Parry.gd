@@ -19,10 +19,13 @@ export(ParryHeight) var parry_type = ParryHeight.High
 func _enter():
 	parry_active = true
 
-func _frame_13():
+
+func _frame_10():
 	parry_active = false
 
-func can_parry_hitbox(hitbox: Hitbox):
+func can_parry_hitbox(hitbox):
+	if hitbox == null:
+		return false
 	if !active:
 		return false
 	if !parry_active:
@@ -40,6 +43,6 @@ func _tick():
 	host.apply_fric()
 	if air_type == AirType.Aerial:
 		host.apply_grav()
-		if host.is_grounded():
+		if !parry_active and host.is_grounded():
 			queue_state_change("Landing", LANDING_LAG)
 	host.apply_forces()

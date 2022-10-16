@@ -29,4 +29,5 @@ move_x = 2
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 script = ExtResource( 2 )
+hitlag_ticks = 8
 screenshake_amount = 2

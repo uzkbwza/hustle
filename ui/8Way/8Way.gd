@@ -1,5 +1,7 @@
 extends Control
 
+signal data_changed()
+
 export var NW = true
 export var N = true
 export var NE = true
@@ -69,6 +71,7 @@ func dir_to_facing(dir):
 	return dir
 
 func _on_button_pressed(button):
+	emit_signal("data_changed")
 	for b in get_buttons():
 		if button != b:
 			b.pressed = false
@@ -95,7 +98,7 @@ func get_value(dir):
 		"SE": return get_vec_int(1, 1)
 
 func get_data():
-	return get_value(pressed_button.name)
+	return get_value(pressed_button.name) if pressed_button else "Neutral"
 
 func get_vec_int(x: int, y: int):
 	return {

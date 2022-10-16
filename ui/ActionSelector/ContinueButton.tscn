@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/ActionSelector/ContinueButton.gd" type="Script" id=1]
+
+[node name="ContinueButton" type="Button"]
+unique_name_in_owner = true
+margin_right = 69.0
+margin_bottom = 20.0
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = true
+action_mode = 0
+text = "Continue"
+script = ExtResource( 1 )

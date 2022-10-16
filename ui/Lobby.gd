@@ -19,7 +19,7 @@ func _ready():
 	Network.connect("connection_succeeded", self, "_on_connection_success")
 	Network.connect("player_list_changed", self, "refresh_lobby")
 #	Network.connect("game_ended", self, "_on_game_ended")
-#	Network.connect("game_error", self, "_on_game_error")
+	Network.connect("game_error", self, "_on_game_error")
 	join_button.connect("pressed", self, "_on_join_pressed")
 	host_button.connect("pressed", self, "_on_host_pressed")
 	start_button.connect("pressed", self, "_on_start_pressed")
@@ -87,6 +87,10 @@ func refresh_lobby():
 func _on_start_pressed():
 	Network.begin_game()
 
-#
+
+func _on_game_error(what):
+	Network.stop_multiplayer()
+	get_tree().reload_current_scene()
+
 #func _on_find_public_ip_pressed():
 #	OS.shell_open("https://icanhazip.com/")

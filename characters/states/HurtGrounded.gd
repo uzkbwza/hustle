@@ -1,6 +1,7 @@
 extends CharacterHurtState
 
 const GROUND_FRIC = "0.05"
+const DI_STRENGTH = "1.0"
 
 var hitstun = 0
 var can_act = false
@@ -17,10 +18,13 @@ func _enter():
 			anim_name = "HurtGroundedLow"
 	
 	hitstun = hitbox.hitstun_ticks
-	var x = fixed_math.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
-	var force = fixed_math.normalized_vec_times(x, "0", hitbox.knockback)
-	host.apply_force(force.x, force.y)
-
+	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
+	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
+	knockback_force.y = "0"
+	var di_force = fixed.normalized_vec_times(host.current_di.x, "0", DI_STRENGTH)
+	var force_x = fixed.add(knockback_force.x, di_force.x)
+	var force_y = fixed.add(knockback_force.y, di_force.y)
+	host.apply_force(force_x, force_y)
 
 func _tick():
 	host.apply_full_fric(GROUND_FRIC)
@@ -31,3 +35,7 @@ func _tick():
 		else:
 			enable_interrupt()
 			can_act = true
+
+func _exit():
+	if host.hp <= 0:
+		queue_state_change("Knockdown")

@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=17 format=2]
+[gd_resource type="Theme" load_steps=21 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
+[ext_resource path="res://ui/checkbutton1.png" type="Texture" id=3]
+[ext_resource path="res://ui/checkbutton2.png" type="Texture" id=4]
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
@@ -38,19 +40,19 @@ border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 [sub_resource type="StyleBoxFlat" id=18]
 bg_color = Color( 1, 1, 1, 1 )
 border_width_left = 1
-border_width_top = 8
+border_width_top = 1
 border_color = Color( 1, 1, 1, 1 )
 
 [sub_resource type="StyleBoxFlat" id=17]
 bg_color = Color( 1, 1, 1, 1 )
 border_width_left = 1
-border_width_top = 8
+border_width_top = 2
 border_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=21]
 bg_color = Color( 0, 0, 0, 1 )
 border_width_left = 1
 border_width_top = 1
@@ -72,6 +74,9 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0, 0, 0, 1 )
+
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
 
@@ -84,6 +89,14 @@ border_width_left = 4
 border_width_right = 2
 border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 
+[sub_resource type="StyleBoxFlat" id=20]
+bg_color = Color( 1, 0.2, 0.239216, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.2, 0.239216, 1 )
+
 [resource]
 default_font = ExtResource( 1 )
 Button/styles/disabled = SubResource( 9 )
@@ -91,6 +104,8 @@ Button/styles/focus = SubResource( 15 )
 Button/styles/hover = SubResource( 11 )
 Button/styles/normal = SubResource( 3 )
 Button/styles/pressed = SubResource( 8 )
+CheckButton/icons/off = ExtResource( 3 )
+CheckButton/icons/on = ExtResource( 4 )
 HBoxContainer/constants/separation = 1
 HSlider/icons/grabber = ExtResource( 2 )
 HSlider/icons/grabber_disabled = ExtResource( 2 )
@@ -100,13 +115,19 @@ HSlider/styles/grabber_area = SubResource( 18 )
 HSlider/styles/grabber_area_highlight = SubResource( 18 )
 HSlider/styles/slider = SubResource( 17 )
 Panel/styles/panel = SubResource( 4 )
-PanelContainer/styles/panel = SubResource( 2 )
+PanelContainer/styles/panel = SubResource( 21 )
 SelectButton/base_type = "Button"
 SelectButton/styles/hover = SubResource( 13 )
 SelectButton/styles/normal = SubResource( 14 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = ExtResource( 1 )
+TooltipPanel/styles/panel = SubResource( 19 )
 VBoxContainer/constants/separation = 1
 VScrollBar/styles/grabber = SubResource( 5 )
 VScrollBar/styles/grabber_highlight = SubResource( 7 )
 VScrollBar/styles/grabber_pressed = SubResource( 5 )
 VScrollBar/styles/scroll = SubResource( 6 )
 VScrollBar/styles/scroll_focus = SubResource( 6 )
+YouButton/base_type = "Button"
+YouPanel/base_type = "PanelContainer"
+YouPanel/styles/panel = SubResource( 20 )

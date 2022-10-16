@@ -1,7 +1,8 @@
 extends Control
 
-signal pressed(action)
+signal was_pressed(action)
 signal toggled(on)
+signal data_changed()
 
 var action_name = ""
 var action_title = ""
@@ -23,6 +24,11 @@ func is_pressed():
 func get_disabled():
 	return $"%Button".disabled
 
+func set_data_node(node):
+	data_node = node
+	if node:
+		node.connect("data_changed", self, "emit_signal", ["data_changed"])
+
 func get_data():
 	if data_node:
 		return data_node.get_data()
@@ -38,7 +44,7 @@ func on_toggled(on):
 	emit_signal("toggled", on)
 
 func on_pressed():
-	emit_signal("pressed", action_name)
+	emit_signal("was_pressed", action_name)
 
 func set_pressed_no_signal(on):
 	$"%Button".set_pressed_no_signal(on)

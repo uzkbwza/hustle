@@ -29,18 +29,39 @@ var chara = FGObject.new()
 
 var stage_width = 0
 
+var obj_name: String
+
 var data
 var obj_data
 var current_tick = 0
 var hitlag_ticks = 0
 var combo_count = 0
 
-var fixed_math = FixedMath.new()
+var is_ghost = false
+
+var disabled = false
+
+var fixed = FixedMath.new()
 
 var state_interruptable = false
 var state_hit_cancellable = false
 
 var invulnerable = false
+
+var projectile_invulnerable = false
+
+var state_variables = ["id", "projectile_invulnerable", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+
+var hitboxes = []
+
+var objs_map = {
+	
+}
+
+
+func _enter_tree():
+	if obj_name:
+		name = obj_name
 
 func _ready():
 	chara.id = id
@@ -53,6 +74,69 @@ func _ready():
 	if id == 2:
 		chara.set_facing(-1)
 	state_machine.init()
+	setup_hitbox_names()
+	state_machine.connect("state_exited", self, "_on_state_exited")
+
+func setup_hitbox_names():
+	for i in range(hitboxes.size()):
+		if obj_name != "":
+			hitboxes[i].name = (obj_name) + "_" + "HB" + "_" + str(i)
+		else:
+			hitboxes[i].name = (name) + "_" + "HB" + "_" + str(i)
+
+func _on_state_exited(state: ObjectState):
+	for hitbox in hitboxes:
+		hitbox.deactivate()
+
+func current_state():
+	return state_machine.state
+
+func init():
+	pass
+
+func copy_to(o: BaseObj):
+	var current_state = current_state()
+	o.state_machine.starting_state = current_state.name
+	o.init()
+	o.update_data()
+
+	o.set_pos(get_pos().x, get_pos().y)
+	for variable in state_variables:
+		var v = get(variable)
+		if v is Array or v is Dictionary:
+			o.set(variable, v.duplicate(true))
+		else:
+			o.set(variable, get(variable))
+	o.chara.set_facing(get_facing_int())
+	o.state_machine._change_state(current_state.state_name, current_state.data)
+	for state in o.state_machine.states_map:
+		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
+#	while o.current_state().current_tick < current_state.current_tick:
+#		o.normal_tick()
+#		o.set_pos(get_pos().x, get_pos().y)
+#		if o.current_state().state_name != current_state.state_name:
+#			break
+	o.current_state().current_tick = current_state.current_tick
+	o.set_pos(get_pos().x, get_pos().y)
+
+	
+	
+#	o.set_vel(get_vel().x, get_vel().y)
+#	o.current_state().current_tick = current_state.current_tick
+#	o.stage_width = stage_width
+#	o.hitlag_ticks = hitlag_ticks
+#	o.combo_count = combo_count
+#	o.invulnerable = invulnerable
+#	o.current_tick = current_tick
+	for i in range(hitboxes.size()):
+		o.hitboxes[i].hit_objects = hitboxes[i].hit_objects.duplicate()
+		if hitboxes[i].active:
+			o.hitboxes[i].activate()
+	chara.copy_to(o.chara)
+	o.chara.update_grounded()
+#	o.set_pos(get_pos().x, get_pos().y)
+#	o.set_facing(get_facing_int())
+	o.update_data()
 
 func get_frames():
 	return ReplayManager.frames[id]
@@ -74,15 +158,26 @@ func get_facing():
 
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true):
 	var obj = projectile.instance()
+#	obj.obj_name = str(objs_map.size() + 1)
+	obj.objs_map = objs_map
+	obj.obj_name = str(objs_map.size() + 1)
 	add_child(obj)
 	var pos = get_pos()
 	obj.set_pos(pos.x + pos_x * (get_facing_int() if relative else 1), pos.y + pos_y)
 	obj.set_facing(get_facing_int())
 	obj.stage_width = stage_width
 	obj.id = id
+	
 	remove_child(obj)
+	obj.obj_name = str(objs_map.size() + 1)
 	emit_signal("object_spawned", obj)
 	return obj
+
+func start_projectile_invulnerability():
+	projectile_invulnerable = true
+
+func end_projectile_invulnerability():
+	projectile_invulnerable = false
 
 func start_invulnerability():
 	invulnerable = true
@@ -243,8 +338,8 @@ func get_pos():
 	}
 	
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
-	var unscaled_force = fixed_math.vec_div(str(x), str(y), div)
-	var force = fixed_math.vec_mul(unscaled_force["x"], unscaled_force["y"], mul)
+	var unscaled_force = fixed.vec_div(str(x), str(y), div)
+	var force = fixed.vec_mul(unscaled_force["x"], unscaled_force["y"], mul)
 	return FixedVec2String.new(force.x, force.y)
 	
 func on_state_started(state):
@@ -275,10 +370,7 @@ func tick():
 	if hitlag_ticks > 0:
 		hitlag_ticks -= 1
 	else:
-		state_tick()
-		update_data()
-		current_tick += 1
-		update_grounded()
+		normal_tick()
 	
 	for particle in particles.get_children():
 		particle.tick()
@@ -290,3 +382,8 @@ func state_tick():
 		state_machine.queue_state(state_machine.state.fallback_state)
 		state_machine.tick()
 
+func normal_tick():
+	state_tick()
+	update_data()
+	current_tick += 1
+	update_grounded()

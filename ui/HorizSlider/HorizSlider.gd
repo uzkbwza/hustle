@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+signal data_changed()
+
 export var centered = true
 
 func _ready():
@@ -10,6 +12,7 @@ func _ready():
 	pass # Replace with function body.
 
 func on_value_changed(value):
+	emit_signal("data_changed")
 	$ValueLabel.text = str(value)
 
 func get_value():

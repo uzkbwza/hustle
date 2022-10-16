@@ -14,21 +14,18 @@ var projectile_spawned = false
 
 func _enter():
 	var vel = host.get_vel()
-	var new_vel = fixed_math.mul(vel.x, MOMENTUM_REDUCTION)
+	var new_vel = fixed.mul(vel.x, MOMENTUM_REDUCTION)
 	host.set_vel(new_vel, "0")
 	if data:
-		
-		speed_modifier = fixed_math.round(fixed_math.mul(fixed_math.sub(fixed_math.div(str(data.x), "100"), "0.5"), speed_modifier_amount))
+		speed_modifier = fixed.round(fixed.mul(fixed.sub(fixed.div(str(data.x), "100"), "0.5"), speed_modifier_amount))
 	projectile_spawned = false
 
 func _frame_12():
 	projectile_spawned = true
 	var object = host.spawn_object(projectile, projectile_x, projectile_y)
 	var obj_state = object.state_machine.get_state("Default")
-	if obj_state.move_x != 0:
-		obj_state.move_x += speed_modifier
-	if obj_state.move_y != 0:
-		obj_state.move_y += speed_modifier
+	obj_state.data = {"speed_modifier": speed_modifier}
+
 	if air_type == AirType.Grounded:
 		host.apply_force_relative(push_back_amount, "0")
 		

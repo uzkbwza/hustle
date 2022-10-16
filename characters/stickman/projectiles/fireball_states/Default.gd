@@ -23,9 +23,9 @@ func _tick():
 		host.hurtbox.height = 0
 		pass
 	elif !hit_something:
-		host.move_directly_relative(move_x, move_y)
-	if hit_something:
-			host.queue_free()
+		host.move_directly_relative((move_x + data["speed_modifier"]) if move_x != 0 else 0, (move_y + data["speed_modifier"]) if move_y != 0 else 0)
+#	if hit_something:
+#			host.queue_free()
 #			if current_tick > hit_something_tick + FREE_AFTER_TICKS:
 
 func _on_hit_something(_obj, _hitbox):
@@ -34,3 +34,4 @@ func _on_hit_something(_obj, _hitbox):
 	host.stop_particles()
 	hit_something_tick = current_tick
 	hit_something = true
+	host.disabled = true

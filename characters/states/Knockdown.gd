@@ -6,3 +6,5 @@ func _enter():
 func _tick():
 	host.apply_fric()
 	host.apply_forces()
+	if host.hp <= 0:
+		fallback_state = "Knockdown"

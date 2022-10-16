@@ -25,6 +25,7 @@ move_x = 8
 [node name="Hitbox" parent="StateMachine/Default" index="0"]
 width = 8
 height = 8
+damage = 60
 hitstun_ticks = 12
 hitlag_ticks = 9
 knockback = "6.0"

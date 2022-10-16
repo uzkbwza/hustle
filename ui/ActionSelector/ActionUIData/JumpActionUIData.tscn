@@ -16,4 +16,5 @@ margin_right = 50.0
 margin_bottom = 62.0
 min_length = 0.5
 limit_angle = true
+limit_range_degrees = 120.0
 limit_center_degrees = -90.0

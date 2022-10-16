@@ -21,7 +21,7 @@ func _enter():
 		else:
 			anim_name = "DashForward"
 
-	host.apply_force(force.x, fixed_math.mul(force.y, Y_MODIFIER) if "-" in force.y else force.y)
+	host.apply_force(force.x, fixed.mul(force.y, Y_MODIFIER) if "-" in force.y else force.y)
 
 func _tick():
 #	host.apply_grav()

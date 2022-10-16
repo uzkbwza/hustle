@@ -72,6 +72,9 @@ func _enter():
 func _tick():
 	pass
 
+func _tick_after():
+	pass
+
 func _update(_delta):
 	#  To use with _process or _physics_process
 	pass

@@ -27,7 +27,7 @@ export var enter_force_speed = "0.0"
 export var reset_momentum = false
 
 var current_tick = -1
-var fixed_math
+var fixed
 
 var anim_name
 
@@ -36,27 +36,26 @@ var has_hitboxes = false
 var hitbox_start_frames = {
 }
 
-var active_hitboxes = []
+var frame_methods = []
+var max_tick = 0
 
 func apply_enter_force():
 	if enter_force_speed != "0.0":
 		var force = xy_to_dir(enter_force_dir_x, enter_force_dir_y, enter_force_speed, "1.0")
-#		force.y = host.fixed_math.mul(force.y, "2.0")
+#		force.y = host.fixed.mul(force.y, "2.0")
 		host.apply_force_relative(force.x, force.y)
 
 func _on_hit_something(_obj, _hitbox):
 	pass
 
-func clean_hitboxes():
-	var invalid_hitboxes = []
-	for hitbox in active_hitboxes:
-		if !is_instance_valid(hitbox):
-			invalid_hitboxes.append(hitbox)
-	for hitbox in invalid_hitboxes:
-		active_hitboxes.erase(hitbox)
 func get_active_hitboxes():
-	clean_hitboxes()
-	return active_hitboxes
+	var hitboxes = []
+	for start_frame in hitbox_start_frames:
+		var items = hitbox_start_frames[start_frame]
+		for item in items:
+			if item is Hitbox:
+				hitboxes.append(item)
+	return hitboxes
 
 func _tick_shared():
 	if current_tick < anim_length or endless:
@@ -65,10 +64,8 @@ func _tick_shared():
 		if hitbox_start_frames.has(current_tick + 1):
 			for hitbox in hitbox_start_frames[current_tick + 1]:
 				activate_hitbox(hitbox)
-		var pos = host.get_pos()
 		for hitbox in get_active_hitboxes():
 			hitbox.facing = host.get_facing()
-			hitbox.update_position(pos.x, pos.y)
 			if hitbox.active:
 				hitbox.tick()
 			else:
@@ -77,30 +74,56 @@ func _tick_shared():
 		if current_tick == force_tick:
 			if force_speed != "0.0":
 				var force = xy_to_dir(force_dir_x, force_dir_y, force_speed, "1.0")
-		#		force.y = host.fixed_math.mul(force.y, "2.0")
+		#		force.y = host.fixed.mul(force.y, "2.0")
 				host.apply_force_relative(force.x, force.y)
+
+		var new_max = false
+		if current_tick > max_tick:
+			max_tick = current_tick
+			new_max = true
 		
-		var method_name = "_frame_" + str(current_tick)
-		# create methods called "_frame_1" or "_frame_27" etc to execute actions on those frames.
-		if has_method(method_name):
-			call(method_name)
+		if host.is_ghost or new_max or current_tick in frame_methods:
+			var method_name = "_frame_" + str(current_tick)
+			# create methods called "_frame_1" or "_frame_27" etc to execute actions on those frames.
+			if has_method(method_name):
+				call(method_name)
+				frame_methods.append(current_tick)
+			new_max = false
+
+func _tick_after():
+	for hitbox in get_active_hitboxes():
+		var pos = host.get_pos()
+		hitbox.update_position(pos.x, pos.y)
+
+func copy_to(state: ObjectState):
+	var properties = get_script().get_script_property_list()
+	for variable in properties:
+		var value = get(variable.name)
+		if not (value is Object or value is Array or value is Dictionary):
+			if value:
+				state.set(variable.name, value)
+		if data:
+			if data is Dictionary or data is Array:
+				state.data = data.duplicate()
+			else:
+				state.data = data
+	pass
 
 func activate_hitbox(hitbox):
 	hitbox.activate()
-	active_hitboxes.append(hitbox)
 
 func terminate_hitboxes():
-	for hitbox in active_hitboxes:
+	for hitbox in get_active_hitboxes():
 		hitbox.deactivate()
-	active_hitboxes.clear()
 
 func deactivate_hitbox(hitbox):
-	active_hitboxes.erase(hitbox)
+#	active_hitboxes.erase(hitbox)
+	pass
 
 func init():
 	connect("state_started", host, "on_state_started", [self])
 	connect("state_ended", host, "on_state_ended", [self])
-	fixed_math = host.fixed_math
+	fixed = host.fixed
 	anim_name = sprite_animation if sprite_animation else state_name
 	if sprite_anim_length < 0:
 		if host.sprite.frames.has_animation(anim_name):
@@ -114,7 +137,7 @@ func setup_hitboxes():
 	for child in get_children():
 		if child is Hitbox:
 			hitboxes.append(child)
-
+			host.hitboxes.append(child)
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
 			has_hitboxes = true
@@ -148,6 +171,6 @@ func update_sprite_frame():
 	if host.sprite.animation != anim_name:
 		host.sprite.animation = anim_name
 		host.sprite.frame = 0
-#	var frame = host.fixed_math.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
+#	var frame = host.fixed.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
 	var frame = (current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length)
 	host.sprite.frame = frame
