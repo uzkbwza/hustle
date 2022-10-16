@@ -1,5 +1,7 @@
 extends Control
 
+class_name ButtonCategoryContainer
+
 onready var action_data_container = $"%ActionDataContainer"
 onready var action_data_panel_container = $"%ActionDataPanelContainer"
 

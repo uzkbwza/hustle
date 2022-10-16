@@ -105,12 +105,13 @@ func init(game, id):
 				states.append(state)
 				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene)
 	nudge_button = create_button("Nudge", "DI", "Defense", NUDGE_SCENE)
+	sort_categories()
 	connect("action_selected", fighter, "on_action_selected")
 	fighter.connect("action_selected", self, "_on_fighter_action_selected")
 	hide()
 	if player_id == 1:
-		for i in range(button_category_containers.size()):
-			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
+#		for i in range(button_category_containers.size()):
+#			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
 		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
 	continue_button = create_button("Continue", "Continue", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"))
 	continue_button.get_parent().remove_child(continue_button)
@@ -120,6 +121,32 @@ func init(game, id):
 
 func _on_fighter_action_selected(_action, _data, _extra):
 	hide()
+
+func sort_categories():
+	var children = $"%CategoryContainer".get_children()
+	var categories = []
+	for child in children:
+		if child is ButtonCategoryContainer:
+			$"%CategoryContainer".remove_child(child)
+			categories.append(child)
+	categories.sort_custom(self, "category_sort_func")
+	for cat in categories:
+		if cat is ButtonCategoryContainer:
+			$"%CategoryContainer".add_child(cat)
+
+func category_sort_func(a, b):
+	var cat_map = {
+		"Movement": 0,
+		"Attack": 1,
+		"Special": 2,
+		"Super": 3,
+		"Defense": 4,
+	}
+#	if cat_map.has(a.label_text) and cat_map.has(b.label_text):
+	if player_id == 1:
+		return cat_map[a.label_text] > cat_map[b.label_text]
+	return cat_map[a.label_text] < cat_map[b.label_text]
+#	return false
 
 func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE):
 	var button
@@ -310,8 +337,8 @@ func activate():
 
 	if showing:
 		if last_button and !last_button.get_disabled():
-				last_button.set_pressed(true)
-				last_button.on_pressed()
+			last_button.set_pressed(true)
+			last_button.on_pressed()
 		else:
 #			for button in buttons:
 #				if !button.get_disabled():

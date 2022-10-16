@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://framework/BetterRng.gd"
 }, {
+"base": "Control",
+"class": "ButtonCategoryContainer",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ButtonCategoryContainer.gd"
+}, {
 "base": "CharacterState",
 "class": "CharacterHurtState",
 "language": "GDScript",
@@ -158,6 +163,7 @@ _global_script_class_icons={
 "Array2D": "",
 "BaseObj": "",
 "BetterRng": "",
+"ButtonCategoryContainer": "",
 "CharacterHurtState": "",
 "CharacterState": "",
 "CollisionBox": "",

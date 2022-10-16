@@ -1,5 +1,670 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/projectiles/StickmanFireball.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/FireballActionUIData.tscn" type="PackedScene" id=3]
+[ext_resource path="res://characters/stickman/states/Fireball.gd" type="Script" id=4]
+[ext_resource path="res://characters/stickman/QuickSlashAirActionUIData.tscn" type="PackedScene" id=5]
+[ext_resource path="res://characters/stickman/QuickSlashGroundActionUIData.tscn" type="PackedScene" id=6]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=7]
+[ext_resource path="res://characters/stickman/states/QuickSlash.gd" type="Script" id=8]
+[ext_resource path="res://characters/states/Idle.gd" type="Script" id=9]
+[ext_resource path="res://characters/stickman/states/Uppercut.gd" type="Script" id=10]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/DiveKickActionUIData.tscn" type="PackedScene" id=11]
+[ext_resource path="res://characters/stickman/states/FlyingRoundhouse.gd" type="Script" id=12]
+[ext_resource path="res://characters/stickman/states/DiveKick.gd" type="Script" id=13]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/ChukJumpActionUIData.tscn" type="PackedScene" id=14]
+[ext_resource path="res://characters/states/Fall.gd" type="Script" id=15]
+[ext_resource path="res://characters/stickman/states/NunChukJump.gd" type="Script" id=16]
+[ext_resource path="res://characters/stickman/states/NunChuk.gd" type="Script" id=17]
+[ext_resource path="res://characters/stickman/projectiles/StickmanAirFireball.tscn" type="PackedScene" id=18]
+[ext_resource path="res://characters/stickman/stickman_spriteframes.tres" type="SpriteFrames" id=19]
 
 [node name="BaseChar" instance=ExtResource( 1 )]
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = ExtResource( 19 )
+
+[node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
+script = ExtResource( 4 )
+__meta__ = {
+"_editor_description_": ""
+}
+anim_length = 20
+reset_momentum = true
+title = "Fireball"
+type = 2
+data_ui_scene = ExtResource( 3 )
+interrupt_from_string = "GroundedSpecial
+Grounded"
+interrupt_into_string = "Grounded"
+projectile = ExtResource( 2 )
+projectile_y = -22
+speed_modifier_amount = "3.5"
+
+[node name="QuickSlash" type="Node2D" parent="StateMachine" index="29"]
+script = ExtResource( 8 )
+__meta__ = {
+"_editor_description_": ""
+}
+fallback_state = "Fall"
+anim_length = 60
+title = "Quick Slash"
+type = 3
+data_ui_scene = ExtResource( 6 )
+iasa_at = 20
+interrupt_from_string = "GroundedSuper
+AerialSuper
+Grounded
+Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "AerialSuper"
+
+[node name="H1" type="Node2D" parent="StateMachine/QuickSlash" index="0"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H2" type="Node2D" parent="StateMachine/QuickSlash" index="1"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H3" type="Node2D" parent="StateMachine/QuickSlash" index="2"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H4" type="Node2D" parent="StateMachine/QuickSlash" index="3"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H5" type="Node2D" parent="StateMachine/QuickSlash" index="4"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H6" type="Node2D" parent="StateMachine/QuickSlash" index="5"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="QuickSlashAir" type="Node2D" parent="StateMachine" index="30"]
+script = ExtResource( 8 )
+__meta__ = {
+"_editor_description_": ""
+}
+fallback_state = "Fall"
+sprite_animation = "QuickSlash"
+anim_length = 60
+reset_momentum = true
+title = "Quick Slash"
+type = 3
+data_ui_scene = ExtResource( 5 )
+air_type = 1
+iasa_at = 20
+interrupt_from_string = "GroundedSuper
+AerialSuper
+Grounded
+Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "AerialSuper"
+
+[node name="H1" type="Node2D" parent="StateMachine/QuickSlashAir" index="0"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H2" type="Node2D" parent="StateMachine/QuickSlashAir" index="1"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H3" type="Node2D" parent="StateMachine/QuickSlashAir" index="2"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H4" type="Node2D" parent="StateMachine/QuickSlashAir" index="3"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H5" type="Node2D" parent="StateMachine/QuickSlashAir" index="4"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="H6" type="Node2D" parent="StateMachine/QuickSlashAir" index="5"]
+script = ExtResource( 7 )
+width = 10
+height = 10
+damage = 60
+hitstun_ticks = 20
+dir_x = "0.90"
+dir_y = "-0.4"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 6
+active_ticks = 1
+
+[node name="Uppercut2" type="Node2D" parent="StateMachine" index="31"]
+script = ExtResource( 10 )
+__meta__ = {
+"_editor_description_": ""
+}
+anim_length = 30
+endless = true
+force_dir_x = "-0.46"
+force_dir_y = "-1"
+force_speed = "15.0"
+force_tick = 3
+enter_force_dir_x = "1.0"
+enter_force_speed = "8.0"
+reset_momentum = true
+title = "Uppercut"
+type = 2
+interrupt_from_string = "GroundedSpecial
+Grounded"
+hit_cancel_into_string = "GroundedSuper
+AerialSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Uppercut2" index="0"]
+script = ExtResource( 7 )
+x = 16
+y = -14
+width = 16
+height = 18
+damage = 80
+hitlag_ticks = 10
+screenshake_amount = 8
+dir_x = "2.0"
+dir_y = "-2.0"
+knockback = "18.0"
+pushback_x = "-1.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+start_tick = 3
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Uppercut2" index="1"]
+script = ExtResource( 7 )
+x = 11
+y = -28
+width = 14
+height = 19
+damage = 60
+hitlag_ticks = 6
+group = 1
+screenshake_amount = 5
+dir_x = "0.5"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+start_tick = 5
+active_ticks = 4
+
+[node name="UppercutLanding2" type="Node2D" parent="StateMachine" index="32"]
+script = ExtResource( 9 )
+sprite_animation = "Landing"
+anim_length = 18
+title = "UppercutLanding"
+type = 2
+interrupt_into_string = "Grounded"
+
+[node name="DiveKick" type="Node2D" parent="StateMachine" index="33"]
+script = ExtResource( 13 )
+endless = true
+title = "Dive Kick"
+type = 1
+data_ui_scene = ExtResource( 11 )
+air_type = 1
+interrupt_from_string = "AerialAttack
+Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "AerialSuper
+AerialSpecial"
+move_y = 5
+x_modifier_amount = 10
+y_modifier_amount = 7
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/DiveKick" index="0"]
+script = ExtResource( 7 )
+x = 10
+y = -9
+width = 10
+height = 9
+damage = 70
+hitlag_ticks = 5
+hit_height = 0
+screenshake_amount = 2
+dir_y = "1.0"
+knockback = "5.0"
+start_tick = 12
+always_on = true
+
+[node name="JumpKick" type="Node2D" parent="StateMachine" index="34"]
+script = ExtResource( 12 )
+endless = true
+force_dir_x = "1.0"
+force_dir_y = "-0.45"
+force_speed = "12.0"
+force_tick = 5
+reset_momentum = true
+title = "Jump Kick"
+type = 2
+air_type = 2
+interrupt_from_string = "GroundedSpecial
+Grounded
+Aerial"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedSuper
+AerialSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/JumpKick" index="0"]
+script = ExtResource( 7 )
+x = 9
+y = -28
+width = 22
+height = 16
+damage = 100
+hitstun_ticks = 34
+hitlag_ticks = 8
+hit_height = 0
+screenshake_amount = 7
+dir_x = "2.0"
+knockback = "11.0"
+start_tick = 11
+active_ticks = 8
+
+[node name="NunChukLight" type="Node2D" parent="StateMachine" index="35"]
+script = ExtResource( 17 )
+anim_length = 30
+enter_force_dir_x = "1.0"
+enter_force_speed = "6.0"
+title = "NunChuk"
+type = 1
+interrupt_from_string = "Grounded
+GroundedAttack"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper"
+allowed_stances_string = "NunChuk
+Normal"
+change_stance_to = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLight" index="0"]
+script = ExtResource( 7 )
+x = 32
+y = -22
+width = 19
+height = 7
+damage = 80
+hitstun_ticks = 23
+knockback = "8.0"
+start_tick = 6
+active_ticks = 3
+
+[node name="NunChukHeavy" type="Node2D" parent="StateMachine" index="36"]
+script = ExtResource( 17 )
+anim_length = 45
+enter_force_dir_x = "1.0"
+enter_force_speed = "10.0"
+title = "Chuk Heavy"
+type = 1
+self_hit_cancellable = false
+interrupt_from_string = "Grounded
+GroundedAttack"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper"
+allowed_stances_string = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/NunChukHeavy" index="0"]
+script = ExtResource( 7 )
+x = 27
+y = -27
+width = 19
+height = 18
+damage = 60
+hitstun_ticks = 23
+knockback = "4.0"
+pushback_x = "0.0"
+start_tick = 9
+active_ticks = 9
+looping = true
+loop_inactive_ticks = 1
+
+[node name="NunChukJump" type="Node2D" parent="StateMachine" index="37"]
+script = ExtResource( 16 )
+endless = true
+enter_force_dir_x = "2.0"
+enter_force_dir_y = "-1.25"
+enter_force_speed = "5.0"
+title = "Chuk Jump"
+type = 1
+data_ui_scene = ExtResource( 14 )
+interrupt_from_string = "Grounded
+GroundedAttack
+GroundedMovement"
+interrupt_into_string = "Aerial
+"
+hit_cancel_into_string = "Aerial"
+allowed_stances_string = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/NunChukJump" index="0"]
+script = ExtResource( 7 )
+x = 5
+y = -2
+height = 16
+damage = 120
+hitstun_ticks = 23
+hitlag_ticks = 7
+hit_height = 0
+knockback = "5.0"
+start_tick = 16
+active_ticks = 4
+
+[node name="NunChukSpin" type="Node2D" parent="StateMachine" index="38"]
+script = ExtResource( 15 )
+anim_length = 40
+title = "Chuk Spin"
+type = 1
+air_type = 1
+self_hit_cancellable = false
+interrupt_from_string = "Aerial
+AerialAttack"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+allowed_stances_string = "Normal
+NunChuk"
+change_stance_to = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/NunChukSpin" index="0"]
+script = ExtResource( 7 )
+x = 25
+y = -10
+width = 25
+height = 9
+damage = 70
+hitstun_ticks = 23
+hit_height = 0
+knockback = "5.0"
+start_tick = 6
+active_ticks = 17
+looping = true
+loop_active_ticks = 4
+loop_inactive_ticks = 3
+
+[node name="AirFireball" type="Node2D" parent="StateMachine" index="39"]
+script = ExtResource( 4 )
+anim_length = 20
+title = "Fireball"
+type = 2
+data_ui_scene = ExtResource( 3 )
+air_type = 1
+interrupt_from_string = "AerialSpecial
+Aerial"
+interrupt_into_string = "Aerial"
+projectile = ExtResource( 18 )
+speed_modifier_amount = "4.0"
+
+[node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="40"]
+script = ExtResource( 15 )
+fallback_state = "Fall"
+anim_length = 22
+title = "Punch"
+type = 1
+air_type = 1
+interrupt_from_string = "Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/AirUpwardPunch" index="0"]
+script = ExtResource( 7 )
+x = 17
+y = -29
+width = 12
+height = 14
+damage = 40
+hitstun_ticks = 40
+hit_height = 0
+dir_x = "0.1"
+knockback = "5.0"
+start_tick = 5
+active_ticks = 2
+
+[node name="GroundedPunch" type="Node2D" parent="StateMachine" index="41"]
+script = ExtResource( 9 )
+anim_length = 15
+title = "Punch"
+type = 1
+interrupt_from_string = "GroundedAttack
+GroundedLight
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+Jump"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/GroundedPunch" index="0"]
+script = ExtResource( 7 )
+x = 11
+y = -24
+height = 6
+damage = 30
+hitstun_ticks = 12
+knockback = "2.0"
+start_tick = 3
+active_ticks = 2
+
+[node name="GroundedKick" type="Node2D" parent="StateMachine" index="42"]
+script = ExtResource( 9 )
+anim_length = 21
+title = "Kick"
+type = 1
+interrupt_from_string = "GroundedAttack
+GroundedLight
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+Jump"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/GroundedKick" index="0"]
+script = ExtResource( 7 )
+x = 20
+y = -7
+width = 21
+height = 7
+damage = 60
+hitstun_ticks = 20
+hitlag_ticks = 6
+hit_height = 2
+knockback = "5.0"
+start_tick = 5
+active_ticks = 3
+
+[node name="GroundedSweep" type="Node2D" parent="StateMachine" index="43"]
+script = ExtResource( 9 )
+anim_length = 30
+enter_force_dir_x = "1.0"
+enter_force_speed = "2.0"
+title = "Sweep"
+type = 1
+interrupt_from_string = "GroundedAttack
+GroundedHeavy
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSpecial
+GroundedSuper
+Jump"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/GroundedSweep" index="0"]
+script = ExtResource( 7 )
+x = 26
+y = -5
+width = 22
+height = 5
+damage = 120
+hitlag_ticks = 7
+hit_height = 2
+screenshake_amount = 5
+dir_y = "-0.25"
+knockback = "6.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+start_tick = 8
+active_ticks = 2
+
+[node name="DropKick" type="Node2D" parent="StateMachine" index="44"]
+script = ExtResource( 15 )
+endless = true
+enter_force_dir_x = "0.65"
+enter_force_dir_y = "-1.0"
+enter_force_speed = "5.0"
+reset_momentum = true
+title = "Drop Kick"
+type = 1
+interrupt_from_string = "GroundedAttack
+GroundedHeavy
+Grounded"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/DropKick" index="0"]
+script = ExtResource( 7 )
+x = 13
+y = -20
+width = 23
+height = 10
+damage = 80
+hitstun_ticks = 45
+hitlag_ticks = 7
+dir_x = "1"
+dir_y = "-0.25"
+knockback = "5.0"
+start_tick = 14
+
+[node name="AirAttack" type="Node2D" parent="StateMachine" index="45"]
+script = ExtResource( 15 )
+fallback_state = "Fall"
+anim_length = 40
+title = "Kick"
+type = 1
+air_type = 1
+interrupt_from_string = "AerialAttack
+Aerial"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/AirAttack" index="0"]
+script = ExtResource( 7 )
+x = 20
+y = -11
+width = 15
+height = 7
+damage = 70
+hitstun_ticks = 40
+hitlag_ticks = 6
+hit_height = 0
+dir_y = "1.0"
+knockback = "8.0"
+knockdown = true
+start_tick = 5
+active_ticks = 7

@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
-[ext_resource path="res://characters/stickman/sprites/portrait2.png" type="Texture" id=2]
+[ext_resource path="res://characters/stickman/Stickman.tscn" type="PackedScene" id=1]
 [ext_resource path="res://framework/BetterCamera.gd" type="Script" id=3]
 [ext_resource path="res://game.gd" type="Script" id=4]
-[ext_resource path="res://characters/stickman/sprites/portrait1.png" type="Texture" id=5]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 4 )
@@ -17,14 +15,10 @@ stage_width = 1000
 
 [node name="P1" parent="Players" instance=ExtResource( 1 )]
 unique_name_in_owner = true
-modulate = Color( 0.67451, 0.635294, 1, 1 )
-character_portrait = ExtResource( 5 )
 
 [node name="P2" parent="Players" instance=ExtResource( 1 )]
 unique_name_in_owner = true
-modulate = Color( 1, 0.54902, 0.54902, 1 )
 id = 2
-character_portrait = ExtResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 current = true
