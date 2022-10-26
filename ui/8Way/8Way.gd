@@ -36,8 +36,6 @@ func init():
 			if disabled_button == pressed_button:
 				pressed_button = null
 			disabled_button.disabled = true
-			
-			continue
 		if pressed_button == null or pressed_button.disabled:
 			button.pressed = true
 			_on_button_pressed(button)

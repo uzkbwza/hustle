@@ -1,16 +1,19 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
 [ext_resource path="res://ui/ActionSelector/ActionButtons.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
-[ext_resource path="res://ui/Lobby.gd" type="Script" id=5]
+[ext_resource path="res://ui/Lobby.tscn" type="PackedScene" id=5]
 [ext_resource path="res://ui/MainMenu.gd" type="Script" id=6]
 [ext_resource path="res://ui/NetworkDebugLabel.gd" type="Script" id=7]
 [ext_resource path="res://ui/HUD/HudLayer.gd" type="Script" id=8]
 [ext_resource path="res://ui/HUD/BurstMeter.gd" type="Script" id=9]
 [ext_resource path="res://ui/PixeloidSans.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://BottomBar.gd" type="Script" id=11]
+[ext_resource path="res://ui/CSS/CharacterSelect.tscn" type="PackedScene" id=12]
+[ext_resource path="res://ui/GhostSpeed.gd" type="Script" id=13]
+[ext_resource path="res://ui/TurnTimer/turn_timer_progress.png" type="Texture" id=14]
 
 [sub_resource type="CanvasItemMaterial" id=10]
 
@@ -57,7 +60,7 @@ script = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0.164706, 0.164706, 0.164706, 1 )
+color = Color( 0.0352941, 0.0470588, 0.054902, 1 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -111,9 +114,13 @@ alignment = 1
 
 [node name="P1Portrait" type="TextureRect" parent="HudLayer/HudLayer/VBoxContainer/TopBar"]
 unique_name_in_owner = true
+modulate = Color( 0.67451, 0.635294, 1, 1 )
 margin_right = 32.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
+rect_clip_content = true
+expand = true
+stretch_mode = 4
 
 [node name="P1HealthBar" type="TextureProgress" parent="HudLayer/HudLayer/VBoxContainer/TopBar"]
 unique_name_in_owner = true
@@ -160,10 +167,14 @@ nine_patch_stretch = true
 
 [node name="P2Portrait" type="TextureRect" parent="HudLayer/HudLayer/VBoxContainer/TopBar"]
 unique_name_in_owner = true
+self_modulate = Color( 1, 0.478431, 0.505882, 1 )
 margin_left = 534.0
 margin_right = 566.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
+rect_clip_content = true
+expand = true
+stretch_mode = 4
 
 [node name="TopBar2" type="HBoxContainer" parent="HudLayer/HudLayer/VBoxContainer"]
 margin_top = 33.0
@@ -262,6 +273,7 @@ valign = 2
 script = ExtResource( 1 )
 
 [node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -271,8 +283,7 @@ __meta__ = {
 
 [node name="DebugLabelP1" type="Label" parent="UILayer/DebugContainer"]
 unique_name_in_owner = true
-visible = false
-margin_right = 640.0
+margin_right = 318.0
 margin_bottom = 360.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
@@ -283,7 +294,6 @@ __meta__ = {
 
 [node name="DebugLabelP2" type="Label" parent="UILayer/DebugContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 322.0
 margin_right = 640.0
 margin_bottom = 360.0
@@ -317,25 +327,32 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -56.0
+margin_left = -45.0
 margin_top = -58.0
-margin_right = 56.0
+margin_right = 45.0
 margin_bottom = 58.0
 alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 45.0
-margin_right = 112.0
-margin_bottom = 57.0
+margin_top = 39.0
+margin_right = 90.0
+margin_bottom = 51.0
 text = "Singleplayer"
 
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 58.0
-margin_right = 112.0
-margin_bottom = 70.0
+margin_top = 52.0
+margin_right = 90.0
+margin_bottom = 64.0
 text = "Multiplayer"
+
+[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 65.0
+margin_right = 90.0
+margin_bottom = 77.0
+text = "Direct Connect"
 
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
@@ -365,109 +382,12 @@ margin_bottom = 63.0
 theme = ExtResource( 4 )
 text = "Quit"
 
-[node name="Lobby" type="Panel" parent="UILayer"]
-unique_name_in_owner = true
+[node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]
 visible = false
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -104.0
-margin_top = -84.0
-margin_right = 104.0
-margin_bottom = 84.0
-theme = ExtResource( 4 )
-script = ExtResource( 5 )
+direct_connect = false
 
-[node name="NetworkSetupScreen" type="VBoxContainer" parent="UILayer/Lobby"]
-unique_name_in_owner = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-
-[node name="NameEdit" type="LineEdit" parent="UILayer/Lobby/NetworkSetupScreen"]
-unique_name_in_owner = true
-margin_right = 208.0
-margin_bottom = 21.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-text = "username"
-placeholder_text = "enter name here"
-
-[node name="PlayerList" type="ItemList" parent="UILayer/Lobby/NetworkSetupScreen"]
-unique_name_in_owner = true
-margin_top = 22.0
-margin_right = 208.0
-margin_bottom = 146.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="NetworkStartButton" type="Button" parent="UILayer/Lobby/NetworkSetupScreen"]
-unique_name_in_owner = true
+[node name="DirectConnectLobby" parent="UILayer" instance=ExtResource( 5 )]
 visible = false
-margin_top = 148.0
-margin_right = 208.0
-margin_bottom = 168.0
-rect_min_size = Vector2( 0, 20 )
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.45
-text = "start"
-
-[node name="ConnectContainer" type="HBoxContainer" parent="UILayer/Lobby/NetworkSetupScreen"]
-unique_name_in_owner = true
-margin_top = 147.0
-margin_right = 208.0
-margin_bottom = 168.0
-rect_min_size = Vector2( 0, 21 )
-
-[node name="HostContainer" type="HBoxContainer" parent="UILayer/Lobby/NetworkSetupScreen/ConnectContainer"]
-unique_name_in_owner = true
-margin_right = 60.0
-margin_bottom = 21.0
-size_flags_vertical = 3
-
-[node name="HostButton" type="Button" parent="UILayer/Lobby/NetworkSetupScreen/ConnectContainer/HostContainer"]
-unique_name_in_owner = true
-margin_right = 60.0
-margin_bottom = 21.0
-rect_min_size = Vector2( 60, 0 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "host"
-
-[node name="JoinContainer" type="HBoxContainer" parent="UILayer/Lobby/NetworkSetupScreen/ConnectContainer"]
-unique_name_in_owner = true
-margin_left = 61.0
-margin_right = 208.0
-margin_bottom = 21.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="JoinButton" type="Button" parent="UILayer/Lobby/NetworkSetupScreen/ConnectContainer/JoinContainer"]
-unique_name_in_owner = true
-margin_right = 60.0
-margin_bottom = 21.0
-rect_min_size = Vector2( 60, 0 )
-size_flags_horizontal = 0
-size_flags_vertical = 3
-text = "join"
-
-[node name="IPEdit" type="LineEdit" parent="UILayer/Lobby/NetworkSetupScreen/ConnectContainer/JoinContainer"]
-unique_name_in_owner = true
-margin_left = 61.0
-margin_right = 147.0
-margin_bottom = 21.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-text = "67.171.216.91"
-placeholder_text = "IP"
-
-[node name="NetworkErrorLabel" type="Label" parent="UILayer/Lobby"]
-unique_name_in_owner = true
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 5.0
-margin_bottom = 42.0
 
 [node name="NetworkDebugLabel" type="Label" parent="UILayer"]
 visible = false
@@ -483,9 +403,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -320.0
-margin_top = -123.0
+margin_top = -152.0
 margin_right = 320.0
-margin_bottom = -8.0
+margin_bottom = -4.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 alignment = 1
@@ -493,9 +413,9 @@ script = ExtResource( 11 )
 
 [node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/BottomBar"]
 visible = false
-margin_top = 3.0
+margin_top = 11.0
 margin_right = 640.0
-margin_bottom = 18.0
+margin_bottom = 26.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 
@@ -510,8 +430,8 @@ size_flags_stretch_ratio = 4.79
 [node name="ActionButtons" type="HBoxContainer" parent="UILayer/BottomBar"]
 unique_name_in_owner = true
 margin_right = 640.0
-margin_bottom = 102.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 135.0
+rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -519,25 +439,31 @@ alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
 margin_right = 319.0
-margin_bottom = 102.0
+margin_bottom = 135.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer"]
-margin_top = 8.0
+[node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 40.0
 margin_right = 319.0
-margin_bottom = 28.0
+margin_bottom = 60.0
 mouse_filter = 2
 
-[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
+margin_right = 319.0
+margin_bottom = 20.0
+mouse_filter = 2
+
+[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
 margin_right = 20.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 20, 0 )
 mouse_filter = 2
 
-[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
+[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 21.0
 margin_right = 121.0
@@ -551,7 +477,7 @@ texture_under = SubResource( 6 )
 texture_progress = SubResource( 8 )
 nine_patch_stretch = true
 
-[node name="P1NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/HBoxContainer"]
+[node name="P1NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 122.0
 margin_top = 4.0
@@ -565,29 +491,35 @@ align = 1
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 29.0
+margin_top = 61.0
 margin_right = 319.0
-margin_bottom = 102.0
+margin_bottom = 135.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
 margin_left = 320.0
 margin_right = 640.0
-margin_bottom = 102.0
+margin_bottom = 135.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2"]
-margin_top = 8.0
+[node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 40.0
 margin_right = 320.0
-margin_bottom = 28.0
+margin_bottom = 60.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
+margin_right = 320.0
+margin_bottom = 20.0
 mouse_filter = 2
 alignment = 2
 
-[node name="P2NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+[node name="P2NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 188.0
 margin_top = 4.0
@@ -597,7 +529,7 @@ rect_min_size = Vector2( 10, 0 )
 text = "9"
 align = 1
 
-[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 199.0
 margin_right = 299.0
@@ -609,9 +541,10 @@ size_flags_vertical = 3
 max_value = 1000.0
 texture_under = SubResource( 6 )
 texture_progress = SubResource( 8 )
+fill_mode = 1
 nine_patch_stretch = true
 
-[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/HBoxContainer"]
+[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
 margin_left = 300.0
 margin_right = 320.0
 margin_bottom = 20.0
@@ -622,29 +555,81 @@ mouse_filter = 2
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 29.0
+margin_top = 61.0
 margin_right = 320.0
-margin_bottom = 102.0
+margin_bottom = 135.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 player_id = 2
 
-[node name="OptionsBar" type="HBoxContainer" parent="UILayer/BottomBar"]
-unique_name_in_owner = true
-margin_top = 103.0
+[node name="MarginContainer" type="MarginContainer" parent="UILayer/BottomBar"]
+margin_top = 136.0
 margin_right = 640.0
-margin_bottom = 115.0
+margin_bottom = 148.0
+custom_constants/margin_right = 10
+custom_constants/margin_left = 10
+
+[node name="OptionsBar" type="HBoxContainer" parent="UILayer/BottomBar/MarginContainer"]
+unique_name_in_owner = true
+margin_left = 10.0
+margin_right = 630.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 5
 alignment = 1
 
-[node name="GhostButton" type="CheckButton" parent="UILayer/BottomBar/OptionsBar"]
+[node name="GhostButton" type="CheckButton" parent="UILayer/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 280.0
-margin_right = 359.0
+margin_left = 165.0
+margin_right = 306.0
 margin_bottom = 12.0
 theme = ExtResource( 4 )
 pressed = true
 action_mode = 0
-text = "show prediction (experimental)"
+text = "show prediction (buggy)"
+
+[node name="GhostSpeed" type="HBoxContainer" parent="UILayer/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 311.0
+margin_right = 454.0
+margin_bottom = 12.0
+script = ExtResource( 13 )
+
+[node name="Label" type="Label" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_right = 84.0
+margin_bottom = 11.0
+theme = ExtResource( 4 )
+text = "prediction speed:"
+
+[node name="1Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 85.0
+margin_right = 113.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+text = "x0.25"
+
+[node name="2Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 114.0
+margin_right = 128.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+pressed = true
+text = "x1"
+
+[node name="3Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 129.0
+margin_right = 143.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+text = "x4"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
 visible = false
@@ -660,3 +645,40 @@ margin_bottom = 50.0
 rect_min_size = Vector2( 50, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="CharacterSelect" parent="UILayer" instance=ExtResource( 12 )]
+unique_name_in_owner = true
+visible = false
+
+[node name="TurnTimer" type="Timer" parent="UILayer"]
+unique_name_in_owner = true
+wait_time = 10.0
+one_shot = true
+
+[node name="P1TurnTimerBar" type="TextureProgress" parent="UILayer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 37.0
+margin_top = 19.0
+margin_right = 69.0
+margin_bottom = 51.0
+max_value = 1.0
+step = 0.001
+value = 1.0
+texture_progress = ExtResource( 14 )
+fill_mode = 5
+
+[node name="P2TurnTimerBar" type="TextureProgress" parent="UILayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -69.0
+margin_top = 19.0
+margin_right = -37.0
+margin_bottom = 51.0
+max_value = 1.0
+step = 0.001
+value = 1.0
+texture_progress = ExtResource( 14 )
+fill_mode = 4

@@ -1,0 +1,826 @@
+[gd_scene load_steps=140 format=2]
+
+[ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=2]
+[ext_resource path="res://characters/stickman/sprites/stickman56.png" type="Texture" id=3]
+[ext_resource path="res://characters/stickman/sprites/phantomdash2.png" type="Texture" id=4]
+[ext_resource path="res://characters/stickman/sprites/phantomdash3.png" type="Texture" id=5]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_light1.png" type="Texture" id=6]
+[ext_resource path="res://characters/stickman/sprites/chuk_jump2.png" type="Texture" id=7]
+[ext_resource path="res://characters/stickman/sprites/stickman55.png" type="Texture" id=8]
+[ext_resource path="res://characters/stickman/sprites/stickman53.png" type="Texture" id=9]
+[ext_resource path="res://characters/stickman/sprites/stickman54.png" type="Texture" id=10]
+[ext_resource path="res://characters/stickman/sprites/stickman61.png" type="Texture" id=11]
+[ext_resource path="res://characters/stickman/sprites/stickman52.png" type="Texture" id=12]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_heavy4.png" type="Texture" id=13]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_heavy1.png" type="Texture" id=14]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_heavy3.png" type="Texture" id=15]
+[ext_resource path="res://characters/stickman/sprites/stickman59.png" type="Texture" id=16]
+[ext_resource path="res://characters/stickman/sprites/phantomdash1.png" type="Texture" id=17]
+[ext_resource path="res://characters/stickman/sprites/chuk_jump1.png" type="Texture" id=18]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin7.png" type="Texture" id=19]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_heavy2.png" type="Texture" id=20]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin6.png" type="Texture" id=21]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_light3.png" type="Texture" id=22]
+[ext_resource path="res://characters/stickman/sprites/stickman44.png" type="Texture" id=23]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin1.png" type="Texture" id=24]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin3.png" type="Texture" id=25]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin5.png" type="Texture" id=26]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin4.png" type="Texture" id=27]
+[ext_resource path="res://characters/stickman/sprites/chuk_jump3.png" type="Texture" id=28]
+[ext_resource path="res://characters/stickman/sprites/stickman58.png" type="Texture" id=29]
+[ext_resource path="res://characters/stickman/sprites/nunchuk_light2.png" type="Texture" id=30]
+[ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=31]
+[ext_resource path="res://characters/stickman/sprites/stickman32.png" type="Texture" id=32]
+[ext_resource path="res://characters/stickman/sprites/stickman49.png" type="Texture" id=33]
+[ext_resource path="res://characters/stickman/sprites/stickman23.png" type="Texture" id=34]
+[ext_resource path="res://characters/stickman/sprites/stickman28.png" type="Texture" id=35]
+[ext_resource path="res://characters/stickman/sprites/stickman27.png" type="Texture" id=36]
+[ext_resource path="res://characters/stickman/sprites/stickman34.png" type="Texture" id=37]
+[ext_resource path="res://characters/stickman/sprites/stickman37.png" type="Texture" id=38]
+[ext_resource path="res://characters/stickman/sprites/stickman41.png" type="Texture" id=39]
+[ext_resource path="res://characters/stickman/sprites/stickman47.png" type="Texture" id=40]
+[ext_resource path="res://characters/stickman/sprites/stickman38.png" type="Texture" id=41]
+[ext_resource path="res://characters/stickman/sprites/stickman22.png" type="Texture" id=42]
+[ext_resource path="res://characters/stickman/sprites/stickman39.png" type="Texture" id=43]
+[ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=44]
+[ext_resource path="res://characters/stickman/sprites/stickman24.png" type="Texture" id=45]
+[ext_resource path="res://characters/stickman/sprites/stickman42.png" type="Texture" id=46]
+[ext_resource path="res://characters/stickman/sprites/stickman40.png" type="Texture" id=47]
+[ext_resource path="res://characters/stickman/sprites/stickman35.png" type="Texture" id=48]
+[ext_resource path="res://characters/stickman/sprites/stickman51.png" type="Texture" id=49]
+[ext_resource path="res://characters/stickman/sprites/stickman33.png" type="Texture" id=50]
+[ext_resource path="res://characters/stickman/sprites/stickman36.png" type="Texture" id=51]
+[ext_resource path="res://characters/stickman/sprites/stickman29.png" type="Texture" id=52]
+[ext_resource path="res://characters/stickman/sprites/stickman50.png" type="Texture" id=53]
+[ext_resource path="res://characters/stickman/sprites/stickman48.png" type="Texture" id=54]
+[ext_resource path="res://characters/stickman/sprites/stickman45.png" type="Texture" id=55]
+[ext_resource path="res://characters/stickman/sprites/chuk_spin2.png" type="Texture" id=56]
+[ext_resource path="res://characters/swordandgun/sprites/pommel2.png" type="Texture" id=57]
+[ext_resource path="res://characters/swordandgun/sprites/idle.png" type="Texture" id=58]
+[ext_resource path="res://characters/stickman/sprites/stickman5.png" type="Texture" id=59]
+[ext_resource path="res://characters/stickman/sprites/stickman7.png" type="Texture" id=60]
+[ext_resource path="res://characters/stickman/sprites/stickman13.png" type="Texture" id=61]
+[ext_resource path="res://characters/stickman/sprites/stickman15.png" type="Texture" id=62]
+[ext_resource path="res://characters/stickman/sprites/stickman16.png" type="Texture" id=63]
+[ext_resource path="res://characters/stickman/sprites/stickman9.png" type="Texture" id=64]
+[ext_resource path="res://characters/stickman/sprites/stickman14.png" type="Texture" id=65]
+[ext_resource path="res://characters/stickman/sprites/stickman10.png" type="Texture" id=66]
+[ext_resource path="res://characters/stickman/sprites/stickman11.png" type="Texture" id=67]
+[ext_resource path="res://characters/swordandgun/sprites/walk2.png" type="Texture" id=68]
+[ext_resource path="res://characters/stickman/sprites/stickman12.png" type="Texture" id=69]
+[ext_resource path="res://characters/stickman/sprites/stickman6.png" type="Texture" id=70]
+[ext_resource path="res://characters/stickman/sprites/stickman8.png" type="Texture" id=71]
+[ext_resource path="res://characters/stickman/sprites/stickman4.png" type="Texture" id=72]
+[ext_resource path="res://characters/stickman/sprites/stickman19.png" type="Texture" id=73]
+[ext_resource path="res://characters/stickman/sprites/stickman17.png" type="Texture" id=74]
+[ext_resource path="res://characters/stickman/sprites/stickman21.png" type="Texture" id=75]
+[ext_resource path="res://characters/stickman/sprites/stickman26.png" type="Texture" id=76]
+[ext_resource path="res://characters/stickman/sprites/stickman18.png" type="Texture" id=77]
+[ext_resource path="res://characters/stickman/sprites/stickman20.png" type="Texture" id=78]
+[ext_resource path="res://characters/states/Idle.gd" type="Script" id=79]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_horiz2.png" type="Texture" id=80]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_vert3.png" type="Texture" id=81]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_horiz1.png" type="Texture" id=82]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=83]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_vert1.png" type="Texture" id=84]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_vert2.png" type="Texture" id=85]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_horiz3.png" type="Texture" id=86]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_vert4.png" type="Texture" id=87]
+[ext_resource path="res://characters/swordandgun/sprites/walk1.png" type="Texture" id=88]
+[ext_resource path="res://characters/swordandgun/sprites/walk3.png" type="Texture" id=89]
+[ext_resource path="res://characters/swordandgun/sprites/walk4.png" type="Texture" id=90]
+[ext_resource path="res://characters/swordandgun/sprites/pommel1.png" type="Texture" id=91]
+[ext_resource path="res://characters/swordandgun/sprites/v_air_slash1.png" type="Texture" id=92]
+[ext_resource path="res://characters/swordandgun/sprites/v_air_slash3.png" type="Texture" id=93]
+[ext_resource path="res://characters/swordandgun/sprites/v_air_slash2.png" type="Texture" id=94]
+[ext_resource path="res://characters/states/Fall.gd" type="Script" id=95]
+[ext_resource path="res://characters/swordandgun/sprites/h_air_slash1.png" type="Texture" id=96]
+[ext_resource path="res://characters/swordandgun/sprites/h_air_slash2.png" type="Texture" id=97]
+[ext_resource path="res://characters/swordandgun/sprites/h_air_slash3.png" type="Texture" id=98]
+[ext_resource path="res://characters/swordandgun/states/Teleport.gd" type="Script" id=99]
+[ext_resource path="res://characters/swordandgun/sprites/teleport1.png" type="Texture" id=100]
+[ext_resource path="res://characters/swordandgun/sprites/teleport2.png" type="Texture" id=101]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/TeleportActionUIData.tscn" type="PackedScene" id=102]
+[ext_resource path="res://characters/swordandgun/sprites/gun_shoot1.png" type="Texture" id=103]
+[ext_resource path="res://characters/swordandgun/sprites/gun_shoot_arm2.png" type="Texture" id=104]
+[ext_resource path="res://characters/swordandgun/sprites/gun_shoot_arm1.png" type="Texture" id=105]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl4.png" type="Texture" id=106]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl3.png" type="Texture" id=107]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl5.png" type="Texture" id=108]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl1.png" type="Texture" id=109]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl2.png" type="Texture" id=110]
+[ext_resource path="res://characters/swordandgun/states/Shoot.gd" type="Script" id=111]
+[ext_resource path="res://characters/swordandgun/SwordGuy.gd" type="Script" id=112]
+[ext_resource path="res://characters/swordandgun/states/1000Cuts.gd" type="Script" id=113]
+[ext_resource path="res://characters/swordandgun/sprites/gun_twirl6.png" type="Texture" id=114]
+[ext_resource path="res://characters/swordandgun/SwordGuyPlayerInfo.tscn" type="PackedScene" id=115]
+[ext_resource path="res://characters/swordandgun/states/Brandish.gd" type="Script" id=116]
+[ext_resource path="res://characters/swordandgun/sprites/poke1.png" type="Texture" id=117]
+[ext_resource path="res://characters/swordandgun/sprites/poke2.png" type="Texture" id=118]
+[ext_resource path="res://characters/stickman/sprites/stickman57.png" type="Texture" id=119]
+[ext_resource path="res://characters/swordandgun/sprites/gun_shoot_arm3.png" type="Texture" id=120]
+[ext_resource path="res://characters/swordandgun/sprites/impale4.png" type="Texture" id=121]
+[ext_resource path="res://characters/swordandgun/sprites/impale5.png" type="Texture" id=122]
+[ext_resource path="res://characters/swordandgun/sprites/impale1.png" type="Texture" id=123]
+[ext_resource path="res://characters/swordandgun/sprites/impale3.png" type="Texture" id=124]
+[ext_resource path="res://characters/swordandgun/sprites/impale2.png" type="Texture" id=125]
+[ext_resource path="res://characters/swordandgun/sprites/impale6.png" type="Texture" id=126]
+[ext_resource path="res://characters/swordandgun/states/Impale.gd" type="Script" id=127]
+[ext_resource path="res://characters/swordandgun/sprites/1000cuts1.png" type="Texture" id=128]
+[ext_resource path="res://characters/swordandgun/sprites/1000cuts3.png" type="Texture" id=129]
+[ext_resource path="res://characters/swordandgun/sprites/1000cuts2.png" type="Texture" id=130]
+[ext_resource path="res://characters/swordandgun/projectiles/1000CutsEffect.tscn" type="PackedScene" id=131]
+[ext_resource path="res://characters/swordandgun/states/UpwardSwipe.gd" type="Script" id=132]
+[ext_resource path="res://characters/swordandgun/sprites/upward_swipe1.png" type="Texture" id=133]
+[ext_resource path="res://characters/swordandgun/sprites/upward_swipe2.png" type="Texture" id=134]
+[ext_resource path="res://characters/swordandgun/sprites/upward_swipe3.png" type="Texture" id=135]
+[ext_resource path="res://characters/swordandgun/sprites/upward_swipe4.png" type="Texture" id=136]
+[ext_resource path="res://ui/ActionSelector/StateIcons/teleport.png" type="Texture" id=137]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 128 ), ExtResource( 128 ), ExtResource( 130 ), ExtResource( 130 ), ExtResource( 129 ), ExtResource( 129 ) ],
+"loop": true,
+"name": "1000Cuts",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 65 ), ExtResource( 65 ), ExtResource( 65 ), ExtResource( 65 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 63 ) ],
+"loop": true,
+"name": "AirAttack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 35 ) ],
+"loop": true,
+"name": "AirFireball",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 43 ), ExtResource( 43 ), ExtResource( 43 ), ExtResource( 43 ), ExtResource( 47 ), ExtResource( 47 ), ExtResource( 39 ) ],
+"loop": true,
+"name": "AirUpwardPunch",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 52 ) ],
+"loop": true,
+"name": "Burst",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ) ],
+"loop": true,
+"name": "DashBackward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 68 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ), ExtResource( 90 ) ],
+"loop": true,
+"name": "DashForward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 49 ), ExtResource( 46 ) ],
+"loop": true,
+"name": "DiveKick",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 59 ), ExtResource( 70 ), ExtResource( 60 ), ExtResource( 71 ) ],
+"loop": true,
+"name": "DoubleJump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "DropKick",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 76 ), ExtResource( 36 ) ],
+"loop": true,
+"name": "Fireball",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "ForwardThrow",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 38 ) ],
+"loop": true,
+"name": "Getup",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 119 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ), ExtResource( 29 ) ],
+"loop": true,
+"name": "Grab",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 59 ) ],
+"loop": true,
+"name": "Grabbed",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 37 ), ExtResource( 37 ), ExtResource( 37 ), ExtResource( 37 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 51 ) ],
+"loop": true,
+"name": "GroundedKick",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 67 ), ExtResource( 69 ), ExtResource( 69 ), ExtResource( 61 ) ],
+"loop": true,
+"name": "GroundedPunch",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 31 ), ExtResource( 31 ), ExtResource( 31 ), ExtResource( 31 ), ExtResource( 40 ), ExtResource( 40 ), ExtResource( 40 ), ExtResource( 54 ), ExtResource( 54 ), ExtResource( 33 ), ExtResource( 33 ), ExtResource( 33 ), ExtResource( 33 ), ExtResource( 33 ), ExtResource( 33 ), ExtResource( 53 ) ],
+"loop": true,
+"name": "GroundedSweep",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 103 ) ],
+"loop": true,
+"name": "GunShoot",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 109 ), ExtResource( 109 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 106 ), ExtResource( 108 ), ExtResource( 114 ) ],
+"loop": true,
+"name": "GunTwirl",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 96 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 98 ) ],
+"loop": true,
+"name": "HAirSlash",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
+"loop": true,
+"name": "HSlash",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 114 ), ExtResource( 114 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 109 ) ],
+"loop": true,
+"name": "Holster",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 74 ) ],
+"loop": true,
+"name": "HurtAerial",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 66 ) ],
+"loop": true,
+"name": "HurtGroundedHigh",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 77 ) ],
+"loop": true,
+"name": "HurtGroundedLow",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 64 ) ],
+"loop": true,
+"name": "HurtGroundedMid",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 125 ), ExtResource( 125 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ), ExtResource( 126 ) ],
+"loop": true,
+"name": "Impale",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 41 ) ],
+"loop": true,
+"name": "InstantCancel",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 72 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 59 ), ExtResource( 71 ), ExtResource( 60 ), ExtResource( 70 ) ],
+"loop": true,
+"name": "JumpBack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 12 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "JumpKick",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 44 ) ],
+"loop": true,
+"name": "Knockdown",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 45 ) ],
+"loop": true,
+"name": "Landing",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "NunChukHeavy",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 18 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 28 ) ],
+"loop": true,
+"name": "NunChukJump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 30 ), ExtResource( 30 ), ExtResource( 30 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "NunChukLight",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 24 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 56 ), ExtResource( 56 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 27 ), ExtResource( 27 ), ExtResource( 27 ), ExtResource( 26 ), ExtResource( 26 ), ExtResource( 26 ), ExtResource( 26 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 27 ), ExtResource( 27 ), ExtResource( 27 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ) ],
+"loop": true,
+"name": "NunChukSpin",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 32 ) ],
+"loop": true,
+"name": "ParryHigh",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 50 ) ],
+"loop": true,
+"name": "ParryLow",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ) ],
+"loop": true,
+"name": "Poke",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 91 ), ExtResource( 91 ), ExtResource( 91 ), ExtResource( 57 ) ],
+"loop": true,
+"name": "Pommel",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 17 ), ExtResource( 17 ), ExtResource( 17 ), ExtResource( 17 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "QuickSlash",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 71 ), ExtResource( 60 ), ExtResource( 70 ), ExtResource( 59 ) ],
+"loop": true,
+"name": "RollBackward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 59 ), ExtResource( 70 ), ExtResource( 60 ), ExtResource( 71 ) ],
+"loop": true,
+"name": "RollForward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), null, null, null, ExtResource( 101 ), ExtResource( 101 ), ExtResource( 100 ) ],
+"loop": true,
+"name": "Teleport",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 11 ) ],
+"loop": true,
+"name": "ThrowTech",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 73 ), ExtResource( 73 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 42 ), ExtResource( 34 ) ],
+"loop": true,
+"name": "Uppercut",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 133 ), ExtResource( 133 ), ExtResource( 133 ), ExtResource( 133 ), ExtResource( 134 ), ExtResource( 134 ), ExtResource( 134 ), ExtResource( 135 ), ExtResource( 135 ), ExtResource( 135 ), ExtResource( 136 ) ],
+"loop": true,
+"name": "UpwardSwipe",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 92 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 93 ) ],
+"loop": true,
+"name": "VAirSlash",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 81 ), ExtResource( 81 ), ExtResource( 87 ) ],
+"loop": true,
+"name": "VSlash",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 58 ) ],
+"loop": true,
+"name": "Wait",
+"speed": 30.0
+} ]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 105 ), ExtResource( 104 ), ExtResource( 120 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="SwordGuy" instance=ExtResource( 1 )]
+script = ExtResource( 112 )
+__meta__ = {
+"_edit_horizontal_guides_": [ -29.0 ],
+"_edit_vertical_guides_": [ 26.0 ]
+}
+gravity = "0.4"
+ground_friction = "1.5"
+air_friction = "0.1"
+max_ground_speed = "12"
+max_air_speed = "9"
+extra_state_variables = "bullets_left
+cut_projectile"
+character_portrait = ExtResource( 58 )
+player_info_scene = ExtResource( 115 )
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "UpwardSwipe"
+frame = 7
+
+[node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 0, -24 )
+z_index = -1
+frames = SubResource( 2 )
+
+[node name="1000Cuts" type="Node2D" parent="StateMachine" index="2"]
+script = ExtResource( 113 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 12
+particle_scene = ExtResource( 131 )
+particle_position = Vector2( 0, -16 )
+spawn_particle_on_enter = true
+type = 3
+air_type = 2
+interrupt_from_string = "GroundedSuper
+Grounded
+AerialSuper
+Aerial"
+interrupt_into_string = "Grounded
+Aerial"
+super_level = 3
+
+[node name="HSlash" type="Node2D" parent="StateMachine" index="3"]
+script = ExtResource( 79 )
+sprite_animation = "HSlash"
+anim_length = 25
+force_dir_x = "1.0"
+force_speed = "6.0"
+force_tick = 6
+title = "H Slash"
+type = 1
+self_hit_cancellable = false
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/HSlash" index="0"]
+script = ExtResource( 83 )
+x = 45
+y = -19
+width = 39
+height = 8
+damage = 90
+victim_hitlag = 4
+start_tick = 7
+active_ticks = 2
+
+[node name="VSlash" type="Node2D" parent="StateMachine" index="4"]
+script = ExtResource( 79 )
+sprite_animation = "VSlash"
+anim_length = 30
+force_dir_x = "1.0"
+force_speed = "7.0"
+force_tick = 2
+title = "V Slash"
+type = 1
+self_hit_cancellable = false
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSpecial
+GroundedAttack
+GroundedSuper
+Jump"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/VSlash" index="0"]
+script = ExtResource( 83 )
+x = 37
+y = -26
+width = 31
+height = 23
+damage = 110
+hitstun_ticks = 40
+victim_hitlag = 4
+hit_height = 0
+dir_x = "0.5"
+dir_y = "1.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 11
+active_ticks = 2
+
+[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="5"]
+script = ExtResource( 132 )
+apply_forces = true
+apply_fric = true
+anim_length = 25
+enter_force_dir_x = "1.0"
+enter_force_speed = "5.0"
+title = "Upward Swipe"
+type = 1
+air_type = 2
+self_hit_cancellable = false
+interrupt_from_string = "Grounded
+Aerial
+GroundedAttack
+AerialAttack"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "Aerial"
+GROUNDED_LIFT = "-12.0"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/UpwardSwipe" index="0"]
+script = ExtResource( 83 )
+x = 32
+y = -20
+width = 31
+height = 13
+damage = 70
+hitstun_ticks = 25
+hitlag_ticks = 7
+victim_hitlag = 7
+dir_x = "-0.15"
+knockback = "9.0"
+pushback_x = "2.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 8
+active_ticks = 4
+
+[node name="Poke" type="Node2D" parent="StateMachine" index="6"]
+script = ExtResource( 79 )
+sprite_animation = "Poke"
+anim_length = 30
+force_dir_x = "1.0"
+force_speed = "12.0"
+force_tick = 1
+title = "Stinger"
+type = 1
+self_hit_cancellable = false
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSpecial
+GroundedAttack
+GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Poke" index="0"]
+script = ExtResource( 83 )
+x = 53
+y = -21
+width = 29
+height = 4
+damage = 120
+hitlag_ticks = 7
+victim_hitlag = 7
+dir_y = "-0.25"
+knockback = "14.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+start_tick = 11
+active_ticks = 2
+
+[node name="Impale" type="Node2D" parent="StateMachine" index="7"]
+script = ExtResource( 127 )
+anim_length = 45
+force_dir_x = "-1.0"
+force_speed = "8.0"
+force_tick = 22
+enter_force_dir_x = "1.0"
+enter_force_speed = "4.0"
+title = "Impale"
+type = 2
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Impale" index="0"]
+script = ExtResource( 83 )
+x = 31
+y = -17
+width = 22
+height = 4
+damage = 50
+hitlag_ticks = 12
+victim_hitlag = 20
+cancellable = false
+screenshake_amount = 2
+dir_y = "0"
+knockback = "2.0"
+pushback_x = "-5.0"
+knockdown = true
+disable_collision = false
+start_tick = 9
+active_ticks = 4
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Impale" index="1"]
+script = ExtResource( 83 )
+x = 31
+y = -12
+width = 32
+height = 18
+damage = 200
+victim_hitlag = 4
+group = 1
+screenshake_amount = 6
+screenshake_frames = 40
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "90"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+ground_bounce = false
+start_tick = 23
+active_ticks = 4
+
+[node name="VAirSlash" type="Node2D" parent="StateMachine" index="8"]
+script = ExtResource( 95 )
+anim_length = 18
+title = "V Slash"
+type = 1
+air_type = 1
+self_hit_cancellable = false
+interrupt_from_string = "Aerial
+AerialAttack"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/VAirSlash" index="0"]
+script = ExtResource( 83 )
+x = 22
+y = 2
+width = 21
+height = 21
+damage = 70
+hitstun_ticks = 20
+victim_hitlag = 4
+hit_height = 0
+dir_x = "0.5"
+dir_y = "0.25"
+knockback = "5.0"
+start_tick = 5
+active_ticks = 2
+
+[node name="HAirSlash" type="Node2D" parent="StateMachine" index="9"]
+script = ExtResource( 95 )
+anim_length = 16
+force_dir_x = "1.0"
+force_dir_y = "-0.75"
+force_speed = "9.0"
+force_tick = 5
+reset_momentum = true
+title = "H Slash"
+type = 1
+air_type = 1
+self_hit_cancellable = false
+interrupt_from_string = "Aerial
+AerialAttack"
+interrupt_into_string = "Aerial"
+hit_cancel_into_string = "Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/HAirSlash" index="0"]
+script = ExtResource( 83 )
+x = 36
+y = -17
+width = 24
+height = 14
+damage = 70
+hitstun_ticks = 22
+hitlag_ticks = 5
+victim_hitlag = 5
+hit_height = 0
+dir_x = "1.5"
+dir_y = "-0.25"
+knockback = "8"
+start_tick = 6
+active_ticks = 4
+
+[node name="Teleport" type="Node2D" parent="StateMachine" index="10"]
+script = ExtResource( 99 )
+anim_length = 18
+data_ui_scene = ExtResource( 102 )
+button_texture = ExtResource( 137 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+self_interruptable = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="Pommel" type="Node2D" parent="StateMachine" index="11"]
+script = ExtResource( 79 )
+anim_length = 9
+enter_force_dir_x = "1.0"
+enter_force_speed = "2.0"
+type = 1
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+Jump"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Pommel" index="0"]
+script = ExtResource( 83 )
+x = 15
+y = -23
+width = 11
+height = 8
+damage = 40
+hitstun_ticks = 12
+victim_hitlag = 4
+hit_height = 0
+dir_x = "0.5"
+dir_y = "1.0"
+start_tick = 4
+active_ticks = 2
+
+[node name="Brandish" type="Node2D" parent="StateMachine" index="12"]
+script = ExtResource( 116 )
+fallback_state = "Shoot"
+sprite_animation = "GunTwirl"
+anim_length = 7
+title = "Quick Draw"
+type = 2
+air_type = 2
+interrupt_from_string = "Grounded
+GroundedSpecial
+Aerial
+AerialSpecial"
+interrupt_into_string = "Gun
+AerialSuper
+GroundedSuper"
+
+[node name="Holster" type="Node2D" parent="StateMachine" index="13"]
+script = ExtResource( 79 )
+sprite_animation = "Holster"
+anim_length = 6
+type = 2
+air_type = 2
+interrupt_from_string = "Gun"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="Shoot" type="Node2D" parent="StateMachine" index="14"]
+script = ExtResource( 111 )
+fallback_state = "Holster"
+sprite_animation = "GunShoot"
+anim_length = 14
+type = 2
+air_type = 2
+iasa_at = 7
+interrupt_from_string = "Gun
+"
+interrupt_into_string = "Gun
+GroundedSuper
+AerialSuper"
+
+[node name="DashStartup" parent="StateMachine" index="25"]
+title = "Walk"
+interrupt_from_string = "GroundedMovement
+Grounded
+Dash"
+
+[node name="DashForward" parent="StateMachine" index="26"]
+dash_speed = 4
+fric = "0.02"
+spawn_particle = false
+
+[node name="DashBackward" parent="StateMachine" index="27"]
+dash_speed = 4
+fric = "0.02"
+spawn_particle = false
+
+[node name="Jump" parent="StateMachine" index="29"]
+speed = "8.5"
+
+[node name="DoubleJump" parent="StateMachine" index="30"]
+speed = "7"
+
+[node name="AirDash" parent="StateMachine" index="31"]
+interrupt_from_string = ""
+interrupt_into_string = ""
+
+[node name="AirGrab" parent="StateMachine" index="39"]
+land_cancel = true
+
+[node name="AirDownThrow" parent="StateMachine" index="44"]
+dir_x = "1.0"
+dir_y = "1.00"

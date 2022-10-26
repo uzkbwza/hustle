@@ -42,8 +42,8 @@ func init(game):
 
 func _process(_delta):
 	if is_instance_valid(game):
-		p1_healthbar.value = p1.hp
-		p2_healthbar.value = p2.hp
+		p1_healthbar.value = max(p1.hp, 0)
+		p2_healthbar.value = max(p2.hp, 0)
 		p1_super_meter.value = p1.super_meter
 		p2_super_meter.value = p2.super_meter
 		p1_num_supers.text = str(p1.supers_available)

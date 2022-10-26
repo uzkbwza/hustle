@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/PlayerInfo.gd" type="Script" id=1]
+
+[node name="PlayerInfo" type="Control"]
+margin_right = 319.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 40 )
+mouse_filter = 2
+script = ExtResource( 1 )

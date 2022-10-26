@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://projectile/DirProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=2]
+[ext_resource path="res://characters/wizard/projectiles/sprites/magic_missile.png" type="Texture" id=3]
+[ext_resource path="res://characters/wizard/projectiles/DartParticle.tscn" type="PackedScene" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[node name="MagicMissile" instance=ExtResource( 1 )]
+z_index = 2
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Default"
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 4 )]
+z_index = -4
+
+[node name="Default" parent="StateMachine" index="0"]
+endless = true
+move_speed = "5.0"
+homing = true
+homing_turn_speed = "0.25"
+homing_accel = "0.15"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 2 )
+width = 6
+height = 6
+damage = 20
+hitstun_ticks = 10
+victim_hitlag = 4
+knockback = "3.0"
+start_tick = 1
+always_on = true

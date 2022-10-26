@@ -5,6 +5,7 @@ class_name BetterRng
 const cardinal_dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1)]
 const diagonal_dirs = [Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1), Vector2(-1, 1)]
 const ascii = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const numbers = '0123456789'
 
 static func ang2vec(angle):
 	return Vector2(cos(angle), sin(angle))
@@ -99,4 +100,10 @@ func random_string(length: int):
 	var string = ''
 	for i in range(length):
 		string = string + choose(ascii)
+	return string
+
+func random_number_string(length: int):
+	var string = ''
+	for i in range(length):
+		string = string + choose(numbers)
 	return string

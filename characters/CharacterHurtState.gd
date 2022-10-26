@@ -1,30 +1,55 @@
 extends CharacterState
 
 class_name CharacterHurtState
-const HIT_GRAV = "0.25"
-const HIT_FALL_SPEED = "15.0"
+
+const SMOKE_SPEED = "6.5"
+const SMOKE_FREQUENCY = 1
+
+var hitbox
+
+func _enter_tree():
+	is_hurt_state = true
 
 func init():
 	.init()
 	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
+	hitbox = data["hitbox"]
 	host.z_index = -1
-#	host.colliding_with_opponent = false
-	host.chara.set_gravity(HIT_GRAV)
-	host.chara.set_max_fall_speed(HIT_FALL_SPEED)
+	if hitbox.disable_collision:
+		host.colliding_with_opponent = false
+#	host.chara.set_gravity(HIT_GRAV)
+#	host.chara.set_max_fall_speed(HIT_FALL_SPEED)
 	host.refresh_air_movements()
-	host.state_interruptable = false
+	host.state_interruptable = true
 	host.busy_interrupt = true
 	._enter_shared()
-	
+
+func _tick_shared():
+	._tick_shared()
+	if current_tick % SMOKE_FREQUENCY == 0:
+		var vel = host.get_vel()
+		if fixed.gt(fixed.vec_len(vel.x, vel.y), SMOKE_SPEED):
+			spawn_particle_relative(preload("res://fx/KnockbackSmoke.tscn"), Vector2(0, -16))
+
+func get_x_dir(hitbox):
+	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
+	if hitbox.reversible:
+		var dir = Utils.int_sign(hitbox.pos_x - host.get_pos().x)
+		var modifier = "1"
+		if dir == -1 and hitbox.facing == "Left":
+			modifier = "-1"
+		if dir == 1 and hitbox.facing == "Right":
+			modifier = "-1"
+		x = fixed.mul(x, modifier)
+	return x
+
 func _on_hit_something(_obj, _hitbox):
 	pass
 
 func _exit_shared():
 	host.z_index = 0
-	host.chara.set_gravity(host.gravity)
-	host.chara.set_max_fall_speed(host.max_fall_speed)
 	._exit_shared()
 
 func can_interrupt():

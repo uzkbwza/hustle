@@ -4,6 +4,8 @@ class_name BaseObj
 
 signal object_spawned(object)
 signal particle_effect_spawned(particle)
+signal initialized()
+signal got_hit()
 
 export var id = 1
 export var dummy = false
@@ -14,6 +16,7 @@ export var air_friction: String = "0.2"
 export var max_ground_speed: String = "15"
 export var max_air_speed: String = "10"
 export var max_fall_speed: String = "15"
+export(String, MULTILINE) var extra_state_variables
 
 onready var collision_box = $CollisionBox
 onready var hurtbox = $Hurtbox
@@ -39,43 +42,42 @@ var combo_count = 0
 
 var is_ghost = false
 
+var spawn_data = null
 var disabled = false
+
+var creator_name = null
+var creator = null
 
 var fixed = FixedMath.new()
 
-var state_interruptable = false
+var state_interruptable = true
 var state_hit_cancellable = false
 
 var invulnerable = false
 
 var projectile_invulnerable = false
 
-var state_variables = ["id", "projectile_invulnerable", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "projectile_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
+
+var initialized = false
 
 var objs_map = {
 	
 }
-
 
 func _enter_tree():
 	if obj_name:
 		name = obj_name
 
 func _ready():
-	chara.id = id
-	chara.set_gravity(gravity)
-	chara.set_ground_friction(ground_friction)
-	chara.set_air_friction(air_friction)
-	chara.set_max_ground_speed(max_ground_speed)
-	chara.set_max_air_speed(max_air_speed)
-	chara.set_max_fall_speed(max_fall_speed)
-	if id == 2:
-		chara.set_facing(-1)
-	state_machine.init()
-	setup_hitbox_names()
 	state_machine.connect("state_exited", self, "_on_state_exited")
+	state_variables.append_array(Utils.split_lines(extra_state_variables))
+	if creator_name:
+		creator = objs_map[creator_name]
+	if !obj_name:
+		obj_name = name
 
 func setup_hitbox_names():
 	for i in range(hitboxes.size()):
@@ -92,22 +94,36 @@ func current_state():
 	return state_machine.state
 
 func init():
-	pass
+	chara.id = id
+	chara.set_gravity(gravity)
+	chara.set_ground_friction(ground_friction)
+	chara.set_air_friction(air_friction)
+	chara.set_max_ground_speed(max_ground_speed)
+	chara.set_max_air_speed(max_air_speed)
+	chara.set_max_fall_speed(max_fall_speed)
+	state_machine.init("", spawn_data)
+	setup_hitbox_names()
+	update_data()
+	initialized = true
+	emit_signal("initialized")
 
 func copy_to(o: BaseObj):
 	var current_state = current_state()
 	o.state_machine.starting_state = current_state.name
+	o.spawn_data = current_state.copy_data()
+	o.set_pos(get_pos().x, get_pos().y)
+	if creator_name and o.objs_map.has(creator_name):
+		o.creator = o.objs_map[creator_name]
 	o.init()
 	o.update_data()
 
-	o.set_pos(get_pos().x, get_pos().y)
 	for variable in state_variables:
 		var v = get(variable)
 		if v is Array or v is Dictionary:
 			o.set(variable, v.duplicate(true))
 		else:
 			o.set(variable, get(variable))
-	o.chara.set_facing(get_facing_int())
+#	o.chara.set_facing(get_facing_int())
 	o.state_machine._change_state(current_state.state_name, current_state.data)
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
@@ -128,15 +144,20 @@ func copy_to(o: BaseObj):
 #	o.combo_count = combo_count
 #	o.invulnerable = invulnerable
 #	o.current_tick = current_tick
+#	if o.has_method("clean_parried_hitboxes"):
+#		o.clean_parried_hitboxes()
 	for i in range(hitboxes.size()):
 		o.hitboxes[i].hit_objects = hitboxes[i].hit_objects.duplicate()
 		if hitboxes[i].active:
 			o.hitboxes[i].activate()
+			o.hitboxes[i].tick = hitboxes[i].tick
+			o.hitboxes[i].enabled = hitboxes[i].enabled
 	chara.copy_to(o.chara)
 	o.chara.update_grounded()
 #	o.set_pos(get_pos().x, get_pos().y)
 #	o.set_facing(get_facing_int())
 	o.update_data()
+	o.chara.set_facing(get_facing_int())
 
 func get_frames():
 	return ReplayManager.frames[id]
@@ -144,6 +165,7 @@ func get_frames():
 func stop_particles():
 	for particle in particles.get_children():
 		particle.stop_emitting()
+	pass
 
 func update_data():
 	data = get_data()
@@ -152,26 +174,56 @@ func update_data():
 		"state": state_machine.state.state_name,
 		"frame": state_machine.state.current_tick,
 	}
+	update_collision_boxes()
+
+func obj_local_pos(obj: BaseObj):
+	update_data()
+	var pos = get_pos()
+	obj.update_data()
+	var o_pos = obj.get_pos()
+	return {
+		"x": o_pos.x - pos.x,
+		"y": o_pos.y - pos.y,
+	}
+
+func obj_local_center(obj: BaseObj):
+	update_data()
+	var pos = get_hurtbox_center()
+	obj.update_data()
+	var o_pos = obj.get_hurtbox_center()
+	return {
+		"x": o_pos.x - pos.x,
+		"y": o_pos.y - pos.y,
+	}
 
 func get_facing():
 	return chara.get_facing().keys()[0]
 
-func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true):
+func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = projectile.instance()
-#	obj.obj_name = str(objs_map.size() + 1)
+	obj.creator_name = obj_name
+#	obj.obj_name = str(objs_map.size() + 1)r
 	obj.objs_map = objs_map
+	obj.is_ghost = is_ghost
 	obj.obj_name = str(objs_map.size() + 1)
-	add_child(obj)
+	obj.spawn_data = data
+#	add_child(obj)
 	var pos = get_pos()
-	obj.set_pos(pos.x + pos_x * (get_facing_int() if relative else 1), pos.y + pos_y)
+	if local:
+		obj.set_pos(pos.x + pos_x * (get_facing_int() if relative else 1), pos.y + pos_y)
+	else:
+		obj.set_pos(pos_x, pos_y)
 	obj.set_facing(get_facing_int())
 	obj.stage_width = stage_width
 	obj.id = id
 	
-	remove_child(obj)
+#	remove_child(obj)
 	obj.obj_name = str(objs_map.size() + 1)
 	emit_signal("object_spawned", obj)
 	return obj
+
+func get_hurtbox_center():
+	return hurtbox.get_center()
 
 func start_projectile_invulnerability():
 	projectile_invulnerable = true
@@ -188,6 +240,21 @@ func end_invulnerability():
 func spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vector2.RIGHT):
 	if ReplayManager.resimulating:
 		return
+	if !initialized:
+		yield(self, "initialized")
+	call_deferred("_spawn_particle_effect", particle_effect, pos, dir)
+	
+func spawn_particle_effect_relative(particle_effect: PackedScene, pos: Vector2 = Vector2(), dir= Vector2.RIGHT):
+	if ReplayManager.resimulating:
+		return
+	if !initialized:
+		yield(self, "initialized")
+	var p = get_pos_visual()
+	pos.x *= get_facing_int()
+	call_deferred("_spawn_particle_effect", particle_effect, pos + p, dir)
+
+
+func _spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vector2.RIGHT):
 	var obj = particle_effect.instance()
 	add_child(obj)
 	obj.tick()
@@ -202,15 +269,23 @@ func spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vect
 
 	emit_signal("particle_effect_spawned", obj)
 	return obj
-	
+
+func get_camera():
+	return get_tree().get_nodes_in_group("Camera")[0] if !is_ghost else null
+
 func update_collision_boxes():
 	var pos = get_pos()
 	collision_box.update_position(pos.x, pos.y)
 	hurtbox.update_position(pos.x, pos.y)
 
 func set_facing(facing: int):
+	if facing != 1 and facing != -1:
+		facing = 1
 	chara.set_facing(facing)
-	flip.scale.x = -1 if facing < 0 else 1
+	if is_instance_valid(flip):
+		flip.scale.x = -1 if facing < 0 else 1
+	if initialized:
+		update_data()
 
 func set_vel(x, y):
 	check_params(x, y)
@@ -272,6 +347,9 @@ func apply_forces():
 func apply_forces_no_limit():
 	chara.apply_forces_no_limit()
 
+func apply_grav_custom(grav: String, fall_speed: String):
+	chara.apply_grav_custom(grav, fall_speed)
+
 func apply_grav():
 	chara.apply_grav()
 
@@ -280,6 +358,15 @@ func apply_fric():
 
 func apply_full_fric(fric):
 	chara.apply_full_fric(fric)
+	
+func apply_y_fric(fric):
+	chara.apply_y_fric(fric)
+
+func get_object_dir(obj):
+	var dir = Utils.int_sign(obj.get_pos().x - get_pos().x)
+	if dir == 0:
+		return get_facing_int()
+	return dir
 
 func move_directly(x, y):
 	check_params(x, y)
@@ -329,7 +416,7 @@ func update_grounded():
 	chara.update_grounded()
 
 func hit_by(hitbox: Hitbox):
-	pass
+	emit_signal("got_hit")
 
 func get_pos():
 	return {
@@ -372,8 +459,8 @@ func tick():
 	else:
 		normal_tick()
 	
-	for particle in particles.get_children():
-		particle.tick()
+#	for particle in particles.get_children():
+#		particle.tick()
 	update_collision_boxes()
 
 func state_tick():

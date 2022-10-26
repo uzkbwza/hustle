@@ -1,6 +1,7 @@
 extends CharacterState
 
-const MOMENTUM_REDUCTION = "0.75"
+const MOMENTUM_REDUCTION_X = "0.75"
+const MOMENTUM_REDUCTION_Y = "0.25"
 
 export(PackedScene) var projectile
 export var projectile_x = 16
@@ -14,22 +15,21 @@ var projectile_spawned = false
 
 func _enter():
 	var vel = host.get_vel()
-	var new_vel = fixed.mul(vel.x, MOMENTUM_REDUCTION)
-	host.set_vel(new_vel, "0")
+	var new_vel_x = fixed.mul(vel.x, MOMENTUM_REDUCTION_X)
+	var new_vel_y = fixed.mul(vel.y, MOMENTUM_REDUCTION_Y)
+	host.set_vel(new_vel_x, new_vel_y)
 	if data:
 		speed_modifier = fixed.round(fixed.mul(fixed.sub(fixed.div(str(data.x), "100"), "0.5"), speed_modifier_amount))
 	projectile_spawned = false
 
-func _frame_12():
+func _frame_8():
+#	host.update_facing()
 	projectile_spawned = true
-	var object = host.spawn_object(projectile, projectile_x, projectile_y)
+	var object = host.spawn_object(projectile, projectile_x, projectile_y, true, {"speed_modifier": speed_modifier})
 	var obj_state = object.state_machine.get_state("Default")
-	obj_state.data = {"speed_modifier": speed_modifier}
-
 	if air_type == AirType.Grounded:
 		host.apply_force_relative(push_back_amount, "0")
-		
-	
+
 func _tick():
 	host.apply_fric()
 	host.apply_forces()

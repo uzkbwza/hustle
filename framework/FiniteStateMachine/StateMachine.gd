@@ -71,9 +71,11 @@ func _enter_tree():
 #
 #	initialized = true
 
-func init(st: String = "") -> bool:
+func init(st: String = "", data=null) -> bool:
 	if !is_ready:
 		yield(self, "ready")
+	if initialized:
+		return
 	if starting_state:
 		st = starting_state
 	var can_initialize = false
@@ -105,9 +107,9 @@ func init(st: String = "") -> bool:
 		a.connect("animation_finished", self, "auto_transition")
 
 	if st != "":
-		_change_state(states_map[st].get_name())
+		_change_state(states_map[st].get_name(), data)
 	else:
-		_change_state(states_array[0].get_name())
+		_change_state(states_array[0].get_name(), data)
 	initialized = true
 	return true
 

@@ -11,7 +11,7 @@ free = false
 one_shot = false
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="0"]
-amount = 128
+amount = 64
 lifetime = 2.0
 lifetime_randomness = 1.0
 local_coords = false
@@ -21,7 +21,6 @@ emission_sphere_radius = 8.0
 spread = 19.56
 gravity = Vector2( 0, 0 )
 initial_velocity = 37.43
-scale_amount = 2.29
+scale_amount = 0.65
 scale_amount_random = 1.0
 scale_amount_curve = SubResource( 1 )
-color = Color( 1, 0.2, 0.239216, 1 )

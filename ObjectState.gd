@@ -5,12 +5,17 @@ class_name ObjectState
 signal state_started()
 signal state_ended()
 
-export var fallback_state = "Wait"
+export var _c_Physics = 0
+export var apply_forces = false
+export var apply_fric = false
+export var apply_grav = false
 
 export var _c_Animation_and_Length = 0
+export var fallback_state = "Wait"
 export var sprite_animation = ""
 export var anim_length = 1
 export var sprite_anim_length = -1
+export var ticks_per_frame = 1
 export var loop_animation = false
 export var endless = false
 
@@ -25,6 +30,12 @@ export var enter_force_dir_x = "0.0"
 export var enter_force_dir_y = "0.0"
 export var enter_force_speed = "0.0"
 export var reset_momentum = false
+
+export var _c_Particles = 0
+export(PackedScene) var particle_scene = null
+export var particle_position = Vector2()
+export var spawn_particle_on_enter = false
+
 
 var current_tick = -1
 var fixed
@@ -58,6 +69,10 @@ func get_active_hitboxes():
 	return hitboxes
 
 func _tick_shared():
+	if current_tick == 0:
+		if spawn_particle_on_enter and particle_scene:
+			spawn_particle_relative(particle_scene, particle_position)
+		apply_enter_force()
 	if current_tick < anim_length or endless:
 		current_tick += 1
 		update_sprite_frame()
@@ -89,11 +104,26 @@ func _tick_shared():
 				call(method_name)
 				frame_methods.append(current_tick)
 			new_max = false
+	if apply_fric:
+		host.apply_fric()
+	if apply_grav:
+		host.apply_grav()
+	if apply_forces:
+		host.apply_forces()
 
 func _tick_after():
 	for hitbox in get_active_hitboxes():
 		var pos = host.get_pos()
 		hitbox.update_position(pos.x, pos.y)
+
+func copy_data():
+	var d = null
+	if data:
+		if data is Dictionary or data is Array:
+			d = data.duplicate()
+		else:
+			d = data
+	return d
 
 func copy_to(state: ObjectState):
 	var properties = get_script().get_script_property_list()
@@ -102,12 +132,7 @@ func copy_to(state: ObjectState):
 		if not (value is Object or value is Array or value is Dictionary):
 			if value:
 				state.set(variable.name, value)
-		if data:
-			if data is Dictionary or data is Array:
-				state.data = data.duplicate()
-			else:
-				state.data = data
-	pass
+	state.data = copy_data()
 
 func activate_hitbox(hitbox):
 	hitbox.activate()
@@ -148,17 +173,29 @@ func setup_hitboxes():
 				else:
 					hitbox_start_frames[hitbox.start_tick] = [hitbox]
 			hitbox.connect("hit_something", self, "__on_hit_something")
+			hitbox.connect("got_parried", self, "__on_got_parried")
 		for hitbox2 in hitboxes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)
+
 func __on_hit_something(obj, hitbox):
 	if active:
 		_on_hit_something(obj, hitbox)
 
+func __on_got_parried():
+	if active:
+		_got_parried()
+
+func _got_parried():
+	pass
+
+func spawn_particle_relative(scene: PackedScene, pos=Vector2(), dir=Vector2.RIGHT):
+	var p = host.get_pos_visual()
+	host.spawn_particle_effect(scene, p + pos, dir)
+
 func _enter_shared():
 	if reset_momentum:
 		host.reset_momentum()
-	apply_enter_force()
 	current_tick = -1
 	emit_signal("state_started")
 	
@@ -171,6 +208,7 @@ func update_sprite_frame():
 	if host.sprite.animation != anim_name:
 		host.sprite.animation = anim_name
 		host.sprite.frame = 0
+	var sprite_tick = current_tick / ticks_per_frame
 #	var frame = host.fixed.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
-	var frame = (current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length)
+	var frame = (sprite_tick % sprite_anim_length) if loop_animation else Utils.int_min(sprite_tick, sprite_anim_length)
 	host.sprite.frame = frame

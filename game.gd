@@ -25,8 +25,6 @@ var p2_data
 var p1_turn = false
 var p2_turn = false
 
-onready var p1 = $"%P1"
-onready var p2 = $"%P2"
 onready var camera = $Camera2D
 onready var objects_node = $Objects
 onready var fx_node = $Fx
@@ -47,8 +45,12 @@ var ghost_cleaned = true
 
 var is_ghost = false
 var ghost_hidden = false
-
 var ghost_game
+var ghost_speed = 3
+var ghost_tick = 0
+
+var p1 = null
+var p2 = null
 
 var snapping_camera = false 
 var waiting_for_player_prev = false
@@ -65,10 +67,6 @@ func get_ticks_left():
 	return time - Utils.int_min(current_tick, time)
 
 func _ready():
-	p1.connect("undo", self, "set", ["undoing", true])
-	p2.connect("undo", self, "set", ["undoing", true])
-	connect_signals(p1)
-	connect_signals(p2)
 	camera.limit_left = -stage_width - 20
 	camera.limit_right = stage_width + 20
 	if is_ghost:
@@ -77,15 +75,8 @@ func _ready():
 			object.free()
 		for fx in fx_node.get_children():
 			fx.free()
-	if !is_ghost:
+	else:
 		emit_signal("simulation_continue")
-	
-	objs_map = {
-		"P1": p1,
-		"P2": p2,
-	}
-	p1.objs_map = objs_map
-	p2.objs_map = objs_map
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
@@ -97,11 +88,16 @@ func copy_to(game: Game):
 	clean_objects()
 	for object in game.objects:
 		object.free()
+	for fx in game.effects:
+		fx.free()
 	for object in objects:
-		if is_instance_valid(object) and !object.disabled:
-			var new_obj = load(object.filename).instance()
-			game.on_object_spawned(new_obj)
-			object.copy_to(new_obj)
+		if is_instance_valid(object):
+			if !object.disabled:
+				var new_obj = load(object.filename).instance()
+				game.on_object_spawned(new_obj)
+				object.copy_to(new_obj)
+			else:
+				game.objs_map[game.objs_map.size() + 1] = null
 
 func get_screen_position(player_id):
 	var screen_center = camera.get_camera_screen_center()
@@ -128,7 +124,10 @@ func on_object_spawned(obj: BaseObj):
 	objects_node.add_child(obj)
 	obj.obj_name = str(objs_map.size() + 1)
 	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
+	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
+	for particle in obj.particles.get_children():
+		effects.append(particle)
 	connect_signals(obj)
 
 func _on_fx_exit_tree(fx):
@@ -137,8 +136,30 @@ func _on_fx_exit_tree(fx):
 func _on_obj_exit_tree(obj):
 	objects.erase(obj)
 
-func start_game(singleplayer: bool):
-
+func start_game(singleplayer: bool, match_data: Dictionary):
+	p1 = load(match_data.selected_characters[1]["filename"]).instance()
+	p2 = load(match_data.selected_characters[2]["filename"]).instance()
+	p1.name = "P1"
+	p2.name = "P2"
+	p1.modulate = Color("aca2ff")
+	p2.modulate = Color("ff7a81")
+	p2.id = 2
+	p1.is_ghost = is_ghost
+	p2.is_ghost = is_ghost
+	$Players.add_child(p1)
+	$Players.add_child(p2)
+	p1.init()
+	p2.init()
+	p1.connect("undo", self, "set", ["undoing", true])
+	p2.connect("undo", self, "set", ["undoing", true])
+	connect_signals(p1)
+	connect_signals(p2)
+	objs_map = {
+		"P1": p1,
+		"P2": p2,
+	}
+	p1.objs_map = objs_map
+	p2.objs_map = objs_map
 	snapping_camera = true
 	self.singleplayer = singleplayer
 	current_tick = -1
@@ -152,11 +173,6 @@ func start_game(singleplayer: bool):
 		pass
 	elif !is_ghost:
 		Network.game = self
-	if is_ghost:
-		p1.is_ghost = true
-		p2.is_ghost = true
-	p1.init()
-	p2.init()
 	p1.set_pos(-char_distance, 0)
 	p2.set_pos(char_distance, 0)
 	
@@ -201,33 +217,48 @@ func clean_objects():
 	for object in invalid_objects:
 		objects.erase(object)
 
+func initialize_objects():
+	for object in objects:
+		if !object.initialized:
+			object.init()
+
 func tick():
 	if !singleplayer:
 		if !is_ghost:
 			Network.reset_action_inputs()
 	clean_objects()
 	for object in objects:
-#		if object.disabled:
-#			continue
+		if object.disabled:
+			continue
+		if !object.initialized:
+			object.init()
 		object.tick()
+	
 	for fx in effects:
 		fx.tick()
+
 	current_tick += 1
 	p1.current_tick = current_tick
 	p2.current_tick = current_tick
 	p1.tick()
 	p2.tick()
+	initialize_objects()
 	p1_data = p1.data
 	p2_data = p2.data
 	resolve_collisions()
 	apply_hitboxes()
 	p1_data = p1.data
 	p2_data = p2.data
+	if p1.state_interruptable and !p1.busy_interrupt:
+		p2.reset_combo()
+	if p2.state_interruptable and !p2.busy_interrupt:
+		p1.reset_combo()
 	if is_ghost:
 		if !ghost_hidden:
 			if !visible and current_tick >= 0:
 				show()
 		return
+
 	if !game_finished:
 		if ReplayManager.playback:
 			if !ReplayManager.resimulating:
@@ -240,10 +271,7 @@ func tick():
 					camera.reset_shake()
 	if should_game_end():
 		end_game()
-	if p1.state_interruptable and !p1.busy_interrupt:
-		p2.reset_combo()
-	if p2.state_interruptable and !p2.busy_interrupt:
-		p1.reset_combo()
+
 
 func int_abs(n: int):
 	if n < 0:
@@ -406,7 +434,7 @@ func apply_hitboxes():
 			p = p1
 
 		if p:
-			if p.projectile_invulnerable:
+			if p.projectile_invulnerable and object.get("immunity_susceptible"):
 				continue
 			var hitboxes = object.get_active_hitboxes()
 			p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
@@ -488,13 +516,7 @@ func end_game():
 	p2.game_over = true
 	emit_signal("game_ended")
 
-func _process(delta):
-	update()
-	if !is_ghost:
-		if Input.is_action_just_pressed("playback"):
-			if !game_finished and singleplayer and !ReplayManager.playback:
-				if is_waiting_on_player() and current_tick > 0:
-					buffer_playback = true
+
 
 func process_tick():
 	if !ReplayManager.playback:
@@ -514,7 +536,6 @@ func process_tick():
 					emit_signal("player_actionable")
 				elif !is_ghost:
 					Network.rpc("end_turn_simulation", current_tick, Network.player_id)
-
 			elif p2.state_interruptable and !p2_turn:
 				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
 				p1.state_interruptable = true
@@ -532,6 +553,13 @@ func process_tick():
 #				camera.reset_smoothing()
 		else:
 			call_deferred("simulate_one_tick")
+func _process(delta):
+	update()
+	if !is_ghost:
+		if Input.is_action_just_pressed("playback"):
+			if !game_finished and singleplayer and !ReplayManager.playback:
+				if is_waiting_on_player() and current_tick > 0:
+					buffer_playback = true
 
 func _physics_process(_delta):
 	if undoing:
@@ -547,9 +575,18 @@ func _physics_process(_delta):
 			if current_tick >= game_end_tick + 120:
 				start_playback()
 	else:
-		call_deferred("simulate_one_tick")
-		if current_tick > GHOST_FRAMES:
-			emit_signal("ghost_finished")
+		var simulate_frames = 1
+		if ghost_speed == 1:
+			simulate_frames = 1 if ghost_tick % 4 == 0 else 0
+		if ghost_speed == 3:
+			simulate_frames = 4
+		for i in range(simulate_frames):
+			call_deferred("simulate_one_tick")
+			if current_tick > GHOST_FRAMES:
+				emit_signal("ghost_finished")
+		ghost_tick += 1
+		p1.set_ghost_colors()
+		p2.set_ghost_colors()
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")
@@ -588,21 +625,21 @@ func _unhandled_input(event: InputEvent):
 	if camera.global_position.x < camera.limit_left + get_viewport_rect().size.x/2:
 		camera.global_position.x = camera.limit_left + get_viewport_rect().size.x/2
 
-
 func _draw():
 	if is_ghost:
 		return
 	if !snapping_camera:
 		draw_circle(camera.position, 3, Color.white * 0.5)
-	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), Color.black, 2.0)
-	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), Color.black, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), Color.black, 2.0)
-	var line_dist = 100
+	var line_color = Color.white
+	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
+	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), line_color, 2.0)
+	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), line_color, 2.0)
+	var line_dist = 10
 	var num_lines = stage_width * 2 / line_dist
 	for i in range(num_lines):
 		var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
-		draw_line(Vector2(x, 0), Vector2(x, 1000), Color.black, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, 1000), Color.black, 2.0)
+		draw_line(Vector2(x, 0), Vector2(x, 10), line_color, 2.0)
+	draw_line(Vector2(stage_width, 0), Vector2(stage_width, 10), line_color, 2.0)
 
 func show_state():
 	p1.position = p1.get_pos_visual()

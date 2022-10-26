@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/smoke-sheet.png" type="Texture" id=2]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0.530682 ), 0.0, 0.0, 0, 0, Vector2( 0.264957, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="KnockbackSmoke" instance=ExtResource( 1 )]
+z_index = -2
+
+[node name="Particles" type="CPUParticles2D" parent="." index="1"]
+material = SubResource( 1 )
+amount = 2
+explosiveness = 0.93
+randomness = 1.0
+lifetime_randomness = 0.2
+fixed_fps = 60
+fract_delta = false
+draw_order = 1
+texture = ExtResource( 2 )
+emission_shape = 1
+emission_sphere_radius = 8.0
+gravity = Vector2( 0, 0 )
+scale_amount = 0.18
+scale_amount_random = 0.46
+scale_amount_curve = SubResource( 2 )
+anim_speed = 6.62
+anim_speed_random = 0.6

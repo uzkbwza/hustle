@@ -31,17 +31,21 @@ func any_buttons_visible():
 			return true
 	return false
 
-func _process(_delta):
+#func _process(_delta):
 #	if visible:
 #		snap_to_boundaries()
-	if action_data_panel_container.visible and game:
-		var screen_pos = game.get_screen_position(player_id)
-		var center_pos = get_viewport_rect().size/2 - action_data_panel_container.rect_size/2
-		action_data_panel_container.rect_global_position = screen_pos + center_pos
-		if active_button and active_button.data_node:
-			action_data_panel_container.rect_global_position += active_button.data_node.display_offset
-		action_data_panel_container.raise()
-		pass
+#	if action_data_panel_container.visible and game:
+#		snap_action_data_to_player()
+#		action_data_panel_container.rect_global_position
+#		pass
+#
+#func snap_action_data_to_player():
+#	var screen_pos = game.get_screen_position(player_id)
+#	var center_pos = get_viewport_rect().size/2 - action_data_panel_container.rect_size/2
+#	action_data_panel_container.rect_global_position = screen_pos + center_pos
+#	if active_button and active_button.data_node:
+#		action_data_panel_container.rect_global_position += active_button.data_node.display_offset
+#	action_data_panel_container.raise()
 
 func add_button(button):
 	$"%ButtonContainer".add_child(button)
@@ -78,9 +82,9 @@ func show_data_container():
 	
 func hide_data_container():
 	$"%ActionDataPanelContainer".hide()
-
-func add_data_node(node):
-	action_data_container.add_child(node)
+#
+#func add_data_node(node):
+#	action_data_container.add_child(node)
 
 #func snap_to_boundaries():
 #	var viewport_size = get_viewport_rect().size

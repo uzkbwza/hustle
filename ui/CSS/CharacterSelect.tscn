@@ -1,8 +1,93 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+[ext_resource path="res://ui/CSS/CharacterButton.tscn" type="PackedScene" id=3]
+[ext_resource path="res://characters/swordandgun/SwordGuy.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/CSS/CharacterDisplay.tscn" type="PackedScene" id=5]
+[ext_resource path="res://characters/wizard/Wizard.tscn" type="PackedScene" id=6]
 
 [node name="CharacterSelect" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 2 )
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CharacterButtonContainer" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -194.0
+margin_top = -30.0
+margin_right = 194.0
+margin_bottom = 30.0
+alignment = 1
+
+[node name="CharacterButton" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+margin_left = 103.0
+margin_right = 163.0
+text = "ninja guy"
+
+[node name="CharacterButton2" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+margin_left = 164.0
+margin_right = 224.0
+text = "sword guy"
+character_scene = ExtResource( 4 )
+
+[node name="CharacterButton3" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+margin_left = 225.0
+margin_right = 285.0
+text = "wizard"
+character_scene = ExtResource( 6 )
+
+[node name="GoButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -40.0
+margin_top = 74.0
+margin_right = 40.0
+margin_bottom = 102.0
+disabled = true
+text = "GO"
+
+[node name="SelectingLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -50.0
+margin_top = 8.0
+margin_right = 50.0
+margin_bottom = 19.0
+text = "P1 SELECTING"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="P1Display" parent="HBoxContainer" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+mouse_filter = 2
+
+[node name="Control2" type="Control" parent="HBoxContainer"]
+margin_left = 213.0
+margin_right = 426.0
+margin_bottom = 360.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="P2Display" parent="HBoxContainer" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 427.0
+margin_right = 640.0
+mouse_filter = 2
+player_id = 2

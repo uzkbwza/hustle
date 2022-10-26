@@ -1,0 +1,44 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb1.png" type="Texture" id=3]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb7.png" type="Texture" id=4]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb6.png" type="Texture" id=5]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb3.png" type="Texture" id=6]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb4.png" type="Texture" id=7]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb5.png" type="Texture" id=8]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb2.png" type="Texture" id=9]
+[ext_resource path="res://characters/wizard/projectiles/orb/states/Default.gd" type="Script" id=10]
+[ext_resource path="res://characters/wizard/projectiles/orb/OrbParticle.tscn" type="PackedScene" id=11]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "Orb",
+"speed": 5.0
+} ]
+
+[node name="Orb" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+extra_state_variables = "locked
+triggered_attacks"
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Orb"
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 11 )]
+z_index = -1
+
+[node name="Hurtbox" parent="." index="2"]
+width = 9
+height = 9
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 10 )
+sprite_animation = "Orb"
+ticks_per_frame = 4
+loop_animation = true
+LIFETIME = 3000

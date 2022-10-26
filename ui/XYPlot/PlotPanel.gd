@@ -1,6 +1,6 @@
 extends Control
 
-const SNAP_AMOUNT = 0.15
+const SNAP_AMOUNT = 0.1
 
 signal data_changed()
 
@@ -12,8 +12,12 @@ var mpos = Vector2()
 var x_value_float = 0.0
 var y_value_float = 0.0
 
+var buffer_update = false
+var buffer_changed = false
+
 func init():
-	call_deferred("update_value", Vector2())
+	call_deferred("update_value", parent.get_default_value())
+	emit_signal("data_changed")
 
 func _ready():
 	rect_size.y = rect_size.x
@@ -42,6 +46,9 @@ func _input(event: InputEvent):
 				mouse_clicked = true
 			else:
 				mouse_clicked = false
+				if buffer_update:
+					buffer_changed = true
+					buffer_update = false
 		if event.button_index == BUTTON_RIGHT:
 			if event.pressed:
 				if mouse_over:
@@ -51,7 +58,7 @@ func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
 
 func update_value(p=null):
-	emit_signal("data_changed")
+	buffer_update = true
 	mpos = get_local_mouse_position()
 	var point
 	if p == null:
@@ -77,24 +84,25 @@ func update_value(p=null):
 
 		if abs(closest) > parent.limit_range / 2:
 			var real_point = point
-			point = point.rotated(closest).rotated((parent.limit_range / 2) * sign(-closest))
+			point = point.rotated(closest).rotated((parent.limit_range / 2) * Utils.int_sign(-closest))
 			angle = point.angle()
 			point = point.normalized() * point.length()
 	
-	if point.length() >= (rect_size.x / 2) - SNAP_AMOUNT * (rect_size.x / 2):
-		point = point.normalized() * (rect_size.x / 2)
-	
-	for i in range(8):
-		var snap_angle = (TAU / 8) * i
-		var angle_diff = Utils.angle_diff(angle, snap_angle)
-		if abs(angle_diff) < SNAP_AMOUNT:
-			point = Utils.ang2vec(snap_angle) * point.length()
-	
-	if parent.limit_angle:
-		var snap_angle = parent.limit_center
-		var angle_diff = Utils.angle_diff(angle, snap_angle)
-		if abs(angle_diff) < SNAP_AMOUNT:
-			point = Utils.ang2vec(snap_angle) * point.length()
+	if parent.snap:
+		if point.length() >= (rect_size.x / 2) - SNAP_AMOUNT * (rect_size.x / 2):
+			point = point.normalized() * (rect_size.x / 2)
+		
+		for i in range(8):
+			var snap_angle = (TAU / 8) * i
+			var angle_diff = Utils.angle_diff(angle, snap_angle)
+			if abs(angle_diff) < SNAP_AMOUNT:
+				point = Utils.ang2vec(snap_angle) * point.length()
+		
+		if parent.limit_angle:
+			var snap_angle = parent.limit_center
+			var angle_diff = Utils.angle_diff(angle, snap_angle)
+			if abs(angle_diff) < SNAP_AMOUNT:
+				point = Utils.ang2vec(snap_angle) * point.length()
 	
 	if parent.always_max:
 		point = point.normalized() * (rect_size.x / 2)
@@ -112,6 +120,9 @@ func update_value(p=null):
 func _process(_delta):
 	if mouse_over and mouse_clicked:
 		update_value()
+	if buffer_changed:
+		buffer_changed = false
+		call_deferred("emit_signal", "data_changed")
 
 func get_value():
 	var values = {
@@ -125,7 +136,7 @@ func _draw():
 	var values = get_value()
 	var pos = midpoint + Vector2((values.x / float(parent.range_)) * rect_size.x / 2, (values.y / float(parent.range_)) * rect_size.y / 2).round()
 	var bg_color = Color.black
-	bg_color.a = 0.05
+	bg_color.a = 0.85
 	var bg_line_color = Color.white
 	var limit_color = Color.red
 	var limit_bg_color = limit_color

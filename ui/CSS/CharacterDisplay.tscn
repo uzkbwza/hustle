@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/CSS/CharacterDisplay.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+
+[node name="Control" type="VBoxContainer"]
+margin_right = 212.0
+margin_bottom = 360.0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="PlayerLabel" type="Label" parent="."]
+unique_name_in_owner = true
+margin_top = 168.0
+margin_right = 212.0
+margin_bottom = 179.0
+text = "P1"
+align = 1
+
+[node name="CharacterLabel" type="Label" parent="."]
+unique_name_in_owner = true
+margin_top = 180.0
+margin_right = 212.0
+margin_bottom = 191.0
+align = 1

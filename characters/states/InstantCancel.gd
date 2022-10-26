@@ -1,6 +1,7 @@
 extends SuperMove
 
 func _enter():
+	spawn_particle_relative(preload("res://fx/InstantCancelEffect.tscn"), Vector2(0, -16))
 	pass
 
 func _tick():

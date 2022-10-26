@@ -16,41 +16,41 @@ script = ExtResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 4.0
-margin_right = 1916.0
-margin_bottom = 1076.0
+margin_right = 636.0
+margin_bottom = 356.0
 
 [node name="TopBar" type="Panel" parent="VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 1912.0
+margin_right = 632.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 34.0
-margin_right = 1912.0
-margin_bottom = 1076.0
+margin_right = 632.0
+margin_bottom = 356.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Control" type="Panel" parent="VBoxContainer/HBoxContainer"]
 margin_right = 300.0
-margin_bottom = 1042.0
+margin_bottom = 322.0
 rect_min_size = Vector2( 300, 0 )
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 margin_left = 304.0
-margin_right = 1912.0
-margin_bottom = 1042.0
+margin_right = 632.0
+margin_bottom = 322.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-margin_right = 1608.0
+margin_right = 328.0
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 4.0
-margin_right = 1608.0
-margin_bottom = 738.0
+margin_right = 328.0
+margin_bottom = 18.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -59,10 +59,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="Anchor" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer/Control/CenterContainer"]
-margin_left = 804.0
-margin_top = 367.0
-margin_right = 804.0
-margin_bottom = 367.0
+margin_left = 164.0
+margin_top = 7.0
+margin_right = 164.0
+margin_bottom = 7.0
 
 [node name="Character" type="Node2D" parent="VBoxContainer/HBoxContainer/VBoxContainer/Control/CenterContainer/Anchor"]
 
@@ -74,9 +74,9 @@ texture = ExtResource( 3 )
 texture = ExtResource( 2 )
 
 [node name="Panel" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-margin_top = 742.0
-margin_right = 1608.0
-margin_bottom = 1042.0
+margin_top = 22.0
+margin_right = 328.0
+margin_bottom = 322.0
 rect_min_size = Vector2( 0, 300 )
 size_flags_horizontal = 3
 
@@ -86,13 +86,13 @@ anchor_bottom = 1.0
 
 [node name="AnimationBar" type="Panel" parent="VBoxContainer/HBoxContainer/VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 1608.0
+margin_right = 328.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 
 [node name="AnimationEditor" type="Panel" parent="VBoxContainer/HBoxContainer/VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 34.0
-margin_right = 1608.0
+margin_right = 328.0
 margin_bottom = 300.0
 size_flags_vertical = 3

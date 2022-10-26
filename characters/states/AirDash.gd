@@ -8,6 +8,9 @@ export var dir_y = "-5.0"
 export var speed = "2.0"
 export var fric = "0.05"
 
+func _frame_1():
+	spawn_particle_relative(preload("res://fx/DashParticle.tscn"), Vector2(0, -16), Vector2(data.x, data.y))
+
 func _enter():
 	var force = xy_to_dir(data.x, data.y, speed)
 	if "-" in force.x:

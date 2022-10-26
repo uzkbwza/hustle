@@ -20,9 +20,12 @@ export var aerial_hit_state = "HurtAerial"
 export var grounded_hit_state = "HurtGrounded"
 export var damage = 10
 export var reverse = false
+export var disable_collision = true
+export var ground_bounce = true
 
 var hit_height = Hitbox.HitHeight.Mid
 var hitlag_ticks = 0
+var victim_hitlag = 0
 var throw = true
 
 func _enter_shared():

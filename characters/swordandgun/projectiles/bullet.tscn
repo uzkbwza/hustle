@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/swordandgun/projectiles/states/BulletDefault.gd" type="Script" id=2]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Bullet" instance=ExtResource( 1 )]
+z_index = -2
+
+[node name="Sprite" parent="Flip" index="0"]
+visible = false
+frames = SubResource( 1 )
+offset = Vector2( 512, 0 )
+
+[node name="CollisionBox" parent="." index="1"]
+width = 0
+height = 0
+
+[node name="Hurtbox" parent="." index="2"]
+width = 0
+height = 0
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 2 )
+sprite_animation = ""
+anim_length = 10
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 3 )
+width = 12
+height = 12
+damage = 100
+hitstun_ticks = 25
+victim_hitlag = 4
+screenshake_amount = 7
+dir_y = "-0.25"
+knockback = "12.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+start_tick = 1
+active_ticks = 2

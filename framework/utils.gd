@@ -25,8 +25,25 @@ static func int_abs(n: int):
 		n *= -1
 	return n
 
+static func int_sign(n: int):
+	if n == 0:
+		return 0
+	if n < 0:
+		return -1
+	return 1
+
 static func frames(n, fps=60):
 	return (n / float(fps))
+
+static func split_lines(string):
+	if !string:
+		return []
+	var lines = []
+	for s in string.split("\n"):
+		var line = s.strip_edges()
+		if line:
+			lines.append(line)
+	return lines
 
 static func int_clamp(n: int, min_: int, max_: int):
 	if n > min_ and n < max_:

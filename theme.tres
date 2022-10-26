@@ -1,9 +1,11 @@
-[gd_resource type="Theme" load_steps=21 format=2]
+[gd_resource type="Theme" load_steps=23 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
 [ext_resource path="res://ui/checkbutton1.png" type="Texture" id=3]
 [ext_resource path="res://ui/checkbutton2.png" type="Texture" id=4]
+[ext_resource path="res://ui/checkbutton3.png" type="Texture" id=5]
+[ext_resource path="res://ui/checkbutton4.png" type="Texture" id=6]
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
@@ -105,7 +107,9 @@ Button/styles/hover = SubResource( 11 )
 Button/styles/normal = SubResource( 3 )
 Button/styles/pressed = SubResource( 8 )
 CheckButton/icons/off = ExtResource( 3 )
+CheckButton/icons/off_disabled = ExtResource( 5 )
 CheckButton/icons/on = ExtResource( 4 )
+CheckButton/icons/on_disabled = ExtResource( 6 )
 HBoxContainer/constants/separation = 1
 HSlider/icons/grabber = ExtResource( 2 )
 HSlider/icons/grabber_disabled = ExtResource( 2 )

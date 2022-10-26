@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://characters/stickman/sprites/summon_throw2.png" type="Texture" id=1]
+[ext_resource path="res://characters/stickman/sprites/summon_throw1.png" type="Texture" id=2]
+[ext_resource path="res://characters/stickman/sprites/summon_throw4.png" type="Texture" id=3]
+[ext_resource path="res://characters/stickman/sprites/summon_throw3.png" type="Texture" id=4]
+[ext_resource path="res://characters/stickman/projectiles/fireball_states/StickmanSummonKunai.gd" type="Script" id=5]
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=6]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 1 ), ExtResource( 1 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 3 ) ],
+"loop": false,
+"name": "Default",
+"speed": 60.0
+} ]
+
+[node name="StickmanSummon" instance=ExtResource( 6 )]
+z_index = -1
+gravity = "0.57"
+
+[node name="Sprite" parent="Flip" index="0"]
+modulate = Color( 1, 1, 1, 0.92549 )
+frames = SubResource( 1 )
+animation = "Default"
+frame = 25
+
+[node name="CollisionBox" parent="." index="1"]
+width = 5
+height = 5
+
+[node name="Hurtbox" parent="." index="2"]
+width = 5
+height = 5
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 5 )
+anim_length = 70

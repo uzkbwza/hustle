@@ -1,4 +1,4 @@
-extends VBoxContainer
+extends Control
 
 signal data_changed()
 
@@ -29,6 +29,12 @@ func set_facing(facing: int):
 			child.facing = facing
 			if child.has_method("init"):
 				child.init()
+
+func get_facing():
+	for child in get_children():
+		if child.get("facing"):
+			return child.facing
+	return null
 
 func init():
 	for child in get_children():

@@ -1,6 +1,7 @@
 extends Control
 
 signal action_selected(action, data, extra)
+signal turn_ended()
 signal action_clicked(action, data, extra)
 
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
@@ -12,6 +13,7 @@ const BUTTON_CATEGORY_DISTANCE = 100
 export var player_id = 1
 
 var fighter: Fighter
+var fighter_extra: PlayerExtra
 #onready var button_container = $"%ButtonContainer"
 
 var buttons = []
@@ -21,6 +23,8 @@ var current_button = null
 var current_extra = null
 var current_data = null
 var button_pressed = null
+var any_available_actions = false
+var active = false
 var game
 
 var continue_button
@@ -48,12 +52,17 @@ func _ready():
 	if player_id == 1:
 		$"%BottomRow".alignment = BoxContainer.ALIGN_END
 		$"%TopRow".alignment = BoxContainer.ALIGN_END
+		$"%TopRowDataContainer".move_child($"%DI", 0)
+		$"%TopRowDataContainer".grow_horizontal = Control.GROW_DIRECTION_END
 	else:
 		$"%BottomRow".alignment = BoxContainer.ALIGN_BEGIN
 		$"%TopRow".alignment = BoxContainer.ALIGN_BEGIN
+		$"%TopRowDataContainer".grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	$"%AutoButton".hint_tooltip = "Skips your turn when no actions are available."
+#	$"%ReverseButton".show()
 	$"%DI".hint_tooltip = "Adjusts the angle you are knocked back next time you are hit."
 	$"%DI".connect("data_changed", self, "send_ui_action")
+	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
 	if !player_id == 1:
 		var top_row_items = $"%TopRow".get_children()
 		top_row_items.invert()
@@ -68,6 +77,10 @@ func _on_submit_pressed():
 	if current_action:
 		on_action_submitted(current_action, data)
 
+func timeout():
+	if active:
+		_on_submit_pressed()
+
 func _on_continue_pressed():
 	on_action_submitted("Continue")
 
@@ -79,7 +92,13 @@ func reset():
 		button_category_container.free()
 	for button in buttons:
 		if is_instance_valid(button):
+			if button.data_node:
+				button.data_node.free()
 			button.free()
+	for data in $"%DataContainer".get_children():
+		data.free()
+	if fighter_extra:
+		fighter_extra.free()
 	
 	button_category_containers.clear()
 #	for container in [category_container, action_container, action_data_container]:
@@ -94,31 +113,41 @@ func init(game, id):
 	reset()
 	self.game = game
 	fighter = game.get_player(id)
+	fighter_extra = fighter.player_extra_params_scene.instance()
+	fighter_extra.connect("data_changed", self, "send_ui_action")
+	fighter_extra.set_fighter(fighter)
 	Network.action_button_panels[id] = self
 	buttons = []
-#	for button in button_container.get_children():
+#	for button in button_container.get_children():nudge_button
 #		button.free()
 	var states = []
 	for category in fighter.action_cancels:
 		for state in fighter.action_cancels[category]:
 			if state.show_in_menu and not state in states:
 				states.append(state)
-				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene)
-	nudge_button = create_button("Nudge", "DI", "Defense", NUDGE_SCENE)
+				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene, BUTTON_SCENE, state.button_texture, state.reversible)
+#	nudge_button = create_button("Nudge", "DI", "Defense", NUDGE_SCENE)
 	sort_categories()
 	connect("action_selected", fighter, "on_action_selected")
 	fighter.connect("action_selected", self, "_on_fighter_action_selected")
 	hide()
+	$"%TopRowDataContainer".add_child(fighter_extra)
 	if player_id == 1:
 #		for i in range(button_category_containers.size()):
 #			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
 		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
-	continue_button = create_button("Continue", "Continue", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"))
+		$"%TopRowDataContainer".move_child(fighter_extra, 2)
+	else:
+		$"%TopRowDataContainer".move_child(fighter_extra, 0)
+	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"))
 	continue_button.get_parent().remove_child(continue_button)
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
 	$"%TurnButtons".move_child(continue_button, 1)
-
+	
+#	$"%ReverseButton".show()
+	
+	
 func _on_fighter_action_selected(_action, _data, _extra):
 	hide()
 
@@ -148,11 +177,11 @@ func category_sort_func(a, b):
 	return cat_map[a.label_text] < cat_map[b.label_text]
 #	return false
 
-func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE):
+func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true):
 	var button
 	var data_node
 	button = button_scene.instance()
-	button.setup(name, title)
+	button.setup(name, title, texture)
 	buttons.append(button)
 	
 #	button_container.add_child(button)
@@ -160,10 +189,12 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 		create_category(category)
 	var container = button_category_containers[category]
 	container.add_button(button)
+	button.set_player_id(player_id)
 	if data_scene:
 		data_node = data_scene.instance()
-		container.add_data_node(data_node)
+		$"%DataContainer".add_child(data_node)
 	button.set_data_node(data_node)
+	button.reversible = reversible
 	button.connect("data_changed", self, "send_ui_action")
 	button.container = container
 	button.connect("was_pressed", self, "on_action_selected", [button])
@@ -179,15 +210,28 @@ func create_category(category):
 	$"%CategoryContainer".add_child(scene)
 
 func send_ui_action(action=null):
+	current_extra = get_extra()
 	if game == null:
 		return
 	if action == null:
 		action = current_action
 	if !button_pressed:
 		action = "Continue"
+	if current_button:
+		if current_button.data_node:
+#			button.data_node.show()
+			var dir = fighter.get_opponent_dir()
+			if current_extra and current_extra.has("reverse") and current_extra["reverse"]:
+				dir *= -1
+			var data_facing = current_button.data_node.get_facing()
+			if data_facing:
+				if dir != data_facing:
+					current_button.data_node.set_facing(dir)
 	if action:
 		yield(get_tree(), "idle_frame")
 		emit_signal("action_clicked", action, current_button.get_data() if current_button else null, get_extra())
+#			button.data_node.init()
+#			button.container.show_data_container()
 
 func on_action_selected(action, button):
 	button_pressed = true
@@ -210,19 +254,32 @@ func on_action_selected(action, button):
 	last_button = button
 	if button.data_node:
 		button.data_node.show()
-		button.data_node.set_facing(fighter.get_opponent_dir())
+		var dir = fighter.get_opponent_dir()
+		if current_extra and current_extra.has("reverse") and current_extra["reverse"]:
+			dir *= -1
+		button.data_node.set_facing(dir)
 		button.data_node.init()
 		button.container.show_data_container()
+	if button.reversible:
+		$"%ReverseButton".set_disabled(false)
+	else:
+		$"%ReverseButton".set_disabled(true)
 	send_ui_action()
 
 func get_extra():
-	return {
-		"DI": $"%DI".get_data()
+	var extra = {
+		"DI": $"%DI".get_data(),
+		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled
 	}
+	if fighter_extra:
+		extra.merge(fighter_extra.get_extra())
+	return extra
 
 func on_action_submitted(action, data=null):
+	active = false
 	var extra = get_extra()
 	emit_signal("action_selected", action, data, extra)
+	emit_signal("turn_ended")
 	if Network.player_id == player_id:
 		Network.submit_action(action, data, extra)
 	hide()
@@ -257,9 +314,14 @@ func tween_spread():
 	spread_tween.set_trans(Tween.TRANS_EXPO)
 	spread_tween.tween_property(self, "spread_amount", 1.0, 0.20)
 
+#func _physics_process(delta):
+#	if active and Input.is_action_just_pressed("submit_action"):
+#		_on_submit_pressed()
+
 func activate():
 	if visible:
 		return
+	active = true
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:
@@ -268,6 +330,8 @@ func activate():
 		else:
 			$"%YouLabel".hide()
 			modulate = Color("b3b3b3")
+	else:
+		$"%YouLabel".hide()
 
 	var showing = true
 	if game.current_tick == 0:
@@ -276,7 +340,8 @@ func activate():
 		$"%UndoButton".set_disabled(false)
 	if Network.multiplayer_active:
 		$"%UndoButton".hide()
-
+#	$"%ReverseButton".set_pressed_no_signal(false)
+	$"%ReverseButton".set_disabled(true)
 #	tween_spread()
 	current_action = null
 	current_button = null
@@ -309,8 +374,8 @@ func activate():
 		cancel_into = (state.interrupt_into if !fighter.state_hit_cancellable else state.hit_cancel_into)
 	else:
 		cancel_into = state.busy_interrupt_into
-	var any_available_actions = false
-
+	any_available_actions = false
+	fighter_extra.hide()
 	for button in buttons:
 		var found = false
 		for category in cancel_into:
@@ -318,11 +383,13 @@ func activate():
 				for cancel_state in fighter.action_cancels[category]:
 					if cancel_state.state_name == button.action_name:
 						if cancel_state.is_usable() and cancel_state.allowed_in_stance():
-							if fighter.state_hit_cancellable:
-								if cancel_state.state_name == state.state_name:
-									if !state.self_hit_cancellable:
-										continue
+							if cancel_state.state_name == state.state_name:
+								if fighter.state_hit_cancellable and !state.self_hit_cancellable:
+									continue
+								elif !fighter.state_hit_cancellable and !state.self_interruptable:
+									continue
 							found = true
+							$"%ReverseButton".set_disabled(false)
 #							$"%SelectButton".disabled = false
 							any_available_actions = true
 							
@@ -336,10 +403,10 @@ func activate():
 #		nudge_button.set_disabled(false)
 
 	if showing:
-		if last_button and !last_button.get_disabled():
-			last_button.set_pressed(true)
-			last_button.on_pressed()
-		else:
+#		if last_button and !last_button.get_disabled():
+##			last_button.set_pressed(true)
+##			last_button.on_pressed()
+#		else:
 #			for button in buttons:
 #				if !button.get_disabled():
 #					button.set_pressed(true)
@@ -350,6 +417,10 @@ func activate():
 
 	show_categories()
 	
+	if !fighter.busy_interrupt:
+		fighter_extra.show()
+		fighter_extra.show_options()
+
 	if fighter.dummy:
 		on_action_submitted("ContinueAuto", null)
 		hide()
@@ -360,8 +431,10 @@ func activate():
 			print("no available actions!")
 			on_action_submitted("Continue", null)
 			current_action = "Continue"
-
+	$"%ReverseButton".hide()
 	yield(get_tree(), "idle_frame")
+	if !$"%ReverseButton".disabled:
+		$"%ReverseButton".show()
 	if is_instance_valid(continue_button):
 		continue_button.show()
 		continue_button.set_disabled(false)

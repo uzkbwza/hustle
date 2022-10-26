@@ -6,6 +6,7 @@ var hitboxes = []
 var move_dir
 
 var dist = MOVE_DISTANCE
+var start_pos
 
 func _enter():
 	dist = MOVE_DISTANCE
@@ -55,8 +56,10 @@ func _enter():
 #		hitboxes[i].x = fixed.round(fixed.mul(vec.x, str(host.get_facing_int())))
 #		hitboxes[i].y = fixed.round(fixed.sub(vec.y, "16"))
 #
+func _frame_1():
+	start_pos = host.get_pos().duplicate()
+
 func _frame_4():
-	
 	pass
 #	host.move_directly(MOVE_DISTANCE / 4, 0)
 
@@ -66,7 +69,6 @@ func _frame_5():
 
 
 	var move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, str(MOVE_DISTANCE))
-	var start_pos = host.get_pos().duplicate()
 
 
 	host.move_directly(move_vec.x, move_vec.y)

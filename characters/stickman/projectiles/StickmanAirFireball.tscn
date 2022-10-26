@@ -6,16 +6,17 @@
 
 [node name="Sprite" parent="Flip" index="0"]
 rotation = 0.785398
+animation = "Default"
 
 [node name="FireballTrail" parent="Flip/Particles" index="0"]
 rotation = 0.785398
 
 [node name="Default" parent="StateMachine" index="0"]
-move_x = 4
-move_y = 4
+move_x = 5
+move_y = 5
 
 [node name="Hitbox" parent="StateMachine/Default" index="0"]
 x = -2
-width = 10
+damage = 30
+hitstun_ticks = 10
 dir_y = "1.0"
-knockback = "5.0"

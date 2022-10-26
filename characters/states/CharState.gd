@@ -32,10 +32,12 @@ export(String) var title
 export var show_in_menu = true
 export(ActionType) var type
 export(PackedScene) var data_ui_scene = null
+export(Texture) var button_texture = null
 
 export var _c_Air_Data = 0
 export(AirType) var air_type = AirType.Grounded
 export var uses_air_movement = false
+export var land_cancel = false
 
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
@@ -49,6 +51,9 @@ export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
 export var burst_cancellable = true
 export var burstable = true
 export var self_hit_cancellable = true
+export var self_interruptable = true
+export var reversible = true
+
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
 export(String, MULTILINE) var hit_cancel_into_string
@@ -57,12 +62,16 @@ export var _c_Stances = 0
 export(String, MULTILINE) var allowed_stances_string = "Normal"
 export(String) var change_stance_to = ""
 
+var started_in_air = false
+
 var interrupt_into = []
 var interrupt_from = []
 var hit_cancel_into = []
 var busy_interrupt_into = []
 
 var allowed_stances = []
+
+var is_hurt_state = false
 
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
@@ -105,23 +114,22 @@ func is_usable():
 	return true
 
 func get_categories(string: String):
-	var categories = []
-	for s in string.split("\n"):
-		var category = s.strip_edges()
-		if category:
-			categories.append(category)
-	return categories
+	return Utils.split_lines(string)
 
 func _enter_shared():
+	started_in_air = false
 	._enter_shared()
+	host.update_grounded()
 	if change_stance_to:
 		host.change_stance_to(change_stance_to)
+	if !host.is_grounded():
+		started_in_air = true
 	if uses_air_movement:
 		host.air_movements_left -= 1
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		host.gain_super_meter(WHIFF_SUPER_GAIN)
-
+		
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances
 	
@@ -136,20 +144,31 @@ func _on_hit_something(obj, hitbox):
 		enable_hit_cancel()
 
 func _tick_shared():
+	if current_tick == 0:
+		if !is_hurt_state:
+			if host.reverse_state:
+				host.set_facing(host.get_facing_int() * -1)
 	._tick_shared()
+	if land_cancel and host.is_grounded() and started_in_air:
+		queue_state_change("Landing")
 	if current_tick <= anim_length and !endless:
 		if can_interrupt():
 			enable_interrupt()
+
+func _tick_after():
+	._tick_after()
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
 
 func _exit_shared():
+	host.update_facing()
 	terminate_hitboxes()
 	host.end_invulnerability()
 	host.end_projectile_invulnerability()
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
 	host.state_hit_cancellable = false
-	host.update_facing()
+#	if host.reverse_state:
+#		host.set_facing(host.get_facing_int() * -1)
 	emit_signal("state_ended")

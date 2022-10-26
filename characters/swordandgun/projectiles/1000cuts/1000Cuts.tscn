@@ -1,0 +1,89 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/swordandgun/projectiles/states/1000CutsDefault.gd" type="Script" id=2]
+[ext_resource path="res://characters/swordandgun/projectiles/1000cuts/1000Cuts.gd" type="Script" id=3]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts1.png" type="Texture" id=5]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts6.png" type="Texture" id=6]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts11.png" type="Texture" id=7]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts8.png" type="Texture" id=8]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts4.png" type="Texture" id=9]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts5.png" type="Texture" id=10]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts12.png" type="Texture" id=11]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts7.png" type="Texture" id=12]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts10.png" type="Texture" id=13]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts2.png" type="Texture" id=14]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts9.png" type="Texture" id=15]
+[ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts3.png" type="Texture" id=16]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 14 ), ExtResource( 16 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 15 ), ExtResource( 13 ), ExtResource( 7 ), ExtResource( 11 ) ],
+"loop": true,
+"name": "Slash",
+"speed": 5.0
+} ]
+
+[node name="1000Cuts" instance=ExtResource( 1 )]
+z_index = 2
+script = ExtResource( 3 )
+extra_state_variables = "total_ticks"
+immunity_susceptible = false
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Slash"
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 2 )
+sprite_animation = "Slash"
+anim_length = 23
+ticks_per_frame = 2
+endless = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 4 )
+x = 34
+y = 8
+width = 15
+height = 7
+damage = 50
+hitstun_ticks = 14
+hitlag_ticks = 3
+victim_hitlag = 3
+hit_height = 2
+knockback = "5.0"
+start_tick = 2
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+script = ExtResource( 4 )
+x = 31
+y = -11
+width = 10
+height = 11
+damage = 50
+hitstun_ticks = 14
+hitlag_ticks = 3
+victim_hitlag = 3
+hit_height = 0
+group = 1
+knockback = "5.0"
+start_tick = 10
+active_ticks = 2
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/Default" index="2"]
+script = ExtResource( 4 )
+x = 25
+y = -3
+width = 26
+height = 6
+damage = 50
+hitstun_ticks = 14
+hitlag_ticks = 3
+victim_hitlag = 3
+group = 2
+knockback = "5.0"
+start_tick = 18
+active_ticks = 2

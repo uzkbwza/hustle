@@ -1,9 +1,9 @@
 extends CharacterState
 
-func _enter():
+func _frame_1():
 	throw_techable = true
 
-func _frame_4():
+func _frame_9():
 	throw_techable = false
 
 func _tick():

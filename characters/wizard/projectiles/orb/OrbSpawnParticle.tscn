@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://characters/wizard/projectiles/orb/OrbParticle.tscn" type="PackedScene" id=1]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+free = true
+one_shot = true
+
+[node name="Timer" parent="." index="0"]
+wait_time = 0.032
+
+[node name="OrbParticles" parent="." index="1"]
+amount = 32
+lifetime = 1.0
+preprocess = 0.05
+speed_scale = 4.06
+explosiveness = 1.0
+emission_shape = 0
+spread = 180.0
+gravity = Vector2( 0, -26.403 )
+initial_velocity = 33.78
+initial_velocity_random = 0.75
+scale_amount = 2.03

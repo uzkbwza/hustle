@@ -8,8 +8,9 @@ var action_title = ""
 
 var data_node = null
 var container = null
+var reversible = false
 
-func setup(name, title):
+func setup(name, title, texture=null):
 	action_name = name
 	action_title = title
 	text = title
@@ -20,6 +21,9 @@ func set_pressed(on):
 	
 func is_pressed():
 	return pressed
+
+func set_player_id(_player_id):
+	pass
 
 func get_disabled():
 	return disabled
@@ -42,7 +46,7 @@ func _ready():
 
 func update_color(on):
 	if on:
-		modulate = Color.gold
+		modulate = Color.cyan
 	else:
 		modulate = Color.white
 

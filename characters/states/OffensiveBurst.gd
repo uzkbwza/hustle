@@ -2,7 +2,8 @@ extends CharacterState
 
 var started_falling = false
 
-func _enter():
+func _frame_1():
+	host.update_grounded()
 	started_falling = false
 	host.use_burst()
 	host.start_invulnerability()

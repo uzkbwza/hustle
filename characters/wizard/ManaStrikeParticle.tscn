@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/wizard/projectiles/sprites/blast1.png" type="Texture" id=2]
+[ext_resource path="res://characters/wizard/projectiles/sprites/blast4.png" type="Texture" id=3]
+[ext_resource path="res://characters/wizard/projectiles/sprites/blast2.png" type="Texture" id=4]
+[ext_resource path="res://characters/wizard/projectiles/sprites/blast3.png" type="Texture" id=5]
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=6]
+[ext_resource path="res://fx/particle_square_4x4.png" type="Texture" id=7]
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0.909091 ), 0.0, 0.0, 0, 0, Vector2( 0.796, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 2 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 60.0
+} ]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+z_index = 1
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="1"]
+amount = 5
+lifetime = 0.55
+preprocess = 0.05
+speed_scale = 1.67
+explosiveness = 0.98
+local_coords = false
+texture = ExtResource( 7 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 121.47
+initial_velocity_random = 0.5
+linear_accel = -24.58
+scale_amount = 0.98
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 2 )
+color = Color( 0.113725, 0.552941, 0.960784, 1 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
+amount = 5
+lifetime = 0.55
+preprocess = 0.01
+speed_scale = 1.67
+explosiveness = 0.98
+local_coords = false
+texture = ExtResource( 6 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 121.47
+initial_velocity_random = 0.5
+linear_accel = -24.58
+scale_amount = 1.92
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 2 )
+color = Color( 0.831373, 0.25098, 0.713726, 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="3"]
+frames = SubResource( 1 )
+frame = 1
+playing = true

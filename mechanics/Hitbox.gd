@@ -11,6 +11,7 @@ const HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 
 signal hit_something(obj, hitbox)
+signal got_parried()
 
 enum HitHeight {
 	High
@@ -24,6 +25,7 @@ export var damage: int = 0
 export var _c_Hit_Properties = 0
 export var hitstun_ticks: int = 30
 export var hitlag_ticks: int = 4
+export var victim_hitlag: int = -1
 export var cancellable = true
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -45,6 +47,7 @@ export var _c_Knockback = 0
 export var dir_x: String = "1.0"
 export var dir_y: String = "-1.0"
 export var knockback: String = "10.0"
+export var launch_reversible = false
 
 export var pushback_x: String = "1.0"
 
@@ -52,6 +55,8 @@ export var _c_Knockback_Type = 0
 export var grounded_hit_state = "HurtGrounded"
 export var aerial_hit_state = "HurtAerial"
 export var knockdown = false
+export var disable_collision = true
+export var ground_bounce = true
 
 export var _c_Frame_Data = 0
 export var start_tick: int = 0
@@ -73,6 +78,14 @@ var throw = false
 var grouped_hitboxes = []
 
 var hit_objects = []
+
+func _ready():
+	if height < 0:
+		height *= -1
+	if width < 0:
+		width *= -1
+	if victim_hitlag == -1:
+		victim_hitlag = hitlag_ticks
 
 func activate():
 	if active:
@@ -104,6 +117,7 @@ func hit(obj):
 				camera.bump(Vector2(), screenshake_amount, Utils.frames(hitlag_ticks if screenshake_frames < 0 else screenshake_frames))
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
+				emit_signal("got_parried")
 			if can_hit and spawn_particle_effect:
 				host.spawn_particle_effect(HIT_PARTICLE, get_overlap_center_float(obj.hurtbox), dir)
 
@@ -129,15 +143,14 @@ func get_angle_float(facing=false):
 	# for aesthetic purposes
 	return get_dir_float(facing).angle()
 
-
 func get_dir_float(facing=false):
 	# for aesthetic purposes
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
 func can_draw_box():
-	return .can_draw_box() or (active and enabled)
-#	return .can_draw_box()
-
+#	return .can_draw_box() or (active and enabled)
+	return .can_draw_box()
+#
 func tick():
 	if looping:
 		var loop_tick = tick % (loop_active_ticks + loop_inactive_ticks)

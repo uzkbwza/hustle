@@ -119,15 +119,9 @@ offset = Vector2( 0, -18 )
 
 [node name="CollisionBox" type="Node" parent="."]
 script = ExtResource( 11 )
-y = -16
-width = 16
-height = 16
 
 [node name="Hurtbox" type="Node" parent="."]
 script = ExtResource( 11 )
-y = -14
-width = 14
-height = 14
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -159,15 +153,6 @@ GroundedSpecial"
 
 [node name="Hitbox" type="Node" parent="StateMachine/GroundAttack"]
 script = ExtResource( 7 )
-x = 11
-y = -23
-width = 19
-height = 4
-hitstun_ticks = 15
-hitlag_ticks = 5
-start_tick = 4
-active_ticks = 2
-hit_height = 0
 
 [node name="Uppercut" type="Node" parent="StateMachine"]
 script = ExtResource( 39 )
@@ -187,35 +172,9 @@ Grounded"
 
 [node name="Hitbox" type="Node" parent="StateMachine/Uppercut"]
 script = ExtResource( 7 )
-x = 18
-y = -14
-width = 12
-height = 14
-hitstun_ticks = 900
-dir_x = "8.0"
-dir_y = "-10.0"
-knockback = "20.0"
-pushback_x = "-1.0"
-start_tick = 3
-active_ticks = 3
-grounded_hit_state = "HurtAerial"
-knockdown = true
 
 [node name="Hitbox2" type="Node" parent="StateMachine/Uppercut"]
 script = ExtResource( 7 )
-x = 16
-y = -29
-width = 18
-height = 23
-hitstun_ticks = 900
-dir_x = "5.0"
-dir_y = "-10.0"
-knockback = "30.0"
-pushback_x = "-1.0"
-start_tick = 6
-active_ticks = 3
-grounded_hit_state = "HurtAerial"
-knockdown = true
 
 [node name="UppercutLanding" type="Node" parent="StateMachine"]
 script = ExtResource( 4 )
@@ -231,7 +190,6 @@ fallback_state = "Fall"
 anim_length = 40
 title = "Air Attack"
 type = 2
-aerial = true
 interrupt_from_string = "AerialAttack
 Aerial"
 interrupt_into_string = "Aerial"
@@ -240,15 +198,6 @@ AerialMovement"
 
 [node name="Hitbox" type="Node" parent="StateMachine/AirAttack"]
 script = ExtResource( 7 )
-x = 20
-y = -11
-width = 14
-height = 9
-hitstun_ticks = 50
-dir_x = "0.5"
-knockback = "5.0"
-start_tick = 5
-hit_height = 0
 
 [node name="Fall" type="Node" parent="StateMachine"]
 script = ExtResource( 10 )
@@ -290,11 +239,11 @@ dash_speed = 7
 
 [node name="Jump" type="Node" parent="StateMachine"]
 script = ExtResource( 8 )
+fallback_state = "Fall"
+anim_length = 1000
+reset_momentum = true
 title = "Jump"
 type = 1
-reset_momentum = true
-anim_length = 1000
-fallback_state = "Fall"
 data_ui_scene = ExtResource( 9 )
 interrupt_frames = [ 7, 18 ]
 interrupt_from_string = "GroundedMovement
@@ -304,14 +253,13 @@ speed = "8"
 
 [node name="DoubleJump" type="Node" parent="StateMachine"]
 script = ExtResource( 8 )
-title = "Air Jump"
-type = 1
-aerial = true
-reset_momentum = true
+fallback_state = "Fall"
 anim_length = 1000
 sprite_anim_length = 4
-fallback_state = "Fall"
 loop_animation = true
+reset_momentum = true
+title = "Air Jump"
+type = 1
 data_ui_scene = ExtResource( 9 )
 uses_air_movement = true
 interrupt_frames = [ 7, 25 ]
@@ -328,7 +276,6 @@ reset_momentum = true
 title = "Air Dash"
 type = 1
 data_ui_scene = ExtResource( 13 )
-aerial = true
 uses_air_movement = true
 interrupt_frames = [ 7 ]
 interrupt_from_string = "AerialMovement
@@ -339,20 +286,19 @@ speed = "10.0"
 
 [node name="HurtGrounded" type="Node" parent="StateMachine"]
 script = ExtResource( 28 )
+anim_length = 100000
+reset_momentum = true
 title = "Hurt Grounded"
 type = 4
-reset_momentum = true
-anim_length = 100000
 interrupt_into_string = "Grounded"
 
 [node name="HurtAerial" type="Node" parent="StateMachine"]
 script = ExtResource( 27 )
+fallback_state = "Fall"
+anim_length = 100000
+reset_momentum = true
 title = "Hurt Aerial"
 type = 4
-aerial = true
-reset_momentum = true
-anim_length = 100000
-fallback_state = "Fall"
 interrupt_into_string = "Aerial"
 
 [node name="DebugLabel" type="Label" parent="."]

@@ -21,6 +21,12 @@ func update_position(x: int, y: int):
 func x_facing():
 	return x if facing == "Right" else -x
 
+func get_absolute_position():
+	return {
+		"x": pos_x + x_facing(),
+		"y": pos_y + y,
+	}
+
 func get_aabb():
 	var x = x_facing()
 	var x1: int = (x - width) + (pos_x)
@@ -59,6 +65,13 @@ func get_overlap_center(box: CollisionBox):
 	return {
 		"x": (overlap.x1 + overlap.x2) / 2,
 		"y": (overlap.y1 + overlap.y2) / 2
+	}
+
+func get_center():
+	var aabb = get_aabb()
+	return {
+		"x": (aabb.x1 + aabb.x2) / 2,
+		"y": (aabb.y1 + aabb.y2) / 2
 	}
 
 func get_overlap_center_float(box: CollisionBox):
