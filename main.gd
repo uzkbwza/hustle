@@ -28,6 +28,8 @@ func _ready():
 	$"%GhostButton".connect("toggled", self, "_on_ghost_button_toggled")
 	$"%CharacterSelect".connect("match_ready", self, "_on_match_ready")
 	$"%GhostSpeed".connect("value_changed", self, "_on_ghost_speed_changed")
+	$"%GameUI".hide()
+	$"%MainMenu".show()
 
 func _on_game_started(singleplayer):
 	self.singleplayer = singleplayer

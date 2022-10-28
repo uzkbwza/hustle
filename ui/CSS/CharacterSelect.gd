@@ -77,7 +77,6 @@ func _on_button_mouse_entered(button):
 func display_character(id, data):
 	var display = $"%P1Display" if id == 1 else $"%P2Display"
 	display.load_character_data(data)
-	
 
 func _on_button_pressed(button):
 	for button in buttons:

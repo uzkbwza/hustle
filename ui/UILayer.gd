@@ -23,12 +23,19 @@ func _ready():
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
 	$"%DirectConnectButton".connect("pressed", self, "_on_direct_connect_button_pressed")
 	$"%RematchButton".connect("pressed", self, "_on_rematch_button_pressed")
+	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
+	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
+	$"%ResumeButton".connect("pressed", self, "pause")
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
 	turn_timer.connect("timeout", self, "_on_turn_timer_timeout")
+
+func _on_quit_button_pressed():
+	Network.stop_multiplayer()
+	get_tree().reload_current_scene()
 
 func id_to_action_buttons(player_id):
 	if player_id == 1:
@@ -104,6 +111,9 @@ func _on_turn_timer_timeout():
 	$"%P1ActionButtons".timeout()
 	$"%P2ActionButtons".timeout()
 
+func pause():
+	$"%PausePanel".visible = !$"%PausePanel".visible
+
 func _process(_delta):
 	if !turn_timer.is_stopped():
 		var bars = [$"%P1TurnTimerBar", $"%P2TurnTimerBar"]
@@ -113,3 +123,8 @@ func _process(_delta):
 				bar.value = turn_timer.time_left / turn_timer.wait_time
 				if turn_timer.time_left < 5:
 					bar.visible = Utils.wave(-1, 1, 0.032) > 0
+	if Input.is_action_just_pressed("pause"):
+		pause()
+	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active
+	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
+

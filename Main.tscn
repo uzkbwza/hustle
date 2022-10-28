@@ -306,13 +306,310 @@ __meta__ = {
 }
 
 [node name="CurrentTick" type="Label" parent="UILayer"]
-visible = false
 anchor_right = 1.0
 margin_bottom = 14.0
 align = 1
 
+[node name="GameUI" type="Control" parent="UILayer"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 4 )
+
+[node name="TopInfo" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -320.0
+margin_right = 320.0
+margin_bottom = 11.0
+text = "R: Watch replay - ESC: Open menu"
+align = 1
+
+[node name="TopInfoMP" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -320.0
+margin_right = 320.0
+margin_bottom = 11.0
+text = "ESC: Open menu"
+align = 1
+
+[node name="BottomBar" type="VBoxContainer" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -320.0
+margin_top = -152.0
+margin_right = 320.0
+margin_bottom = -4.0
+mouse_filter = 2
+theme = ExtResource( 4 )
+alignment = 1
+script = ExtResource( 11 )
+
+[node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
+visible = false
+margin_top = 11.0
+margin_right = 640.0
+margin_bottom = 26.0
+mouse_filter = 2
+theme = ExtResource( 4 )
+
+[node name="Timer" type="Control" parent="UILayer/GameUI/BottomBar/BottomSuperBar"]
+margin_right = 640.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 40, 15 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.79
+
+[node name="ActionButtons" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
+unique_name_in_owner = true
+margin_right = 640.0
+margin_bottom = 135.0
+rect_min_size = Vector2( 0, 120 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
+margin_right = 319.0
+margin_bottom = 135.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 40.0
+margin_right = 319.0
+margin_bottom = 60.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
+margin_right = 319.0
+margin_bottom = 20.0
+mouse_filter = 2
+
+[node name="Padding" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
+margin_right = 20.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 21.0
+margin_right = 121.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+max_value = 1000.0
+texture_under = SubResource( 6 )
+texture_progress = SubResource( 8 )
+nine_patch_stretch = true
+
+[node name="P1NumSupers" type="Label" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 122.0
+margin_top = 4.0
+margin_right = 132.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 10, 0 )
+text = "9"
+align = 1
+
+[node name="P1ActionButtons" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 61.0
+margin_right = 319.0
+margin_bottom = 135.0
+rect_min_size = Vector2( 0, 73 )
+size_flags_horizontal = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
+margin_left = 320.0
+margin_right = 640.0
+margin_bottom = 135.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 40.0
+margin_right = 320.0
+margin_bottom = 60.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
+margin_right = 320.0
+margin_bottom = 20.0
+mouse_filter = 2
+alignment = 2
+
+[node name="P2NumSupers" type="Label" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 188.0
+margin_top = 4.0
+margin_right = 198.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 10, 0 )
+text = "9"
+align = 1
+
+[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 199.0
+margin_right = 299.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+max_value = 1000.0
+texture_under = SubResource( 6 )
+texture_progress = SubResource( 8 )
+fill_mode = 1
+nine_patch_stretch = true
+
+[node name="Padding" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
+margin_left = 300.0
+margin_right = 320.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="P2ActionButtons" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 61.0
+margin_right = 320.0
+margin_bottom = 135.0
+rect_min_size = Vector2( 0, 73 )
+size_flags_horizontal = 3
+player_id = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
+margin_top = 136.0
+margin_right = 640.0
+margin_bottom = 148.0
+custom_constants/margin_right = 10
+custom_constants/margin_left = 10
+
+[node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer"]
+unique_name_in_owner = true
+margin_left = 10.0
+margin_right = 630.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 5
+alignment = 1
+
+[node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 165.0
+margin_right = 306.0
+margin_bottom = 12.0
+theme = ExtResource( 4 )
+pressed = true
+action_mode = 0
+text = "show prediction (buggy)"
+
+[node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 311.0
+margin_right = 454.0
+margin_bottom = 12.0
+script = ExtResource( 13 )
+
+[node name="Label" type="Label" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_right = 84.0
+margin_bottom = 11.0
+theme = ExtResource( 4 )
+text = "prediction speed:"
+
+[node name="1Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 85.0
+margin_right = 113.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+text = "x0.25"
+
+[node name="2Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 114.0
+margin_right = 128.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+pressed = true
+text = "x1"
+
+[node name="3Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 129.0
+margin_right = 143.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+text = "x4"
+
+[node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -42.0
+margin_top = -7.0
+margin_right = 42.0
+margin_bottom = 7.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/PausePanel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 83.0
+margin_bottom = 26.0
+alignment = 1
+
+[node name="ResumeButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 82.0
+margin_bottom = 12.0
+size_flags_vertical = 0
+text = "resume"
+
+[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 13.0
+margin_right = 82.0
+margin_bottom = 25.0
+size_flags_vertical = 0
+text = "quit"
+
 [node name="MainMenu" type="Control" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
@@ -367,18 +664,17 @@ alignment = 1
 
 [node name="RematchButton" type="Button" parent="UILayer/PostGameButtons"]
 unique_name_in_owner = true
-margin_top = 66.0
+margin_top = 59.0
 margin_right = 76.0
-margin_bottom = 78.0
+margin_bottom = 71.0
 theme = ExtResource( 4 )
 text = "Rematch"
 
 [node name="QuitButton" type="Button" parent="UILayer/PostGameButtons"]
 unique_name_in_owner = true
-visible = false
-margin_top = 51.0
-margin_right = 80.0
-margin_bottom = 63.0
+margin_top = 72.0
+margin_right = 76.0
+margin_bottom = 84.0
 theme = ExtResource( 4 )
 text = "Quit"
 
@@ -394,242 +690,6 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 7 )
-
-[node name="BottomBar" type="VBoxContainer" parent="UILayer"]
-unique_name_in_owner = true
-visible = false
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -320.0
-margin_top = -152.0
-margin_right = 320.0
-margin_bottom = -4.0
-mouse_filter = 2
-theme = ExtResource( 4 )
-alignment = 1
-script = ExtResource( 11 )
-
-[node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/BottomBar"]
-visible = false
-margin_top = 11.0
-margin_right = 640.0
-margin_bottom = 26.0
-mouse_filter = 2
-theme = ExtResource( 4 )
-
-[node name="Timer" type="Control" parent="UILayer/BottomBar/BottomSuperBar"]
-margin_right = 640.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 40, 15 )
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 4.79
-
-[node name="ActionButtons" type="HBoxContainer" parent="UILayer/BottomBar"]
-unique_name_in_owner = true
-margin_right = 640.0
-margin_bottom = 135.0
-rect_min_size = Vector2( 0, 120 )
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
-margin_right = 319.0
-margin_bottom = 135.0
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment = 2
-
-[node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 40.0
-margin_right = 319.0
-margin_bottom = 60.0
-mouse_filter = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
-margin_right = 319.0
-margin_bottom = 20.0
-mouse_filter = 2
-
-[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
-margin_right = 20.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 20, 0 )
-mouse_filter = 2
-
-[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 21.0
-margin_right = 121.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 100, 20 )
-mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-max_value = 1000.0
-texture_under = SubResource( 6 )
-texture_progress = SubResource( 8 )
-nine_patch_stretch = true
-
-[node name="P1NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 122.0
-margin_top = 4.0
-margin_right = 132.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 10, 0 )
-text = "9"
-align = 1
-
-[node name="P1ActionButtons" parent="UILayer/BottomBar/ActionButtons/VBoxContainer" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 61.0
-margin_right = 319.0
-margin_bottom = 135.0
-rect_min_size = Vector2( 0, 73 )
-size_flags_horizontal = 3
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons"]
-margin_left = 320.0
-margin_right = 640.0
-margin_bottom = 135.0
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment = 2
-
-[node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2"]
-unique_name_in_owner = true
-margin_top = 40.0
-margin_right = 320.0
-margin_bottom = 60.0
-mouse_filter = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
-margin_right = 320.0
-margin_bottom = 20.0
-mouse_filter = 2
-alignment = 2
-
-[node name="P2NumSupers" type="Label" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 188.0
-margin_top = 4.0
-margin_right = 198.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 10, 0 )
-text = "9"
-align = 1
-
-[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 199.0
-margin_right = 299.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 100, 20 )
-mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-max_value = 1000.0
-texture_under = SubResource( 6 )
-texture_progress = SubResource( 8 )
-fill_mode = 1
-nine_patch_stretch = true
-
-[node name="Padding" type="Control" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/HBoxContainer"]
-margin_left = 300.0
-margin_right = 320.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 20, 0 )
-mouse_filter = 2
-
-[node name="P2ActionButtons" parent="UILayer/BottomBar/ActionButtons/VBoxContainer2" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 61.0
-margin_right = 320.0
-margin_bottom = 135.0
-rect_min_size = Vector2( 0, 73 )
-size_flags_horizontal = 3
-player_id = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="UILayer/BottomBar"]
-margin_top = 136.0
-margin_right = 640.0
-margin_bottom = 148.0
-custom_constants/margin_right = 10
-custom_constants/margin_left = 10
-
-[node name="OptionsBar" type="HBoxContainer" parent="UILayer/BottomBar/MarginContainer"]
-unique_name_in_owner = true
-margin_left = 10.0
-margin_right = 630.0
-margin_bottom = 12.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 5
-alignment = 1
-
-[node name="GhostButton" type="CheckButton" parent="UILayer/BottomBar/MarginContainer/OptionsBar"]
-unique_name_in_owner = true
-margin_left = 165.0
-margin_right = 306.0
-margin_bottom = 12.0
-theme = ExtResource( 4 )
-pressed = true
-action_mode = 0
-text = "show prediction (buggy)"
-
-[node name="GhostSpeed" type="HBoxContainer" parent="UILayer/BottomBar/MarginContainer/OptionsBar"]
-unique_name_in_owner = true
-margin_left = 311.0
-margin_right = 454.0
-margin_bottom = 12.0
-script = ExtResource( 13 )
-
-[node name="Label" type="Label" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
-unique_name_in_owner = true
-margin_right = 84.0
-margin_bottom = 11.0
-theme = ExtResource( 4 )
-text = "prediction speed:"
-
-[node name="1Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
-unique_name_in_owner = true
-margin_left = 85.0
-margin_right = 113.0
-margin_bottom = 12.0
-rect_min_size = Vector2( 12, 0 )
-toggle_mode = true
-text = "x0.25"
-
-[node name="2Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
-unique_name_in_owner = true
-margin_left = 114.0
-margin_right = 128.0
-margin_bottom = 12.0
-rect_min_size = Vector2( 12, 0 )
-toggle_mode = true
-pressed = true
-text = "x1"
-
-[node name="3Speed" type="Button" parent="UILayer/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
-unique_name_in_owner = true
-margin_left = 129.0
-margin_right = 143.0
-margin_bottom = 12.0
-rect_min_size = Vector2( 12, 0 )
-toggle_mode = true
-text = "x4"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
 visible = false

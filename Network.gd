@@ -354,6 +354,10 @@ remotesync func open_chara_select():
 	emit_signal("start_game")
 
 func end_game():
+	if multiplayer_active:
+		stop_multiplayer()
+
+func _exit_tree():
 	stop_multiplayer()
 
 func stop_multiplayer():

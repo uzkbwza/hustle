@@ -27,7 +27,7 @@ func _ready():
 func init(game):
 	self.game = game
 	show()
-	$"%BottomBar".show()
+	$"%GameUI".show()
 	p1 = game.get_player(1)
 	p2 = game.get_player(2)
 	$"%P1Portrait".texture = p1.character_portrait

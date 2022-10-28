@@ -7,7 +7,7 @@
 [ext_resource path="res://ui/CSS/CharacterDisplay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://characters/wizard/Wizard.tscn" type="PackedScene" id=6]
 
-[node name="CharacterSelect" type="Control"]
+[node name="CharacterSelect" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 2 )
