@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=47 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/stickman_spriteframes.tres" type="SpriteFrames" id=2]
@@ -38,6 +38,14 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/stomp.png" type="Texture" id=36]
 [ext_resource path="res://ui/ActionSelector/StateIcons/uppercut.png" type="Texture" id=37]
 [ext_resource path="res://ui/ActionSelector/StateIcons/quickslash.png" type="Texture" id=38]
+[ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=39]
+[ext_resource path="res://sound/common/hit3.wav" type="AudioStream" id=40]
+[ext_resource path="res://sound/common/hit2.wav" type="AudioStream" id=41]
+[ext_resource path="res://sound/common/hit4.wav" type="AudioStream" id=42]
+[ext_resource path="res://characters/stickman/sounds/shuriken.wav" type="AudioStream" id=43]
+[ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=44]
+[ext_resource path="res://sound/common/slash4.wav" type="AudioStream" id=45]
+[ext_resource path="res://characters/stickman/sounds/summon.wav" type="AudioStream" id=46]
 
 [node name="Stickman" instance=ExtResource( 15 )]
 script = ExtResource( 14 )
@@ -45,7 +53,6 @@ max_ground_speed = "20"
 max_air_speed = "10"
 max_fall_speed = "15"
 extra_state_variables = "can_summon"
-num_air_movements = 2
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = ExtResource( 2 )
@@ -67,6 +74,8 @@ __meta__ = {
 }
 anim_length = 12
 reset_momentum = true
+sfx = ExtResource( 43 )
+sfx_tick = 8
 title = "Shuriken"
 type = 2
 data_ui_scene = ExtResource( 22 )
@@ -81,6 +90,8 @@ speed_modifier_amount = "3.5"
 [node name="AirFireball" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 5 )
 anim_length = 12
+sfx = ExtResource( 43 )
+sfx_tick = 8
 title = "Shuriken"
 type = 2
 data_ui_scene = ExtResource( 22 )
@@ -120,6 +131,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -134,6 +146,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -148,6 +161,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -162,6 +176,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -176,6 +191,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -190,6 +206,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -227,6 +244,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -241,6 +259,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -255,6 +274,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -269,6 +289,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -283,6 +304,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -297,6 +319,7 @@ height = 10
 damage = 60
 hitstun_ticks = 20
 victim_hitlag = 4
+hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
@@ -336,6 +359,7 @@ damage = 80
 hitlag_ticks = 10
 victim_hitlag = 10
 screenshake_amount = 8
+hit_sound = ExtResource( 42 )
 dir_x = "2.0"
 dir_y = "-2.0"
 knockback = "18.0"
@@ -356,6 +380,7 @@ hitlag_ticks = 6
 victim_hitlag = 6
 group = 1
 screenshake_amount = 5
+hit_sound = ExtResource( 42 )
 dir_x = "0.5"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -390,6 +415,8 @@ hitlag_ticks = 10
 victim_hitlag = 10
 hit_height = 2
 screenshake_amount = 6
+whiff_sound = ExtResource( 44 )
+hit_sound = ExtResource( 40 )
 dir_x = "0.5"
 dir_y = "-2.0"
 grounded_hit_state = "HurtAerial"
@@ -432,6 +459,7 @@ hitlag_ticks = 5
 victim_hitlag = 5
 hit_height = 0
 screenshake_amount = 2
+hit_sound = ExtResource( 41 )
 dir_y = "1.0"
 knockback = "5.0"
 start_tick = 12
@@ -502,6 +530,7 @@ height = 7
 damage = 80
 hitstun_ticks = 23
 victim_hitlag = 4
+hit_sound = ExtResource( 41 )
 knockback = "8.0"
 start_tick = 7
 active_ticks = 3
@@ -568,6 +597,7 @@ hitstun_ticks = 23
 hitlag_ticks = 7
 victim_hitlag = 7
 hit_height = 0
+hit_sound = ExtResource( 40 )
 knockback = "5.0"
 start_tick = 16
 active_ticks = 4
@@ -598,6 +628,7 @@ damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
 hit_height = 0
+hit_sound = ExtResource( 39 )
 knockback = "5.0"
 start_tick = 6
 active_ticks = 17
@@ -615,6 +646,7 @@ damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
 hit_height = 0
+hit_sound = ExtResource( 39 )
 knockback = "5.0"
 start_tick = 6
 active_ticks = 17
@@ -702,6 +734,7 @@ hitstun_ticks = 20
 hitlag_ticks = 6
 victim_hitlag = 6
 hit_height = 2
+hit_sound = ExtResource( 41 )
 knockback = "5.0"
 start_tick = 5
 active_ticks = 3
@@ -733,6 +766,7 @@ hitlag_ticks = 7
 victim_hitlag = 7
 hit_height = 2
 screenshake_amount = 5
+hit_sound = ExtResource( 40 )
 dir_y = "-0.25"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
@@ -766,6 +800,7 @@ damage = 80
 hitstun_ticks = 45
 hitlag_ticks = 7
 victim_hitlag = 7
+hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
 knockback = "5.0"
@@ -795,6 +830,7 @@ hitstun_ticks = 40
 hitlag_ticks = 6
 victim_hitlag = 6
 hit_height = 0
+hit_sound = ExtResource( 41 )
 dir_y = "1.0"
 knockback = "8.0"
 knockdown = true
@@ -804,6 +840,8 @@ active_ticks = 7
 [node name="Summon" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 9 )
 anim_length = 11
+sfx = ExtResource( 46 )
+sfx_tick = 4
 title = "Summon"
 type = 2
 data_ui_scene = ExtResource( 17 )

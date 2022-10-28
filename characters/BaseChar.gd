@@ -276,6 +276,8 @@ func hit_by(hitbox):
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
 		gain_super_meter(PARRY_METER)
 		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
+		play_sound("Parry")
+		play_sound("Parry2")
 		
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -401,7 +403,7 @@ func tick():
 				parried = false
 		state_tick()
 
-		chara.apply_pushback()
+		chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
 			refresh_air_movements()
 		current_tick += 1

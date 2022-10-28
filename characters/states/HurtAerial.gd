@@ -54,8 +54,10 @@ func _tick():
 				return "Knockdown"
 			else:
 				return "Landing"
-
-	if !knockdown and current_tick > hitstun:
+				
+	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown
+	
+	if !extended_hitstun and current_tick > hitstun:
 		if can_act:
 			return fallback_state
 		else:

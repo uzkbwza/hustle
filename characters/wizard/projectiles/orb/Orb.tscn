@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
@@ -11,6 +11,11 @@
 [ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb2.png" type="Texture" id=9]
 [ext_resource path="res://characters/wizard/projectiles/orb/states/Default.gd" type="Script" id=10]
 [ext_resource path="res://characters/wizard/projectiles/orb/OrbParticle.tscn" type="PackedScene" id=11]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=12]
+[ext_resource path="res://characters/wizard/projectiles/orb/sound/lock.wav" type="AudioStream" id=13]
+[ext_resource path="res://characters/wizard/projectiles/orb/sound/unlock.wav" type="AudioStream" id=14]
+[ext_resource path="res://characters/wizard/projectiles/orb/sound/push.wav" type="AudioStream" id=15]
+[ext_resource path="res://characters/wizard/projectiles/orb/sound/shoot.wav" type="AudioStream" id=16]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -22,7 +27,9 @@ animations = [ {
 
 [node name="Orb" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
-extra_state_variables = "locked
+extra_state_variables = "frozen
+locked
+push_ticks
 triggered_attacks"
 
 [node name="Sprite" parent="Flip" index="0"]
@@ -32,7 +39,31 @@ animation = "Orb"
 [node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 11 )]
 z_index = -1
 
-[node name="Hurtbox" parent="." index="2"]
+[node name="Lock" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 13 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 12 )
+
+[node name="Unlock" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
+stream = ExtResource( 14 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 12 )
+
+[node name="Push" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+stream = ExtResource( 15 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 12 )
+
+[node name="Shoot" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+stream = ExtResource( 16 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 12 )
+
+[node name="Hurtbox" parent="." index="3"]
 width = 9
 height = 9
 

@@ -149,7 +149,7 @@ func _tick_shared():
 			if host.reverse_state:
 				host.set_facing(host.get_facing_int() * -1)
 	._tick_shared()
-	if land_cancel and host.is_grounded() and started_in_air:
+	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
 		queue_state_change("Landing")
 	if current_tick <= anim_length and !endless:
 		if can_interrupt():
@@ -171,4 +171,5 @@ func _exit_shared():
 	host.state_hit_cancellable = false
 #	if host.reverse_state:
 #		host.set_facing(host.get_facing_int() * -1)
+#	host.sprite.rotation = 0
 	emit_signal("state_ended")

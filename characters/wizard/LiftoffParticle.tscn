@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=1]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=2]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0.890909 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=2]
+interpolation_mode = 2
+colors = PoolColorArray( 0.831373, 0.25098, 0.713726, 1, 0.113725, 0.552941, 0.960784, 1 )
+
+[node name="ParticleEffect" instance=ExtResource( 2 )]
+free = false
+one_shot = false
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+amount = 30
+lifetime = 0.5
+randomness = 1.0
+lifetime_randomness = 0.5
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 1
+emission_sphere_radius = 12.83
+gravity = Vector2( 0, 0 )
+scale_amount = 1.45
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color_ramp = SubResource( 2 )

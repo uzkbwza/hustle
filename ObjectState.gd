@@ -36,6 +36,16 @@ export(PackedScene) var particle_scene = null
 export var particle_position = Vector2()
 export var spawn_particle_on_enter = false
 
+export var _c_Sfx = 0
+export(AudioStream) var enter_sfx = null
+export var enter_sfx_volume = -15.0
+
+export(AudioStream) var sfx = null
+export var sfx_tick = 1
+export var sfx_volume = -15.0
+
+var enter_sfx_player
+var sfx_player
 
 var current_tick = -1
 var fixed
@@ -85,7 +95,8 @@ func _tick_shared():
 				hitbox.tick()
 			else:
 				deactivate_hitbox(hitbox)
-		
+		if current_tick == sfx_tick and sfx_player and !ReplayManager.resimulating:
+			sfx_player.play()
 		if current_tick == force_tick:
 			if force_speed != "0.0":
 				var force = xy_to_dir(force_dir_x, force_dir_y, force_speed, "1.0")
@@ -156,6 +167,22 @@ func init():
 		else:
 			sprite_anim_length = anim_length
 	setup_hitboxes()
+	call_deferred("setup_audio")
+
+func setup_audio():
+	if enter_sfx:
+		enter_sfx_player = VariableSound2D.new()
+		add_child(enter_sfx_player)
+		enter_sfx_player.bus = "Fx"
+		enter_sfx_player.stream = enter_sfx
+		enter_sfx_player.volume_db = enter_sfx_volume
+
+	if sfx:
+		sfx_player = VariableSound2D.new()
+		add_child(sfx_player)
+		sfx_player.bus = "Fx"
+		sfx_player.stream = sfx
+		sfx_player.volume_db = sfx_volume
 
 func setup_hitboxes():
 	var hitboxes = []
@@ -197,6 +224,8 @@ func _enter_shared():
 	if reset_momentum:
 		host.reset_momentum()
 	current_tick = -1
+	if enter_sfx_player and !ReplayManager.resimulating:
+		enter_sfx_player.play()
 	emit_signal("state_started")
 	
 func xy_to_dir(x, y, mul="1.0", div="100.0"):

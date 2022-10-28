@@ -2,7 +2,7 @@ extends AudioStreamPlayer2D
 
 class_name VariableSound2D
 
-export var pitch_variation = 0.1
+export var pitch_variation = 0.05
 export var one_shot = false
 export var streams: Array = []
 var pitch_scale_

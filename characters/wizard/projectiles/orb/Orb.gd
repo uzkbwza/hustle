@@ -7,10 +7,15 @@ const DIRECT_MOVE_SPEED = "3.0"
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LOCK_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 const DISABLE_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
+const PUSH_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
+const PUSH_TICKS = 30
 
 var triggered_attacks = {}
 
+var frozen = false
 var locked = false
+
+var push_ticks = 0
 
 func _ready():
 	pass
@@ -23,13 +28,16 @@ func get_target_pos():
 	}
 
 func lock():
+	reset_momentum()
 	locked = true
+	push_ticks = 0
 	spawn_particle_effect_relative(LOCK_PARTICLE)
-	
+	play_sound("Lock")
 
 func unlock():
 	locked = false
 	spawn_particle_effect_relative(LOCK_PARTICLE)
+	play_sound("Unock")
 
 func get_travel_dir():
 	if creator:
@@ -40,10 +48,14 @@ func travel_towards_creator():
 	var travel_dir = get_travel_dir()
 	if travel_dir:
 		var force = fixed.vec_mul(travel_dir.x, travel_dir.y, ACCEL_SPEED)
+
 		apply_force(force.x, force.y)
-		apply_full_fric(FRIC)
-		apply_y_fric(FRIC)
-		apply_forces()
+		if push_ticks > 0:
+			apply_forces_no_limit()
+		else:
+			apply_full_fric(FRIC)
+			apply_y_fric(FRIC)
+			apply_forces()
 		if get_pos().y > -5:
 			apply_force("0", "-" + ACCEL_SPEED)
 		var direct_movement = fixed.vec_mul(travel_dir.x, travel_dir.y, DIRECT_MOVE_SPEED)
@@ -65,6 +77,13 @@ func attack(attack_type):
 		"OrbDart":
 			spawn_orb_dart()
 
+func push(fx, fy):
+	play_sound("Push")
+	reset_momentum()
+	push_ticks = PUSH_TICKS
+	apply_force(fx, fy)
+	spawn_particle_effect_relative(PUSH_PARTICLE)
+
 func disable():
 	.disable()
 	creator.orb_projectile = null
@@ -74,3 +93,4 @@ func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)
 	var dir = fixed.normalized_vec(str(local_pos.x), str(local_pos.y))
 	spawn_object(ORB_DART_SCENE, 0, 0, true, {"dir": dir})
+	play_sound("Shoot")

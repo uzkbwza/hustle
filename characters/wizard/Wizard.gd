@@ -17,10 +17,12 @@ var hovering = false
 var orb_projectile
 var can_flame_wave = true
 
+onready var liftoff_sprite = $Flip/LiftoffSprite
+
 func init():
 	.init()
 	hover_left = HOVER_AMOUNT / 4
-
+	
 func apply_grav():
 	if !hovering:
 		.apply_grav()

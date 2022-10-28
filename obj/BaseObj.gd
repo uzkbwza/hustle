@@ -67,6 +67,11 @@ var objs_map = {
 	
 }
 
+var sounds = {
+	
+}
+
+
 func _enter_tree():
 	if obj_name:
 		name = obj_name
@@ -78,6 +83,16 @@ func _ready():
 		creator = objs_map[creator_name]
 	if !obj_name:
 		obj_name = name
+
+	for sound in $Sounds.get_children():
+		sounds[sound.name] = sound
+		sound.bus = "Fx"
+
+func play_sound(sound_name):
+	if is_ghost or ReplayManager.resimulating:
+		return
+	if sound_name in sounds:
+		sounds[sound_name].play()
 
 func setup_hitbox_names():
 	for i in range(hitboxes.size()):
@@ -157,6 +172,7 @@ func copy_to(o: BaseObj):
 #	o.set_pos(get_pos().x, get_pos().y)
 #	o.set_facing(get_facing_int())
 	o.update_data()
+	o.sprite.rotation = sprite.rotation
 	o.chara.set_facing(get_facing_int())
 
 func get_frames():

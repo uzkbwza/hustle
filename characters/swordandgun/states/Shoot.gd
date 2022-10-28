@@ -13,6 +13,8 @@ var angle
 
 
 func _frame_1():
+	host.play_sound("Shoot")
+	host.play_sound("ShootBass")
 	var camera = host.get_camera()
 	var bullet_location_local = host.obj_local_center(host.opponent)
 	dir = fixed.normalized_vec_times(str(bullet_location_local.x), str(bullet_location_local.y), "1.0")

@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://projectile/DirProjectile.tscn" type="PackedScene" id=2]
 [ext_resource path="res://characters/wizard/projectiles/sprites/orb_projectile.png" type="Texture" id=3]
 [ext_resource path="res://characters/wizard/projectiles/OrbDartParticle.tscn" type="PackedScene" id=4]
+[ext_resource path="res://characters/wizard/projectiles/states/OrbDartDefault.gd" type="Script" id=5]
+[ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -25,21 +27,21 @@ frames = SubResource( 1 )
 [node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 4 )]
 z_index = -1
 
-[node name="CollisionBox" parent="." index="1"]
+[node name="CollisionBox" parent="." index="2"]
 width = 5
 height = 5
 
 [node name="Default" parent="StateMachine" index="0"]
-endless = true
-move_speed = "16"
+script = ExtResource( 5 )
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 script = ExtResource( 1 )
 width = 5
 height = 5
-damage = 30
+damage = 60
 hitlag_ticks = 6
 victim_hitlag = 6
+hit_sound = ExtResource( 6 )
 knockback = "5.0"
 start_tick = 1
 always_on = true

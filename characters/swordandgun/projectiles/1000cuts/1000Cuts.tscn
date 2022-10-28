@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/projectiles/states/1000CutsDefault.gd" type="Script" id=2]
@@ -16,6 +16,8 @@
 [ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts2.png" type="Texture" id=14]
 [ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts9.png" type="Texture" id=15]
 [ext_resource path="res://characters/swordandgun/projectiles/sprites/1000cuts3.png" type="Texture" id=16]
+[ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=17]
+[ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=18]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -53,6 +55,7 @@ hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
 hit_height = 2
+hit_sound = ExtResource( 17 )
 knockback = "5.0"
 start_tick = 2
 active_ticks = 2
@@ -69,6 +72,7 @@ hitlag_ticks = 3
 victim_hitlag = 3
 hit_height = 0
 group = 1
+hit_sound = ExtResource( 17 )
 knockback = "5.0"
 start_tick = 10
 active_ticks = 2
@@ -84,6 +88,7 @@ hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
 group = 2
+hit_sound = ExtResource( 18 )
 knockback = "5.0"
 start_tick = 18
 active_ticks = 2

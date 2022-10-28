@@ -94,6 +94,7 @@ func join_game(ip, port, new_player_name):
 
 func host_game_holepunch():
 	_reset()
+	print('traversing nat...')
 	hole_punch.start_traversal(session_id, true, session_username)
 	var result = yield(hole_punch, "hole_punched")
 	print("hole punched")
@@ -110,6 +111,7 @@ func host_game_holepunch():
 func join_game_holepunch(room_code):
 	_reset()
 	hole_punch.start_traversal(room_code, false, session_username)
+	print('traversing nat...')
 	var result = yield(hole_punch, "hole_punched")
 	print("hole punched")
 	

@@ -1,6 +1,7 @@
 extends Node
 
 class_name HolePunch
+
 #Signal is emitted when holepunch is complete. Connect this signal to your network manager
 #Once your network manager received the signal they can host or join a game on the host port
 signal hole_punched(my_port, hosts_port, hosts_address)
@@ -48,7 +49,7 @@ const PEER_GO = "go"
 const SERVER_OK = "ok"
 const SERVER_INFO = "peers"
 
-const MAX_PLAYER_COUNT = 2
+const MAX_PLAYER_COUNT = 1
 
 # warning-ignore:unused_argument
 func _process(delta):
@@ -167,7 +168,6 @@ func _ping_peer():
 			emit_signal("hole_punched", int(own_port), int(host_port), host_address)
 			p_timer.stop()
 			set_process(false)
-
 
 func start_peer_contact():	
 	server_udp.put_packet("goodbye".to_utf8())

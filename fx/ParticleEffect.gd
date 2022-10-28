@@ -8,6 +8,7 @@ const FPS = 60
 export var free=true
 export var one_shot = true
 export var lifetime = 1.0
+export var start_enabled = true
 var enabled = true
 var tick = 0
 
@@ -17,10 +18,10 @@ func _ready():
 	for child in get_children():
 		if child is Particles2D:
 			child.one_shot = one_shot
-			child.emitting = true
+			child.emitting = start_enabled
 		if child is CPUParticles2D:
 			child.one_shot = one_shot
-			child.emitting = true
+			child.emitting = start_enabled
 		if child is AnimatedSprite:
 			child.playing = false
 			child.frame = 0

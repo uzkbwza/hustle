@@ -16,6 +16,8 @@ unique_name_in_owner = true
 [node name="Particles" type="Node2D" parent="Flip"]
 unique_name_in_owner = true
 
+[node name="Sounds" type="Node2D" parent="."]
+
 [node name="CollisionBox" type="Node2D" parent="."]
 script = ExtResource( 2 )
 

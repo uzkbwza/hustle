@@ -239,6 +239,10 @@ config/icon="res://icon.png"
 ReplayManager="*res://ReplayManager.gd"
 Network="*res://Network.gd"
 
+[debug]
+
+gdscript/warnings/enable=false
+
 [display]
 
 window/size/width=640

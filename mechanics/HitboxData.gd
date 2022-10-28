@@ -19,6 +19,7 @@ var damage
 var reversible
 var name
 var throw
+var knockdown_extends_hitstun = true
 
 func _init(state):
 	hit_height = state.hit_height
@@ -42,3 +43,5 @@ func _init(state):
 		var pos = state.get_absolute_position()
 		pos_x = pos.x
 		pos_y = pos.y
+	if state.get("knockdown_extends_hitstun") != null:
+		knockdown_extends_hitstun = state.knockdown_extends_hitstun

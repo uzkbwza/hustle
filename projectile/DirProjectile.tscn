@@ -8,9 +8,6 @@ extra_state_variables = "immunity_susceptible"
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 2 )
-fallback_state = "Wait"
-sprite_animation = ""
-endless = false
 move_speed = "15.0"
 _c_Homing_Options = 0
 homing = false

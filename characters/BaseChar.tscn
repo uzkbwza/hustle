@@ -1,4 +1,4 @@
-[gd_scene load_steps=124 format=2]
+[gd_scene load_steps=134 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -122,6 +122,16 @@
 [ext_resource path="res://fx/BurstEffect.tscn" type="PackedScene" id=120]
 [ext_resource path="res://ui/ActionSelector/StateIcons/getup.png" type="Texture" id=121]
 [ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=122]
+[ext_resource path="res://sound/common/jump1.wav" type="AudioStream" id=123]
+[ext_resource path="res://sound/common/dash1.wav" type="AudioStream" id=124]
+[ext_resource path="res://sound/common/burst.wav" type="AudioStream" id=125]
+[ext_resource path="res://sound/common/explosion2.wav" type="AudioStream" id=126]
+[ext_resource path="res://sound/common/explosion1.wav" type="AudioStream" id=127]
+[ext_resource path="res://sound/common/landing.wav" type="AudioStream" id=128]
+[ext_resource path="res://sound/common/throw_tech.wav" type="AudioStream" id=129]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=130]
+[ext_resource path="res://sound/common/parry.wav" type="AudioStream" id=131]
+[ext_resource path="res://sound/common/parry2.wav" type="AudioStream" id=132]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -326,6 +336,7 @@ script = ExtResource( 1 )
 gravity = "0.5"
 max_air_speed = "13"
 max_fall_speed = "8"
+num_air_movements = 2
 character_portrait = ExtResource( 2 )
 player_info_scene = ExtResource( 39 )
 player_extra_params_scene = ExtResource( 122 )
@@ -339,17 +350,29 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionBox" parent="." index="1"]
+[node name="Parry" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 131 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Parry2" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
+stream = ExtResource( 132 )
+volume_db = -15.0
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="CollisionBox" parent="." index="2"]
 y = -14
 width = 10
 height = 14
 
-[node name="Hurtbox" parent="." index="2"]
+[node name="Hurtbox" parent="." index="3"]
 y = -16
 width = 14
 height = 16
 
-[node name="StateMachine" parent="." index="3"]
+[node name="StateMachine" parent="." index="4"]
 __meta__ = {
 "_edit_group_": true
 }
@@ -397,6 +420,8 @@ height = 36
 hitstun_ticks = 45
 victim_hitlag = 4
 screenshake_amount = 2
+whiff_sound = ExtResource( 125 )
+hit_sound = ExtResource( 126 )
 dir_y = "-0.25"
 knockback = "20.0"
 start_tick = 2
@@ -432,6 +457,8 @@ height = 36
 hitstun_ticks = 45
 victim_hitlag = 4
 screenshake_amount = 2
+whiff_sound = ExtResource( 125 )
+hit_sound = ExtResource( 127 )
 dir_y = "-0.25"
 knockback = "4.0"
 start_tick = 2
@@ -451,6 +478,8 @@ interrupt_into_string = "Aerial"
 script = ExtResource( 69 )
 particle_scene = ExtResource( 11 )
 spawn_particle_on_enter = true
+enter_sfx = ExtResource( 128 )
+enter_sfx_volume = -10.0
 type = 5
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded"
@@ -512,6 +541,8 @@ fallback_state = "Getup"
 anim_length = 30
 particle_scene = ExtResource( 11 )
 spawn_particle_on_enter = true
+enter_sfx = ExtResource( 128 )
+enter_sfx_volume = -10.0
 iasa_at = 4
 busy_interrupt_type = 1
 interrupt_into_string = "OTG"
@@ -558,6 +589,8 @@ change_stance_to = "Normal"
 script = ExtResource( 6 )
 anim_length = 15
 reset_momentum = true
+enter_sfx = ExtResource( 124 )
+enter_sfx_volume = -10.0
 title = "Dash Forward"
 interrupt_frames = [ 7 ]
 interruptible_on_opponent_turn = true
@@ -570,6 +603,8 @@ dash_speed = 12
 script = ExtResource( 6 )
 anim_length = 18
 reset_momentum = true
+enter_sfx = ExtResource( 124 )
+enter_sfx_volume = -10.0
 title = "Dash Back"
 interrupt_frames = [ 7 ]
 interruptible_on_opponent_turn = true
@@ -586,6 +621,8 @@ anim_length = 16
 sprite_anim_length = 4
 loop_animation = true
 reset_momentum = true
+enter_sfx = ExtResource( 124 )
+enter_sfx_volume = -10.0
 title = "Dodge"
 type = 4
 data_ui_scene = ExtResource( 51 )
@@ -602,6 +639,7 @@ anim_length = 1000
 sprite_anim_length = 4
 loop_animation = true
 particle_scene = ExtResource( 12 )
+enter_sfx = ExtResource( 123 )
 title = "Jump"
 data_ui_scene = ExtResource( 9 )
 button_texture = ExtResource( 67 )
@@ -624,6 +662,7 @@ anim_length = 1000
 sprite_anim_length = 4
 loop_animation = true
 particle_scene = ExtResource( 12 )
+enter_sfx = ExtResource( 123 )
 title = "Double Jump"
 data_ui_scene = ExtResource( 9 )
 button_texture = ExtResource( 67 )
@@ -642,6 +681,8 @@ script = ExtResource( 5 )
 fallback_state = "Fall"
 anim_length = 15
 reset_momentum = true
+enter_sfx = ExtResource( 124 )
+enter_sfx_volume = -10.0
 title = "Air Dash"
 data_ui_scene = ExtResource( 13 )
 button_texture = ExtResource( 66 )
@@ -742,8 +783,16 @@ height = 12
 hitlag_ticks = 0
 victim_hitlag = 0
 priority = 9999
+knockdown_extends_hitstun = null
+_c_Frame_Data = true
 start_tick = 3
 active_ticks = 3
+always_on = 5
+_c_Loop_Data = false
+looping = 0
+loop_active_ticks = 0
+_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 130 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
+
 throw_state = "Hold"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="26"]
@@ -770,7 +819,16 @@ height = 12
 hitlag_ticks = 0
 victim_hitlag = 0
 priority = 9999
+knockdown_extends_hitstun = null
+_c_Frame_Data = true
 start_tick = 3
+active_ticks = 0
+always_on = 5
+_c_Loop_Data = false
+looping = 0
+loop_active_ticks = 0
+_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 130 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
+
 throw_state = "Hold"
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="27"]
@@ -887,6 +945,7 @@ anim_length = 30
 enter_force_dir_x = "-1.0"
 enter_force_speed = "8.0"
 reset_momentum = true
+enter_sfx = ExtResource( 129 )
 interrupt_into_string = "Grounded
 Aerial"
 
