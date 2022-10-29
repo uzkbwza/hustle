@@ -6,7 +6,7 @@ signal action_selected(action, data)
 
 signal undo()
 
-const MAX_HEALTH = 1000
+const MAX_HEALTH = 10
 #const STALING_REDUCTIONS = [
 #	"1.0",
 #	"0.90",
@@ -35,6 +35,7 @@ const GUTS_REDUCTIONS = {
 	"0.20": "0.52",
 	"0.10": "0.50",
 }
+
 const MAX_GUTS = 10
 
 const MAX_DI_COMBO_ENHANCMENT = 15

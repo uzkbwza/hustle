@@ -36,6 +36,7 @@ var undoing = false
 var singleplayer = false
 
 var buffer_playback = false
+var buffer_edit = false
 
 var game_end_tick = 0
 
@@ -48,6 +49,8 @@ var ghost_hidden = false
 var ghost_game
 var ghost_speed = 3
 var ghost_tick = 0
+
+var match_data = null
 
 var p1 = null
 var p2 = null
@@ -137,8 +140,9 @@ func _on_obj_exit_tree(obj):
 	objects.erase(obj)
 
 func start_game(singleplayer: bool, match_data: Dictionary):
-	p1 = load(match_data.selected_characters[1]["filename"]).instance()
-	p2 = load(match_data.selected_characters[2]["filename"]).instance()
+	self.match_data = match_data
+	p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
+	p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
 	p1.name = "P1"
 	p2.name = "P2"
 	p1.modulate = Color("aca2ff")
@@ -166,8 +170,11 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	if !is_ghost:
 		if ReplayManager.playback:
 			get_max_replay_tick()
-		else:
+		elif !match_data.has("replay"):
 			ReplayManager.init()
+		else:
+			get_max_replay_tick()
+			ReplayManager.playback = true
 	if singleplayer:
 #		p2.dummy = true
 		pass
@@ -190,7 +197,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	if !ReplayManager.resimulating:
 		show_state()
 	if ReplayManager.playback and !ReplayManager.resimulating:
-		yield(get_tree().create_timer(0.25), "timeout")
+		yield(get_tree().create_timer(0.33), "timeout")
 	game_started = true
 
 func update_data():
@@ -270,6 +277,9 @@ func tick():
 					ReplayManager.resimulating = false
 					camera.reset_shake()
 	if should_game_end():
+		if Network.multiplayer_active:
+			if !ReplayManager.playback:
+				Network.autosave_match_replay(match_data)
 		end_game()
 
 
@@ -486,21 +496,7 @@ func resimulate():
 	show_state()
 
 func undo():
-	if ReplayManager.resimulating:
-		return
-	var last_frame = 0
-	var last_id = 1
-	for id in ReplayManager.frames.keys():
-		for frame in ReplayManager.frames[id].keys():
-			if frame > last_frame:
-				last_frame = frame
-				last_id = id
-	var other_id = 1 if last_id == 2 else 2
-	ReplayManager.frames[last_id].erase(last_frame)
-	ReplayManager.frames[other_id].erase(last_frame)
-	ReplayManager.resimulating = true
-	ReplayManager.playback = true
-	ReplayManager.resim_tick = last_frame - 2
+	ReplayManager.undo()
 	game_started = false
 	start_playback()
 
@@ -514,9 +510,9 @@ func end_game():
 	game_finished = true
 	p1.game_over = true
 	p2.game_over = true
+	if !is_ghost:
+		ReplayManager.play_full = true
 	emit_signal("game_ended")
-
-
 
 func process_tick():
 	if !ReplayManager.playback:
@@ -552,7 +548,13 @@ func process_tick():
 			yield(get_tree(), "idle_frame")
 #				camera.reset_smoothing()
 		else:
+			if buffer_edit:
+				ReplayManager.playback = false
+				ReplayManager.cut_replay(current_tick)
+				buffer_edit = false
 			call_deferred("simulate_one_tick")
+
+
 func _process(delta):
 	update()
 	if !is_ghost:
@@ -560,6 +562,9 @@ func _process(delta):
 			if !game_finished and singleplayer and !ReplayManager.playback:
 				if is_waiting_on_player() and current_tick > 0:
 					buffer_playback = true
+		if Input.is_action_just_pressed("edit_replay"):
+			if ReplayManager.playback:
+				buffer_edit = true
 
 func _physics_process(_delta):
 	if undoing:

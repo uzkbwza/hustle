@@ -13,11 +13,11 @@ var peer_udp = PacketPeerUDP.new()
 #Set the rendevouz address to the IP address of your third party server
 export(String) var rendevouz_address = "168.235.86.185"
 #Set the rendevouz port to the port of your third party server
-export(int) var rendevouz_port = 1209
+export(int) var rendevouz_port = 52450
 #This is the range of ports you will search if you hear no response from the first port tried
-export(int) var port_cascade_range = 10
+export(int) var port_cascade_range = 100
 #The amount of messages of the same type you will send before cascading or giving up
-export(int) var response_window = 5
+export(int) var response_window = 10
 
 
 var found_server = false
@@ -49,7 +49,7 @@ const PEER_GO = "go"
 const SERVER_OK = "ok"
 const SERVER_INFO = "peers"
 
-const MAX_PLAYER_COUNT = 1
+const MAX_PLAYER_COUNT = 2
 
 # warning-ignore:unused_argument
 func _process(delta):

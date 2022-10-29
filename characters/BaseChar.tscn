@@ -1,4 +1,4 @@
-[gd_scene load_steps=134 format=2]
+[gd_scene load_steps=135 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -132,6 +132,7 @@
 [ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=130]
 [ext_resource path="res://sound/common/parry.wav" type="AudioStream" id=131]
 [ext_resource path="res://sound/common/parry2.wav" type="AudioStream" id=132]
+[ext_resource path="res://sound/common/instant_cancel.wav" type="AudioStream" id=133]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -699,6 +700,8 @@ fric = "0.025"
 
 [node name="InstantCancel" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 59 )
+enter_sfx = ExtResource( 133 )
+enter_sfx_volume = -10.0
 title = "Inst. Cancel"
 type = 3
 button_texture = ExtResource( 107 )

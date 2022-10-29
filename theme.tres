@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=23 format=2]
+[gd_resource type="Theme" load_steps=25 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -49,6 +49,18 @@ border_color = Color( 1, 1, 1, 1 )
 bg_color = Color( 1, 1, 1, 1 )
 border_width_left = 1
 border_width_top = 2
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=23]
+bg_color = Color( 0.235294, 0.235294, 0.235294, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=22]
+bg_color = Color( 0.168627, 0.168627, 0.168627, 1 )
+border_width_left = 1
+border_width_right = 1
 border_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="StyleBoxFlat" id=4]
@@ -118,6 +130,9 @@ HSlider/icons/tick = null
 HSlider/styles/grabber_area = SubResource( 18 )
 HSlider/styles/grabber_area_highlight = SubResource( 18 )
 HSlider/styles/slider = SubResource( 17 )
+LineEdit/styles/focus = SubResource( 23 )
+LineEdit/styles/normal = SubResource( 22 )
+LineEdit/styles/read_only = null
 Panel/styles/panel = SubResource( 4 )
 PanelContainer/styles/panel = SubResource( 21 )
 SelectButton/base_type = "Button"

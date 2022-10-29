@@ -5,6 +5,7 @@ onready var p2_action_buttons = $"%P2ActionButtons"
 
 signal singleplayer_started()
 signal multiplayer_started()
+signal loaded_replay(match_data)
 
 var game
 var turns_taken = {
@@ -26,12 +27,40 @@ func _ready():
 	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%ResumeButton".connect("pressed", self, "pause")
+	$"%ReplayButton".connect("pressed", self, "load_replay")
+	$"%ReplayCancelButton".connect("pressed", $"%ReplayWindow", "hide")
+	$"%OpenReplayFolderButton".connect("pressed", self, "open_replay_folder")
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
 	turn_timer.connect("timeout", self, "_on_turn_timer_timeout")
+
+func load_replay():
+	$"%ReplayWindow".show()
+	for child in $"%ReplayContainer".get_children():
+		child.free()
+	var replay_map = ReplayManager.load_replays()
+	var buttons = []
+	for key in replay_map:
+		var button = preload("res://ui/ReplayWindow/ReplayButton.tscn").instance()
+		button.text = key
+		button.path = replay_map[key]["path"]
+		button.modified = replay_map[key]["modified"]
+		button.connect("pressed", self, "_on_replay_button_pressed", [button.path])
+		buttons.append(button)
+	buttons.sort_custom(self, "sort_replays")
+	for button in buttons:
+		$"%ReplayContainer".add_child(button)
+
+func sort_replays(a, b):
+	return a.modified > b.modified
+
+func _on_replay_button_pressed(path):
+	var match_data = ReplayManager.load_replay(path)
+	emit_signal("loaded_replay", match_data)
+	$"%ReplayWindow".hide()
 
 func _on_quit_button_pressed():
 	Network.stop_multiplayer()
@@ -66,6 +95,7 @@ func _on_rematch_button_pressed():
 
 func _on_game_playback_requested():
 	$PostGameButtons.show()
+	$"%RematchButton".show()
 
 func on_game_started():
 	lobby.hide()
@@ -88,7 +118,11 @@ func _on_turn_ready():
 		1: false,
 		2: false
 	}
-	
+
+func open_replay_folder():
+	var folder = ProjectSettings.globalize_path("user://replay")
+	OS.shell_open(folder)
+
 func end_turn_for(player_id):
 	turns_taken[player_id] = true
 
@@ -113,6 +147,10 @@ func _on_turn_timer_timeout():
 
 func pause():
 	$"%PausePanel".visible = !$"%PausePanel".visible
+	if $"%PausePanel".visible:
+		$"%SaveReplayButton".disabled = false
+		$"%SaveReplayButton".text = "save replay"
+		$"%SaveReplayLabel".text = ""
 
 func _process(_delta):
 	if !turn_timer.is_stopped():
@@ -125,6 +163,6 @@ func _process(_delta):
 					bar.visible = Utils.wave(-1, 1, 0.032) > 0
 	if Input.is_action_just_pressed("pause"):
 		pause()
-	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active
-	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
-
+	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished
+	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished
+	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished

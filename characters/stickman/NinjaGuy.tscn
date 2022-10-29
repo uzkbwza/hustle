@@ -47,7 +47,7 @@
 [ext_resource path="res://sound/common/slash4.wav" type="AudioStream" id=45]
 [ext_resource path="res://characters/stickman/sounds/summon.wav" type="AudioStream" id=46]
 
-[node name="Stickman" instance=ExtResource( 15 )]
+[node name="NinjaGuy" instance=ExtResource( 15 )]
 script = ExtResource( 14 )
 max_ground_speed = "20"
 max_air_speed = "10"

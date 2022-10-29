@@ -21,6 +21,8 @@ var multiplayer_active = false
 
 var game
 
+var replay_saved = false
+
 var ticks = {
 	1: null,
 	2: null
@@ -143,8 +145,10 @@ func _reset():
 	network_ids = {}
 	multiplayer_active = false
 
-	game
-
+	game = null
+	
+	replay_saved = false
+	
 	ticks = {
 		1: null,
 		2: null
@@ -233,8 +237,6 @@ func _player_disconnected(id):
 	else: # Game is not in progress.
 		# Unregister this player.
 		unregister_player(id)
-	end_game()
-	get_tree().reload_current_scene()
 
 # Callback from SceneTree, only for clients (not server).
 func _connected_ok():
@@ -323,6 +325,7 @@ remotesync func send_rematch_request(player_id):
 	rematch_requested[player_id] = true
 	if rematch_requested[1] and rematch_requested[2]:
 		if get_tree().is_network_server():
+			ReplayManager.init()
 			begin_game()
 
 func assign_players():
@@ -356,6 +359,11 @@ remotesync func open_chara_select():
 func end_game():
 	if multiplayer_active:
 		stop_multiplayer()
+
+func autosave_match_replay(match_data):
+	if !replay_saved:
+		replay_saved = true
+		ReplayManager.save_replay_mp(match_data, players.values()[0], players.values()[1])
 
 func _exit_tree():
 	stop_multiplayer()

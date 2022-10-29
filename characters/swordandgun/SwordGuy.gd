@@ -31,4 +31,4 @@ func on_got_hit():
 		if objs_map.has(cut_projectile):
 			objs_map[cut_projectile].disable()
 			cut_projectile = null
-		
+

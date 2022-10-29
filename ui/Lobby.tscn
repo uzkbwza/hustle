@@ -24,7 +24,7 @@ anchor_bottom = 1.0
 [node name="NameEdit" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
 margin_right = 208.0
-margin_bottom = 21.0
+margin_bottom = 11.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "username"
@@ -32,7 +32,7 @@ placeholder_text = "enter name here"
 
 [node name="PlayerList" type="ItemList" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_top = 22.0
+margin_top = 12.0
 margin_right = 208.0
 margin_bottom = 146.0
 size_flags_horizontal = 3
@@ -124,7 +124,7 @@ margin_right = 167.0
 margin_bottom = 21.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-text = "1209"
+text = "52450"
 placeholder_text = "port"
 
 [node name="NetworkErrorLabel" type="Label" parent="."]

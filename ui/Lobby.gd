@@ -9,9 +9,7 @@ onready var ip_edit = $"%IPEdit"
 onready var port_edit = $"%PortEdit"
 
 onready var player_list = $"%PlayerList"
-
 onready var error_label = $"%NetworkErrorLabel"
-
 onready var connect_container = $"%ConnectContainer"
 
 export var direct_connect = true

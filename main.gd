@@ -1,5 +1,7 @@
 extends Node
 
+signal game_started()
+
 onready var ui_layer = $UILayer
 onready var game_layer = $GameLayer
 onready var hud_layer = $HudLayer
@@ -18,31 +20,43 @@ var p2_ghost_extra
 
 var match_data = {}
 
-signal game_started()
 func _ready():
 	ui_layer.connect("singleplayer_started", self, "_on_game_started", [true])
+	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")
 	connect("game_started", ui_layer, "on_game_started")
 	Network.connect("start_game", self, "_on_game_started", [false])
 	$"%P1ActionButtons".connect("action_clicked", self, "on_action_clicked", [1])
 	$"%P2ActionButtons".connect("action_clicked", self, "on_action_clicked", [2])
 	$"%GhostButton".connect("toggled", self, "_on_ghost_button_toggled")
+	$"%SaveReplayButton".connect("pressed", self, "save_replay")
 	$"%CharacterSelect".connect("match_ready", self, "_on_match_ready")
 	$"%GhostSpeed".connect("value_changed", self, "_on_ghost_speed_changed")
 	$"%GameUI".hide()
 	$"%MainMenu".show()
+	ReplayManager.play_full = false
 
 func _on_game_started(singleplayer):
+	if is_instance_valid(game):
+		game.free()
+		game = null
+		stop_ghost()
 	self.singleplayer = singleplayer
+	Network.replay_saved = false
 	hide_main_menu()
 	$"%CharacterSelect".show()
 	$"%CharacterSelect".init(singleplayer)
 	$"%DirectConnectLobby".hide()
 	$"%Lobby".hide()
 
+func _on_loaded_replay(match_data):
+	match_data["replay"] = true
+	_on_match_ready(match_data)
+
 func _on_match_ready(data):
 	match_data = data
-	singleplayer = data["singleplayer"]
-	ReplayManager.playback = false
+	singleplayer = true if match_data.has("replay") else data["singleplayer"]
+	if !match_data.has("replay"):
+		ReplayManager.playback = false
 	setup_game(singleplayer, data)
 	emit_signal("game_started")
 
@@ -55,6 +69,12 @@ func setup_game(singleplayer, data):
 	if game:
 		game.queue_free()
 	call_deferred("setup_game_deferred", singleplayer, data)
+
+func save_replay():
+	var filename = ReplayManager.save_replay(match_data, $"%ReplayName".text)
+	$"%SaveReplayButton".disabled = true
+	$"%SaveReplayButton".text = "saved"
+	$"%SaveReplayLabel".text = "saved replay to " + filename
 
 func hide_main_menu():
 	$"%MainMenu".hide()

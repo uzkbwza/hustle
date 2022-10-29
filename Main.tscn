@@ -338,6 +338,17 @@ margin_bottom = 11.0
 text = "ESC: Open menu"
 align = 1
 
+[node name="TopInfoReplay" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -320.0
+margin_right = 320.0
+margin_bottom = 11.0
+text = "E: Edit replay - ESC: Open menu"
+align = 1
+
 [node name="BottomBar" type="VBoxContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
 anchor_left = 0.5
@@ -575,37 +586,83 @@ text = "x4"
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -42.0
-margin_top = -7.0
-margin_right = 42.0
-margin_bottom = 7.0
+margin_left = -58.0
+margin_top = -2.0
+margin_right = 83.0
+margin_bottom = 39.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/PausePanel"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 83.0
-margin_bottom = 26.0
+margin_right = 140.0
+margin_bottom = 52.0
 alignment = 1
 
 [node name="ResumeButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 82.0
+margin_right = 139.0
 margin_bottom = 12.0
 size_flags_vertical = 0
 text = "resume"
 
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+visible = false
+margin_top = 13.0
+margin_right = 139.0
+margin_bottom = 13.0
+
 [node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 13.0
-margin_right = 82.0
+margin_right = 139.0
 margin_bottom = 25.0
 size_flags_vertical = 0
 text = "quit"
+
+[node name="ReplayName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 26.0
+margin_right = 139.0
+margin_bottom = 37.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+align = 1
+placeholder_text = "replay name"
+caret_blink = true
+
+[node name="SaveReplayButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 38.0
+margin_right = 139.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 60, 0 )
+text = "save replay"
+
+[node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+margin_top = 51.0
+margin_right = 139.0
+margin_bottom = 51.0
+
+[node name="SaveReplayLabel" type="Label" parent="UILayer/GameUI/PausePanel/VBoxContainer/Control"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -274.0
+margin_top = 3.0
+margin_right = 274.0
+margin_bottom = 14.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="MainMenu" type="Control" parent="UILayer"]
 unique_name_in_owner = true
@@ -632,24 +689,38 @@ alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 39.0
+margin_top = 26.0
 margin_right = 90.0
-margin_bottom = 51.0
+margin_bottom = 38.0
 text = "Singleplayer"
 
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 52.0
+margin_top = 39.0
 margin_right = 90.0
-margin_bottom = 64.0
+margin_bottom = 51.0
 text = "Multiplayer"
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
+margin_top = 52.0
+margin_right = 90.0
+margin_bottom = 64.0
+text = "Direct Connect"
+
+[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
 margin_top = 65.0
 margin_right = 90.0
 margin_bottom = 77.0
-text = "Direct Connect"
+text = "Replays"
+
+[node name="QuitGameButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 78.0
+margin_right = 90.0
+margin_bottom = 90.0
+text = "Quit"
 
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
@@ -742,3 +813,59 @@ step = 0.001
 value = 1.0
 texture_progress = ExtResource( 14 )
 fill_mode = 4
+
+[node name="ReplayWindow" type="PanelContainer" parent="UILayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -188.0
+margin_top = -136.0
+margin_right = 188.0
+margin_bottom = 136.0
+theme = ExtResource( 4 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ReplayWindow"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 375.0
+margin_bottom = 271.0
+
+[node name="Panel" type="Panel" parent="UILayer/ReplayWindow/VBoxContainer"]
+margin_right = 374.0
+margin_bottom = 257.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/ReplayWindow/VBoxContainer/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ReplayContainer" type="VBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer/Panel/ScrollContainer"]
+unique_name_in_owner = true
+margin_right = 374.0
+margin_bottom = 257.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer"]
+margin_top = 258.0
+margin_right = 374.0
+margin_bottom = 270.0
+alignment = 2
+
+[node name="ReplayCancelButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 374.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "cancel"
+
+[node name="OpenReplayFolderButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 374.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "open folder"

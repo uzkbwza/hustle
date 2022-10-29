@@ -1,4 +1,4 @@
-[gd_scene load_steps=154 format=2]
+[gd_scene load_steps=155 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=2]
@@ -151,6 +151,7 @@
 [ext_resource path="res://characters/swordandgun/sounds/shoot_bass.wav" type="AudioStream" id=149]
 [ext_resource path="res://characters/swordandgun/sounds/quickdraw.wav" type="AudioStream" id=150]
 [ext_resource path="res://characters/swordandgun/sounds/1000cuts.wav" type="AudioStream" id=151]
+[ext_resource path="res://characters/swordandgun/sounds/swing3.wav" type="AudioStream" id=152]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -506,7 +507,7 @@ x = 45
 y = -19
 width = 39
 height = 8
-damage = 90
+damage = 80
 victim_hitlag = 4
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -537,7 +538,7 @@ x = 37
 y = -26
 width = 31
 height = 23
-damage = 110
+damage = 90
 hitstun_ticks = 40
 victim_hitlag = 4
 hit_height = 0
@@ -614,6 +615,7 @@ height = 4
 damage = 120
 hitlag_ticks = 7
 victim_hitlag = 7
+whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 141 )
 dir_y = "-0.25"
 knockback = "14.0"
@@ -668,7 +670,7 @@ victim_hitlag = 4
 group = 1
 screenshake_amount = 6
 screenshake_frames = 40
-whiff_sound = ExtResource( 146 )
+whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 143 )
 dir_x = "-1.0"
 dir_y = "2"

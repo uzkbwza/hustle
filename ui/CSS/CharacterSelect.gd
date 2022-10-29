@@ -65,12 +65,20 @@ func init(singleplayer=true):
 func get_character_data(button):
 	var data = {}
 	var scene = button.character_scene.instance()
-	data["filename"] = scene.filename
+	data["name"] = scene.name
+	scene.free()
+	return data
+
+func get_display_data(button):
+	var data = {}
+	var scene = button.character_scene.instance()
+	data["name"] = scene.name
+	data["portrait"] = scene.character_portrait
 	scene.free()
 	return data
 
 func _on_button_mouse_entered(button):
-	var data = get_character_data(button)
+	var data = get_display_data(button)
 	display_character(current_player, data)
 	pass
 
@@ -83,7 +91,8 @@ func _on_button_pressed(button):
 		button.set_pressed_no_signal(false)
 #	button.set_pressed_no_signal(true)
 	var data = get_character_data(button)
-	display_character(current_player, data)
+	var display_data = get_display_data(button)
+	display_character(current_player, display_data)
 	selected_characters[current_player] = data
 	if singleplayer and current_player == 1:
 		current_player = 2

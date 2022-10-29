@@ -9,7 +9,8 @@ func set_fighter(fighter):
 		$HBoxContainer.alignment = BoxContainer.ALIGN_END
 
 func _process(delta):
-	hover_bar.value = fighter.hover_left / float(fighter.HOVER_AMOUNT)
-	hover_bar.modulate.a = 0.25 if fighter.hover_left <= fighter.HOVER_MIN_AMOUNT else 1.0
-#	hover_bar.modulate.b = 0.5 if fighter.hovering else 1.0
-	hover_bar.tint_progress = Color("64d26b") if !fighter.hovering else Color("ff333d")
+	if is_instance_valid(fighter):
+		hover_bar.value = fighter.hover_left / float(fighter.HOVER_AMOUNT)
+		hover_bar.modulate.a = 0.25 if fighter.hover_left <= fighter.HOVER_MIN_AMOUNT else 1.0
+	#	hover_bar.modulate.b = 0.5 if fighter.hovering else 1.0
+		hover_bar.tint_progress = Color("64d26b") if !fighter.hovering else Color("ff333d")
