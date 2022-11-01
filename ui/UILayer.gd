@@ -16,7 +16,7 @@ var turns_taken = {
 const BOTH_ACTIONABLE_TURN_TIMER = 30
 const ONE_ACTIONABLE_TURN_TIMER = 15
 const DISCORD_URL = "https://discord.gg/kyNeDrFBR7"
-#const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
+const TWITTER_URL = "https://twitter.com/ivy_sly_"
 const IVY_SLY_URL = "https://www.ivysly.com"
 
 onready var lobby = $Lobby
@@ -31,14 +31,16 @@ func _ready():
 	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%QuitProgramButton".connect("pressed", self, "_on_quit_program_button_pressed")
 	$"%ResumeButton".connect("pressed", self, "pause")
-	$"%ReplayButton".connect("pressed", self, "load_replay")
-	$"%ReplayCancelButton".connect("pressed", $"%ReplayWindow", "hide")
+	$"%ReplayButton".connect("pressed", self, "load_replays")
+	$"%ReplayCancelButton".connect("pressed", self, "_on_replay_cancel_pressed")
 	$"%OpenReplayFolderButton".connect("pressed", self, "open_replay_folder")
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
-	$"%ShowAutosavedReplays".connect("pressed", self, "load_replay")
+	$"%ShowAutosavedReplays".connect("pressed", self, "load_replays")
 	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
 	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
+	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
+	$"%VersionLabel".text = "version " + Global.VERSION
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
@@ -46,7 +48,7 @@ func _ready():
 	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
 		lobby.connect("quit_on_rematch", $"%RematchButton", "hide")
 	
-func load_replay():
+func load_replays():
 	$"%ReplayWindow".show()
 	for child in $"%ReplayContainer".get_children():
 		child.free()
@@ -62,6 +64,7 @@ func load_replay():
 	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
+	$"%MainMenu".hide()
 
 func sort_replays(a, b):
 	return a.modified > b.modified
@@ -70,6 +73,9 @@ func _on_replay_button_pressed(path):
 	var match_data = ReplayManager.load_replay(path)
 	emit_signal("loaded_replay", match_data)
 	$"%ReplayWindow".hide()
+
+func _on_replay_cancel_pressed():
+	get_tree().reload_current_scene()
 
 func _on_quit_button_pressed():
 	Network.stop_multiplayer()
@@ -120,9 +126,11 @@ func _on_singleplayer_pressed():
 
 func _on_direct_connect_button_pressed():
 	direct_connect_lobby.show()
+	$"%MainMenu".hide()
 
 func _on_multiplayer_pressed():
 	lobby.show()
+	$"%MainMenu".hide()
 
 func _on_turn_ready():
 	$"%P1TurnTimerBar".hide()

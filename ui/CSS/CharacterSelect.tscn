@@ -50,8 +50,8 @@ scroll_horizontal_enabled = false
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 125.0
-margin_bottom = 88.0
+margin_right = 128.0
+margin_bottom = 134.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -111,7 +111,7 @@ unique_name_in_owner = true
 margin_top = 37.0
 margin_right = 128.0
 margin_bottom = 49.0
-hint_tooltip = "Enable directional influence."
+hint_tooltip = "Enable directional influence, affecting the characters' knockback trajectory when they are hit."
 size_flags_horizontal = 15
 text = "DI Enabled"
 expand_icon = true

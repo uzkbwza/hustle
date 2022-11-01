@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=27 format=2]
+[gd_resource type="Theme" load_steps=28 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://ui/checkbutton2.png" type="Texture" id=4]
 [ext_resource path="res://ui/checkbutton3.png" type="Texture" id=5]
 [ext_resource path="res://ui/checkbutton4.png" type="Texture" id=6]
+[ext_resource path="res://ui/updown.png" type="Texture" id=7]
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
@@ -150,6 +151,7 @@ PanelContainer/styles/panel = SubResource( 21 )
 SelectButton/base_type = "Button"
 SelectButton/styles/hover = SubResource( 13 )
 SelectButton/styles/normal = SubResource( 14 )
+SpinBox/icons/updown = ExtResource( 7 )
 TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
 TooltipLabel/fonts/font = ExtResource( 1 )
 TooltipPanel/styles/panel = SubResource( 19 )
