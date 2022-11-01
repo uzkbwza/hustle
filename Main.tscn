@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://ui/CSS/CharacterSelect.tscn" type="PackedScene" id=12]
 [ext_resource path="res://ui/GhostSpeed.gd" type="Script" id=13]
 [ext_resource path="res://ui/TurnTimer/turn_timer_progress.png" type="Texture" id=14]
+[ext_resource path="res://ui/title.png" type="Texture" id=15]
 
 [sub_resource type="CanvasItemMaterial" id=10]
 
@@ -36,6 +37,55 @@ size = 36
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 10 )
+
+[sub_resource type="DynamicFont" id=14]
+size = 18
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 10 )
+
+[sub_resource type="DynamicFont" id=15]
+size = 18
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 10 )
+
+[sub_resource type="DynamicFont" id=13]
+size = 36
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 10 )
+
+[sub_resource type="Animation" id=11]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("WinLabel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "game_won"
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("WinLabel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2, 0.233333, 0.266667, 0.3, 0.333333 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true, false, true, false, true, false, true, false, true ]
+}
 
 [sub_resource type="Gradient" id=5]
 offsets = PoolRealArray( 0 )
@@ -86,6 +136,7 @@ handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="HudLayer" type="CanvasLayer" parent="."]
+visible = false
 script = ExtResource( 8 )
 
 [node name="HudLayer" type="Control" parent="HudLayer"]
@@ -248,6 +299,22 @@ margin_bottom = 44.0
 rect_min_size = Vector2( 40, 40 )
 custom_fonts/font = SubResource( 9 )
 text = "2"
+valign = 2
+
+[node name="P1HitLabel" type="Label" parent="HudLayer/HudLayer/VBoxContainer/HBoxContainer/P1ComboCounter"]
+unique_name_in_owner = true
+show_behind_parent = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -4.0
+margin_top = -8.0
+margin_right = 36.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 40, 40 )
+custom_fonts/font = SubResource( 14 )
+text = "hits"
 align = 1
 valign = 2
 
@@ -266,8 +333,42 @@ margin_bottom = 44.0
 rect_min_size = Vector2( 40, 40 )
 custom_fonts/font = SubResource( 9 )
 text = "2"
+valign = 2
+
+[node name="P2HitLabel" type="Label" parent="HudLayer/HudLayer/VBoxContainer/HBoxContainer/P2ComboCounter"]
+unique_name_in_owner = true
+show_behind_parent = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -4.0
+margin_top = -8.0
+margin_right = 36.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 40, 40 )
+custom_fonts/font = SubResource( 15 )
+text = "hits"
 align = 1
 valign = 2
+
+[node name="WinLabel" type="Label" parent="HudLayer"]
+unique_name_in_owner = true
+visible = false
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -22.0
+margin_bottom = 22.0
+theme = ExtResource( 4 )
+custom_fonts/font = SubResource( 13 )
+text = "P1 WIN"
+align = 1
+
+[node name="HudAnimationPlayer" type="AnimationPlayer" parent="HudLayer"]
+unique_name_in_owner = true
+anims/RESET = SubResource( 11 )
+anims/game_won = SubResource( 12 )
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 script = ExtResource( 1 )
@@ -319,6 +420,7 @@ theme = ExtResource( 4 )
 
 [node name="TopInfo" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -320.0
@@ -366,9 +468,8 @@ script = ExtResource( 11 )
 
 [node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 visible = false
-margin_top = 11.0
 margin_right = 640.0
-margin_bottom = 26.0
+margin_bottom = 15.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 
@@ -586,6 +687,7 @@ text = "x4"
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -615,19 +717,11 @@ margin_top = 13.0
 margin_right = 139.0
 margin_bottom = 13.0
 
-[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+[node name="ReplayName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 13.0
 margin_right = 139.0
-margin_bottom = 25.0
-size_flags_vertical = 0
-text = "quit"
-
-[node name="ReplayName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 26.0
-margin_right = 139.0
-margin_bottom = 37.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 align = 1
@@ -636,11 +730,19 @@ caret_blink = true
 
 [node name="SaveReplayButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 unique_name_in_owner = true
+margin_top = 25.0
+margin_right = 139.0
+margin_bottom = 37.0
+rect_min_size = Vector2( 60, 0 )
+text = "save replay"
+
+[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 38.0
 margin_right = 139.0
 margin_bottom = 50.0
-rect_min_size = Vector2( 60, 0 )
-text = "save replay"
+size_flags_vertical = 0
+text = "quit"
 
 [node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 margin_top = 51.0
@@ -666,15 +768,11 @@ __meta__ = {
 
 [node name="MainMenu" type="Control" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
 theme = ExtResource( 4 )
 script = ExtResource( 6 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="ButtonContainer" type="VBoxContainer" parent="UILayer/MainMenu"]
 anchor_left = 0.5
@@ -689,71 +787,131 @@ alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 26.0
 margin_right = 90.0
-margin_bottom = 38.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 text = "Singleplayer"
 
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 39.0
+margin_top = 21.0
 margin_right = 90.0
-margin_bottom = 51.0
+margin_bottom = 41.0
+rect_min_size = Vector2( 0, 20 )
 text = "Multiplayer"
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 52.0
+margin_top = 42.0
 margin_right = 90.0
-margin_bottom = 64.0
+margin_bottom = 62.0
+rect_min_size = Vector2( 0, 20 )
 text = "Direct Connect"
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 65.0
+margin_top = 63.0
 margin_right = 90.0
-margin_bottom = 77.0
+margin_bottom = 83.0
+rect_min_size = Vector2( 0, 20 )
 text = "Replays"
 
-[node name="QuitGameButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="DiscordButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 78.0
+margin_top = 84.0
 margin_right = 90.0
-margin_bottom = 90.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 0, 20 )
+text = "Discord"
+icon_align = 1
+expand_icon = true
+
+[node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 105.0
+margin_right = 90.0
+margin_bottom = 125.0
+rect_min_size = Vector2( 0, 20 )
 text = "Quit"
+
+[node name="Title" type="Control" parent="UILayer/MainMenu"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -142.0
+margin_top = 15.0
+margin_right = 142.0
+margin_bottom = 65.0
+theme = ExtResource( 4 )
+
+[node name="TitleImage" type="TextureRect" parent="UILayer/MainMenu/Title"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+texture = ExtResource( 15 )
+expand = true
+stretch_mode = 4
+
+[node name="IvySlyLinkButton" type="LinkButton" parent="UILayer/MainMenu/Title"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -26.0
+margin_top = 26.5
+margin_right = 26.0
+margin_bottom = 37.5
+text = "BY IVY SLY"
+underline = 1
 
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
-anchor_right = 1.0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = 282.0
-margin_top = 216.0
-margin_right = -282.0
+margin_left = -43.0
+margin_top = -144.0
+margin_right = 43.0
 theme = ExtResource( 4 )
 alignment = 1
 
+[node name="Label" type="Label" parent="UILayer/PostGameButtons"]
+margin_top = 53.0
+margin_right = 86.0
+margin_bottom = 64.0
+text = "replay autosaved"
+
 [node name="RematchButton" type="Button" parent="UILayer/PostGameButtons"]
 unique_name_in_owner = true
-margin_top = 59.0
-margin_right = 76.0
-margin_bottom = 71.0
+margin_top = 65.0
+margin_right = 86.0
+margin_bottom = 77.0
 theme = ExtResource( 4 )
 text = "Rematch"
 
 [node name="QuitButton" type="Button" parent="UILayer/PostGameButtons"]
 unique_name_in_owner = true
-margin_top = 72.0
-margin_right = 76.0
-margin_bottom = 84.0
+margin_top = 78.0
+margin_right = 86.0
+margin_bottom = 90.0
 theme = ExtResource( 4 )
 text = "Quit"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]
+unique_name_in_owner = true
 visible = false
 direct_connect = false
 
 [node name="DirectConnectLobby" parent="UILayer" instance=ExtResource( 5 )]
+unique_name_in_owner = true
 visible = false
 
 [node name="NetworkDebugLabel" type="Label" parent="UILayer"]
@@ -856,16 +1014,35 @@ margin_right = 374.0
 margin_bottom = 270.0
 alignment = 2
 
+[node name="OpenReplayFolderButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 114.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "open folder"
+
+[node name="ShowAutosavedReplays" type="CheckButton" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 115.0
+margin_right = 258.0
+margin_bottom = 12.0
+text = "show autosaved replays"
+
 [node name="ReplayCancelButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
+margin_left = 259.0
 margin_right = 374.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 text = "cancel"
 
-[node name="OpenReplayFolderButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+[node name="AdvantageLabel" type="Label" parent="UILayer"]
 unique_name_in_owner = true
-margin_right = 374.0
-margin_bottom = 12.0
-size_flags_horizontal = 3
-text = "open folder"
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 71.0
+margin_bottom = 85.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+align = 1

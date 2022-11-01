@@ -17,6 +17,7 @@ signal player_actionable()
 signal simulation_continue()
 signal playback_requested()
 signal game_ended()
+signal game_won(winner)
 signal ghost_finished()
 
 var p1_data
@@ -34,6 +35,8 @@ var max_replay_tick = 0
 var game_started = false
 var undoing = false
 var singleplayer = false
+
+var game_paused = false
 
 var buffer_playback = false
 var buffer_edit = false
@@ -143,6 +146,9 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	self.match_data = match_data
 	p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
 	p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
+	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)
+	if match_data.has("game_length"):
+		time = match_data["game_length"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p1.modulate = Color("aca2ff")
@@ -150,6 +156,24 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
+
+	for value in ["di_enabled", "infinite_resources", "turbo_mode", "one_hit_ko"]:
+		if match_data.has(value):
+			for player in [p1, p2]:
+				if player.get(value) != null:
+					player.set(value, match_data[value])
+
+#	if match_data.has("infinite_resources"):
+#		p1.infinite_resources = match_data["infinite_resources"]
+#		p2.infinite_resources = match_data["infinite_resources"]
+#
+#	if match_data.has("turbo_mode"):
+#		p1.turbo_mode = match_data["turbo_mode"]
+#		p2.turbo_mode = match_data["turbo_mode"]
+#
+#	if match_data.has("one_hit_ko"):
+#		p1.one_hit_ko = match_data["one_hit_ko"]
+#		p2.one_hit_ko = match_data["one_hit_ko"]
 	$Players.add_child(p1)
 	$Players.add_child(p2)
 	p1.init()
@@ -176,7 +200,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			get_max_replay_tick()
 			ReplayManager.playback = true
 	if singleplayer:
-#		p2.dummy = true
+		if match_data["p2_dummy"]:
+			p2.dummy = true
 		pass
 	elif !is_ghost:
 		Network.game = self
@@ -256,9 +281,9 @@ func tick():
 	apply_hitboxes()
 	p1_data = p1.data
 	p2_data = p2.data
-	if p1.state_interruptable and !p1.busy_interrupt:
+	if (p1.state_interruptable or p1.dummy_interruptable) and !p1.busy_interrupt:
 		p2.reset_combo()
-	if p2.state_interruptable and !p2.busy_interrupt:
+	if (p2.state_interruptable or p2.dummy_interruptable) and !p2.busy_interrupt:
 		p1.reset_combo()
 	if is_ghost:
 		if !ghost_hidden:
@@ -512,7 +537,13 @@ func end_game():
 	p2.game_over = true
 	if !is_ghost:
 		ReplayManager.play_full = true
+	var winner = 0
+	if p2.hp > p1.hp:
+		winner = 2
+	elif p1.hp > p2.hp:
+		winner = 1
 	emit_signal("game_ended")
+	emit_signal("game_won", winner)
 
 func process_tick():
 	if !ReplayManager.playback:
@@ -522,7 +553,9 @@ func process_tick():
 					call_deferred("simulate_one_tick")
 					p1_turn = false
 					p2_turn = false
+					game_paused = false
 		else:
+			game_paused = true
 			if p1.state_interruptable and !p1_turn:
 				p2.busy_interrupt = (!p2.state_interruptable and !p2.current_state().interruptible_on_opponent_turn)
 				p2.state_interruptable = true
@@ -531,7 +564,7 @@ func process_tick():
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
-					Network.rpc("end_turn_simulation", current_tick, Network.player_id)
+					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 			elif p2.state_interruptable and !p2_turn:
 				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
 				p1.state_interruptable = true
@@ -540,12 +573,13 @@ func process_tick():
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
-					Network.rpc("end_turn_simulation", current_tick, Network.player_id)
+					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 	else:
 		if ReplayManager.resimulating:
 			snapping_camera = true
 			call_deferred("resimulate")
 			yield(get_tree(), "idle_frame")
+			game_paused = false
 #				camera.reset_smoothing()
 		else:
 			if buffer_edit:
@@ -557,9 +591,9 @@ func process_tick():
 
 func _process(delta):
 	update()
-	if !is_ghost:
+	if !is_ghost and singleplayer:
 		if Input.is_action_just_pressed("playback"):
-			if !game_finished and singleplayer and !ReplayManager.playback:
+			if !game_finished and !ReplayManager.playback:
 				if is_waiting_on_player() and current_tick > 0:
 					buffer_playback = true
 		if Input.is_action_just_pressed("edit_replay"):
@@ -639,7 +673,7 @@ func _draw():
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
 	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), line_color, 2.0)
 	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), line_color, 2.0)
-	var line_dist = 10
+	var line_dist = 50
 	var num_lines = stage_width * 2 / line_dist
 	for i in range(num_lines):
 		var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width

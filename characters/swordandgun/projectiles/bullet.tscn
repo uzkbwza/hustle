@@ -20,11 +20,11 @@ visible = false
 frames = SubResource( 1 )
 offset = Vector2( 512, 0 )
 
-[node name="CollisionBox" parent="." index="1"]
+[node name="CollisionBox" parent="." index="2"]
 width = 0
 height = 0
 
-[node name="Hurtbox" parent="." index="2"]
+[node name="Hurtbox" parent="." index="3"]
 width = 0
 height = 0
 
@@ -45,5 +45,6 @@ dir_y = "-0.25"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+knockdown_extends_hitstun = false
 start_tick = 1
 active_ticks = 2

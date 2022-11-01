@@ -22,6 +22,8 @@ onready var liftoff_sprite = $Flip/LiftoffSprite
 func init():
 	.init()
 	hover_left = HOVER_AMOUNT / 4
+	if infinite_resources:
+		hover_left = HOVER_AMOUNT
 	
 func apply_grav():
 	if !hovering:
@@ -51,10 +53,11 @@ func tick():
 					modifier = HOVER_VEL_Y_NEG_MODIFIER
 				set_vel(vel.x, fixed.mul(vel.y, modifier))
 				if hover_left > 0:
-					hover_left -= hover_drain_amount
-					if hover_left <= 0:
-						hovering = false
-						hover_left = 0
+					if !infinite_resources:
+						hover_left -= hover_drain_amount
+						if hover_left <= 0:
+							hovering = false
+							hover_left = 0
 		else:
 			hover_left += hover_gain_amount
 			if hover_left > HOVER_AMOUNT:

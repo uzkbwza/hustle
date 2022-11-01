@@ -15,6 +15,9 @@ var turns_taken = {
 
 const BOTH_ACTIONABLE_TURN_TIMER = 30
 const ONE_ACTIONABLE_TURN_TIMER = 15
+const DISCORD_URL = "https://discord.gg/kyNeDrFBR7"
+#const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
+const IVY_SLY_URL = "https://www.ivysly.com"
 
 onready var lobby = $Lobby
 onready var direct_connect_lobby = $DirectConnectLobby
@@ -26,22 +29,28 @@ func _ready():
 	$"%RematchButton".connect("pressed", self, "_on_rematch_button_pressed")
 	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
+	$"%QuitProgramButton".connect("pressed", self, "_on_quit_program_button_pressed")
 	$"%ResumeButton".connect("pressed", self, "pause")
 	$"%ReplayButton".connect("pressed", self, "load_replay")
 	$"%ReplayCancelButton".connect("pressed", $"%ReplayWindow", "hide")
 	$"%OpenReplayFolderButton".connect("pressed", self, "open_replay_folder")
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
+	$"%ShowAutosavedReplays".connect("pressed", self, "load_replay")
+	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
+	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
 	turn_timer.connect("timeout", self, "_on_turn_timer_timeout")
-
+	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
+		lobby.connect("quit_on_rematch", $"%RematchButton", "hide")
+	
 func load_replay():
 	$"%ReplayWindow".show()
 	for child in $"%ReplayContainer".get_children():
 		child.free()
-	var replay_map = ReplayManager.load_replays()
+	var replay_map = ReplayManager.load_replays($"%ShowAutosavedReplays".pressed)
 	var buttons = []
 	for key in replay_map:
 		var button = preload("res://ui/ReplayWindow/ReplayButton.tscn").instance()
@@ -65,6 +74,9 @@ func _on_replay_button_pressed(path):
 func _on_quit_button_pressed():
 	Network.stop_multiplayer()
 	get_tree().reload_current_scene()
+
+func _on_quit_program_button_pressed():
+	get_tree().quit()
 
 func id_to_action_buttons(player_id):
 	if player_id == 1:
@@ -94,8 +106,10 @@ func _on_rematch_button_pressed():
 	$"%RematchButton".disabled = true
 
 func _on_game_playback_requested():
-	$PostGameButtons.show()
-	$"%RematchButton".show()
+	if Network.multiplayer_active:
+		$PostGameButtons.show()
+		$"%RematchButton".show()
+		Network.rematch_menu = true
 
 func on_game_started():
 	lobby.hide()
@@ -133,6 +147,7 @@ func setup_action_buttons():
 func on_player_actionable():
 	$"%P1ActionButtons".activate()
 	$"%P2ActionButtons".activate()
+	$"%AdvantageLabel".text = ""
 #	if Network.multiplayer_active:
 #		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
 #			turn_timer.start(BOTH_ACTIONABLE_TURN_TIMER)
@@ -163,6 +178,30 @@ func _process(_delta):
 					bar.visible = Utils.wave(-1, 1, 0.032) > 0
 	if Input.is_action_just_pressed("pause"):
 		pause()
-	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished
-	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished
-	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished
+	
+	var advantage_label = $"%AdvantageLabel"
+#	advantage_label.text = ""
+	var ghost_game = get_parent().ghost_game
+	if is_instance_valid(ghost_game) and is_instance_valid(game):
+		if game.game_paused:
+			var you_id = 1
+			var opponent_id = 2
+			if Network.multiplayer_active:
+				you_id = Network.player_id
+				opponent_id = (you_id % 2) + 1
+			var you = ghost_game.get_player(you_id)
+			var opponent = ghost_game.get_player(opponent_id)
+			if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
+				var advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
+				if advantage >= 0:
+					advantage_label.set("custom_colors/font_color", Color("64d26b"))
+					advantage_label.text = "advantage: +" + str(advantage)
+				else:
+					advantage_label.set("custom_colors/font_color", Color("ff333d"))
+					advantage_label.text = "advantage: " + str(advantage)
+		else:
+			advantage_label.text = ""
+
+	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
+	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
+	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu

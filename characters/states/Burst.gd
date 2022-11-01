@@ -22,4 +22,4 @@ func _exit():
 	host.end_projectile_invulnerability()
 
 func is_usable():
-	return .is_usable() and (host.bursts_available > 0)
+	return host.burst_enabled and .is_usable() and (host.bursts_available > 0)

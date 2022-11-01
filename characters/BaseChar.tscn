@@ -442,7 +442,9 @@ button_texture = ExtResource( 96 )
 air_type = 2
 burst_cancellable = false
 interrupt_from_string = "OffensiveBurst
-BusyNormal"
+BusyNormal
+Grounded
+Aerial"
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "Grounded
@@ -488,7 +490,7 @@ change_stance_to = "Normal"
 
 [node name="ParryHigh" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 68 )
-anim_length = 30
+anim_length = 20
 title = "High Parry"
 type = 4
 button_texture = ExtResource( 99 )
@@ -503,7 +505,7 @@ allowed_stances_string = "All"
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 68 )
-anim_length = 30
+anim_length = 20
 title = "Low Parry"
 type = 4
 button_texture = ExtResource( 98 )
@@ -520,7 +522,7 @@ parry_type = 1
 [node name="ParryAir" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 68 )
 sprite_animation = "ParryLow"
-anim_length = 30
+anim_length = 20
 title = "Parry"
 type = 4
 button_texture = ExtResource( 98 )
@@ -636,7 +638,7 @@ interrupt_into_string = "Grounded"
 script = ExtResource( 8 )
 fallback_state = "Fall"
 sprite_animation = "Jump"
-anim_length = 1000
+anim_length = 120
 sprite_anim_length = 4
 loop_animation = true
 particle_scene = ExtResource( 12 )
@@ -644,7 +646,7 @@ enter_sfx = ExtResource( 123 )
 title = "Jump"
 data_ui_scene = ExtResource( 9 )
 button_texture = ExtResource( 67 )
-interrupt_frames = [ 7, 18 ]
+interrupt_frames = [ 7, 18, 60 ]
 interruptible_on_opponent_turn = true
 interrupt_from_string = "GroundedMovement
 Grounded
@@ -659,7 +661,7 @@ speed = "9"
 script = ExtResource( 8 )
 fallback_state = "Fall"
 sprite_animation = "DoubleJump"
-anim_length = 1000
+anim_length = 120
 sprite_anim_length = 4
 loop_animation = true
 particle_scene = ExtResource( 12 )
@@ -669,7 +671,7 @@ data_ui_scene = ExtResource( 9 )
 button_texture = ExtResource( 67 )
 air_type = 1
 uses_air_movement = true
-interrupt_frames = [ 7, 25 ]
+interrupt_frames = [ 7, 25, 60 ]
 interruptible_on_opponent_turn = true
 interrupt_from_string = "AerialMovement
 Aerial
@@ -854,6 +856,7 @@ start_throw_pos_y = -12
 release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
+dir_y = "-0.30"
 damage = 90
 
 [node name="BackThrow" type="Node2D" parent="StateMachine" index="28"]
@@ -876,6 +879,7 @@ start_throw_pos_y = -12
 release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
+dir_y = "-0.30"
 damage = 90
 reverse = true
 

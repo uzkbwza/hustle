@@ -18,4 +18,4 @@ func _tick():
 	host.apply_forces()
 
 func is_usable():
-	return .is_usable() and (host.bursts_available > 0)
+	return host.burst_cancel_enabled and .is_usable() and (host.bursts_available > 0)

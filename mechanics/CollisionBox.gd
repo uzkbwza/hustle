@@ -109,7 +109,7 @@ func box_draw():
 
 func can_draw_box():
 	if Engine.editor_hint:
-		return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
+#		return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
 		pass
 	return false
 

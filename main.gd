@@ -34,7 +34,8 @@ func _ready():
 	$"%GameUI".hide()
 	$"%MainMenu".show()
 	ReplayManager.play_full = false
-
+	Network._reset()
+	
 func _on_game_started(singleplayer):
 	if is_instance_valid(game):
 		game.free()
@@ -126,6 +127,7 @@ func on_action_clicked(action, data, extra, player_id):
 		p2_ghost_data = data
 		p2_ghost_extra = extra
 	start_ghost()
+	$"%AdvantageLabel".text = ""
 	pass
 
 func start_ghost():
@@ -138,6 +140,8 @@ func _start_ghost():
 	if !$"%GhostButton".pressed:
 		return
 	if ReplayManager.playback:
+		return
+	if !is_instance_valid(game):
 		return
 	ghost_game = preload("res://Game.tscn").instance()
 	ghost_game.is_ghost = true

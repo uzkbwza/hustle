@@ -16,6 +16,136 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="ShowSettingsButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -35.5
+margin_top = 29.0
+margin_right = 35.5
+margin_bottom = 41.0
+toggle_mode = true
+action_mode = 0
+text = "show settings"
+
+[node name="GameSettingsPanelContainer" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -64.0
+margin_top = -139.0
+margin_right = 64.0
+margin_bottom = -5.0
+size_flags_vertical = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GameSettingsPanelContainer"]
+margin_right = 128.0
+margin_bottom = 134.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="GameSettingsContainer" type="VBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer"]
+unique_name_in_owner = true
+margin_right = 125.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+margin_right = 128.0
+margin_bottom = 11.0
+
+[node name="StageWidthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
+margin_right = 57.0
+margin_bottom = 11.0
+text = "Stage Width"
+
+[node name="StageWidth" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 58.0
+margin_right = 128.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+min_value = 100.0
+max_value = 50000.0
+value = 2500.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+margin_top = 12.0
+margin_right = 128.0
+margin_bottom = 23.0
+
+[node name="GameLengthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
+margin_right = 70.0
+margin_bottom = 11.0
+text = "Round Length "
+
+[node name="GameLength" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 71.0
+margin_right = 128.0
+margin_bottom = 11.0
+hint_tooltip = "Set the timer for the match (in frames)."
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 999999.0
+value = 3600.0
+
+[node name="P2Dummy" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 128.0
+margin_bottom = 36.0
+hint_tooltip = "Player 2 will not be prompted for input."
+size_flags_horizontal = 15
+pressed = true
+text = "Training Dummy"
+expand_icon = true
+
+[node name="DIEnabled" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 37.0
+margin_right = 128.0
+margin_bottom = 49.0
+hint_tooltip = "Enable directional influence."
+size_flags_horizontal = 15
+text = "DI Enabled"
+expand_icon = true
+
+[node name="TurboMode" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 50.0
+margin_right = 128.0
+margin_bottom = 62.0
+hint_tooltip = "Freely cancel moves into other moves."
+size_flags_horizontal = 15
+text = "Turbo Mode"
+expand_icon = true
+
+[node name="InfiniteResources" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 63.0
+margin_right = 128.0
+margin_bottom = 75.0
+hint_tooltip = "Never run out of super-meter or other character-specific resources."
+size_flags_horizontal = 15
+text = "Infinite Resources"
+expand_icon = true
+
+[node name="OneHitKO" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 76.0
+margin_right = 128.0
+margin_bottom = 88.0
+hint_tooltip = "Both players have 1 HP."
+size_flags_horizontal = 15
+text = "One-Hit KO"
+expand_icon = true
+
 [node name="CharacterButtonContainer" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
 anchor_left = 0.5
@@ -23,9 +153,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -194.0
-margin_top = -30.0
+margin_top = 10.0
 margin_right = 194.0
-margin_bottom = 30.0
+margin_bottom = 70.0
 alignment = 1
 
 [node name="CharacterButton" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
@@ -52,9 +182,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -40.0
-margin_top = 74.0
+margin_top = 90.0
 margin_right = 40.0
-margin_bottom = 102.0
+margin_bottom = 118.0
 disabled = true
 text = "GO"
 
@@ -73,6 +203,10 @@ align = 1
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="P1Display" parent="HBoxContainer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
@@ -91,3 +225,14 @@ margin_left = 427.0
 margin_right = 640.0
 mouse_filter = 2
 player_id = 2
+
+[node name="QuitButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 292.0
+margin_top = -20.0
+margin_right = -292.0
+margin_bottom = -8.0
+text = "quit"

@@ -6,7 +6,7 @@ signal action_selected(action, data)
 
 signal undo()
 
-const MAX_HEALTH = 10
+var MAX_HEALTH = 1000
 #const STALING_REDUCTIONS = [
 #	"1.0",
 #	"0.90",
@@ -71,6 +71,8 @@ var queued_action = null
 var queued_data = null
 var queued_extra = null
 
+var dummy_interruptable = false
+
 var game_over = false
 
 var colliding_with_opponent = true
@@ -82,6 +84,13 @@ var action_cancels = {
 
 var ghost_ready_tick = null
 var ghost_ready_set = false
+
+var di_enabled = true
+var turbo_mode = false
+var infinite_resources = false
+var one_hit_ko = false
+var burst_enabled = true
+var burst_cancel_enabled = true
 
 var hp: int = 0
 var super_meter: int = 0
@@ -126,6 +135,9 @@ func init():
 	.init()
 	if !is_ghost:
 		Network.player_objects[id] = self
+		
+	if one_hit_ko:
+		MAX_HEALTH = 1
 	hp = MAX_HEALTH
 	game_over = false
 	show_you_label()
@@ -137,6 +149,10 @@ func init():
 					action_cancels[category] = []
 				if !(state in action_cancels[category]):
 					action_cancels[category].append(state)
+	if infinite_resources:
+		supers_available = MAX_SUPERS
+		super_meter = MAX_SUPER_METER
+
 #	state_interruptable = true
 
 func change_stance_to(stance):
@@ -155,7 +171,7 @@ func _ready():
 	sprite.animation = "Wait"
 
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "burst_enabled", "burst_cancel_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 
 func gain_burst_meter():
@@ -176,13 +192,19 @@ func gain_burst():
 		burst_meter = 0
 
 func use_burst():
+	if infinite_resources:
+		return
 	bursts_available -= 1
 	refresh_air_movements()
 
 func use_super_bar():
+	if infinite_resources:
+		return
 	supers_available -= 1
 
 func use_super_meter(amount):
+	if infinite_resources:
+		return
 	super_meter -= amount
 	if super_meter < 0:
 		if supers_available > 0:
@@ -348,10 +370,13 @@ func process_action():
 
 func process_extra(extra):
 	if "DI" in extra:
-		var di = extra["DI"]
-		nudge_distance_left = NUDGE_DISTANCE
-		current_nudge = xy_to_dir(di.x, di.y, str(NUDGE_DISTANCE))
-		current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
+		if di_enabled:
+			var di = extra["DI"]
+			nudge_distance_left = NUDGE_DISTANCE
+			current_nudge = xy_to_dir(di.x, di.y, str(NUDGE_DISTANCE))
+			current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
+		else:
+			current_di = FixedVec2String.new(0, 0)
 	if "reverse" in extra:
 		reverse_state = extra["reverse"]
 		if reverse_state:
@@ -376,6 +401,7 @@ func get_opponent_dir():
 	return Utils.int_sign(opponent.get_pos().x - get_pos().x)
 
 func tick():
+	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
 	update_grounded()
@@ -424,7 +450,7 @@ func tick():
 #	reverse_state = false
 
 func set_ghost_colors():
-	if !ghost_ready_set and state_interruptable:
+	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
 		ghost_ready_set = true
 		ghost_ready_tick = current_tick
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
@@ -451,6 +477,9 @@ func update_facing():
 func on_state_interruptable(state):
 	if !dummy:
 		state_interruptable = true
+	else:
+		dummy_interruptable = true
+		opponent.reset_combo()
 
 func on_state_hit_cancellable(state):
 	if !dummy:

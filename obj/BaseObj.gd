@@ -71,7 +71,6 @@ var sounds = {
 	
 }
 
-
 func _enter_tree():
 	if obj_name:
 		name = obj_name

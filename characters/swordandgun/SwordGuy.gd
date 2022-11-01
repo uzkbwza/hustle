@@ -23,6 +23,8 @@ func get_barrel_location(angle):
 	return barrel_location
 
 func use_bullet():
+	if infinite_resources:
+		return
 	bullets_left -= 1
 	emit_signal("bullet_used")
 
@@ -31,4 +33,3 @@ func on_got_hit():
 		if objs_map.has(cut_projectile):
 			objs_map[cut_projectile].disable()
 			cut_projectile = null
-

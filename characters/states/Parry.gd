@@ -2,7 +2,7 @@ extends CharacterState
 
 class_name ParryState
 
-const LANDING_LAG = 20
+const LANDING_LAG = 8
 
 export var particle_location = Vector2(14, -31)
 

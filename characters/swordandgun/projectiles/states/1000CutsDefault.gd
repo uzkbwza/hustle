@@ -10,6 +10,7 @@ func _tick():
 	host.total_ticks += 1
 	if host.total_ticks > LIFETIME:
 		host.disable()
+		host.creator.cut_projectile = null
 
 func disable():
 	host.disable()

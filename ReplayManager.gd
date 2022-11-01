@@ -57,9 +57,9 @@ func generate_replay_name():
 	return string
 
 func save_replay_mp(match_data, p1, p2):
-	save_replay(match_data, generate_mp_replay_name(p1, p2))
+	save_replay(match_data, generate_mp_replay_name(p1, p2), true)
 
-func save_replay(match_data: Dictionary, file_name=""):
+func save_replay(match_data: Dictionary, file_name="", autosave=false):
 	if file_name == "":
 		file_name = generate_replay_name() 
 	var data = match_data.duplicate(true)
@@ -73,19 +73,23 @@ func save_replay(match_data: Dictionary, file_name=""):
 	var file = File.new()
 #	OS.shell_open(str("file://", "user://"))
 	print(file_name)
-	file.open("user://replay/"+file_name+".replay", File.WRITE)
+	file.open("user://replay/"+("autosave/" if autosave else "")+file_name+".replay", File.WRITE)
 	file.store_var(data, true)
 	file.close()
 	return file_name + ".replay"
 
-func load_replays():
+func load_replays(autosave=true):
 	var dir = Directory.new()
 	var files = []
 	var _directories = []
+	if !dir.dir_exists("user://replay"):
+		dir.make_dir("user://replay")
+	if !dir.dir_exists("user://replay/autosave"):
+		dir.make_dir("user://replay/autosave")
 	dir.open("user://replay")
 	dir.list_dir_begin(false, true)
-	print(dir.get_current_dir())
-	Global.add_dir_contents(dir, files, _directories)
+#	print(dir.get_current_dir())
+	Global.add_dir_contents(dir, files, _directories, autosave)
 	var replay_paths = {}
 	for path in files:
 		var file = File.new()

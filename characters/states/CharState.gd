@@ -125,7 +125,8 @@ func _enter_shared():
 	if !host.is_grounded():
 		started_in_air = true
 	if uses_air_movement:
-		host.air_movements_left -= 1
+		if !host.infinite_resources:
+			host.air_movements_left -= 1
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		host.gain_super_meter(WHIFF_SUPER_GAIN)

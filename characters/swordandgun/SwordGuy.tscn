@@ -1,4 +1,4 @@
-[gd_scene load_steps=155 format=2]
+[gd_scene load_steps=164 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=2]
@@ -152,6 +152,15 @@
 [ext_resource path="res://characters/swordandgun/sounds/quickdraw.wav" type="AudioStream" id=150]
 [ext_resource path="res://characters/swordandgun/sounds/1000cuts.wav" type="AudioStream" id=151]
 [ext_resource path="res://characters/swordandgun/sounds/swing3.wav" type="AudioStream" id=152]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/h_slash.png" type="Texture" id=153]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/v_slash.png" type="Texture" id=154]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/upward_swipe.png" type="Texture" id=155]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/stinger.png" type="Texture" id=156]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/impale.png" type="Texture" id=157]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/pommel.png" type="Texture" id=158]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/quickdraw.png" type="Texture" id=159]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/holster.png" type="Texture" id=160]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/shoot.png" type="Texture" id=161]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -250,7 +259,7 @@ animations = [ {
 "name": "GunShoot",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 109 ), ExtResource( 109 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 106 ), ExtResource( 108 ), ExtResource( 114 ) ],
+"frames": [ ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 110 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 106 ), ExtResource( 108 ), ExtResource( 114 ) ],
 "loop": true,
 "name": "GunTwirl",
 "speed": 60.0
@@ -493,6 +502,7 @@ force_speed = "6.0"
 force_tick = 6
 title = "H Slash"
 type = 1
+button_texture = ExtResource( 153 )
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -523,6 +533,7 @@ force_speed = "7.0"
 force_tick = 2
 title = "V Slash"
 type = 1
+button_texture = ExtResource( 154 )
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -559,6 +570,7 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 title = "Upward Swipe"
 type = 1
+button_texture = ExtResource( 155 )
 air_type = 2
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
@@ -598,6 +610,7 @@ force_speed = "12.0"
 force_tick = 1
 title = "Stinger"
 type = 1
+button_texture = ExtResource( 156 )
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -634,6 +647,7 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 title = "Impale"
 type = 2
+button_texture = ExtResource( 157 )
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded"
@@ -687,6 +701,7 @@ script = ExtResource( 95 )
 anim_length = 18
 title = "V Slash"
 type = 1
+button_texture = ExtResource( 154 )
 air_type = 1
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
@@ -722,6 +737,7 @@ force_tick = 5
 reset_momentum = true
 title = "H Slash"
 type = 1
+button_texture = ExtResource( 153 )
 air_type = 1
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
@@ -774,6 +790,7 @@ anim_length = 9
 enter_force_dir_x = "1.0"
 enter_force_speed = "2.0"
 type = 1
+button_texture = ExtResource( 158 )
 interrupt_from_string = "GroundedAttack
 Grounded"
 interrupt_into_string = "Grounded"
@@ -801,11 +818,12 @@ active_ticks = 2
 script = ExtResource( 116 )
 fallback_state = "Shoot"
 sprite_animation = "GunTwirl"
-anim_length = 7
+anim_length = 14
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"
 type = 2
+button_texture = ExtResource( 159 )
 air_type = 2
 interrupt_from_string = "Grounded
 GroundedSpecial
@@ -820,6 +838,7 @@ script = ExtResource( 79 )
 sprite_animation = "Holster"
 anim_length = 6
 type = 2
+button_texture = ExtResource( 160 )
 air_type = 2
 interrupt_from_string = "Gun"
 interrupt_into_string = "Grounded
@@ -831,6 +850,7 @@ fallback_state = "Holster"
 sprite_animation = "GunShoot"
 anim_length = 14
 type = 2
+button_texture = ExtResource( 161 )
 air_type = 2
 iasa_at = 7
 interrupt_from_string = "Gun

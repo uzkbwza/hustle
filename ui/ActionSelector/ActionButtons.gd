@@ -25,6 +25,7 @@ var current_data = null
 var button_pressed = null
 var any_available_actions = false
 var active = false
+var turbo_mode = false
 var game
 
 var continue_button
@@ -113,9 +114,11 @@ func init(game, id):
 	reset()
 	self.game = game
 	fighter = game.get_player(id)
+	$"%DI".visible = fighter.di_enabled
 	fighter_extra = fighter.player_extra_params_scene.instance()
 	fighter_extra.connect("data_changed", self, "send_ui_action")
 	fighter_extra.set_fighter(fighter)
+	turbo_mode = fighter.turbo_mode
 	Network.action_button_panels[id] = self
 	buttons = []
 #	for button in button_container.get_children():nudge_button
@@ -144,10 +147,8 @@ func init(game, id):
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
 	$"%TurnButtons".move_child(continue_button, 1)
-	
 #	$"%ReverseButton".show()
-	
-	
+
 func _on_fighter_action_selected(_action, _data, _extra):
 	hide()
 
@@ -372,6 +373,11 @@ func activate():
 	var cancel_into
 	if !fighter.busy_interrupt:
 		cancel_into = (state.interrupt_into if !fighter.state_hit_cancellable else state.hit_cancel_into)
+		if turbo_mode:
+			if fighter.is_grounded():
+				cancel_into.append("Grounded")
+			else:
+				cancel_into.append("Aerial")
 	else:
 		cancel_into = state.busy_interrupt_into
 	any_available_actions = false
@@ -382,11 +388,11 @@ func activate():
 			if fighter.action_cancels.has(category):
 				for cancel_state in fighter.action_cancels[category]:
 					if cancel_state.state_name == button.action_name:
-						if cancel_state.is_usable() and cancel_state.allowed_in_stance():
+						if cancel_state.is_usable() and (cancel_state.allowed_in_stance()):
 							if cancel_state.state_name == state.state_name:
-								if fighter.state_hit_cancellable and !state.self_hit_cancellable:
+								if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
 									continue
-								elif !fighter.state_hit_cancellable and !state.self_interruptable:
+								elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
 									continue
 							found = true
 							$"%ReverseButton".set_disabled(false)

@@ -4,7 +4,6 @@
 [ext_resource path="res://ui/Lobby.gd" type="Script" id=2]
 
 [node name="Lobby" type="Panel"]
-unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -24,7 +23,8 @@ anchor_bottom = 1.0
 [node name="NameEdit" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
 margin_right = 208.0
-margin_bottom = 11.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 0, 16 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "username"
@@ -32,66 +32,68 @@ placeholder_text = "enter name here"
 
 [node name="PlayerList" type="ItemList" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_top = 12.0
+margin_top = 17.0
 margin_right = 208.0
-margin_bottom = 146.0
+margin_bottom = 137.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
 visible = false
-margin_top = 125.0
-margin_right = 208.0
-margin_bottom = 146.0
-align = 1
-editable = false
-
-[node name="NetworkStartButton" type="Button" parent="NetworkSetupScreen"]
-unique_name_in_owner = true
-visible = false
 margin_top = 126.0
 margin_right = 208.0
 margin_bottom = 146.0
 rect_min_size = Vector2( 0, 20 )
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.45
-text = "start"
+align = 1
+editable = false
 
 [node name="ConnectContainer" type="HBoxContainer" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_top = 147.0
+margin_top = 138.0
 margin_right = 208.0
 margin_bottom = 168.0
-rect_min_size = Vector2( 0, 21 )
+rect_min_size = Vector2( 0, 30 )
 
 [node name="HostContainer" type="HBoxContainer" parent="NetworkSetupScreen/ConnectContainer"]
 unique_name_in_owner = true
-margin_right = 40.0
-margin_bottom = 21.0
+margin_right = 50.0
+margin_bottom = 30.0
 size_flags_vertical = 3
 
-[node name="HostButton" type="Button" parent="NetworkSetupScreen/ConnectContainer/HostContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="NetworkSetupScreen/ConnectContainer/HostContainer"]
+margin_right = 50.0
+margin_bottom = 30.0
+
+[node name="HostButton" type="Button" parent="NetworkSetupScreen/ConnectContainer/HostContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 40.0
-margin_bottom = 21.0
+margin_right = 50.0
+margin_bottom = 17.0
 rect_min_size = Vector2( 40, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "host"
 
+[node name="PublicButton" type="CheckButton" parent="NetworkSetupScreen/ConnectContainer/HostContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 50.0
+margin_bottom = 30.0
+pressed = true
+text = "public"
+
 [node name="JoinContainer" type="HBoxContainer" parent="NetworkSetupScreen/ConnectContainer"]
 unique_name_in_owner = true
-margin_left = 41.0
+margin_left = 51.0
 margin_right = 208.0
-margin_bottom = 21.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="JoinButton" type="Button" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
 margin_right = 40.0
-margin_bottom = 21.0
+margin_bottom = 30.0
 rect_min_size = Vector2( 40, 0 )
 size_flags_horizontal = 0
 size_flags_vertical = 3
@@ -100,8 +102,8 @@ text = "join"
 [node name="IPEdit" type="LineEdit" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
 margin_left = 41.0
-margin_right = 120.0
-margin_bottom = 21.0
+margin_right = 79.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.46
 text = "67.171.216.91"
@@ -109,23 +111,33 @@ placeholder_text = "IP"
 
 [node name="RoomCodeEdit" type="LineEdit" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
-visible = false
-margin_left = 41.0
-margin_right = 120.0
-margin_bottom = 21.0
+margin_left = 80.0
+margin_right = 118.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.46
 placeholder_text = "Room Code"
 
 [node name="PortEdit" type="LineEdit" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
-margin_left = 121.0
-margin_right = 167.0
-margin_bottom = 21.0
+margin_left = 119.0
+margin_right = 157.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "52450"
 placeholder_text = "port"
+
+[node name="NetworkStartButton" type="Button" parent="NetworkSetupScreen"]
+unique_name_in_owner = true
+visible = false
+margin_top = 148.0
+margin_right = 208.0
+margin_bottom = 168.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.45
+text = "start"
 
 [node name="NetworkErrorLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -134,3 +146,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 5.0
 margin_bottom = 42.0
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+margin_left = 168.0
+margin_top = -12.0
+margin_right = 208.0
+size_flags_horizontal = 0
+text = "go back"
+
+[node name="DirectConnectWarning" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -100.0
+margin_top = 91.0
+margin_right = 100.0
+margin_bottom = 145.0
+text = "note: host must port-forward for direct connect to work"
+align = 1
+autowrap = true

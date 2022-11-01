@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=25 format=2]
+[gd_resource type="Theme" load_steps=27 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -51,6 +51,9 @@ border_width_left = 1
 border_width_top = 2
 border_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="StyleBoxFlat" id=25]
+bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
+
 [sub_resource type="StyleBoxFlat" id=23]
 bg_color = Color( 0.235294, 0.235294, 0.235294, 1 )
 border_width_left = 1
@@ -59,6 +62,12 @@ border_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="StyleBoxFlat" id=22]
 bg_color = Color( 0.168627, 0.168627, 0.168627, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=24]
+bg_color = Color( 0.239216, 0.239216, 0.239216, 1 )
 border_width_left = 1
 border_width_right = 1
 border_color = Color( 0, 0, 0, 1 )
@@ -130,9 +139,12 @@ HSlider/icons/tick = null
 HSlider/styles/grabber_area = SubResource( 18 )
 HSlider/styles/grabber_area_highlight = SubResource( 18 )
 HSlider/styles/slider = SubResource( 17 )
+ItemList/styles/bg = SubResource( 25 )
+ItemList/styles/bg_focus = SubResource( 25 )
+LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.752941 )
 LineEdit/styles/focus = SubResource( 23 )
 LineEdit/styles/normal = SubResource( 22 )
-LineEdit/styles/read_only = null
+LineEdit/styles/read_only = SubResource( 24 )
 Panel/styles/panel = SubResource( 4 )
 PanelContainer/styles/panel = SubResource( 21 )
 SelectButton/base_type = "Button"

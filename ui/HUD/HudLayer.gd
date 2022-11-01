@@ -23,11 +23,12 @@ var p2
 
 func _ready():
 	hide()
-
+	$"%WinLabel".hide()
 func init(game):
 	self.game = game
 	show()
 	$"%GameUI".show()
+	$"%WinLabel".hide()
 	p1 = game.get_player(1)
 	p2 = game.get_player(2)
 	$"%P1Portrait".texture = p1.character_portrait
@@ -38,7 +39,15 @@ func init(game):
 	p2_super_meter.max_value = p2.MAX_SUPER_METER
 	p1_burst_meter.fighter = p1
 	p2_burst_meter.fighter = p2
+	game.connect("game_won", self, "on_game_won")
 	pass
+
+func on_game_won(winner):
+	$"HudAnimationPlayer".play("game_won")
+	if winner == 0:
+		$"%WinLabel".text = "DRAW"
+	else:
+		$"%WinLabel".text = "P" + str(winner) + " WIN"
 
 func _process(_delta):
 	if is_instance_valid(game):
@@ -50,4 +59,6 @@ func _process(_delta):
 		p2_num_supers.text = str(p2.supers_available)
 		p1_combo_counter.text = "" if p1.combo_count < 2 else str(p1.combo_count)
 		p2_combo_counter.text = "" if p2.combo_count < 2 else str(p2.combo_count)
+		$"%P1HitLabel".visible = p1.combo_count >= 2
+		$"%P2HitLabel".visible = p2.combo_count >= 2
 		$"%Timer".text = str(game.get_ticks_left())

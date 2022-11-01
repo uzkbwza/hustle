@@ -14,20 +14,37 @@ var singleplayer = true
 
 var current_player = 1
 
+var network_match_data = {}
+
 func _ready():
 	$"%GoButton".connect("pressed", self, "go")
+	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
+	$"%QuitButton".connect("pressed", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
+	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	init()
 
 func _on_network_character_selected(player_id, character):
 	selected_characters[player_id] = character
 	if selected_characters[1] != null and selected_characters[2] != null:
 #		$"%GoButton".disabled = false
-		go()
+		if Network.is_host():
+			Network.rpc_("send_match_data", get_match_data())
+
+
+func _on_network_match_locked_in(match_data):
+	network_match_data = match_data
+	go()
+	
+
+func _on_show_settings_toggled(on):
+	$"%GameSettingsPanelContainer".visible = on
 
 func init(singleplayer=true):
 	for button in buttons:
 		button.disabled = false
+#	$"%ShowSettingsButton".show()
+#	$"%GameSettingsPanelContainer".hide()
 	$"%GoButton".disabled = true
 	$"%GoButton".show()
 	self.singleplayer = singleplayer
@@ -35,7 +52,13 @@ func init(singleplayer=true):
 	$"%SelectingLabel".text = "P1 SELECT YOUR CHARACTER" if singleplayer else "SELECT YOUR CHARACTER"
 	$"%P1Display".init()
 	$"%P2Display".init()
-
+	$"%P2Dummy".visible = singleplayer
+	if !singleplayer:
+		if !Network.is_host():
+			$"%ShowSettingsButton".hide()
+			$"%GameSettingsPanelContainer".hide()
+		$"%DIEnabled".pressed = true
+	
 	hovered_characters = {
 		1: null,
 		2: null,
@@ -105,12 +128,27 @@ func _on_button_pressed(button):
 	if !singleplayer:
 		Network.select_character(data)
 
+func quit():
+	if Network.multiplayer_active:
+		Network.stop_multiplayer()
+	get_tree().reload_current_scene()
+
 func get_match_data():
 	return {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
+		"stage_width": $"%StageWidth".value,
+		"p2_dummy": $"%P2Dummy".pressed if singleplayer else false,
+		"di_enabled": $"%DIEnabled".pressed,
+		"turbo_mode": $"%TurboMode".pressed,
+		"infinite_resources": $"%InfiniteResources".pressed,
+		"one_hit_ko": $"%OneHitKO".pressed,
+		"game_length": $"%GameLength".value,
 	}
 
 func go():
-	emit_signal("match_ready", get_match_data())
+	if !singleplayer:
+		emit_signal("match_ready", network_match_data)
+	else:
+		emit_signal("match_ready", get_match_data())
 	hide()
