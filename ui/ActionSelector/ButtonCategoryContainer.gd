@@ -4,6 +4,7 @@ class_name ButtonCategoryContainer
 
 onready var action_data_container = $"%ActionDataContainer"
 onready var action_data_panel_container = $"%ActionDataPanelContainer"
+onready var button_container = $"%ButtonContainer"
 
 var label_text = ""
 var selected_button_text = ""

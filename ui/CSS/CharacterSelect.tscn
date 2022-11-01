@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://characters/swordandgun/SwordGuy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/CSS/CharacterDisplay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://characters/wizard/Wizard.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=7]
 
 [node name="CharacterSelect" type="Panel"]
 anchor_right = 1.0
@@ -158,18 +159,20 @@ margin_right = 194.0
 margin_bottom = 70.0
 alignment = 1
 
-[node name="CharacterButton" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+[node name="NinjaGuy" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
 margin_left = 103.0
 margin_right = 163.0
-text = "ninja guy"
+text = "ninja"
+icon_align = 1
+expand_icon = true
 
-[node name="CharacterButton2" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+[node name="SwordGuy" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
 margin_left = 164.0
 margin_right = 224.0
-text = "sword guy"
+text = "cowboy"
 character_scene = ExtResource( 4 )
 
-[node name="CharacterButton3" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
+[node name="Wizard" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
 margin_left = 225.0
 margin_right = 285.0
 text = "wizard"
@@ -192,10 +195,10 @@ text = "GO"
 unique_name_in_owner = true
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -50.0
-margin_top = 8.0
-margin_right = 50.0
-margin_bottom = 19.0
+margin_left = -292.0
+margin_top = 168.0
+margin_right = 292.0
+margin_bottom = 179.0
 text = "P1 SELECTING"
 align = 1
 
@@ -236,3 +239,6 @@ margin_top = -20.0
 margin_right = -292.0
 margin_bottom = -8.0
 text = "quit"
+
+[node name="ButtonSoundPlayer" parent="." instance=ExtResource( 7 )]
+button_containers = [ NodePath("../CharacterButtonContainer") ]

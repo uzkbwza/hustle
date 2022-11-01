@@ -2,7 +2,8 @@ class_name MultiplayerClient
 
 # The URL we will connect to.
 #const SERVER_URL = "ws://localhost:52450"
-const SERVER_URL = "ws://67.171.216.91:52450"
+#const SERVER_URL = "ws://67.171.216.91:52450"
+const SERVER_URL = "ws://168.235.86.185:52450"
 #const SERVER_IP = "168.235.86.185"
 #const SERVER_IP = "67.171.216.91"
 #const SERVER_IP = "localhost"

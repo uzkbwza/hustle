@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Control",
+"class": "ActionButton",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ActionButton.gd"
+}, {
 "base": "Reference",
 "class": "Array2D",
 "language": "GDScript",
@@ -195,6 +200,7 @@ _global_script_classes=[ {
 "path": "res://characters/wizard/states/WizardState.gd"
 } ]
 _global_script_class_icons={
+"ActionButton": "",
 "Array2D": "",
 "BaseObj": "",
 "BaseProjectile": "",

@@ -1,5 +1,7 @@
 extends Control
 
+class_name ActionButton
+
 signal was_pressed(action)
 signal toggled(on)
 signal data_changed()

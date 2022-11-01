@@ -52,7 +52,7 @@ grow_vertical = 2
 rect_min_size = Vector2( 48, 47 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/vseparation = 0
+custom_constants/vseparation = 1
 custom_constants/hseparation = 1
 columns = 3
 

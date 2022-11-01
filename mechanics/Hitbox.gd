@@ -95,6 +95,10 @@ var whiff_sound_player
 var hit_sound_player
 var hit_bass_sound_player
 
+func copy_to(hitbox: Hitbox):
+	for variable in ["dir_x", "dir_y"]:
+		hitbox.set(variable, get(variable))
+
 func _ready():
 	if height < 0:
 		height *= -1

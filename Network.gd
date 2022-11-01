@@ -339,7 +339,8 @@ remote func receive_match_list(list):
 	emit_signal("match_list_received", list)
 
 func request_match_list():
-	rpc_id(1, "fetch_match_list")
+	if multiplayer_client:
+		rpc_id(1, "fetch_match_list")
 
 func is_host():
 	if direct_connect:

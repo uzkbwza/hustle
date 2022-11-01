@@ -591,14 +591,6 @@ func process_tick():
 
 func _process(delta):
 	update()
-	if !is_ghost and singleplayer:
-		if Input.is_action_just_pressed("playback"):
-			if !game_finished and !ReplayManager.playback:
-				if is_waiting_on_player() and current_tick > 0:
-					buffer_playback = true
-		if Input.is_action_just_pressed("edit_replay"):
-			if ReplayManager.playback:
-				buffer_edit = true
 
 func _physics_process(_delta):
 	if undoing:
@@ -663,6 +655,14 @@ func _unhandled_input(event: InputEvent):
 		camera.global_position.x = camera.limit_right - get_viewport_rect().size.x/2
 	if camera.global_position.x < camera.limit_left + get_viewport_rect().size.x/2:
 		camera.global_position.x = camera.limit_left + get_viewport_rect().size.x/2
+	if !is_ghost and singleplayer:
+			if event.is_action_pressed("playback"):
+				if !game_finished and !ReplayManager.playback:
+					if is_waiting_on_player() and current_tick > 0:
+						buffer_playback = true
+			if event.is_action_pressed("edit_replay"):
+				if ReplayManager.playback:
+					buffer_edit = true
 
 func _draw():
 	if is_ghost:

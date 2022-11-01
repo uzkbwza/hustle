@@ -746,7 +746,6 @@ burst_cancellable = false
 burstable = false
 
 [node name="Hold" type="Node2D" parent="StateMachine" index="23"]
-visible = false
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -834,7 +833,9 @@ looping = 0
 loop_active_ticks = 0
 _c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 130 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
 
-throw_state = "Hold"
+throw_state = "AirHold"
+hits_aerial = true
+hits_grounded = false
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 90 )
@@ -846,6 +847,7 @@ anim_length = 30
 title = "Forward Throw"
 type = 1
 air_type = 2
+reversible = false
 interrupt_from_string = "GroundedThrow"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
@@ -869,6 +871,7 @@ anim_length = 30
 title = "Back Throw"
 type = 1
 air_type = 2
+reversible = false
 interrupt_from_string = "GroundedThrow"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
@@ -885,11 +888,15 @@ reverse = true
 
 [node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 90 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Forward Throw"
 type = 1
 air_type = 1
+reversible = false
 interrupt_from_string = "AerialThrow"
 interrupt_into_string = "Aerial"
 allowed_stances_string = "All"
@@ -904,11 +911,15 @@ damage = 90
 
 [node name="AirBackThrow" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 90 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Back Throw"
 type = 1
 air_type = 1
+reversible = false
 interrupt_from_string = "AerialThrow"
 interrupt_into_string = "Aerial
 "
@@ -925,12 +936,15 @@ reverse = true
 
 [node name="AirDownThrow" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 90 )
+apply_forces = true
 apply_fric = true
+apply_grav = true
 sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Down Throw"
 type = 1
 air_type = 1
+reversible = false
 interrupt_from_string = "AerialThrow"
 interrupt_into_string = "Aerial
 "
@@ -944,7 +958,6 @@ knockback = "10.0"
 dir_x = "0.10"
 dir_y = "1.0"
 damage = 90
-reverse = true
 
 [node name="ThrowTech" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 94 )

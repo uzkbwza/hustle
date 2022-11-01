@@ -35,6 +35,7 @@ func _ready():
 	start_button.connect("pressed", self, "_on_start_pressed")
 	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	$"RefreshTimer".connect("timeout", self, "refresh_match_list")
 
 func show():
 	.show()
@@ -53,7 +54,10 @@ func show():
 		show_match_list = true
 		host_button.disabled = true
 		join_button.disabled = true
+		$"%ConnectingLabel".show()
 		yield(Network.multiplayer_client, "connection_succeeded")
+		$"%ConnectingLabel".hide()
+		$"%RefreshTimer".start()
 		host_button.disabled = false
 		join_button.disabled = false
 		Network.request_match_list()
@@ -65,6 +69,9 @@ func show():
 		$"%PublicButton".hide()
 
 	name_edit.editable = true
+
+func refresh_match_list():
+	Network.request_match_list()
 
 func _on_host_pressed():
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://ui/title.png" type="Texture" id=15]
 [ext_resource path="res://ui/discord.png" type="Texture" id=16]
 [ext_resource path="res://ui/twitter.png" type="Texture" id=17]
+[ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=18]
 
 [sub_resource type="CanvasItemMaterial" id=10]
 
@@ -112,7 +113,7 @@ script = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0.0352941, 0.0470588, 0.054902, 1 )
+color = Color( 0.0431373, 0.0470588, 0.0588235, 1 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -793,7 +794,10 @@ margin_top = 10.0
 margin_right = 90.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Singleplayer"
+flat = true
 
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -801,7 +805,10 @@ margin_top = 31.0
 margin_right = 90.0
 margin_bottom = 51.0
 rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Multiplayer"
+flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -809,7 +816,10 @@ margin_top = 52.0
 margin_right = 90.0
 margin_bottom = 72.0
 rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Direct Connect"
+flat = true
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -817,7 +827,10 @@ margin_top = 73.0
 margin_right = 90.0
 margin_bottom = 93.0
 rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Replays"
+flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -825,7 +838,10 @@ margin_top = 94.0
 margin_right = 90.0
 margin_bottom = 114.0
 rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Quit"
+flat = true
 
 [node name="Title" type="Control" parent="UILayer/MainMenu"]
 unique_name_in_owner = true
@@ -860,6 +876,7 @@ margin_left = -26.0
 margin_top = 26.5
 margin_right = 26.0
 margin_bottom = 37.5
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
 text = "BY IVY SLY"
 underline = 1
 
@@ -1071,3 +1088,6 @@ margin_bottom = 85.0
 theme = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 align = 1
+
+[node name="ButtonSoundPlayer" parent="UILayer" instance=ExtResource( 18 )]
+button_containers = [ NodePath("../MainMenu/ButtonContainer") ]

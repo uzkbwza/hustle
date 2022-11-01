@@ -166,6 +166,7 @@ func copy_to(o: BaseObj):
 			o.hitboxes[i].activate()
 			o.hitboxes[i].tick = hitboxes[i].tick
 			o.hitboxes[i].enabled = hitboxes[i].enabled
+			hitboxes[i].copy_to(o.hitboxes[i])
 	chara.copy_to(o.chara)
 	o.chara.update_grounded()
 #	o.set_pos(get_pos().x, get_pos().y)

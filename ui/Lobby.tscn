@@ -106,7 +106,6 @@ margin_right = 79.0
 margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.46
-text = "67.171.216.91"
 placeholder_text = "IP"
 
 [node name="RoomCodeEdit" type="LineEdit" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
@@ -125,7 +124,6 @@ margin_right = 157.0
 margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-text = "52450"
 placeholder_text = "port"
 
 [node name="NetworkStartButton" type="Button" parent="NetworkSetupScreen"]
@@ -150,8 +148,9 @@ margin_bottom = 42.0
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
 margin_left = 168.0
-margin_top = -12.0
+margin_top = 168.0
 margin_right = 208.0
+margin_bottom = 180.0
 size_flags_horizontal = 0
 text = "go back"
 
@@ -163,9 +162,25 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -100.0
-margin_top = 91.0
-margin_right = 100.0
+margin_top = 87.0
+margin_right = 61.0
 margin_bottom = 145.0
 text = "note: host must port-forward for direct connect to work"
 align = 1
 autowrap = true
+
+[node name="ConnectingLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -55.0
+margin_top = -5.5
+margin_right = 55.0
+margin_bottom = 5.5
+text = "Connecting to server..."
+
+[node name="RefreshTimer" type="Timer" parent="."]
+unique_name_in_owner = true

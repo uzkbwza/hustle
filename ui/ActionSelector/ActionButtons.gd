@@ -199,6 +199,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	button.connect("data_changed", self, "send_ui_action")
 	button.container = container
 	button.connect("was_pressed", self, "on_action_selected", [button])
+	$"%ButtonSoundPlayer".add_container(button)
 	return button
 
 func create_category(category):
