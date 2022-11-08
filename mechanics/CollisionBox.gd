@@ -80,6 +80,10 @@ func get_overlap_center_float(box: CollisionBox):
 	return Vector2((overlap.x1 + overlap.x2) / 2.0, (overlap.y1 + overlap.y2) / 2.0)
 
 func overlaps(box: CollisionBox):
+	if width == 0 and height == 0:
+		return false
+	if box.width == 0 and box.height == 0:
+		return false
 	var aabb1 = get_aabb()
 	var aabb2 = box.get_aabb()
 	return !(aabb1.x1 > aabb2.x2 or aabb1.x2 < aabb2.x1 or aabb1.y1 > aabb2.y2 or aabb1.y2 < aabb2.y1)

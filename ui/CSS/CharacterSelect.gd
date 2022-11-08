@@ -5,15 +5,10 @@ var buttons = []
 signal match_ready(data)
 
 var pressed_button = null
-
 var hovered_characters = {}
-
 var selected_characters = {}
-
 var singleplayer = true
-
 var current_player = 1
-
 var network_match_data = {}
 
 func _ready():
@@ -26,6 +21,8 @@ func _ready():
 
 func _on_network_character_selected(player_id, character):
 	selected_characters[player_id] = character
+	if Network.is_host() and player_id == Network.player_id:
+		$"%GameSettingsPanelContainer".hide()
 	if selected_characters[1] != null and selected_characters[2] != null:
 #		$"%GoButton".disabled = false
 		if Network.is_host():
@@ -35,7 +32,6 @@ func _on_network_character_selected(player_id, character):
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
 	go()
-	
 
 func _on_show_settings_toggled(on):
 	$"%GameSettingsPanelContainer".visible = on
@@ -53,11 +49,12 @@ func init(singleplayer=true):
 	$"%P1Display".init()
 	$"%P2Display".init()
 	$"%P2Dummy".visible = singleplayer
+	$"%TurnLengthContainer".visible = !singleplayer
 	if !singleplayer:
 		if !Network.is_host():
 			$"%ShowSettingsButton".hide()
 			$"%GameSettingsPanelContainer".hide()
-		$"%DIEnabled".pressed = true
+#		$"%DIEnabled".pressed = true
 	
 	hovered_characters = {
 		1: null,
@@ -137,13 +134,15 @@ func get_match_data():
 	return {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
-		"stage_width": $"%StageWidth".value,
+		"stage_width": int($"%StageWidth".value),
 		"p2_dummy": $"%P2Dummy".pressed if singleplayer else false,
 		"di_enabled": $"%DIEnabled".pressed,
 		"turbo_mode": $"%TurboMode".pressed,
 		"infinite_resources": $"%InfiniteResources".pressed,
 		"one_hit_ko": $"%OneHitKO".pressed,
-		"game_length": $"%GameLength".value,
+		"game_length": int($"%GameLength".value),
+		"turn_time": int($"%TurnLength".value),
+		"burst_enabled": $"%BurstEnabled".pressed,
 	}
 
 func go():

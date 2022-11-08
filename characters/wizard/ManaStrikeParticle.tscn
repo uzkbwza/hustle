@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/sprites/blast1.png" type="Texture" id=2]
@@ -7,6 +7,14 @@
 [ext_resource path="res://characters/wizard/projectiles/sprites/blast3.png" type="Texture" id=5]
 [ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=6]
 [ext_resource path="res://fx/particle_square_4x4.png" type="Texture" id=7]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=8]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
 
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0.909091 ), 0.0, 0.0, 0, 0, Vector2( 0.796, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
@@ -20,6 +28,7 @@ animations = [ {
 } ]
 
 [node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 3 )
 z_index = 1
 
 [node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="1"]
@@ -60,5 +69,5 @@ color = Color( 0.831373, 0.25098, 0.713726, 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="3"]
 frames = SubResource( 1 )
-frame = 1
+frame = 4
 playing = true

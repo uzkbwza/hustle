@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/projectiles/sprites/caltrops.png" type="Texture" id=2]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
+[ext_resource path="res://characters/stickman/projectiles/CaltropsDefault.gd" type="Script" id=4]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=5]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 5 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Caltrops" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+z_index = 2
+gravity = "0.48"
+max_air_speed = "15"
+max_fall_speed = "8"
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+offset = Vector2( 0, -4 )
+
+[node name="CollisionBox" parent="." index="2"]
+y = -4
+width = 4
+height = 4
+
+[node name="Hurtbox" parent="." index="3"]
+y = -4
+width = 4
+height = 4
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 4 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+move_x = 0
+fizzle_on_ground = false
+fizzle_on_walls = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 3 )
+y = -4
+width = 3
+height = 3
+damage = 50
+hitstun_ticks = 40
+victim_hitlag = 4
+knockback = "3.0"
+launch_reversible = true
+start_tick = 10
+always_on = true

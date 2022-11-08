@@ -24,7 +24,6 @@ animations = [ {
 z_index = -1
 gravity = "0.37"
 ground_friction = "0.6"
-immunity_susceptible = true
 
 [node name="Sprite" parent="Flip" index="0"]
 modulate = Color( 1, 1, 1, 0.92549 )
@@ -32,11 +31,11 @@ frames = SubResource( 1 )
 animation = "Slide"
 offset = Vector2( 0, -16 )
 
-[node name="CollisionBox" parent="." index="1"]
+[node name="CollisionBox" parent="." index="2"]
 width = 5
 height = 5
 
-[node name="Hurtbox" parent="." index="2"]
+[node name="Hurtbox" parent="." index="3"]
 width = 5
 height = 5
 
@@ -62,6 +61,7 @@ width = 21
 height = 6
 hitstun_ticks = 50
 victim_hitlag = 4
+hit_height = 2
 dir_x = "-0.40"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"

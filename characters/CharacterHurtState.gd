@@ -15,6 +15,7 @@ func init():
 	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
+	host.release_opponent()
 	hitbox = data["hitbox"]
 	host.z_index = -1
 	if hitbox.disable_collision:

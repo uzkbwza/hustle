@@ -8,7 +8,7 @@ const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 
 const HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
-const DAMAGE_SUPER_GAIN_DIVISOR = 1
+#const DAMAGE_SUPER_GAIN_DIVISOR = 1
 
 signal hit_something(obj, hitbox)
 signal got_parried()
@@ -27,6 +27,7 @@ export var hitstun_ticks: int = 30
 export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
 export var cancellable = true
+export var increment_combo = true
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -45,6 +46,9 @@ export var screenshake_amount: int = 4
 export var screenshake_frames: int = -1
 export(PackedScene) var hit_particle
 export var replace_hit_particle = false
+export var camera_bump_dir = Vector2()
+export(PackedScene) var whiff_particle = null
+
 
 export var _c_Sfx = 0
 export(AudioStream) var whiff_sound = preload("res://sound/common/whiff1.wav") 
@@ -96,7 +100,7 @@ var hit_sound_player
 var hit_bass_sound_player
 
 func copy_to(hitbox: Hitbox):
-	for variable in ["dir_x", "dir_y"]:
+	for variable in ["x", "y", "pos_x", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
 		hitbox.set(variable, get(variable))
 
 func _ready():
@@ -104,8 +108,6 @@ func _ready():
 		height *= -1
 	if width < 0:
 		width *= -1
-	if victim_hitlag == -1:
-		victim_hitlag = hitlag_ticks
 	call_deferred("setup_audio")
 
 func setup_audio():
@@ -147,10 +149,13 @@ func play_whiff_sound():
 func activate():
 	if active:
 		return
+	spawn_whiff_particle()
 	play_whiff_sound()
 	tick = 0
 	active = true
 	enabled = true
+	if victim_hitlag == -1:
+		victim_hitlag = hitlag_ticks
 
 func deactivate():
 	played_whiff_sound = false
@@ -160,6 +165,11 @@ func deactivate():
 
 func to_data():
 	return HitboxData.new(self)
+
+func spawn_whiff_particle():
+	if whiff_particle:
+		var center = get_center()
+		host.spawn_particle_effect(whiff_particle, Vector2(center.x, center.y))
 
 func spawn_particle(particle, obj, dir):
 	host.spawn_particle_effect(particle, get_overlap_center_float(obj.hurtbox), dir)
@@ -176,17 +186,16 @@ func hit(obj):
 		var can_hit = true
 		if obj.is_in_group("Fighter"):
 			if !host.is_ghost:
-				camera.bump(Vector2(), screenshake_amount, Utils.frames(hitlag_ticks if screenshake_frames < 0 else screenshake_frames))
+				camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames))
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")
 			if can_hit and spawn_particle_effect:
 				if hit_particle:
 					spawn_particle(hit_particle, obj, dir)
-					if !replace_hit_particle:
-						spawn_particle(HIT_PARTICLE, obj, dir)
-				else:
+				if !replace_hit_particle:
 					spawn_particle(HIT_PARTICLE, obj, dir)
+			obj.rumble(screenshake_amount, victim_hitlag if screenshake_frames < 0 else screenshake_frames)
 
 		if host.hitlag_ticks < hitlag_ticks:
 			host.hitlag_ticks = hitlag_ticks
@@ -197,10 +206,10 @@ func hit(obj):
 			var opponent = obj.get("opponent")
 			
 			if opponent:
-				opponent.incr_combo()
+				if increment_combo:
+					opponent.incr_combo()
 				if opponent != host:
 					opponent.add_pushback(pushback)
-				opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 			if hit_sound_player and !ReplayManager.resimulating:
 				hit_sound_player.play()
 				hit_bass_sound_player.play()

@@ -6,7 +6,8 @@ var hitboxes = []
 var move_dir
 
 var dist = MOVE_DISTANCE
-var start_pos
+var start_pos_x
+var start_pos_y
 
 func _enter():
 	dist = MOVE_DISTANCE
@@ -57,7 +58,9 @@ func _enter():
 #		hitboxes[i].y = fixed.round(fixed.sub(vec.y, "16"))
 #
 func _frame_1():
-	start_pos = host.get_pos().duplicate()
+	var start_pos = host.get_pos().duplicate()
+	start_pos_x = start_pos.x
+	start_pos_y = start_pos.y
 
 func _frame_4():
 	pass
@@ -78,14 +81,14 @@ func _frame_5():
 	
 	for i in range(hitboxes.size()):
 		var ratio = fixed.div(str(i), str(hitboxes.size()))
-		hitboxes[i].x = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos.x), str(end_pos.x), ratio), str(host.get_pos().x))) * host.get_facing_int()
-		hitboxes[i].y = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos.y), str(end_pos.y), ratio), str(host.get_pos().y))) - 16
+		hitboxes[i].x = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_x), str(end_pos.x), ratio), str(host.get_pos().x))) * host.get_facing_int()
+		hitboxes[i].y = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_y), str(end_pos.y), ratio), str(host.get_pos().y))) - 16
 	
-	move_vec.x = end_pos.x - start_pos.x
-	move_vec.y = end_pos.y - start_pos.y
+	move_vec.x = end_pos.x - start_pos_x
+	move_vec.y = end_pos.y - start_pos_y
 	var pos = host.get_pos_visual()
 	var particle_dir = Vector2(float(move_vec.x), float(move_vec.y)).normalized()
-	host.spawn_particle_effect(preload("res://characters/stickman/QuickSlashEffect.tscn"), Vector2(start_pos.x, start_pos.y - 13), particle_dir)
+	host.spawn_particle_effect(preload("res://characters/stickman/QuickSlashEffect.tscn"), Vector2(start_pos_x, start_pos_y - 13), particle_dir)
 	host.update_data()
 
 func _frame_6():

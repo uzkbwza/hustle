@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/izunaswish.wav-b05d9e79ac974242e87c30b04058a249.sample"
+
+[deps]
+
+source_file="res://characters/swordandgun/sounds/izunaswish.wav"
+dest_files=[ "res://.import/izunaswish.wav-b05d9e79ac974242e87c30b04058a249.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

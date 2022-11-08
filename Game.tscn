@@ -23,3 +23,7 @@ editor_draw_drag_margin = true
 script = ExtResource( 3 )
 
 [node name="Fx" type="Node2D" parent="."]
+
+[node name="GhostStartTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true

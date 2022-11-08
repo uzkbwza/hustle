@@ -13,6 +13,7 @@ func _tick():
 	host.apply_forces()
 	if host.is_grounded():
 		return "Slide"
+	host.set_facing(host.get_facing_int()) # without this the ghost is flipped for some reason
 
 #func _frame_23():
 #	stopped = false

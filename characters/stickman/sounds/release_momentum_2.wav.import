@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/release_momentum_2.wav-3464ed88cf2846a59a0ea95cbaa7b688.sample"
+
+[deps]
+
+source_file="res://characters/stickman/sounds/release_momentum_2.wav"
+dest_files=[ "res://.import/release_momentum_2.wav-3464ed88cf2846a59a0ea95cbaa7b688.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

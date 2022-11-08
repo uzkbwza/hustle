@@ -1,4 +1,4 @@
-[gd_scene load_steps=135 format=2]
+[gd_scene load_steps=147 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -133,8 +133,26 @@
 [ext_resource path="res://sound/common/parry.wav" type="AudioStream" id=131]
 [ext_resource path="res://sound/common/parry2.wav" type="AudioStream" id=132]
 [ext_resource path="res://sound/common/instant_cancel.wav" type="AudioStream" id=133]
+[ext_resource path="res://characters/CharacterMaterial.tres" type="Material" id=134]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=135]
+[ext_resource path="res://sound/common/super.wav" type="AudioStream" id=136]
+[ext_resource path="res://sound/common/super2.wav" type="AudioStream" id=137]
+[ext_resource path="res://sound/common/super5.wav" type="AudioStream" id=138]
+[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=139]
+[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=140]
+[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=141]
+[ext_resource path="res://ui/ActionSelector/StateIcons/throw_forward.png" type="Texture" id=142]
+[ext_resource path="res://ui/ActionSelector/StateIcons/throw_back.png" type="Texture" id=143]
+[ext_resource path="res://ui/ActionSelector/StateIcons/throw_down.png" type="Texture" id=144]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 135 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[sub_resource type="SpriteFrames" id=3]
 animations = [ {
 "frames": [ ExtResource( 24 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 26 ) ],
 "loop": true,
@@ -333,6 +351,7 @@ animations = [ {
 } ]
 
 [node name="BaseChar" groups=["Fighter"] instance=ExtResource( 3 )]
+material = SubResource( 2 )
 script = ExtResource( 1 )
 gravity = "0.5"
 max_air_speed = "13"
@@ -343,7 +362,8 @@ player_info_scene = ExtResource( 39 )
 player_extra_params_scene = ExtResource( 122 )
 
 [node name="Sprite" parent="Flip" index="0"]
-frames = SubResource( 1 )
+material = ExtResource( 134 )
+frames = SubResource( 3 )
 animation = "Wait"
 offset = Vector2( 0, -18 )
 __meta__ = {
@@ -362,6 +382,26 @@ stream = ExtResource( 132 )
 volume_db = -15.0
 bus = "Fx"
 script = ExtResource( 130 )
+
+[node name="Super" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+stream = ExtResource( 136 )
+volume_db = -4.0
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Super2" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+stream = ExtResource( 137 )
+volume_db = -10.0
+bus = "Fx"
+script = ExtResource( 130 )
+pitch_variation = 0.01
+
+[node name="Super3" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
+stream = ExtResource( 138 )
+volume_db = -4.0
+bus = "Fx"
+script = ExtResource( 130 )
+pitch_variation = 0.01
 
 [node name="CollisionBox" parent="." index="2"]
 y = -14
@@ -437,7 +477,7 @@ particle_scene = ExtResource( 120 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
 title = "Burst Cancel"
-type = 2
+type = 3
 button_texture = ExtResource( 96 )
 air_type = 2
 burst_cancellable = false
@@ -472,6 +512,7 @@ script = ExtResource( 10 )
 fallback_state = "Fall"
 sprite_animation = "Jump"
 anim_length = 15
+button_texture = ExtResource( 55 )
 air_type = 1
 interruptible_on_opponent_turn = true
 interrupt_from_string = "Fall"
@@ -547,6 +588,7 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 128 )
 enter_sfx_volume = -10.0
 iasa_at = 4
+interruptible_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "OTG"
 
@@ -717,6 +759,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+super_freeze_ticks = 8
 
 [node name="HurtGrounded" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 28 )
@@ -787,16 +830,15 @@ height = 12
 hitlag_ticks = 0
 victim_hitlag = 0
 priority = 9999
-knockdown_extends_hitstun = null
-_c_Frame_Data = true
+_c_Sfx = null
+whiff_sound = 0
+hit_sound = ExtResource( 141 )
+hit_bass_sound = ExtResource( 139 )
+whiff_sound_volume = ExtResource( 140 )
+hit_sound_volume = -8.0
 start_tick = 3
 active_ticks = 3
-always_on = 5
-_c_Loop_Data = false
-looping = 0
 loop_active_ticks = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 130 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
-
 throw_state = "Hold"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="26"]
@@ -823,19 +865,14 @@ height = 12
 hitlag_ticks = 0
 victim_hitlag = 0
 priority = 9999
-knockdown_extends_hitstun = null
-_c_Frame_Data = true
+whiff_sound = 0
+hit_sound = ExtResource( 141 )
+hit_bass_sound = ExtResource( 139 )
+whiff_sound_volume = ExtResource( 140 )
+hit_sound_volume = -8.0
 start_tick = 3
-active_ticks = 0
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 130 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
-
+active_ticks = 3
 throw_state = "AirHold"
-hits_aerial = true
-hits_grounded = false
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 90 )
@@ -846,6 +883,7 @@ sprite_animation = "ForwardThrow"
 anim_length = 30
 title = "Forward Throw"
 type = 1
+button_texture = ExtResource( 142 )
 air_type = 2
 reversible = false
 interrupt_from_string = "GroundedThrow"
@@ -870,6 +908,7 @@ sprite_animation = "ForwardThrow"
 anim_length = 30
 title = "Back Throw"
 type = 1
+button_texture = ExtResource( 143 )
 air_type = 2
 reversible = false
 interrupt_from_string = "GroundedThrow"
@@ -895,10 +934,12 @@ sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Forward Throw"
 type = 1
+button_texture = ExtResource( 142 )
 air_type = 1
 reversible = false
 interrupt_from_string = "AerialThrow"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
 allowed_stances_string = "All"
 release = true
 release_frame = 10
@@ -918,11 +959,12 @@ sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Back Throw"
 type = 1
+button_texture = ExtResource( 143 )
 air_type = 1
 reversible = false
 interrupt_from_string = "AerialThrow"
 interrupt_into_string = "Aerial
-"
+Grounded"
 allowed_stances_string = "All"
 release = true
 release_frame = 10
@@ -943,11 +985,12 @@ sprite_animation = "ForwardThrow"
 anim_length = 16
 title = "Down Throw"
 type = 1
+button_texture = ExtResource( 144 )
 air_type = 1
 reversible = false
 interrupt_from_string = "AerialThrow"
 interrupt_into_string = "Aerial
-"
+Grounded"
 allowed_stances_string = "All"
 release = true
 release_frame = 10

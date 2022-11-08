@@ -31,6 +31,7 @@ var multiplayer_host = false
 var replay_saved = false
 var direct_connect = false
 var rematch_menu = false
+var ids_synced = false
 
 var ticks = {
 	1: null,
@@ -68,23 +69,26 @@ signal match_code_received(code)
 signal relay_match_joined()
 signal match_locked_in(match_data)
 signal match_list_received(list)
-
+signal player_ids_synced()
+signal player_disconnected()
+signal sync_timer_request(id, time)
+signal chat_message_received(id, message)
 
 func _ready():
-	get_tree().connect("network_peer_connected", self, "player_connected")
-	get_tree().connect("network_peer_disconnected", self,"player_disconnected")
-	get_tree().connect("connected_to_server", self, "_connected_ok")
-	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
+	get_tree().connect("network_peer_disconnected", self,"player_disconnected", [], CONNECT_DEFERRED)
+	get_tree().connect("connected_to_server", self, "_connected_ok", [], CONNECT_DEFERRED)
+	get_tree().connect("connection_failed", self, "_connected_fail", [], CONNECT_DEFERRED)
+	get_tree().connect("server_disconnected", self, "_server_disconnected", [], CONNECT_DEFERRED)
 	hole_punch = HolePunch.new()
-	hole_punch.connect("hole_punched", self, "_on_hole_punched")
+	hole_punch.connect("hole_punched", self, "_on_hole_punched", [], CONNECT_DEFERRED)
 	add_child(hole_punch)
 	randomize()
 
-func _exit_tree():
-	stop_multiplayer()
-
 func rpc_(function_name: String, arg=null, type="remotesync"):
+	if !multiplayer_active:
+		return
+#	yield(get_tree().create_timer(rng.randf_range(0.5, 2.0)), "timeout")
 	if direct_connect:
 		if arg is Array:
 			var all_args = [function_name]
@@ -234,6 +238,8 @@ func _reset():
 		2: false,
 	}
 	
+	ids_synced = false
+	
 	get_tree().set_network_peer(null)
 
 # Callback from SceneTree.
@@ -242,6 +248,9 @@ func player_connected(id):
 	if direct_connect:
 		rpc_("register_player", [player_name, id, Global.VERSION])
 
+func pid_to_username(player_id):
+		return players[network_ids[player_id]]
+		
 func opponent_id(pid=player_id):
 	if pid == 1:
 		return network_ids[2]
@@ -273,7 +282,10 @@ func reset_action_inputs():
 
 # Callback from SceneTree.
 remote func player_disconnected(id):
-	multiplayer_active = false
+#	multiplayer_active = false
+	if !(id in players):
+		return
+	emit_signal("player_disconnected")
 	if is_host():
 		if players.has(id):
 			emit_signal("game_error", "Player " + players[id] + " disconnected")
@@ -295,6 +307,7 @@ func _connected_ok():
 # Callback from SceneTree, only for clients (not server).
 func _server_disconnected():
 	emit_signal("game_error", "Server disconnected")
+	print("server disconnected")
 	multiplayer_active = false
 	end_game()
 
@@ -302,6 +315,12 @@ func _server_disconnected():
 func _connected_fail():
 	get_tree().set_network_peer(null) # Remove peer
 	emit_signal("connection_failed")
+
+remotesync func receive_player_timer(id, timer):
+	emit_signal("sync_timer_request", id, timer)
+
+func sync_timer(id, time):
+	rpc_("receive_player_timer", [id, time], "remotesync")
 
 func submit_action(action, data, extra):
 	if multiplayer_active:
@@ -323,6 +342,7 @@ func get_sender_id():
 
 func unregister_player(id):
 	players.erase(id)
+	print("unregistering player: " + str(id))
 	emit_signal("player_list_changed")
 
 func get_player_list():
@@ -380,6 +400,7 @@ func autosave_match_replay(match_data):
 		ReplayManager.save_replay_mp(match_data, players.values()[0], players.values()[1])
 
 func stop_multiplayer():
+	print("stopping multiplayer")
 	multiplayer_active = false
 	if peer:
 		peer.close_connection()
@@ -394,6 +415,9 @@ remote func send_action(action, data, extra, id):
 		action_inputs[id]["data"] = null
 		action_inputs[id]["extra"] = null
 		player_objects[id].on_action_selected(action, data, extra)
+
+remotesync func send_chat_message(player_id, message):
+	emit_signal("chat_message_received", player_id, message)
 
 remotesync func end_turn_simulation(tick, player_id):
 #	if get_sender_id() == network_id:
@@ -429,6 +453,8 @@ remotesync func sync_ids(network_ids):
 	for player in network_ids:
 		if network_ids[player] == get_tree().get_network_unique_id():
 			player_id = player
+	ids_synced = true
+	emit_signal("player_ids_synced")
 
 remotesync func send_rematch_request(player_id):
 	rematch_requested[player_id] = true
@@ -438,6 +464,7 @@ remotesync func send_rematch_request(player_id):
 			begin_game()
 
 remotesync func sync_character_selection(player_id, character):
+	print("player %s selected character" % [str(player_id)])
 	emit_signal("character_selected", player_id, character)
 
 remotesync func open_chara_select():

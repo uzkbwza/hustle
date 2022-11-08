@@ -13,7 +13,7 @@ func _frame_3():
 	var dir = xy_to_dir(data.x, data.y, SPEED)
 	var hitbox_offs = fixed.normalized_vec_times(dir.x, dir.y, HITBOX_OFFSET)
 	var center = host.get_hurtbox_center()
-	hitbox.dir_x = hitbox_offs.x
+	hitbox.dir_x = fixed.mul(hitbox_offs.x, str(host.get_facing_int()))
 	hitbox.dir_y = hitbox_offs.y
 	particle_x = hitbox_offs.x
 	particle_y = hitbox_offs.y

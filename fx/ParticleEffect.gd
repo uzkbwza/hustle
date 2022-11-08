@@ -19,19 +19,35 @@ func _ready():
 		if child is Particles2D:
 			child.one_shot = one_shot
 			child.emitting = start_enabled
-		if child is CPUParticles2D:
+		elif child is CPUParticles2D:
 			child.one_shot = one_shot
 			child.emitting = start_enabled
-		if child is AnimatedSprite:
+		elif child is AnimatedSprite:
 			child.playing = false
 			child.frame = 0
+#		if child is Node2D:
+#			child.set_material(get_material())
 	if !ReplayManager.playback:
 		set_enabled(false)
 		tick_timer.connect("timeout", self, "on_tick_timer_timeout")
 
+func set_speed_scale(speed):
+	for child in get_children():
+		if child.get("speed_scale") != null:
+			child.speed_scale = speed
+
 func on_tick_timer_timeout():
 	if enabled:
 		set_enabled(false)
+
+func start_emitting():
+	show()
+	set_enabled(true)
+	for child in get_children():
+		if child is Particles2D:
+			child.emitting = true
+		if child is CPUParticles2D:
+			child.emitting = true
 
 func stop_emitting():
 	for child in get_children():

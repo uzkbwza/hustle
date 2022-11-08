@@ -2,8 +2,9 @@ extends Camera2D
 
 class_name GoodCamera
 
-const MAX_SHAKE_AMOUNT = 20
-const SCREENSHAKE_MODIFIER = 1.0
+const MAX_SHAKE_AMOUNT = 50
+const SCREENSHAKE_MODIFIER = 1.5
+const SCREENSHAKE_TIME_MODIFIER = 1.5
 
 export var default_screenshake_amount = 2.0
 export var default_screenshake_time = 0.1
@@ -47,9 +48,10 @@ func reset_shake():
 func bump(dir=Vector2(), amount=default_screenshake_amount, time=default_screenshake_time):
 	if amount > MAX_SHAKE_AMOUNT:
 		amount = MAX_SHAKE_AMOUNT
-	amount *= SCREENSHAKE_MODIFIER
 	amount = float(amount)
 	time = float(time)
+	amount *= SCREENSHAKE_MODIFIER
+	time *= SCREENSHAKE_TIME_MODIFIER
 #	if !Global.screen_shake:
 #		return
 	var shake_tween = create_tween()
@@ -84,7 +86,7 @@ func bump(dir=Vector2(), amount=default_screenshake_amount, time=default_screens
 	offsets.erase(offs)
 
 
-func _physics_process(delta):
+func tick():
 #	smoothing_speed = _smoothing_speed / Engine.time_scale
 	offset = Vector2()
 #	if 1.0 / delta > 30:

@@ -18,10 +18,18 @@ export(ParryHeight) var parry_type = ParryHeight.High
 
 func _enter():
 	parry_active = true
+	interruptible_on_opponent_turn = false
+#
+#func _frame_1():
+#	parry_active = true
+#	interruptible_on_opponent_turn = false
 
 
 func _frame_10():
 	parry_active = false
+
+func parry():
+	interruptible_on_opponent_turn = true
 
 func can_parry_hitbox(hitbox):
 	if hitbox == null:
@@ -46,3 +54,5 @@ func _tick():
 		if !parry_active and host.is_grounded():
 			queue_state_change("Landing", LANDING_LAG)
 	host.apply_forces()
+	if current_tick >= 10:
+		parry_active = false

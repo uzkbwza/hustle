@@ -31,11 +31,17 @@ func _ready():
 	$"%SaveReplayButton".connect("pressed", self, "save_replay")
 	$"%CharacterSelect".connect("match_ready", self, "_on_match_ready")
 	$"%GhostSpeed".connect("value_changed", self, "_on_ghost_speed_changed")
+	$"%GhostWaitTimer".connect("timeout", self, "_on_ghost_wait_timer_timeout")
 	$"%GameUI".hide()
 	$"%MainMenu".show()
 	ReplayManager.play_full = false
-	Network._reset()
+	if Network.multiplayer_active:
+		Network.stop_multiplayer()
+	Network.connect("player_disconnected", self, "_on_player_disconnected")
 	
+func _on_player_disconnected():
+	$"%OpponentDisconnectedLabel".show()
+
 func _on_game_started(singleplayer):
 	if is_instance_valid(game):
 		game.free()
@@ -48,6 +54,10 @@ func _on_game_started(singleplayer):
 	$"%CharacterSelect".init(singleplayer)
 	$"%DirectConnectLobby".hide()
 	$"%Lobby".hide()
+
+func _on_ghost_wait_timer_timeout():
+	if is_instance_valid(game):
+		start_ghost()
 
 func _on_loaded_replay(match_data):
 	match_data["replay"] = true
@@ -87,6 +97,8 @@ func setup_game_deferred(singleplayer, data):
 	game.connect("player_actionable", self, "_on_player_actionable")
 	game.connect("playback_requested", self, "_on_playback_requested")
 	game.start_game(singleplayer, data)
+	if data.has("turn_time"):
+		ui_layer.set_turn_time(data.turn_time)
 	ui_layer.init(game)
 	hud_layer.init(game)
 	var p1 = game.get_player(1)
@@ -106,6 +118,7 @@ func setup_game_deferred(singleplayer, data):
 	$"%P2InfoContainer".add_child(p2_info_scene)
 	$"%P2InfoContainer".move_child(p2_info_scene, 0)
 	
+	
 func _on_ghost_button_toggled(toggled):
 	if toggled:
 		start_ghost()
@@ -115,6 +128,7 @@ func _on_ghost_button_toggled(toggled):
 func _on_player_actionable():
 #	if singleplayer or Network.player_id == id:
 	ui_layer.on_player_actionable()
+	$"%GhostWaitTimer".start()
 	start_ghost()
 
 func on_action_clicked(action, data, extra, player_id):
@@ -134,6 +148,9 @@ func start_ghost():
 	call_deferred("_start_ghost")
 
 func _start_ghost():
+	if !$"%GhostWaitTimer".is_stopped():
+		yield($"%GhostWaitTimer", "timeout")
+		return
 	stop_ghost()
 	for child in $"%GhostViewport".get_children():
 		child.queue_free()

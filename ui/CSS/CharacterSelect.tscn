@@ -51,8 +51,8 @@ scroll_horizontal_enabled = false
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 128.0
-margin_bottom = 134.0
+margin_right = 122.0
+margin_bottom = 113.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -73,7 +73,7 @@ margin_bottom = 11.0
 size_flags_horizontal = 3
 min_value = 100.0
 max_value = 50000.0
-value = 2500.0
+value = 1500.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 margin_top = 12.0
@@ -96,32 +96,65 @@ min_value = 1.0
 max_value = 999999.0
 value = 3600.0
 
-[node name="P2Dummy" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+[node name="TurnLengthContainer" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 128.0
-margin_bottom = 36.0
+margin_bottom = 35.0
+
+[node name="TurnLengthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
+margin_right = 51.0
+margin_bottom = 11.0
+text = "Turn Clock"
+
+[node name="TurnLength" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
+unique_name_in_owner = true
+margin_left = 52.0
+margin_right = 128.0
+margin_bottom = 11.0
+hint_tooltip = "Set a timer for each player (in minutes). It counts down during each turn."
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 999999.0
+value = 30.0
+
+[node name="P2Dummy" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 36.0
+margin_right = 128.0
+margin_bottom = 48.0
 hint_tooltip = "Player 2 will not be prompted for input."
 size_flags_horizontal = 15
+text = "No P2 Input"
+expand_icon = true
+
+[node name="BurstEnabled" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 49.0
+margin_right = 128.0
+margin_bottom = 61.0
+hint_tooltip = "Both players have 1 HP."
+size_flags_horizontal = 15
 pressed = true
-text = "Training Dummy"
+text = "Burst Enabled"
 expand_icon = true
 
 [node name="DIEnabled" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 37.0
+margin_top = 62.0
 margin_right = 128.0
-margin_bottom = 49.0
+margin_bottom = 74.0
 hint_tooltip = "Enable directional influence, affecting the characters' knockback trajectory when they are hit."
 size_flags_horizontal = 15
+pressed = true
 text = "DI Enabled"
 expand_icon = true
 
 [node name="TurboMode" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 50.0
+margin_top = 75.0
 margin_right = 128.0
-margin_bottom = 62.0
+margin_bottom = 87.0
 hint_tooltip = "Freely cancel moves into other moves."
 size_flags_horizontal = 15
 text = "Turbo Mode"
@@ -129,9 +162,9 @@ expand_icon = true
 
 [node name="InfiniteResources" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 63.0
+margin_top = 88.0
 margin_right = 128.0
-margin_bottom = 75.0
+margin_bottom = 100.0
 hint_tooltip = "Never run out of super-meter or other character-specific resources."
 size_flags_horizontal = 15
 text = "Infinite Resources"
@@ -139,9 +172,9 @@ expand_icon = true
 
 [node name="OneHitKO" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 76.0
+margin_top = 101.0
 margin_right = 128.0
-margin_bottom = 88.0
+margin_bottom = 113.0
 hint_tooltip = "Both players have 1 HP."
 size_flags_horizontal = 15
 text = "One-Hit KO"
@@ -213,6 +246,8 @@ __meta__ = {
 
 [node name="P1Display" parent="HBoxContainer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
+margin_right = 212.0
+margin_bottom = 360.0
 mouse_filter = 2
 
 [node name="Control2" type="Control" parent="HBoxContainer"]
@@ -226,6 +261,7 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 margin_left = 427.0
 margin_right = 640.0
+margin_bottom = 360.0
 mouse_filter = 2
 player_id = 2
 

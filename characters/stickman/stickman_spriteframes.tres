@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=82 format=2]
+[gd_resource type="SpriteFrames" load_steps=85 format=2]
 
 [ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=1]
 [ext_resource path="res://characters/stickman/sprites/phantomdash2.png" type="Texture" id=2]
@@ -81,6 +81,9 @@
 [ext_resource path="res://characters/stickman/sprites/stomp3.png" type="Texture" id=79]
 [ext_resource path="res://characters/stickman/sprites/stomp1.png" type="Texture" id=80]
 [ext_resource path="res://characters/stickman/sprites/summon.png" type="Texture" id=81]
+[ext_resource path="res://characters/stickman/sprites/caltrops3.png" type="Texture" id=82]
+[ext_resource path="res://characters/stickman/sprites/caltrops2.png" type="Texture" id=83]
+[ext_resource path="res://characters/stickman/sprites/caltrops1.png" type="Texture" id=84]
 
 [resource]
 animations = [ {
@@ -102,6 +105,11 @@ animations = [ {
 "frames": [ ExtResource( 66 ) ],
 "loop": true,
 "name": "Burst",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 84 ), ExtResource( 83 ), ExtResource( 83 ), ExtResource( 83 ), ExtResource( 82 ) ],
+"loop": true,
+"name": "Caltrops",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 49 ) ],

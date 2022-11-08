@@ -3,9 +3,9 @@ extends BaseObj
 class_name Fighter
 
 signal action_selected(action, data)
+signal super_started()
 
 signal undo()
-
 var MAX_HEALTH = 1000
 #const STALING_REDUCTIONS = [
 #	"1.0",
@@ -21,7 +21,11 @@ var MAX_HEALTH = 1000
 #	"0.40",
 #]
 const MAX_STALES = 15
-const MIN_STALE_MODIFIER = "0.25"
+const MIN_STALE_MODIFIER = "0.2"
+
+const DAMAGE_SUPER_GAIN_DIVISOR = 1
+const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
+const HITLAG_COLLISION_TICKS = 4
 
 const GUTS_REDUCTIONS = {
 	"1": "1",
@@ -45,7 +49,7 @@ const BURST_BUILD_SPEED = 4
 const MAX_BURST_METER = 1500
 const START_BURSTS = 1
 
-const MAX_SUPER_METER = 150
+const MAX_SUPER_METER = 125
 const MAX_SUPERS = 9
 const VEL_SUPER_GAIN_DIVISOR = 4
 
@@ -53,6 +57,7 @@ const VEL_SUPER_GAIN_DIVISOR = 4
 const NUDGE_DISTANCE = 20
 
 const PARRY_METER = 50
+const METER_GAIN_MODIFIER = "1.25"
 
 export var num_air_movements = 2
 
@@ -90,8 +95,8 @@ var turbo_mode = false
 var infinite_resources = false
 var one_hit_ko = false
 var burst_enabled = true
-var burst_cancel_enabled = true
 
+var trail_hp: int = MAX_HEALTH
 var hp: int = 0
 var super_meter: int = 0
 var supers_available: int = 0
@@ -127,12 +132,15 @@ var parried_hitboxes = []
 var throw_pos_x = 16
 var throw_pos_y = -5
 
+var combo_damage = 0
+var hitlag_applied = 0
+
 class InputState:
 	var name
 	var data
 
-func init():
-	.init()
+func init(pos=null):
+	.init(pos)
 	if !is_ghost:
 		Network.player_objects[id] = self
 		
@@ -141,7 +149,9 @@ func init():
 	hp = MAX_HEALTH
 	game_over = false
 	show_you_label()
-	bursts_available = START_BURSTS
+	if burst_enabled:
+		for i in range(START_BURSTS):
+			gain_burst()
 	for state in state_machine.get_children():
 		if state is CharacterState:
 			for category in state.interrupt_from:
@@ -153,7 +163,8 @@ func init():
 		supers_available = MAX_SUPERS
 		super_meter = MAX_SUPER_METER
 
-#	state_interruptable = true
+func start_super():
+	emit_signal("super_started")
 
 func change_stance_to(stance):
 	self.stance = stance
@@ -171,10 +182,12 @@ func _ready():
 	sprite.animation = "Wait"
 
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "burst_enabled", "burst_cancel_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 
 func gain_burst_meter():
+	if !burst_enabled:
+		return
 	if bursts_available < MAX_BURSTS:
 		burst_meter += BURST_BUILD_SPEED
 		if burst_meter > MAX_BURST_METER:
@@ -201,6 +214,9 @@ func use_super_bar():
 	if infinite_resources:
 		return
 	supers_available -= 1
+	if supers_available < 0:
+		supers_available = 0
+		super_meter = 0
 
 func use_super_meter(amount):
 	if infinite_resources:
@@ -225,7 +241,7 @@ func gain_super_meter(amount):
 			
 func combo_stale_meter(meter: int):
 	var staling = get_combo_stale(combo_count)
-	return fixed.round(fixed.mul(str(meter), staling))
+	return fixed.round(fixed.mul(fixed.mul(str(meter), staling), METER_GAIN_MODIFIER))
 	
 func update_data():
 	data = get_data()
@@ -249,12 +265,14 @@ func get_global_throw_pos():
 
 func reset_combo():
 	combo_count = 0
+	combo_damage = 0
+	opponent.trail_hp = opponent.hp
 
 func incr_combo():
 	combo_count += 1
 
 func is_colliding_with_opponent():
-	return colliding_with_opponent or hitlag_ticks > 0
+	return colliding_with_opponent or (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS
 
 func thrown_by(hitbox: ThrowBox):
 	emit_signal("got_hit")
@@ -279,7 +297,10 @@ func hit_by(hitbox):
 			state = hitbox.aerial_hit_state
 #		if hitlag_ticks < hitbox.victim_hitlag:
 		hitlag_ticks = hitbox.victim_hitlag
+		hitlag_applied = hitbox.victim_hitlag
 		state_machine._change_state(state, {"hitbox": hitbox})
+		if hitbox.disable_collision:
+			colliding_with_opponent = false
 	#	state_interruptable = false
 		busy_interrupt = true
 		can_nudge = true
@@ -297,11 +318,14 @@ func hit_by(hitbox):
 		particle_location.x *= get_facing_int()
 		if !particle_location:
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
+		current_state().parry()
 		gain_super_meter(PARRY_METER)
 		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 		play_sound("Parry")
 		play_sound("Parry2")
 		
+
+
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
 	throw_pos_y = y
@@ -310,7 +334,14 @@ func get_center_position_float():
 	return Vector2(position.x + collision_box.x, position.y + collision_box.y)
 
 func take_damage(damage: int):
-	hp -= Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	if opponent.combo_count == 0:
+		trail_hp = hp
+	if damage == 0:
+		return
+	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	hp -= damage
+	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
+	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 
 func get_guts():
 	var current_guts = "1"
@@ -367,6 +398,13 @@ func process_action():
 			state_machine.queue_state(queued_action, queued_data)
 	if queued_extra:
 		process_extra(queued_extra)
+
+func set_color(color: Color):
+	sprite.get_material().set_shader_param("color", color)
+
+func release_opponent():
+	if opponent.current_state().state_name == "Grabbed":
+		opponent.change_state("Fall")
 
 func process_extra(extra):
 	if "DI" in extra:
@@ -429,12 +467,14 @@ func tick():
 				current_state().parry_active = false
 				parried = false
 		state_tick()
-
+		if state_hit_cancellable:
+			state_interruptable = true
+			can_nudge = false
 		chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
 			refresh_air_movements()
 		current_tick += 1
-		if not (state_machine.state is CharacterHurtState):
+		if not (current_state().is_hurt_state) and !(opponent.current_state().is_hurt_state):
 			var x_vel_int = chara.get_x_vel_int()
 			if Utils.int_sign(x_vel_int) == Utils.int_sign(opponent.get_pos().x - get_pos().x):
 				gain_super_meter(Utils.int_max(Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR, 1))
@@ -447,7 +487,6 @@ func tick():
 	for particle in particles.get_children():
 		particle.tick()
 	any_available_actions = true
-#	reverse_state = false
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):

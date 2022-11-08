@@ -3,6 +3,7 @@ extends Node2D
 class_name Game
 
 const GHOST_FRAMES = 90
+const SUPER_FREEZE_TICKS = 20
 
 export(int) var char_distance = 200
 export(int) var stage_width = 2000
@@ -61,13 +62,20 @@ var p2 = null
 var snapping_camera = false 
 var waiting_for_player_prev = false
 
-var objects = []
+var objects: Array = []
 var objs_map = {
 	
 }
-var effects = []
+var effects: Array = []
 
 var drag_position = null
+
+var super_freeze_ticks = 0
+var super_active = false
+var p1_super = false
+var p2_super = false
+
+var network_sync_tick = -100
 
 func get_ticks_left():
 	return time - Utils.int_min(current_tick, time)
@@ -81,6 +89,7 @@ func _ready():
 			object.free()
 		for fx in fx_node.get_children():
 			fx.free()
+		$GhostStartTimer.start()
 	else:
 		emit_signal("simulation_continue")
 
@@ -89,6 +98,8 @@ func connect_signals(object):
 	object.connect("particle_effect_spawned", self, "on_particle_effect_spawned")
 
 func copy_to(game: Game):
+	if !game_started:
+		return
 	p1.copy_to(game.p1)
 	p2.copy_to(game.p2)
 	clean_objects()
@@ -104,6 +115,19 @@ func copy_to(game: Game):
 				object.copy_to(new_obj)
 			else:
 				game.objs_map[game.objs_map.size() + 1] = null
+
+func _on_super_started(player):
+	if is_ghost:
+		return
+	var state = player.current_state()
+	if state.get("super_freeze_ticks") != null:
+		if state.super_freeze_ticks > super_freeze_ticks:
+			super_freeze_ticks = state.super_freeze_ticks
+	super_active = true
+	if player == p1:
+		p1_super = true
+	if player == p2:
+		p2_super = true
 
 func get_screen_position(player_id):
 	var screen_center = camera.get_camera_screen_center()
@@ -151,17 +175,14 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		time = match_data["game_length"]
 	p1.name = "P1"
 	p2.name = "P2"
-	p1.modulate = Color("aca2ff")
-	p2.modulate = Color("ff7a81")
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
 
-	for value in ["di_enabled", "infinite_resources", "turbo_mode", "one_hit_ko"]:
-		if match_data.has(value):
-			for player in [p1, p2]:
-				if player.get(value) != null:
-					player.set(value, match_data[value])
+	for value in match_data:
+		for player in [p1, p2]:
+			if player.get(value) != null:
+				player.set(value, match_data[value])
 
 #	if match_data.has("infinite_resources"):
 #		p1.infinite_resources = match_data["infinite_resources"]
@@ -176,10 +197,14 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 #		p2.one_hit_ko = match_data["one_hit_ko"]
 	$Players.add_child(p1)
 	$Players.add_child(p2)
+	p1.set_color(Color("aca2ff"))
+	p2.set_color(Color("ff7a81"))
 	p1.init()
 	p2.init()
 	p1.connect("undo", self, "set", ["undoing", true])
 	p2.connect("undo", self, "set", ["undoing", true])
+	p1.connect("super_started", self, "_on_super_started", [p1])
+	p2.connect("super_started", self, "_on_super_started", [p2])
 	connect_signals(p1)
 	connect_signals(p2)
 	objs_map = {
@@ -255,6 +280,7 @@ func initialize_objects():
 			object.init()
 
 func tick():
+
 	if !singleplayer:
 		if !is_ghost:
 			Network.reset_action_inputs()
@@ -265,7 +291,7 @@ func tick():
 		if !object.initialized:
 			object.init()
 		object.tick()
-	
+
 	for fx in effects:
 		fx.tick()
 
@@ -419,7 +445,6 @@ func apply_hitboxes():
 		else:
 			p1_throwing = true
 	
-	
 	if !p2_hit and !p1_hit:
 		if p2_throwing and p1_throwing:
 			p1.state_machine.queue_state("ThrowTech")
@@ -437,7 +462,8 @@ func apply_hitboxes():
 				can_hit = false
 			if can_hit:
 				p2_hit_by.hit(p2)
-				p1.state_machine.queue_state(p2_hit_by.throw_state)
+				if p2_hit_by.throw_state:
+					p1.state_machine.queue_state(p2_hit_by.throw_state)
 				return
 
 		elif p2_throwing:
@@ -452,7 +478,8 @@ func apply_hitboxes():
 				can_hit = false
 			if can_hit:
 				p1_hit_by.hit(p1)
-				p2.state_machine.queue_state(p1_hit_by.throw_state)
+				if p1_hit_by.throw_state:
+					p2.state_machine.queue_state(p1_hit_by.throw_state)
 				return
 
 	var objects_to_hit = []
@@ -546,6 +573,16 @@ func end_game():
 	emit_signal("game_won", winner)
 
 func process_tick():
+	super_active = super_freeze_ticks > 0
+	if super_freeze_ticks > 0:
+		super_freeze_ticks -= 1
+		if super_freeze_ticks == 0:
+			super_active = false
+			p1_super = false
+			p2_super = false
+		return
+
+	
 	if !ReplayManager.playback:
 		if !is_waiting_on_player():
 #				if Input.is_action_just_pressed("frame_advance"):
@@ -556,6 +593,7 @@ func process_tick():
 					game_paused = false
 		else:
 			game_paused = true
+			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
 				p2.busy_interrupt = (!p2.state_interruptable and !p2.current_state().interruptible_on_opponent_turn)
 				p2.state_interruptable = true
@@ -564,8 +602,10 @@ func process_tick():
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
-					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
+					someones_turn = true
+
 			elif p2.state_interruptable and !p2_turn:
+				someones_turn = true
 				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
 				p1.state_interruptable = true
 				p2.show_you_label()
@@ -573,7 +613,12 @@ func process_tick():
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
+					someones_turn = true
+
+			if someones_turn:
+				if network_sync_tick != current_tick:
 					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
+					network_sync_tick = current_tick
 	else:
 		if ReplayManager.resimulating:
 			snapping_camera = true
@@ -587,12 +632,17 @@ func process_tick():
 				ReplayManager.cut_replay(current_tick)
 				buffer_edit = false
 			call_deferred("simulate_one_tick")
-
+	
 
 func _process(delta):
 	update()
+	super_dim()
+
 
 func _physics_process(_delta):
+	if !$GhostStartTimer.is_stopped():
+		return
+	camera.tick()
 	if undoing:
 		undo()
 		return
@@ -639,6 +689,9 @@ func _physics_process(_delta):
 		emit_signal("simulation_continue")
 		start_playback()
 
+func super_dim():
+	var arr = objects + effects
+
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.pressed:
@@ -646,7 +699,7 @@ func _unhandled_input(event: InputEvent):
 			raise()
 		else:
 			drag_position = null
-	if event is InputEventMouseMotion and drag_position and is_waiting_on_player():
+	if event is InputEventMouseMotion and drag_position and is_waiting_on_player() and !ReplayManager.playback:
 		camera.global_position -= event.relative
 		snapping_camera = false
 	if camera.global_position.y > camera.limit_bottom - get_viewport_rect().size.y/2:
@@ -683,6 +736,9 @@ func _draw():
 func show_state():
 	p1.position = p1.get_pos_visual()
 	p2.position = p2.get_pos_visual()
+	p1.update()
+	p2.update()
 	for object in objects:
 		object.position = object.get_pos_visual()
+		object.update()
 	

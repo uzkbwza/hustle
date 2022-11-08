@@ -7,6 +7,9 @@ signal particle_effect_spawned(particle)
 signal initialized()
 signal got_hit()
 
+const RUMBLE_MODIFIER = 4.0
+const MAX_RUMBLE = 10
+
 export var id = 1
 export var dummy = false
 export var _c_MovementAttributes = 0
@@ -62,6 +65,7 @@ var state_variables = ["id", "projectile_invulnerable", "creator_name", "name", 
 var hitboxes = []
 
 var initialized = false
+var rng = BetterRng.new()
 
 var objs_map = {
 	
@@ -107,7 +111,7 @@ func _on_state_exited(state: ObjectState):
 func current_state():
 	return state_machine.state
 
-func init():
+func init(pos=null):
 	chara.id = id
 	chara.set_gravity(gravity)
 	chara.set_ground_friction(ground_friction)
@@ -115,12 +119,30 @@ func init():
 	chara.set_max_ground_speed(max_ground_speed)
 	chara.set_max_air_speed(max_air_speed)
 	chara.set_max_fall_speed(max_fall_speed)
+
 	state_machine.init("", spawn_data)
 	setup_hitbox_names()
 	update_data()
 	initialized = true
 	emit_signal("initialized")
 
+func rumble(amount: float, ticks: int):
+	var time = ticks / 60.0
+	var tween = create_tween()
+#	tween.set_ease(Tween.EASE_OUT)
+#	tween.set_trans(Tween.TRANS_CIRC)
+	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	tween.tween_method(self, "set_rumble", amount, 0.0, time)
+
+func set_rumble(amount):
+	flip.position = rng.random_vec() * min((amount * RUMBLE_MODIFIER), MAX_RUMBLE)
+	if amount < 0.05:
+		flip.position = Vector2()
+	pass
+
+func change_state(state_name, state_data=null):
+	state_machine._change_state(state_name, state_data)
+	
 func copy_to(o: BaseObj):
 	var current_state = current_state()
 	o.state_machine.starting_state = current_state.name
@@ -138,7 +160,8 @@ func copy_to(o: BaseObj):
 		else:
 			o.set(variable, get(variable))
 #	o.chara.set_facing(get_facing_int())
-	o.state_machine._change_state(current_state.state_name, current_state.data)
+	o.change_state(current_state.state_name, current_state.data)
+	
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
 #	while o.current_state().current_tick < current_state.current_tick:
@@ -149,8 +172,6 @@ func copy_to(o: BaseObj):
 	o.current_state().current_tick = current_state.current_tick
 	o.set_pos(get_pos().x, get_pos().y)
 
-	
-	
 #	o.set_vel(get_vel().x, get_vel().y)
 #	o.current_state().current_tick = current_state.current_tick
 #	o.stage_width = stage_width
@@ -160,6 +181,13 @@ func copy_to(o: BaseObj):
 #	o.current_tick = current_tick
 #	if o.has_method("clean_parried_hitboxes"):
 #		o.clean_parried_hitboxes()
+	o.chara.update_grounded()
+#	o.set_pos(get_pos().x, get_pos().y)
+#	o.set_facing(get_facing_int())
+	o.update_data()
+	o.sprite.rotation = sprite.rotation
+	o.chara.set_facing(get_facing_int())
+	var pos = get_pos()
 	for i in range(hitboxes.size()):
 		o.hitboxes[i].hit_objects = hitboxes[i].hit_objects.duplicate()
 		if hitboxes[i].active:
@@ -167,13 +195,8 @@ func copy_to(o: BaseObj):
 			o.hitboxes[i].tick = hitboxes[i].tick
 			o.hitboxes[i].enabled = hitboxes[i].enabled
 			hitboxes[i].copy_to(o.hitboxes[i])
+			o.hitboxes[i].update_position(pos.x, pos.y)
 	chara.copy_to(o.chara)
-	o.chara.update_grounded()
-#	o.set_pos(get_pos().x, get_pos().y)
-#	o.set_facing(get_facing_int())
-	o.update_data()
-	o.sprite.rotation = sprite.rotation
-	o.chara.set_facing(get_facing_int())
 
 func get_frames():
 	return ReplayManager.frames[id]
@@ -211,6 +234,11 @@ func obj_local_center(obj: BaseObj):
 		"x": o_pos.x - pos.x,
 		"y": o_pos.y - pos.y,
 	}
+
+func get_global_center():
+	var pos = get_pos()
+	var center = get_hurtbox_center()
+	return 
 
 func get_facing():
 	return chara.get_facing().keys()[0]
@@ -326,6 +354,10 @@ func set_pos(x, y):
 	check_params(x, y)
 	if x is int:
 		chara.set_position(x, y)
+		if hurtbox:
+			hurtbox.update_position(x, y)
+		if collision_box:
+			collision_box.update_position(x, y)
 		return
 	chara.set_position_str(x, y)
 
@@ -490,3 +522,6 @@ func normal_tick():
 	update_data()
 	current_tick += 1
 	update_grounded()
+
+func _draw():
+	pass

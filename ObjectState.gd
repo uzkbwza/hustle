@@ -36,13 +36,26 @@ export(PackedScene) var particle_scene = null
 export var particle_position = Vector2()
 export var spawn_particle_on_enter = false
 
+export var _c_TimedParticles = 0
+export(PackedScene) var timed_particle_scene = null
+export var timed_particle_position = Vector2()
+export var timed_spawn_particle_tick = 1
+
 export var _c_Sfx = 0
 export(AudioStream) var enter_sfx = null
 export var enter_sfx_volume = -15.0
-
 export(AudioStream) var sfx = null
 export var sfx_tick = 1
 export var sfx_volume = -15.0
+
+export var _c_Projectiles = 0
+export(PackedScene) var projectile_scene
+export var projectile_tick = 1
+export var projectile_pos_x = 0
+export var projectile_pos_y = 0
+export var projectile_local_pos = true
+
+
 
 var enter_sfx_player
 var sfx_player
@@ -69,6 +82,15 @@ func apply_enter_force():
 func _on_hit_something(_obj, _hitbox):
 	pass
 
+func get_projectile_pos():
+	return { "x": projectile_pos_x, "y": projectile_pos_y }
+
+func get_projectile_data():
+	return null
+
+func process_projectile(_projectile):
+	pass
+
 func get_active_hitboxes():
 	var hitboxes = []
 	for start_frame in hitbox_start_frames:
@@ -83,6 +105,7 @@ func _tick_shared():
 		if spawn_particle_on_enter and particle_scene:
 			spawn_particle_relative(particle_scene, particle_position)
 		apply_enter_force()
+
 	if current_tick < anim_length or endless:
 		current_tick += 1
 		update_sprite_frame()
@@ -103,6 +126,16 @@ func _tick_shared():
 		#		force.y = host.fixed.mul(force.y, "2.0")
 				host.apply_force_relative(force.x, force.y)
 
+		if current_tick == projectile_tick:
+			if projectile_scene:
+				var pos = get_projectile_pos()
+				var obj = host.spawn_object(projectile_scene, pos.x, pos.y, true, get_projectile_data(), projectile_local_pos)
+				process_projectile(obj)
+
+		if current_tick == timed_spawn_particle_tick:
+			if timed_particle_scene:
+				spawn_particle_relative(timed_particle_scene, timed_particle_position)
+
 		var new_max = false
 		if current_tick > max_tick:
 			max_tick = current_tick
@@ -115,6 +148,8 @@ func _tick_shared():
 				call(method_name)
 				frame_methods.append(current_tick)
 			new_max = false
+
+	
 	if apply_fric:
 		host.apply_fric()
 	if apply_grav:
@@ -232,6 +267,8 @@ func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	return host.xy_to_dir(x, y, mul, div)
 
 func update_sprite_frame():
+	if ReplayManager.resimulating:
+		return
 	if !host.sprite.frames.has_animation(anim_name):
 		return
 	if host.sprite.animation != anim_name:

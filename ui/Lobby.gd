@@ -35,7 +35,23 @@ func _ready():
 	start_button.connect("pressed", self, "_on_start_pressed")
 	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	$"RefreshTimer".connect("timeout", self, "refresh_match_list")
+	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
+	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
+	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
+
+func _on_refresh_timer_timeout():
+	if show_match_list:
+		refresh_match_list()
+	else:
+		$"%RefreshTimer".stop()
+
+func _on_room_code_edit_text_changed(text):
+	if !direct_connect:
+		join_button.disabled = (text.strip_edges() == "")
+
+func _on_ip_edit_text_changed(text):
+	if direct_connect:
+		join_button.disabled = (text.strip_edges() == "")
 
 func show():
 	.show()
@@ -59,7 +75,7 @@ func show():
 		$"%ConnectingLabel".hide()
 		$"%RefreshTimer".start()
 		host_button.disabled = false
-		join_button.disabled = false
+#		join_button.disabled = false
 		Network.request_match_list()
 		$"%DirectConnectWarning".hide()
 		$"%PublicButton".pressed = true
@@ -136,6 +152,7 @@ func _on_match_clicked(index):
 	if show_match_list:
 		var match_ = match_list[index]
 		$"%RoomCodeEdit".text = match_.code
+		$"%JoinButton".disabled = false
 
 func _on_match_list_received(list):
 	if show_match_list:
@@ -176,14 +193,19 @@ func _on_game_start():
 func _on_start_pressed():
 	hide()
 	Network.assign_players()
+	if !Network.ids_synced:
+		yield(Network, "player_ids_synced")
 	Network.begin_game()
 
 
 func _on_game_error(what):
 #	Network.stop_multiplayer()
+	print(what)
 	if !Network.rematch_menu:
 		Network.stop_multiplayer()
 		error_label.set_text(what)
+		if Network.game:
+			get_tree().reload_current_scene()
 #		show()
 #		get_tree().reload_current_scene()
 	else:

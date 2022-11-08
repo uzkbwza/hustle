@@ -1,0 +1,105 @@
+[gd_scene load_steps=25 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch1.png" type="Texture" id=4]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch4.png" type="Texture" id=5]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch5.png" type="Texture" id=6]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch7.png" type="Texture" id=7]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch2.png" type="Texture" id=8]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch3.png" type="Texture" id=9]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch6.png" type="Texture" id=10]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch8.png" type="Texture" id=11]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch9.png" type="Texture" id=12]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch10.png" type="Texture" id=13]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch11.png" type="Texture" id=14]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch12.png" type="Texture" id=15]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch13.png" type="Texture" id=16]
+[ext_resource path="res://characters/wizard/projectiles/states/VileClutchDefault.gd" type="Script" id=17]
+[ext_resource path="res://characters/wizard/projectiles/VileClutchEffect.tscn" type="PackedScene" id=18]
+[ext_resource path="res://characters/wizard/projectiles/VileClutch.gd" type="Script" id=19]
+[ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=20]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch15.png" type="Texture" id=21]
+[ext_resource path="res://characters/wizard/projectiles/sprites/vile_clutch14.png" type="Texture" id=22]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 11 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 22 ), ExtResource( 22 ), ExtResource( 22 ), ExtResource( 22 ), ExtResource( 21 ) ],
+"loop": true,
+"name": "Default",
+"speed": 60.0
+} ]
+
+[node name="VileClutch" instance=ExtResource( 1 )]
+material = SubResource( 1 )
+z_index = 2
+z_as_relative = false
+script = ExtResource( 19 )
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+animation = "Default"
+
+[node name="CollisionBox" parent="." index="2"]
+y = 1
+width = 6
+height = 1
+
+[node name="Hurtbox" parent="." index="3"]
+width = 0
+height = 0
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 17 )
+fallback_state = "Wait"
+sprite_animation = ""
+particle_scene = ExtResource( 18 )
+timed_particle_scene = ExtResource( 18 )
+timed_spawn_particle_tick = 12
+move_x = 0
+clash = false
+lifetime = 32
+fizzle_on_ground = false
+fizzle_on_walls = false
+screenshake_amount = 3
+screenshake_ticks = 15
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 3 )
+y = -2
+width = 26
+height = 2
+damage = 80
+victim_hitlag = 10
+hit_height = 2
+whiff_sound = ExtResource( 20 )
+dir_x = "0.0"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 10
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+script = ExtResource( 3 )
+x = 6
+y = -40
+height = 24
+damage = 40
+hitstun_ticks = 10
+hitlag_ticks = 15
+victim_hitlag = 30
+group = 1
+screenshake_frames = 10
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 19
+active_ticks = 3

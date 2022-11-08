@@ -3,7 +3,8 @@ class_name MultiplayerClient
 # The URL we will connect to.
 #const SERVER_URL = "ws://localhost:52450"
 #const SERVER_URL = "ws://67.171.216.91:52450"
-const SERVER_URL = "ws://168.235.86.185:52450"
+#const SERVER_URL = "ws://168.235.86.185:52450"
+const SERVER_URL = "ws://168.235.81.168:52450"
 #const SERVER_IP = "168.235.86.185"
 #const SERVER_IP = "67.171.216.91"
 #const SERVER_IP = "localhost"
@@ -16,9 +17,9 @@ signal connection_succeeded()
 
 func _init():
 	# Connect base signals to get notified of connection open, close, and errors.
-	_client.connect("connection_failed", self, "_closed")
-	_client.connect("server_disconnected", self, "_closed")
-	_client.connect("connection_succeeded", self, "_connected")
+	_client.connect("connection_failed", self, "_closed", [], CONNECT_DEFERRED)
+	_client.connect("server_disconnected", self, "_closed", [], CONNECT_DEFERRED)
+	_client.connect("connection_succeeded", self, "_connected", [], CONNECT_DEFERRED)
 
 	# Initiate connection to the given URL.
 	var err = _client.connect_to_url(SERVER_URL, PoolStringArray(["binary"]), true)

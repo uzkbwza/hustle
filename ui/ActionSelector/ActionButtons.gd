@@ -395,6 +395,10 @@ func activate():
 									continue
 								elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
 									continue
+							if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
+								continue
+							elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
+								continue
 							found = true
 							$"%ReverseButton".set_disabled(false)
 #							$"%SelectButton".disabled = false

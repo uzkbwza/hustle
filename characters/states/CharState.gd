@@ -43,7 +43,6 @@ export var _c_Interrupt_Data = 0
 export var iasa_at = -1
 export var interrupt_frames = []
 export var throw_techable = false
-
 export var interruptible_on_opponent_turn = false
 
 export var _c_Interrupt_Categories = 0
@@ -53,20 +52,28 @@ export var burstable = true
 export var self_hit_cancellable = true
 export var self_interruptable = true
 export var reversible = true
+export var instant_cancellable = true
 
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
 export(String, MULTILINE) var hit_cancel_into_string
+export(String, MULTILINE) var interrupt_exceptions_string
+export(String, MULTILINE) var hit_cancel_exceptions_string
 
 export var _c_Stances = 0
 export(String, MULTILINE) var allowed_stances_string = "Normal"
 export(String) var change_stance_to = ""
 
+export var _c_Misc = 0
+export var release_opponent_on_startup = false
+
 var started_in_air = false
 
 var interrupt_into = []
 var interrupt_from = []
+var interrupt_exceptions = []
 var hit_cancel_into = []
+var hit_cancel_exceptions = []
 var busy_interrupt_into = []
 
 var allowed_stances = []
@@ -80,11 +87,14 @@ func init():
 	interrupt_into.append_array(get_categories(interrupt_into_string))
 	interrupt_from.append_array(get_categories(interrupt_from_string))
 	hit_cancel_into.append_array(get_categories(hit_cancel_into_string))
+	hit_cancel_exceptions.append_array(get_categories(hit_cancel_exceptions_string))
 	allowed_stances.append_array(get_categories(allowed_stances_string))
-
+	interrupt_exceptions.append_array(get_categories(interrupt_exceptions_string))
+	
 	if burst_cancellable:
 		hit_cancel_into.append("OffensiveBurst")
-	hit_cancel_into.append("InstantCancel")
+	if instant_cancellable:
+		hit_cancel_into.append("InstantCancel")
 	if title == "":
 		title = state_name
 	match busy_interrupt_type:
@@ -146,9 +156,14 @@ func _on_hit_something(obj, hitbox):
 
 func _tick_shared():
 	if current_tick == 0:
-		if !is_hurt_state:
+		if release_opponent_on_startup:
+			host.release_opponent()
+		if !is_hurt_state and reversible:
 			if host.reverse_state:
 				host.set_facing(host.get_facing_int() * -1)
+				host.update_data()
+		else:
+			host.reverse_state = false
 	._tick_shared()
 	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
 		queue_state_change("Landing")
@@ -174,3 +189,4 @@ func _exit_shared():
 #		host.set_facing(host.get_facing_int() * -1)
 #	host.sprite.rotation = 0
 	emit_signal("state_ended")
+	host.z_index = 0

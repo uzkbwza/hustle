@@ -16,11 +16,12 @@ var hovering = false
 
 var orb_projectile
 var can_flame_wave = true
+var can_vile_clutch = true
 
 onready var liftoff_sprite = $Flip/LiftoffSprite
 
-func init():
-	.init()
+func init(pos=null):
+	.init(pos)
 	hover_left = HOVER_AMOUNT / 4
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT

@@ -179,10 +179,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/ThrowBox.gd"
 }, {
+"base": "CharacterState",
+"class": "ThrowState",
+"language": "GDScript",
+"path": "res://characters/states/ThrowState.gd"
+}, {
 "base": "Node",
 "class": "Utils",
 "language": "GDScript",
 "path": "res://framework/utils.gd"
+}, {
+"base": "AudioStreamPlayer",
+"class": "VariableSound",
+"language": "GDScript",
+"path": "res://framework/VariableSound.gd"
 }, {
 "base": "AudioStreamPlayer2D",
 "class": "VariableSound2D",
@@ -234,7 +244,9 @@ _global_script_class_icons={
 "StateMachine": "",
 "SuperMove": "",
 "ThrowBox": "",
+"ThrowState": "",
 "Utils": "",
+"VariableSound": "",
 "VariableSound2D": "",
 "Window": "",
 "WizardState": ""
@@ -269,7 +281,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/Holepunch/plugin.cfg", "res://addons/export_categories/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/Holepunch/plugin.cfg" )
 
 [gui]
 

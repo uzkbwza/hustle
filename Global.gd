@@ -2,11 +2,35 @@ extends Node
 
 const VERSION = "0.1.0"
 
+var audio_player
+var music_enabled = true
+ 
 var name_paths = {
-	"SwordGuy": "res://characters/swordandgun/SwordGuy.tscn",
-	"NinjaGuy": "res://characters/stickman/NinjaGuy.tscn",
+	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
+	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 }
+
+func _enter_tree():
+	audio_player = AudioStreamPlayer.new()
+	call_deferred("add_child", audio_player)
+	audio_player.bus = "Music"
+	var data = get_player_data()
+	music_enabled = data.options.music_enabled
+	set_music_enabled(music_enabled)
+
+
+func set_music_enabled(on):
+	music_enabled = on
+	if on:
+#		play_song(preload("res://sound/music/bgm1.mp3"))
+		pass
+	else:
+		audio_player.stop()
+
+func play_song(song):
+	audio_player.stream = song
+	audio_player.play()
 
 func add_dir_contents(dir: Directory, files: Array, directories: Array, recursive=true):
 	var file_name = dir.get_next()
@@ -31,12 +55,21 @@ func add_dir_contents(dir: Directory, files: Array, directories: Array, recursiv
 	dir.list_dir_end()
 
 func save_username(username: String):
-	var file = File.new()
-	file.open("user://playerdata.json")
+	save_player_data({"username": username})
+
+func save_options():
+	save_player_data({
+		"options": {
+			"music_enabled": music_enabled
+		}
+	})
 
 func get_default_player_data():
 	return {
-		"username": "username"
+		"username": "username",
+		"options" : {
+			"music_enabled": true,
+		}
 #		"favorite_color": null,
 	}
 
@@ -48,10 +81,14 @@ func get_player_data():
 		save_player_data(data)
 	file.open("user://playerdata.json", File.READ)
 	data = parse_json(file.get_as_text())
+	var default_data = get_default_player_data()
 	if !(data is Dictionary):
 		save_player_data(get_default_player_data())
 		file.close()
 		return get_default_player_data()
+	for key in default_data:
+		if not (key in data):
+			data[key] = default_data[key]
 	file.close()
 	return data
 

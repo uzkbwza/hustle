@@ -63,7 +63,8 @@ func refresh():
 			selected_button_text = button.action_title
 			return
 	$"%Label".text = label_text
-	$"%Label".modulate = Color.darkgray
+	$"%Label".modulate = Color.white
+	$"%Label".modulate.a = 0.25
 
 
 func on_button_mouse_entered(button):

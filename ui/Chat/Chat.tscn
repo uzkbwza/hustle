@@ -1,0 +1,132 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/Chat/minimize_button1.png" type="Texture" id=2]
+[ext_resource path="res://ui/Chat/minimize_button2.png" type="Texture" id=3]
+[ext_resource path="res://ui/Chat/LineEdit.gd" type="Script" id=4]
+[ext_resource path="res://ui/Chat/minimize_button3.png" type="Texture" id=5]
+[ext_resource path="res://ui/Chat/Chat.gd" type="Script" id=6]
+[ext_resource path="res://framework/VariableSound.gd" type="Script" id=7]
+[ext_resource path="res://sound/ui/keyboard2.wav" type="AudioStream" id=8]
+[ext_resource path="res://sound/ui/chat.wav" type="AudioStream" id=9]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 0.380392 )
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 0.0627451 )
+border_width_left = 2
+border_width_right = 2
+border_color = Color( 1, 1, 1, 0.145098 )
+
+[node name="ChatWindow" instance=ExtResource( 1 )]
+self_modulate = Color( 1, 1, 1, 0.184314 )
+margin_left = -66.0
+margin_top = -31.0
+margin_right = 66.0
+margin_bottom = 96.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource( 6 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_right = 131.0
+margin_bottom = 126.0
+
+[node name="TitleBar" parent="VBoxContainer" index="0"]
+self_modulate = Color( 1, 1, 1, 0 )
+margin_right = 130.0
+
+[node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+text = "Chat"
+align = 0
+
+[node name="ShowButton" type="TextureButton" parent="VBoxContainer/TitleBar" index="1"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -10.0
+margin_bottom = 9.0
+action_mode = 0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 5 )
+texture_hover = ExtResource( 3 )
+
+[node name="Contents" parent="VBoxContainer" index="1"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.0705882 )
+margin_right = 130.0
+margin_bottom = 125.0
+rect_min_size = Vector2( 0, 0 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Contents" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 129.0
+margin_bottom = 114.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/Contents/VBoxContainer" index="0"]
+unique_name_in_owner = true
+margin_right = 128.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MessageContainer" type="VBoxContainer" parent="VBoxContainer/Contents/VBoxContainer/ScrollContainer" index="0"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="1"]
+margin_top = 101.0
+margin_right = 128.0
+margin_bottom = 113.0
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="0"]
+unique_name_in_owner = true
+margin_right = 101.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+custom_styles/focus = SubResource( 2 )
+custom_styles/normal = SubResource( 1 )
+script = ExtResource( 4 )
+
+[node name="KeyboardSound" type="AudioStreamPlayer" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer/LineEdit" index="2"]
+stream = ExtResource( 8 )
+volume_db = -30.0
+pitch_scale = 1.5
+bus = "UI"
+script = ExtResource( 7 )
+pitch_variation = 0.5
+
+[node name="TooLongLabel" type="Label" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer/LineEdit" index="3"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -126.0
+margin_top = 10.5
+margin_right = 126.0
+margin_bottom = 21.5
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+text = "message too long"
+align = 1
+
+[node name="SendButton" type="Button" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="1"]
+unique_name_in_owner = true
+margin_left = 102.0
+margin_right = 128.0
+margin_bottom = 12.0
+text = "send"
+
+[node name="ChatSound" type="AudioStreamPlayer" parent="." index="1"]
+stream = ExtResource( 9 )
+volume_db = -15.0
+pitch_scale = 1.5
+bus = "UI"

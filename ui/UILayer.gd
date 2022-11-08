@@ -6,6 +6,7 @@ onready var p2_action_buttons = $"%P2ActionButtons"
 signal singleplayer_started()
 signal multiplayer_started()
 signal loaded_replay(match_data)
+signal received_synced_time()
 
 var game
 var turns_taken = {
@@ -13,15 +14,29 @@ var turns_taken = {
 	2: false
 }
 
-const BOTH_ACTIONABLE_TURN_TIMER = 30
-const ONE_ACTIONABLE_TURN_TIMER = 15
+var turn_time = 30
+
+var p1_turn_time = 30
+var p2_turn_time = 30
+
 const DISCORD_URL = "https://discord.gg/kyNeDrFBR7"
 const TWITTER_URL = "https://twitter.com/ivy_sly_"
 const IVY_SLY_URL = "https://www.ivysly.com"
+const MIN_TURN_TIME = 5.0
 
 onready var lobby = $Lobby
 onready var direct_connect_lobby = $DirectConnectLobby
-onready var turn_timer = $"%TurnTimer"
+onready var p1_turn_timer = $"%P1TurnTimer"
+onready var p2_turn_timer = $"%P2TurnTimer"
+
+var p1_synced_time = null
+var p2_synced_time = null
+
+var game_started = false
+var timer_sync_tick = -1
+
+var received_synced_time = false
+
 func _ready():
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
@@ -44,10 +59,19 @@ func _ready():
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
-	turn_timer.connect("timeout", self, "_on_turn_timer_timeout")
+	Network.connect("sync_timer_request", self, "_on_sync_timer_request")
+	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
+	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
 	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
 		lobby.connect("quit_on_rematch", $"%RematchButton", "hide")
-	
+		
+	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
+	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
+
+func _on_music_button_toggled(on):
+	Global.set_music_enabled(on)
+
+	Global.save_options()
 func load_replays():
 	$"%ReplayWindow".show()
 	for child in $"%ReplayContainer".get_children():
@@ -65,6 +89,14 @@ func load_replays():
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
 	$"%MainMenu".hide()
+
+func set_turn_time(time):
+#	print("setting turn time to " + str(time))
+	p1_turn_time = time * 60
+	p2_turn_time = time * 60
+	turn_time = time * 60
+	p1_turn_timer.wait_time = p1_turn_time
+	p2_turn_timer.wait_time = p2_turn_time
 
 func sort_replays(a, b):
 	return a.modified > b.modified
@@ -84,6 +116,22 @@ func _on_quit_button_pressed():
 func _on_quit_program_button_pressed():
 	get_tree().quit()
 
+func _on_sync_timer_request(id, time):
+	if id == 1:
+		var paused = p1_turn_timer.paused
+		p1_turn_timer.start(time)
+		p1_turn_timer.paused = paused
+		received_synced_time = true
+		emit_signal("received_synced_time")
+
+func sync_timer(player_id):
+	if player_id == Network.player_id:
+		print("syncing timer")
+		var timer = p1_turn_timer
+		if player_id == 2:
+			timer = p2_turn_timer
+		Network.sync_timer(player_id, timer.time_left)
+
 func id_to_action_buttons(player_id):
 	if player_id == 1:
 		return $"%P1ActionButtons"
@@ -94,17 +142,31 @@ func init(game):
 	if !ReplayManager.playback:
 		$PostGameButtons.hide()
 		$"%RematchButton".disabled = false
-		
 	self.game = game
 	setup_action_buttons()
 	if Network.multiplayer_active:
 		game.connect("playback_requested", self, "_on_game_playback_requested")
+		$"%P1TurnTimerLabel".show()
+		$"%P2TurnTimerLabel".show()
+		$"%ChatWindow".show()
+	game_started = false
+	timer_sync_tick = -1
 
 func _on_player_turn_ready(player_id):
+	if player_id == Network.player_id:
+		sync_timer(player_id)
 	if player_id == 1:
 		$"%P1TurnTimerBar".hide()
+#		p1_turn_timer.stop()
+		p1_turn_timer.paused = true
+
 	elif player_id == 2:
 		$"%P2TurnTimerBar".hide()
+#		p2_turn_timer.stop()
+		p2_turn_timer.paused = true
+
+
+	$"%TurnReadySound".play()
 	turns_taken[player_id] = true
 
 func _on_rematch_button_pressed():
@@ -135,7 +197,10 @@ func _on_multiplayer_pressed():
 func _on_turn_ready():
 	$"%P1TurnTimerBar".hide()
 	$"%P2TurnTimerBar".hide()
-	turn_timer.stop()
+
+#	p1_turn_timer.stop()
+#	p2_turn_timer.stop()
+	
 	var turns_taken = {
 		1: false,
 		2: false
@@ -153,21 +218,57 @@ func setup_action_buttons():
 	$"%P2ActionButtons".init(game, 2)
 
 func on_player_actionable():
+#	if p1_turn_timer.wait_time == 0:
+#		p1_turn_timer.wait_time = MIN_TURN_TIME
+#	if p2_turn_timer.wait_time == 0:
+#		 p2_turn_timer.wait_time = MIN_TURN_TIME
+	if Network.multiplayer_active:
+		print("starting turn timer")
+#		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
+		if !game_started:
+#		if p1_turn_timer.is_stopped():
+			p1_turn_timer.start()
+			p2_turn_timer.start()
+			game_started = true
+		else:
+			if p1_turn_timer.time_left < MIN_TURN_TIME:
+				p1_turn_timer.start(MIN_TURN_TIME)
+			if p2_turn_timer.time_left < MIN_TURN_TIME:
+				p2_turn_timer.start(MIN_TURN_TIME)
+
+		p1_turn_timer.paused = false
+		p2_turn_timer.paused = false
+#		if game.current_tick != timer_sync_tick:
+#			timer_sync_tick = game.current_tick
+#			sync_timer(Network.player_id)
+#			if !received_synced_time:
+#				yield(self, "received_synced_time")
+#				received_synced_time = false
+		$"%P1TurnTimerBar".show()
+		$"%P2TurnTimerBar".show()
+
+#	$"%P1SuperContainer".rect_min_size.y = 40
+#	$"%P2SuperContainer".rect_min_size.y = 40
 	$"%P1ActionButtons".activate()
 	$"%P2ActionButtons".activate()
 	$"%AdvantageLabel".text = ""
-#	if Network.multiplayer_active:
-#		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
-#			turn_timer.start(BOTH_ACTIONABLE_TURN_TIMER)
+
 #		else:
-#			turn_timer.start(ONE_ACTIONABLE_TURN_TIMER)
-#		$"%P1TurnTimerBar".show()
-#		$"%P2TurnTimerBar".show()
+#			turn_timer.start(turn_time)
 
-func _on_turn_timer_timeout():
-	$"%P1ActionButtons".timeout()
-	$"%P2ActionButtons".timeout()
-
+func _on_turn_timer_timeout(player_id):
+		if player_id == 1:
+			if Network.player_id == player_id:
+				$"%P1ActionButtons".timeout()
+				p1_turn_timer.wait_time = MIN_TURN_TIME
+				p1_turn_timer.start()
+				p1_turn_timer.paused = true
+		else:
+			if Network.player_id == player_id:
+				$"%P2ActionButtons".timeout()
+				p1_turn_timer.wait_time = MIN_TURN_TIME
+				p1_turn_timer.start()
+				p1_turn_timer.paused = true
 func pause():
 	$"%PausePanel".visible = !$"%PausePanel".visible
 	if $"%PausePanel".visible:
@@ -175,15 +276,38 @@ func pause():
 		$"%SaveReplayButton".text = "save replay"
 		$"%SaveReplayLabel".text = ""
 
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.scancode == KEY_ENTER:
+			if Network.multiplayer_active:
+				$"%ChatWindow".show()
+				$"%ChatWindow".line_edit_focus()
+
+func time_convert(time_in_sec):
+	var seconds = time_in_sec%60
+	var minutes = (time_in_sec/60)%60
+	var hours = (time_in_sec/60)/60
+
+	#returns a string with the format "HH:MM:SS"
+	if hours >= 1:
+		return "%02d:%02d:%02d" % [hours, minutes, seconds]
+	return "%02d:%02d" % [minutes, seconds]
 func _process(_delta):
-	if !turn_timer.is_stopped():
-		var bars = [$"%P1TurnTimerBar", $"%P2TurnTimerBar"]
-		for i in range(2):
-#			if !turns_taken[i+1]:
-				var bar = bars[i]
-				bar.value = turn_timer.time_left / turn_timer.wait_time
-				if turn_timer.time_left < 5:
-					bar.visible = Utils.wave(-1, 1, 0.032) > 0
+	if !p1_turn_timer.is_paused():
+#		if !turns_taken[1]:
+			var bar = $"%P1TurnTimerBar"
+			bar.value = p1_turn_timer.time_left / turn_time
+			if p1_turn_timer.time_left < 5:
+				bar.visible = Utils.wave(-1, 1, 0.064) > 0
+	if !p2_turn_timer.is_paused():
+#		if !turns_taken[2]:
+			var bar = $"%P2TurnTimerBar"
+			bar.value = p2_turn_timer.time_left / turn_time
+			if p2_turn_timer.time_left < 5:
+				bar.visible = Utils.wave(-1, 1, 0.064) > 0
+	$"%P1TurnTimerLabel".text = time_convert(int(floor(p1_turn_timer.time_left)))
+	$"%P2TurnTimerLabel".text = time_convert(int(floor(p2_turn_timer.time_left)))
+
 	if Input.is_action_just_pressed("pause"):
 		pause()
 	
@@ -209,7 +333,8 @@ func _process(_delta):
 					advantage_label.text = "advantage: " + str(advantage)
 		else:
 			advantage_label.text = ""
-
+	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
+	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
 	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu

@@ -5,8 +5,6 @@ class_name BaseProjectile
 export var immunity_susceptible = true
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
 
 func disable():
 	sprite.hide()

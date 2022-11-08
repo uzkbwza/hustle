@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/store_momentum_2.wav-cda1520be7135873bd177d0985746618.sample"
+
+[deps]
+
+source_file="res://characters/stickman/sounds/store_momentum_2.wav"
+dest_files=[ "res://.import/store_momentum_2.wav-cda1520be7135873bd177d0985746618.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
