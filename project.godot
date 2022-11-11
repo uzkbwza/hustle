@@ -258,7 +258,7 @@ config/name="Yomi Hustle"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="YomiHustle"
-config/icon="res://icon.png"
+config/icon="res://icon2.png"
 
 [autoload]
 

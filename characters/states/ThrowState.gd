@@ -38,8 +38,6 @@ var throw = true
 func _tick_shared():
 	if current_tick == 0:
 		throw = true
-		host.colliding_with_opponent = false
-		host.opponent.colliding_with_opponent = false
 		host.opponent.change_state("Grabbed")
 		host.throw_pos_x = start_throw_pos_x
 		host.throw_pos_y = start_throw_pos_y
@@ -52,7 +50,10 @@ func _tick_shared():
 	if release and current_tick + 1 == release_frame:
 		_release()
 		released = true
-
+	if !released:
+		host.opponent.colliding_with_opponent = false
+		host.colliding_with_opponent = false
+	
 func _tick_after():
 	._tick_after()
 	if !released:

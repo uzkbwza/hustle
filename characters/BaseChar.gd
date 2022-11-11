@@ -106,7 +106,7 @@ var supers_available: int = 0
 
 var burst_meter: int = 0
 var bursts_available: int = 0
-
+#var parried_this_frame = false
 var busy_interrupt = false
 var any_available_actions = true
 
@@ -189,7 +189,7 @@ func _ready():
 	sprite.animation = "Wait"
 
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 
 func gain_burst_meter():
@@ -279,7 +279,7 @@ func incr_combo():
 	combo_count += 1
 
 func is_colliding_with_opponent():
-	return colliding_with_opponent or (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS
+	return (colliding_with_opponent or (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS) and current_state().state_name != "Grabbed"
 
 func thrown_by(hitbox: ThrowBox):
 	emit_signal("got_hit")
@@ -292,6 +292,8 @@ func hitbox_from_name(hitbox_name):
 		return objs_map[obj_name].hitboxes[hitbox_id]
 
 func hit_by(hitbox):
+	if parried:
+		return
 	if hitbox.name in parried_hitboxes:
 		return
 	if !hitbox.hits_otg and current_state().state_name == "Knockdown":
@@ -339,6 +341,7 @@ func hit_by(hitbox):
 		parried_hitboxes.append(hitbox.name)
 		var particle_location = current_state().get("particle_location")
 		particle_location.x *= get_facing_int()
+		
 		if !particle_location:
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
 		current_state().parry()

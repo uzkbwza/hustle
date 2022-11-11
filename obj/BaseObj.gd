@@ -274,6 +274,15 @@ func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true
 func get_hurtbox_center():
 	return hurtbox.get_center()
 
+func hurtbox_pos_relative():
+	return { 
+		"x": hurtbox.x * get_facing_int(),
+		"y": hurtbox.y,
+	}
+
+func hurtbox_pos_relative_float():
+	return Vector2(hurtbox.x * get_facing_int(), hurtbox.y)
+
 func start_projectile_invulnerability():
 	projectile_invulnerable = true
 

@@ -1,6 +1,6 @@
 extends Node
 
-const VERSION = "0.1.0"
+const VERSION = "0.1.1"
 
 var audio_player
 var music_enabled = true

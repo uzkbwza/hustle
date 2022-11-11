@@ -105,13 +105,6 @@ func copy_to(hitbox: Hitbox):
 	for variable in ["x", "y", "pos_x", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
 		hitbox.set(variable, get(variable))
 
-func _ready():
-	if height < 0:
-		height *= -1
-	if width < 0:
-		width *= -1
-	call_deferred("setup_audio")
-
 func setup_audio():
 #	if !host.is_ghost:
 		if whiff_sound:
@@ -156,7 +149,7 @@ func activate():
 	tick = 0
 	active = true
 	enabled = true
-	cancellable = cancellable or bool(host.get("turbo_mode"))
+	cancellable = cancellable or (bool(host.get("turbo_mode")) and !throw)
 	if victim_hitlag == -1:
 		victim_hitlag = hitlag_ticks
 
@@ -176,6 +169,13 @@ func spawn_whiff_particle():
 
 func spawn_particle(particle, obj, dir):
 	host.spawn_particle_effect(particle, get_overlap_center_float(obj.hurtbox), dir)
+
+func init():
+	if height < 0:
+		height *= -1
+	if width < 0:
+		width *= -1
+	call_deferred("setup_audio")
 
 func hit(obj):
 	if !(obj.name in hit_objects) and !obj.invulnerable:

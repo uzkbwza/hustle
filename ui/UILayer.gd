@@ -72,6 +72,7 @@ func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
 
 	Global.save_options()
+
 func load_replays():
 	$"%ReplayWindow".show()
 	for child in $"%ReplayContainer".get_children():
@@ -121,6 +122,12 @@ func _on_sync_timer_request(id, time):
 		var paused = p1_turn_timer.paused
 		p1_turn_timer.start(time)
 		p1_turn_timer.paused = paused
+		received_synced_time = true
+		emit_signal("received_synced_time")
+	elif id == 2:
+		var paused = p2_turn_timer.paused
+		p2_turn_timer.start(time)
+		p2_turn_timer.paused = paused
 		received_synced_time = true
 		emit_signal("received_synced_time")
 

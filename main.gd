@@ -46,8 +46,11 @@ func _ready():
 	Network.connect("player_disconnected", self, "_on_player_disconnected")
 	$"%FreezeOnMyTurn".set_pressed_no_signal(Global.freeze_ghost_prediction)
 	$"%AfterimageButton".set_pressed_no_signal(Global.ghost_afterimages)
+
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()
+	if !is_instance_valid(game):
+		get_tree().reload_current_scene()
 
 func _on_game_started(singleplayer):
 	if is_instance_valid(game):

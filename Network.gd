@@ -32,6 +32,7 @@ var replay_saved = false
 var direct_connect = false
 var rematch_menu = false
 var ids_synced = false
+var turn_synced = false
 
 var ticks = {
 	1: null,
@@ -202,8 +203,6 @@ func _reset():
 	players = {}
 	players_ready = []
 	
-	
-	
 	action_button_panels = {
 		1: null,
 		2: null,
@@ -241,6 +240,7 @@ func _reset():
 	}
 	
 	ids_synced = false
+	turn_synced = false
 	
 	get_tree().set_network_peer(null)
 
@@ -431,6 +431,8 @@ remotesync func end_turn_simulation(tick, player_id):
 	print("ending turn simulation for player " + str(player_id) + " at tick " + str(tick))
 	ticks[player_id] = tick
 	if ticks[1] == ticks[2]:
+		turn_synced = true
+#		if rng.percent(60):
 		emit_signal("player_turns_synced")
 
 remotesync func multiplayer_turn_ready(id):
@@ -442,6 +444,7 @@ remotesync func multiplayer_turn_ready(id):
 		var action_input = action_inputs[player_id]
 		rpc_("send_action", [action_input["action"], action_input["data"], action_input["extra"], player_id], "remote")
 		emit_signal("turn_ready")
+		turn_synced = false
 
 remotesync func register_player(new_player_name, id, version):
 	if version != Global.VERSION:
@@ -481,6 +484,9 @@ remote func test_relay():
 
 remote func room_join_confirm():
 	emit_signal("relay_match_joined")
+
+remote func room_join_deny(message):
+	emit_signal("game_error", message)
 
 remote func receive_match_id(match_id):
 	print("received match id: %s" % [match_id])

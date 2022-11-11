@@ -226,16 +226,16 @@ func setup_hitboxes():
 			hitboxes.append(child)
 			host.hitboxes.append(child)
 	for hitbox in hitboxes:
-		if hitbox is Hitbox:
-			has_hitboxes = true
-			hitbox.host = host
-			if hitbox.start_tick >= 0:
-				if hitbox_start_frames.has(hitbox.start_tick):
-					hitbox_start_frames[hitbox.start_tick].append(hitbox)
-				else:
-					hitbox_start_frames[hitbox.start_tick] = [hitbox]
-			hitbox.connect("hit_something", self, "__on_hit_something")
-			hitbox.connect("got_parried", self, "__on_got_parried")
+		hitbox.init()
+		has_hitboxes = true
+		hitbox.host = host
+		if hitbox.start_tick >= 0:
+			if hitbox_start_frames.has(hitbox.start_tick):
+				hitbox_start_frames[hitbox.start_tick].append(hitbox)
+			else:
+				hitbox_start_frames[hitbox.start_tick] = [hitbox]
+		hitbox.connect("hit_something", self, "__on_hit_something")
+		hitbox.connect("got_parried", self, "__on_got_parried")
 		for hitbox2 in hitboxes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)

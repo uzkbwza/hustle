@@ -45,7 +45,7 @@ margin_right = 208.0
 margin_bottom = 137.0
 text = "Dojo 1"
 align = 1
-items = [ "Dojo 1", null, false, 0, null, "Dojo 2", null, false, 1, null ]
+items = [ "Dojo 1", null, false, 0, null, "Dojo 2", null, false, 1, null, "Local Dojo (coming soon)", null, true, 2, null ]
 selected = 0
 
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]
@@ -154,8 +154,10 @@ unique_name_in_owner = true
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 5.0
+margin_top = 16.0
 margin_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true

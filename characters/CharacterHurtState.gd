@@ -32,7 +32,7 @@ func _tick_shared():
 	if current_tick % SMOKE_FREQUENCY == 0:
 		var vel = host.get_vel()
 		if fixed.gt(fixed.vec_len(vel.x, vel.y), SMOKE_SPEED):
-			spawn_particle_relative(preload("res://fx/KnockbackSmoke.tscn"), Vector2(0, -16))
+			spawn_particle_relative(preload("res://fx/KnockbackSmoke.tscn"), host.hurtbox_pos_relative_float())
 
 func get_x_dir(hitbox):
 	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")

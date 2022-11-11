@@ -43,6 +43,7 @@ func _frame_10():
 
 func parry():
 	interruptible_on_opponent_turn = true
+	enable_interrupt()
 #	parry_type = ParryHeight.Both
 #	parry_tick = current_tick
 

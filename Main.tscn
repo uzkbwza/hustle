@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=64 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -51,6 +51,7 @@
 [ext_resource path="res://framework/VariableSound.gd" type="Script" id=49]
 [ext_resource path="res://fx/speed_lines.gdshader" type="Shader" id=50]
 [ext_resource path="res://SpeedLines.gd" type="Script" id=51]
+[ext_resource path="res://ui/itch.png" type="Texture" id=52]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -1206,6 +1207,15 @@ margin_right = 639.0
 margin_bottom = 359.0
 custom_constants/separation = 0
 alignment = 2
+
+[node name="ItchButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
+unique_name_in_owner = true
+margin_left = 573.0
+margin_right = 595.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 20 )
+icon = ExtResource( 52 )
+icon_align = 1
 
 [node name="DiscordButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
 unique_name_in_owner = true

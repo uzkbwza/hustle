@@ -22,7 +22,8 @@ var match_list = []
 
 var servers = [
 	"ws://168.235.81.168:52450",
-	"ws://168.235.86.185:52450"
+	"ws://168.235.86.185:52450",
+	"ws://localhost:52450"
 ]
 
 func _ready():
@@ -45,13 +46,14 @@ func _ready():
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
 	$"%ServerList".connect("item_selected", self, "refresh_multiplayer")
 
-func refresh_multiplayer(_index):
+func refresh_multiplayer(_index=null):
 	Network.stop_multiplayer()
 	item_list.clear()
 	$"%ConnectingLabel".show()
 	Network.setup_relay_multiplayer(get_server_address())
 	yield(Network.multiplayer_client, "connection_succeeded")
 	$"%ConnectingLabel".hide()
+	show()
 
 func _on_refresh_timer_timeout():
 	if show_match_list:
@@ -221,8 +223,11 @@ func _on_game_error(what):
 #	Network.stop_multiplayer()
 	print(what)
 	if !Network.rematch_menu:
-		Network.stop_multiplayer()
+#		Network.stop_multiplayer()
+#		refresh_multiplayer()
 		error_label.set_text(what)
+		join_button.disabled = false
+		host_button.disabled = false
 		if Network.game:
 			get_tree().reload_current_scene()
 #		show()

@@ -108,10 +108,16 @@ func _ready():
 		$GhostStartTimer.start()
 	else:
 		emit_signal("simulation_continue")
+	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
 	object.connect("particle_effect_spawned", self, "on_particle_effect_spawned")
+
+func _on_network_timer_timeout():
+	if Network.multiplayer_active:
+		if !Network.turn_synced:
+				Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 
 func copy_to(game: Game):
 	if !game_started:
@@ -654,7 +660,7 @@ func process_tick():
 				ReplayManager.cut_replay(current_tick)
 				buffer_edit = false
 			call_deferred("simulate_one_tick")
-	
+			
 
 func _process(delta):
 	update()
@@ -721,6 +727,7 @@ func _physics_process(_delta):
 		game_finished = false
 		emit_signal("simulation_continue")
 		start_playback()
+
 
 func ghost_tick():
 	p1.actionable_label.hide()

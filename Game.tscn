@@ -27,3 +27,6 @@ script = ExtResource( 3 )
 [node name="GhostStartTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+
+[node name="NetworkSyncTimer" type="Timer" parent="."]
+autostart = true
