@@ -33,22 +33,21 @@ var hitlag_ticks = 0
 var victim_hitlag = 0
 var throw = true
 
-func _enter_shared():
-	throw = true
-	host.colliding_with_opponent = false
-	host.opponent.colliding_with_opponent = false
-	host.opponent.change_state("Grabbed")
-	host.throw_pos_x = start_throw_pos_x
-	host.throw_pos_y = start_throw_pos_y
-	var throw_pos = host.get_global_throw_pos()
-	host.opponent.set_pos(throw_pos.x, throw_pos.y)
-	if reverse:
-		host.set_facing(-host.get_facing_int())
-	released = false
-	host.start_invulnerability()
-	._enter_shared()
+#	released = false
 
 func _tick_shared():
+	if current_tick == 0:
+		throw = true
+		host.colliding_with_opponent = false
+		host.opponent.colliding_with_opponent = false
+		host.opponent.change_state("Grabbed")
+		host.throw_pos_x = start_throw_pos_x
+		host.throw_pos_y = start_throw_pos_y
+		var throw_pos = host.get_global_throw_pos()
+		host.opponent.set_pos(throw_pos.x, throw_pos.y)
+		if reverse:
+			host.set_facing(-host.get_facing_int())
+		host.start_invulnerability()
 	._tick_shared()
 	if release and current_tick + 1 == release_frame:
 		_release()
@@ -60,6 +59,9 @@ func _tick_after():
 		host.update_data()
 		var throw_pos = host.get_global_throw_pos()
 		host.opponent.set_pos(throw_pos.x, throw_pos.y)
+
+func _exit():
+	released = false
 
 func _release():
 	throw = false

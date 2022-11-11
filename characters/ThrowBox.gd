@@ -1,5 +1,3 @@
-tool
-
 extends Hitbox
 
 class_name ThrowBox
@@ -9,7 +7,8 @@ export var throw_state = ""
 export var hits_aerial = false
 export var hits_grounded = true
 
-func _enter_tree():
+func activate():
+	.activate()
 	priority = 9999
 	spawn_particle_effect = false
 	throw = true

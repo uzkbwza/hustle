@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=2]
+[gd_scene load_steps=68 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/stickman_spriteframes.tres" type="SpriteFrames" id=2]
@@ -57,6 +57,14 @@
 [ext_resource path="res://characters/stickman/sounds/store_momentum_2.wav" type="AudioStream" id=55]
 [ext_resource path="res://characters/stickman/sounds/release_momentum_2.wav" type="AudioStream" id=56]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=57]
+[ext_resource path="res://characters/states/CharState.gd" type="Script" id=58]
+[ext_resource path="res://characters/stickman/projectiles/WhipWave.tscn" type="PackedScene" id=59]
+[ext_resource path="res://characters/stickman/sprites/actionicons/whip_wave.png" type="Texture" id=60]
+[ext_resource path="res://characters/stickman/sounds/kunai.wav" type="AudioStream" id=61]
+[ext_resource path="res://characters/stickman/states/StickyBomb.gd" type="Script" id=62]
+[ext_resource path="res://characters/stickman/NinjaExtra.tscn" type="PackedScene" id=63]
+[ext_resource path="res://characters/stickman/sprites/actionicons/sticky_bomb.png" type="Texture" id=64]
+[ext_resource path="res://characters/swordandgun/sounds/lasso.wav" type="AudioStream" id=65]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -79,14 +87,17 @@ max_ground_speed = "20"
 max_air_speed = "10"
 max_fall_speed = "15"
 extra_state_variables = "can_summon
+bomb_thrown
+bomb_projectile
 storing_momentum
 stored_momentum_x
 stored_momentum_y"
+player_extra_params_scene = ExtResource( 63 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = ExtResource( 2 )
-animation = "Caltrops"
+animation = "StickyBomb"
 
 [node name="Super2" parent="Sounds" index="3"]
 pitch_variation = 0.1
@@ -104,43 +115,13 @@ dash_speed = 15
 dash_speed = 10
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-_c_Knockback = -5.0
-dir_x = "0"
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = "False"
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
-_c_Frame_Data = true
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":Resource( "res://framework/VariableSound2D.gd" ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
-
+cancellable = false
+increment_combo = false
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-_c_Knockback = -5.0
-dir_x = "0"
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = "False"
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
-_c_Frame_Data = true
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":Resource( "res://sound/common/hit_bass.wav" ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":Resource( "res://framework/VariableSound2D.gd" ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
-
+cancellable = false
+increment_combo = false
+_c_Grouping = 1
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 5 )
@@ -514,6 +495,7 @@ damage = 70
 hitstun_ticks = 50
 hitlag_ticks = 10
 victim_hitlag = 10
+hits_otg = true
 hit_height = 2
 screenshake_amount = 6
 whiff_sound = ExtResource( 44 )
@@ -759,7 +741,65 @@ looping = true
 loop_active_ticks = 4
 loop_inactive_ticks = 3
 
-[node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="42"]
+[node name="StickyBomb" type="Node2D" parent="StateMachine" index="42"]
+script = ExtResource( 62 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 17
+sfx = ExtResource( 65 )
+sfx_tick = 10
+sfx_volume = -8.0
+type = 2
+button_texture = ExtResource( 64 )
+air_type = 2
+interrupt_from_string = "GroundedSpecial
+AerialSpecial
+Grounded
+Aerial"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="WhipWave" type="Node2D" parent="StateMachine" index="43"]
+script = ExtResource( 58 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 19
+force_dir_x = "1.0"
+force_speed = "3.0"
+force_tick = 6
+sfx = ExtResource( 61 )
+sfx_tick = 12
+sfx_volume = -8.0
+projectile_scene = ExtResource( 59 )
+projectile_tick = 12
+projectile_pos_x = 24
+projectile_pos_y = -4
+type = 2
+button_texture = ExtResource( 60 )
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded"
+allowed_stances_string = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/WhipWave" index="0"]
+script = ExtResource( 1 )
+x = 34
+y = -7
+width = 22
+height = 8
+damage = 80
+hitstun_ticks = 18
+hitlag_ticks = 6
+hit_height = 2
+screenshake_amount = 6
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 11
+active_ticks = 3
+
+[node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
 anim_length = 22
@@ -786,7 +826,7 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 2
 
-[node name="GroundedPunch" type="Node2D" parent="StateMachine" index="43"]
+[node name="GroundedPunch" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 4 )
 anim_length = 15
 title = "Punch"
@@ -813,7 +853,7 @@ knockback = "2.0"
 start_tick = 3
 active_ticks = 2
 
-[node name="GroundedKick" type="Node2D" parent="StateMachine" index="44"]
+[node name="GroundedKick" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 4 )
 anim_length = 21
 title = "Kick"
@@ -834,7 +874,7 @@ x = 20
 y = -7
 width = 21
 height = 7
-damage = 60
+damage = 70
 hitstun_ticks = 20
 hitlag_ticks = 6
 victim_hitlag = 6
@@ -844,7 +884,7 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 3
 
-[node name="GroundedSweep" type="Node2D" parent="StateMachine" index="45"]
+[node name="GroundedSweep" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 4 )
 anim_length = 30
 enter_force_dir_x = "1.0"
@@ -882,7 +922,7 @@ knockdown = true
 start_tick = 8
 active_ticks = 2
 
-[node name="DropKick" type="Node2D" parent="StateMachine" index="46"]
+[node name="DropKick" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 3 )
 endless = true
 enter_force_dir_x = "0.75"
@@ -914,7 +954,7 @@ dir_y = "-0.25"
 knockback = "5.0"
 start_tick = 14
 
-[node name="AirAttack" type="Node2D" parent="StateMachine" index="47"]
+[node name="AirAttack" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
 anim_length = 40
@@ -945,7 +985,7 @@ knockdown = true
 start_tick = 5
 active_ticks = 7
 
-[node name="Summon" type="Node2D" parent="StateMachine" index="48"]
+[node name="Summon" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 9 )
 anim_length = 11
 sfx = ExtResource( 46 )
@@ -962,7 +1002,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="StoreMomentum" type="Node2D" parent="StateMachine" index="49"]
+[node name="StoreMomentum" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 50 )
 sprite_animation = "Summon"
 anim_length = 10
@@ -987,7 +1027,7 @@ allowed_stances_string = "Normal
 NunChuk"
 change_stance_to = "Normal"
 
-[node name="ReleaseMomentum" type="Node2D" parent="StateMachine" index="50"]
+[node name="ReleaseMomentum" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 50 )
 sprite_animation = "Summon"
 anim_length = 3

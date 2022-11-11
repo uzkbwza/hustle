@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/projectiles/whip_wave2.png" type="Texture" id=2]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=4]
+[ext_resource path="res://characters/stickman/projectiles/whip_wave1.png" type="Texture" id=5]
+[ext_resource path="res://characters/stickman/projectiles/FireballTrail.tscn" type="PackedScene" id=6]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Default"
+
+[node name="FireballTrail" parent="Flip/Particles" index="0" instance=ExtResource( 6 )]
+material = SubResource( 3 )
+
+[node name="Default" parent="StateMachine" index="0"]
+ticks_per_frame = 3
+loop_animation = true
+move_x = 19
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+script = ExtResource( 3 )
+x = -7
+width = 23
+height = 4
+damage = 40
+hits_otg = true
+hit_height = 2
+dir_x = "0.40"
+knockback = "2.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 1
+always_on = true

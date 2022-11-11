@@ -160,7 +160,11 @@ func _tick_shared():
 			host.release_opponent()
 		if !is_hurt_state and reversible:
 			if host.reverse_state:
-				host.set_facing(host.get_facing_int() * -1)
+				var facing = host.get_facing_int()
+				var opponent_x = host.opponent.get_pos().x
+				var my_x = host.get_pos().x
+				var equal_x = opponent_x == my_x
+				host.set_facing(facing * (-1 if !equal_x else 1))
 				host.update_data()
 		else:
 			host.reverse_state = false

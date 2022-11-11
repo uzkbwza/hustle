@@ -15,7 +15,8 @@ func _tick():
 	var dir = host.obj_local_center(host.creator.opponent)
 	var move_dir = fixed.normalized_vec_times(str(dir.x), str(dir.y), MOVE_SPEED)
 	host.move_directly(move_dir.x, move_dir.y)
-
+#	if current_tick >= lifetime:
+#		return "Explode"
 	host.apply_y_fric(Y_FRIC)
 	if current_tick == 60:
 		host.reset_momentum()

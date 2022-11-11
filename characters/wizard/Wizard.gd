@@ -71,7 +71,10 @@ func tick():
 func process_extra(extra):
 	.process_extra(extra)
 	if extra.has("hover"):
-		hovering = extra["hover"]
+		if can_hover():
+			hovering = extra["hover"]
+		else:
+			hovering = false
 
 func can_hover():
 	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

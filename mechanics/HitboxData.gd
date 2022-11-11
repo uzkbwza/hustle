@@ -15,11 +15,16 @@ var disable_collision
 var aerial_hit_state
 var grounded_hit_state
 var ground_bounce
+var hits_otg
 var damage
 var reversible
 var name
 var throw
 var knockdown_extends_hitstun = true
+var rumble
+var host
+var screenshake_frames = 0
+var screenshake_amount = 0
 
 func _init(state):
 	hit_height = state.hit_height
@@ -45,3 +50,12 @@ func _init(state):
 		pos_y = pos.y
 	if state.get("knockdown_extends_hitstun") != null:
 		knockdown_extends_hitstun = state.knockdown_extends_hitstun
+	if state.get("hits_otg") != null:
+		hits_otg = state.hits_otg
+	if state.get("rumble") != null:
+		rumble = state.rumble
+	self.host = state.host.obj_name
+	if state.get("screenshake_amount") != null:
+		screenshake_amount = state.screenshake_amount
+	if state.get("screenshake_frames") != null:
+		screenshake_frames = state.screenshake_frames

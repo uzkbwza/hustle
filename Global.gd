@@ -4,11 +4,17 @@ const VERSION = "0.1.0"
 
 var audio_player
 var music_enabled = true
- 
+var freeze_ghost_prediction = true
+var ghost_afterimages = true
+
 var name_paths = {
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
+}
+
+var songs = {
+	"bg1": preload("res://sound/music/bg1.mp3")
 }
 
 func _enter_tree():
@@ -16,20 +22,24 @@ func _enter_tree():
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"
 	var data = get_player_data()
+	
 	music_enabled = data.options.music_enabled
+	freeze_ghost_prediction = data.options.freeze_ghost_prediction
+	ghost_afterimages = data.options.ghost_afterimages
+	
 	set_music_enabled(music_enabled)
-
 
 func set_music_enabled(on):
 	music_enabled = on
 	if on:
-#		play_song(preload("res://sound/music/bgm1.mp3"))
+		play_song("bg1")
 		pass
 	else:
 		audio_player.stop()
+		pass
 
-func play_song(song):
-	audio_player.stream = song
+func play_song(song_name):
+	audio_player.stream = songs[song_name]
 	audio_player.play()
 
 func add_dir_contents(dir: Directory, files: Array, directories: Array, recursive=true):
@@ -57,10 +67,16 @@ func add_dir_contents(dir: Directory, files: Array, directories: Array, recursiv
 func save_username(username: String):
 	save_player_data({"username": username})
 
+func save_option(value, option):
+	set(option, value)
+	save_options()
+
 func save_options():
 	save_player_data({
 		"options": {
-			"music_enabled": music_enabled
+			"music_enabled": music_enabled,
+			"freeze_ghost_prediction": freeze_ghost_prediction,
+			"ghost_afterimages": ghost_afterimages,
 		}
 	})
 
@@ -69,6 +85,8 @@ func get_default_player_data():
 		"username": "username",
 		"options" : {
 			"music_enabled": true,
+			"freeze_ghost_prediction": true,
+			"ghost_afterimages": true,
 		}
 #		"favorite_color": null,
 	}

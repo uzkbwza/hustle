@@ -44,18 +44,19 @@ animations = [ {
 [node name="SparkBomb" instance=ExtResource( 1 )]
 material = SubResource( 1 )
 script = ExtResource( 10 )
+deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 animation = "Default"
 
 [node name="CollisionBox" parent="." index="2"]
-width = 0
-height = 0
+width = 3
+height = 3
 
 [node name="Hurtbox" parent="." index="3"]
-width = 0
-height = 0
+width = 4
+height = 4
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 3 )
@@ -69,7 +70,7 @@ particle_scene = ExtResource( 20 )
 spawn_particle_on_enter = true
 move_x = 0
 clash = false
-lifetime = 6000
+lifetime = 300
 fizzle_on_ground = false
 fizzle_on_walls = false
 

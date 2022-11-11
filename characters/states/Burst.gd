@@ -17,6 +17,8 @@ func _tick():
 	if started_falling:
 		host.apply_grav()
 	host.apply_forces()
+	if current_tick > 15:
+		host.end_invulnerability()
 
 func _exit():
 	host.end_projectile_invulnerability()

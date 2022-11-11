@@ -1,12 +1,22 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://obj/BaseObj.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
 [ext_resource path="res://characters/stickman/projectiles/fireball_states/Default.gd" type="Script" id=3]
 [ext_resource path="res://projectile/BaseProjectile.gd" type="Script" id=5]
 
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
 [node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 1 )
 script = ExtResource( 5 )
 immunity_susceptible = true
+deletes_other_projectiles = true
 
 [node name="Default" type="Node2D" parent="StateMachine" index="0"]
 script = ExtResource( 3 )

@@ -278,10 +278,17 @@ func pause():
 
 func _unhandled_input(event):
 	if event is InputEventKey:
-		if event.scancode == KEY_ENTER:
-			if Network.multiplayer_active:
-				$"%ChatWindow".show()
-				$"%ChatWindow".line_edit_focus()
+		if event.pressed:
+			if event.scancode == KEY_ENTER:
+				if Network.multiplayer_active:
+					$"%ChatWindow".show()
+					$"%ChatWindow".line_edit_focus()
+			if event.scancode == KEY_F1:
+				visible = !visible
+				$"../HudLayer/HudLayer".visible = ! $"../HudLayer/HudLayer".visible
+			if event.scancode == KEY_SPACE:
+				p1_action_buttons.space_pressed()
+				p2_action_buttons.space_pressed()
 
 func time_convert(time_in_sec):
 	var seconds = time_in_sec%60

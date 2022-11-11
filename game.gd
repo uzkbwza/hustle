@@ -4,6 +4,9 @@ class_name Game
 
 const GHOST_FRAMES = 90
 const SUPER_FREEZE_TICKS = 20
+const GHOST_ACTIONABLE_FREEZE_TICKS = 10
+
+const CAMERA_MAX_Y_DIST = 210
 
 export(int) var char_distance = 200
 export(int) var stage_width = 2000
@@ -20,6 +23,8 @@ signal playback_requested()
 signal game_ended()
 signal game_won(winner)
 signal ghost_finished()
+signal make_afterimage()
+signal ghost_my_turn()
 
 var p1_data
 var p2_data
@@ -49,18 +54,22 @@ var game_finished = false
 var ghost_cleaned = true
 
 var is_ghost = false
+var is_afterimage = false
 var ghost_hidden = false
 var ghost_game
 var ghost_speed = 3
 var ghost_tick = 0
 
 var match_data = null
+var simulated_once = false
 
 var p1 = null
 var p2 = null
 
 var snapping_camera = false 
 var waiting_for_player_prev = false
+
+var camera_snap_position = Vector2()
 
 var objects: Array = []
 var objs_map = {
@@ -74,8 +83,15 @@ var super_freeze_ticks = 0
 var super_active = false
 var p1_super = false
 var p2_super = false
+var ghost_freeze = false
 
 var network_sync_tick = -100
+
+var ghost_actionable_freeze_ticks = 0
+var ghost_p1_actionable = false
+var ghost_p2_actionable = false
+var made_afterimage = false
+#var has_ghost_frozen_yet = false
 
 func get_ticks_left():
 	return time - Utils.int_min(current_tick, time)
@@ -133,7 +149,7 @@ func get_screen_position(player_id):
 	var screen_center = camera.get_camera_screen_center()
 	var player_position = get_player(player_id).get_center_position_float()
 	var result = player_position - screen_center
-	return result
+	return result / camera.zoom.x
 
 func get_player(id):
 	if id == 1:
@@ -249,6 +265,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	if ReplayManager.playback and !ReplayManager.resimulating:
 		yield(get_tree().create_timer(0.33), "timeout")
 	game_started = true
+#	if is_afterimage:
+#		show_state()
 
 func update_data():
 	p1.update_data()
@@ -280,10 +298,12 @@ func initialize_objects():
 			object.init()
 
 func tick():
-
+	if is_afterimage:
+		return
 	if !singleplayer:
 		if !is_ghost:
 			Network.reset_action_inputs()
+
 	clean_objects()
 	for object in objects:
 		if object.disabled:
@@ -488,39 +508,41 @@ func apply_hitboxes():
 	for object in objects:
 		if object.disabled:
 			continue
-		var p
-		var p_hit_by
-		if object.id == 1:
-			p = p2
-		elif object.id == 2:
-			p = p1
+		for p in [p1, p2]:
+			var p_hit_by
+			if p == p1:
+				if object.id == 1 and !object.damages_own_team:
+					continue
+			if p == p2:
+				if object.id == 2 and !object.damages_own_team:
+					continue
 
-		if p:
-			if p.projectile_invulnerable and object.get("immunity_susceptible"):
-				continue
-			var hitboxes = object.get_active_hitboxes()
-			p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
-			if p_hit_by:
-				p_hit_by.hit(p)
+			if p:
+				if p.projectile_invulnerable and object.get("immunity_susceptible"):
+					continue
+				var hitboxes = object.get_active_hitboxes()
+				p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
+				if p_hit_by:
+					p_hit_by.hit(p)
 
-		var opp_objects = []
-		var opp_id = (object.id % 2) + 1
+			var opp_objects = []
+			var opp_id = (object.id % 2) + 1
 
-		for opp_object in objects:
-			if opp_object.id == opp_id:
-				opp_objects.append(opp_object)
+			for opp_object in objects:
+				if opp_object.id == opp_id:
+					opp_objects.append(opp_object)
 
-		for opp_object in opp_objects:
-			var obj_hit_by
-			var obj_hitboxes = opp_object.get_active_hitboxes()
-			obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
-			if obj_hit_by:
-				objects_hit_each_other = true
-				objects_to_hit.append([obj_hit_by, object])
-	
-	if objects_hit_each_other:
-		for pair in objects_to_hit:
-			pair[0].hit(pair[1])
+			for opp_object in opp_objects:
+				var obj_hit_by
+				var obj_hitboxes = opp_object.get_active_hitboxes()
+				obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
+				if obj_hit_by:
+					objects_hit_each_other = true
+					objects_to_hit.append([obj_hit_by, object])
+		
+		if objects_hit_each_other:
+			for pair in objects_to_hit:
+				pair[0].hit(pair[1])
 
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
@@ -637,17 +659,35 @@ func process_tick():
 func _process(delta):
 	update()
 	super_dim()
-
+	if camera.global_position.y > camera.limit_bottom - get_viewport_rect().size.y/2:
+		camera.global_position.y = camera.limit_bottom - get_viewport_rect().size.y/2
+	if camera.global_position.x > camera.limit_right - get_viewport_rect().size.x/2:
+		camera.global_position.x = camera.limit_right - get_viewport_rect().size.x/2
+	if camera.global_position.x < camera.limit_left + get_viewport_rect().size.x/2:
+		camera.global_position.x = camera.limit_left + get_viewport_rect().size.x/2
+	
+	if game_started and !is_ghost:
+		camera.zoom = Vector2.ONE
+		var dist = p1.get_hurtbox_center().y - p2.get_hurtbox_center().y
+		if abs(p1.get_hurtbox_center().y - p2.get_hurtbox_center().y) > CAMERA_MAX_Y_DIST:
+			var dist_ratio = abs(dist) / float(CAMERA_MAX_Y_DIST)
+			camera.zoom = Vector2.ONE * dist_ratio
+	if is_instance_valid(ghost_game):
+		ghost_game.camera.zoom = camera.zoom
+	camera_snap_position = camera.position
+	
 
 func _physics_process(_delta):
+	camera.tick()
 	if !$GhostStartTimer.is_stopped():
 		return
-	camera.tick()
 	if undoing:
 		undo()
 		return
 	if !game_started:
 		return
+
+
 	if !is_ghost:
 		if !game_finished:
 			process_tick()
@@ -656,18 +696,12 @@ func _physics_process(_delta):
 			if current_tick >= game_end_tick + 120:
 				start_playback()
 	else:
-		var simulate_frames = 1
-		if ghost_speed == 1:
-			simulate_frames = 1 if ghost_tick % 4 == 0 else 0
-		if ghost_speed == 3:
-			simulate_frames = 4
-		for i in range(simulate_frames):
-			call_deferred("simulate_one_tick")
-			if current_tick > GHOST_FRAMES:
-				emit_signal("ghost_finished")
-		ghost_tick += 1
-		p1.set_ghost_colors()
-		p2.set_ghost_colors()
+		if ghost_actionable_freeze_ticks > 0:
+			ghost_actionable_freeze_ticks -= 1
+			if ghost_actionable_freeze_ticks == 0:
+				emit_signal("make_afterimage")
+		else:
+			call_deferred("ghost_tick")
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")
@@ -679,7 +713,6 @@ func _physics_process(_delta):
 				camera.global_position = lerp(camera.global_position, target, 0.28)
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.global_position = camera.global_position
-
 	#		undo()
 	waiting_for_player_prev = is_waiting_on_player()
 	
@@ -689,10 +722,59 @@ func _physics_process(_delta):
 		emit_signal("simulation_continue")
 		start_playback()
 
-func super_dim():
-	var arr = objects + effects
+func ghost_tick():
+	p1.actionable_label.hide()
+	p2.actionable_label.hide()
+	var simulate_frames = 1
+	if ghost_speed == 1:
+		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
+#	if ghost_speed == 3:
+#		simulate_frames = 4
+	ghost_tick += 1
 
+	for i in range(simulate_frames):
+		if ghost_actionable_freeze_ticks == 0:
+			simulate_one_tick()
+		if current_tick > GHOST_FRAMES:
+			emit_signal("ghost_finished")
+		p1.set_ghost_colors()
+		p2.set_ghost_colors()
+
+		if (p1.state_interruptable or p1.dummy_interruptable) and !ghost_p1_actionable:
+			ghost_p1_actionable = true
+			if ghost_freeze:
+				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
+				p1.actionable_label.show()
+				emit_signal("ghost_my_turn")
+				if p2.current_state().interruptible_on_opponent_turn:
+					p2.actionable_label.show()
+					ghost_p2_actionable = true
+			else:
+				ghost_actionable_freeze_ticks = 1
+#				emit_signal("ghost_my_turn")
+#					if !made_afterimage:
+#						made_afterimage = true
+		if (p2.state_interruptable or p2.dummy_interruptable) and !ghost_p2_actionable:
+			ghost_p2_actionable = true
+			if ghost_freeze:
+				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
+				p2.actionable_label.show()
+				emit_signal("ghost_my_turn")
+				if p1.current_state().interruptible_on_opponent_turn:
+					ghost_p1_actionable = true
+					p1.actionable_label.show()
+			else:
+				ghost_actionable_freeze_ticks = 1
+#				emit_signal("ghost_my_turn")
+#					if !made_afterimage:
+#						made_afterimage = true
+
+func super_dim():
+#	var arr = objects + effects
+	pass
 func _unhandled_input(event: InputEvent):
+	if is_afterimage:
+		return
 	if event is InputEventMouseButton:
 		if event.pressed:
 			drag_position = camera.get_local_mouse_position()
@@ -702,12 +784,6 @@ func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion and drag_position and is_waiting_on_player() and !ReplayManager.playback:
 		camera.global_position -= event.relative
 		snapping_camera = false
-	if camera.global_position.y > camera.limit_bottom - get_viewport_rect().size.y/2:
-		camera.global_position.y = camera.limit_bottom - get_viewport_rect().size.y/2
-	if camera.global_position.x > camera.limit_right - get_viewport_rect().size.x/2:
-		camera.global_position.x = camera.limit_right - get_viewport_rect().size.x/2
-	if camera.global_position.x < camera.limit_left + get_viewport_rect().size.x/2:
-		camera.global_position.x = camera.limit_left + get_viewport_rect().size.x/2
 	if !is_ghost and singleplayer:
 			if event.is_action_pressed("playback"):
 				if !game_finished and !ReplayManager.playback:

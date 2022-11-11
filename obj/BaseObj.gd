@@ -21,6 +21,8 @@ export var max_air_speed: String = "10"
 export var max_fall_speed: String = "15"
 export(String, MULTILINE) var extra_state_variables
 
+export var damages_own_team = false
+
 onready var collision_box = $CollisionBox
 onready var hurtbox = $Hurtbox
 onready var particles = $"%Particles"
@@ -140,8 +142,9 @@ func set_rumble(amount):
 		flip.position = Vector2()
 	pass
 
-func change_state(state_name, state_data=null):
-	state_machine._change_state(state_name, state_data)
+func change_state(state_name, state_data=null, enter=true, exit=true):
+	state_machine._change_state(state_name, state_data, enter, exit)
+	
 	
 func copy_to(o: BaseObj):
 	var current_state = current_state()
@@ -152,16 +155,16 @@ func copy_to(o: BaseObj):
 		o.creator = o.objs_map[creator_name]
 	o.init()
 	o.update_data()
-
 	for variable in state_variables:
 		var v = get(variable)
 		if v is Array or v is Dictionary:
 			o.set(variable, v.duplicate(true))
 		else:
 			o.set(variable, get(variable))
+	
 #	o.chara.set_facing(get_facing_int())
 	o.change_state(current_state.state_name, current_state.data)
-	
+
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
 #	while o.current_state().current_tick < current_state.current_tick:
@@ -170,7 +173,6 @@ func copy_to(o: BaseObj):
 #		if o.current_state().state_name != current_state.state_name:
 #			break
 	o.current_state().current_tick = current_state.current_tick
-	o.set_pos(get_pos().x, get_pos().y)
 
 #	o.set_vel(get_vel().x, get_vel().y)
 #	o.current_state().current_tick = current_state.current_tick
@@ -196,7 +198,10 @@ func copy_to(o: BaseObj):
 			o.hitboxes[i].enabled = hitboxes[i].enabled
 			hitboxes[i].copy_to(o.hitboxes[i])
 			o.hitboxes[i].update_position(pos.x, pos.y)
+	
+
 	chara.copy_to(o.chara)
+	o.chara.set_facing(get_facing_int())
 
 func get_frames():
 	return ReplayManager.frames[id]

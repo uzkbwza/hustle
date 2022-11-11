@@ -27,6 +27,8 @@ const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
 const HITLAG_COLLISION_TICKS = 4
 
+const MAX_GROUNDED_HITS = 7
+
 const GUTS_REDUCTIONS = {
 	"1": "1",
 #	"0.90": "1.10",
@@ -57,13 +59,14 @@ const VEL_SUPER_GAIN_DIVISOR = 4
 const NUDGE_DISTANCE = 20
 
 const PARRY_METER = 50
-const METER_GAIN_MODIFIER = "1.25"
+const METER_GAIN_MODIFIER = "1.1"
 
 export var num_air_movements = 2
 
 export(Texture) var character_portrait
 
 onready var you_label = $YouLabel
+onready var actionable_label = $ActionableLabel
 
 var input_state = InputState.new()
 
@@ -107,6 +110,8 @@ var bursts_available: int = 0
 var busy_interrupt = false
 var any_available_actions = true
 
+var on_the_ground = false
+
 var current_nudge = {
 	"x": "0",
 	"y": "0",
@@ -128,6 +133,8 @@ var parried = false
 var stance = "Normal"
 
 var parried_hitboxes = []
+
+var grounded_hits_taken = 0
 
 var throw_pos_x = 16
 var throw_pos_y = -5
@@ -182,7 +189,7 @@ func _ready():
 	sprite.animation = "Wait"
 
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 
 func gain_burst_meter():
@@ -287,6 +294,8 @@ func hitbox_from_name(hitbox_name):
 func hit_by(hitbox):
 	if hitbox.name in parried_hitboxes:
 		return
+	if !hitbox.hits_otg and current_state().state_name == "Knockdown":
+		return
 	if hitbox.throw:
 		return thrown_by(hitbox)
 	if !can_parry_hitbox(hitbox):
@@ -298,6 +307,20 @@ func hit_by(hitbox):
 #		if hitlag_ticks < hitbox.victim_hitlag:
 		hitlag_ticks = hitbox.victim_hitlag
 		hitlag_applied = hitbox.victim_hitlag
+		
+		if objs_map.has(hitbox.host):
+			var host = objs_map[hitbox.host]
+			if host.hitlag_ticks < hitbox.hitlag_ticks:
+				host.hitlag_ticks = hitbox.hitlag_ticks
+		
+		if hitbox.rumble:
+			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
+		
+		if state == "HurtGrounded":
+			grounded_hits_taken += 1
+			if grounded_hits_taken >= MAX_GROUNDED_HITS:
+				state = "HurtAerial"
+				grounded_hits_taken = 0
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
@@ -323,8 +346,6 @@ func hit_by(hitbox):
 		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 		play_sound("Parry")
 		play_sound("Parry2")
-		
-
 
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -514,11 +535,11 @@ func update_facing():
 		update_data()
 
 func on_state_interruptable(state):
+	grounded_hits_taken = 0
 	if !dummy:
 		state_interruptable = true
 	else:
 		dummy_interruptable = true
-		opponent.reset_combo()
 
 func on_state_hit_cancellable(state):
 	if !dummy:

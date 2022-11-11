@@ -1,4 +1,4 @@
-[gd_scene load_steps=219 format=2]
+[gd_scene load_steps=220 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -214,6 +214,7 @@
 [ext_resource path="res://characters/wizard/sprites/tome_slap4.png" type="Texture" id=212]
 [ext_resource path="res://characters/wizard/sprites/tome_slap2.png" type="Texture" id=213]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/tome_slap.png" type="Texture" id=214]
+[ext_resource path="res://sound/common/hit5.wav" type="AudioStream" id=215]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -536,8 +537,8 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "TomeSlap"
-frame = 4
+animation = "CatchWind"
+frame = 6
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -771,6 +772,7 @@ height = 6
 damage = 60
 hitlag_ticks = 6
 screenshake_amount = 5
+hit_sound = ExtResource( 215 )
 dir_x = "1.00"
 dir_y = "-0.40"
 knockback = "5.0"
@@ -1040,7 +1042,7 @@ apply_grav = true
 sprite_animation = "CatchWind"
 anim_length = 35
 enter_sfx = ExtResource( 161 )
-title = "Wind Force"
+title = "Zephyr"
 type = 2
 button_texture = ExtResource( 177 )
 burst_cancellable = false
@@ -1280,12 +1282,13 @@ y_modifier = "1.0"
 interrupt_from_string = ""
 speed = "8"
 
-[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-_c_Knockback = -5.0
+[node name="Hold" parent="StateMachine" index="42"]
+start_throw_pos_x = 21
+start_throw_pos_y = -5
 
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-hits_aerial = true
-hits_grounded = false
+[node name="AirHold" parent="StateMachine" index="43"]
+start_throw_pos_x = 21
+start_throw_pos_y = -5
 
 [node name="ForwardThrow" parent="StateMachine" index="46"]
 anim_length = 24

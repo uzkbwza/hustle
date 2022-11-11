@@ -37,8 +37,11 @@ func _tick():
 		else:
 			host.move_directly_relative(move_x, move_y)
 
-func _on_hit_something(_obj, _hitbox):
+func _on_hit_something(obj, _hitbox):
 	if clash:
+		if obj is BaseProjectile:
+			if !obj.deletes_other_projectiles:
+				return
 		num_hits -= 1
 		if num_hits == 0:
 			fizzle()

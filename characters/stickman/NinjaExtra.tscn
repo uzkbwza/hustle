@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/NinjaExtra.gd" type="Script" id=2]
+[ext_resource path="res://theme.tres" type="Theme" id=3]
+
+[node name="NinjaExtra" instance=ExtResource( 1 )]
+alignment = 1
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+margin_left = 287.0
+margin_right = 353.0
+margin_bottom = 360.0
+alignment = 1
+
+[node name="BombButton" type="CheckButton" parent="VBoxContainer" index="0"]
+unique_name_in_owner = true
+margin_top = 170.0
+margin_right = 66.0
+margin_bottom = 190.0
+rect_min_size = Vector2( 34, 20 )
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Detonate"

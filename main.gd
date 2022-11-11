@@ -10,6 +10,8 @@ var singleplayer = false
 var game
 var ghost_game
 
+var afterimages = []
+
 var p1_ghost_action
 var p1_ghost_data
 var p1_ghost_extra
@@ -32,13 +34,18 @@ func _ready():
 	$"%CharacterSelect".connect("match_ready", self, "_on_match_ready")
 	$"%GhostSpeed".connect("value_changed", self, "_on_ghost_speed_changed")
 	$"%GhostWaitTimer".connect("timeout", self, "_on_ghost_wait_timer_timeout")
+	$"%FreezeOnMyTurn".connect("pressed", self, "start_ghost")
+	$"%FreezeOnMyTurn".connect("toggled", Global, "save_option", ["freeze_ghost_prediction"])
+	$"%AfterimageButton".connect("pressed", self, "start_ghost")
+	$"%AfterimageButton".connect("toggled", Global, "save_option", ["ghost_afterimages"])
 	$"%GameUI".hide()
 	$"%MainMenu".show()
 	ReplayManager.play_full = false
 	if Network.multiplayer_active:
 		Network.stop_multiplayer()
 	Network.connect("player_disconnected", self, "_on_player_disconnected")
-	
+	$"%FreezeOnMyTurn".set_pressed_no_signal(Global.freeze_ghost_prediction)
+	$"%AfterimageButton".set_pressed_no_signal(Global.ghost_afterimages)
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()
 
@@ -147,6 +154,22 @@ func on_action_clicked(action, data, extra, player_id):
 func start_ghost():
 	call_deferred("_start_ghost")
 
+func _process(_delta):
+	align_afterimages()
+	if is_instance_valid(game):
+		$"%SpeedLines".set_direction(game.camera.current_direction)
+		$"%SpeedLines".set_speed(game.camera.current_speed / game.camera.zoom.x)
+		$"%SpeedLines".tick = game.current_tick
+		$"%SpeedLines".on = !game.is_waiting_on_player()
+
+func align_afterimages():
+	if is_instance_valid(game):
+		var center = -game.camera_snap_position / game.camera.zoom.x
+#		center.y = min(center.y, ghost_game.camera.limit_bottom)
+		for image in $"%Afterimages".get_children():
+			image.rect_position = center + image.start_position / game.camera.zoom.x + game.camera.offset / game.camera.zoom.x
+			image.visible = $"%AfterimageButton".pressed
+
 func _start_ghost():
 	if !$"%GhostWaitTimer".is_stopped():
 		yield($"%GhostWaitTimer", "timeout")
@@ -154,20 +177,27 @@ func _start_ghost():
 	stop_ghost()
 	for child in $"%GhostViewport".get_children():
 		child.queue_free()
+	afterimages = []
+	$"%AfterImage1".texture = null
+	$"%AfterImage2".texture = null
 	if !$"%GhostButton".pressed:
 		return
 	if ReplayManager.playback:
 		return
 	if !is_instance_valid(game):
 		return
+	
 	ghost_game = preload("res://Game.tscn").instance()
 	ghost_game.is_ghost = true
 	$"%GhostViewport".add_child(ghost_game)
 	ghost_game.start_game(true, match_data)
-	ghost_game.connect("ghost_finished", self, "start_ghost")
+	ghost_game.connect("ghost_finished", self, "ghost_finished")
+	ghost_game.connect("make_afterimage", self, "make_afterimage", [], CONNECT_DEFERRED)
+	ghost_game.connect("ghost_my_turn", self, "ghost_my_turn", [], CONNECT_DEFERRED)
+	ghost_game.ghost_speed = $"%GhostSpeed".get_speed()
+	ghost_game.ghost_freeze = $"%FreezeOnMyTurn".pressed
 	game.call_deferred("copy_to", ghost_game)
 	game.ghost_game = ghost_game
-	ghost_game.ghost_speed = $"%GhostSpeed".get_speed()
 	var p1 = ghost_game.get_player(1)
 	var p2 = ghost_game.get_player(2)
 
@@ -180,12 +210,35 @@ func _start_ghost():
 	p2.queued_data = p2_ghost_data
 	p2.queued_extra = p2_ghost_extra
 	p2.is_ghost = true
-	call_deferred("fix_ghost_objects")
-#	yield(get_tree(), "idle_frame")
+	call_deferred("fix_ghost_objects", ghost_game)
 
-func fix_ghost_objects():
-	for obj_name in ghost_game.objs_map:
-		var object = ghost_game.objs_map[obj_name]
+func ghost_my_turn():
+	$GhostMyTurnSound.play()
+
+func make_afterimage():
+	if !$"%AfterimageButton".pressed:
+		return
+	var img = $"%GhostViewport".get_texture().get_data()
+	
+	var img_dest = Image.new()
+	img_dest.create(img.get_width(), img.get_height(), false, img.get_format())
+	img_dest.blit_rect(img, Rect2(Vector2(), Vector2(img.get_width(), img.get_height())), Vector2.ZERO)
+	img_dest.flip_y()
+	# Create a texture for it.
+	var tex = ImageTexture.new()
+	tex.create_from_image(img_dest)
+	
+	var texture_rect = $"%AfterImage1" if $"%AfterImage1".texture == null else $"%AfterImage2"
+	texture_rect.start_position = game.camera_snap_position
+	texture_rect.texture = tex
+
+func ghost_finished():
+#	yield(get_tree(), "idle_frame")
+	start_ghost()
+
+func fix_ghost_objects(ghost_game_):
+	for obj_name in ghost_game_.objs_map:
+		var object = ghost_game_.objs_map[obj_name]
 		if object:
 			object.is_ghost = true
 
@@ -195,7 +248,8 @@ func stop_ghost():
 	for child in $"%GhostViewport".get_children():
 		child.hide()
 		child.ghost_hidden = true
-#		child.queue_free()
+	for child in $"%Afterimages".get_children():
+		child.texture = null
 
 func _on_simulation_continue():
 	p1_ghost_action = null

@@ -61,7 +61,7 @@ func _ready():
 		$"%TopRowDataContainer".grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	$"%AutoButton".hint_tooltip = "Skips your turn when no actions are available."
 #	$"%ReverseButton".show()
-	$"%DI".hint_tooltip = "Adjusts the angle you are knocked back next time you are hit."
+	$"%DI".hint_tooltip = "Adjusts the angle and speed you are knocked back next time you are hit."
 	$"%DI".connect("data_changed", self, "send_ui_action")
 	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
 	if !player_id == 1:
@@ -87,6 +87,10 @@ func _on_continue_pressed():
 
 func _on_undo_pressed():
 	on_action_submitted("Undo")
+
+func space_pressed():
+	if !$"%SelectButton".disabled and $"%SelectButton".visible:
+		_on_submit_pressed()
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -344,6 +348,7 @@ func activate():
 		$"%UndoButton".hide()
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)
+	$"%ReverseButton".pressed = false
 #	tween_spread()
 	current_action = null
 	current_button = null

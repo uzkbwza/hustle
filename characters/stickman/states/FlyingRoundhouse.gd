@@ -3,13 +3,22 @@ extends CharacterState
 var left_ground = false
 
 func _enter():
-	host.start_projectile_invulnerability()
 	left_ground = false
 
-func _frame_6():
+#func _frame_1():
+#	left_ground = false
+
+func _frame_7():
 	left_ground = true
 
 func _tick():
+	if current_tick <= 6:
+		left_ground = false
+	if current_tick < 24:
+		host.start_projectile_invulnerability()
+	else:
+		host.end_projectile_invulnerability()
+		
 	host.apply_fric()
 	host.apply_grav()
 	host.apply_forces()

@@ -78,11 +78,11 @@ func _frame_5():
 	host.update_data()
 	
 	var end_pos = host.get_pos().duplicate()
-	
-	for i in range(hitboxes.size()):
-		var ratio = fixed.div(str(i), str(hitboxes.size()))
-		hitboxes[i].x = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_x), str(end_pos.x), ratio), str(host.get_pos().x))) * host.get_facing_int()
-		hitboxes[i].y = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_y), str(end_pos.y), ratio), str(host.get_pos().y))) - 16
+	if start_pos_x != null and start_pos_y != null and end_pos.x != null and end_pos.y != null:
+		for i in range(hitboxes.size()):
+			var ratio = fixed.div(str(i), str(hitboxes.size()))
+			hitboxes[i].x = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_x), str(end_pos.x), ratio), str(host.get_pos().x))) * host.get_facing_int()
+			hitboxes[i].y = fixed.round(fixed.sub(fixed.lerp_string(str(start_pos_y), str(end_pos.y), ratio), str(host.get_pos().y))) - 16
 	
 	move_vec.x = end_pos.x - start_pos_x
 	move_vec.y = end_pos.y - start_pos_y

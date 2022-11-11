@@ -1,4 +1,4 @@
-[gd_scene load_steps=147 format=2]
+[gd_scene load_steps=144 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -138,9 +138,6 @@
 [ext_resource path="res://sound/common/super.wav" type="AudioStream" id=136]
 [ext_resource path="res://sound/common/super2.wav" type="AudioStream" id=137]
 [ext_resource path="res://sound/common/super5.wav" type="AudioStream" id=138]
-[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=139]
-[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=140]
-[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=141]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_forward.png" type="Texture" id=142]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_back.png" type="Texture" id=143]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_down.png" type="Texture" id=144]
@@ -460,12 +457,14 @@ width = 36
 height = 36
 hitstun_ticks = 45
 victim_hitlag = 4
+hits_otg = true
 screenshake_amount = 2
 whiff_sound = ExtResource( 125 )
 hit_sound = ExtResource( 126 )
 dir_y = "-0.25"
 knockback = "20.0"
-start_tick = 2
+launch_reversible = true
+start_tick = 1
 active_ticks = 1
 
 [node name="OffensiveBurst" type="Node2D" parent="StateMachine" index="3"]
@@ -499,12 +498,14 @@ width = 36
 height = 36
 hitstun_ticks = 45
 victim_hitlag = 4
+hits_otg = true
 screenshake_amount = 2
 whiff_sound = ExtResource( 125 )
 hit_sound = ExtResource( 127 )
 dir_y = "-0.25"
 knockback = "4.0"
-start_tick = 2
+launch_reversible = true
+start_tick = 1
 active_ticks = 1
 
 [node name="Fall" type="Node2D" parent="StateMachine" index="4"]
@@ -587,7 +588,7 @@ particle_scene = ExtResource( 11 )
 spawn_particle_on_enter = true
 enter_sfx = ExtResource( 128 )
 enter_sfx_volume = -10.0
-iasa_at = 4
+iasa_at = 10
 interruptible_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "OTG"
@@ -750,6 +751,7 @@ title = "Inst. Cancel"
 type = 3
 button_texture = ExtResource( 107 )
 air_type = 2
+self_interruptable = false
 interrupt_from_string = "Grounded
 Aerial
 InstantCancel
@@ -815,6 +817,7 @@ anim_length = 30
 type = 1
 button_texture = ExtResource( 112 )
 throw_techable = true
+instant_cancellable = false
 interrupt_from_string = "Grounded
 GroundedAttack
 GroundedGrab"
@@ -827,18 +830,10 @@ x = 7
 y = -18
 width = 12
 height = 12
-hitlag_ticks = 0
-victim_hitlag = 0
+_c_Grouping = 1
 priority = 9999
-_c_Sfx = null
-whiff_sound = 0
-hit_sound = ExtResource( 141 )
-hit_bass_sound = ExtResource( 139 )
-whiff_sound_volume = ExtResource( 140 )
-hit_sound_volume = -8.0
 start_tick = 3
 active_ticks = 3
-loop_active_ticks = 0
 throw_state = "Hold"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="26"]
@@ -850,6 +845,7 @@ type = 1
 button_texture = ExtResource( 112 )
 air_type = 1
 throw_techable = true
+instant_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack
 AerialGrab"
@@ -862,17 +858,12 @@ x = 7
 y = -18
 width = 12
 height = 12
-hitlag_ticks = 0
-victim_hitlag = 0
 priority = 9999
-whiff_sound = 0
-hit_sound = ExtResource( 141 )
-hit_bass_sound = ExtResource( 139 )
-whiff_sound_volume = ExtResource( 140 )
-hit_sound_volume = -8.0
 start_tick = 3
 active_ticks = 3
 throw_state = "AirHold"
+hits_aerial = true
+hits_grounded = false
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 90 )
@@ -1020,4 +1011,16 @@ margin_right = 20.0
 margin_bottom = -36.0
 theme = ExtResource( 47 )
 text = "You"
+align = 1
+
+[node name="ActionableLabel" type="Label" parent="." index="6"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -44.0
+margin_top = -40.0
+margin_right = 44.0
+margin_bottom = -26.0
+theme = ExtResource( 47 )
+text = "Ready"
 align = 1

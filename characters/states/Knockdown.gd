@@ -1,10 +1,12 @@
 extends CharacterState
 
 func _enter():
-	host.start_invulnerability()
+#	host.start_invulnerability()
+	host.on_the_ground = true
 	host.colliding_with_opponent = false
 
 func _exit():
+	host.on_the_ground = false
 	host.colliding_with_opponent = true
 
 func _tick():

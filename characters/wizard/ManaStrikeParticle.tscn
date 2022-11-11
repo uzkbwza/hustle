@@ -69,5 +69,5 @@ color = Color( 0.831373, 0.25098, 0.713726, 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="3"]
 frames = SubResource( 1 )
-frame = 4
+frame = 10
 playing = true

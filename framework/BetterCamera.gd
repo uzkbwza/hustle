@@ -19,6 +19,10 @@ var rng = BetterRng.new()
 var offsets = []
 var tweens = []
 
+var current_speed = 0.0
+var current_direction = Vector2()
+var last_pos = Vector2()
+
 class Offset extends Reference:
 	var rng: BetterRng
 	var dir = Vector2()
@@ -86,7 +90,11 @@ func bump(dir=Vector2(), amount=default_screenshake_amount, time=default_screens
 	offsets.erase(offs)
 
 
+
 func tick():
+	current_speed = lerp(current_speed, position.distance_to(last_pos), 0.85)
+	current_direction = lerp(current_direction, (position - last_pos).normalized(), 0.5)
+	last_pos = position
 #	smoothing_speed = _smoothing_speed / Engine.time_scale
 	offset = Vector2()
 #	if 1.0 / delta > 30:

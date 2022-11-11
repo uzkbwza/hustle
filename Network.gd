@@ -25,7 +25,7 @@ var multiplayer_active = false
 var game = null
 
 
-var multiplayer_client = null
+var multiplayer_client: MultiplayerClient = null
 var multiplayer_host = false
 
 var replay_saved = false
@@ -99,6 +99,8 @@ func rpc_(function_name: String, arg=null, type="remotesync"):
 		else:
 			rpc(function_name)
 	else:
+		if !(multiplayer_client and multiplayer_client.connected):
+			return
 		if type == "remote":
 			rpc_id(1, "relay", function_name, arg)
 		
@@ -141,8 +143,8 @@ func join_game_direct(ip, port, new_player_name):
 	direct_connect = true
 	get_tree().set_network_peer(peer)
 
-func setup_relay_multiplayer():
-	multiplayer_client = MultiplayerClient.new()
+func setup_relay_multiplayer(address):
+	multiplayer_client = MultiplayerClient.new(address)
 	multiplayer_active = true
 	direct_connect = false
 	get_tree().set_network_peer(multiplayer_client.get_client())
@@ -249,6 +251,8 @@ func player_connected(id):
 		rpc_("register_player", [player_name, id, Global.VERSION])
 
 func pid_to_username(player_id):
+		if direct_connect:
+			return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
 		return players[network_ids[player_id]]
 		
 func opponent_id(pid=player_id):
@@ -314,6 +318,7 @@ func _server_disconnected():
 # Callback from SceneTree, only for clients (not server).
 func _connected_fail():
 	get_tree().set_network_peer(null) # Remove peer
+	multiplayer_client = null
 	emit_signal("connection_failed")
 
 remotesync func receive_player_timer(id, timer):
@@ -359,7 +364,7 @@ remote func receive_match_list(list):
 	emit_signal("match_list_received", list)
 
 func request_match_list():
-	if multiplayer_client:
+	if multiplayer_client and multiplayer_client.connected:
 		rpc_id(1, "fetch_match_list")
 
 func is_host():

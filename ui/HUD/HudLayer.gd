@@ -136,17 +136,18 @@ func _physics_process(_delta):
 			var screen_center = game.get_viewport_rect().size/2
 			var p1_texture: Texture = p1.sprite.frames.get_frame(p1.sprite.animation, p1.sprite.frame)
 			var p2_texture: Texture = p2.sprite.frames.get_frame(p2.sprite.animation, p2.sprite.frame)
-			var p1_offset = p1_texture.get_size() / 2
-			var p2_offset = p1_texture.get_size() / 2
+			var p1_offset = (p1_texture.get_size() / 2) / game.camera.zoom.x
+			var p2_offset = (p2_texture.get_size() / 2) / game.camera.zoom.x
 			$"%P1SuperTexture".texture = p1_texture
 			$"%P1SuperTexture".flip_h = p1.flip.scale.x < 0
 			$"%P2SuperTexture".texture = p2_texture
 			$"%P2SuperTexture".flip_h = p2.flip.scale.x < 0
 			p1_super_effects_node.position = p1_offset
 			p2_super_effects_node.position = p2_offset
-			
-			$"%P1SuperTexture".rect_global_position = game.get_screen_position(1) + screen_center - p1_offset - Vector2(0, 4)
-			$"%P2SuperTexture".rect_global_position = game.get_screen_position(2) + screen_center - p2_offset - Vector2(0, 4)
+			$"%P1SuperTexture".rect_size = p1_texture.get_size() / game.camera.zoom.x
+			$"%P2SuperTexture".rect_size = p2_texture.get_size() / game.camera.zoom.x
+			$"%P1SuperTexture".rect_global_position = game.get_screen_position(1) + screen_center - p1_offset - (Vector2(0, 4) / game.camera.zoom.x)
+			$"%P2SuperTexture".rect_global_position = game.get_screen_position(2) + screen_center - p2_offset - (Vector2(0, 4) / game.camera.zoom.x)
 		else:
 			super_started = false
 

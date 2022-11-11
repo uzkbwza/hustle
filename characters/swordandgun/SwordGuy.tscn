@@ -1,4 +1,4 @@
-[gd_scene load_steps=221 format=2]
+[gd_scene load_steps=231 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=2]
@@ -208,15 +208,25 @@
 [ext_resource path="res://sound/common/jump1.wav" type="AudioStream" id=206]
 [ext_resource path="res://sound/common/explosion2.wav" type="AudioStream" id=207]
 [ext_resource path="res://fx/JumpParticle.tscn" type="PackedScene" id=208]
-[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=209]
-[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=210]
-[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=211]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter3.png" type="Texture" id=212]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter5.png" type="Texture" id=213]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter1.png" type="Texture" id=214]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter2.png" type="Texture" id=215]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter4.png" type="Texture" id=216]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/ankle_cutter.png" type="Texture" id=217]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down3.png" type="Texture" id=218]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker5.png" type="Texture" id=219]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down2.png" type="Texture" id=220]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down1.png" type="Texture" id=221]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down4.png" type="Texture" id=222]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down8.png" type="Texture" id=223]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down6.png" type="Texture" id=224]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down5.png" type="Texture" id=225]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down7.png" type="Texture" id=226]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down10.png" type="Texture" id=227]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down11.png" type="Texture" id=228]
+[ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down9.png" type="Texture" id=229]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/3combo_down.png" type="Texture" id=230]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -232,10 +242,15 @@ animations = [ {
 "name": "1000Cuts",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 198 ), ExtResource( 198 ), ExtResource( 195 ), ExtResource( 195 ), ExtResource( 195 ), ExtResource( 196 ), ExtResource( 196 ), ExtResource( 199 ), ExtResource( 199 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ) ],
+"frames": [ ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 198 ), ExtResource( 198 ), ExtResource( 195 ), ExtResource( 195 ), ExtResource( 219 ), ExtResource( 219 ), ExtResource( 196 ), ExtResource( 199 ), ExtResource( 199 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ) ],
 "loop": true,
 "name": "3Combo",
 "speed": 60.0
+}, {
+"frames": [ ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 218 ), ExtResource( 218 ), ExtResource( 222 ), ExtResource( 222 ), ExtResource( 225 ), ExtResource( 225 ), ExtResource( 224 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 228 ) ],
+"loop": true,
+"name": "3ComboDown",
+"speed": 5.0
 }, {
 "frames": [ ExtResource( 65 ), ExtResource( 65 ), ExtResource( 65 ), ExtResource( 65 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 63 ) ],
 "loop": true,
@@ -553,8 +568,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "AnkleCutter"
-frame = 11
+animation = "3ComboDown"
+frame = 14
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -637,7 +652,8 @@ self_hit_cancellable = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+3Combo"
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "AerialSuper
@@ -763,7 +779,157 @@ knockback = "12.0"
 start_tick = 29
 active_ticks = 3
 
-[node name="LightningSlice" type="Node2D" parent="StateMachine" index="5"]
+[node name="3ComboDown" type="Node2D" parent="StateMachine" index="5"]
+script = ExtResource( 204 )
+apply_forces = true
+apply_fric = true
+anim_length = 40
+particle_scene = ExtResource( 208 )
+enter_sfx = ExtResource( 206 )
+title = "3 Combo Down"
+type = 2
+button_texture = ExtResource( 230 )
+air_type = 1
+land_cancel = true
+self_hit_cancellable = false
+interrupt_from_string = "Grounded
+Aerial
+GroundedSpecial
+AerialSpecial
+3Combo"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "AerialSuper
+AerialAttack
+AerialSpecial"
+hit_cancel_exceptions_string = "3Combo"
+down = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/3ComboDown" index="0"]
+script = ExtResource( 83 )
+x = -11
+y = 24
+height = 12
+damage = 40
+hitstun_ticks = 18
+victim_hitlag = 5
+cancellable = false
+whiff_sound = ExtResource( 140 )
+hit_sound = ExtResource( 144 )
+dir_x = "0.5"
+dir_y = "1.0"
+knockback = "7.0"
+start_tick = 8
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/3ComboDown" index="1"]
+script = ExtResource( 83 )
+x = 24
+y = 14
+width = 14
+height = 15
+damage = 40
+hitstun_ticks = 18
+victim_hitlag = 5
+cancellable = false
+whiff_sound = ExtResource( 140 )
+hit_sound = ExtResource( 144 )
+dir_x = "0.5"
+dir_y = "1.0"
+knockback = "7.0"
+start_tick = 8
+active_ticks = 2
+
+[node name="Hitbox4" type="Node2D" parent="StateMachine/3ComboDown" index="2"]
+script = ExtResource( 83 )
+x = 9
+y = 13
+height = 12
+damage = 50
+hitstun_ticks = 25
+victim_hitlag = 5
+group = 1
+whiff_sound = ExtResource( 146 )
+hit_sound = ExtResource( 148 )
+dir_x = "0.5"
+dir_y = "1.0"
+knockback = "8.0"
+start_tick = 15
+active_ticks = 2
+
+[node name="Hitbox5" type="Node2D" parent="StateMachine/3ComboDown" index="3"]
+script = ExtResource( 83 )
+x = 35
+y = 10
+width = 9
+height = 9
+damage = 50
+hitstun_ticks = 25
+victim_hitlag = 5
+group = 1
+whiff_sound = ExtResource( 146 )
+hit_sound = ExtResource( 148 )
+dir_x = "0.5"
+dir_y = "1.0"
+knockback = "8.0"
+start_tick = 15
+active_ticks = 2
+
+[node name="Hitbox6" type="Node2D" parent="StateMachine/3ComboDown" index="4"]
+script = ExtResource( 83 )
+x = 39
+y = -5
+width = 9
+height = 13
+damage = 50
+hitstun_ticks = 25
+victim_hitlag = 5
+group = 1
+whiff_sound = ExtResource( 146 )
+hit_sound = ExtResource( 148 )
+dir_x = "0.5"
+dir_y = "1.0"
+knockback = "8.0"
+start_tick = 15
+active_ticks = 2
+
+[node name="Hitbox7" type="Node2D" parent="StateMachine/3ComboDown" index="5"]
+script = ExtResource( 83 )
+x = 3
+y = 7
+width = 21
+height = 14
+damage = 130
+hitstun_ticks = 40
+hitlag_ticks = 7
+victim_hitlag = 10
+group = 2
+screenshake_amount = 7
+hit_sound = ExtResource( 207 )
+dir_y = "-0.2"
+knockback = "12.0"
+start_tick = 29
+active_ticks = 3
+
+[node name="Hitbox8" type="Node2D" parent="StateMachine/3ComboDown" index="6"]
+script = ExtResource( 83 )
+x = 22
+y = -6
+width = 21
+height = 14
+damage = 130
+hitstun_ticks = 40
+hitlag_ticks = 7
+victim_hitlag = 10
+group = 2
+screenshake_amount = 7
+hit_sound = ExtResource( 207 )
+dir_y = "-0.2"
+knockback = "12.0"
+start_tick = 29
+active_ticks = 3
+
+[node name="LightningSlice" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 191 )
 apply_forces = true
 apply_fric = true
@@ -807,7 +973,7 @@ knockdown_extends_hitstun = false
 start_tick = 17
 active_ticks = 1
 
-[node name="LightningSliceCancel" type="Node2D" parent="StateMachine" index="6"]
+[node name="LightningSliceCancel" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 191 )
 apply_forces = true
 apply_fric = true
@@ -847,7 +1013,7 @@ knockdown_extends_hitstun = false
 start_tick = 17
 active_ticks = 3
 
-[node name="LassoPull" type="Node2D" parent="StateMachine" index="7"]
+[node name="LassoPull" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 177 )
 anim_length = 20
 title = "Pull"
@@ -873,7 +1039,7 @@ knockdown = true
 knockdown_extends_hitstun = false
 active_ticks = 1
 
-[node name="LassoHit" type="Node2D" parent="StateMachine" index="8"]
+[node name="LassoHit" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 167 )
 fallback_state = "LassoReel"
 sprite_animation = "LassoReel"
@@ -883,7 +1049,7 @@ type = 3
 air_type = 2
 interrupt_into_string = "Lasso"
 
-[node name="LassoReel" type="Node2D" parent="StateMachine" index="9"]
+[node name="LassoReel" type="Node2D" parent="StateMachine" index="10"]
 script = ExtResource( 175 )
 endless = true
 reset_momentum = true
@@ -900,37 +1066,9 @@ interrupt_from_string = "Lasso"
 script = ExtResource( 166 )
 width = 30
 height = 30
-victim_hitlag = 4
-increment_combo = false
 priority = 9999
-_c_Sfx = null
-whiff_sound = 0
-hit_sound = ExtResource( 211 )
-hit_bass_sound = ExtResource( 209 )
-whiff_sound_volume = ExtResource( 210 )
-hit_sound_volume = -8.0
-_c_Knockback = -5.0
-dir_x = "0"
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = "False"
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
-_c_Frame_Data = true
-active_ticks = 1
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":ExtResource( 210 ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 139 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
 
-hits_aerial = true
-
-[node name="HSlash" type="Node2D" parent="StateMachine" index="10"]
+[node name="HSlash" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 79 )
 sprite_animation = "HSlash"
 anim_length = 25
@@ -961,7 +1099,7 @@ hit_sound = ExtResource( 145 )
 start_tick = 7
 active_ticks = 2
 
-[node name="VSlash" type="Node2D" parent="StateMachine" index="11"]
+[node name="VSlash" type="Node2D" parent="StateMachine" index="12"]
 script = ExtResource( 79 )
 sprite_animation = "VSlash"
 anim_length = 30
@@ -998,7 +1136,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
 
-[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="12"]
+[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="13"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -1035,7 +1173,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="13"]
+[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -1074,7 +1212,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="Poke" type="Node2D" parent="StateMachine" index="14"]
+[node name="Poke" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 79 )
 sprite_animation = "Poke"
 anim_length = 30
@@ -1110,7 +1248,7 @@ knockdown = true
 start_tick = 11
 active_ticks = 2
 
-[node name="Impale" type="Node2D" parent="StateMachine" index="15"]
+[node name="Impale" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 127 )
 anim_length = 45
 force_dir_x = "-1.0"
@@ -1137,6 +1275,7 @@ hitlag_ticks = 12
 victim_hitlag = 20
 cancellable = false
 screenshake_amount = 2
+rumble = false
 hit_sound = ExtResource( 142 )
 dir_y = "0"
 knockback = "2.0"
@@ -1157,6 +1296,7 @@ victim_hitlag = 4
 group = 1
 screenshake_amount = 6
 screenshake_frames = 40
+rumble = false
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 143 )
 dir_x = "-1.0"
@@ -1169,7 +1309,7 @@ ground_bounce = false
 start_tick = 23
 active_ticks = 4
 
-[node name="VAirSlash" type="Node2D" parent="StateMachine" index="16"]
+[node name="VAirSlash" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 95 )
 anim_length = 18
 title = "Vert. Slash"
@@ -1200,7 +1340,7 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 2
 
-[node name="HAirSlash" type="Node2D" parent="StateMachine" index="17"]
+[node name="HAirSlash" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 189 )
 anim_length = 16
 force_dir_x = "1.0"
@@ -1233,7 +1373,7 @@ knockback = "8"
 start_tick = 6
 active_ticks = 4
 
-[node name="Teleport" type="Node2D" parent="StateMachine" index="18"]
+[node name="Teleport" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 99 )
 anim_length = 18
 enter_sfx = ExtResource( 138 )
@@ -1253,7 +1393,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Pommel" type="Node2D" parent="StateMachine" index="19"]
+[node name="Pommel" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 79 )
 anim_length = 9
 enter_force_dir_x = "1.0"
@@ -1283,7 +1423,7 @@ dir_y = "1.0"
 start_tick = 4
 active_ticks = 2
 
-[node name="Brandish" type="Node2D" parent="StateMachine" index="20"]
+[node name="Brandish" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 116 )
 fallback_state = "Shoot"
 sprite_animation = "GunTwirl"
@@ -1302,7 +1442,7 @@ interrupt_into_string = "Gun
 AerialSuper
 GroundedSuper"
 
-[node name="Holster" type="Node2D" parent="StateMachine" index="21"]
+[node name="Holster" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 79 )
 sprite_animation = "Holster"
 anim_length = 6
@@ -1313,7 +1453,7 @@ interrupt_from_string = "Gun"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Shoot" type="Node2D" parent="StateMachine" index="22"]
+[node name="Shoot" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot"
@@ -1330,7 +1470,7 @@ GroundedSuper
 AerialSuper"
 release_opponent_on_startup = true
 
-[node name="LassoHold" type="Node2D" parent="StateMachine" index="23"]
+[node name="LassoHold" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 168 )
 apply_forces = true
 apply_fric = true
@@ -1343,7 +1483,7 @@ interrupt_into_string = "LassoThrow
 "
 start_throw_pos_x = 16
 
-[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="24"]
+[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 169 )
 endless = true
 reset_momentum = true
@@ -1380,7 +1520,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 
-[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="25"]
+[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -1418,39 +1558,37 @@ knockdown_extends_hitstun = false
 start_tick = 12
 active_ticks = 2
 
-[node name="DashStartup" parent="StateMachine" index="36"]
+[node name="DashStartup" parent="StateMachine" index="37"]
 title = "Walk"
 interrupt_from_string = "GroundedMovement
 Grounded
 Dash"
 
-[node name="DashForward" parent="StateMachine" index="37"]
+[node name="DashForward" parent="StateMachine" index="38"]
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="38"]
+[node name="DashBackward" parent="StateMachine" index="39"]
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="Jump" parent="StateMachine" index="40"]
+[node name="Jump" parent="StateMachine" index="41"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="41"]
+[node name="DoubleJump" parent="StateMachine" index="42"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="42"]
+[node name="AirDash" parent="StateMachine" index="43"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 dir_x = "0"
 pushback_x = "False"
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":ExtResource( 210 ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 139 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
 
-
-[node name="AirGrab" parent="StateMachine" index="50"]
+[node name="AirGrab" parent="StateMachine" index="51"]
 land_cancel = true
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
@@ -1458,9 +1596,7 @@ dir_x = "0"
 pushback_x = "False"
 active_ticks = 1
 loop_active_ticks = 0
-_c_Throw_Data = Object(AudioStreamPlayer2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"stream":ExtResource( 210 ),"volume_db":-5.0,"pitch_scale":1.0,"autoplay":false,"stream_paused":false,"max_distance":2000.0,"attenuation":1.0,"bus":"Fx","area_mask":1,"script":ExtResource( 139 ),"pitch_variation":0.1,"one_shot":false,"streams":[  ])
 
-
-[node name="AirDownThrow" parent="StateMachine" index="55"]
+[node name="AirDownThrow" parent="StateMachine" index="56"]
 dir_x = "1.0"
 dir_y = "1.00"

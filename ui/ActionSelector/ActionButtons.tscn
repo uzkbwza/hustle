@@ -118,6 +118,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 margin_right = 38.0
 margin_bottom = 29.0
+hint_tooltip = "Submit the selected action and end your turn."
 mouse_default_cursor_shape = 2
 size_flags_vertical = 3
 theme = ExtResource( 4 )
@@ -130,6 +131,7 @@ visible = false
 margin_top = 20.0
 margin_right = 38.0
 margin_bottom = 39.0
+hint_tooltip = "Perform your action backwards."
 size_flags_horizontal = 3
 size_flags_vertical = 3
 action_mode = 0
@@ -141,7 +143,7 @@ expand_icon = true
 [node name="ContinueButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons" instance=ExtResource( 3 )]
 visible = false
 margin_top = 20.0
-margin_right = 44.0
+margin_right = 38.0
 margin_bottom = 39.0
 
 [node name="UndoButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
@@ -149,6 +151,7 @@ unique_name_in_owner = true
 margin_top = 30.0
 margin_right = 38.0
 margin_bottom = 60.0
+hint_tooltip = "Resimulate the match until the previous turn."
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

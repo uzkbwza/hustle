@@ -28,6 +28,7 @@ export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
 export var cancellable = true
 export var increment_combo = true
+export var hits_otg = false
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -48,6 +49,7 @@ export(PackedScene) var hit_particle
 export var replace_hit_particle = false
 export var camera_bump_dir = Vector2()
 export(PackedScene) var whiff_particle = null
+export var rumble = true
 
 
 export var _c_Sfx = 0
@@ -154,6 +156,7 @@ func activate():
 	tick = 0
 	active = true
 	enabled = true
+	cancellable = cancellable or bool(host.get("turbo_mode"))
 	if victim_hitlag == -1:
 		victim_hitlag = hitlag_ticks
 
@@ -190,15 +193,15 @@ func hit(obj):
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")
+			if obj.on_the_ground:
+				if !hits_otg:
+					can_hit = false
 			if can_hit and spawn_particle_effect:
 				if hit_particle:
 					spawn_particle(hit_particle, obj, dir)
 				if !replace_hit_particle:
 					spawn_particle(HIT_PARTICLE, obj, dir)
-			obj.rumble(screenshake_amount, victim_hitlag if screenshake_frames < 0 else screenshake_frames)
 
-		if host.hitlag_ticks < hitlag_ticks:
-			host.hitlag_ticks = hitlag_ticks
 		if can_hit:
 			var pushback = host.fixed.mul(host.fixed.add(pushback_x, host.fixed.mul(str(host.combo_count), COMBO_PUSHBACK_COEFFICIENT)), "-1")
 			host.add_pushback(pushback)

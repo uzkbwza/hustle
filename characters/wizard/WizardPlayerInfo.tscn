@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/PlayerInfo.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/WizardPlayerInfo.gd" type="Script" id=2]
+[ext_resource path="res://theme.tres" type="Theme" id=3]
 
 [sub_resource type="Gradient" id=3]
 offsets = PoolRealArray( 0.665893 )
@@ -20,6 +21,7 @@ gradient = SubResource( 2 )
 width = 100
 
 [node name="PlayerInfo" instance=ExtResource( 1 )]
+theme = ExtResource( 3 )
 script = ExtResource( 2 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
@@ -46,3 +48,10 @@ value = 1.0
 texture_under = SubResource( 4 )
 texture_progress = SubResource( 1 )
 nine_patch_stretch = true
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HoverBar" index="0"]
+margin_top = -7.0
+margin_right = 100.0
+margin_bottom = 4.0
+text = "hover"
+align = 1

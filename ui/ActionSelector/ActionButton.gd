@@ -21,6 +21,8 @@ func setup(name, title, texture=null):
 		$"%TextureRect".texture = texture
 		custom_texture = true
 #	$"%Button".text = title
+	hint_tooltip = title
+	$"%Button".hint_tooltip = title
 
 func set_player_id(player_id):
 	if player_id != 1 and custom_texture:

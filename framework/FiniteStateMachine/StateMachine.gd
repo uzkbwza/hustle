@@ -161,15 +161,16 @@ func integrate(st):
 	state._integrate_shared(st)
 	state._integrate(st)
 
-func _change_state(state_name: String, data=null) -> void:
+func _change_state(state_name: String, data=null, enter=true, exit=true) -> void:
 	var next_state = states_map[state_name]
 	queued_states = []
 	queued_data = []
 
 	if state:
-		state._exit_shared()
-		state._exit()
-		emit_signal("state_exited", state)
+		if exit:
+			state._exit_shared()
+			state._exit()
+			emit_signal("state_exited", state)
 		state.active = false
 		state.set_physics_process(false)
 		state.set_process(false)
@@ -194,14 +195,15 @@ func _change_state(state_name: String, data=null) -> void:
 		animated_sprite.frame = 0
 		animated_sprite.play.call_deferred(state.animation)
 	state.data = data
-	var new_state = state._enter_shared()
-	if new_state:
-		_change_state(new_state)
-		return
-	new_state = state._enter()
-	if new_state:
-		_change_state(new_state)
-		return
+	if enter:
+		var new_state = state._enter_shared()
+		if new_state:
+			_change_state(new_state)
+			return
+		new_state = state._enter()
+		if new_state:
+			_change_state(new_state)
+			return
 	emit_signal("state_changed", states_stack)
 
 func try(method: String, args: Array = []):

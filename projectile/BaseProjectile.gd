@@ -3,6 +3,7 @@ extends BaseObj
 class_name BaseProjectile
 
 export var immunity_susceptible = true
+export var deletes_other_projectiles = true
 
 # Called when the node enters the scene tree for the first time.
 

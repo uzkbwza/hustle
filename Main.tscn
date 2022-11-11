@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=2]
+[gd_scene load_steps=63 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -46,6 +46,25 @@
 [ext_resource path="res://ui/SuperLevels/super_level8.png" type="Texture" id=44]
 [ext_resource path="res://ui/SuperLevels/super_level3.png" type="Texture" id=45]
 [ext_resource path="res://ui/HUD/ComboCounter.gd" type="Script" id=46]
+[ext_resource path="res://AfterImage.gd" type="Script" id=47]
+[ext_resource path="res://sound/ui/my_turn_2.wav" type="AudioStream" id=48]
+[ext_resource path="res://framework/VariableSound.gd" type="Script" id=49]
+[ext_resource path="res://fx/speed_lines.gdshader" type="Shader" id=50]
+[ext_resource path="res://SpeedLines.gd" type="Script" id=51]
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 50 )
+shader_param/direction = null
+shader_param/intensity = null
+
+[sub_resource type="OpenSimplexNoise" id=20]
+octaves = 9
+period = 3.0
+
+[sub_resource type="OpenSimplexNoise" id=21]
+seed = 1
+octaves = 9
+period = 3.0
 
 [sub_resource type="CanvasItemMaterial" id=10]
 
@@ -162,25 +181,65 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="SpeedLinesLayer" type="CanvasLayer" parent="."]
+
+[node name="SpeedLines" type="Control" parent="SpeedLinesLayer"]
+unique_name_in_owner = true
+material = SubResource( 19 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 51 )
+dir = Vector2( -0.413931, -0.910308 )
+intensity = 0.0
+noise = SubResource( 20 )
+noise2 = SubResource( 21 )
+on = true
+intensity_easing = -1.86607
+
 [node name="GameLayer" type="CanvasLayer" parent="."]
 follow_viewport_enable = true
 
 [node name="GhostLayer" type="CanvasLayer" parent="."]
 
-[node name="ViewportContainer" type="ViewportContainer" parent="GhostLayer"]
-modulate = Color( 1, 1, 1, 0.372549 )
+[node name="Afterimages" type="Control" parent="GhostLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.243137 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="AfterImage1" type="TextureRect" parent="GhostLayer/Afterimages"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 47 )
+
+[node name="AfterImage2" type="TextureRect" parent="GhostLayer/Afterimages"]
+unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.784314 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 47 )
+
+[node name="GhostViewportContainer" type="ViewportContainer" parent="GhostLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.584314 )
 material = SubResource( 10 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
 
-[node name="GhostViewport" type="Viewport" parent="GhostLayer/ViewportContainer"]
+[node name="GhostViewport" type="Viewport" parent="GhostLayer/GhostViewportContainer"]
 unique_name_in_owner = true
 size = Vector2( 640, 360 )
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
+gui_disable_input = true
 
 [node name="HudLayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
@@ -199,6 +258,8 @@ visible = false
 margin_right = 64.0
 margin_bottom = 64.0
 texture = ExtResource( 21 )
+expand = true
+stretch_mode = 1
 
 [node name="P1SuperEffectsNode" type="Node2D" parent="HudLayer/P1SuperTexture"]
 unique_name_in_owner = true
@@ -383,6 +444,7 @@ rect_min_size = Vector2( 32, 32 )
 rect_clip_content = true
 expand = true
 stretch_mode = 4
+flip_h = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudLayer"]
 margin_left = 27.0
@@ -626,13 +688,12 @@ theme = ExtResource( 4 )
 
 [node name="TopInfo" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
-visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -320.0
 margin_right = 320.0
 margin_bottom = 11.0
-text = "R: Watch replay - ESC: Open menu"
+text = "SPACE: Lock in - R: Watch replay - ESC: Open menu - F1: Toggle HUD"
 align = 1
 
 [node name="TopInfoMP" type="Label" parent="UILayer/GameUI"]
@@ -643,7 +704,7 @@ anchor_right = 0.5
 margin_left = -320.0
 margin_right = 320.0
 margin_bottom = 11.0
-text = "ESC: Open menu - Enter: Chat"
+text = "SPACE: Lock in - ESC: Open menu - Enter: Chat - F1: Toggle HUD"
 align = 1
 
 [node name="TopInfoReplay" type="Label" parent="UILayer/GameUI"]
@@ -654,7 +715,7 @@ anchor_right = 0.5
 margin_left = -320.0
 margin_right = 320.0
 margin_bottom = 11.0
-text = "E: Edit replay - ESC: Open menu"
+text = "E: Edit replay - ESC: Open menu - F1: Toggle HUD"
 align = 1
 
 [node name="BottomBar" type="VBoxContainer" parent="UILayer/GameUI"]
@@ -869,18 +930,34 @@ alignment = 1
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 165.0
-margin_right = 306.0
+margin_left = 38.0
+margin_right = 179.0
 margin_bottom = 12.0
 theme = ExtResource( 4 )
 pressed = true
 action_mode = 0
 text = "show prediction (buggy)"
 
+[node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 184.0
+margin_right = 265.0
+margin_bottom = 12.0
+pressed = true
+text = "afterimages"
+
+[node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 270.0
+margin_right = 448.0
+margin_bottom = 12.0
+pressed = true
+text = "freeze prediction on turn ready"
+
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 311.0
-margin_right = 454.0
+margin_left = 453.0
+margin_right = 581.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
@@ -912,6 +989,7 @@ text = "x1"
 
 [node name="3Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
+visible = false
 margin_left = 129.0
 margin_right = 143.0
 margin_bottom = 12.0
@@ -1156,7 +1234,6 @@ margin_top = -11.0
 
 [node name="MusicButton" type="CheckButton" parent="UILayer/MainMenu"]
 unique_name_in_owner = true
-visible = false
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -1400,3 +1477,11 @@ bus = "UI"
 unique_name_in_owner = true
 wait_time = 0.25
 one_shot = true
+
+[node name="GhostMyTurnSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 48 )
+volume_db = -30.0
+pitch_scale = 2.0
+bus = "UI"
+script = ExtResource( 49 )
+pitch_variation = 0.05

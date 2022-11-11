@@ -20,6 +20,11 @@ var show_match_list = true
 
 var match_list = []
 
+var servers = [
+	"ws://168.235.81.168:52450",
+	"ws://168.235.86.185:52450"
+]
+
 func _ready():
 	# Called every time the node is added to the scene.
 	Network.connect("connection_failed", self, "_on_connection_failed")
@@ -38,12 +43,24 @@ func _ready():
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
+	$"%ServerList".connect("item_selected", self, "refresh_multiplayer")
+
+func refresh_multiplayer(_index):
+	Network.stop_multiplayer()
+	item_list.clear()
+	$"%ConnectingLabel".show()
+	Network.setup_relay_multiplayer(get_server_address())
+	yield(Network.multiplayer_client, "connection_succeeded")
+	$"%ConnectingLabel".hide()
 
 func _on_refresh_timer_timeout():
 	if show_match_list:
 		refresh_match_list()
 	else:
 		$"%RefreshTimer".stop()
+
+func get_server_address():
+	return servers[$"%ServerList".selected]
 
 func _on_room_code_edit_text_changed(text):
 	if !direct_connect:
@@ -66,7 +83,7 @@ func show():
 #		$"%RoomCodeDisplay".show()
 		$"%RoomCodeEdit".show()
 		$"%PublicButton".show()
-		Network.setup_relay_multiplayer()
+		Network.setup_relay_multiplayer(get_server_address())
 		show_match_list = true
 		host_button.disabled = true
 		join_button.disabled = true
@@ -79,10 +96,12 @@ func show():
 		Network.request_match_list()
 		$"%DirectConnectWarning".hide()
 		$"%PublicButton".pressed = true
+		$"%ServerList".show()
 	else:
 		$"%DirectConnectWarning".show()
 		$"%RoomCodeEdit".hide()
 		$"%PublicButton".hide()
+		$"%ServerList".hide()
 
 	name_edit.editable = true
 
@@ -122,7 +141,6 @@ func _on_join_pressed():
 	if name_edit.text == "":
 		error_label.text = "Invalid name!"
 		return
-	
 	error_label.text = ""
 	host_button.disabled = true
 	join_button.disabled = true
@@ -159,6 +177,7 @@ func _on_match_list_received(list):
 		item_list.clear()
 		match_list = list
 		for match_ in list:
+#			for i in range(100):
 			item_list.add_item("%s's room - %s" % [match_.host, match_.code])
 			
 func _on_back_button_pressed():

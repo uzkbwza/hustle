@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=85 format=2]
+[gd_resource type="SpriteFrames" load_steps=94 format=2]
 
 [ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=1]
 [ext_resource path="res://characters/stickman/sprites/phantomdash2.png" type="Texture" id=2]
@@ -84,6 +84,15 @@
 [ext_resource path="res://characters/stickman/sprites/caltrops3.png" type="Texture" id=82]
 [ext_resource path="res://characters/stickman/sprites/caltrops2.png" type="Texture" id=83]
 [ext_resource path="res://characters/stickman/sprites/caltrops1.png" type="Texture" id=84]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave1.png" type="Texture" id=85]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave5.png" type="Texture" id=86]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave3.png" type="Texture" id=87]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave2.png" type="Texture" id=88]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave4.png" type="Texture" id=89]
+[ext_resource path="res://characters/stickman/sprites/chuk_wave6.png" type="Texture" id=90]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb3.png" type="Texture" id=91]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb2.png" type="Texture" id=92]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb1.png" type="Texture" id=93]
 
 [resource]
 animations = [ {
@@ -277,6 +286,11 @@ animations = [ {
 "name": "RollForward",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 91 ) ],
+"loop": true,
+"name": "StickyBomb",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 79 ) ],
 "loop": true,
 "name": "Stomp",
@@ -301,4 +315,9 @@ animations = [ {
 "loop": true,
 "name": "Wait",
 "speed": 30.0
+}, {
+"frames": [ ExtResource( 85 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 85 ), ExtResource( 88 ), ExtResource( 88 ), ExtResource( 87 ), ExtResource( 87 ), ExtResource( 87 ), ExtResource( 89 ), ExtResource( 89 ), ExtResource( 86 ), ExtResource( 86 ), ExtResource( 86 ), ExtResource( 90 ), ExtResource( 90 ) ],
+"loop": true,
+"name": "WhipWave",
+"speed": 5.0
 } ]

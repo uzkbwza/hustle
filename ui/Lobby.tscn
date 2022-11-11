@@ -34,9 +34,19 @@ placeholder_text = "enter name here"
 unique_name_in_owner = true
 margin_top = 17.0
 margin_right = 208.0
-margin_bottom = 137.0
+margin_bottom = 123.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="ServerList" type="OptionButton" parent="NetworkSetupScreen"]
+unique_name_in_owner = true
+margin_top = 124.0
+margin_right = 208.0
+margin_bottom = 137.0
+text = "Dojo 1"
+align = 1
+items = [ "Dojo 1", null, false, 0, null, "Dojo 2", null, false, 1, null ]
+selected = 0
 
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
@@ -97,7 +107,6 @@ margin_bottom = 30.0
 rect_min_size = Vector2( 40, 0 )
 size_flags_horizontal = 0
 size_flags_vertical = 3
-disabled = true
 text = "join"
 
 [node name="IPEdit" type="LineEdit" parent="NetworkSetupScreen/ConnectContainer/JoinContainer"]
@@ -168,7 +177,7 @@ margin_left = -100.0
 margin_top = 87.0
 margin_right = 61.0
 margin_bottom = 145.0
-text = "note: host must port-forward for direct connect to work"
+text = "note: host may need to port-forward for direct connect to work"
 align = 1
 autowrap = true
 

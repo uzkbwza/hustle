@@ -1,6 +1,6 @@
 extends WizardState
 
-const PULL_SPEED = "-10"
+const PULL_SPEED = "-5"
 const MAX_EXTRA_PULL_DIST = "200"
 const MAX_EXTRA_PULL = "-10"
 const PULL_FORCE = "-1"
