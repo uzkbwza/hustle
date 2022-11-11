@@ -1483,6 +1483,10 @@ stream = ExtResource( 19 )
 volume_db = -10.0
 bus = "UI"
 
+[node name="NetworkSyncTimer" type="Timer" parent="UILayer"]
+wait_time = 2.0
+autostart = true
+
 [node name="GhostWaitTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 0.25

@@ -379,7 +379,7 @@ func activate():
 	var cancel_into
 	if !fighter.busy_interrupt:
 		cancel_into = (state.interrupt_into if !fighter.state_hit_cancellable else state.hit_cancel_into)
-		if turbo_mode:
+		if turbo_mode and fighter.opponent.current_state().state_name != "Grabbed":
 			if fighter.is_grounded():
 				cancel_into.append("Grounded")
 			else:
@@ -436,7 +436,8 @@ func activate():
 	if !fighter.busy_interrupt:
 		fighter_extra.show()
 		fighter_extra.show_options()
-
+	fighter_extra.reset()
+	
 	if fighter.dummy:
 		on_action_submitted("ContinueAuto", null)
 		hide()

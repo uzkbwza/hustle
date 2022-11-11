@@ -228,7 +228,7 @@ func _on_game_error(what):
 		error_label.set_text(what)
 		join_button.disabled = false
 		host_button.disabled = false
-		if Network.game:
+		if !Network.game:
 			get_tree().reload_current_scene()
 #		show()
 #		get_tree().reload_current_scene()

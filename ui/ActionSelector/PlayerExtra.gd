@@ -16,3 +16,6 @@ func get_extra():
 
 func show_options():
 	return
+
+func reset():
+	pass

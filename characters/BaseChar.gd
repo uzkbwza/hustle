@@ -289,7 +289,10 @@ func hitbox_from_name(hitbox_name):
 		var hitbox_props = hitbox_name.split("_")
 		var obj_name = hitbox_props[0]
 		var hitbox_id = int(hitbox_props[-1])
-		return objs_map[obj_name].hitboxes[hitbox_id]
+		if objs_map.has(obj_name):
+			var obj = objs_map[obj_name]
+			if obj and obj.hitboxes.has(hitbox_id):
+				return objs_map[obj_name].hitboxes[hitbox_id]
 
 func hit_by(hitbox):
 	if parried:
@@ -453,8 +456,9 @@ func clean_parried_hitboxes():
 	var hitboxes_to_refresh = []
 	for hitbox_name in parried_hitboxes:
 		var hitbox = hitbox_from_name(hitbox_name)
-		if !hitbox.enabled or !hitbox.active:
-			hitboxes_to_refresh.append(hitbox)
+		if hitbox:
+			if !hitbox.enabled or !hitbox.active:
+				hitboxes_to_refresh.append(hitbox)
 	
 	for hitbox in hitboxes_to_refresh:
 		parried_hitboxes.erase(hitbox.name)

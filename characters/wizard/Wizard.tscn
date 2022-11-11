@@ -542,7 +542,6 @@ frame = 6
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
-visible = false
 material = null
 position = Vector2( 134, -144 )
 

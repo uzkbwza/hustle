@@ -84,7 +84,7 @@ var super_active = false
 var p1_super = false
 var p2_super = false
 var ghost_freeze = false
-
+var player_actionable = true
 var network_sync_tick = -100
 
 var ghost_actionable_freeze_ticks = 0
@@ -108,16 +108,10 @@ func _ready():
 		$GhostStartTimer.start()
 	else:
 		emit_signal("simulation_continue")
-	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
 	object.connect("particle_effect_spawned", self, "on_particle_effect_spawned")
-
-func _on_network_timer_timeout():
-	if Network.multiplayer_active:
-		if !Network.turn_synced:
-				Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 
 func copy_to(game: Game):
 	if !game_started:
@@ -316,7 +310,13 @@ func tick():
 			continue
 		if !object.initialized:
 			object.init()
+		
 		object.tick()
+		var pos = object.get_pos()
+		if pos.x < -stage_width:
+			object.set_pos(-stage_width, pos.y)
+		elif pos.x > stage_width:
+			object.set_pos(stage_width, pos.y)
 
 	for fx in effects:
 		fx.tick()
@@ -631,7 +631,7 @@ func process_tick():
 					emit_signal("player_actionable")
 				elif !is_ghost:
 					someones_turn = true
-
+				player_actionable = true
 			elif p2.state_interruptable and !p2_turn:
 				someones_turn = true
 				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
@@ -642,9 +642,11 @@ func process_tick():
 					emit_signal("player_actionable")
 				elif !is_ghost:
 					someones_turn = true
+				player_actionable = true
 
 			if someones_turn:
 				if network_sync_tick != current_tick:
+#					yield(get_tree().create_timer(2.0), "timeout")
 					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 					network_sync_tick = current_tick
 	else:
@@ -711,6 +713,7 @@ func _physics_process(_delta):
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")
+		player_actionable = false
 	
 	if !is_ghost:
 		if snapping_camera:

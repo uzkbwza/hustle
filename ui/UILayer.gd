@@ -19,6 +19,8 @@ var turn_time = 30
 var p1_turn_time = 30
 var p2_turn_time = 30
 
+var lock_in_tick = -INF
+
 const DISCORD_URL = "https://discord.gg/kyNeDrFBR7"
 const TWITTER_URL = "https://twitter.com/ivy_sly_"
 const IVY_SLY_URL = "https://www.ivysly.com"
@@ -34,6 +36,7 @@ var p2_synced_time = null
 
 var game_started = false
 var timer_sync_tick = -1
+var actionable = false
 
 var received_synced_time = false
 
@@ -60,6 +63,8 @@ func _ready():
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
 	Network.connect("sync_timer_request", self, "_on_sync_timer_request")
+	Network.connect("check_players_ready", self, "check_players_ready")
+	
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
 	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
@@ -67,7 +72,8 @@ func _ready():
 		
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
-
+	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
+	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
 
@@ -158,6 +164,7 @@ func init(game):
 		$"%ChatWindow".show()
 	game_started = false
 	timer_sync_tick = -1
+	lock_in_tick = -INF
 
 func _on_player_turn_ready(player_id):
 	if player_id == Network.player_id:
@@ -172,6 +179,7 @@ func _on_player_turn_ready(player_id):
 #		p2_turn_timer.stop()
 		p2_turn_timer.paused = true
 
+	lock_in_tick = game.current_tick
 
 	$"%TurnReadySound".play()
 	turns_taken[player_id] = true
@@ -204,7 +212,7 @@ func _on_multiplayer_pressed():
 func _on_turn_ready():
 	$"%P1TurnTimerBar".hide()
 	$"%P2TurnTimerBar".hide()
-
+	actionable = false
 #	p1_turn_timer.stop()
 #	p2_turn_timer.stop()
 	
@@ -223,8 +231,24 @@ func end_turn_for(player_id):
 func setup_action_buttons():
 	$"%P1ActionButtons".init(game, 1)
 	$"%P2ActionButtons".init(game, 2)
+	
+func check_players_ready():
+	if is_instance_valid(game):
+		if game.is_waiting_on_player():
+			if lock_in_tick != game.current_tick:
+				on_player_actionable()
+
+func _on_network_timer_timeout():
+	if Network.multiplayer_active:
+		if !Network.turn_synced:
+			if is_instance_valid(game):
+				if game.player_actionable and lock_in_tick != game.current_tick and !actionable:
+					Network.rpc_("check_players_ready")
 
 func on_player_actionable():
+	if actionable and Network.multiplayer_active:
+		return
+	actionable = true
 #	if p1_turn_timer.wait_time == 0:
 #		p1_turn_timer.wait_time = MIN_TURN_TIME
 #	if p2_turn_timer.wait_time == 0:
@@ -306,6 +330,7 @@ func time_convert(time_in_sec):
 	if hours >= 1:
 		return "%02d:%02d:%02d" % [hours, minutes, seconds]
 	return "%02d:%02d" % [minutes, seconds]
+
 func _process(_delta):
 	if !p1_turn_timer.is_paused():
 #		if !turns_taken[1]:

@@ -22,3 +22,6 @@ func get_extra():
 		"explode": bomb_button.pressed
 	}
 	return extra
+
+func reset():
+	bomb_button.set_pressed_no_signal(false)

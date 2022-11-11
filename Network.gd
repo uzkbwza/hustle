@@ -74,6 +74,7 @@ signal player_ids_synced()
 signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
+signal check_players_ready()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -445,6 +446,10 @@ remotesync func multiplayer_turn_ready(id):
 		rpc_("send_action", [action_input["action"], action_input["data"], action_input["extra"], player_id], "remote")
 		emit_signal("turn_ready")
 		turn_synced = false
+
+remotesync func check_players_ready():
+	emit_signal("check_players_ready")
+	pass
 
 remotesync func register_player(new_player_name, id, version):
 	if version != Global.VERSION:

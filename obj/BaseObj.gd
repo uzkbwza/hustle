@@ -176,7 +176,7 @@ func copy_to(o: BaseObj):
 
 #	o.set_vel(get_vel().x, get_vel().y)
 #	o.current_state().current_tick = current_state.current_tick
-#	o.stage_width = stage_width
+	o.stage_width = stage_width
 #	o.hitlag_ticks = hitlag_ticks
 #	o.combo_count = combo_count
 #	o.invulnerable = invulnerable
@@ -256,6 +256,7 @@ func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true
 	obj.is_ghost = is_ghost
 	obj.obj_name = str(objs_map.size() + 1)
 	obj.spawn_data = data
+	obj.stage_width = stage_width
 #	add_child(obj)
 	var pos = get_pos()
 	if local:
@@ -263,7 +264,6 @@ func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true
 	else:
 		obj.set_pos(pos_x, pos_y)
 	obj.set_facing(get_facing_int())
-	obj.stage_width = stage_width
 	obj.id = id
 	
 #	remove_child(obj)
