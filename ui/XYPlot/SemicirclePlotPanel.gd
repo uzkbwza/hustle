@@ -28,14 +28,9 @@ func _ready():
 	x_value_float = 0
 	y_value_float = 0
 	call_deferred("update_value", Vector2())
-	$"%UpdateTimer".connect("timeout", self, "on_update_timer_timeout")
-
-func on_update_timer_timeout():
-	if mouse_clicked and mouse_over:
-		emit_signal("data_changed")
 
 func midpoint():
-	return Vector2(rect_size.x / 2, rect_size.y / 2)
+	return Vector2(rect_size.x / 2, rect_size.y)
 
 func _on_mouse_entered():
 	mouse_over = true
@@ -60,7 +55,7 @@ func _input(event: InputEvent):
 			if event.pressed:
 				if mouse_over:
 					update_value(Vector2())
-					call_deferred("emit_signal", "data_changed")
+
 func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
 
@@ -139,7 +134,6 @@ func get_value():
 	return values
 
 func _draw():
-	
 	var midpoint = midpoint()
 	var values = get_value()
 	var pos = midpoint + Vector2((values.x / float(parent.range_)) * rect_size.x / 2, (values.y / float(parent.range_)) * rect_size.y / 2).round()
@@ -152,10 +146,7 @@ func _draw():
 	limit_bg_color.a *= 0.25
 	var padding = 2
 	var draw_min_length = parent.min_length > 0
-	if !semicircle:
-		draw_circle(midpoint, midpoint.x, bg_color)
-	else:
-		draw_circle_arc_poly(midpoint, rect_size.x / 2, PI, TAU, bg_color)
+	draw_arc(midpoint, midpoint.x, PI, TAU, 32, bg_color)
 	
 	if parent.snap_radius > 0.0:
 		var snap_radius_color = Color.green
@@ -173,11 +164,8 @@ func _draw():
 #			draw_circle_arc_poly(midpoint, rect_size.x / 2 - padding, parent.limit_center + parent.limit_range / 2, -parent.limit_center - parent.limit_range / 2, Color.red)
 
 	if parent.min_length > 0:
-		if !semicircle:
-			draw_circle(midpoint, parent.min_length * (rect_size.x / 2), limit_bg_color)
-		else:
-			draw_circle_arc_poly(midpoint, parent.min_length * (rect_size.x / 2), PI, TAU, limit_bg_color)
-
+		draw_circle(midpoint, parent.min_length * (rect_size.x / 2), limit_bg_color)
+		
 	bg_line_color.a = 0.65
 	draw_arc(midpoint, rect_size.x / 2 - 2, 0, TAU, 64, bg_line_color, 1.0)
 	bg_line_color.a = 0.15

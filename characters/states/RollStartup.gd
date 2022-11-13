@@ -10,7 +10,7 @@ var accel
 
 func _enter():
 	host.start_invulnerability()
-	host.colliding_with_opponent = false
+	
 	force = xy_to_dir(data.x, 0, speed, "1")
 	accel = xy_to_dir(data.x, 0, accel_speed, "1")
 	if "-" in force.x:
@@ -25,7 +25,10 @@ func _enter():
 			anim_name = "RollForward"
 	host.apply_force(force.x, str(0))
 
-func _frame_11():
+func _frame_1():
+	host.colliding_with_opponent = false
+
+func _frame_13():
 	if !tech:
 		host.end_invulnerability()
 

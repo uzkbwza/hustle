@@ -14,5 +14,6 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 80.0
 margin_bottom = 62.0
+min_length = 0.0
+always_max = true
 limit_range_degrees = 120.0
-snap_radius = 0.7

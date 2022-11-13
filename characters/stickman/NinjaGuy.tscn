@@ -118,19 +118,17 @@ knockback = "24.0"
 dash_speed = 15
 
 [node name="DashBackward" parent="StateMachine" index="14"]
-dash_speed = 10
+dash_speed = 9
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="20"]
+[node name="Jump" parent="StateMachine" index="16"]
+y_modifier = "1.33"
+
+[node name="WhiffInstantCancel" parent="StateMachine" index="21"]
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 cancellable = false
 increment_combo = false
-
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-cancellable = false
-increment_combo = false
-_c_Grouping = 1
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 5 )
@@ -1061,3 +1059,8 @@ allowed_stances_string = "Normal
 NunChuk"
 change_stance_to = "Normal"
 release = true
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+cancellable = false
+increment_combo = false
+_c_Grouping = 1

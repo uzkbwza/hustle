@@ -12,6 +12,7 @@ export var limit_range_degrees = 90.0
 export var limit_center_degrees = 0.0
 export var limit_symmetrical = false
 export var snap = true
+export var snap_radius = 0.0
 
 export var default_value = Vector2(1, 0)
 

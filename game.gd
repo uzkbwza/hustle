@@ -41,7 +41,7 @@ var max_replay_tick = 0
 var game_started = false
 var undoing = false
 var singleplayer = false
-var parry_freeze = true
+var parry_freeze = false
 
 var game_paused = false
 
