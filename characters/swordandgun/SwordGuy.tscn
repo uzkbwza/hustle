@@ -1588,7 +1588,7 @@ interrupt_into_string = ""
 dir_x = "0"
 pushback_x = "False"
 
-[node name="AirGrab" parent="StateMachine" index="51"]
+[node name="AirGrab" parent="StateMachine" index="52"]
 land_cancel = true
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
@@ -1597,6 +1597,6 @@ pushback_x = "False"
 active_ticks = 1
 loop_active_ticks = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="56"]
+[node name="AirDownThrow" parent="StateMachine" index="57"]
 dir_x = "1.0"
 dir_y = "1.00"

@@ -27,7 +27,7 @@ margin_bottom = 16.0
 rect_min_size = Vector2( 0, 16 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-text = "username"
+max_length = 32
 placeholder_text = "enter name here"
 
 [node name="PlayerList" type="ItemList" parent="NetworkSetupScreen"]

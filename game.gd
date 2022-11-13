@@ -41,6 +41,7 @@ var max_replay_tick = 0
 var game_started = false
 var undoing = false
 var singleplayer = false
+var parry_freeze = true
 
 var game_paused = false
 
@@ -49,9 +50,15 @@ var buffer_edit = false
 
 var game_end_tick = 0
 
+var frame_passed = false
+
 var game_finished = false
 
 var ghost_cleaned = true
+
+var advance_frame_input = false
+
+var frame_by_frame = false
 
 var is_ghost = false
 var is_afterimage = false
@@ -79,6 +86,7 @@ var effects: Array = []
 
 var drag_position = null
 
+var real_tick = 0
 var super_freeze_ticks = 0
 var super_active = false
 var p1_super = false
@@ -182,19 +190,28 @@ func _on_fx_exit_tree(fx):
 func _on_obj_exit_tree(obj):
 	objects.erase(obj)
 
+func on_parry():
+	super_freeze_ticks = 10 
+	parry_freeze = true
+
 func start_game(singleplayer: bool, match_data: Dictionary):
 	self.match_data = match_data
 	p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
 	p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
+	p1.connect("parried", self, "on_parry")
+	p2.connect("parried", self, "on_parry")
 	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)
 	if match_data.has("game_length"):
 		time = match_data["game_length"]
+	if match_data.has("frame_by_frame"):
+		frame_by_frame = match_data.frame_by_frame
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
-
+	if !is_ghost:
+		Global.current_game = self
 	for value in match_data:
 		for player in [p1, p2]:
 			if player.get(value) != null:
@@ -298,8 +315,7 @@ func initialize_objects():
 			object.init()
 
 func tick():
-	if is_afterimage:
-		return
+	frame_passed = true
 	if !singleplayer:
 		if !is_ghost:
 			Network.reset_action_inputs()
@@ -320,7 +336,6 @@ func tick():
 
 	for fx in effects:
 		fx.tick()
-
 	current_tick += 1
 	p1.current_tick = current_tick
 	p2.current_tick = current_tick
@@ -608,17 +623,29 @@ func process_tick():
 			super_active = false
 			p1_super = false
 			p2_super = false
+			parry_freeze = false
 		return
 
+
+	var can_tick = !Global.frame_advance or (advance_frame_input)
+	if can_tick:
+		advance_frame_input = false
+	if !Global.frame_advance:
+		if Global.playback_speed_mod > 0:
+			can_tick = real_tick % Global.playback_speed_mod == 0
+	if Network.multiplayer_active:
+		can_tick = true
 	
 	if !ReplayManager.playback:
 		if !is_waiting_on_player():
+				if can_tick:
 #				if Input.is_action_just_pressed("frame_advance"):
 					snapping_camera = true
 					call_deferred("simulate_one_tick")
 					p1_turn = false
 					p2_turn = false
 					game_paused = false
+					
 		else:
 			game_paused = true
 			var someones_turn = false
@@ -661,8 +688,9 @@ func process_tick():
 				ReplayManager.playback = false
 				ReplayManager.cut_replay(current_tick)
 				buffer_edit = false
-			call_deferred("simulate_one_tick")
-			
+			if can_tick:
+				call_deferred("simulate_one_tick")
+
 
 func _process(delta):
 	update()
@@ -687,6 +715,7 @@ func _process(delta):
 
 func _physics_process(_delta):
 	camera.tick()
+	real_tick += 1
 	if !$GhostStartTimer.is_stopped():
 		return
 	if undoing:

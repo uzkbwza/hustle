@@ -19,6 +19,7 @@ enum ActionType {
 enum BusyInterrupt {
 	Normal,
 	Hurt,
+	None,
 }
 
 enum AirType {
@@ -75,7 +76,6 @@ var interrupt_exceptions = []
 var hit_cancel_into = []
 var hit_cancel_exceptions = []
 var busy_interrupt_into = []
-
 var allowed_stances = []
 
 var is_hurt_state = false
@@ -90,7 +90,7 @@ func init():
 	hit_cancel_exceptions.append_array(get_categories(hit_cancel_exceptions_string))
 	allowed_stances.append_array(get_categories(allowed_stances_string))
 	interrupt_exceptions.append_array(get_categories(interrupt_exceptions_string))
-	
+
 	if burst_cancellable:
 		hit_cancel_into.append("OffensiveBurst")
 	if instant_cancellable:
@@ -103,7 +103,8 @@ func init():
 		BusyInterrupt.Hurt:
 			if burstable:
 				busy_interrupt_into.append("BusyHurt")
-	
+		BusyInterrupt.None:
+			pass
 	if iasa_at < 0:
 		iasa_at = anim_length + iasa_at
 	.init()

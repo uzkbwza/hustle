@@ -80,7 +80,6 @@ func _on_match_ready(data):
 		ReplayManager.playback = false
 	setup_game(singleplayer, data)
 	emit_signal("game_started")
-
 func show_lobby():
 	$"%DirectConnectLobby".show()
 	$"%Lobby".show()

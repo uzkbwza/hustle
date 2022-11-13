@@ -89,8 +89,9 @@ func _on_undo_pressed():
 	on_action_submitted("Undo")
 
 func space_pressed():
-	if !$"%SelectButton".disabled and $"%SelectButton".visible:
-		_on_submit_pressed()
+	if visible:
+		if !$"%SelectButton".disabled and $"%SelectButton".visible:
+			_on_submit_pressed()
 
 func reset():
 	for button_category_container in button_category_containers.values():

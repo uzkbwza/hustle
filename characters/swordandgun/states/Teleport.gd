@@ -27,3 +27,6 @@ func _tick():
 	host.apply_grav()
 	host.apply_forces()
 	host.set_grounded(host.get_pos().y == 0)
+
+func is_usable():
+	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"

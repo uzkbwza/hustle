@@ -61,8 +61,9 @@ var state_hit_cancellable = false
 var invulnerable = false
 
 var projectile_invulnerable = false
+var throw_invulnerable = false
 
-var state_variables = ["id", "projectile_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "projectile_invulnerable", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -80,6 +81,7 @@ var sounds = {
 func _enter_tree():
 	if obj_name:
 		name = obj_name
+	add_to_group("BaseObj")
 
 func _ready():
 	state_machine.connect("state_exited", self, "_on_state_exited")

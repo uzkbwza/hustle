@@ -155,7 +155,7 @@ func host_game_relay(new_player_name, public=true):
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
 	multiplayer_host = true
-	player_name = new_player_name
+	player_name = new_player_name.substr(0, 32)
 	rpc_id(1, "create_match", player_name, public)
 	yield(self, "match_code_received")
 
@@ -163,7 +163,7 @@ func join_game_relay(new_player_name, room_code):
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
 	multiplayer_host = false
-	player_name = new_player_name
+	player_name = new_player_name.substr(0, 32)
 	rpc_id(1, "player_join_game", player_name, room_code)
 	yield(self, "relay_match_joined")
 #	rpc_("register_player", [new_player_name, get_tree().get_network_unique_id()])
@@ -179,6 +179,9 @@ func setup_network_ids(player_name):
 	session_id = random_session_id()
 	session_username = unique_username(player_name)
 	return session_username
+
+remote func server_error(message):
+	emit_signal("game_error", message)
 
 func _reset():
 	peer = null
@@ -453,7 +456,7 @@ remotesync func check_players_ready():
 
 remotesync func register_player(new_player_name, id, version):
 	if version != Global.VERSION:
-		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s" % [Global.VERSION, version])
+		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Visit ivysly.itch.io/yomi-hustle to download the newest version." % [Global.VERSION, version])
 		return
 	if get_tree().get_network_unique_id() == id:
 		network_id = id

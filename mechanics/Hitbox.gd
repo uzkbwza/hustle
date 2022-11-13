@@ -177,8 +177,11 @@ func init():
 		width *= -1
 	call_deferred("setup_audio")
 
+func otg_check(obj):
+	return obj.current_state().state_name != "Knockdown" or hits_otg
+
 func hit(obj):
-	if !(obj.name in hit_objects) and !obj.invulnerable:
+	if !(obj.name in hit_objects) and !obj.invulnerable and otg_check(obj):
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		var dir = get_dir_float(true)
 		if grounded_hit_state == "HurtGrounded" and obj.is_grounded():
@@ -230,8 +233,11 @@ func get_dir_float(facing=false):
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
 func can_draw_box():
-#	return .can_draw_box() or (active and enabled)
-	return .can_draw_box()
+	if Global.get("show_hitboxes") and !Network.get("multiplayer_active"):
+		return (active and enabled and Global.show_hitboxes)
+	else:
+		return .can_draw_box()
+#	return .can_draw_box()
 #
 func tick():
 	if looping:

@@ -108,11 +108,21 @@ pitch_variation = 0.03
 [node name="Wait" parent="StateMachine" index="1"]
 change_stance_to = "Normal"
 
+[node name="Burst" parent="StateMachine" index="2"]
+interrupt_exceptions_string = "WhiffCancel"
+
+[node name="Hitbox" parent="StateMachine/Burst" index="0"]
+knockback = "24.0"
+
 [node name="DashForward" parent="StateMachine" index="13"]
 dash_speed = 15
 
 [node name="DashBackward" parent="StateMachine" index="14"]
 dash_speed = 10
+
+[node name="WhiffInstantCancel" parent="StateMachine" index="20"]
+instant_cancellable = false
+hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 cancellable = false

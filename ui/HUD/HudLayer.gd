@@ -112,12 +112,12 @@ func _physics_process(_delta):
 		$"%P1HitLabel".visible = p1.combo_count >= 2
 		$"%P2HitLabel".visible = p2.combo_count >= 2
 		$"%Timer".text = str(game.get_ticks_left())
-		$"%SuperDim".visible = game.super_active
+		$"%SuperDim".visible = game.super_active and !game.parry_freeze
 		$"%P1SuperTexture".visible = game.p1_super
 		$"%P2SuperTexture".visible = game.p2_super
 		p1_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p1.supers_available < 1 else preload("res://ui/super_ready.tres")
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
-		if game.super_active:
+		if game.super_active and !game.parry_freeze:
 			if !super_started:
 				if game.p1_super:
 					var fx = preload("res://fx/superparticle.tscn").instance()

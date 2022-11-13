@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=2]
+[gd_scene load_steps=66 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -52,6 +52,8 @@
 [ext_resource path="res://fx/speed_lines.gdshader" type="Shader" id=50]
 [ext_resource path="res://SpeedLines.gd" type="Script" id=51]
 [ext_resource path="res://ui/itch.png" type="Texture" id=52]
+[ext_resource path="res://OptionsContainer.gd" type="Script" id=53]
+[ext_resource path="res://ui/ReplayControls.tscn" type="PackedScene" id=54]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -450,7 +452,7 @@ flip_h = true
 [node name="HBoxContainer" type="HBoxContainer" parent="HudLayer/HudLayer"]
 margin_left = 27.0
 margin_top = 56.0
-margin_right = 613.0
+margin_right = 595.0
 margin_bottom = 116.0
 mouse_filter = 2
 
@@ -480,15 +482,15 @@ valign = 2
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/HBoxContainer"]
 margin_left = 41.0
-margin_right = 545.0
+margin_right = 527.0
 margin_bottom = 60.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="P2ComboCounter" type="Control" parent="HudLayer/HudLayer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 546.0
-margin_right = 586.0
+margin_left = 528.0
+margin_right = 568.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 40, 60 )
 script = ExtResource( 46 )
@@ -686,6 +688,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="TopInfo" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1006,15 +1011,15 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -70.5
-margin_top = -26.5
+margin_top = -33.0
 margin_right = 70.5
-margin_bottom = 26.5
+margin_bottom = 33.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/PausePanel"]
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 140.0
-margin_bottom = 52.0
+margin_bottom = 65.0
 alignment = 1
 
 [node name="ResumeButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
@@ -1049,18 +1054,26 @@ margin_bottom = 37.0
 rect_min_size = Vector2( 60, 0 )
 text = "save replay"
 
-[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+[node name="PauseOptionsButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 38.0
 margin_right = 139.0
 margin_bottom = 50.0
+rect_min_size = Vector2( 60, 0 )
+text = "options"
+
+[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 51.0
+margin_right = 139.0
+margin_bottom = 63.0
 size_flags_vertical = 0
 text = "quit"
 
 [node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-margin_top = 51.0
+margin_top = 64.0
 margin_right = 139.0
-margin_bottom = 51.0
+margin_bottom = 64.0
 
 [node name="SaveReplayLabel" type="Label" parent="UILayer/GameUI/PausePanel/VBoxContainer/Control"]
 unique_name_in_owner = true
@@ -1111,9 +1124,8 @@ alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 10.0
 margin_right = 90.0
-margin_bottom = 30.0
+margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1122,9 +1134,9 @@ flat = true
 
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 31.0
+margin_top = 21.0
 margin_right = 90.0
-margin_bottom = 51.0
+margin_bottom = 41.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1133,9 +1145,9 @@ flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 52.0
+margin_top = 42.0
 margin_right = 90.0
-margin_bottom = 72.0
+margin_bottom = 62.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1144,20 +1156,31 @@ flat = true
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 73.0
+margin_top = 63.0
 margin_right = 90.0
-margin_bottom = 93.0
+margin_bottom = 83.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Replays"
 flat = true
 
+[node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 84.0
+margin_right = 90.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Options"
+flat = true
+
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 94.0
+margin_top = 105.0
 margin_right = 90.0
-margin_bottom = 114.0
+margin_bottom = 125.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1242,19 +1265,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -11.0
 
-[node name="MusicButton" type="CheckButton" parent="UILayer/MainMenu"]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -42.5
-margin_top = -17.0
-margin_right = 42.5
-pressed = true
-text = "enable music"
-flat = true
-
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -1290,6 +1300,113 @@ margin_bottom = 90.0
 theme = ExtResource( 4 )
 text = "Quit"
 
+[node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -75.0
+margin_top = -56.0
+margin_right = 75.0
+margin_bottom = 56.0
+size_flags_horizontal = 12
+size_flags_vertical = 12
+theme = ExtResource( 4 )
+script = ExtResource( 53 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 149.0
+margin_bottom = 111.0
+
+[node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
+margin_right = 148.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 0, 9 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="UILayer/OptionsContainer/VBoxContainer/TitleBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = 2.0
+mouse_filter = 1
+text = "Options"
+align = 1
+
+[node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
+margin_top = 10.0
+margin_right = 148.0
+margin_bottom = 110.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 147.0
+margin_bottom = 99.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
+margin_right = 146.0
+margin_bottom = 98.0
+size_flags_vertical = 3
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+margin_right = 146.0
+
+[node name="FullscreenButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 1.0
+margin_right = 146.0
+margin_bottom = 13.0
+text = "fullscreen"
+align = 1
+
+[node name="MusicButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 14.0
+margin_right = 146.0
+margin_bottom = 26.0
+pressed = true
+text = "enable music"
+align = 1
+
+[node name="HitboxesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 27.0
+margin_right = 146.0
+margin_bottom = 39.0
+text = "show hitboxes"
+align = 1
+
+[node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 40.0
+margin_right = 146.0
+margin_bottom = 52.0
+text = "show playback controls"
+align = 1
+
+[node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+margin_top = 53.0
+margin_right = 146.0
+margin_bottom = 85.0
+size_flags_vertical = 3
+
+[node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 86.0
+margin_right = 146.0
+margin_bottom = 98.0
+text = "done"
+
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
 visible = false
@@ -1298,6 +1415,14 @@ direct_connect = false
 [node name="DirectConnectLobby" parent="UILayer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
 visible = false
+
+[node name="ReplayControls" parent="UILayer" instance=ExtResource( 54 )]
+unique_name_in_owner = true
+visible = false
+margin_left = -299.0
+margin_top = -221.0
+margin_right = -136.0
+margin_bottom = -159.0
 
 [node name="NetworkDebugLabel" type="Label" parent="UILayer"]
 visible = false
@@ -1475,7 +1600,7 @@ __meta__ = {
 }
 
 [node name="ButtonSoundPlayer" parent="UILayer" instance=ExtResource( 18 )]
-button_containers = [ NodePath("../MainMenu/ButtonContainer") ]
+button_containers = [ NodePath("../MainMenu/ButtonContainer"), NodePath("../GameUI/PausePanel/VBoxContainer"), NodePath("../OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer") ]
 
 [node name="TurnReadySound" type="AudioStreamPlayer" parent="UILayer"]
 unique_name_in_owner = true

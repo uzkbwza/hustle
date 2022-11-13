@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/ActionSelector/ActionButtons.gd" type="Script" id=1]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=2]
@@ -6,6 +6,13 @@
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=5]
 [ext_resource path="res://sound/ui/button_hover2.wav" type="AudioStream" id=7]
+
+[sub_resource type="InputEventKey" id=1]
+pressed = true
+scancode = 32
+
+[sub_resource type="ShortCut" id=2]
+shortcut = SubResource( 1 )
 
 [node name="ActionButtons" type="VBoxContainer"]
 anchor_right = 1.0
@@ -123,6 +130,7 @@ mouse_default_cursor_shape = 2
 size_flags_vertical = 3
 theme = ExtResource( 4 )
 theme_type_variation = "SelectButton"
+shortcut = SubResource( 2 )
 text = "Lock In"
 
 [node name="ReverseButton" type="CheckButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]

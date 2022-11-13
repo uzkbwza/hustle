@@ -23,7 +23,7 @@ func init():
 func cut_replay(last_frame):
 	for id in frames.keys():
 		for frame in frames[id].keys():
-			if frame >= last_frame:
+			if frame > last_frame:
 				frames[id].erase(frame)
 
 func undo():

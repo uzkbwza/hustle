@@ -4,6 +4,7 @@ class_name Fighter
 
 signal action_selected(action, data)
 signal super_started()
+signal parried()
 
 signal undo()
 var MAX_HEALTH = 1000
@@ -289,10 +290,8 @@ func hitbox_from_name(hitbox_name):
 		var hitbox_props = hitbox_name.split("_")
 		var obj_name = hitbox_props[0]
 		var hitbox_id = int(hitbox_props[-1])
-		if objs_map.has(obj_name):
-			var obj = objs_map[obj_name]
-			if obj and obj.hitboxes.has(hitbox_id):
-				return objs_map[obj_name].hitboxes[hitbox_id]
+		var obj = objs_map[obj_name]
+		return objs_map[obj_name].hitboxes[hitbox_id]
 
 func hit_by(hitbox):
 	if parried:
@@ -352,6 +351,7 @@ func hit_by(hitbox):
 		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 		play_sound("Parry")
 		play_sound("Parry2")
+		emit_signal("parried")
 
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -411,15 +411,15 @@ func process_action():
 				queued_action = null
 				queued_data = null
 				return
-			if queued_action != "ContinueAuto":
-				if !is_ghost:
-					ReplayManager.frames[id][current_tick] = {
-						"action": queued_action,
-						"data": queued_data,
-						"extra": queued_extra,
-					}
-			else:
-				queued_action = null
+#			if queued_action != "ContinueAuto":
+			if !is_ghost:
+				ReplayManager.frames[id][current_tick] = {
+					"action": queued_action,
+					"data": queued_data,
+					"extra": queued_extra,
+				}
+#			else:
+#				queued_action = null
 	if queued_action:
 		if queued_action in state_machine.states_map:
 			state_machine.queue_state(queued_action, queued_data)
@@ -451,14 +451,16 @@ func refresh_air_movements():
 	air_movements_left = num_air_movements
 
 func clean_parried_hitboxes():
+	if is_ghost:
+		return
 	if !parried_hitboxes:
 		return
 	var hitboxes_to_refresh = []
 	for hitbox_name in parried_hitboxes:
 		var hitbox = hitbox_from_name(hitbox_name)
-		if hitbox:
-			if !hitbox.enabled or !hitbox.active:
-				hitboxes_to_refresh.append(hitbox)
+#		if hitbox:
+		if !hitbox.enabled or !hitbox.active:
+			hitboxes_to_refresh.append(hitbox)
 	
 	for hitbox in hitboxes_to_refresh:
 		parried_hitboxes.erase(hitbox.name)
@@ -521,12 +523,12 @@ func set_ghost_colors():
 		ghost_ready_set = true
 		ghost_ready_tick = current_tick
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
-			modulate = Color.green
+			set_color(Color.green)
 			if opponent.current_state().interruptible_on_opponent_turn:
 				opponent.ghost_ready_set = true
-				opponent.modulate = Color.green
+				opponent.set_color(Color.green)
 		elif opponent.ghost_ready_tick < ghost_ready_tick:
-			modulate = Color.orange
+			set_color(Color.orange)
 
 func set_facing(facing: int, force=false):
 	if reverse_state and !force:

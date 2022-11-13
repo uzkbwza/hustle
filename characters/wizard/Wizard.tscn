@@ -880,6 +880,7 @@ apply_grav = true
 anim_length = 16
 sfx = ExtResource( 152 )
 sfx_tick = 6
+title = "Flame Wave"
 type = 2
 button_texture = ExtResource( 174 )
 air_type = 2
@@ -958,6 +959,7 @@ apply_grav = true
 anim_length = 14
 sfx = ExtResource( 152 )
 sfx_tick = 6
+title = "Magic Dart"
 type = 2
 button_texture = ExtResource( 176 )
 air_type = 2
@@ -1058,6 +1060,7 @@ x = 110
 y = -128
 width = 100
 height = 100
+can_draw = false
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/WindForce" index="1"]
 script = ExtResource( 159 )

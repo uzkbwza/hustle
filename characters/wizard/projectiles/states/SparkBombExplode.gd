@@ -1,7 +1,7 @@
 extends ObjectState
 
 const PUSH_DISTANCE = "60"
-const PUSH_SPEED = "16"
+const PUSH_SPEED = "10"
 
 
 func _frame_1():

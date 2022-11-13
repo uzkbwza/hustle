@@ -1,0 +1,130 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/Chat/minimize_button1.png" type="Texture" id=2]
+[ext_resource path="res://ui/Chat/minimize_button2.png" type="Texture" id=3]
+[ext_resource path="res://ui/Chat/minimize_button3.png" type="Texture" id=4]
+[ext_resource path="res://ui/ReplayControls.gd" type="Script" id=5]
+[ext_resource path="res://ui/PlaybackWindow/pause_play1.png" type="Texture" id=6]
+
+[sub_resource type="InputEventAction" id=1]
+action = "toggle_frame_advance"
+pressed = true
+
+[sub_resource type="ShortCut" id=2]
+shortcut = SubResource( 1 )
+
+[sub_resource type="InputEventAction" id=3]
+action = "frame_advance"
+pressed = true
+
+[sub_resource type="ShortCut" id=4]
+shortcut = SubResource( 3 )
+
+[node name="Window" instance=ExtResource( 1 )]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = -62.0
+margin_top = -70.0
+margin_right = 63.0
+margin_bottom = -8.0
+script = ExtResource( 5 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_right = 124.0
+margin_bottom = 62.0
+
+[node name="TitleBar" parent="VBoxContainer" index="0"]
+margin_right = 123.0
+
+[node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+text = "Playback Controls"
+
+[node name="ShowButton" type="TextureButton" parent="VBoxContainer/TitleBar" index="1"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -10.0
+margin_bottom = 9.0
+action_mode = 0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+
+[node name="Contents" parent="VBoxContainer" index="1"]
+margin_right = 123.0
+margin_bottom = 61.0
+rect_min_size = Vector2( 0, 50 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Contents" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 122.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="0"]
+margin_right = 121.0
+margin_bottom = 12.0
+
+[node name="PauseButton" type="Button" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="0"]
+unique_name_in_owner = true
+margin_right = 47.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 47, 0 )
+toggle_mode = true
+action_mode = 0
+shortcut = SubResource( 2 )
+icon = ExtResource( 6 )
+icon_align = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="1"]
+margin_left = 48.0
+margin_right = 62.0
+margin_bottom = 11.0
+text = "(P)"
+
+[node name="Control" type="Control" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="2"]
+margin_left = 63.0
+margin_right = 63.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+
+[node name="FrameAdvance" type="Button" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="3"]
+unique_name_in_owner = true
+margin_left = 64.0
+margin_right = 106.0
+margin_bottom = 12.0
+action_mode = 0
+shortcut = SubResource( 4 )
+text = "1 Frame"
+
+[node name="Label2" type="Label" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="4"]
+margin_left = 107.0
+margin_right = 121.0
+margin_bottom = 11.0
+text = "(F)"
+
+[node name="Label3" type="Label" parent="VBoxContainer/Contents/VBoxContainer" index="1"]
+margin_top = 13.0
+margin_right = 121.0
+margin_bottom = 24.0
+text = "Playback Speed"
+align = 1
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer/Contents/VBoxContainer" index="2"]
+margin_top = 25.0
+margin_right = 121.0
+margin_bottom = 37.0
+max_value = 2.0
+value = 2.0
+
+[node name="SpeedText" type="Label" parent="VBoxContainer/Contents/VBoxContainer" index="3"]
+unique_name_in_owner = true
+margin_top = 38.0
+margin_right = 121.0
+margin_bottom = 49.0
+text = "1.0"
+align = 1
+
+[connection signal="value_changed" from="VBoxContainer/Contents/VBoxContainer/HSlider" to="." method="_on_HSlider_value_changed"]

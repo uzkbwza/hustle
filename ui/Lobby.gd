@@ -17,6 +17,7 @@ signal quit_on_rematch()
 export var direct_connect = true
 
 var show_match_list = true
+var showing = false
 
 var match_list = []
 
@@ -74,11 +75,15 @@ func _on_ip_edit_text_changed(text):
 
 func show():
 	.show()
+	showing = true
 	var player_data = Global.get_player_data()
 	if player_data.has("username"):
 		name_edit.text = player_data.username
+	name_edit.show()
+	name_edit.editable = true
 	join_button.show()
 	host_button.show()
+	connect_container.show()
 	if !direct_connect:
 		$"%IPEdit".hide()
 		$"%PortEdit".hide()
@@ -99,11 +104,14 @@ func show():
 		$"%DirectConnectWarning".hide()
 		$"%PublicButton".pressed = true
 		$"%ServerList".show()
+		$"%RoomCodeDisplay".hide()
+		$"%NetworkStartButton".hide()
 	else:
 		$"%DirectConnectWarning".show()
 		$"%RoomCodeEdit".hide()
 		$"%PublicButton".hide()
 		$"%ServerList".hide()
+		connect_container.show()
 
 	name_edit.editable = true
 
@@ -111,9 +119,8 @@ func refresh_match_list():
 	Network.request_match_list()
 
 func _on_host_pressed():
-
 	if name_edit.text == "":
-		error_label.text = "Invalid name!"
+		error_label.text = "Invalid username!"
 		return
 
 	start_button.show()
@@ -141,7 +148,7 @@ func _on_host_pressed():
 
 func _on_join_pressed():
 	if name_edit.text == "":
-		error_label.text = "Invalid name!"
+		error_label.text = "Invalid username!"
 		return
 	error_label.text = ""
 	host_button.disabled = true
@@ -218,8 +225,9 @@ func _on_start_pressed():
 		yield(Network, "player_ids_synced")
 	Network.begin_game()
 
-
 func _on_game_error(what):
+	if !showing:
+		return
 #	Network.stop_multiplayer()
 	print(what)
 	if !Network.rematch_menu:
@@ -228,7 +236,7 @@ func _on_game_error(what):
 		error_label.set_text(what)
 		join_button.disabled = false
 		host_button.disabled = false
-		if !Network.game:
+		if !Network.game and !visible:
 			get_tree().reload_current_scene()
 #		show()
 #		get_tree().reload_current_scene()

@@ -143,6 +143,7 @@ func get_match_data():
 		"game_length": int($"%GameLength".value),
 		"turn_time": int($"%TurnLength".value),
 		"burst_enabled": $"%BurstEnabled".pressed,
+		"frame_by_frame": $"%FrameByFrame".pressed,
 	}
 
 func go():

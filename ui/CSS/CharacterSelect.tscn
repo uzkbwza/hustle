@@ -37,9 +37,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -64.0
-margin_top = -139.0
+margin_top = -155.0
 margin_right = 64.0
-margin_bottom = -5.0
+margin_bottom = -21.0
 size_flags_vertical = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="GameSettingsPanelContainer"]
@@ -133,7 +133,7 @@ unique_name_in_owner = true
 margin_top = 49.0
 margin_right = 128.0
 margin_bottom = 61.0
-hint_tooltip = "Both players have 1 HP."
+hint_tooltip = "Allow the use of burst moves."
 size_flags_horizontal = 15
 pressed = true
 text = "Burst Enabled"
@@ -178,6 +178,17 @@ margin_bottom = 113.0
 hint_tooltip = "Both players have 1 HP."
 size_flags_horizontal = 15
 text = "One-Hit KO"
+expand_icon = true
+
+[node name="FrameByFrame" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 114.0
+margin_right = 128.0
+margin_bottom = 126.0
+hint_tooltip = "Play through the match frame-by-frame. Not recommended for multiplayer."
+size_flags_horizontal = 15
+text = "Frame By Frame"
 expand_icon = true
 
 [node name="CharacterButtonContainer" type="HBoxContainer" parent="."]

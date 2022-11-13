@@ -36,6 +36,8 @@ func _enter():
 #	parry_active = true
 #	interruptible_on_opponent_turn = false
 
+func is_usable():
+	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
 
 func _frame_10():
 	if !parried:
@@ -44,6 +46,7 @@ func _frame_10():
 func parry():
 	interruptible_on_opponent_turn = true
 	enable_interrupt()
+	host.parried = true
 #	parry_type = ParryHeight.Both
 #	parry_tick = current_tick
 

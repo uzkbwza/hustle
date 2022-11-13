@@ -8,6 +8,7 @@ export var x: int = 0
 export var y: int = 0
 export var width: int = 20
 export var height: int = 20
+export var can_draw = true
 
 var pos_x = 0
 var pos_y = 0
@@ -96,13 +97,24 @@ func get_rect_float():
 	return Rect2(x - width, y - height, width * 2, height * 2)
 
 func box_draw():
+		var parent = get_parent()
+		if parent.is_in_group("BaseObj"):
+			if parent.disabled:
+				return
 		var color = Color.red
 		if "CollisionBox" in name:
-			color = Color.blue
+			color = Color.teal
 		elif "Hurtbox" in name:
 			color = Color.yellow
+			if parent.is_in_group("BaseObj"):
+				if parent.projectile_invulnerable:
+					color = Color.pink
+				if parent.invulnerable:
+					color = Color.blue
+		
 		elif "ThrowBox" in name:
 			color = Color.purple
+		
 		var rect = get_rect_float()
 		var fill = color
 		var stroke = color
@@ -112,10 +124,16 @@ func box_draw():
 		draw_rect(rect, stroke, false)
 
 func can_draw_box():
-	if Engine.editor_hint:
-		return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
-		pass
-	return false
+	if Network.get("multiplayer_active"):
+		return false
+	if !can_draw:
+		return false
+	if Global.get("show_hitboxes"):
+		return Global.show_hitboxes
+	else:
+		if Engine.editor_hint:
+#			return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
+			pass
 
 func _process(delta):
 	update()

@@ -1,11 +1,18 @@
 extends Node
 
-const VERSION = "0.1.2"
+var VERSION = "0.1.5"
 
 var audio_player
 var music_enabled = true
 var freeze_ghost_prediction = true
 var ghost_afterimages = true
+var fullscreen = false
+var show_hitboxes = false
+var frame_advance = false
+var show_playback_controls = false
+var playback_speed_mod = 1
+
+var current_game = null
 
 var name_paths = {
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
@@ -18,16 +25,21 @@ var songs = {
 }
 
 func _enter_tree():
+
 	audio_player = AudioStreamPlayer.new()
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"
 	var data = get_player_data()
 	
-	music_enabled = data.options.music_enabled
-	freeze_ghost_prediction = data.options.freeze_ghost_prediction
-	ghost_afterimages = data.options.ghost_afterimages
-	
+	for key in data.options:
+		set(key, data.options[key])
+#	music_enabled = data.options.music_enabled
+#	freeze_ghost_prediction = data.options.freeze_ghost_prediction
+#	ghost_afterimages = data.options.ghost_afterimages
+#	fullscreen = data.options.fullscreen
+#	show_hitboxes = data.options.show_hitboxes
 	set_music_enabled(music_enabled)
+	set_fullscreen(fullscreen)
 
 func set_music_enabled(on):
 	music_enabled = on
@@ -37,6 +49,23 @@ func set_music_enabled(on):
 	else:
 		audio_player.stop()
 		pass
+
+
+func set_playback_controls(on):
+	show_playback_controls = on
+	save_options()
+	
+func set_fullscreen(on):
+	fullscreen = on
+	if fullscreen:
+		OS.window_fullscreen = true
+	else:
+		OS.window_fullscreen = false
+	save_options()
+
+func set_hitboxes(on):
+	show_hitboxes = on
+	save_options()
 
 func play_song(song_name):
 	audio_player.stream = songs[song_name]
@@ -77,6 +106,9 @@ func save_options():
 			"music_enabled": music_enabled,
 			"freeze_ghost_prediction": freeze_ghost_prediction,
 			"ghost_afterimages": ghost_afterimages,
+			"fullscreen": fullscreen,
+			"show_hitboxes": fullscreen,
+			"show_playback_controls": show_playback_controls,
 		}
 	})
 
@@ -87,8 +119,10 @@ func get_default_player_data():
 			"music_enabled": true,
 			"freeze_ghost_prediction": true,
 			"ghost_afterimages": true,
+			"fullscreen": false,
+			"show_hitboxes": false,
+			"show_playback_controls": false,
 		}
-#		"favorite_color": null,
 	}
 
 func get_player_data():

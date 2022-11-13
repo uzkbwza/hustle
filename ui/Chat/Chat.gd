@@ -27,11 +27,12 @@ func on_chat_message_received(player_id: int, message: String):
 	if !(player_id == Network.player_id):
 		$"ChatSound".play()
 	$"%MessageContainer".call_deferred("add_child", node)
-	
+	yield(get_tree(), 'idle_frame')
+	yield(get_tree(), 'idle_frame')
+	$"%ScrollContainer".scroll_vertical = 10000000000000000
 
 func on_message_ready(message):
 	$"%TooLongLabel".hide()
-	$"%ScrollContainer".scroll_vertical = $"%MessageContainer".rect_size.y
 	if Network.multiplayer_active:
 		if len(message) < 1000:
 			$"%LineEdit".clear()
@@ -39,6 +40,7 @@ func on_message_ready(message):
 		else:
 			$"%TooLongLabel".show()
 			$"%TooLongLabel".text = "message too long (" + str(len(message)) + "/1000)"
+	
 
 func toggle():
 	visible = !visible

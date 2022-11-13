@@ -21,9 +21,10 @@ var p2_turn_time = 30
 
 var lock_in_tick = -INF
 
-const DISCORD_URL = "https://discord.gg/kyNeDrFBR7"
+const DISCORD_URL = "https://discord.gg/yomi"
 const TWITTER_URL = "https://twitter.com/ivy_sly_"
 const IVY_SLY_URL = "https://www.ivysly.com"
+const ITCH_URL = "https://ivysly.itch.io/yomi-hustle"
 const MIN_TURN_TIME = 5.0
 
 onready var lobby = $Lobby
@@ -58,7 +59,9 @@ func _ready():
 	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
 	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
 	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
+	$"%ItchButton".connect("pressed", OS, "shell_open", [ITCH_URL])
 	$"%VersionLabel".text = "version " + Global.VERSION
+
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
@@ -69,15 +72,32 @@ func _ready():
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
 	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
 		lobby.connect("quit_on_rematch", $"%RematchButton", "hide")
-		
+	
+	$"%OptionsBackButton".connect("pressed", $"%OptionsContainer", "hide")
+	$"%OptionsButton".connect("pressed", $"%OptionsContainer", "show")
+	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
+	$"%FullscreenButton".set_pressed_no_signal(Global.fullscreen)
+	$"%FullscreenButton".connect("toggled", self, "_on_fullscreen_button_toggled")
+	$"%HitboxesButton".set_pressed_no_signal(Global.show_hitboxes)
+	$"%HitboxesButton".connect("toggled", self, "_on_hitboxes_button_toggled")
+	$"%PlaybackControls".set_pressed_no_signal(Global.show_playback_controls)
+	$"%PlaybackControls".connect("toggled", self, "_on_playback_controls_button_toggled")
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
-
 	Global.save_options()
+
+func _on_fullscreen_button_toggled(on):
+	Global.set_fullscreen(on)
+
+func _on_hitboxes_button_toggled(on):
+	Global.set_hitboxes(on)
+
+func _on_playback_controls_button_toggled(on):
+	Global.set_playback_controls(on)
 
 func load_replays():
 	$"%ReplayWindow".show()
@@ -317,9 +337,15 @@ func _unhandled_input(event):
 			if event.scancode == KEY_F1:
 				visible = !visible
 				$"../HudLayer/HudLayer".visible = ! $"../HudLayer/HudLayer".visible
-			if event.scancode == KEY_SPACE:
-				p1_action_buttons.space_pressed()
-				p2_action_buttons.space_pressed()
+#			if !Network.multiplayer_active:
+#				if is_instance_valid(game) and $"%ReplayControls".visible:
+#					if event.scancode == KEY_P:
+#						Global.frame_advance = !Global.frame_advance
+#					if event.scancode == KEY_F:
+#						game.advance_frame_input = true
+#			if event.scancode == KEY_SPACE:
+#				p1_action_buttons.space_pressed()
+#				p2_action_buttons.space_pressed()
 
 func time_convert(time_in_sec):
 	var seconds = time_in_sec%60
@@ -349,7 +375,7 @@ func _process(_delta):
 
 	if Input.is_action_just_pressed("pause"):
 		pause()
-	
+
 	var advantage_label = $"%AdvantageLabel"
 #	advantage_label.text = ""
 	var ghost_game = get_parent().ghost_game
@@ -366,10 +392,10 @@ func _process(_delta):
 				var advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
 				if advantage >= 0:
 					advantage_label.set("custom_colors/font_color", Color("64d26b"))
-					advantage_label.text = "advantage: +" + str(advantage)
+					advantage_label.text = "frame advantage: +" + str(advantage)
 				else:
 					advantage_label.set("custom_colors/font_color", Color("ff333d"))
-					advantage_label.text = "advantage: " + str(advantage)
+					advantage_label.text = "frame advantage: " + str(advantage)
 		else:
 			advantage_label.text = ""
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
@@ -377,3 +403,9 @@ func _process(_delta):
 	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu
+	if is_instance_valid(game) and !Network.multiplayer_active:
+		$"%ReplayControls".show()
+	else:
+		$"%ReplayControls".hide()
+#	if $"%TopInfoMP".visible and !actionable:
+#		on_player_actionable()
