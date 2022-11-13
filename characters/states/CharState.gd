@@ -187,6 +187,7 @@ func _exit_shared():
 	terminate_hitboxes()
 	host.end_invulnerability()
 	host.end_projectile_invulnerability()
+	host.got_parried = false
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
 	host.state_hit_cancellable = false

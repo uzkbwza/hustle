@@ -78,8 +78,6 @@ size_flags_vertical = 3
 
 [node name="MessageContainer" type="VBoxContainer" parent="VBoxContainer/Contents/VBoxContainer/ScrollContainer" index="0"]
 unique_name_in_owner = true
-margin_right = 128.0
-margin_bottom = 100.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

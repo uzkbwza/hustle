@@ -68,6 +68,12 @@ func init(game):
 	if Network.multiplayer_active:
 		$"%P1Username".text = Network.pid_to_username(1)
 		$"%P2Username".text = Network.pid_to_username(2)
+	elif game.match_data.has("user_data"):
+		if game.match_data.user_data.has("p1"):
+			$"%P1Username".text = game.match_data.user_data.p1
+		if game.match_data.user_data.has("p2"):
+			$"%P2Username".text = game.match_data.user_data.p2
+	
 	game.connect("game_won", self, "on_game_won")
 	pass
 

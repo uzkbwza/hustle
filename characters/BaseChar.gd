@@ -93,6 +93,7 @@ var action_cancels = {
 
 var ghost_ready_tick = null
 var ghost_ready_set = false
+var got_parried = false
 
 var di_enabled = true
 var turbo_mode = false
@@ -190,7 +191,7 @@ func _ready():
 	sprite.animation = "Wait"
 
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 
 func gain_burst_meter():
@@ -337,6 +338,7 @@ func hit_by(hitbox):
 		state_tick()
 	else:
 		parried = true
+		opponent.got_parried = true
 #		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
 #		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
 		hitlag_ticks = 0

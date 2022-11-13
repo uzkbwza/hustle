@@ -1624,3 +1624,5 @@ pitch_scale = 2.0
 bus = "UI"
 script = ExtResource( 49 )
 pitch_variation = 0.05
+
+[connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]

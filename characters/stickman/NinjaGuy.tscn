@@ -121,7 +121,6 @@ dash_speed = 15
 dash_speed = 10
 
 [node name="WhiffInstantCancel" parent="StateMachine" index="20"]
-instant_cancellable = false
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -466,16 +465,15 @@ y = -28
 width = 14
 height = 19
 damage = 60
+hitstun_ticks = 55
 hitlag_ticks = 6
 victim_hitlag = 6
 group = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
-dir_x = "0.5"
 knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
-knockdown_extends_hitstun = false
 start_tick = 5
 active_ticks = 4
 
@@ -519,7 +517,7 @@ active_ticks = 4
 [node name="UppercutLanding" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 4 )
 sprite_animation = "Landing"
-anim_length = 18
+anim_length = 8
 title = "UppercutLanding"
 type = 2
 interrupt_into_string = "Grounded"

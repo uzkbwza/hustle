@@ -1284,15 +1284,15 @@ y_modifier = "1.0"
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="42"]
+[node name="Hold" parent="StateMachine" index="43"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="43"]
+[node name="AirHold" parent="StateMachine" index="44"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 
-[node name="ForwardThrow" parent="StateMachine" index="46"]
+[node name="ForwardThrow" parent="StateMachine" index="47"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1307,7 +1307,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="BackThrow" parent="StateMachine" index="47"]
+[node name="BackThrow" parent="StateMachine" index="48"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1322,7 +1322,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirForwardThrow" parent="StateMachine" index="48"]
+[node name="AirForwardThrow" parent="StateMachine" index="49"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1335,7 +1335,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirBackThrow" parent="StateMachine" index="49"]
+[node name="AirBackThrow" parent="StateMachine" index="50"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1348,7 +1348,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirDownThrow" parent="StateMachine" index="50"]
+[node name="AirDownThrow" parent="StateMachine" index="51"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1360,7 +1360,7 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="ThrowTech" parent="StateMachine" index="51"]
+[node name="ThrowTech" parent="StateMachine" index="52"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true

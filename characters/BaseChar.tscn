@@ -1,4 +1,4 @@
-[gd_scene load_steps=145 format=2]
+[gd_scene load_steps=146 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -139,6 +139,7 @@
 [ext_resource path="res://sound/common/super2.wav" type="AudioStream" id=137]
 [ext_resource path="res://sound/common/super5.wav" type="AudioStream" id=138]
 [ext_resource path="res://ui/ActionSelector/StateIcons/whiff_cancel.png" type="Texture" id=139]
+[ext_resource path="res://characters/states/WhiffInstantCancel.gd" type="Script" id=140]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_forward.png" type="Texture" id=142]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_back.png" type="Texture" id=143]
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_down.png" type="Texture" id=144]
@@ -770,7 +771,7 @@ change_stance_to = "Normal"
 super_freeze_ticks = 8
 
 [node name="WhiffInstantCancel" type="Node2D" parent="StateMachine" index="20"]
-script = ExtResource( 59 )
+script = ExtResource( 140 )
 sprite_animation = "InstantCancel"
 enter_sfx = ExtResource( 133 )
 enter_sfx_volume = -10.0
@@ -794,11 +795,6 @@ GroundedMovement"
 hit_cancel_exceptions_string = "Parry
 AerialMovement
 GroundedMovement"
-allowed_stances_string = "All"
-change_stance_to = "Normal"
-super_level = 2
-supers_used = 2
-super_freeze_ticks = 8
 
 [node name="HurtGrounded" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 28 )

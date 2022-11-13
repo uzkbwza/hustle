@@ -406,7 +406,7 @@ func end_game():
 func autosave_match_replay(match_data):
 	if !replay_saved:
 		replay_saved = true
-		ReplayManager.save_replay_mp(match_data, players.values()[0], players.values()[1])
+		ReplayManager.save_replay_mp(match_data, pid_to_username(1), pid_to_username(2))
 
 func stop_multiplayer():
 	print("stopping multiplayer")

@@ -105,6 +105,18 @@ func setup_game_deferred(singleplayer, data):
 	game.connect("simulation_continue", self, "_on_simulation_continue")
 	game.connect("player_actionable", self, "_on_player_actionable")
 	game.connect("playback_requested", self, "_on_playback_requested")
+	
+	if Network.multiplayer_active:
+		data["user_data"] = {
+			"p1": Network.pid_to_username(1),
+			"p2": Network.pid_to_username(2),
+		}
+	else:
+		data["user_data"] = {
+			"p1": Global.get_player_data().username,
+			"p2": data.selected_characters[2]["name"],
+		}
+	
 	game.start_game(singleplayer, data)
 	if data.has("turn_time"):
 		ui_layer.set_turn_time(data.turn_time)
@@ -266,3 +278,8 @@ func _on_ghost_speed_changed(_value):
 func _on_playback_requested():
 	ReplayManager.playback = true
 	setup_game(singleplayer, match_data)
+
+
+func _on_ReplayName_text_entered(_new_text):
+	save_replay()
+	pass # Replace with function body.
