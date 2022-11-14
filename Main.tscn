@@ -395,6 +395,39 @@ value = 28.0
 texture_progress = ExtResource( 25 )
 fill_mode = 1
 
+[node name="P1GhostHealthBar" type="TextureProgress" parent="HudLayer/HudLayer/VBoxContainer/TopBar/P1HealthBar"]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -9.5
+margin_right = 228.0
+margin_bottom = 9.5
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+max_value = 1000.0
+value = 1000.0
+texture_over = ExtResource( 22 )
+texture_progress = ExtResource( 24 )
+fill_mode = 1
+
+[node name="P1GhostHealthBarTrail" type="TextureProgress" parent="HudLayer/HudLayer/VBoxContainer/TopBar/P1HealthBar/P1GhostHealthBar"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.392157 )
+show_behind_parent = true
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -9.5
+margin_right = 228.0
+margin_bottom = 9.5
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+max_value = 1000.0
+value = 1000.0
+texture_progress = ExtResource( 25 )
+fill_mode = 1
+
 [node name="Timer" type="Label" parent="HudLayer/HudLayer/VBoxContainer/TopBar"]
 unique_name_in_owner = true
 margin_left = 263.0
@@ -435,6 +468,36 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 max_value = 1000.0
 value = 28.0
+texture_progress = ExtResource( 27 )
+
+[node name="P2GhostHealthBar" type="TextureProgress" parent="HudLayer/HudLayer/VBoxContainer/TopBar/P2HealthBar"]
+unique_name_in_owner = true
+margin_right = 229.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 0, 16 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+max_value = 1000.0
+value = 1000.0
+texture_over = ExtResource( 26 )
+texture_progress = ExtResource( 23 )
+
+[node name="P2GhostHealthBarTrail" type="TextureProgress" parent="HudLayer/HudLayer/VBoxContainer/TopBar/P2HealthBar/P2GhostHealthBar"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.392157 )
+show_behind_parent = true
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -9.5
+margin_right = 228.0
+margin_bottom = 9.5
+rect_min_size = Vector2( 0, 16 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+max_value = 1000.0
+value = 1000.0
 texture_progress = ExtResource( 27 )
 
 [node name="P2Portrait" type="TextureRect" parent="HudLayer/HudLayer/VBoxContainer/TopBar"]
@@ -480,6 +543,16 @@ text = "hits"
 align = 1
 valign = 2
 
+[node name="P1DmgLabel" type="Label" parent="HudLayer/HudLayer/HBoxContainer/P1ComboCounter"]
+unique_name_in_owner = true
+margin_left = 14.0
+margin_top = 59.0
+margin_right = 54.0
+margin_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+align = 1
+
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/HBoxContainer"]
 margin_left = 41.0
 margin_right = 527.0
@@ -512,6 +585,20 @@ custom_fonts/font = SubResource( 15 )
 text = "hits"
 align = 1
 valign = 2
+
+[node name="P2DmgLabel" type="Label" parent="HudLayer/HudLayer/HBoxContainer/P2ComboCounter"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -6.0
+margin_top = -2.0
+margin_right = 34.0
+margin_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+align = 1
 
 [node name="TopBar2" type="HBoxContainer" parent="HudLayer/HudLayer"]
 anchor_left = 0.5
@@ -645,7 +732,6 @@ align = 1
 valign = 1
 
 [node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2

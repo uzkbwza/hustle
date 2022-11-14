@@ -10,7 +10,7 @@ var lasso_hit_frame = 0
 
 onready var ANIM_LENGTH = anim_length
 
-func _enter():
+func _frame_0():
 	anim_length = ANIM_LENGTH
 	lasso_hit = false
 	hit_cancelled = false

@@ -2,7 +2,7 @@ extends CharacterState
 
 var left_ground = false
 
-func _enter():
+func _frame_0():
 	left_ground = false
 
 #func _frame_1():

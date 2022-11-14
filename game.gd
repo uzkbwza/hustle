@@ -126,6 +126,8 @@ func copy_to(game: Game):
 		return
 	p1.copy_to(game.p1)
 	p2.copy_to(game.p2)
+	game.p1.hp = p1.hp
+	game.p2.hp = p2.hp
 	clean_objects()
 	for object in game.objects:
 		object.free()
@@ -217,17 +219,6 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			if player.get(value) != null:
 				player.set(value, match_data[value])
 
-#	if match_data.has("infinite_resources"):
-#		p1.infinite_resources = match_data["infinite_resources"]
-#		p2.infinite_resources = match_data["infinite_resources"]
-#
-#	if match_data.has("turbo_mode"):
-#		p1.turbo_mode = match_data["turbo_mode"]
-#		p2.turbo_mode = match_data["turbo_mode"]
-#
-#	if match_data.has("one_hit_ko"):
-#		p1.one_hit_ko = match_data["one_hit_ko"]
-#		p2.one_hit_ko = match_data["one_hit_ko"]
 	$Players.add_child(p1)
 	$Players.add_child(p2)
 	p1.set_color(Color("aca2ff"))
@@ -569,6 +560,10 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
+			var grounded = hurtbox.get_parent().is_grounded()
+			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
+				continue
+
 			if hitbox.overlaps(hurtbox):
 				hit_by = hitbox
 	return hit_by
@@ -640,7 +635,8 @@ func process_tick():
 		if !is_waiting_on_player():
 				if can_tick:
 #				if Input.is_action_just_pressed("frame_advance"):
-					snapping_camera = true
+					if !Global.frame_advance:
+						snapping_camera = true
 					call_deferred("simulate_one_tick")
 					p1_turn = false
 					p2_turn = false
@@ -673,7 +669,6 @@ func process_tick():
 
 			if someones_turn:
 				if network_sync_tick != current_tick:
-#					yield(get_tree().create_timer(2.0), "timeout")
 					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 					network_sync_tick = current_tick
 	else:
@@ -682,7 +677,6 @@ func process_tick():
 			call_deferred("resimulate")
 			yield(get_tree(), "idle_frame")
 			game_paused = false
-#				camera.reset_smoothing()
 		else:
 			if buffer_edit:
 				ReplayManager.playback = false
@@ -691,7 +685,7 @@ func process_tick():
 			if can_tick:
 				call_deferred("simulate_one_tick")
 
-
+	
 func _process(delta):
 	update()
 	super_dim()
@@ -767,8 +761,6 @@ func ghost_tick():
 	var simulate_frames = 1
 	if ghost_speed == 1:
 		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
-#	if ghost_speed == 3:
-#		simulate_frames = 4
 	ghost_tick += 1
 
 	for i in range(simulate_frames):
@@ -790,9 +782,7 @@ func ghost_tick():
 					ghost_p2_actionable = true
 			else:
 				ghost_actionable_freeze_ticks = 1
-#				emit_signal("ghost_my_turn")
-#					if !made_afterimage:
-#						made_afterimage = true
+
 		if (p2.state_interruptable or p2.dummy_interruptable) and !ghost_p2_actionable:
 			ghost_p2_actionable = true
 			if ghost_freeze:
@@ -804,13 +794,10 @@ func ghost_tick():
 					p1.actionable_label.show()
 			else:
 				ghost_actionable_freeze_ticks = 1
-#				emit_signal("ghost_my_turn")
-#					if !made_afterimage:
-#						made_afterimage = true
 
 func super_dim():
-#	var arr = objects + effects
 	pass
+
 func _unhandled_input(event: InputEvent):
 	if is_afterimage:
 		return
@@ -820,7 +807,7 @@ func _unhandled_input(event: InputEvent):
 			raise()
 		else:
 			drag_position = null
-	if event is InputEventMouseMotion and drag_position and is_waiting_on_player() and !ReplayManager.playback:
+	if event is InputEventMouseMotion and drag_position and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
 		camera.global_position -= event.relative
 		snapping_camera = false
 	if !is_ghost and singleplayer:

@@ -60,7 +60,7 @@ const VEL_SUPER_GAIN_DIVISOR = 4
 const NUDGE_DISTANCE = 20
 
 const PARRY_METER = 50
-const METER_GAIN_MODIFIER = "1.1"
+const METER_GAIN_MODIFIER = "1.0"
 
 export var num_air_movements = 2
 
@@ -368,6 +368,7 @@ func take_damage(damage: int):
 	if damage == 0:
 		return
 	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	opponent.combo_damage += damage
 	hp -= damage
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)

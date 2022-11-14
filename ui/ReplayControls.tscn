@@ -5,7 +5,7 @@
 [ext_resource path="res://ui/Chat/minimize_button2.png" type="Texture" id=3]
 [ext_resource path="res://ui/Chat/minimize_button3.png" type="Texture" id=4]
 [ext_resource path="res://ui/ReplayControls.gd" type="Script" id=5]
-[ext_resource path="res://ui/PlaybackWindow/pause_play1.png" type="Texture" id=6]
+[ext_resource path="res://ui/PlaybackWindow/pause_play2.png" type="Texture" id=6]
 
 [sub_resource type="InputEventAction" id=1]
 action = "toggle_frame_advance"
@@ -112,7 +112,8 @@ margin_bottom = 24.0
 text = "Playback Speed"
 align = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/Contents/VBoxContainer" index="2"]
+[node name="PlaybackSpeed" type="HSlider" parent="VBoxContainer/Contents/VBoxContainer" index="2"]
+unique_name_in_owner = true
 margin_top = 25.0
 margin_right = 121.0
 margin_bottom = 37.0
@@ -127,4 +128,4 @@ margin_bottom = 49.0
 text = "1.0"
 align = 1
 
-[connection signal="value_changed" from="VBoxContainer/Contents/VBoxContainer/HSlider" to="." method="_on_HSlider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Contents/VBoxContainer/PlaybackSpeed" to="." method="_on_HSlider_value_changed"]

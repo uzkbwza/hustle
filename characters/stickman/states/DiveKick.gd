@@ -13,7 +13,7 @@ var move_y_modifier = 0
 
 var moving = false
 
-func _enter():
+func _frame_0():
 	var vel = host.get_vel()
 	var new_vel = fixed.mul(vel.x, MOMENTUM_REDUCTION)
 	host.set_vel(new_vel, "0")

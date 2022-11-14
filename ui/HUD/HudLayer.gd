@@ -27,6 +27,12 @@ onready var p2_air_option_display = $"%P2AirMovementDisplay"
 onready var p1_super_effects_node = $"%P1SuperEffectsNode"
 onready var p2_super_effects_node = $"%P2SuperEffectsNode"
 
+onready var p1_ghost_health_bar = $"%P1GhostHealthBar"
+onready var p1_ghost_health_bar_trail = $"%P1GhostHealthBarTrail"
+
+onready var p2_ghost_health_bar = $"%P2GhostHealthBar"
+onready var p2_ghost_health_bar_trail = $"%P2GhostHealthBarTrail"
+
 const TRAIL_DRAIN_RATE = 25
 
 var p1: Fighter
@@ -61,6 +67,15 @@ func init(game):
 	p1_health_bar_trail.max_value = p1.MAX_HEALTH
 	p1_health_bar_trail.value = p1.MAX_HEALTH
 	p2_health_bar_trail.value = p2.MAX_HEALTH
+	
+	p1_ghost_health_bar_trail.max_value = p1.MAX_HEALTH
+	p2_ghost_health_bar_trail.max_value = p2.MAX_HEALTH
+	p1_ghost_health_bar_trail.value = p1.MAX_HEALTH
+	p2_ghost_health_bar_trail.value = p2.MAX_HEALTH
+	
+	p1_ghost_health_bar.max_value = p1.MAX_HEALTH
+	p2_ghost_health_bar.max_value = p2.MAX_HEALTH
+	
 	p1_super_meter.max_value = p1.MAX_SUPER_METER
 	p2_super_meter.max_value = p2.MAX_SUPER_METER
 	p1_burst_meter.fighter = p1
@@ -92,6 +107,8 @@ func drain_health_trail(trail, drain_value):
 		trail.value -= TRAIL_DRAIN_RATE
 		if trail.value < drain_value:
 			trail.value = drain_value
+	else:
+		trail.value = drain_value
 
 func _physics_process(_delta):
 	if is_instance_valid(game):
@@ -115,6 +132,34 @@ func _physics_process(_delta):
 		p2_num_supers.texture.current_frame = clamp(p2.supers_available, 0, 9)
 		p1_combo_counter.set_combo(str(p1.combo_count))
 		p2_combo_counter.set_combo(str(p2.combo_count))
+		
+		if is_instance_valid(game.ghost_game):
+			p1_ghost_health_bar.visible = true
+			p2_ghost_health_bar.visible = true
+			var gg: Game = game.ghost_game
+			var p1_ghost = gg.get_player(1)
+			var p2_ghost = gg.get_player(2)
+			p1_ghost_health_bar.value = max(p1_ghost.hp, 0)
+			p2_ghost_health_bar.value = max(p2_ghost.hp, 0)
+			drain_health_trail(p1_ghost_health_bar_trail, p1_ghost.trail_hp)
+			drain_health_trail(p2_ghost_health_bar_trail, p2_ghost.trail_hp)
+		else:
+			p1_ghost_health_bar.value = p1_healthbar.value
+			p2_ghost_health_bar.value = p2_healthbar.value
+			p1_ghost_health_bar_trail.value = p1_health_bar_trail.value
+			p2_ghost_health_bar_trail.value = p2_health_bar_trail.value
+			p1_ghost_health_bar.visible = false
+			p2_ghost_health_bar.visible = false
+		
+		if !ReplayManager.playback or p1.combo_count > 1:
+			$"%P1DmgLabel".text = str(p1.combo_damage) + " DMG"
+		else:
+			$"%P1DmgLabel".text = ""
+		if !ReplayManager.playback or p2.combo_count > 1:
+			$"%P2DmgLabel".text = str(p2.combo_damage) + " DMG"
+		else:
+			$"%P2DmgLabel".text = ""
+
 		$"%P1HitLabel".visible = p1.combo_count >= 2
 		$"%P2HitLabel".visible = p2.combo_count >= 2
 		$"%Timer".text = str(game.get_ticks_left())

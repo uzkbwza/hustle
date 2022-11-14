@@ -4,7 +4,7 @@ const DEFAULT_LAG = 4
 
 var lag = 0
 
-func _enter():
+func _frame_0():
 	lag = DEFAULT_LAG
 	if data is int:
 		lag = data

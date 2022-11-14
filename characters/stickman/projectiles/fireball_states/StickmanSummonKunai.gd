@@ -18,7 +18,7 @@ func create_particle():
 func _frame_1():
 	create_particle()
 
-func _enter():
+func _frame_0():
 	stopped = false
 	
 	var y = fixed.mul(fixed.mul(str(data.y), Y_MODIFIER), "-1")

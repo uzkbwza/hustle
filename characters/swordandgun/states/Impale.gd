@@ -2,7 +2,7 @@ extends CharacterState
 
 var hit = false
 
-func _enter():
+func _frame_0():
 	host.z_index = -2
 
 func _exit():

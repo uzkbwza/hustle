@@ -71,7 +71,7 @@ var hitbox_start_frames = {
 }
 
 var frame_methods = []
-var max_tick = 0
+var max_tick = -1
 
 func apply_enter_force():
 	if enter_force_speed != "0.0":
@@ -100,8 +100,15 @@ func get_active_hitboxes():
 				hitboxes.append(item)
 	return hitboxes
 
+func _tick_before():
+	pass
+
 func _tick_shared():
-	if current_tick == 0:
+#	if current_tick == -1:
+#		if has_method("_frame_0"):
+#			call("_frame_0")
+	
+	if current_tick == -1:
 		if spawn_particle_on_enter and particle_scene:
 			spawn_particle_relative(particle_scene, particle_position)
 		apply_enter_force()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=149 format=2]
+[gd_scene load_steps=150 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -146,6 +146,7 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/throw_down.png" type="Texture" id=144]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/SuperJumpActionUIData.tscn" type="PackedScene" id=145]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/DoubleJumpActionUIData.tscn" type="PackedScene" id=146]
+[ext_resource path="res://ui/ActionSelector/StateIcons/super_jump.png" type="Texture" id=147]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -698,9 +699,10 @@ particle_scene = ExtResource( 12 )
 sfx = ExtResource( 123 )
 title = "Jump"
 data_ui_scene = ExtResource( 9 )
-button_texture = ExtResource( 121 )
+button_texture = ExtResource( 67 )
 interrupt_frames = [ 7, 18, 60 ]
 interruptible_on_opponent_turn = true
+reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
 Jump"
@@ -724,8 +726,9 @@ sfx_tick = 10
 sfx_volume = -8.0
 title = "Super Jump"
 data_ui_scene = ExtResource( 145 )
-button_texture = ExtResource( 67 )
+button_texture = ExtResource( 147 )
 interrupt_frames = [ 22, 42, 60 ]
+reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
 Jump"
@@ -753,6 +756,7 @@ air_type = 1
 uses_air_movement = true
 interrupt_frames = [ 7, 25, 60 ]
 interruptible_on_opponent_turn = true
+reversible = false
 interrupt_from_string = "AerialMovement
 Aerial
 DoubleJump"

@@ -16,7 +16,7 @@ export var fizzle_on_walls = true
 var hit_something = false
 var hit_something_tick = 0
 
-func _enter():
+func _frame_0():
 	hit_something = false
 	hit_something_tick = 0
 	host.set_grounded(false)

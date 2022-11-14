@@ -528,10 +528,13 @@ func tick():
 	update_collision_boxes()
 
 func state_tick():
-	state_machine.tick()
-	if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
-		state_machine.queue_state(state_machine.state.fallback_state)
+	var once = true
+	while once or current_state().current_tick < 0:
+		once = false
 		state_machine.tick()
+		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
+			state_machine.queue_state(state_machine.state.fallback_state)
+			state_machine.tick()
 
 func normal_tick():
 	state_tick()

@@ -2,7 +2,7 @@ extends "res://characters/states/Fall.gd"
 
 var apply_lift = true
 
-func _enter():
+func _frame_0():
 	apply_lift = false
 	host.reset_momentum()
 	if !host.used_aerial_h_slash:

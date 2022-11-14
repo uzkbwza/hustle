@@ -8,7 +8,7 @@ var force
 var accel
 
 
-func _enter():
+func _frame_0():
 	host.start_invulnerability()
 	
 	force = xy_to_dir(data.x, 0, speed, "1")

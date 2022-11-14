@@ -1,6 +1,6 @@
 extends CharacterState
 
-func _enter():
+func _frame_0():
 #	host.start_invulnerability()
 	host.on_the_ground = true
 	host.colliding_with_opponent = false

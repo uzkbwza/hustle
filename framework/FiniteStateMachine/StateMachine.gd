@@ -141,6 +141,7 @@ func tick():
 		var state = queued_states.pop_front()
 		var data = queued_data.pop_front()
 		_change_state(state, data)
+	state._tick_before()
 	var next_state_name = state._tick_shared()
 	if next_state_name == null:
 		next_state_name = state._tick()
@@ -204,6 +205,7 @@ func _change_state(state_name: String, data=null, enter=true, exit=true) -> void
 		if new_state:
 			_change_state(new_state)
 			return
+	
 	emit_signal("state_changed", states_stack)
 
 func try(method: String, args: Array = []):

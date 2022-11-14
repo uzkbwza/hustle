@@ -1,6 +1,6 @@
 extends SuperMove
 
-func _enter():
+func _frame_0():
 	spawn_particle_relative(preload("res://fx/InstantCancelEffect.tscn"), host.hurtbox_pos_relative_float())
 	pass
 

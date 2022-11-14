@@ -11,7 +11,7 @@ export var fric = "0.05"
 func _frame_1():
 	spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(data.x, data.y))
 
-func _enter():
+func _frame_0():
 	var force = xy_to_dir(data.x, data.y, speed)
 	if "-" in force.x:
 		if host.get_facing() == "Right":

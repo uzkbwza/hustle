@@ -13,7 +13,7 @@ var speed_modifier
 
 var projectile_spawned = false
 
-func _enter():
+func _frame_0():
 	var vel = host.get_vel()
 	var new_vel_x = fixed.mul(vel.x, MOMENTUM_REDUCTION_X)
 	var new_vel_y = fixed.mul(vel.y, MOMENTUM_REDUCTION_Y)

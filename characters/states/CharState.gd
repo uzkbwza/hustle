@@ -157,6 +157,7 @@ func _on_hit_something(obj, hitbox):
 
 func _tick_shared():
 	if current_tick == 0:
+
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:

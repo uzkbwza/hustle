@@ -9,6 +9,7 @@ export var super_jump = false
 
 const SHORT_HOP_IASA = 7
 const FULL_HOP_IASA = 14
+const FULL_HOP_LENGTH = "0.7"
 
 var jump_tick = 1
 var squat
@@ -18,7 +19,10 @@ var force_y
 func jump():
 	var vel = host.get_vel()
 	host.set_vel(fixed.mul(vel.x, x_speed_preserved), "0")
-	var force = xy_to_dir(data["x"], data["y"], speed)
+	var force = xy_to_dir(data["x"], data["y"])
+	var force_power = fixed.vec_mul(force.x, force.y, fixed.powu(fixed.vec_len(force.x, force.y), 2))
+	force = FixedVec2String.new(fixed.div(fixed.add(force_power.x, force.x), "2"), fixed.div(fixed.add(force_power.y, force.y), "2"))
+	force = fixed.vec_mul(force.x, force.y, speed)
 	if !super_jump:
 		spawn_particle_relative(particle_scene, Vector2(), Vector2(float(force.x), float(force.y)))
 	else:
@@ -39,10 +43,10 @@ func _frame_12():
 	if super_jump:
 		jump()
 
-func _enter():
+func _frame_0():
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
-	var full_hop = fixed.gt(length, "0.7")
+	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
 	squat = super_jump or (air_type == AirType.Grounded and fixed.sign(str(data["x"])) != host.get_facing_int() and data["x"] != 0 and full_hop)
 	
 	if !squat:
@@ -54,11 +58,11 @@ func _enter():
 
 	if !super_jump:
 		if squat:
-			interrupt_frames[0] = 18
-			interrupt_frames[1] = 29
-		elif full_hop:
 			interrupt_frames[0] = 14
 			interrupt_frames[1] = 25
+		elif full_hop:
+			interrupt_frames[0] = 10
+			interrupt_frames[1] = 21
 		else:
 			interrupt_frames[0] = 7
 			interrupt_frames[1] = 18

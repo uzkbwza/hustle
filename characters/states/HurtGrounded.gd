@@ -7,7 +7,6 @@ var hitstun = 0
 var can_act = false
 
 func _enter():
-	
 	can_act = false
 	hitbox = data["hitbox"]
 	match hitbox.hit_height:

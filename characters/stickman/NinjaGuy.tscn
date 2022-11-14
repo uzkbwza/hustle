@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=2]
+[gd_scene load_steps=70 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/stickman_spriteframes.tres" type="SpriteFrames" id=2]
@@ -65,6 +65,8 @@
 [ext_resource path="res://characters/stickman/NinjaExtra.tscn" type="PackedScene" id=63]
 [ext_resource path="res://characters/stickman/sprites/actionicons/sticky_bomb.png" type="Texture" id=64]
 [ext_resource path="res://characters/swordandgun/sounds/lasso.wav" type="AudioStream" id=65]
+[ext_resource path="res://characters/stickman/NunChukLight.gd" type="Script" id=66]
+[ext_resource path="res://characters/stickman/ActionUIData/NunChukLightActionUIData.tscn" type="PackedScene" id=67]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -97,7 +99,8 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = ExtResource( 2 )
-animation = "StickyBomb"
+animation = "NunChukLightHigh"
+frame = 6
 
 [node name="Super2" parent="Sounds" index="3"]
 pitch_variation = 0.1
@@ -424,7 +427,7 @@ force_dir_y = "-1"
 force_speed = "10.0"
 force_tick = 3
 enter_force_dir_x = "1.0"
-enter_force_speed = "4.0"
+enter_force_speed = "6.0"
 reset_momentum = true
 title = "Uppercut"
 type = 2
@@ -441,15 +444,14 @@ y = -14
 width = 16
 height = 18
 damage = 120
-hitstun_ticks = 40
+hitstun_ticks = 52
 hitlag_ticks = 10
 victim_hitlag = 10
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
-dir_x = "2.0"
 dir_y = "-2.0"
 knockback = "12.0"
-pushback_x = "-1.0"
+pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -469,6 +471,7 @@ victim_hitlag = 6
 group = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
+dir_y = "-0.5"
 knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -495,13 +498,14 @@ Jump"
 script = ExtResource( 1 )
 x = 36
 y = -4
-width = 28
+width = 30
 height = 4
 damage = 70
 hitstun_ticks = 50
 hitlag_ticks = 10
 victim_hitlag = 10
 hits_otg = true
+hits_vs_aerial = false
 hit_height = 2
 screenshake_amount = 6
 whiff_sound = ExtResource( 44 )
@@ -593,23 +597,26 @@ start_tick = 11
 active_ticks = 8
 
 [node name="NunChukLight" type="Node2D" parent="StateMachine" index="38"]
-script = ExtResource( 13 )
-anim_length = 18
-enter_force_dir_x = "1.0"
-enter_force_speed = "6.0"
+script = ExtResource( 66 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 15
+force_dir_x = "1.0"
+force_speed = "6.0"
 title = "NunChuk"
 type = 1
+data_ui_scene = ExtResource( 67 )
 button_texture = ExtResource( 27 )
-interrupt_from_string = "Grounded
-GroundedAttack"
-interrupt_into_string = "Grounded
-Aerial"
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedAttack
 GroundedSpecial
 GroundedSuper
 Jump"
-allowed_stances_string = "NunChuk
-Normal"
+allowed_stances_string = "Normal
+NunChuk"
 change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLight" index="0"]
@@ -626,8 +633,46 @@ knockback = "8.0"
 start_tick = 7
 active_ticks = 3
 
-[node name="NunChukHeavy" type="Node2D" parent="StateMachine" index="39"]
+[node name="NunChukLightHigh" type="Node2D" parent="StateMachine" index="39"]
+script = ExtResource( 66 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 15
+force_dir_x = "1.0"
+force_speed = "6.0"
+type = 1
+button_texture = ExtResource( 27 )
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+Jump"
+allowed_stances_string = "Normal
+NunChuk"
+change_stance_to = "NunChuk"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLightHigh" index="0"]
+script = ExtResource( 1 )
+x = 31
+y = -41
+width = 22
+height = 10
+damage = 100
+hitstun_ticks = 23
+victim_hitlag = 4
+hits_vs_grounded = false
+hit_sound = ExtResource( 42 )
+dir_x = "0.20"
+knockback = "6.0"
+start_tick = 7
+active_ticks = 3
+
+[node name="NunChukHeavy" type="Node2D" parent="StateMachine" index="40"]
 script = ExtResource( 13 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 anim_length = 22
 enter_force_dir_x = "1.0"
 enter_force_speed = "10.0"
@@ -662,7 +707,7 @@ active_ticks = 9
 looping = true
 loop_inactive_ticks = 1
 
-[node name="NunChukJump" type="Node2D" parent="StateMachine" index="40"]
+[node name="NunChukJump" type="Node2D" parent="StateMachine" index="41"]
 script = ExtResource( 11 )
 endless = true
 enter_force_dir_x = "2.0"
@@ -695,7 +740,7 @@ knockback = "5.0"
 start_tick = 16
 active_ticks = 4
 
-[node name="NunChukSpin" type="Node2D" parent="StateMachine" index="41"]
+[node name="NunChukSpin" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 3 )
 anim_length = 40
 title = "Chuk Spin"
@@ -747,7 +792,7 @@ looping = true
 loop_active_ticks = 4
 loop_inactive_ticks = 3
 
-[node name="StickyBomb" type="Node2D" parent="StateMachine" index="42"]
+[node name="StickyBomb" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 62 )
 apply_forces = true
 apply_fric = true
@@ -766,7 +811,7 @@ Aerial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="WhipWave" type="Node2D" parent="StateMachine" index="43"]
+[node name="WhipWave" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 58 )
 apply_forces = true
 apply_fric = true
@@ -805,7 +850,7 @@ knockdown_extends_hitstun = false
 start_tick = 11
 active_ticks = 3
 
-[node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="44"]
+[node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
 anim_length = 22
@@ -832,7 +877,7 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 2
 
-[node name="GroundedPunch" type="Node2D" parent="StateMachine" index="45"]
+[node name="GroundedPunch" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 4 )
 anim_length = 15
 title = "Punch"
@@ -859,7 +904,7 @@ knockback = "2.0"
 start_tick = 3
 active_ticks = 2
 
-[node name="GroundedKick" type="Node2D" parent="StateMachine" index="46"]
+[node name="GroundedKick" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 4 )
 anim_length = 21
 title = "Kick"
@@ -890,7 +935,7 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 3
 
-[node name="GroundedSweep" type="Node2D" parent="StateMachine" index="47"]
+[node name="GroundedSweep" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 4 )
 anim_length = 30
 enter_force_dir_x = "1.0"
@@ -928,7 +973,7 @@ knockdown = true
 start_tick = 8
 active_ticks = 2
 
-[node name="DropKick" type="Node2D" parent="StateMachine" index="48"]
+[node name="DropKick" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 3 )
 endless = true
 enter_force_dir_x = "0.75"
@@ -960,7 +1005,7 @@ dir_y = "-0.25"
 knockback = "5.0"
 start_tick = 14
 
-[node name="AirAttack" type="Node2D" parent="StateMachine" index="49"]
+[node name="AirAttack" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
 anim_length = 40
@@ -991,7 +1036,7 @@ knockdown = true
 start_tick = 5
 active_ticks = 7
 
-[node name="Summon" type="Node2D" parent="StateMachine" index="50"]
+[node name="Summon" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 9 )
 anim_length = 11
 sfx = ExtResource( 46 )
@@ -1008,7 +1053,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="StoreMomentum" type="Node2D" parent="StateMachine" index="51"]
+[node name="StoreMomentum" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 50 )
 sprite_animation = "Summon"
 anim_length = 10
@@ -1033,7 +1078,7 @@ allowed_stances_string = "Normal
 NunChuk"
 change_stance_to = "Normal"
 
-[node name="ReleaseMomentum" type="Node2D" parent="StateMachine" index="52"]
+[node name="ReleaseMomentum" type="Node2D" parent="StateMachine" index="53"]
 script = ExtResource( 50 )
 sprite_animation = "Summon"
 anim_length = 3

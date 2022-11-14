@@ -68,6 +68,9 @@ func _enter():
 	# Initialize state 
 	pass
 
+func _tick_before():
+	pass
+
 # for fixed_step games
 func _tick():
 	pass

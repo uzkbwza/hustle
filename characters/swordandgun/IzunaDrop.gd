@@ -9,7 +9,7 @@ onready var hitbox = $Hitbox
 
 var dir = -1
 
-func _enter():
+func _frame_0():
 	host.apply_force_relative(-BACKWARDS_SPEED, LIFT_SPEED)
 	host.move_directly(0, -1)
 	host.z_index = 1

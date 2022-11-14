@@ -1,6 +1,6 @@
 extends CharacterState
 
-func _enter():
+func _frame_0():
 	host.start_invulnerability()
 	
 func _tick():

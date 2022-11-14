@@ -15,6 +15,14 @@ func _ready():
 	
 func show():
 	if Global.show_playback_controls:
+		_on_pause_toggled(Global.frame_advance)
+		$"%PauseButton".set_pressed_no_signal(Global.frame_advance)
+		$"%PlaybackSpeed".value = {
+			4: 0,
+			2: 1,
+			1: 2,
+			0: 3,
+		}[Global.playback_speed_mod]
 		.show()
 
 func _on_frame_advance():

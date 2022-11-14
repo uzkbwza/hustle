@@ -25,7 +25,7 @@ func _ready():
 var parry_active = false
 
 
-func _enter():
+func _frame_0():
 	parry_type = initial_parry_type
 	parry_active = true
 	parry_tick = 0

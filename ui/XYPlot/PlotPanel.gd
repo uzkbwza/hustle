@@ -99,6 +99,10 @@ func update_value(p=null):
 		if point.length() >= (rect_size.x / 2) - SNAP_AMOUNT * (rect_size.x / 2):
 			point = point.normalized() * (rect_size.x / 2)
 		
+		if parent.snap_radius > 0.0:
+			if abs(point.length() / (rect_size.x / 2)) < SNAP_AMOUNT:
+				point = point.normalized() * parent.snap_radius
+		
 		for i in range(8):
 			var snap_angle = (TAU / 8) * i
 			var angle_diff = Utils.angle_diff(angle, snap_angle)

@@ -281,7 +281,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/Holepunch/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg" )
 
 [gui]
 

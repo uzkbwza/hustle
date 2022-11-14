@@ -7,7 +7,7 @@ var grabbed = false
 
 onready var throw_box = $ThrowBox
 
-func _enter():
+func _frame_0():
 	grabbed = false
 
 func _frame_1():

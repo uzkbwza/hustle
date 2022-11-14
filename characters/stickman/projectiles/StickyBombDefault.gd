@@ -3,7 +3,7 @@ const ATTACH_DISTANCE = "16"
 
 var attached = false
 
-func _enter():
+func _frame_0():
 	attached = false
 
 func _tick():

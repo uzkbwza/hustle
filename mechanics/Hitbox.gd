@@ -29,6 +29,8 @@ export var victim_hitlag: int = -1
 export var cancellable = true
 export var increment_combo = true
 export var hits_otg = false
+export var hits_vs_grounded = true
+export var hits_vs_aerial = true
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
