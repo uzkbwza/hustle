@@ -34,6 +34,7 @@ export var show_in_menu = true
 export(ActionType) var type
 export(PackedScene) var data_ui_scene = null
 export(Texture) var button_texture = null
+export var flip_icon = true
 
 export var _c_Air_Data = 0
 export(AirType) var air_type = AirType.Grounded
@@ -45,6 +46,7 @@ export var iasa_at = -1
 export var interrupt_frames = []
 export var throw_techable = false
 export var interruptible_on_opponent_turn = false
+
 
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal

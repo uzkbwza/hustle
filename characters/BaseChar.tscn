@@ -1,4 +1,4 @@
-[gd_scene load_steps=150 format=2]
+[gd_scene load_steps=151 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -147,6 +147,7 @@
 [ext_resource path="res://ui/ActionSelector/ActionUIData/SuperJumpActionUIData.tscn" type="PackedScene" id=145]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/DoubleJumpActionUIData.tscn" type="PackedScene" id=146]
 [ext_resource path="res://ui/ActionSelector/StateIcons/super_jump.png" type="Texture" id=147]
+[ext_resource path="res://sound/common/block.wav" type="AudioStream" id=148]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -380,26 +381,32 @@ volume_db = -8.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Parry2" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
-stream = ExtResource( 132 )
-volume_db = -15.0
+[node name="Block" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
+stream = ExtResource( 148 )
+volume_db = -4.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Super" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+[node name="Parry2" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+stream = ExtResource( 132 )
+volume_db = -20.0
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Super" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
 stream = ExtResource( 136 )
 volume_db = -4.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Super2" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+[node name="Super2" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
 stream = ExtResource( 137 )
 volume_db = -10.0
 bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.01
 
-[node name="Super3" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
+[node name="Super3" type="AudioStreamPlayer2D" parent="Sounds" index="5"]
 stream = ExtResource( 138 )
 volume_db = -4.0
 bus = "Fx"
@@ -541,7 +548,7 @@ change_stance_to = "Normal"
 [node name="ParryHigh" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 68 )
 anim_length = 20
-title = "High Parry"
+title = "High Block"
 type = 4
 button_texture = ExtResource( 99 )
 interrupt_from_string = "Grounded
@@ -557,7 +564,7 @@ allowed_stances_string = "All"
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 68 )
 anim_length = 20
-title = "Low Parry"
+title = "Low Block"
 type = 4
 button_texture = ExtResource( 98 )
 interrupt_from_string = "Grounded
@@ -575,7 +582,7 @@ parry_type = 1
 script = ExtResource( 68 )
 sprite_animation = "ParryLow"
 anim_length = 20
-title = "Parry"
+title = "Block"
 type = 4
 button_texture = ExtResource( 98 )
 air_type = 1
@@ -727,7 +734,7 @@ sfx_volume = -8.0
 title = "Super Jump"
 data_ui_scene = ExtResource( 145 )
 button_texture = ExtResource( 147 )
-interrupt_frames = [ 22, 42, 60 ]
+interrupt_frames = [ 15, 28, 42, 60 ]
 reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
@@ -793,11 +800,7 @@ type = 3
 button_texture = ExtResource( 107 )
 air_type = 2
 self_interruptable = false
-interrupt_from_string = "Grounded
-Aerial
-InstantCancel
-GroundedSuper
-AerialSuper"
+interrupt_from_string = "InstantCancel"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
@@ -829,6 +832,9 @@ GroundedMovement"
 hit_cancel_exceptions_string = "Parry
 AerialMovement
 GroundedMovement"
+allowed_stances_string = "All"
+super_level = 0
+super_freeze_ticks = 8
 
 [node name="HurtGrounded" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 28 )
@@ -938,7 +944,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "ForwardThrow"
-anim_length = 30
+anim_length = 15
 title = "Forward Throw"
 type = 1
 button_texture = ExtResource( 142 )
@@ -963,7 +969,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "ForwardThrow"
-anim_length = 30
+anim_length = 15
 title = "Back Throw"
 type = 1
 button_texture = ExtResource( 143 )

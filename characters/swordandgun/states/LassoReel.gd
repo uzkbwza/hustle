@@ -17,6 +17,7 @@ func _frame_1():
 	throw_box.y = opp_pos.y
 
 func _tick():
+	grabbed = false
 	var opp_pos = host.obj_local_center(host.opponent)
 	throw_box.x = opp_pos.x * host.get_facing_int()
 	throw_box.y = opp_pos.y

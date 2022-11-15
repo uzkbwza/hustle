@@ -352,13 +352,15 @@ func tick():
 	if !game_finished:
 		if ReplayManager.playback:
 			if !ReplayManager.resimulating:
-				if current_tick > max_replay_tick:
+				if current_tick > max_replay_tick and !ReplayManager.frames.finished:
 					ReplayManager.set_deferred("playback", false)
 			else:
 				if current_tick > ReplayManager.resim_tick:
 					ReplayManager.playback = false
 					ReplayManager.resimulating = false
 					camera.reset_shake()
+	else:
+		ReplayManager.frames.finished = true
 	if should_game_end():
 		if Network.multiplayer_active:
 			if !ReplayManager.playback:
@@ -643,6 +645,7 @@ func process_tick():
 					game_paused = false
 					
 		else:
+			ReplayManager.frames.finished = false
 			game_paused = true
 			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
@@ -717,7 +720,6 @@ func _physics_process(_delta):
 		return
 	if !game_started:
 		return
-
 
 	if !is_ghost:
 		if !game_finished:

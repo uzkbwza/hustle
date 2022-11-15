@@ -152,8 +152,11 @@ func _tick_shared():
 			var method_name = "_frame_" + str(current_tick)
 			# create methods called "_frame_1" or "_frame_27" etc to execute actions on those frames.
 			if has_method(method_name):
-				call(method_name)
-				frame_methods.append(current_tick)
+				if not (current_tick in frame_methods):
+					frame_methods.append(current_tick)
+				var next_state = call(method_name)
+				if next_state != null:
+					return next_state
 			new_max = false
 
 	
@@ -246,6 +249,7 @@ func setup_hitboxes():
 		for hitbox2 in hitboxes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)
+		
 
 func __on_hit_something(obj, hitbox):
 	if active:

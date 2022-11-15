@@ -65,6 +65,7 @@ func _exit():
 	released = false
 
 func _release():
+	
 	throw = false
 	host.throw_pos_x = release_throw_pos_x
 	host.throw_pos_y = release_throw_pos_y
@@ -73,6 +74,7 @@ func _release():
 	host.opponent.update_facing()
 	var throw_data = HitboxData.new(self)
 	host.opponent.hit_by(throw_data)
+	host.incr_combo()
 	if screenshake_amount > 0 and screenshake_frames > 0 and !host.is_ghost:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		camera.bump(Vector2(), screenshake_amount, screenshake_frames / 60.0)

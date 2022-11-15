@@ -1,0 +1,81 @@
+Zip file format
+===============
+
+This is all copied from the Wikipedia page on the Zip file format and I'm
+keeping it here for reference:
+https://en.wikipedia.org/wiki/Zip_(file_format)
+
+File headers
+------------
+Offset Bytes Description 
+0      4     Local file header signature = 0x04034b50 (read as a little-endian number)
+4      2     Version needed to extract (minimum)
+6      2     General purpose bit flag
+8      2     Compression method
+10     2     File last modification time
+12     2     File last modification date
+14     4     CRC-32
+18     4     Compressed size
+22     4     Uncompressed size
+26     2     File name length (n)
+28     2     Extra field length (m)
+30     n     File name
+30+n   m     Extra field 
+
+This is immediately followed by the compressed data.
+
+Data descriptor
+---------------
+If the bit at offset 3 (0x08) of the general-purpose flags field is set, then
+the CRC-32 and file sizes are not known when the header is written. The fields
+in the local header are filled with zero, and the CRC-32 and size are appended
+in a 12-byte structure (optionally preceded by a 4-byte signature) immediately
+after the compressed data:
+
+Offset Bytes   Description[24]
+0      0/4     Optional data descriptor signature = 0x08074b50
+0/4      4     CRC-32
+4/8      4     Compressed size
+8/12     4     Uncompressed size 
+
+
+Central directory
+-----------------
+Offset Bytes Description[24]
+0      4     Central directory file header signature = 0x02014b50
+4      2     Version made by
+6      2     Version needed to extract (minimum)
+8      2     General purpose bit flag
+10     2     Compression method
+12     2     File last modification time
+14     2     File last modification date
+16     4     CRC-32
+20     4     Compressed size
+24     4     Uncompressed size
+28     2     File name length (n)
+30     2     Extra field length (m)
+32     2     File comment length (k)
+34     2     Disk number where file starts
+36     2     Internal file attributes
+38     4     External file attributes
+42     4     Relative offset of local file header. This is the number of bytes between the start of the first disk on which the file occurs, and the start of the local file header. This allows software reading the central directory to locate the position of the file inside the ZIP file.
+46     n     File name
+46+n   m     Extra field
+46+n+m k     File comment
+
+
+End of central directory record (EOCD)
+--------------------------------------
+After all the central directory entries comes the end of central directory
+(EOCD) record, which marks the end of the ZIP file:
+
+Offset Bytes Description[24]
+0      4     End of central directory signature = 0x06054b50
+4      2     Number of this disk
+6      2     Disk where central directory starts
+8      2     Number of central directory records on this disk
+10     2     Total number of central directory records
+12     4     Size of central directory (bytes)
+16     4     Offset of start of central directory, relative to start of archive
+20     2     Comment length (n)
+22     n     Comment 

@@ -200,7 +200,8 @@ func copy_to(o: BaseObj):
 			o.hitboxes[i].enabled = hitboxes[i].enabled
 			hitboxes[i].copy_to(o.hitboxes[i])
 			o.hitboxes[i].update_position(pos.x, pos.y)
-	
+	o.projectile_invulnerable = projectile_invulnerable
+	o.invulnerable = invulnerable
 
 	chara.copy_to(o.chara)
 	o.chara.set_facing(get_facing_int())
@@ -420,8 +421,8 @@ func apply_grav():
 func apply_fric():
 	chara.apply_fric()
 
-func apply_full_fric(fric):
-	chara.apply_full_fric(fric)
+func apply_x_fric(fric):
+	chara.apply_x_fric(fric)
 	
 func apply_y_fric(fric):
 	chara.apply_y_fric(fric)

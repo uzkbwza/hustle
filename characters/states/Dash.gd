@@ -11,5 +11,5 @@ func _frame_1():
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 
 func _tick():
-	host.apply_full_fric(fric)
+	host.apply_x_fric(fric)
 	host.apply_forces()

@@ -53,7 +53,7 @@ func travel_towards_creator():
 		if push_ticks > 0:
 			apply_forces_no_limit()
 		else:
-			apply_full_fric(FRIC)
+			apply_x_fric(FRIC)
 			apply_y_fric(FRIC)
 			apply_forces()
 		if get_pos().y > -5:

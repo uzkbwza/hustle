@@ -13,6 +13,7 @@ var data_node = null
 var container = null
 var custom_texture = false
 var reversible = false
+var flip_icon = true
 
 func setup(name, title, texture=null):
 	action_name = name
@@ -25,7 +26,7 @@ func setup(name, title, texture=null):
 	$"%Button".hint_tooltip = title
 
 func set_player_id(player_id):
-	if player_id != 1 and custom_texture:
+	if player_id != 1 and custom_texture and flip_icon:
 		$"%TextureRect".flip_h = true
 
 func set_pressed(on):

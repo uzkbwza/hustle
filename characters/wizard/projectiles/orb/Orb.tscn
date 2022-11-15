@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
@@ -16,6 +16,14 @@
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/unlock.wav" type="AudioStream" id=14]
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/push.wav" type="AudioStream" id=15]
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/shoot.wav" type="AudioStream" id=16]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=17]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 17 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -25,7 +33,15 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 17 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
 [node name="Orb" instance=ExtResource( 1 )]
+material = SubResource( 2 )
 script = ExtResource( 2 )
 extra_state_variables = "frozen
 locked
@@ -37,6 +53,7 @@ frames = SubResource( 1 )
 animation = "Orb"
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 11 )]
+material = SubResource( 3 )
 z_index = -1
 
 [node name="Lock" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
@@ -62,6 +79,10 @@ stream = ExtResource( 16 )
 volume_db = -8.0
 bus = "Fx"
 script = ExtResource( 12 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 9
+height = 9
 
 [node name="Hurtbox" parent="." index="3"]
 width = 9

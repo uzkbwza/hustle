@@ -38,7 +38,7 @@ func _tick():
 	else:
 		anim_name = "HurtAerial"
 
-	host.apply_full_fric(AIR_FRIC)
+	host.apply_x_fric(AIR_FRIC)
 	host.apply_grav_custom(HIT_GRAV, HIT_FALL_SPEED)
 	host.apply_forces_no_limit()
 	

@@ -18,6 +18,7 @@ var facing = 1
 var pressed_button = null
 
 func _ready():
+	randomize()
 	for button in get_buttons():
 		button.connect("pressed", self, "_on_button_pressed", [button])
 	$Label.text = name
@@ -29,16 +30,20 @@ func init():
 	for button in get_buttons():
 		button.disabled = false
 	
-	for dir in ["NW", "N", "NE", "W", "Neutral", "E", "SW", "S", "SE"]:
-		var button = get_node("%"+dir)
-		if !get(dir):
-			var disabled_button = get_node("%" + dir_to_facing(dir)) if consider_facing else button
-			if disabled_button == pressed_button:
-				pressed_button = null
-			disabled_button.disabled = true
-		if pressed_button == null or pressed_button.disabled:
-			button.pressed = true
-			_on_button_pressed(button)
+	for i in range(2):
+		randomize()
+		var dirs = ["NW", "N", "NE", "W", "Neutral", "E", "SW", "S", "SE"]
+#		dirs.shuffle()
+		for dir in dirs:
+			var button =  get_node("%" + dir_to_facing(dir)) if consider_facing else get_node("%"+dir)
+			if !get(dir):
+				var disabled_button = button
+				if disabled_button == pressed_button:
+					pressed_button = null
+				disabled_button.disabled = true
+			if pressed_button == null or pressed_button.disabled:
+				button.pressed = true
+				_on_button_pressed(button)
 	
 	$"%Top".show()
 	$"%Middle".show()

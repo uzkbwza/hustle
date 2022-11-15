@@ -6,13 +6,15 @@ const ORB_PARTICLE_SCENE = preload("res://characters/wizard/projectiles/orb/OrbS
 const HOVER_AMOUNT = 400
 const HOVER_MIN_AMOUNT = 50
 const HOVER_VEL_Y_POS_MODIFIER = "0.70"
-const HOVER_VEL_Y_NEG_MODIFIER = "0.97"
+const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
 const ORB_SUPER_DRAIN = 2
+const FAST_FALL_SPEED = "5"
 
 var hover_left = 0
 var hover_drain_amount = 5
 var hover_gain_amount = 3
 var hovering = false
+var fast_falling = false
 
 var orb_projectile
 var can_flame_wave = true
@@ -27,8 +29,13 @@ func init(pos=null):
 		hover_left = HOVER_AMOUNT
 	
 func apply_grav():
+	if fast_falling:
+		apply_grav_custom(FAST_FALL_SPEED, FAST_FALL_SPEED)
 	if !hovering:
 		.apply_grav()
+
+func apply_grav_fast_fall():
+	move_directly("0", FAST_FALL_SPEED)
 
 func apply_grav_custom(grav: String, fall_speed: String):
 	if !hovering:
@@ -44,6 +51,7 @@ func tick():
 	if hitlag_ticks <= 0:
 		if is_grounded():
 			hovering = false
+			fast_falling = false
 		if hovering:
 			if current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
 				hovering = false
@@ -72,9 +80,17 @@ func process_extra(extra):
 	.process_extra(extra)
 	if extra.has("hover"):
 		if can_hover():
+			if !hovering and extra["hover"]:
+				play_sound("FastFall")
 			hovering = extra["hover"]
 		else:
 			hovering = false
+	if extra.has("fast_fall"):
+		if extra["fast_fall"]:
+			if extra["fast_fall"] and !fast_falling:
+				play_sound("FastFall")
+				set_vel(get_vel().x, FAST_FALL_SPEED)
+			fast_falling = extra["fast_fall"]
 
 func can_hover():
 	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

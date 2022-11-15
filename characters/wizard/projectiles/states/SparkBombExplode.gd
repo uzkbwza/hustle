@@ -10,5 +10,5 @@ func _frame_1():
 		var force = fixed.normalized_vec_times(str(dir.x), str(dir.y), PUSH_SPEED)
 		host.creator.apply_force(force.x, force.y)
 
-func _frame_40():
+func _frame_16():
 	host.disable()

@@ -21,6 +21,8 @@ var showing = false
 
 var match_list = []
 
+var experimental_mode = false
+
 var servers = [
 	"ws://168.235.81.168:52450",
 	"ws://168.235.86.185:52450",
@@ -46,6 +48,9 @@ func _ready():
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
 	$"%ServerList".connect("item_selected", self, "refresh_multiplayer")
+	experimental_mode = "unstable" in Global.VERSION
+	if experimental_mode:
+		$MatchmakingDisabledLabel.show()
 
 func refresh_multiplayer(_index=null):
 	Network.stop_multiplayer()
@@ -100,9 +105,15 @@ func show():
 		$"%RefreshTimer".start()
 		host_button.disabled = false
 #		join_button.disabled = false
-		Network.request_match_list()
+		if !experimental_mode:
+			Network.request_match_list()
+#		else:
+#			item_list.modulate.a = 0
 		$"%DirectConnectWarning".hide()
 		$"%PublicButton".pressed = true
+		if experimental_mode:
+			$"%PublicButton".pressed = false
+			$"%PublicButton".disabled = true
 		$"%ServerList".show()
 		$"%RoomCodeDisplay".hide()
 		$"%NetworkStartButton".hide()

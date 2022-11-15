@@ -2,12 +2,12 @@ extends CharacterState
 
 var started_falling = false
 
-func _frame_0():
+func _enter():
+	host.start_invulnerability()
 	host.start_projectile_invulnerability()
 	host.opponent.reset_combo()
 	started_falling = false
 	host.use_burst()
-	host.start_invulnerability()
 
 func _frame_15():
 	host.end_invulnerability()
@@ -19,6 +19,8 @@ func _tick():
 	host.apply_forces()
 	if current_tick > 15:
 		host.end_invulnerability()
+	else:
+		host.start_invulnerability()
 
 func _exit():
 	host.end_projectile_invulnerability()

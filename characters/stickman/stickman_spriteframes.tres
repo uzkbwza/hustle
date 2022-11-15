@@ -104,7 +104,7 @@ animations = [ {
 "name": "AirAttack",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 72 ) ],
+"frames": [ ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 72 ) ],
 "loop": true,
 "name": "AirFireball",
 "speed": 5.0
@@ -144,12 +144,12 @@ animations = [ {
 "name": "DoubleJump",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 11 ) ],
+"frames": [ ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 11 ) ],
 "loop": true,
 "name": "DropKick",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 70 ) ],
+"frames": [ ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 59 ), ExtResource( 70 ) ],
 "loop": true,
 "name": "Fireball",
 "speed": 5.0
@@ -254,7 +254,7 @@ animations = [ {
 "name": "NunChukLight",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 95 ) ],
+"frames": [ ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 96 ), ExtResource( 95 ) ],
 "loop": true,
 "name": "NunChukLightHigh",
 "speed": 5.0

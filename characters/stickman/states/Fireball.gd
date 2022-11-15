@@ -1,7 +1,7 @@
 extends CharacterState
 
 const MOMENTUM_REDUCTION_X = "0.75"
-const MOMENTUM_REDUCTION_Y = "0.25"
+const MOMENTUM_REDUCTION_Y = "0.75"
 
 export(PackedScene) var projectile
 export var projectile_x = 16
@@ -22,7 +22,7 @@ func _frame_0():
 		speed_modifier = fixed.round(fixed.mul(fixed.sub(fixed.div(str(data.x), "100"), "0.5"), speed_modifier_amount))
 	projectile_spawned = false
 
-func _frame_8():
+func _frame_4():
 #	host.update_facing()
 	projectile_spawned = true
 	var object = host.spawn_object(projectile, projectile_x, projectile_y, true, {"speed_modifier": speed_modifier})

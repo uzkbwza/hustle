@@ -27,8 +27,12 @@ const MIN_STALE_MODIFIER = "0.2"
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
 const HITLAG_COLLISION_TICKS = 4
+const PROJECTILE_PERFECT_PARRY_WINDOW = 2
 
 const MAX_GROUNDED_HITS = 7
+
+const PARRY_CHIP_DIVISOR = 3
+const PARRY_KNOCKBACK_DIVISOR = "3"
 
 const GUTS_REDUCTIONS = {
 	"1": "1",
@@ -100,6 +104,7 @@ var turbo_mode = false
 var infinite_resources = false
 var one_hit_ko = false
 var burst_enabled = true
+var always_perfect_parry = false
 
 var trail_hp: int = MAX_HEALTH
 var hp: int = 0
@@ -189,10 +194,10 @@ func is_you():
 
 func _ready():
 	sprite.animation = "Wait"
-
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "reverse_state", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
+	add_to_group("Fighter")
 
 func gain_burst_meter():
 	if !burst_enabled:
@@ -218,6 +223,14 @@ func use_burst():
 		return
 	bursts_available -= 1
 	refresh_air_movements()
+
+func use_burst_meter(amount):
+	if infinite_resources:
+		return
+	if bursts_available > 0:
+		bursts_available = 0
+		burst_meter = MAX_BURST_METER
+	burst_meter -= amount
 
 func use_super_bar():
 	if infinite_resources:
@@ -281,7 +294,7 @@ func incr_combo():
 	combo_count += 1
 
 func is_colliding_with_opponent():
-	return (colliding_with_opponent or (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS) and current_state().state_name != "Grabbed"
+	return (colliding_with_opponent or (current_state() is CharacterHurtState and (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS) and current_state().state_name != "Grabbed")
 
 func thrown_by(hitbox: ThrowBox):
 	emit_signal("got_hit")
@@ -329,16 +342,26 @@ func hit_by(hitbox):
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
-	#	state_interruptable = false
+
 		busy_interrupt = true
 		can_nudge = true
-	#	reset_combo()
+
 		emit_signal("got_hit")
 		take_damage(hitbox.damage)
 		state_tick()
 	else:
 		parried = true
 		opponent.got_parried = true
+		var host = objs_map[hitbox.host]
+		var projectile = !host.is_in_group("Fighter")
+		var perfect_parry
+		if !projectile:
+			perfect_parry = always_perfect_parry or (host and current_state().current_tick >= host.current_state().current_tick)
+		else:
+			perfect_parry = always_perfect_parry or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW)
+#			print("parrying projectile")
+#		print("perfect parry: " + str(perfect_parry))
+#		print("me: %d, opponent: %d" % [current_state().current_tick, host.current_state().current_tick])
 #		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
 #		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
 		hitlag_ticks = 0
@@ -348,12 +371,29 @@ func hit_by(hitbox):
 		
 		if !particle_location:
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
-		current_state().parry()
-		gain_super_meter(PARRY_METER)
-		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
-		play_sound("Parry")
-		play_sound("Parry2")
-		emit_signal("parried")
+		current_state().parry(perfect_parry)
+		if !perfect_parry:
+			take_damage(hitbox.damage / PARRY_CHIP_DIVISOR)
+			apply_force_relative(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), "0")
+			gain_super_meter(PARRY_METER / 3)
+			opponent.gain_super_meter(PARRY_METER / 3)
+			if !projectile:
+				current_state().anim_length = opponent.current_state().anim_length
+				current_state().endless = opponent.current_state().endless
+				current_state().iasa_at = opponent.current_state().iasa_at
+#			for i in range(opponent.current_state().anim_length):
+#				if i > current_state().current_tick and i in opponent.current_state().hitbox_start_frames:
+#					current_state().anim_length = i
+			spawn_particle_effect(preload("res://fx/FlawedParryEffect.tscn"), get_pos_visual() + particle_location)
+			parried = false
+			play_sound("Block")
+			play_sound("Parry")
+		else:
+			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
+			gain_super_meter(PARRY_METER)
+			play_sound("Parry2")
+			play_sound("Parry")
+			emit_signal("parried")
 
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -421,8 +461,6 @@ func process_action():
 					"data": queued_data,
 					"extra": queued_extra,
 				}
-#			else:
-#				queued_action = null
 	if queued_action:
 		if queued_action in state_machine.states_map:
 			state_machine.queue_state(queued_action, queued_data)
@@ -495,8 +533,8 @@ func tick():
 				can_nudge = false
 	else:
 		if parried:
-			state_interruptable = true
-			if current_state().get("parry_active"):
+#			state_interruptable = true
+#			if current_state().get("parry_active"):
 				current_state().parry_active = false
 				parried = false
 		state_tick()

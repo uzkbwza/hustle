@@ -21,18 +21,19 @@ func _frame_0():
 	move_x_modifier = abs(data.x) * x_modifier_amount
 	move_y_modifier = data.y * y_modifier_amount
 
+func _frame_11():
+	host.apply_force_relative(move_x + move_x_modifier, move_y + move_y_modifier)
+
 func _frame_12():
 #	host.update_facing()
 	moving = true
 	host.reset_momentum()
-	host.apply_force_relative(move_x + move_x_modifier, move_y + move_y_modifier)
 
 func _tick():
 	if moving:
 		host.move_directly_relative(move_x + move_x_modifier, move_y + move_y_modifier)
 	else:
 		host.apply_forces()
-
 	if host.is_grounded():
 		host.reset_momentum()
 		host.apply_force_relative((move_x + move_x_modifier) / 2, 0)

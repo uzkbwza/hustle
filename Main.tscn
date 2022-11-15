@@ -732,6 +732,7 @@ align = 1
 valign = 1
 
 [node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2

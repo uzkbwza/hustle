@@ -3,6 +3,7 @@ extends Node
 var frames = {
 	1: {},
 	2: {},
+	"finished": false,
 }
 
 var playback = false setget set_playback
@@ -18,10 +19,14 @@ func init():
 	frames = {
 		1: {},
 		2: {},
+		"finished": false,
 	}
 
+func frame_ids():
+	return [1, 2]
+
 func cut_replay(last_frame):
-	for id in frames.keys():
+	for id in frame_ids():
 		for frame in frames[id].keys():
 			if frame > last_frame:
 				frames[id].erase(frame)
@@ -31,7 +36,7 @@ func undo():
 		return
 	var last_frame = 0
 	var last_id = 1
-	for id in frames.keys():
+	for id in frame_ids():
 		for frame in frames[id].keys():
 			if frame > last_frame:
 				last_frame = frame

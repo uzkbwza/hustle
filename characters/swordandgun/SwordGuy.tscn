@@ -1,4 +1,4 @@
-[gd_scene load_steps=231 format=2]
+[gd_scene load_steps=242 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=2]
@@ -208,6 +208,9 @@
 [ext_resource path="res://sound/common/jump1.wav" type="AudioStream" id=206]
 [ext_resource path="res://sound/common/explosion2.wav" type="AudioStream" id=207]
 [ext_resource path="res://fx/JumpParticle.tscn" type="PackedScene" id=208]
+[ext_resource path="res://characters/swordandgun/BackSlash.gd" type="Script" id=209]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/back_slash.png" type="Texture" id=210]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash2.png" type="Texture" id=211]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter3.png" type="Texture" id=212]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter5.png" type="Texture" id=213]
 [ext_resource path="res://characters/swordandgun/sprites/ankle_cutter1.png" type="Texture" id=214]
@@ -227,6 +230,14 @@
 [ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down11.png" type="Texture" id=228]
 [ext_resource path="res://characters/swordandgun/sprites/triple_ass_smacker_down9.png" type="Texture" id=229]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/3combo_down.png" type="Texture" id=230]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash1.png" type="Texture" id=231]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash6.png" type="Texture" id=232]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash3.png" type="Texture" id=233]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash4.png" type="Texture" id=234]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash7.png" type="Texture" id=235]
+[ext_resource path="res://characters/swordandgun/sprites/back_slash5.png" type="Texture" id=236]
+[ext_resource path="res://characters/swordandgun/sounds/swing4.wav" type="AudioStream" id=237]
+[ext_resource path="res://sound/common/explosion1.wav" type="AudioStream" id=238]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -270,6 +281,11 @@ animations = [ {
 "frames": [ ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ) ],
 "loop": true,
 "name": "AnkleCutter",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 231 ), ExtResource( 231 ), ExtResource( 211 ), ExtResource( 211 ), ExtResource( 233 ), ExtResource( 233 ), ExtResource( 234 ), ExtResource( 234 ), ExtResource( 234 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 235 ), ExtResource( 235 ), ExtResource( 235 ), ExtResource( 235 ) ],
+"loop": true,
+"name": "BackSlash",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 52 ) ],
@@ -447,6 +463,11 @@ animations = [ {
 "name": "LightningSlice",
 "speed": 60.0
 }, {
+"frames": [  ],
+"loop": true,
+"name": "New Anim",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 13 ) ],
 "loop": true,
 "name": "NunChukHeavy",
@@ -568,8 +589,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "3ComboDown"
-frame = 14
+animation = "BackSlash"
+frame = 8
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1382,7 +1403,7 @@ data_ui_scene = ExtResource( 102 )
 button_texture = ExtResource( 137 )
 air_type = 2
 uses_air_movement = true
-iasa_at = 9
+iasa_at = 10
 self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedMovement
@@ -1558,29 +1579,104 @@ knockdown_extends_hitstun = false
 start_tick = 12
 active_ticks = 2
 
-[node name="DashStartup" parent="StateMachine" index="37"]
+[node name="BackSlash" type="Node2D" parent="StateMachine" index="27"]
+script = ExtResource( 209 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 35
+force_dir_x = "-1.0"
+force_speed = "5.0"
+force_tick = 6
+type = 2
+button_texture = ExtResource( 210 )
+flip_icon = false
+self_hit_cancellable = false
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSpecial
+GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/BackSlash" index="0"]
+script = ExtResource( 83 )
+x = 25
+y = -26
+width = 15
+height = 14
+damage = 80
+hitstun_ticks = 19
+hitlag_ticks = 7
+hits_vs_grounded = false
+group = 1
+hit_sound = ExtResource( 179 )
+dir_x = "-1.0"
+knockback = "14.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+start_tick = 5
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/BackSlash" index="1"]
+script = ExtResource( 83 )
+x = 10
+y = -56
+width = 47
+height = 27
+damage = 80
+hitstun_ticks = 33
+hits_vs_grounded = false
+priority = 1
+whiff_sound = ExtResource( 237 )
+hit_sound = ExtResource( 145 )
+dir_x = "-1.0"
+knockback = "8.0"
+start_tick = 7
+active_ticks = 3
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/BackSlash" index="2"]
+script = ExtResource( 83 )
+x = -41
+y = -58
+width = 4
+height = 4
+damage = 160
+hitstun_ticks = 33
+hitlag_ticks = 13
+hits_vs_grounded = false
+priority = 2
+screenshake_amount = 7
+whiff_sound = ExtResource( 237 )
+hit_sound = ExtResource( 238 )
+dir_x = "-1.0"
+dir_y = "0.0"
+knockback = "12.0"
+start_tick = 9
+active_ticks = 1
+
+[node name="DashStartup" parent="StateMachine" index="38"]
 title = "Walk"
 interrupt_from_string = "GroundedMovement
 Grounded
 Dash"
 
-[node name="DashForward" parent="StateMachine" index="38"]
+[node name="DashForward" parent="StateMachine" index="39"]
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="39"]
+[node name="DashBackward" parent="StateMachine" index="40"]
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="Jump" parent="StateMachine" index="41"]
+[node name="Jump" parent="StateMachine" index="42"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="43"]
+[node name="DoubleJump" parent="StateMachine" index="44"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="44"]
+[node name="AirDash" parent="StateMachine" index="45"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
@@ -1588,7 +1684,7 @@ interrupt_into_string = ""
 dir_x = "0"
 pushback_x = "False"
 
-[node name="AirGrab" parent="StateMachine" index="53"]
+[node name="AirGrab" parent="StateMachine" index="54"]
 land_cancel = true
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
@@ -1597,6 +1693,6 @@ pushback_x = "False"
 active_ticks = 1
 loop_active_ticks = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="58"]
+[node name="AirDownThrow" parent="StateMachine" index="59"]
 dir_x = "1.0"
 dir_y = "1.00"

@@ -35,7 +35,6 @@ export var hits_vs_aerial = true
 export(HitHeight) var hit_height = HitHeight.Mid
 
 export var _c_Grouping = 0
-# lower values have higher priority
 # when multiple hitboxes are overlapping an opponent, the highest-priority hitbox will be chosen
 export var priority: int = 0
 
@@ -102,6 +101,7 @@ var hit_objects = []
 var whiff_sound_player
 var hit_sound_player
 var hit_bass_sound_player
+
 
 func copy_to(hitbox: Hitbox):
 	for variable in ["x", "y", "pos_x", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
@@ -235,6 +235,7 @@ func get_dir_float(facing=false):
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
 func can_draw_box():
+	
 	if Global.get("show_hitboxes") and !Network.get("multiplayer_active"):
 		return (active and enabled and Global.show_hitboxes)
 	else:
@@ -256,3 +257,4 @@ func tick():
 	if tick > active_ticks:
 		if !always_on:
 			deactivate()
+	update()

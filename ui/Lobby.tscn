@@ -198,3 +198,16 @@ text = "Connecting to server..."
 
 [node name="RefreshTimer" type="Timer" parent="."]
 unique_name_in_owner = true
+
+[node name="MatchmakingDisabledLabel" type="Label" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -104.0
+margin_top = -95.5
+margin_right = 104.0
+margin_bottom = -84.5
+text = "public lobbies disabled in unstable version"
+align = 1

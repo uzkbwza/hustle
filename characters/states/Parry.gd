@@ -23,14 +23,17 @@ func _ready():
 	initial_parry_type = parry_type
 
 var parry_active = false
-
+var perfect = true
 
 func _frame_0():
+	endless = false
+	perfect = true
 	parry_type = initial_parry_type
 	parry_active = true
 	parry_tick = 0
 	parried = false
 	interruptible_on_opponent_turn = false
+	anim_length = 20
 #
 #func _frame_1():
 #	parry_active = true
@@ -43,14 +46,18 @@ func _frame_10():
 	if !parried:
 		parry_active = false
 
-func parry():
+func parry(perfect=true):
+	if perfect:
+		enable_interrupt()
+	else:
+		parry_type = ParryHeight.Both
 	interruptible_on_opponent_turn = true
-	enable_interrupt()
 	host.parried = true
-#	parry_type = ParryHeight.Both
-#	parry_tick = current_tick
+	self.perfect = perfect
 
 func can_parry_hitbox(hitbox):
+	if !perfect:
+		return true
 	if hitbox == null:
 		return false
 	if !active:
@@ -70,12 +77,9 @@ func _tick():
 	host.apply_fric()
 	if air_type == AirType.Aerial:
 		host.apply_grav()
-		if !parry_active and host.is_grounded():
-			queue_state_change("Landing", LANDING_LAG)
+#		if !parry_active and host.is_grounded():
+#			queue_state_change("Landing", LANDING_LAG)
 	host.apply_forces()
-#	if !parried:
-	if current_tick >= 10:
+
+	if current_tick >= 10 and perfect:
 		parry_active = false
-#	if parried:
-#		if current_tick >= parry_tick + AFTER_PARRY_ACTIVE_TICKS:
-#			parry_active = false

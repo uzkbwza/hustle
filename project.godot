@@ -52,7 +52,7 @@ _global_script_classes=[ {
 "base": "Node2D",
 "class": "CollisionBox",
 "language": "GDScript",
-"path": "res://mechanics/CollisionBox.gd"
+"path": "res://addons/collision_box/CollisionBox.gd"
 }, {
 "base": "ObjectState",
 "class": "DefaultFireball",

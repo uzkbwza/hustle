@@ -10,6 +10,9 @@ export var super_jump = false
 const SHORT_HOP_IASA = 7
 const FULL_HOP_IASA = 14
 const FULL_HOP_LENGTH = "0.7"
+const SUPER_JUMP_SPEED = "17.0"
+const BASE_JUMP_SPEED = "0.5"
+const SUPER_JUMP_FORCES_END_TICK = 25
 
 var jump_tick = 1
 var squat
@@ -22,7 +25,7 @@ func jump():
 	var force = xy_to_dir(data["x"], data["y"])
 	var force_power = fixed.vec_mul(force.x, force.y, fixed.powu(fixed.vec_len(force.x, force.y), 2))
 	force = FixedVec2String.new(fixed.div(fixed.add(force_power.x, force.x), "2"), fixed.div(fixed.add(force_power.y, force.y), "2"))
-	force = fixed.vec_mul(force.x, force.y, speed)
+	force = fixed.vec_mul(force.x, force.y, fixed.add(speed, BASE_JUMP_SPEED) if !super_jump else SUPER_JUMP_SPEED)
 	if !super_jump:
 		spawn_particle_relative(particle_scene, Vector2(), Vector2(float(force.x), float(force.y)))
 	else:
@@ -39,7 +42,7 @@ func _frame_4():
 	if squat and !super_jump:
 		jump()
 
-func _frame_12():
+func _frame_7():
 	if super_jump:
 		jump()
 
@@ -53,7 +56,7 @@ func _frame_0():
 		jump_tick = 1
 		jump()
 	else:
-		jump_tick = 4 if !super_jump else 12
+		jump_tick = 4 if !super_jump else 7
 		anim_name = "Landing"
 
 	if !super_jump:
@@ -71,8 +74,7 @@ func _frame_0():
 
 func _tick():
 	if current_tick >= interrupt_frames[0]:
-		if !super_jump:
-			interruptible_on_opponent_turn = true
+		interruptible_on_opponent_turn = true
 	if current_tick >= jump_tick:
 		if "-" in force_x:
 			if host.get_facing() == "Right":
@@ -85,7 +87,7 @@ func _tick():
 			else:
 				anim_name = sprite_animation
 		host.apply_grav()
-		if !super_jump:
+		if !super_jump or fixed.gt(host.get_vel().y, "0") or current_tick > SUPER_JUMP_FORCES_END_TICK:
 			host.apply_forces()
 		else:
 			host.apply_forces_no_limit()

@@ -106,16 +106,17 @@ func setup_game_deferred(singleplayer, data):
 	game.connect("player_actionable", self, "_on_player_actionable")
 	game.connect("playback_requested", self, "_on_playback_requested")
 	
-	if Network.multiplayer_active:
-		data["user_data"] = {
-			"p1": Network.pid_to_username(1),
-			"p2": Network.pid_to_username(2),
-		}
-	else:
-		data["user_data"] = {
-			"p1": Global.get_player_data().username,
-			"p2": data.selected_characters[2]["name"],
-		}
+	if !data.has("user_data"):
+		if Network.multiplayer_active:
+			data["user_data"] = {
+				"p1": Network.pid_to_username(1),
+				"p2": Network.pid_to_username(2),
+			}
+		else:
+			data["user_data"] = {
+				"p1": Global.get_player_data().username,
+				"p2": data.selected_characters[2]["name"],
+			}
 	
 	game.start_game(singleplayer, data)
 	if data.has("turn_time"):
@@ -138,7 +139,6 @@ func setup_game_deferred(singleplayer, data):
 	$"%P1InfoContainer".move_child(p1_info_scene, 0)
 	$"%P2InfoContainer".add_child(p2_info_scene)
 	$"%P2InfoContainer".move_child(p2_info_scene, 0)
-	
 	
 func _on_ghost_button_toggled(toggled):
 	if toggled:

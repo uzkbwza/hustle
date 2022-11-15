@@ -70,7 +70,7 @@ particle_scene = ExtResource( 20 )
 spawn_particle_on_enter = true
 move_x = 0
 clash = false
-lifetime = 6000
+lifetime = 600
 fizzle_on_ground = false
 fizzle_on_walls = false
 

@@ -8,7 +8,7 @@ var force
 var accel
 
 
-func _frame_0():
+func _enter():
 	host.start_invulnerability()
 	
 	force = xy_to_dir(data.x, 0, speed, "1")
@@ -33,6 +33,8 @@ func _frame_13():
 		host.end_invulnerability()
 
 func _tick():
-	host.apply_force(accel.x, str(0))
-	host.apply_fric()
-	host.apply_forces()
+	host.colliding_with_opponent = false
+	if accel:
+		host.apply_force(accel.x, str(0))
+		host.apply_fric()
+		host.apply_forces()

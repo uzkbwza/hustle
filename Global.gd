@@ -1,6 +1,6 @@
 extends Node
 
-var VERSION = "0.2.0a"
+var VERSION = "0.2.0-unstable-8"
 
 var audio_player
 var music_enabled = true
@@ -107,7 +107,7 @@ func save_options():
 			"freeze_ghost_prediction": freeze_ghost_prediction,
 			"ghost_afterimages": ghost_afterimages,
 			"fullscreen": fullscreen,
-			"show_hitboxes": fullscreen,
+			"show_hitboxes": show_hitboxes,
 			"show_playback_controls": show_playback_controls,
 		}
 	})

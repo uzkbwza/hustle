@@ -133,7 +133,7 @@ func init(game, id):
 		for state in fighter.action_cancels[category]:
 			if state.show_in_menu and not state in states:
 				states.append(state)
-				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene, BUTTON_SCENE, state.button_texture, state.reversible)
+				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene, BUTTON_SCENE, state.button_texture, state.reversible, state.flip_icon)
 #	nudge_button = create_button("Nudge", "DI", "Defense", NUDGE_SCENE)
 	sort_categories()
 	connect("action_selected", fighter, "on_action_selected")
@@ -183,7 +183,7 @@ func category_sort_func(a, b):
 	return cat_map[a.label_text] < cat_map[b.label_text]
 #	return false
 
-func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true):
+func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true, flip_icon=true):
 	var button
 	var data_node
 	button = button_scene.instance()
@@ -195,6 +195,9 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 		create_category(category)
 	var container = button_category_containers[category]
 	container.add_button(button)
+	if button.get("flip_icon") != null:
+		button.flip_icon = flip_icon
+	
 	button.set_player_id(player_id)
 	if data_scene:
 		data_node = data_scene.instance()

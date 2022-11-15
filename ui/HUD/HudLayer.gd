@@ -49,7 +49,7 @@ var p2_prev_super = 0
 func _ready():
 	hide()
 	$"%WinLabel".hide()
-	
+
 func init(game):
 	self.game = game
 	show()
@@ -144,21 +144,23 @@ func _physics_process(_delta):
 			drain_health_trail(p1_ghost_health_bar_trail, p1_ghost.trail_hp)
 			drain_health_trail(p2_ghost_health_bar_trail, p2_ghost.trail_hp)
 		else:
-			p1_ghost_health_bar.value = p1_healthbar.value
-			p2_ghost_health_bar.value = p2_healthbar.value
-			p1_ghost_health_bar_trail.value = p1_health_bar_trail.value
-			p2_ghost_health_bar_trail.value = p2_health_bar_trail.value
+			p1_ghost_health_bar.value = 0
+			p2_ghost_health_bar.value = 0
+			p1_ghost_health_bar_trail.value = 0
+			p2_ghost_health_bar_trail.value = 0
 			p1_ghost_health_bar.visible = false
 			p2_ghost_health_bar.visible = false
 		
 		if !ReplayManager.playback or p1.combo_count > 1:
-			$"%P1DmgLabel".text = str(p1.combo_damage) + " DMG"
+			$"%P1DmgLabel".text = str(p1.combo_damage * 10) + " DMG"
 		else:
 			$"%P1DmgLabel".text = ""
+		$"%P1DmgLabel".visible = p1.combo_damage > 0
 		if !ReplayManager.playback or p2.combo_count > 1:
-			$"%P2DmgLabel".text = str(p2.combo_damage) + " DMG"
+			$"%P2DmgLabel".text = str(p2.combo_damage * 10) + " DMG"
 		else:
 			$"%P2DmgLabel".text = ""
+		$"%P2DmgLabel".visible = p2.combo_damage > 0
 
 		$"%P1HitLabel".visible = p1.combo_count >= 2
 		$"%P2HitLabel".visible = p2.combo_count >= 2

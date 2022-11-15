@@ -28,7 +28,7 @@ func _frame_0():
 
 func _tick():
 #	host.apply_grav()
-	host.apply_full_fric(fric)
+	host.apply_x_fric(fric)
 	host.apply_forces_no_limit()
 	if host.is_grounded():
 		return "Landing"

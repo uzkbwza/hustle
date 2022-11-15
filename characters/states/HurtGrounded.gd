@@ -28,7 +28,7 @@ func _enter():
 	host.apply_force(force_x, force_y)
 
 func _tick():
-	host.apply_full_fric(GROUND_FRIC)
+	host.apply_x_fric(GROUND_FRIC)
 	host.apply_forces_no_limit()
 	if current_tick >= hitstun:
 		if can_act:

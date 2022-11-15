@@ -10,6 +10,9 @@ export var width: int = 20
 export var height: int = 20
 export var can_draw = true
 
+#var editor_can_draw = false
+var editor_selected = false
+
 var pos_x = 0
 var pos_y = 0
 
@@ -124,19 +127,20 @@ func box_draw():
 		draw_rect(rect, stroke, false)
 
 func can_draw_box():
+	if editor_selected:
+		return true
 	if Network.get("multiplayer_active"):
 		return false
 	if !can_draw:
 		return false
 	if Global.get("show_hitboxes"):
 		return Global.show_hitboxes
-	else:
-		if Engine.editor_hint:
-#			return (self in EditorPlugin.new().get_editor_interface().get_selection().get_selected_nodes())
-			pass
+
 
 func _process(delta):
 	update()
+	if Engine.editor_hint:
+		editor_selected = false
 
 func _draw():
 	if !can_draw_box():

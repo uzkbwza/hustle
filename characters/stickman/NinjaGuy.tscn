@@ -102,10 +102,10 @@ frames = ExtResource( 2 )
 animation = "NunChukLightHigh"
 frame = 6
 
-[node name="Super2" parent="Sounds" index="3"]
+[node name="Super2" parent="Sounds" index="4"]
 pitch_variation = 0.1
 
-[node name="Super3" parent="Sounds" index="4"]
+[node name="Super3" parent="Sounds" index="5"]
 pitch_variation = 0.03
 
 [node name="Wait" parent="StateMachine" index="1"]
@@ -115,7 +115,11 @@ change_stance_to = "Normal"
 interrupt_exceptions_string = "WhiffCancel"
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
+hitstun_ticks = 24
 knockback = "24.0"
+
+[node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
+hitstun_ticks = 24
 
 [node name="DashForward" parent="StateMachine" index="13"]
 dash_speed = 15
@@ -138,7 +142,7 @@ script = ExtResource( 5 )
 __meta__ = {
 "_editor_description_": ""
 }
-anim_length = 12
+anim_length = 11
 reset_momentum = true
 sfx = ExtResource( 43 )
 sfx_tick = 8
@@ -155,7 +159,7 @@ speed_modifier_amount = "3.5"
 
 [node name="AirFireball" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 5 )
-anim_length = 12
+anim_length = 11
 sfx = ExtResource( 43 )
 sfx_tick = 8
 title = "Shuriken"
@@ -163,7 +167,6 @@ type = 2
 data_ui_scene = ExtResource( 22 )
 button_texture = ExtResource( 33 )
 air_type = 1
-self_interruptable = false
 interrupt_from_string = "AerialSpecial
 Aerial"
 interrupt_into_string = "Aerial"
@@ -439,10 +442,10 @@ AerialSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Uppercut" index="0"]
 script = ExtResource( 1 )
-x = 16
+x = 12
 y = -14
-width = 16
-height = 18
+width = 12
+height = 13
 damage = 120
 hitstun_ticks = 52
 hitlag_ticks = 10
@@ -450,7 +453,6 @@ victim_hitlag = 10
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
 dir_y = "-2.0"
-knockback = "12.0"
 pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -654,10 +656,10 @@ change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLightHigh" index="0"]
 script = ExtResource( 1 )
-x = 31
-y = -41
-width = 22
-height = 10
+x = 15
+y = -30
+width = 11
+height = 11
 damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
@@ -665,7 +667,39 @@ hits_vs_grounded = false
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
-start_tick = 7
+start_tick = 6
+active_ticks = 3
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/NunChukLightHigh" index="1"]
+script = ExtResource( 1 )
+x = 28
+y = -39
+width = 11
+height = 11
+damage = 100
+hitstun_ticks = 23
+victim_hitlag = 4
+hits_vs_grounded = false
+hit_sound = ExtResource( 42 )
+dir_x = "0.20"
+knockback = "6.0"
+start_tick = 6
+active_ticks = 3
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukLightHigh" index="2"]
+script = ExtResource( 1 )
+x = 38
+y = -44
+width = 12
+height = 15
+damage = 100
+hitstun_ticks = 23
+victim_hitlag = 4
+hits_vs_grounded = false
+hit_sound = ExtResource( 42 )
+dir_x = "0.20"
+knockback = "6.0"
+start_tick = 6
 active_ticks = 3
 
 [node name="NunChukHeavy" type="Node2D" parent="StateMachine" index="40"]
@@ -977,8 +1011,8 @@ active_ticks = 2
 script = ExtResource( 3 )
 endless = true
 enter_force_dir_x = "0.75"
-enter_force_dir_y = "-1.0"
-enter_force_speed = "4.0"
+enter_force_dir_y = "-0.60"
+enter_force_speed = "7.0"
 reset_momentum = true
 title = "Drop Kick"
 type = 1
@@ -1003,7 +1037,7 @@ hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
 knockback = "5.0"
-start_tick = 14
+start_tick = 11
 
 [node name="AirAttack" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 3 )

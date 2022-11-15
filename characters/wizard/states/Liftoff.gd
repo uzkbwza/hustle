@@ -7,6 +7,12 @@ onready var hitbox = $Hitbox
 var particle_x
 var particle_y
 
+func _frame_0():
+	land_cancel = false
+
+
+
+
 func _frame_3():
 	host.reset_momentum()
 #	host.move_directly(0, -1)
@@ -25,9 +31,13 @@ func _frame_3():
 	host.liftoff_sprite.show()
 	host.liftoff_sprite.rotation = float(fixed.vec_to_angle(fixed.mul(dir.x, str(host.get_facing_int())), dir.y)) + TAU/4
 #	$"%LiftoffParticles".set_enabled(true)
-
+	land_cancel = true
+	
 func _tick():
 	host.apply_forces_no_limit()
+	if current_tick > 4:
+		if host.is_grounded():
+			return "Landing"
 	
 func _exit():
 	host.liftoff_sprite.hide()
