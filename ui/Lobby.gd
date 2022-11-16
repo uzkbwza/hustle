@@ -26,6 +26,7 @@ var experimental_mode = false
 var servers = [
 	"ws://168.235.81.168:52450",
 	"ws://168.235.86.185:52450",
+	"ws://176.56.237.81:52450",
 	"ws://localhost:52450"
 ]
 

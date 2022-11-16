@@ -335,6 +335,7 @@ func activate():
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:
+#			Network.rpc_("my_turn_started")
 			$"%YouLabel".show()
 			modulate = Color.white
 		else:
@@ -461,3 +462,9 @@ func activate():
 		continue_button.set_disabled(false)
 	button_pressed = false
 	send_ui_action("Continue")
+	yield(get_tree().create_timer(randf() * 0.5), "timeout")
+#	if user_facing:
+#		_on_submit_pressed()
+#	if user_facing and Network.multiplayer_active:
+#			yield(Network, "opponent_turn_started")
+#			$"%SelectButton".disabled = true

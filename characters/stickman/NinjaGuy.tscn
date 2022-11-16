@@ -130,6 +130,11 @@ dash_speed = 9
 [node name="Jump" parent="StateMachine" index="16"]
 y_modifier = "1.33"
 
+[node name="AirDash" parent="StateMachine" index="19"]
+interrupt_into_string = "Aerial
+Grounded
+Fall"
+
 [node name="WhiffInstantCancel" parent="StateMachine" index="21"]
 hit_cancel_exceptions_string = ""
 

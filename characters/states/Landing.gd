@@ -12,5 +12,6 @@ func _frame_0():
 	iasa_at = lag - 1
 
 func _tick():
-	host.apply_fric()
+	if current_tick > 4:
+		host.apply_fric()
 	host.apply_forces()

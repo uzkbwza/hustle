@@ -1,6 +1,6 @@
 extends Node
 
-var VERSION = "0.2.0-unstable-8"
+var VERSION = "0.2.0-unstable-9"
 
 var audio_player
 var music_enabled = true
@@ -49,7 +49,6 @@ func set_music_enabled(on):
 	else:
 		audio_player.stop()
 		pass
-
 
 func set_playback_controls(on):
 	show_playback_controls = on

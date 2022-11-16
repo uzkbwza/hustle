@@ -33,6 +33,7 @@ var direct_connect = false
 var rematch_menu = false
 var ids_synced = false
 var turn_synced = false
+var send_ready = false
 
 var ticks = {
 	1: null,
@@ -51,6 +52,8 @@ var player_ids = {}
 var rematch_requested = {}
 var hole_punch: HolePunch
 var rng = BetterRng.new()
+
+var last_action = null
 
 var session_id
 var session_username
@@ -75,6 +78,7 @@ signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
 signal check_players_ready()
+signal opponent_turn_started()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -198,6 +202,10 @@ func _reset():
 	direct_connect = false
 	rematch_menu = false
 
+	last_action = null
+
+	send_ready = false
+
 	ticks = {
 		1: null,
 		2: null
@@ -305,7 +313,6 @@ remote func player_disconnected(id):
 func _process(_delta):
 	if multiplayer_client:
 		multiplayer_client.poll()
-	pass
 
 # Callback from SceneTree, only for clients (not server).
 func _connected_ok():
@@ -376,6 +383,9 @@ func is_host():
 		return get_tree().is_network_server()
 	return multiplayer_host
 
+remote func my_turn_started():
+	emit_signal("opponent_turn_started")
+
 func assign_players():
 	if is_host():
 		var network_ids = {}
@@ -420,10 +430,13 @@ remote func receive_match_code(code):
 
 remote func send_action(action, data, extra, id):
 		print("received action: " + str(action))
-		action_inputs[id]["action"] = null
-		action_inputs[id]["data"] = null
-		action_inputs[id]["extra"] = null
+#		action_inputs[id]["action"] = null
+#		action_inputs[id]["data"] = null
+#		action_inputs[id]["extra"] = null
 		player_objects[id].on_action_selected(action, data, extra)
+
+remote func check_tick_sync(tick):
+	pass
 
 remotesync func send_chat_message(player_id, message):
 	emit_signal("chat_message_received", player_id, message)
@@ -436,6 +449,7 @@ remotesync func end_turn_simulation(tick, player_id):
 	ticks[player_id] = tick
 	if ticks[1] == ticks[2]:
 		turn_synced = true
+		send_ready = false
 #		if rng.percent(60):
 		emit_signal("player_turns_synced")
 
@@ -446,9 +460,11 @@ remotesync func multiplayer_turn_ready(id):
 	if turn_ready(id):
 		print("sending action")
 		var action_input = action_inputs[player_id]
+		last_action = action_input
 		rpc_("send_action", [action_input["action"], action_input["data"], action_input["extra"], player_id], "remote")
 		emit_signal("turn_ready")
 		turn_synced = false
+		send_ready = true
 
 remotesync func check_players_ready():
 	emit_signal("check_players_ready")

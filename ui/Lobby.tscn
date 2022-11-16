@@ -43,9 +43,9 @@ unique_name_in_owner = true
 margin_top = 124.0
 margin_right = 208.0
 margin_bottom = 137.0
-text = "Dojo 1"
+text = "Dojo 1 (NY)"
 align = 1
-items = [ "Dojo 1", null, false, 0, null, "Dojo 2", null, false, 1, null, "Local Dojo (coming soon)", null, true, 2, null ]
+items = [ "Dojo 1 (NY)", null, false, 0, null, "Dojo 2 (LA)", null, false, 1, null, "Dojo 3 (EU)", null, false, 3, null, "Unofficial Dojo (coming soon)", null, true, 4, null ]
 selected = 0
 
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]

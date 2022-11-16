@@ -352,7 +352,7 @@ func tick():
 	if !game_finished:
 		if ReplayManager.playback:
 			if !ReplayManager.resimulating:
-				if current_tick > max_replay_tick and !ReplayManager.frames.finished:
+				if current_tick > max_replay_tick and !(ReplayManager.frames.has("finished") and ReplayManager.frames.finished):
 					ReplayManager.set_deferred("playback", false)
 			else:
 				if current_tick > ReplayManager.resim_tick:

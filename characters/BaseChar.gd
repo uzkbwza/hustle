@@ -412,6 +412,8 @@ func take_damage(damage: int):
 	hp -= damage
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
+	if hp < 0:
+		hp = 0
 
 func get_guts():
 	var current_guts = "1"
