@@ -78,7 +78,6 @@ signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
 signal check_players_ready()
-signal opponent_turn_started()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -382,9 +381,6 @@ func is_host():
 	if direct_connect:
 		return get_tree().is_network_server()
 	return multiplayer_host
-
-remote func my_turn_started():
-	emit_signal("opponent_turn_started")
 
 func assign_players():
 	if is_host():

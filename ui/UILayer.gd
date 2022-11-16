@@ -274,8 +274,8 @@ func on_player_actionable():
 #	if p2_turn_timer.wait_time == 0:
 #		 p2_turn_timer.wait_time = MIN_TURN_TIME
 	if Network.multiplayer_active:
-		Network.rpc_("my_turn_started")
-		yield(Network, "opponent_turn_started")
+#		Network.rpc_("my_turn_started")
+#		yield(Network, "opponent_turn_started")
 		print("starting turn timer")
 #		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
 		if !game_started:
