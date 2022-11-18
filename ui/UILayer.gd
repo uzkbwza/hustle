@@ -209,7 +209,7 @@ func _on_rematch_button_pressed():
 	$"%RematchButton".disabled = true
 
 func _on_game_playback_requested():
-	if Network.multiplayer_active:
+	if Network.multiplayer_active and !ReplayManager.resimulating:
 		$PostGameButtons.show()
 		$"%RematchButton".show()
 		Network.rematch_menu = true

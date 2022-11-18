@@ -542,6 +542,8 @@ max_air_speed = "8"
 max_fall_speed = "6.5"
 extra_state_variables = "hover_ticks_left
 hovering
+fast_falling
+hover_left
 orb_projectile
 can_flame_wave
 can_vile_clutch"

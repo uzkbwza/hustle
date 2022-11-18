@@ -13,4 +13,4 @@ func _tick():
 		obj.apply_force(force.x, force.y)
 		
 func is_usable():
-	return .is_usable() and !host.bomb_thrown
+	return .is_usable() and !host.bomb_thrown and host.sticky_bombs_left > 0

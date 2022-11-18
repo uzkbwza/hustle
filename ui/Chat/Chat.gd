@@ -19,7 +19,7 @@ func line_edit_focus():
 
 func on_chat_message_received(player_id: int, message: String):
 	var color = "ff333d" if player_id == 2 else "1d8df5"
-	var text = ("<[color=#%s]" % [color]) + Network.pid_to_username(player_id) + "[/color]>: " + message
+	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + Network.pid_to_username(player_id) + "[/color]>: " + message)
 	var node = RichTextLabel.new()
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
@@ -40,7 +40,6 @@ func on_message_ready(message):
 		else:
 			$"%TooLongLabel".show()
 			$"%TooLongLabel".text = "message too long (" + str(len(message)) + "/1000)"
-	
 
 func toggle():
 	visible = !visible

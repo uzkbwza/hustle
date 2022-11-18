@@ -14,6 +14,7 @@ var hover_left = 0
 var hover_drain_amount = 5
 var hover_gain_amount = 3
 var hovering = false
+var ghost_started_hovering = false
 var fast_falling = false
 
 var orb_projectile
@@ -78,19 +79,24 @@ func tick():
 
 func process_extra(extra):
 	.process_extra(extra)
-	if extra.has("hover"):
-		if can_hover():
-			if !hovering and extra["hover"]:
-				play_sound("FastFall")
-			hovering = extra["hover"]
-		else:
-			hovering = false
+	if can_hover():
+		if extra.has("hover"):
+			if is_ghost and ghost_started_hovering:
+				hovering = true
+			else:
+				if !hovering and extra["hover"]:
+					play_sound("FastFall")
+				hovering = extra["hover"]
+				if hovering and is_ghost:
+					ghost_started_hovering = true
+	else:
+		hovering = false
 	if extra.has("fast_fall"):
 		if extra["fast_fall"]:
 			if extra["fast_fall"] and !fast_falling:
 				play_sound("FastFall")
 				set_vel(get_vel().x, FAST_FALL_SPEED)
-			fast_falling = extra["fast_fall"]
+				fast_falling = extra["fast_fall"]
 
 func can_hover():
 	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

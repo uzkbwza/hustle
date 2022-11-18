@@ -145,7 +145,7 @@ func _on_host_pressed():
 	join_button.hide()
 	host_button.hide()
 	$"%RoomCodeEdit".hide()
-	var player_name = name_edit.text
+	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
 		Network.host_game_direct(player_name, port_edit.text)
 	else:
@@ -167,7 +167,7 @@ func _on_join_pressed():
 	join_button.disabled = true
 #	name_edit.editable = false
 	name_edit.hide()
-	var player_name = name_edit.text
+	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
 		var ip = ip_edit.text
 		var port = port_edit.text
@@ -185,7 +185,7 @@ func _on_join_pressed():
 func save_username():
 	if name_edit.text.strip_edges() == "":
 		name_edit.text = "username"
-	Global.save_player_data({"username": name_edit.text.strip_edges()})
+	Global.save_player_data({"username": ProfanityFilter.filter(name_edit.text.strip_edges())})
 
 func _on_match_clicked(index):
 	if show_match_list:

@@ -154,6 +154,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/PlayerInfo.gd"
 }, {
+"base": "Node",
+"class": "ProfanityFilter",
+"language": "GDScript",
+"path": "res://profanity_filter.gd"
+}, {
 "base": "Reference",
 "class": "QuadTree",
 "language": "GDScript",
@@ -239,6 +244,7 @@ _global_script_class_icons={
 "ParticleEffect": "",
 "PlayerExtra": "",
 "PlayerInfo": "",
+"ProfanityFilter": "",
 "QuadTree": "",
 "StateInterface": "",
 "StateMachine": "",
