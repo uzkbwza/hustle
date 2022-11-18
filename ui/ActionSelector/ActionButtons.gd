@@ -3,6 +3,7 @@ extends Control
 signal action_selected(action, data, extra)
 signal turn_ended()
 signal action_clicked(action, data, extra)
+signal opponent_ready()
 
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
 const NUDGE_SCENE = preload("res://ui/ActionSelector/ActionUIData/NudgeActionUIData.tscn")
@@ -24,6 +25,7 @@ var current_extra = null
 var current_data = null
 var button_pressed = null
 var any_available_actions = false
+var waiting_for_opponent_ready = false
 var active = false
 var turbo_mode = false
 var game
@@ -335,7 +337,6 @@ func activate():
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:
-#			Network.rpc_("my_turn_started")
 			$"%YouLabel".show()
 			modulate = Color.white
 		else:
@@ -462,9 +463,9 @@ func activate():
 		continue_button.set_disabled(false)
 	button_pressed = false
 	send_ui_action("Continue")
-	yield(get_tree().create_timer(randf() * 0.5), "timeout")
-#	if user_facing:
-#		_on_submit_pressed()
+	yield(get_tree().create_timer(randf() * 2), "timeout")
+	if user_facing:
+		_on_submit_pressed()
 #	if user_facing and Network.multiplayer_active:
 #			yield(Network, "opponent_turn_started")
 #			$"%SelectButton".disabled = true

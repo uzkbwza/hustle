@@ -18,6 +18,7 @@ export(int) var time = 3000
 # var b = "text"
 
 signal player_actionable()
+signal player_actionable_network()
 signal simulation_continue()
 signal playback_requested()
 signal game_ended()
@@ -630,8 +631,8 @@ func process_tick():
 	if !Global.frame_advance:
 		if Global.playback_speed_mod > 0:
 			can_tick = real_tick % Global.playback_speed_mod == 0
-	if Network.multiplayer_active:
-		can_tick = true
+#	if Network.multiplayer_active:
+#		can_tick = true
 	
 	if !ReplayManager.playback:
 		if !is_waiting_on_player():
@@ -671,9 +672,10 @@ func process_tick():
 				player_actionable = true
 
 			if someones_turn:
-				if network_sync_tick != current_tick:
-					Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
-					network_sync_tick = current_tick
+				if Network.multiplayer_active:
+					if network_sync_tick != current_tick:
+						Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
+						network_sync_tick = current_tick
 	else:
 		if ReplayManager.resimulating:
 			snapping_camera = true

@@ -58,6 +58,8 @@ var last_action = null
 var session_id
 var session_username
 
+onready var timer = Timer.new()
+
 # Signals to let lobby GUI know what's going on.
 signal player_list_changed()
 signal connection_failed()
@@ -78,6 +80,7 @@ signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
 signal check_players_ready()
+signal opponent_ready()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -88,6 +91,10 @@ func _ready():
 	hole_punch = HolePunch.new()
 	hole_punch.connect("hole_punched", self, "_on_hole_punched", [], CONNECT_DEFERRED)
 	add_child(hole_punch)
+	timer.autostart = true
+	timer.one_shot = false
+	timer.connect("timeout", self, "_on_network_timer_timeout")
+	add_child(timer)
 	randomize()
 
 func rpc_(function_name: String, arg=null, type="remotesync"):
@@ -420,6 +427,14 @@ func stop_multiplayer():
 	if peer:
 		peer.close_connection()
 	_reset()
+
+func _on_network_timer_timeout():
+	pass
+
+
+remote func my_turn_started(player_id):
+	if player_id == opponent_player_id(player_id):
+		emit_signal("opponent_ready")
 
 remote func receive_match_code(code):
 	emit_signal("match_code_received")
