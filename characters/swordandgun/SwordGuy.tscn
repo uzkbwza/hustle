@@ -458,7 +458,7 @@ animations = [ {
 "name": "LassoReel",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 184 ), ExtResource( 184 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 186 ) ],
+"frames": [ ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 186 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 184 ), ExtResource( 184 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 185 ), ExtResource( 186 ) ],
 "loop": true,
 "name": "LightningSlice",
 "speed": 60.0
@@ -991,7 +991,7 @@ hit_sound = ExtResource( 179 )
 knockback = "2.0"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 17
+start_tick = 9
 active_ticks = 1
 
 [node name="LightningSliceCancel" type="Node2D" parent="StateMachine" index="7"]
@@ -1021,7 +1021,7 @@ cancel = true
 script = ExtResource( 83 )
 x = 128
 y = -16
-damage = 65
+damage = 40
 hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 10
@@ -1031,8 +1031,8 @@ hit_sound = ExtResource( 179 )
 knockback = "2.0"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 17
-active_ticks = 3
+start_tick = 7
+active_ticks = 1
 
 [node name="LassoPull" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 177 )
@@ -1403,7 +1403,7 @@ data_ui_scene = ExtResource( 102 )
 button_texture = ExtResource( 137 )
 air_type = 2
 uses_air_movement = true
-iasa_at = 10
+iasa_at = 9
 self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedMovement

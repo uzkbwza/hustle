@@ -158,12 +158,13 @@ func _on_sync_timer_request(id, time):
 		emit_signal("received_synced_time")
 
 func sync_timer(player_id):
-	if player_id == Network.player_id:
-		print("syncing timer")
-		var timer = p1_turn_timer
-		if player_id == 2:
-			timer = p2_turn_timer
-		Network.sync_timer(player_id, timer.time_left)
+	if Network.multiplayer_active:
+		if player_id == Network.player_id:
+			print("syncing timer")
+			var timer = p1_turn_timer
+			if player_id == 2:
+				timer = p2_turn_timer
+			Network.sync_timer(player_id, timer.time_left)
 
 func id_to_action_buttons(player_id):
 	if player_id == 1:
@@ -287,6 +288,7 @@ func on_player_actionable():
 #		Network.rpc_("my_turn_started")
 		while !(Network.can_open_action_buttons):
 			yield(get_tree(), "physics_frame")
+
 		print("starting turn timer")
 #		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
 		if !game_started:

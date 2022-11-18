@@ -68,6 +68,9 @@ func tick():
 						if hover_left <= 0:
 							hovering = false
 							hover_left = 0
+		if fast_falling:
+			if current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
+				fast_falling = false
 		else:
 			hover_left += hover_gain_amount
 			if hover_left > HOVER_AMOUNT:
@@ -91,12 +94,17 @@ func process_extra(extra):
 					ghost_started_hovering = true
 	else:
 		hovering = false
-	if extra.has("fast_fall"):
-		if extra["fast_fall"]:
-			if extra["fast_fall"] and !fast_falling:
-				play_sound("FastFall")
-				set_vel(get_vel().x, FAST_FALL_SPEED)
+	if can_fast_fall():
+		fast_falling = false
+		if extra.has("fast_fall"):
+			if extra["fast_fall"]:
+				if extra["fast_fall"] and !fast_falling:
+					play_sound("FastFall")
+					set_vel(get_vel().x, FAST_FALL_SPEED)
 				fast_falling = extra["fast_fall"]
-
+	else:
+		fast_falling = false
+func can_fast_fall():
+	return !is_grounded()
 func can_hover():
 	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

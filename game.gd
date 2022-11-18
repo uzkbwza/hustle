@@ -634,8 +634,8 @@ func process_tick():
 			can_tick = real_tick % Global.playback_speed_mod == 0
 	if Network.multiplayer_active and !ghost_tick:
 		can_tick = network_simulate_ready
-	if Network.player_id == 2:
-		can_tick = can_tick and (real_tick % 8 == 0)
+#	if Network.player_id == 2:
+#		can_tick = can_tick and (real_tick % 8 == 0)
 
 	if !ReplayManager.playback:
 		if !is_waiting_on_player():
@@ -675,7 +675,6 @@ func process_tick():
 				elif !is_ghost:
 					someones_turn = true
 				player_actionable = true
-
 			if someones_turn:
 				if Network.multiplayer_active:
 					if network_sync_tick != current_tick:
@@ -747,7 +746,7 @@ func _physics_process(_delta):
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")
-		if player_actionable and !is_ghost:
+		if player_actionable and !is_ghost and Network.multiplayer_active:
 			Network.sync_tick()
 		player_actionable = false
 	

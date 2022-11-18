@@ -179,7 +179,7 @@ animations = [ {
 "name": "GroundedKick",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 55 ), ExtResource( 55 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 53 ) ],
+"frames": [ ExtResource( 55 ), ExtResource( 55 ), ExtResource( 55 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 53 ) ],
 "loop": true,
 "name": "GroundedPunch",
 "speed": 5.0

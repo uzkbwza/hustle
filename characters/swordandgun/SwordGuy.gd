@@ -54,3 +54,4 @@ func _draw():
 		var draw_target = to_local(Vector2(obj_pos.x, obj_pos.y))
 		draw_target -= draw_target.normalized() * 8
 		draw_line(Vector2(0, -16), draw_target, Color("704137"), 2.0, false)
+

@@ -8,7 +8,6 @@ signal opponent_ready()
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
 const NUDGE_SCENE = preload("res://ui/ActionSelector/ActionUIData/NudgeActionUIData.tscn")
 const BUTTON_CATEGORY_CONTAINER_SCENE = preload("res://ui/ActionSelector/ButtonCategoryContainer.tscn")
-
 const BUTTON_CATEGORY_DISTANCE = 100
 
 export var player_id = 1
@@ -80,7 +79,6 @@ func _on_submit_pressed():
 	if current_action:
 		on_action_submitted(current_action, data)
 
-
 func timeout():
 	if active:
 		_on_submit_pressed()
@@ -95,6 +93,10 @@ func space_pressed():
 	if visible:
 		if !$"%SelectButton".disabled and $"%SelectButton".visible:
 			_on_submit_pressed()
+
+func _physics_process(delta):
+	if is_instance_valid(game) and !game.game_paused:
+		visible = false
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -158,7 +160,7 @@ func init(game, id):
 #	$"%ReverseButton".show()
 
 func _on_fighter_action_selected(_action, _data, _extra):
-	hide()
+	pass
 
 func sort_categories():
 	var children = $"%CategoryContainer".get_children()
@@ -291,16 +293,18 @@ func get_extra():
 func on_action_submitted(action, data=null):
 	active = false
 	var extra = get_extra()
-	hide()
-	emit_signal("action_selected", action, data, extra)
+#	hide()
+	$"%SelectButton".disabled = true
 	emit_signal("turn_ended")
 	$"%SelectButton".shortcut = null
-#	if Network.multiplayer_active:
-#		yield(get_tree().create_timer(1), "timeout")
+	if Network.multiplayer_active:
+		yield(get_tree().create_timer(1.0), "timeout")
+	emit_signal("action_selected", action, data, extra)
 	if Network.player_id == player_id:
 		Network.submit_action(action, data, extra)
 #func debug_text():
 #	$"%DebugLabel".text = str(center_panel.rect_size)
+
 func get_visible_category_containers():
 	var category_containers = []
 	for container in button_category_containers.values():
@@ -342,6 +346,7 @@ func activate():
 		if user_facing:
 			$"%YouLabel".show()
 			modulate = Color.white
+			Network.action_submitted = false
 		else:
 			$"%YouLabel".hide()
 			modulate = Color("b3b3b3")
@@ -470,8 +475,8 @@ func activate():
 		yield(get_tree().create_timer(0.25), "timeout")
 		$"%SelectButton".shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
 #		yield(get_tree().create_timer(randf() * 1), "timeout")
-		if player_id == 2:
-			_on_submit_pressed()
+#		if player_id == 2:
+#			_on_submit_pressed()
 #	if user_facing and Network.multiplayer_active:
 #			yield(Network, "opponent_turn_started")
 #			$"%SelectButton".disabled = true

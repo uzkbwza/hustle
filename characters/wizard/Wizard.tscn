@@ -555,8 +555,8 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "BoltOfMagma"
-frame = 5
+animation = "TomeSlap"
+frame = 4
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -791,10 +791,10 @@ trigger_orb_delay = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/TomeSlap" index="0"]
 script = ExtResource( 95 )
-x = 16
+x = 17
 y = -23
-width = 14
-height = 6
+width = 15
+height = 7
 damage = 60
 hitlag_ticks = 6
 screenshake_amount = 5

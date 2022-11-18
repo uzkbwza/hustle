@@ -1,7 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
 [ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
 
 [sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.465909 ), 0.0, 0.0, 0, 0 ]
@@ -12,6 +20,7 @@ offsets = PoolRealArray( 0, 0.861619, 1 )
 colors = PoolColorArray( 1, 1, 1, 1, 0.485352, 0.485352, 0.485352, 1, 0.364258, 0.364258, 0.364258, 0 )
 
 [node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 3 )
 z_index = 2
 lifetime = 2.0
 

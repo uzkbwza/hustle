@@ -11,6 +11,8 @@ const DEFAULT_PORT = 52450
 # Max number of players.
 const MAX_PEERS = 1
 
+const NETWORK_TIMER_CYCLE = 3
+
 var peer = null
 
 var player_id = 2
@@ -24,7 +26,6 @@ var multiplayer_active = false
 
 var game = null
 
-
 var multiplayer_client: MultiplayerClient = null
 var multiplayer_host = false
 
@@ -35,6 +36,9 @@ var ids_synced = false
 var turn_synced = false
 var send_ready = false
 var can_open_action_buttons = true
+var action_submitted = false
+var possible_softlock = false
+var last_action_sent_tick = 0
 
 var ticks = {
 	1: null,
@@ -100,6 +104,7 @@ func _ready():
 	timer.one_shot = false
 	timer.connect("timeout", self, "_on_network_timer_timeout")
 	add_child(timer)
+	timer.start(NETWORK_TIMER_CYCLE)
 	randomize()
 
 func rpc_(function_name: String, arg=null, type="remotesync"):
@@ -204,6 +209,8 @@ func _reset():
 	network_ids = {}
 	multiplayer_active = false
 
+	possible_softlock = false
+
 	game = null
 	multiplayer_client = null
 	multiplayer_host = false
@@ -215,7 +222,8 @@ func _reset():
 	last_action = null
 	
 	can_open_action_buttons = true
-
+	last_action_sent_tick = 0
+	
 	send_ready = false
 
 	ticks = {
@@ -262,6 +270,8 @@ func _reset():
 		1: false,
 		2: false,
 	}
+	
+	action_submitted = false
 	
 	ids_synced = false
 	turn_synced = false
@@ -469,8 +479,20 @@ func stop_multiplayer():
 	_reset()
 
 func _on_network_timer_timeout():
-	pass
+	if multiplayer_active:
+		if possible_softlock:
+			if is_instance_valid(game):
+				if game.current_tick != last_action_sent_tick:
+					return
+			print("asking politely if we softlocked")
+			rpc_("check_opponent_sent_action", null, "remote")
 
+remote func check_opponent_sent_action():
+	print("i've been asked politely if we softlocked")
+	if action_submitted:
+		send_current_action()
+	else:
+		print("the answer is no")
 
 remote func my_turn_started(player_id):
 	if player_id == opponent_player_id(player_id):
@@ -485,6 +507,11 @@ remote func send_action(action, data, extra, id):
 #		action_inputs[id]["data"] = null
 #		action_inputs[id]["extra"] = null
 		player_objects[id].on_action_selected(action, data, extra)
+		rpc_("opponent_received_action", null, "remote")
+
+remote func opponent_received_action():
+	print("opponent received my action")
+	possible_softlock = false
 
 remote func check_tick_sync(tick):
 	pass
@@ -531,16 +558,25 @@ remotesync func multiplayer_turn_ready(id):
 	print("turn ready for player " + str(id))
 	emit_signal("player_turn_ready", id)
 	if turn_ready(id):
+		action_submitted = true
 #		if is_host():
 #			host_end_turn()
 #		yield(self, "both_players_turn_end")
 		print("sending action")
 		var action_input = action_inputs[player_id]
 		last_action = action_input
-		rpc_("send_action", [action_input["action"], action_input["data"], action_input["extra"], player_id], "remote")
+#		if rng.percent(0):
+		if is_instance_valid(game):
+			last_action_sent_tick = game.current_tick
+		send_current_action()
+		possible_softlock = true
 		emit_signal("turn_ready")
 		turn_synced = false
 		send_ready = true
+
+func send_current_action():
+	if last_action:
+		rpc_("send_action", [last_action["action"], last_action["data"], last_action["extra"], player_id], "remote")
 
 func host_end_turn():
 	while !game.is_waiting_on_player():

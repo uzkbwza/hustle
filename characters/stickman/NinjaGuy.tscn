@@ -940,7 +940,7 @@ damage = 30
 hitstun_ticks = 12
 victim_hitlag = 4
 knockback = "2.0"
-start_tick = 3
+start_tick = 4
 active_ticks = 2
 
 [node name="GroundedKick" type="Node2D" parent="StateMachine" index="47"]

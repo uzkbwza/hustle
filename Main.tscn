@@ -926,6 +926,7 @@ margin_right = 319.0
 margin_bottom = 135.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
+player_id = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 margin_left = 320.0
