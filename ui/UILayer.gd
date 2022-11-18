@@ -187,8 +187,10 @@ func init(game):
 	lock_in_tick = -INF
 
 func _on_player_turn_ready(player_id):
-	if player_id == Network.player_id:
-		sync_timer(player_id)
+	lock_in_tick = game.current_tick
+	if player_id != Network.player_id:
+		$"%TurnReadySound".play()
+	turns_taken[player_id] = true
 	if player_id == 1:
 		$"%P1TurnTimerBar".hide()
 #		p1_turn_timer.stop()
@@ -198,12 +200,7 @@ func _on_player_turn_ready(player_id):
 		$"%P2TurnTimerBar".hide()
 #		p2_turn_timer.stop()
 		p2_turn_timer.paused = true
-
-	lock_in_tick = game.current_tick
-
-	$"%TurnReadySound".play()
-	turns_taken[player_id] = true
-
+	
 func _on_rematch_button_pressed():
 	Network.request_rematch()
 	$"%RematchButton".disabled = true
@@ -246,7 +243,19 @@ func open_replay_folder():
 	OS.shell_open(folder)
 
 func end_turn_for(player_id):
+	$"%TurnReadySound".play()
 	turns_taken[player_id] = true
+	if player_id == Network.player_id:
+		sync_timer(player_id)
+	if player_id == 1:
+		$"%P1TurnTimerBar".hide()
+#		p1_turn_timer.stop()
+		p1_turn_timer.paused = true
+
+	elif player_id == 2:
+		$"%P2TurnTimerBar".hide()
+#		p2_turn_timer.stop()
+		p2_turn_timer.paused = true
 
 func setup_action_buttons():
 	$"%P1ActionButtons".init(game, 1)
@@ -269,14 +278,15 @@ func on_player_actionable():
 	if actionable and Network.multiplayer_active:
 		return
 	actionable = true
+#	yield(Network, "both_players_actionable")
 #	if p1_turn_timer.wait_time == 0:
 #		p1_turn_timer.wait_time = MIN_TURN_TIME
 #	if p2_turn_timer.wait_time == 0:
 #		 p2_turn_timer.wait_time = MIN_TURN_TIME
 	if Network.multiplayer_active:
 #		Network.rpc_("my_turn_started")
-#		while !(Network.ticks[1] == Network.ticks[2]):
-#			yield(get_tree(), "idle_frame")
+		while !(Network.can_open_action_buttons):
+			yield(get_tree(), "physics_frame")
 		print("starting turn timer")
 #		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
 		if !game_started:

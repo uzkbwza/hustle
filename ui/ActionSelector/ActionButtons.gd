@@ -80,6 +80,7 @@ func _on_submit_pressed():
 	if current_action:
 		on_action_submitted(current_action, data)
 
+
 func timeout():
 	if active:
 		_on_submit_pressed()
@@ -290,14 +291,16 @@ func get_extra():
 func on_action_submitted(action, data=null):
 	active = false
 	var extra = get_extra()
+	hide()
 	emit_signal("action_selected", action, data, extra)
 	emit_signal("turn_ended")
+	$"%SelectButton".shortcut = null
+#	if Network.multiplayer_active:
+#		yield(get_tree().create_timer(1), "timeout")
 	if Network.player_id == player_id:
 		Network.submit_action(action, data, extra)
-	hide()
 #func debug_text():
 #	$"%DebugLabel".text = str(center_panel.rect_size)
-
 func get_visible_category_containers():
 	var category_containers = []
 	for container in button_category_containers.values():
@@ -434,8 +437,8 @@ func activate():
 #					button.set_pressed(true)
 #					button.on_pressed()
 #					break
-			continue_button.set_pressed(true)
-			continue_button.on_pressed()
+		continue_button.set_pressed(true)
+		continue_button.on_pressed()
 
 	show_categories()
 	
@@ -463,9 +466,12 @@ func activate():
 		continue_button.set_disabled(false)
 	button_pressed = false
 	send_ui_action("Continue")
-	yield(get_tree().create_timer(randf() * 2), "timeout")
 	if user_facing:
-		_on_submit_pressed()
+		yield(get_tree().create_timer(0.25), "timeout")
+		$"%SelectButton".shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
+#		yield(get_tree().create_timer(randf() * 1), "timeout")
+		if player_id == 2:
+			_on_submit_pressed()
 #	if user_facing and Network.multiplayer_active:
 #			yield(Network, "opponent_turn_started")
 #			$"%SelectButton".disabled = true

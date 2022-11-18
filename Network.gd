@@ -34,6 +34,7 @@ var rematch_menu = false
 var ids_synced = false
 var turn_synced = false
 var send_ready = false
+var can_open_action_buttons = true
 
 var ticks = {
 	1: null,
@@ -81,6 +82,10 @@ signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
 signal check_players_ready()
 signal opponent_ready()
+signal client_actionable()
+signal both_players_actionable()
+signal client_turn_end()
+signal both_players_turn_end()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -127,7 +132,6 @@ func rpc_(function_name: String, arg=null, type="remotesync"):
 
 remotesync func send_match_data(match_data):
 	emit_signal("match_locked_in", match_data)
-	
 
 func _on_hole_punched(my_port, hosts_port, hosts_address):
 	print("hole punched")
@@ -209,6 +213,8 @@ func _reset():
 	rematch_menu = false
 
 	last_action = null
+	
+	can_open_action_buttons = true
 
 	send_ready = false
 
@@ -416,6 +422,40 @@ func end_game():
 	if multiplayer_active:
 		stop_multiplayer()
 
+func sync_tick():
+	print("notifying opponent")
+	rpc_("opponent_tick", null, "remote")
+	pass
+
+func sync_unlock_turn():
+	print("telling opponent we are actionable")
+	rpc_("opponent_sync_check_unlock", null, "remote")
+
+remote func opponent_sync_check_unlock():
+	print("opponent is actionable")
+	while is_instance_valid(game) and !game.game_paused:
+		yield(get_tree(), "idle_frame")
+	print("so are we")
+	rpc_("confirm_opponent_actionable", null, "remote")
+
+remote func confirm_opponent_actionable():
+	print("confirming...")
+	rpc_("opponent_sync_unlock", null, "remote")
+
+remote func opponent_sync_unlock():
+	print("unlocking action buttons")
+	can_open_action_buttons = true
+
+remote func opponent_tick():
+	print("opponent ready")
+	yield(get_tree(), "idle_frame")
+	game.network_simulate_ready = true
+#	rpc_("ready", null, "remote")
+
+#remote func ready():
+#	print("ready")
+	
+
 func autosave_match_replay(match_data):
 	if !replay_saved:
 		replay_saved = true
@@ -463,12 +503,37 @@ remotesync func end_turn_simulation(tick, player_id):
 		send_ready = false
 #		if rng.percent(60):
 		emit_signal("player_turns_synced")
+#		if is_host():
+#			host_start_turn()
+
+
+func host_start_turn():
+	while !game.is_waiting_on_player():
+		yield(get_tree(), "idle_frame")
+	rpc_("wait_for_client_actionable", null, "remote")
+	yield(self, "client_actionable")
+#	emit_signal("player_turns_synced")
+	rpc_("client_turn_synced")
+
+remote func wait_for_client_actionable():
+	while !game.is_waiting_on_player():
+		yield(get_tree(), "idle_frame")
+	rpc_("client_actionable")
+
+remotesync func client_turn_synced():
+	emit_signal("both_players_actionable")
+
+remote func client_actionable():
+	emit_signal("client_actionable")
 
 remotesync func multiplayer_turn_ready(id):
 	Network.turns_ready[id] = true
 	print("turn ready for player " + str(id))
 	emit_signal("player_turn_ready", id)
 	if turn_ready(id):
+#		if is_host():
+#			host_end_turn()
+#		yield(self, "both_players_turn_end")
 		print("sending action")
 		var action_input = action_inputs[player_id]
 		last_action = action_input
@@ -476,6 +541,24 @@ remotesync func multiplayer_turn_ready(id):
 		emit_signal("turn_ready")
 		turn_synced = false
 		send_ready = true
+
+func host_end_turn():
+	while !game.is_waiting_on_player():
+		yield(get_tree(), "idle_frame")
+	rpc_("wait_for_client_turn_end", null, "remote")
+	yield(self, "client_turn_end")
+	rpc_("client_turn_end_synced")
+
+remote func wait_for_client_turn_end():
+	while !game.is_waiting_on_player():
+		yield(get_tree(), "idle_frame")
+	rpc_("client_turn_end")
+
+remotesync func client_turn_end_synced():
+	emit_signal("both_players_turn_end")
+
+remote func client_turn_end():
+	emit_signal("client_turn_end")
 
 remotesync func check_players_ready():
 	emit_signal("check_players_ready")

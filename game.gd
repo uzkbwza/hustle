@@ -61,6 +61,8 @@ var advance_frame_input = false
 
 var frame_by_frame = false
 
+var network_simulate_ready = true
+
 var is_ghost = false
 var is_afterimage = false
 var ghost_hidden = false
@@ -624,16 +626,17 @@ func process_tick():
 			parry_freeze = false
 		return
 
-
 	var can_tick = !Global.frame_advance or (advance_frame_input)
 	if can_tick:
 		advance_frame_input = false
 	if !Global.frame_advance:
 		if Global.playback_speed_mod > 0:
 			can_tick = real_tick % Global.playback_speed_mod == 0
-#	if Network.multiplayer_active:
-#		can_tick = true
-	
+	if Network.multiplayer_active and !ghost_tick:
+		can_tick = network_simulate_ready
+	if Network.player_id == 2:
+		can_tick = can_tick and (real_tick % 8 == 0)
+
 	if !ReplayManager.playback:
 		if !is_waiting_on_player():
 				if can_tick:
@@ -643,8 +646,10 @@ func process_tick():
 					call_deferred("simulate_one_tick")
 					p1_turn = false
 					p2_turn = false
+					if game_paused:
+						if Network.multiplayer_active:
+							Network.can_open_action_buttons = false
 					game_paused = false
-					
 		else:
 			ReplayManager.frames.finished = false
 			game_paused = true
@@ -676,6 +681,8 @@ func process_tick():
 					if network_sync_tick != current_tick:
 						Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
 						network_sync_tick = current_tick
+						network_simulate_ready = false
+						Network.sync_unlock_turn()
 	else:
 		if ReplayManager.resimulating:
 			snapping_camera = true
@@ -740,6 +747,8 @@ func _physics_process(_delta):
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")
+		if player_actionable and !is_ghost:
+			Network.sync_tick()
 		player_actionable = false
 	
 	if !is_ghost:

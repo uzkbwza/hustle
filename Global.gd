@@ -1,6 +1,6 @@
 extends Node
 
-var VERSION = "0.2.0"
+var VERSION = "0.2.1-unstable"
 
 var audio_player
 var music_enabled = true
