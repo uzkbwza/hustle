@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=2]
+[gd_scene load_steps=67 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -54,6 +54,7 @@
 [ext_resource path="res://ui/itch.png" type="Texture" id=52]
 [ext_resource path="res://OptionsContainer.gd" type="Script" id=53]
 [ext_resource path="res://ui/ReplayControls.tscn" type="PackedScene" id=54]
+[ext_resource path="res://ui/ResimRequestScreen.gd" type="Script" id=55]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -926,7 +927,6 @@ margin_right = 319.0
 margin_bottom = 135.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
-player_id = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 margin_left = 320.0
@@ -1687,28 +1687,58 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="RequestUndoScreen" type="Control" parent="UILayer"]
-unique_name_in_owner = true
+[node name="ResimRequestScreen" type="ColorRect" parent="UILayer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 4 )
+color = Color( 0, 0, 0, 0.658824 )
+script = ExtResource( 55 )
 
-[node name="PanelContainer" type="PanelContainer" parent="UILayer/RequestUndoScreen"]
+[node name="RequestUndoPanel" type="PanelContainer" parent="UILayer/ResimRequestScreen"]
+unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -99.0
-margin_top = -58.0
-margin_right = 99.0
-margin_bottom = 58.0
+margin_left = -100.0
+margin_top = -13.0
+margin_right = 100.0
+margin_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/RequestUndoScreen/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ResimRequestScreen/RequestUndoPanel"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 197.0
-margin_bottom = 115.0
+margin_right = 216.0
+margin_bottom = 48.0
+custom_constants/separation = 10
+
+[node name="Label" type="Label" parent="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer"]
+margin_right = 215.0
+margin_bottom = 25.0
+text = "your opponent suggests the game is stuck. 
+do you want to try and resync?"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer"]
+margin_top = 35.0
+margin_right = 215.0
+margin_bottom = 47.0
+
+[node name="ResimYes" type="Button" parent="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer"]
+margin_right = 107.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "yes"
+
+[node name="ResimNo" type="Button" parent="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer"]
+margin_left = 108.0
+margin_right = 215.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "no"
 
 [node name="ButtonSoundPlayer" parent="UILayer" instance=ExtResource( 18 )]
 button_containers = [ NodePath("../MainMenu/ButtonContainer"), NodePath("../GameUI/PausePanel/VBoxContainer"), NodePath("../OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer") ]
@@ -1722,6 +1752,21 @@ bus = "UI"
 [node name="NetworkSyncTimer" type="Timer" parent="UILayer"]
 wait_time = 2.0
 autostart = true
+
+[node name="SoftlockResetButton" type="Button" parent="UILayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -49.0
+margin_top = -132.0
+margin_right = 49.0
+margin_bottom = -113.0
+grow_horizontal = 2
+theme = ExtResource( 4 )
+text = "our game is stuck!"
 
 [node name="GhostWaitTimer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -1737,3 +1782,6 @@ script = ExtResource( 49 )
 pitch_variation = 0.05
 
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
+[connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
+[connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]
+[connection signal="pressed" from="UILayer/SoftlockResetButton" to="UILayer" method="_on_SoftlockResetButton_pressed"]

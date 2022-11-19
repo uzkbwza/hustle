@@ -290,18 +290,19 @@ func get_extra():
 		extra.merge(fighter_extra.get_extra())
 	return extra
 
-func on_action_submitted(action, data=null):
+func on_action_submitted(action, data=null, extra=null):
 	active = false
-	var extra = get_extra()
+	extra = get_extra() if extra == null else extra
 #	hide()
 	$"%SelectButton".disabled = true
 	emit_signal("turn_ended")
 	$"%SelectButton".shortcut = null
-	if Network.multiplayer_active:
-		yield(get_tree().create_timer(1.0), "timeout")
+#	if Network.multiplayer_active:
+#		yield(get_tree().create_timer(1.0), "timeout")
 	emit_signal("action_selected", action, data, extra)
 	if Network.player_id == player_id:
 		Network.submit_action(action, data, extra)
+	
 #func debug_text():
 #	$"%DebugLabel".text = str(center_panel.rect_size)
 
@@ -480,3 +481,13 @@ func activate():
 #	if user_facing and Network.multiplayer_active:
 #			yield(Network, "opponent_turn_started")
 #			$"%SelectButton".disabled = true
+	if player_id == 1:
+		if Network.p1_undo_action:
+			var input = Network.p1_undo_action
+			on_action_submitted(input["action"], input["data"], input["extra"])
+			Network.p1_undo_action = null
+	if player_id == 2:
+		if Network.p2_undo_action:
+			var input = Network.p2_undo_action
+			on_action_submitted(input["action"], input["data"], input["extra"])
+			Network.p2_undo_action = null

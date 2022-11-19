@@ -27,6 +27,7 @@ func _ready():
 	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")
 	connect("game_started", ui_layer, "on_game_started")
 	Network.connect("start_game", self, "_on_game_started", [false])
+	Network.connect("match_ready", self, "_on_match_ready")
 	$"%P1ActionButtons".connect("action_clicked", self, "on_action_clicked", [1])
 	$"%P2ActionButtons".connect("action_clicked", self, "on_action_clicked", [2])
 	$"%GhostButton".connect("toggled", self, "_on_ghost_button_toggled")
@@ -80,6 +81,7 @@ func _on_match_ready(data):
 		ReplayManager.playback = false
 	setup_game(singleplayer, data)
 	emit_signal("game_started")
+
 func show_lobby():
 	$"%DirectConnectLobby".show()
 	$"%Lobby".show()
@@ -120,7 +122,10 @@ func setup_game_deferred(singleplayer, data):
 	
 	game.start_game(singleplayer, data)
 	if data.has("turn_time"):
-		ui_layer.set_turn_time(data.turn_time)
+		if !Network.undo:
+			ui_layer.set_turn_time(data.turn_time)
+		else:
+			ui_layer.start_timers()
 	ui_layer.init(game)
 	hud_layer.init(game)
 	var p1 = game.get_player(1)

@@ -31,7 +31,12 @@ func cut_replay(last_frame):
 			if frame > last_frame:
 				frames[id].erase(frame)
 
-func undo():
+func get_last_action(id):
+	var frame_numbers: Array = frames[id].keys()
+	frame_numbers.sort()
+	return frames[id][frame_numbers[-1]]
+
+func undo(cut=true):
 	if resimulating:
 		return
 	var last_frame = 0
@@ -42,12 +47,13 @@ func undo():
 				last_frame = frame
 				last_id = id
 	var other_id = 1 if last_id == 2 else 2
-	frames[last_id].erase(last_frame)
-	frames[other_id].erase(last_frame)
+	if cut:
+		frames[last_id].erase(last_frame)
+		frames[other_id].erase(last_frame)
 	resimulating = true
 	playback = true
-	resim_tick = last_frame - 2
-
+	resim_tick = (last_frame - 2) if cut else -1
+	
 func generate_mp_replay_name(p1: String, p2: String):
 	return p1 + "_v_" + p2 + "_" + generate_replay_name()
 

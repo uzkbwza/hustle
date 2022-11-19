@@ -39,6 +39,8 @@ var game_started = false
 var timer_sync_tick = -1
 var actionable = false
 
+var actionable_time = 0
+
 var received_synced_time = false
 
 func _ready():
@@ -276,9 +278,12 @@ func _on_network_timer_timeout():
 					Network.rpc_("check_players_ready")
 
 func on_player_actionable():
-	if actionable and Network.multiplayer_active:
+	if actionable and (Network.multiplayer_active and !Network.undo and !Network.auto):
 		return
+	Network.undo = false
+	Network.auto = false
 	actionable = true
+	actionable_time = 0
 #	yield(Network, "both_players_actionable")
 #	if p1_turn_timer.wait_time == 0:
 #		p1_turn_timer.wait_time = MIN_TURN_TIME
@@ -372,7 +377,7 @@ func time_convert(time_in_sec):
 		return "%02d:%02d:%02d" % [hours, minutes, seconds]
 	return "%02d:%02d" % [minutes, seconds]
 
-func _process(_delta):
+func _process(delta):
 	if !p1_turn_timer.is_paused():
 #		if !turns_taken[1]:
 			var bar = $"%P1TurnTimerBar"
@@ -424,3 +429,26 @@ func _process(_delta):
 		$"%ReplayControls".hide()
 #	if $"%TopInfoMP".visible and !actionable:
 #		on_player_actionable()
+	$"%SoftlockResetButton".visible = false
+	if Network.multiplayer_active and is_instance_valid(game):
+		var my_action_buttons = p1_action_buttons if Network.player_id == 1 else p2_action_buttons
+		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 3
+		if !$"%SoftlockResetButton".visible:
+			$"%SoftlockResetButton".disabled = false
+
+		if !my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled:
+			actionable_time += delta
+		else:
+			actionable_time = 0
+
+func start_timers():
+	yield(get_tree().create_timer(0.25), "timeout")
+	if actionable:
+		p1_turn_timer.paused = false
+		p2_turn_timer.paused = false
+
+func _on_SoftlockResetButton_pressed():
+	Network.rpc_("send_chat_message", [Network.player_id, "-- wants to resync."])
+	Network.request_softlock_fix()
+	$"%SoftlockResetButton".disabled = true
+	pass # Replace with function body.

@@ -45,6 +45,8 @@ var ticks = {
 	2: null
 }
 
+var auto = false
+
 # Names for remote players in id:name format.
 var players = {}
 var players_ready = []
@@ -58,7 +60,15 @@ var rematch_requested = {}
 var hole_punch: HolePunch
 var rng = BetterRng.new()
 
+var p1_turn_time = 0
+var p2_turn_time = 0
+
 var last_action = null
+var undo = false
+var undo_match_data = null
+
+var p1_undo_action = null
+var p2_undo_action = null
 
 var session_id
 var session_username
@@ -90,6 +100,9 @@ signal client_actionable()
 signal both_players_actionable()
 signal client_turn_end()
 signal both_players_turn_end()
+signal match_ready(match_data)
+signal resim_requested()
+signal resim_denied()
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -230,15 +243,24 @@ func _reset():
 		1: null,
 		2: null
 	}
-
+	
+	undo = false
+	undo_match_data = null
+	
 	# Names for remote players in id:name format.
 	players = {}
 	players_ready = []
+	
+	p1_turn_time = 0
+	p2_turn_time = 0
 	
 	action_button_panels = {
 		1: null,
 		2: null,
 	}
+	
+	p1_undo_action = null
+	p2_undo_action = null
 
 	turns_ready = {
 		1: false,
@@ -257,7 +279,9 @@ func _reset():
 			"extra": null,
 		}
 	}
-
+	
+	auto = false
+	
 	player_objects = {
 		1: null,
 		2: null
@@ -460,11 +484,7 @@ remote func opponent_tick():
 	print("opponent ready")
 	yield(get_tree(), "idle_frame")
 	game.network_simulate_ready = true
-#	rpc_("ready", null, "remote")
 
-#remote func ready():
-#	print("ready")
-	
 
 func autosave_match_replay(match_data):
 	if !replay_saved:
@@ -479,13 +499,14 @@ func stop_multiplayer():
 	_reset()
 
 func _on_network_timer_timeout():
-	if multiplayer_active:
-		if possible_softlock:
-			if is_instance_valid(game):
-				if game.current_tick != last_action_sent_tick:
-					return
-			print("asking politely if we softlocked")
-			rpc_("check_opponent_sent_action", null, "remote")
+	pass
+#	if multiplayer_active:
+#		if possible_softlock:
+#			if is_instance_valid(game):
+#				if game.current_tick != last_action_sent_tick:
+#					return
+#			print("asking politely if we softlocked")
+#			rpc_("check_opponent_sent_action", null, "remote")
 
 remote func check_opponent_sent_action():
 	print("i've been asked politely if we softlocked")
@@ -631,6 +652,43 @@ remotesync func sync_character_selection(player_id, character):
 
 remotesync func open_chara_select():
 	emit_signal("start_game")
+
+func request_softlock_fix():
+	if multiplayer_active:
+		rpc_("send_resim_request", null, "remote")
+
+remote func send_resim_request():
+	emit_signal("resim_requested")
+
+func answer_resim_request(answer: bool):
+	if answer:
+		rpc_("multiplayer_resim", null, "remote")
+	else:
+		rpc_("deny_resim", null, "remote")
+
+remote func deny_resim():
+	rpc_("send_chat_message", [opponent_player_id(player_id), "-- denied resync request."])
+	emit_signal("resim_denied")
+
+remote func multiplayer_resim():
+	auto = true
+	undo = true
+	rpc_("send_opponent_replay_for_resim", [ReplayManager.frames, p1_undo_action, p2_undo_action], "remote")
+
+remote func send_opponent_replay_for_resim(replay, p1_undo_action, p2_undo_action):
+#	self.p1_undo_action = p1_undo_action
+#	self.p2_undo_action = p2_undo_action
+	ReplayManager.frames = replay
+	undo = true	
+	auto = true
+	rpc_("finalize_resim")
+ 
+remotesync func finalize_resim():
+	if is_instance_valid(game):
+		game.undo(false)
+
+func undo_finished():
+	undo = false
 
 # relay stuff
 remote func test_relay():
