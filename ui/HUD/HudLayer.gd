@@ -17,7 +17,6 @@ onready var p2_super_meter = $"%P2SuperMeter"
 onready var p1_num_supers = $"%P1NumSupers"
 onready var p2_num_supers = $"%P2NumSupers"
 
-
 onready var p1_combo_counter = $"%P1ComboCounter"
 onready var p2_combo_counter = $"%P2ComboCounter"
 
@@ -170,6 +169,10 @@ func _physics_process(_delta):
 		$"%P2SuperTexture".visible = game.p2_super
 		p1_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p1.supers_available < 1 else preload("res://ui/super_ready.tres")
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
+		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or game.real_tick % 2 == 0)
+		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or game.real_tick % 2 == 0)
+#		$"%P1AdvantageLabel".visible = game.game_paused and p1.read_advantage
+#		$"%P2AdvantageLabel".visible = game.game_paused and p2.read_advantage
 		if game.super_active and !game.parry_freeze:
 			if !super_started:
 				if game.p1_super:

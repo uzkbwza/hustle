@@ -44,9 +44,17 @@ margin_top = 124.0
 margin_right = 208.0
 margin_bottom = 137.0
 text = "Dojo 1 (NY)"
-align = 1
-items = [ "Dojo 1 (NY)", null, false, 0, null, "Dojo 2 (LA)", null, false, 1, null, "Dojo 3 (EU)", null, false, 3, null, "Unofficial Dojo (coming soon)", null, false, 4, null ]
+items = [ "Dojo 1 (NY)", null, false, 0, null, "Dojo 2 (LA)", null, false, 1, null, "Dojo 3 (EU)", null, false, 3, null, "Local Dojo (coming soon)", null, true, 4, null ]
 selected = 0
+
+[node name="ActivePlayers" type="RichTextLabel" parent="NetworkSetupScreen/ServerList"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.592157 )
+margin_left = 69.0
+margin_right = 192.0
+margin_bottom = 14.0
+mouse_filter = 2
+bbcode_enabled = true
 
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true

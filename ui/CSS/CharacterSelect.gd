@@ -145,6 +145,7 @@ func get_match_data():
 		"burst_enabled": $"%BurstEnabled".pressed,
 		"frame_by_frame": $"%FrameByFrame".pressed,
 		"always_perfect_parry": $"%AlwaysPerfectParry".pressed,
+		"char_distance": int($"%CharDist".value),
 	}
 
 func go():

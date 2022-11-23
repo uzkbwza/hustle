@@ -69,6 +69,7 @@ func _ready():
 	Network.connect("turn_ready", self, "_on_turn_ready")
 	Network.connect("sync_timer_request", self, "_on_sync_timer_request")
 	Network.connect("check_players_ready", self, "check_players_ready")
+	Network.connect("force_open_action_buttons", self, "on_player_actionable")
 	
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
@@ -280,6 +281,8 @@ func _on_network_timer_timeout():
 func on_player_actionable():
 	if actionable and (Network.multiplayer_active and !Network.undo and !Network.auto):
 		return
+	while is_instance_valid(game) and !game.game_paused:
+		yield(get_tree(), "idle_frame")
 	Network.undo = false
 	Network.auto = false
 	actionable = true
@@ -351,7 +354,7 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_ENTER:
-				if Network.multiplayer_active:
+				if Network.multiplayer_active and is_instance_valid(game):
 					$"%ChatWindow".show()
 					$"%ChatWindow".line_edit_focus()
 			if event.scancode == KEY_F1:
@@ -432,7 +435,7 @@ func _process(delta):
 	$"%SoftlockResetButton".visible = false
 	if Network.multiplayer_active and is_instance_valid(game):
 		var my_action_buttons = p1_action_buttons if Network.player_id == 1 else p2_action_buttons
-		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 3
+		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5
 		if !$"%SoftlockResetButton".visible:
 			$"%SoftlockResetButton".disabled = false
 

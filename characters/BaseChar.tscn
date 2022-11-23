@@ -1,4 +1,4 @@
-[gd_scene load_steps=151 format=2]
+[gd_scene load_steps=155 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -148,6 +148,10 @@
 [ext_resource path="res://ui/ActionSelector/ActionUIData/DoubleJumpActionUIData.tscn" type="PackedScene" id=146]
 [ext_resource path="res://ui/ActionSelector/StateIcons/super_jump.png" type="Texture" id=147]
 [ext_resource path="res://sound/common/block.wav" type="AudioStream" id=148]
+[ext_resource path="res://characters/stickman/sprites/stickman1.png" type="Texture" id=149]
+[ext_resource path="res://fx/DashFloorParticle.tscn" type="PackedScene" id=150]
+[ext_resource path="res://fx/DashBackFloorParticle.tscn" type="PackedScene" id=151]
+[ext_resource path="res://HurtboxState.gd" type="Script" id=152]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -348,7 +352,7 @@ animations = [ {
 "name": "Uppercut",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ) ],
+"frames": [ ExtResource( 149 ) ],
 "loop": true,
 "name": "Wait",
 "speed": 30.0
@@ -368,7 +372,7 @@ player_extra_params_scene = ExtResource( 122 )
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
 frames = SubResource( 3 )
-animation = "Wait"
+animation = "Knockdown"
 offset = Vector2( 0, -18 )
 __meta__ = {
 "_edit_group_": true,
@@ -479,7 +483,7 @@ hit_sound = ExtResource( 126 )
 dir_y = "-0.25"
 knockback = "20.0"
 launch_reversible = true
-start_tick = 1
+start_tick = 2
 active_ticks = 1
 
 [node name="OffensiveBurst" type="Node2D" parent="StateMachine" index="3"]
@@ -495,10 +499,7 @@ type = 3
 button_texture = ExtResource( 96 )
 air_type = 2
 burst_cancellable = false
-interrupt_from_string = "OffensiveBurst
-BusyNormal
-Grounded
-Aerial"
+interrupt_from_string = "OffensiveBurst"
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "Grounded
@@ -560,6 +561,8 @@ Aerial
 GroundedSpecial
 AerialSpecial"
 allowed_stances_string = "All"
+change_stance_to = "Normal"
+yomi_effect = true
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 68 )
@@ -575,6 +578,8 @@ interrupt_into_string = "Grounded
 Aerial
 "
 allowed_stances_string = "All"
+change_stance_to = "Normal"
+yomi_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 1
 
@@ -595,6 +600,8 @@ Aerial
 GroundedSpecial
 AerialSpecial"
 allowed_stances_string = "All"
+change_stance_to = "Normal"
+yomi_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 2
 
@@ -610,6 +617,15 @@ iasa_at = 10
 interruptible_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "OTG"
+change_stance_to = "Normal"
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/Knockdown" index="0"]
+script = ExtResource( 152 )
+y = -4
+width = 25
+height = 4
+active_ticks = 5
+endless = true
 
 [node name="Getup" type="Node2D" parent="StateMachine" index="10"]
 script = ExtResource( 58 )
@@ -653,6 +669,8 @@ change_stance_to = "Normal"
 script = ExtResource( 6 )
 anim_length = 15
 reset_momentum = true
+particle_scene = ExtResource( 150 )
+spawn_particle_on_enter = true
 enter_sfx = ExtResource( 124 )
 enter_sfx_volume = -10.0
 title = "Dash Forward"
@@ -667,17 +685,19 @@ dash_speed = 12
 script = ExtResource( 6 )
 anim_length = 18
 reset_momentum = true
+particle_scene = ExtResource( 151 )
+spawn_particle_on_enter = true
 enter_sfx = ExtResource( 124 )
 enter_sfx_volume = -10.0
 title = "Dash Back"
-interrupt_frames = [ 7 ]
-interruptible_on_opponent_turn = true
+interrupt_frames = [ 9 ]
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 dir_x = -1
 dash_speed = 7
 fric = "0.01"
+startup_lag = 3
 
 [node name="Roll" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 54 )
@@ -833,6 +853,7 @@ hit_cancel_exceptions_string = "Parry
 AerialMovement
 GroundedMovement"
 allowed_stances_string = "All"
+change_stance_to = "Normal"
 super_level = 0
 super_freeze_ticks = 8
 
@@ -903,6 +924,7 @@ x = 7
 y = -18
 width = 12
 height = 12
+hits_vs_aerial = false
 _c_Grouping = 1
 priority = 9999
 start_tick = 3
@@ -931,12 +953,11 @@ x = 7
 y = -18
 width = 12
 height = 12
+hits_vs_grounded = false
 priority = 9999
 start_tick = 3
 active_ticks = 3
 throw_state = "AirHold"
-hits_aerial = true
-hits_grounded = false
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 90 )

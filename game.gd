@@ -9,8 +9,8 @@ const GHOST_ACTIONABLE_FREEZE_TICKS = 10
 const CAMERA_MAX_Y_DIST = 210
 
 export(int) var char_distance = 200
-export(int) var stage_width = 2000
-export(int) var max_char_distance = 640
+export(int) var stage_width = 1100
+export(int) var max_char_distance = 600
 export(int) var time = 3000
 
 # Declare member variables here. Examples:
@@ -143,7 +143,7 @@ func copy_to(game: Game):
 				game.on_object_spawned(new_obj)
 				object.copy_to(new_obj)
 			else:
-				game.objs_map[game.objs_map.size() + 1] = null
+				game.objs_map[str(game.objs_map.size() + 1)] = null
 
 func _on_super_started(player):
 	if is_ghost:
@@ -210,6 +210,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		time = match_data["game_length"]
 	if match_data.has("frame_by_frame"):
 		frame_by_frame = match_data.frame_by_frame
+	if match_data.has("char_distance"):
+		char_distance = match_data["char_distance"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
@@ -309,6 +311,7 @@ func initialize_objects():
 			object.init()
 
 func tick():
+		
 	frame_passed = true
 	if !singleplayer:
 		if !is_ghost:
@@ -331,10 +334,21 @@ func tick():
 	for fx in effects:
 		fx.tick()
 	current_tick += 1
+	
 	p1.current_tick = current_tick
 	p2.current_tick = current_tick
+#	p1.read_advantage = (p1.current_state().current_tick > p2.current_state().current_tick) or p1.parried_last_state
+#	p2.read_advantage = (p2.current_state().current_tick > p1.current_state().current_tick) or p2.parried_last_state
+	p1.lowest_tick = null
+	p2.lowest_tick = null
+	p1.tick_before()
+	p2.tick_before()
+	p1.update_advantage()
+	p2.update_advantage()
 	p1.tick()
 	p2.tick()
+	
+	resolve_same_x_coordinate()
 	initialize_objects()
 	p1_data = p1.data
 	p2_data = p2.data
@@ -342,10 +356,14 @@ func tick():
 	apply_hitboxes()
 	p1_data = p1.data
 	p2_data = p2.data
+
 	if (p1.state_interruptable or p1.dummy_interruptable) and !p1.busy_interrupt:
 		p2.reset_combo()
+		
 	if (p2.state_interruptable or p2.dummy_interruptable) and !p2.busy_interrupt:
 		p1.reset_combo()
+
+	
 	if is_ghost:
 		if !ghost_hidden:
 			if !visible and current_tick >= 0:
@@ -387,6 +405,29 @@ func int_clamp(n: int, min_: int, max_: int):
 
 func should_game_end():
 	return current_tick > time or p1.hp <= 0 or p2.hp <= 0
+
+func resolve_same_x_coordinate():
+	# prevent both players occupying the same x coordinate
+	var p1_pos = p1.get_pos()
+	var p2_pos = p2.get_pos()
+	if p1_pos.x == p2_pos.x:
+		var player_to_move = p1 if current_tick % 2 == 0 else p2
+		var direction_to_move = 1 if current_tick % 2 == 0 else -1
+		var x = p1_pos.x
+		if x < 0:
+			direction_to_move = 1
+			if p1.get_facing_int() == -1:
+				player_to_move = p1
+			elif p2.get_facing_int() == -1:
+				player_to_move = p2
+		elif x > 0:
+			direction_to_move = -1
+			if p1.get_facing_int() == 1:
+				player_to_move = p1
+			elif p2.get_facing_int() == 1:
+				player_to_move = p2
+		player_to_move.set_x(player_to_move.get_pos().x + direction_to_move)
+		player_to_move.update_data()
 
 func resolve_collisions(step=0):
 	p1.update_collision_boxes()
@@ -476,13 +517,18 @@ func apply_hitboxes():
 			p1_hit = true
 		else:
 			p2_throwing = true
+			if !p1_hit_by.hits_otg and p1.is_otg():
+				p2_throwing = false
+
 	if p2_hit_by:
 		if !(p2_hit_by is ThrowBox):
 			p2_hit_by.hit(p2)
 			p2_hit = true
 		else:
 			p1_throwing = true
-	
+			if !p2_hit_by.hits_otg and p2.is_otg():
+				p1_throwing = false
+
 	if !p2_hit and !p1_hit:
 		if p2_throwing and p1_throwing:
 			p1.state_machine.queue_state("ThrowTech")
@@ -494,9 +540,9 @@ func apply_hitboxes():
 				p2.state_machine.queue_state("ThrowTech")
 				return
 			var can_hit = true
-			if p2.is_grounded() and !p2_hit_by.hits_grounded:
+			if p2.is_grounded() and !p2_hit_by.hits_vs_grounded:
 				can_hit = false
-			if !p2.is_grounded() and !p2_hit_by.hits_aerial:
+			if !p2.is_grounded() and !p2_hit_by.hits_vs_aerial:
 				can_hit = false
 			if can_hit:
 				p2_hit_by.hit(p2)
@@ -510,9 +556,9 @@ func apply_hitboxes():
 				p2.state_machine.queue_state("ThrowTech")
 				return
 			var can_hit = true
-			if p1.is_grounded() and !p1_hit_by.hits_grounded:
+			if p1.is_grounded() and !p1_hit_by.hits_vs_grounded:
 				can_hit = false
-			if !p1.is_grounded() and !p1_hit_by.hits_aerial:
+			if !p1.is_grounded() and !p1_hit_by.hits_vs_aerial:
 				can_hit = false
 			if can_hit:
 				p1_hit_by.hit(p1)
@@ -668,22 +714,28 @@ func process_tick():
 				p2.state_interruptable = true
 				p1.show_you_label()
 				p1_turn = true
+#				p1.update_advantage()
+#				p2.update_advantage()
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
 					someones_turn = true
 				player_actionable = true
+
 			elif p2.state_interruptable and !p2_turn:
 				someones_turn = true
 				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
 				p1.state_interruptable = true
 				p2.show_you_label()
 				p2_turn = true
+#				p1.update_advantage()
+#				p2.update_advantage()
 				if singleplayer:
 					emit_signal("player_actionable")
 				elif !is_ghost:
 					someones_turn = true
 				player_actionable = true
+
 			if someones_turn:
 				if Network.multiplayer_active:
 					if network_sync_tick != current_tick:
@@ -705,7 +757,6 @@ func process_tick():
 			if can_tick:
 				call_deferred("simulate_one_tick")
 
-	
 func _process(delta):
 	update()
 	super_dim()
@@ -725,7 +776,7 @@ func _process(delta):
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.zoom = camera.zoom
 	camera_snap_position = camera.position
-	
+
 
 func _physics_process(_delta):
 	camera.tick()

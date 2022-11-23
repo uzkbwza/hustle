@@ -284,7 +284,7 @@ func on_action_selected(action, button):
 func get_extra():
 	var extra = {
 		"DI": $"%DI".get_data(),
-		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled
+		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled,
 	}
 	if fighter_extra:
 		extra.merge(fighter_extra.get_extra())
@@ -419,6 +419,17 @@ func activate():
 								continue
 							elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
 								continue
+							var excepted = false
+							if fighter.state_hit_cancellable:
+								for c in state.hit_cancel_exceptions:
+									if c in cancel_state.interrupt_from:
+										excepted = true
+							if !excepted and fighter.state_interruptable:
+								for c in state.interrupt_exceptions:
+									if c in cancel_state.interrupt_from:
+										excepted = true
+							if excepted:
+								continue
 							found = true
 							$"%ReverseButton".set_disabled(false)
 #							$"%SelectButton".disabled = false
@@ -467,13 +478,16 @@ func activate():
 	yield(get_tree(), "idle_frame")
 	if !$"%ReverseButton".disabled:
 		$"%ReverseButton".show()
+
 	if is_instance_valid(continue_button):
 		continue_button.show()
 		continue_button.set_disabled(false)
+
 	button_pressed = false
 	send_ui_action("Continue")
 	if user_facing:
-		yield(get_tree().create_timer(0.25), "timeout")
+		if Network.multiplayer_active:
+			yield(get_tree().create_timer(0.25), "timeout")
 		$"%SelectButton".shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
 #		yield(get_tree().create_timer(randf() * 1), "timeout")
 #		if player_id == 2:

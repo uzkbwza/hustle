@@ -4,6 +4,9 @@ class_name CharacterHurtState
 
 const SMOKE_SPEED = "6.5"
 const SMOKE_FREQUENCY = 1
+const COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES = 5
+
+var counter = false
 
 var hitbox
 

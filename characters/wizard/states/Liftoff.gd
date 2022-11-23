@@ -1,6 +1,6 @@
 extends WizardState
 
-const SPEED = "11.0"
+const SPEED = "15.0"
 const HITBOX_OFFSET = "-28.0"
 
 onready var hitbox = $Hitbox
@@ -10,10 +10,7 @@ var particle_y
 func _frame_0():
 	land_cancel = false
 
-
-
-
-func _frame_3():
+func _frame_8():
 	host.reset_momentum()
 #	host.move_directly(0, -1)
 	var dir = xy_to_dir(data.x, data.y, SPEED)
@@ -35,7 +32,7 @@ func _frame_3():
 	
 func _tick():
 	host.apply_forces_no_limit()
-	if current_tick > 4:
+	if current_tick > 9:
 		if host.is_grounded():
 			return "Landing"
 	

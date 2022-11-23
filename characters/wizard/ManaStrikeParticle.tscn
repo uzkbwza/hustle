@@ -32,42 +32,42 @@ material = SubResource( 3 )
 z_index = 1
 
 [node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="1"]
-amount = 5
+amount = 16
 lifetime = 0.55
 preprocess = 0.05
-speed_scale = 1.67
+speed_scale = 3.57
 explosiveness = 0.98
 local_coords = false
 texture = ExtResource( 7 )
 spread = 180.0
 gravity = Vector2( 0, 0 )
-initial_velocity = 121.47
+initial_velocity = 155.96
 initial_velocity_random = 0.5
 linear_accel = -24.58
-scale_amount = 0.98
+scale_amount = 3.31
 scale_amount_random = 1.0
 scale_amount_curve = SubResource( 2 )
 color = Color( 0.113725, 0.552941, 0.960784, 1 )
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
-amount = 5
+amount = 16
 lifetime = 0.55
 preprocess = 0.01
-speed_scale = 1.67
+speed_scale = 3.57
 explosiveness = 0.98
 local_coords = false
 texture = ExtResource( 6 )
 spread = 180.0
 gravity = Vector2( 0, 0 )
-initial_velocity = 121.47
+initial_velocity = 155.96
 initial_velocity_random = 0.5
 linear_accel = -24.58
-scale_amount = 1.92
+scale_amount = 3.31
 scale_amount_random = 1.0
 scale_amount_curve = SubResource( 2 )
 color = Color( 0.831373, 0.25098, 0.713726, 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="3"]
 frames = SubResource( 1 )
-frame = 10
+frame = 2
 playing = true

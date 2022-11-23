@@ -17,7 +17,8 @@ func _enter():
 		Hitbox.HitHeight.Low:
 			anim_name = "HurtGroundedLow"
 	
-	hitstun = hitbox.hitstun_ticks
+	hitstun = hitbox.hitstun_ticks + (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0)
+	counter = hitbox.counter_hit
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)

@@ -22,4 +22,4 @@ func _frame_4():
 	host.can_summon = false
 	
 func is_usable():
-	return host.can_summon
+	return .is_usable() and host.can_summon

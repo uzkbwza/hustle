@@ -60,12 +60,21 @@ var state_hit_cancellable = false
 
 var invulnerable = false
 
+var default_hurtbox = {
+	"x": 0,
+	"y": 0,
+	"width": 0,
+	"height": 0,
+}
+
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "projectile_invulnerable", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "projectile_invulnerable", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
+
+var previous_state = ""
 
 var initialized = false
 var rng = BetterRng.new()
@@ -108,12 +117,15 @@ func setup_hitbox_names():
 		else:
 			hitboxes[i].name = (name) + "_" + "HB" + "_" + str(i)
 
-func _on_state_exited(state: ObjectState):
+func _on_state_exited(state):
 	for hitbox in hitboxes:
 		hitbox.deactivate()
 
 func current_state():
 	return state_machine.state
+
+func is_otg():
+	return current_state().state_name == "Knockdown"
 
 func init(pos=null):
 	chara.id = id
@@ -123,12 +135,21 @@ func init(pos=null):
 	chara.set_max_ground_speed(max_ground_speed)
 	chara.set_max_air_speed(max_air_speed)
 	chara.set_max_fall_speed(max_fall_speed)
-
+	default_hurtbox.x = hurtbox.x
+	default_hurtbox.y = hurtbox.y
+	default_hurtbox.width = hurtbox.width
+	default_hurtbox.height = hurtbox.height
 	state_machine.init("", spawn_data)
 	setup_hitbox_names()
 	update_data()
 	initialized = true
 	emit_signal("initialized")
+
+func reset_hurtbox():
+	hurtbox.x = default_hurtbox.x
+	hurtbox.y = default_hurtbox.y
+	hurtbox.width = default_hurtbox.width
+	hurtbox.height = default_hurtbox.height
 
 func rumble(amount: float, ticks: int):
 	var time = ticks / 60.0
@@ -200,6 +221,7 @@ func copy_to(o: BaseObj):
 			o.hitboxes[i].enabled = hitboxes[i].enabled
 			hitboxes[i].copy_to(o.hitboxes[i])
 			o.hitboxes[i].update_position(pos.x, pos.y)
+	hurtbox.copy_to(o.hurtbox)
 	o.projectile_invulnerable = projectile_invulnerable
 	o.invulnerable = invulnerable
 
@@ -334,6 +356,11 @@ func _spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vec
 func get_camera():
 	return get_tree().get_nodes_in_group("Camera")[0] if !is_ghost else null
 
+func screen_bump(dir=Vector2(), screenshake_amount=2.0, screenshake_time=0.1):
+	var camera = get_camera()
+	if camera:
+		camera.bump(dir, screenshake_amount, screenshake_time)
+
 func update_collision_boxes():
 	var pos = get_pos()
 	collision_box.update_position(pos.x, pos.y)
@@ -367,6 +394,9 @@ func check_params(x, y):
 func set_x(x: int):
 	chara.set_x(x)
 
+func get_center_position_float():
+	return Vector2(position.x + collision_box.x, position.y + collision_box.y)
+	
 func set_pos(x, y):
 	check_params(x, y)
 	if x is int:
@@ -448,13 +478,17 @@ func move_directly_relative(x, y):
 	chara.move_directly_relative_str(x, y)
 
 func _process(delta):
+	debug_text()
+
+func debug_text():
+	if debug_label:
+		debug_label.text = ""
 	if data:
 		debug_info(data)
 
 func debug_info(data):
 	if debug_label:
-		debug_label.text = ""
-		debug_label.text = debug_dict("", data)
+		debug_label.text = debug_dict(debug_label.text, data)
 
 func debug_dict(text, dict):
 	for key in dict:
@@ -536,6 +570,9 @@ func state_tick():
 		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
 			state_machine.queue_state(state_machine.state.fallback_state)
 			state_machine.tick()
+
+func previous_state():
+	return current_state()._previous_state()
 
 func normal_tick():
 	state_tick()

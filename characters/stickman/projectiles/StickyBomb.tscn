@@ -52,6 +52,7 @@ air_friction = "0.12"
 max_ground_speed = "4"
 max_air_speed = "15"
 max_fall_speed = "5"
+extra_state_variables = "attached"
 deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
@@ -99,6 +100,28 @@ whiff_sound = ExtResource( 13 )
 hit_sound = ExtResource( 14 )
 dir_x = "-1.0"
 knockback = "9.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+start_tick = 1
+active_ticks = 2
+
+[node name="BigExplode" type="Node2D" parent="StateMachine" index="2"]
+script = ExtResource( 6 )
+sprite_animation = "Explode"
+endless = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/BigExplode" index="0"]
+script = ExtResource( 12 )
+width = 16
+height = 16
+damage = 100
+hitstun_ticks = 24
+hitlag_ticks = 1
+victim_hitlag = 10
+whiff_sound = ExtResource( 13 )
+hit_sound = ExtResource( 14 )
+dir_x = "-1.0"
+knockback = "11.0"
 launch_reversible = true
 grounded_hit_state = "HurtAerial"
 start_tick = 1

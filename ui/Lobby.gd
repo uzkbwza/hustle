@@ -37,6 +37,7 @@ func _ready():
 	Network.connect("player_list_changed", self, "refresh_lobby")
 	if !direct_connect:
 		Network.connect("match_list_received", self, "_on_match_list_received")
+		Network.connect("player_count_received", self, "_on_player_count_received")
 #	Network.connect("game_ended", self, "_on_game_ended")
 	Network.connect("game_error", self, "_on_game_error")
 #	Network.connect("game_start", self, "_on_game_start")
@@ -49,13 +50,18 @@ func _ready():
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
 	$"%ServerList".connect("item_selected", self, "refresh_multiplayer")
+	$"%ServerList".connect("item_selected", self, "_on_server_list_item_selected")
 	experimental_mode = "unstable" in Global.VERSION
 	if experimental_mode:
 		$MatchmakingDisabledLabel.show()
 
+func _on_server_list_item_selected(item):
+	Global.save_option(item, "default_dojo")
+
 func refresh_multiplayer(_index=null):
 	Network.stop_multiplayer()
 	item_list.clear()
+	$"%ActivePlayers".clear()
 	$"%ConnectingLabel".show()
 	Network.setup_relay_multiplayer(get_server_address())
 	yield(Network.multiplayer_client, "connection_succeeded")
@@ -91,6 +97,7 @@ func show():
 	host_button.show()
 	connect_container.show()
 	if !direct_connect:
+		$"%ServerList".select(Global.default_dojo)
 		$"%IPEdit".hide()
 		$"%PortEdit".hide()
 #		$"%RoomCodeDisplay".show()
@@ -107,7 +114,7 @@ func show():
 		host_button.disabled = false
 #		join_button.disabled = false
 		if !experimental_mode:
-			Network.request_match_list()
+			refresh_match_list()
 #		else:
 #			item_list.modulate.a = 0
 		$"%DirectConnectWarning".hide()
@@ -129,6 +136,7 @@ func show():
 
 func refresh_match_list():
 	Network.request_match_list()
+	Network.request_player_count()
 
 func _on_host_pressed():
 	if name_edit.text == "":
@@ -192,6 +200,21 @@ func _on_match_clicked(index):
 		var match_ = match_list[index]
 		$"%RoomCodeEdit".text = match_.code
 		$"%JoinButton".disabled = false
+
+func _on_player_count_received(count):
+	if show_match_list:
+		var color = Color.green
+		if count > 200:
+			color = Color.greenyellow
+		if count > 400:
+			color = Color.yellow
+		if count > 600:
+			color = Color.orange
+		if count > 800:
+			color = Color.red
+		$"%ActivePlayers".clear()
+		$"%ActivePlayers".append_bbcode("[color=#" + color.to_html() + "]Connected players: " + str(count) + "[/color]")
+#		$"%ActivePlayers".modulate = color
 
 func _on_match_list_received(list):
 	if show_match_list:

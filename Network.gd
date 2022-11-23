@@ -103,6 +103,8 @@ signal both_players_turn_end()
 signal match_ready(match_data)
 signal resim_requested()
 signal resim_denied()
+signal force_open_action_buttons()
+signal player_count_received(playercount)
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -420,9 +422,17 @@ func request_rematch():
 remote func receive_match_list(list):
 	emit_signal("match_list_received", list)
 
+remote func receive_player_count(count):
+	emit_signal("player_count_received", count)
+
 func request_match_list():
 	if multiplayer_client and multiplayer_client.connected:
 		rpc_id(1, "fetch_match_list")
+
+func request_player_count():
+	if multiplayer_client and multiplayer_client.connected:
+		rpc_id(1, "fetch_player_count")
+
 
 func is_host():
 	if direct_connect:
@@ -479,6 +489,7 @@ remote func confirm_opponent_actionable():
 remote func opponent_sync_unlock():
 	print("unlocking action buttons")
 	can_open_action_buttons = true
+	emit_signal("force_open_action_buttons")
 
 remote func opponent_tick():
 	print("opponent ready")

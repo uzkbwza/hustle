@@ -1,6 +1,6 @@
 extends CharacterState
 
-func _tick():
+func _enter():
 	if data.x * host.get_opponent_dir() < 0:
 		return "DashBackward"
 	else:

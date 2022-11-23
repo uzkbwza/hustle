@@ -2,7 +2,8 @@ extends CharacterState
 #
 func _frame_0():
 #	if current_tick == 0:
-	host.start_invulnerability()
+	if host.read_advantage:
+		host.start_invulnerability()
 #	host.start_invulnerability()
 
 func _tick():

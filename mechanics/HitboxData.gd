@@ -8,6 +8,7 @@ var dir_y: String
 var dir_x: String
 var pos_x: int
 var pos_y: int
+var counter_hit = false
 var knockdown: bool
 var hitlag_ticks
 var victim_hitlag
@@ -25,12 +26,20 @@ var rumble
 var host
 var screenshake_frames = 0
 var screenshake_amount = 0
+var minimum_damage = 0
 
 func _init(state):
 	hit_height = state.hit_height
-	hitstun_ticks = state.hitstun_ticks
+	
+	if !state.has_method("get_real_hitstun"):
+		hitstun_ticks = state.hitstun_ticks
+	else:
+		hitstun_ticks = state.get_real_hitstun()
 	facing = state.host.get_facing()
-	knockback = state.knockback
+	if !state.has_method("get_real_knockback"):
+		knockback = state.knockback
+	else:
+		knockback = state.get_real_knockback()
 	dir_y = state.dir_y
 	hitlag_ticks = state.hitlag_ticks
 	victim_hitlag = state.victim_hitlag
@@ -59,3 +68,7 @@ func _init(state):
 		screenshake_amount = state.screenshake_amount
 	if state.get("screenshake_frames") != null:
 		screenshake_frames = state.screenshake_frames
+	if state.has_method("is_counter_hit"):
+		counter_hit = state.is_counter_hit()
+	if state.get("minimum_damage") != null:
+		minimum_damage = state.minimum_damage

@@ -5,6 +5,9 @@ extends CollisionBox
 class_name Hitbox
 
 const COMBO_PUSHBACK_COEFFICIENT = "0.4"
+const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED = "1.25"
+const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
+const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 0
 
 const HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
@@ -21,6 +24,7 @@ enum HitHeight {
 
 export var _c_Damage = 0
 export var damage: int = 0
+export var minimum_damage: int = 0
 
 export var _c_Hit_Properties = 0
 export var hitstun_ticks: int = 30
@@ -31,6 +35,7 @@ export var increment_combo = true
 export var hits_otg = false
 export var hits_vs_grounded = true
 export var hits_vs_aerial = true
+export var can_counter_hit = true
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -51,7 +56,6 @@ export var replace_hit_particle = false
 export var camera_bump_dir = Vector2()
 export(PackedScene) var whiff_particle = null
 export var rumble = true
-
 
 export var _c_Sfx = 0
 export(AudioStream) var whiff_sound = preload("res://sound/common/whiff1.wav") 
@@ -103,7 +107,7 @@ var hit_sound_player
 var hit_bass_sound_player
 
 
-func copy_to(hitbox: Hitbox):
+func copy_to(hitbox: CollisionBox):
 	for variable in ["x", "y", "pos_x", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
 		hitbox.set(variable, get(variable))
 
@@ -164,6 +168,9 @@ func deactivate():
 func to_data():
 	return HitboxData.new(self)
 
+func is_counter_hit():
+	return host.is_in_group("Fighter") and host.read_advantage and host.opponent.current_state().has_hitboxes
+
 func spawn_whiff_particle():
 	if whiff_particle:
 		var center = get_center()
@@ -179,8 +186,31 @@ func init():
 		width *= -1
 	call_deferred("setup_audio")
 
+func get_real_knockback():
+	if host.is_in_group("Fighter"):
+		if not (host.current_state().state_name in host.combo_moves_used):
+			return knockback
+		var knockback_modifier = host.fixed.powu(COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED if host.opponent.is_grounded() else COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL, host.combo_moves_used[host.current_state().state_name])
+		var final_kb = host.fixed.mul(knockback, knockback_modifier)
+#		var max_kb = host.fixed.mul(knockback, "2")
+#		if host.fixed.gt(final_kb, max_kb):
+#			return max_kb
+#		else:
+		return final_kb
+	else:
+		return knockback
+
+func get_real_hitstun():
+	if host.is_in_group("Fighter"):
+		if not (host.current_state().state_name in host.combo_moves_used):
+			return hitstun_ticks
+		var final_hitstun = Utils.int_max(hitstun_ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (host.combo_moves_used[host.current_state().state_name] + 1)), hitstun_ticks / 2)
+		return final_hitstun
+	else:
+		return hitstun_ticks
+
 func otg_check(obj):
-	return obj.current_state().state_name != "Knockdown" or hits_otg
+	return !obj.is_otg() or hits_otg
 
 func hit(obj):
 	if !(obj.name in hit_objects) and !obj.invulnerable and otg_check(obj):

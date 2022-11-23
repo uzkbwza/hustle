@@ -69,8 +69,13 @@ export(String) var change_stance_to = ""
 
 export var _c_Misc = 0
 export var release_opponent_on_startup = false
+export var yomi_effect = false
+
+var yomi_effect_spawned = false
 
 var started_in_air = false
+var hit_yet = false
+
 
 var interrupt_into = []
 var interrupt_from = []
@@ -115,6 +120,8 @@ func get_ui_category():
 	return ActionType.keys()[type]
 
 func is_usable():
+	if host.current_state().state_name == "WhiffInstantCancel" and !has_hitboxes:
+		return false
 	if air_type == AirType.Aerial:
 		if host.is_grounded():
 			return false
@@ -130,8 +137,12 @@ func get_categories(string: String):
 	return Utils.split_lines(string)
 
 func _enter_shared():
-	started_in_air = false
 	._enter_shared()
+#	host.update_advantage()
+#	if host.opponent:
+#		host.opponent.update_advantage()
+	hit_yet = false
+	started_in_air = false
 	host.update_grounded()
 	if change_stance_to:
 		host.change_stance_to(change_stance_to)
@@ -146,20 +157,28 @@ func _enter_shared():
 		
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances
-	
+
 func enable_interrupt():
+#	host.update_advantage()
 	emit_signal("state_interruptable")
-	
+
 func enable_hit_cancel():
 	emit_signal("state_hit_cancellable")
 
 func _on_hit_something(obj, hitbox):
+	if !hit_yet and obj == host.opponent:
+		hit_yet = true
+		host.stack_move_in_combo(state_name)
+	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
 		enable_hit_cancel()
 
 func _tick_shared():
 	if current_tick == 0:
-
+		if yomi_effect and host.read_advantage:
+			if host.yomi_effect:
+				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
+			host.yomi_effect = false
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:
@@ -172,7 +191,12 @@ func _tick_shared():
 				host.update_data()
 		else:
 			host.reverse_state = false
+#	if busy_interrupt_type != BusyInterrupt.Hurt:
+#		host.update_advantage()
+#		if host.opponent:
+#			host.opponent.update_advantage()
 	._tick_shared()
+
 	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
 		queue_state_change("Landing")
 	if current_tick <= anim_length and !endless:
@@ -180,12 +204,16 @@ func _tick_shared():
 			enable_interrupt()
 
 func _tick_after():
+	host.set_lowest_tick(current_tick)
 	._tick_after()
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
 
 func _exit_shared():
+#	host.update_advantage()
+#	host.opponent.update_advantage()
+	._exit_shared()
 	host.update_facing()
 	terminate_hitboxes()
 	host.end_invulnerability()

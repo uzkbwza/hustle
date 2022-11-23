@@ -1,10 +1,18 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/kunai.png" type="Texture" id=2]
 [ext_resource path="res://projectile/DirProjectileDefault.gd" type="Script" id=3]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
 [ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=5]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=6]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 6 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -15,6 +23,7 @@ animations = [ {
 } ]
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 2 )
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
@@ -36,6 +45,7 @@ homing_turn_speed = "3.0"
 homing_accel = "1.0"
 max_homing_speed = "10"
 start_homing = false
+lifetime = 6000
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 script = ExtResource( 4 )

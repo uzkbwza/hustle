@@ -67,7 +67,13 @@ var anim_name
 
 var has_hitboxes = false
 
+var current_hurtbox = null
+
 var hitbox_start_frames = {
+}
+
+var hurtbox_state_change_frames = {
+	
 }
 
 var frame_methods = []
@@ -107,7 +113,7 @@ func _tick_shared():
 #	if current_tick == -1:
 #		if has_method("_frame_0"):
 #			call("_frame_0")
-	
+
 	if current_tick == -1:
 		if spawn_particle_on_enter and particle_scene:
 			spawn_particle_relative(particle_scene, particle_position)
@@ -116,6 +122,7 @@ func _tick_shared():
 	if current_tick < anim_length or endless:
 		current_tick += 1
 		update_sprite_frame()
+		update_hurtbox()
 		if hitbox_start_frames.has(current_tick + 1):
 			for hitbox in hitbox_start_frames[current_tick + 1]:
 				activate_hitbox(hitbox)
@@ -167,6 +174,15 @@ func _tick_shared():
 	if apply_forces:
 		host.apply_forces()
 
+func update_hurtbox():
+	if current_hurtbox:
+		current_hurtbox.tick(host)
+	if current_tick in hurtbox_state_change_frames:
+		if current_hurtbox:
+			current_hurtbox.end(host)
+		current_hurtbox = hurtbox_state_change_frames[current_tick]
+		current_hurtbox.start(host)
+
 func _tick_after():
 	for hitbox in get_active_hitboxes():
 		var pos = host.get_pos()
@@ -212,6 +228,7 @@ func init():
 		else:
 			sprite_anim_length = anim_length
 	setup_hitboxes()
+	setup_hurtboxes()
 	call_deferred("setup_audio")
 
 func setup_audio():
@@ -249,7 +266,12 @@ func setup_hitboxes():
 		for hitbox2 in hitboxes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)
-		
+
+func setup_hurtboxes():
+	for child in get_children():
+		if child is HurtboxState:
+			hurtbox_state_change_frames[child.start_tick] = child
+
 
 func __on_hit_something(obj, hitbox):
 	if active:
@@ -273,7 +295,12 @@ func _enter_shared():
 	if enter_sfx_player and !ReplayManager.resimulating:
 		enter_sfx_player.play()
 	emit_signal("state_started")
-	
+
+func _exit_shared():
+	if current_hurtbox:
+		current_hurtbox.end(host)
+	host.reset_hurtbox()
+
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	return host.xy_to_dir(x, y, mul, div)
 

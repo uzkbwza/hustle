@@ -5,8 +5,9 @@ class_name Fighter
 signal action_selected(action, data)
 signal super_started()
 signal parried()
-
 signal undo()
+#signal got_counter_hit()
+
 var MAX_HEALTH = 1000
 #const STALING_REDUCTIONS = [
 #	"1.0",
@@ -27,7 +28,10 @@ const MIN_STALE_MODIFIER = "0.2"
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
 const HITLAG_COLLISION_TICKS = 4
-const PROJECTILE_PERFECT_PARRY_WINDOW = 2
+const PROJECTILE_PERFECT_PARRY_WINDOW = 3
+const BURST_ON_DAMAGE_AMOUNT = 5
+
+const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
 
 const MAX_GROUNDED_HITS = 7
 
@@ -75,6 +79,8 @@ onready var actionable_label = $ActionableLabel
 
 var input_state = InputState.new()
 
+var color = Color.white
+
 export(PackedScene) var player_info_scene
 export(PackedScene) var player_extra_params_scene
 
@@ -111,13 +117,18 @@ var hp: int = 0
 var super_meter: int = 0
 var supers_available: int = 0
 
+var parried_last_state = false
+var yomi_effect = false
+
 var burst_meter: int = 0
 var bursts_available: int = 0
 #var parried_this_frame = false
 var busy_interrupt = false
 var any_available_actions = true
 
+var state_changed = false
 var on_the_ground = false
+
 
 var current_nudge = {
 	"x": "0",
@@ -129,6 +140,18 @@ var current_di = {
 	"y": "0",
 }
 
+var last_vel = {
+	"x": "0",
+	"y": "0",
+}
+
+var last_aerial_vel = {
+	"x": "0",
+	"y": "0",
+}
+
+var combo_moves_used = {}
+
 var reverse_state = false
 var ghost_reverse = false
 
@@ -136,6 +159,10 @@ var nudge_distance_left = 0
 
 var can_nudge = false
 var parried = false
+
+var read_advantage = false
+
+var last_action = 0
 
 var stance = "Normal"
 
@@ -148,6 +175,8 @@ var throw_pos_y = -5
 
 var combo_damage = 0
 var hitlag_applied = 0
+
+var lowest_tick = 0
 
 class InputState:
 	var name
@@ -195,15 +224,24 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "reverse_state", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "lowest_tick", "state_changed", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
+	connect("got_hit", self, "on_got_hit")
+	state_machine.connect("state_changed", self, "on_state_changed")
 
-func gain_burst_meter():
+func on_state_changed(states_stack):
+#	state_changed = true
+	pass
+
+func on_got_hit():
+	pass
+
+func gain_burst_meter(amount=null):
 	if !burst_enabled:
 		return
 	if bursts_available < MAX_BURSTS:
-		burst_meter += BURST_BUILD_SPEED
+		burst_meter += BURST_BUILD_SPEED if amount == null else amount
 		if burst_meter > MAX_BURST_METER:
 			gain_burst()
 
@@ -251,6 +289,12 @@ func use_super_meter(amount):
 		else:
 			super_meter = 0
 
+func stack_move_in_combo(move_name):
+	if combo_moves_used.has(move_name):
+		combo_moves_used[move_name] += 1
+	else:
+		combo_moves_used[move_name] = 1
+
 func gain_super_meter(amount):
 	amount = combo_stale_meter(amount)
 	super_meter += amount
@@ -288,6 +332,8 @@ func get_global_throw_pos():
 func reset_combo():
 	combo_count = 0
 	combo_damage = 0
+	combo_moves_used = {}
+	opponent.grounded_hits_taken = 0
 	opponent.trail_hp = opponent.hp
 
 func incr_combo():
@@ -305,60 +351,96 @@ func hitbox_from_name(hitbox_name):
 		var obj_name = hitbox_props[0]
 		var hitbox_id = int(hitbox_props[-1])
 		var obj = objs_map[obj_name]
-		return objs_map[obj_name].hitboxes[hitbox_id]
+		if obj:
+			return objs_map[obj_name].hitboxes[hitbox_id]
 
-func hit_by(hitbox):
-	if parried:
-		return
-	if hitbox.name in parried_hitboxes:
-		return
-	if !hitbox.hits_otg and current_state().state_name == "Knockdown":
-		return
-	if hitbox.throw:
-		return thrown_by(hitbox)
-	if !can_parry_hitbox(hitbox):
+func _process(_delta):
+	update()
+	if invulnerable:
+		if (Global.current_game.real_tick / 1) % 2 == 0:
+			var transparent = color
+			self_modulate.a = 0.5
+#			sprite.get_material().set_shader_param("color", transparent)
+		else:
+			self_modulate.a = 1.0
+#			sprite.get_material().set_shader_param("color", color)
+	else:
+		self_modulate.a = 1.0
+
+func debug_text():
+	.debug_text()
+	debug_info(
+		{
+			"lowest_tick": lowest_tick,
+			"read_advantage": read_advantage,
+		}
+	)
+
+func has_armor():
+	return false
+
+func launched_by(hitbox):
+#		if hitlag_ticks < hitbox.victim_hitlag:
+	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
+	hitlag_applied = hitlag_ticks
+	
+	if objs_map.has(hitbox.host):
+		var host = objs_map[hitbox.host]
+		if host.hitlag_ticks < hitbox.hitlag_ticks:
+			host.hitlag_ticks = hitbox.hitlag_ticks
+	
+	if hitbox.rumble:
+		rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
+
+	if !has_armor():
 		var state
 		if is_grounded():
 			state = hitbox.grounded_hit_state
 		else:
 			state = hitbox.aerial_hit_state
-#		if hitlag_ticks < hitbox.victim_hitlag:
-		hitlag_ticks = hitbox.victim_hitlag
-		hitlag_applied = hitbox.victim_hitlag
-		
-		if objs_map.has(hitbox.host):
-			var host = objs_map[hitbox.host]
-			if host.hitlag_ticks < hitbox.hitlag_ticks:
-				host.hitlag_ticks = hitbox.hitlag_ticks
-		
-		if hitbox.rumble:
-			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
-		
+
 		if state == "HurtGrounded":
 			grounded_hits_taken += 1
 			if grounded_hits_taken >= MAX_GROUNDED_HITS:
 				state = "HurtAerial"
 				grounded_hits_taken = 0
+
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
 
 		busy_interrupt = true
 		can_nudge = true
+	
+	emit_signal("got_hit")
+	take_damage(hitbox.damage, hitbox.minimum_damage)
+	state_tick()
 
-		emit_signal("got_hit")
-		take_damage(hitbox.damage)
-		state_tick()
+func hit_by(hitbox):
+	if parried:
+		return
+	if hitbox.name in parried_hitboxes:
+		return
+	if !hitbox.hits_otg and is_otg():
+		return
+	if hitbox.throw and !is_otg():
+		return thrown_by(hitbox)
+	if !can_parry_hitbox(hitbox):
+		launched_by(hitbox)
 	else:
 		parried = true
 		opponent.got_parried = true
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
+
 		if !projectile:
-			perfect_parry = always_perfect_parry or (host and current_state().current_tick >= host.current_state().current_tick)
+			perfect_parry = always_perfect_parry or read_advantage or parried_last_state
 		else:
-			perfect_parry = always_perfect_parry or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW)
+			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW)
+		if perfect_parry:
+			parried_last_state = true
+
 #			print("parrying projectile")
 #		print("perfect parry: " + str(perfect_parry))
 #		print("me: %d, opponent: %d" % [current_state().current_tick, host.current_state().current_tick])
@@ -399,17 +481,15 @@ func set_throw_position(x: int, y: int):
 	throw_pos_x = x
 	throw_pos_y = y
 
-func get_center_position_float():
-	return Vector2(position.x + collision_box.x, position.y + collision_box.y)
-
-func take_damage(damage: int):
+func take_damage(damage: int, minimum=0):
 	if opponent.combo_count == 0:
 		trail_hp = hp
 	if damage == 0:
 		return
+	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
 	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
 	opponent.combo_damage += damage
-	hp -= damage
+	hp -= Utils.int_max(damage, minimum)
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	if hp < 0:
@@ -443,34 +523,10 @@ func can_parry_hitbox(hitbox):
 		return false
 	return current_state().can_parry_hitbox(hitbox)
 
-func process_action():
-	if ReplayManager.playback:
-		var input = get_playback_input()
-		if input:
-			queued_action = input["action"]
-			queued_data = input["data"]
-			queued_extra = input["extra"]
-	else:
-		if queued_action:
-			if queued_action == "Undo":
-				queued_action = null
-				queued_data = null
-				return
-#			if queued_action != "ContinueAuto":
-			if !is_ghost:
-				ReplayManager.frames[id][current_tick] = {
-					"action": queued_action,
-					"data": queued_data,
-					"extra": queued_extra,
-				}
-	if queued_action:
-		if queued_action in state_machine.states_map:
-			state_machine.queue_state(queued_action, queued_data)
-	if queued_extra:
-		process_extra(queued_extra)
 
 func set_color(color: Color):
 	sprite.get_material().set_shader_param("color", color)
+	self.color = color
 
 func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":
@@ -490,37 +546,100 @@ func process_extra(extra):
 		if reverse_state:
 			ghost_reverse = true
 
+
 func refresh_air_movements():
 	air_movements_left = num_air_movements
 
 func clean_parried_hitboxes():
-	if is_ghost:
-		return
+#	if is_ghost:
+#		return
 	if !parried_hitboxes:
 		return
 	var hitboxes_to_refresh = []
 	for hitbox_name in parried_hitboxes:
 		var hitbox = hitbox_from_name(hitbox_name)
-#		if hitbox:
-		if !hitbox.enabled or !hitbox.active:
-			hitboxes_to_refresh.append(hitbox)
-	
+		if hitbox:
+			if !hitbox.enabled or !hitbox.active:
+				hitboxes_to_refresh.append(hitbox)
+
 	for hitbox in hitboxes_to_refresh:
 		parried_hitboxes.erase(hitbox.name)
 
 func get_opponent_dir():
 	return Utils.int_sign(opponent.get_pos().x - get_pos().x)
 
-func tick():
+func get_advantage():
+	if opponent == null:
+		return true
+#	var minus_modifier = 1 if id == 1 else 0
+	var minus_modifier = 0
+	var advantage = (opponent and opponent.lowest_tick <= lowest_tick) or parried_last_state
+	if state_interruptable and opponent.state_interruptable:
+		advantage = true
+
+#	read_advantage = (opponent and opponent.current_state().current_tick <= 0) or parried_last_state
+#	if opponent.state_interruptable and !opponent.busy_interrupt:
+#		read_advantage = true
+#	if !opponent.state_interruptable:
+#		read_advantage = false
+#	if opponent.busy_interrupt:
+#		read_advantage = false
+#	if busy_interrupt:
+#		read_advantage = false
+	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
+		advantage = false
+	if opponent.current_state().state_name == "WhiffInstantCancel" or (opponent.previous_state() and opponent.previous_state().state_name == "WhiffInstantCancel" and opponent.current_state().has_hitboxes):
+		advantage = false
+	return advantage
+
+func set_lowest_tick(tick):
+	if lowest_tick == null or tick < lowest_tick:
+		lowest_tick = tick
+
+func update_advantage():
+	var new_adv = get_advantage()
+	if new_adv and !read_advantage:
+		yomi_effect = true
+	read_advantage = new_adv
+
+func tick_before():
 	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
 	update_grounded()
-	if !game_over:
-		process_action()
-		queued_action = null
-		queued_data = null
-		queued_extra = null
+	if ReplayManager.playback:
+		var input = get_playback_input()
+		if input:
+			queued_action = input["action"]
+			queued_data = input["data"]
+			queued_extra = input["extra"]
+#			last_action = current_tick
+	else:
+		if queued_action:
+#			last_action = current_tick
+			if queued_action == "Undo":
+				queued_action = null
+				queued_data = null
+				return
+#			if queued_action != "ContinueAuto":
+			if !is_ghost:
+				ReplayManager.frames[id][current_tick] = {
+					"action": queued_action,
+					"data": queued_data,
+					"extra": queued_extra,
+				}
+	if queued_extra:
+		process_extra(queued_extra)
+	if queued_action:
+		if queued_action in state_machine.states_map:
+#			last_action = current_tick
+			state_machine._change_state(queued_action, queued_data)
+	queued_action = null
+	queued_data = null
+	queued_extra = null
+	lowest_tick = current_state().current_tick
+
+func tick():
 
 	if hitlag_ticks > 0:
 		if can_nudge:
@@ -536,14 +655,20 @@ func tick():
 	else:
 		if parried:
 #			state_interruptable = true
-#			if current_state().get("parry_active"):
+			parried = false
+			if current_state().get("parry_active"):
 				current_state().parry_active = false
-				parried = false
+			var prev = previous_state()
+			if prev and prev.get("parry_active"):
+				prev.parry_active = false
+		var minus_offset = 0 if id == 1 else 1
 		state_tick()
+
 		if state_hit_cancellable:
 			state_interruptable = true
 			can_nudge = false
-		chara.apply_pushback(get_opponent_dir())
+		if !current_state() is ThrowState:
+			chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
 			refresh_air_movements()
 		current_tick += 1
@@ -553,6 +678,7 @@ func tick():
 				gain_super_meter(Utils.int_max(Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR, 1))
 	#	if current_state().current_tick == -1:
 	#		state_tick()
+
 	if state_interruptable:
 		update_grounded()
 	gain_burst_meter()
@@ -560,6 +686,12 @@ func tick():
 	for particle in particles.get_children():
 		particle.tick()
 	any_available_actions = true
+	last_vel = get_vel()
+	if !is_grounded():
+		last_aerial_vel = last_vel
+	if !(previous_state() is ParryState) or !(current_state() is ParryState):
+		parried_last_state = false
+#	lowest_tick = null
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
@@ -587,7 +719,6 @@ func update_facing():
 		update_data()
 
 func on_state_interruptable(state):
-	grounded_hits_taken = 0
 	if !dummy:
 		state_interruptable = true
 	else:
@@ -610,3 +741,11 @@ func on_action_selected(action, data, extra):
 	if action == "Undo":
 		emit_signal("undo")
 	emit_signal("action_selected", action, data, extra)
+
+
+func _draw():
+#	if read_advantage:
+#		draw_arc(Vector2(0, -16), 24, 0, TAU, 32, Color.green)
+#	if state_interruptable:
+#		draw_circle(Vector2(0, -16), 8, Color.red)
+	pass

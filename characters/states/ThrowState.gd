@@ -26,6 +26,7 @@ export var disable_collision = true
 export var ground_bounce = true
 export var screenshake_amount = 0
 export var screenshake_frames = 0
+export var hits_otg = false
 #export var incr_combo = false
 
 var hit_height = Hitbox.HitHeight.Mid

@@ -1,6 +1,6 @@
 extends Node
 
-var VERSION = "0.2.4"
+var VERSION = "0.3.0"
 
 var audio_player
 var music_enabled = true
@@ -11,6 +11,7 @@ var show_hitboxes = false
 var frame_advance = false
 var show_playback_controls = false
 var playback_speed_mod = 1
+var default_dojo = 0
 
 var current_game = null
 
@@ -18,6 +19,7 @@ var name_paths = {
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
+	"Robot": "res://characters/robo/Robot.tscn",
 }
 
 var songs = {
@@ -107,12 +109,13 @@ func save_options():
 			"fullscreen": fullscreen,
 			"show_hitboxes": show_hitboxes,
 			"show_playback_controls": show_playback_controls,
+			"default_dojo": 0,
 		}
 	})
 
 func get_default_player_data():
 	return {
-		"username": "username",
+		"username": "",
 		"options" : {
 			"music_enabled": true,
 			"freeze_ghost_prediction": true,
@@ -120,6 +123,7 @@ func get_default_player_data():
 			"fullscreen": false,
 			"show_hitboxes": false,
 			"show_playback_controls": false,
+			"default_dojo": 0,
 		}
 	}
 

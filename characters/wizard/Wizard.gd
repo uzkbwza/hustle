@@ -3,7 +3,7 @@ extends Fighter
 const ORB_SCENE = preload("res://characters/wizard/projectiles/orb/Orb.tscn")
 const ORB_PARTICLE_SCENE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 
-const HOVER_AMOUNT = 400
+const HOVER_AMOUNT = 1200
 const HOVER_MIN_AMOUNT = 50
 const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
@@ -12,7 +12,8 @@ const FAST_FALL_SPEED = "5"
 
 var hover_left = 0
 var hover_drain_amount = 5
-var hover_gain_amount = 3
+var hover_gain_amount = 9
+var hover_gain_amount_air = 2
 var hovering = false
 var ghost_started_hovering = false
 var fast_falling = false
@@ -72,7 +73,7 @@ func tick():
 			if current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
 				fast_falling = false
 		else:
-			hover_left += hover_gain_amount
+			hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
 			if hover_left > HOVER_AMOUNT:
 				hover_left = HOVER_AMOUNT
 	if orb_projectile:

@@ -13,7 +13,6 @@ var lasso_projectile = null
 var used_aerial_h_slash = false
 
 func _ready():
-	connect("got_hit", self, "on_got_hit")
 	shooting_arm.set_material(sprite.get_material())
 
 func init(pos=null):

@@ -6,6 +6,10 @@ export var speed = "25.0"
 export var y_modifier = "1.5"
 export var x_speed_preserved = "0.25"
 export var super_jump = false
+export var super_jump_speed_override = ""
+
+export var fall_anim = false
+export var fall_anim_speed = "1"
 
 const SHORT_HOP_IASA = 7
 const FULL_HOP_IASA = 14
@@ -13,6 +17,8 @@ const FULL_HOP_LENGTH = "0.7"
 const SUPER_JUMP_SPEED = "17.0"
 const BASE_JUMP_SPEED = "0.5"
 const SUPER_JUMP_FORCES_END_TICK = 25
+
+
 
 var jump_tick = 1
 var squat
@@ -25,7 +31,7 @@ func jump():
 	var force = xy_to_dir(data["x"], data["y"])
 	var force_power = fixed.vec_mul(force.x, force.y, fixed.powu(fixed.vec_len(force.x, force.y), 2))
 	force = FixedVec2String.new(fixed.div(fixed.add(force_power.x, force.x), "2"), fixed.div(fixed.add(force_power.y, force.y), "2"))
-	force = fixed.vec_mul(force.x, force.y, fixed.add(speed, BASE_JUMP_SPEED) if !super_jump else SUPER_JUMP_SPEED)
+	force = fixed.vec_mul(force.x, force.y, fixed.add(speed, BASE_JUMP_SPEED) if !super_jump else (SUPER_JUMP_SPEED if super_jump_speed_override == "" else super_jump_speed_override))
 	if !super_jump:
 		spawn_particle_relative(particle_scene, Vector2(), Vector2(float(force.x), float(force.y)))
 	else:
@@ -86,6 +92,9 @@ func _tick():
 				anim_name = "JumpBack"
 			else:
 				anim_name = sprite_animation
+		if fall_anim:
+			if fixed.gt(host.get_vel().y, fall_anim_speed):
+				anim_name = "Fall"
 		host.apply_grav()
 		if !super_jump or fixed.gt(host.get_vel().y, "0") or current_tick > SUPER_JUMP_FORCES_END_TICK:
 			host.apply_forces()

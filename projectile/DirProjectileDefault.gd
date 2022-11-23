@@ -11,6 +11,7 @@ export var homing_turn_speed = "3.0"
 export var homing_accel = "1.0"
 export var max_homing_speed = "10"
 export var start_homing = false
+export var lifetime = 99999
 
 var hit_something = false
 var hit_something_tick = 0
@@ -35,6 +36,10 @@ func _tick():
 		host.hurtbox.width = 0
 		host.hurtbox.height = 0
 		pass
+	if current_tick > lifetime:
+		fizzle()
+		host.hurtbox.width = 0
+		host.hurtbox.height = 0
 	elif !hit_something:
 		var dir
 		if !homing:

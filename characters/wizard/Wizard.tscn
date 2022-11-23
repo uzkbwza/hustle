@@ -1,4 +1,4 @@
-[gd_scene load_steps=230 format=2]
+[gd_scene load_steps=233 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -9,7 +9,7 @@
 [ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=7]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light1.png" type="Texture" id=8]
 [ext_resource path="res://characters/stickman/sprites/stickman53.png" type="Texture" id=9]
-[ext_resource path="res://characters/stickman/sprites/stickman58.png" type="Texture" id=10]
+[ext_resource path="res://characters/wizard/sprites/grab1.png" type="Texture" id=10]
 [ext_resource path="res://characters/stickman/sprites/stickman48.png" type="Texture" id=11]
 [ext_resource path="res://characters/stickman/sprites/stickman44.png" type="Texture" id=12]
 [ext_resource path="res://characters/stickman/sprites/stickman56.png" type="Texture" id=13]
@@ -22,7 +22,7 @@
 [ext_resource path="res://characters/stickman/sprites/stickman45.png" type="Texture" id=20]
 [ext_resource path="res://characters/stickman/sprites/stickman12.png" type="Texture" id=21]
 [ext_resource path="res://characters/wizard/sprites/jump_forward.png" type="Texture" id=22]
-[ext_resource path="res://characters/stickman/sprites/stickman61.png" type="Texture" id=23]
+[ext_resource path="res://characters/wizard/sprites/tech.png" type="Texture" id=23]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_heavy4.png" type="Texture" id=24]
 [ext_resource path="res://characters/stickman/sprites/stickman39.png" type="Texture" id=25]
 [ext_resource path="res://characters/stickman/sprites/chuk_jump1.png" type="Texture" id=26]
@@ -60,7 +60,7 @@
 [ext_resource path="res://characters/stickman/sprites/stickman49.png" type="Texture" id=58]
 [ext_resource path="res://characters/stickman/sprites/phantomdash3.png" type="Texture" id=59]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin4.png" type="Texture" id=60]
-[ext_resource path="res://characters/stickman/sprites/stickman5.png" type="Texture" id=61]
+[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=61]
 [ext_resource path="res://characters/wizard/sprites/burst.png" type="Texture" id=62]
 [ext_resource path="res://characters/wizard/sprites/idle.png" type="Texture" id=63]
 [ext_resource path="res://characters/wizard/sprites/landing.png" type="Texture" id=64]
@@ -78,10 +78,10 @@
 [ext_resource path="res://characters/stickman/sprites/stickman21.png" type="Texture" id=76]
 [ext_resource path="res://characters/stickman/sprites/stickman28.png" type="Texture" id=77]
 [ext_resource path="res://characters/stickman/sprites/stickman22.png" type="Texture" id=78]
-[ext_resource path="res://characters/stickman/sprites/stickman37.png" type="Texture" id=79]
+[ext_resource path="res://characters/wizard/sprites/getup.png" type="Texture" id=79]
 [ext_resource path="res://characters/stickman/sprites/stickman27.png" type="Texture" id=80]
 [ext_resource path="res://characters/stickman/sprites/stickman34.png" type="Texture" id=81]
-[ext_resource path="res://characters/stickman/sprites/stickman57.png" type="Texture" id=82]
+[ext_resource path="res://characters/wizard/sprites/grab2.png" type="Texture" id=82]
 [ext_resource path="res://characters/wizard/sprites/dash_forward.png" type="Texture" id=83]
 [ext_resource path="res://characters/wizard/sprites/dodge2.png" type="Texture" id=84]
 [ext_resource path="res://characters/wizard/sprites/dodge1.png" type="Texture" id=85]
@@ -225,6 +225,9 @@
 [ext_resource path="res://characters/wizard/sprites/magma_bolt4.png" type="Texture" id=223]
 [ext_resource path="res://sound/common/hit3.wav" type="AudioStream" id=224]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/boltofmagma.png" type="Texture" id=225]
+[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=226]
+[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=227]
+[ext_resource path="res://HurtboxState.gd" type="Script" id=228]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -332,12 +335,12 @@ animations = [ {
 "name": "Getup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ) ],
+"frames": [ ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 82 ) ],
 "loop": true,
 "name": "Grab",
 "speed": 60.0
 }, {
-"frames": [ ExtResource( 61 ) ],
+"frames": [ ExtResource( 66 ) ],
 "loop": true,
 "name": "Grabbed",
 "speed": 5.0
@@ -422,7 +425,7 @@ animations = [ {
 "name": "Landing",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 130 ) ],
+"frames": [ ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 130 ) ],
 "loop": true,
 "name": "Liftoff",
 "speed": 5.0
@@ -555,8 +558,8 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "TomeSlap"
-frame = 4
+animation = "Kick"
+frame = 6
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -796,6 +799,7 @@ y = -23
 width = 15
 height = 7
 damage = 60
+hitstun_ticks = 20
 hitlag_ticks = 6
 screenshake_amount = 5
 hit_sound = ExtResource( 215 )
@@ -849,12 +853,19 @@ ground_bounce = false
 start_tick = 7
 active_ticks = 13
 
+[node name="HurtboxState" type="Node2D" parent="StateMachine/Kick" index="1"]
+script = ExtResource( 228 )
+y = -10
+height = 10
+start_tick = 7
+endless = true
+
 [node name="ManaStrike" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 104 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 18
+anim_length = 26
 particle_scene = ExtResource( 97 )
 sfx = ExtResource( 151 )
 sfx_tick = 3
@@ -895,7 +906,7 @@ knockback = "12.0"
 launch_reversible = true
 pushback_x = "-1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 5
+start_tick = 7
 active_ticks = 1
 
 [node name="FlameWave" type="Node2D" parent="StateMachine" index="9"]
@@ -923,7 +934,7 @@ trigger_orb_delay = 30
 script = ExtResource( 132 )
 apply_fric = true
 apply_grav = true
-anim_length = 18
+anim_length = 22
 title = "Missile Form"
 type = 2
 data_ui_scene = ExtResource( 133 )
@@ -948,6 +959,7 @@ script = ExtResource( 95 )
 width = 15
 height = 15
 damage = 120
+minimum_damage = 50
 hitstun_ticks = 40
 hitlag_ticks = 12
 victim_hitlag = 13
@@ -960,7 +972,7 @@ pushback_x = "2.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 4
+start_tick = 9
 active_ticks = 1
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Liftoff" index="1"]
@@ -974,7 +986,7 @@ victim_hitlag = 4
 group = 1
 knockback = "5"
 ground_bounce = false
-start_tick = 5
+start_tick = 10
 active_ticks = 15
 
 [node name="MagicMissile" type="Node2D" parent="StateMachine" index="11"]
@@ -1095,14 +1107,47 @@ x = 10
 y = -22
 width = 14
 height = 19
+hitstun_ticks = 0
+hitlag_ticks = 30
 victim_hitlag = 4
 cancellable = false
+hits_otg = true
+hits_vs_grounded = false
+hit_height = true
+_c_Grouping = 1
 priority = 9999
+screenshake_amount = 0
+screenshake_frames = 4
+hit_particle = -1
+replace_hit_particle = null
+camera_bump_dir = false
+whiff_particle = Vector2( 0, 0 )
+rumble = null
+_c_Sfx = true
+whiff_sound = 0
+hit_sound = ExtResource( 226 )
+hit_bass_sound = ExtResource( 227 )
+whiff_sound_volume = ExtResource( 61 )
+hit_sound_volume = -8.0
+_c_Knockback = -5.0
+dir_x = "0"
+dir_y = "1.0"
+knockback = "-1.0"
+launch_reversible = "10.0"
+pushback_x = "False"
+_c_Knockback_Type = "1.0"
+grounded_hit_state = 0
+aerial_hit_state = "HurtGrounded"
+knockdown = "HurtAerial"
+knockdown_extends_hitstun = false
+_c_Frame_Data = true
 start_tick = 7
 active_ticks = 25
+always_on = 5
+_c_Loop_Data = false
+looping = 0
+loop_active_ticks = 0
 throw_state = "Hold"
-hits_aerial = true
-hits_grounded = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="2"]
 script = ExtResource( 95 )

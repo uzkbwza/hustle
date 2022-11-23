@@ -4,6 +4,8 @@ class_name Window
 
 var drag_position
 
+onready var window_contents = $VBoxContainer/Contents
+
 func _ready():
 	hint_tooltip = name
 	connect("gui_input", self, "_on_gui_input")

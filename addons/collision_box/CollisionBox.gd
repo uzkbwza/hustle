@@ -45,6 +45,12 @@ func get_aabb():
 		"y2": y2
 	}
 
+func copy_to(box: CollisionBox):
+	box.x = x
+	box.y = y
+	box.width = width
+	box.height = height
+
 func get_overlap(box: CollisionBox):
 	var overlap = {
 	}
@@ -145,4 +151,5 @@ func _process(delta):
 func _draw():
 	if !can_draw_box():
 		return
+	z_index = 1000
 	box_draw()

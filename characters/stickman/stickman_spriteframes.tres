@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=97 format=2]
+[gd_resource type="SpriteFrames" load_steps=116 format=2]
 
 [ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=1]
 [ext_resource path="res://characters/stickman/sprites/phantomdash2.png" type="Texture" id=2]
@@ -96,6 +96,25 @@
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light_up1.png" type="Texture" id=94]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light_up3.png" type="Texture" id=95]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light_up2.png" type="Texture" id=96]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab1.png" type="Texture" id=97]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab2.png" type="Texture" id=98]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab3.png" type="Texture" id=99]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab4.png" type="Texture" id=100]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab5.png" type="Texture" id=101]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_throw1.png" type="Texture" id=102]
+[ext_resource path="res://characters/stickman/sprites/sticky_bomb_throw2.png" type="Texture" id=103]
+[ext_resource path="res://characters/stickman/sprites/backsway1.png" type="Texture" id=104]
+[ext_resource path="res://characters/stickman/sprites/backsway2.png" type="Texture" id=105]
+[ext_resource path="res://characters/stickman/sprites/backsway3.png" type="Texture" id=106]
+[ext_resource path="res://characters/stickman/sprites/palm_strike3.png" type="Texture" id=107]
+[ext_resource path="res://characters/stickman/sprites/palm_strike4.png" type="Texture" id=108]
+[ext_resource path="res://characters/stickman/sprites/palm_strike5.png" type="Texture" id=109]
+[ext_resource path="res://characters/stickman/sprites/palm_strike2.png" type="Texture" id=110]
+[ext_resource path="res://characters/stickman/sprites/palm_strike6.png" type="Texture" id=111]
+[ext_resource path="res://characters/stickman/sprites/palm_strike1.png" type="Texture" id=112]
+[ext_resource path="res://characters/stickman/sprites/sway_slide_kick2.png" type="Texture" id=113]
+[ext_resource path="res://characters/stickman/sprites/sway_slide_kick1.png" type="Texture" id=114]
+[ext_resource path="res://characters/stickman/sprites/sway_slide_kick3.png" type="Texture" id=115]
 
 [resource]
 animations = [ {
@@ -113,6 +132,11 @@ animations = [ {
 "loop": true,
 "name": "AirUpwardPunch",
 "speed": 60.0
+}, {
+"frames": [ ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 105 ), ExtResource( 105 ), ExtResource( 105 ), ExtResource( 106 ), ExtResource( 106 ) ],
+"loop": true,
+"name": "BackSway",
+"speed": 5.0
 }, {
 "frames": [ ExtResource( 66 ) ],
 "loop": true,
@@ -184,7 +208,7 @@ animations = [ {
 "name": "GroundedPunch",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 1 ), ExtResource( 1 ), ExtResource( 1 ), ExtResource( 1 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 27 ) ],
+"frames": [ ExtResource( 1 ), ExtResource( 1 ), ExtResource( 1 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 27 ) ],
 "loop": true,
 "name": "GroundedSweep",
 "speed": 5.0
@@ -264,6 +288,11 @@ animations = [ {
 "name": "NunChukSpin",
 "speed": 60.0
 }, {
+"frames": [ ExtResource( 112 ), ExtResource( 112 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 111 ), ExtResource( 111 ) ],
+"loop": true,
+"name": "PalmStrike",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 26 ) ],
 "loop": true,
 "name": "ParryHigh",
@@ -294,9 +323,24 @@ animations = [ {
 "name": "RollForward",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 114 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 115 ) ],
+"loop": true,
+"name": "SlideKick",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 91 ) ],
 "loop": true,
 "name": "StickyBomb",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 97 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 99 ), ExtResource( 99 ), ExtResource( 99 ), ExtResource( 99 ), ExtResource( 100 ), ExtResource( 100 ), ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ) ],
+"loop": true,
+"name": "StickyBombGrab",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 103 ) ],
+"loop": true,
+"name": "StickyBombThrow",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 79 ) ],

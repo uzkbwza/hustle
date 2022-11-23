@@ -1,11 +1,19 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://characters/stickman/sprites/summon_slide_kick1.png" type="Texture" id=1]
 [ext_resource path="res://characters/stickman/sprites/summon_slide_kick2.png" type="Texture" id=2]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=4]
 [ext_resource path="res://characters/stickman/projectiles/fireball_states/StickmanSummonSlide.gd" type="Script" id=5]
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=6]
 [ext_resource path="res://characters/stickman/projectiles/fireball_states/StickmanSummonSlideKick.gd" type="Script" id=7]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -21,6 +29,7 @@ animations = [ {
 } ]
 
 [node name="StickmanSummon" instance=ExtResource( 6 )]
+material = SubResource( 2 )
 z_index = -1
 gravity = "0.37"
 ground_friction = "0.6"

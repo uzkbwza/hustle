@@ -18,6 +18,7 @@ func _tick():
 	if host.disabled:
 		return
 	host.apply_fric()
+	host.apply_grav()
 	host.apply_forces()
 	if current_tick > ACTIVE_FRAMES:
 		finished()

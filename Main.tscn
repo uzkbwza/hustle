@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=2]
+[gd_scene load_steps=68 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -55,6 +55,7 @@
 [ext_resource path="res://OptionsContainer.gd" type="Script" id=53]
 [ext_resource path="res://ui/ReplayControls.tscn" type="PackedScene" id=54]
 [ext_resource path="res://ui/ResimRequestScreen.gd" type="Script" id=55]
+[ext_resource path="res://modloader/MLMainHook.gd" type="Script" id=56]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -699,6 +700,65 @@ margin_bottom = 11.0
 custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
 align = 2
 valign = 2
+
+[node name="P1CounterLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 0.94902, 1, 0.192157, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -247.0
+margin_top = -112.0
+margin_right = -202.0
+margin_bottom = -101.0
+theme = ExtResource( 4 )
+text = "COUNTER!"
+
+[node name="P1AdvantageLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -247.0
+margin_top = -103.0
+margin_right = -202.0
+margin_bottom = -92.0
+theme = ExtResource( 4 )
+text = "ADVANTAGE"
+
+[node name="P2CounterLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 0.94902, 1, 0.192157, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 201.0
+margin_top = -112.0
+margin_right = 246.0
+margin_bottom = -101.0
+theme = ExtResource( 4 )
+text = "COUNTER!"
+
+[node name="P2AdvantageLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 191.0
+margin_top = -103.0
+margin_right = 246.0
+margin_bottom = -92.0
+grow_horizontal = 0
+theme = ExtResource( 4 )
+text = "ADVANTAGE"
 
 [node name="WinLabel" type="Label" parent="HudLayer"]
 unique_name_in_owner = true
@@ -1399,6 +1459,7 @@ margin_left = -75.0
 margin_top = -56.0
 margin_right = 75.0
 margin_bottom = 56.0
+grow_horizontal = 2
 size_flags_horizontal = 12
 size_flags_vertical = 12
 theme = ExtResource( 4 )
@@ -1407,11 +1468,11 @@ script = ExtResource( 53 )
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 149.0
+margin_right = 160.0
 margin_bottom = 111.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
-margin_right = 148.0
+margin_right = 159.0
 margin_bottom = 9.0
 rect_min_size = Vector2( 0, 9 )
 mouse_filter = 1
@@ -1428,7 +1489,7 @@ align = 1
 
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
-margin_right = 148.0
+margin_right = 159.0
 margin_bottom = 110.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
@@ -1437,61 +1498,65 @@ size_flags_vertical = 3
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 147.0
+margin_right = 158.0
 margin_bottom = 99.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 98.0
 size_flags_vertical = 3
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_right = 146.0
+margin_right = 157.0
 
 [node name="FullscreenButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 1.0
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 13.0
 text = "fullscreen"
-align = 1
 
 [node name="MusicButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 14.0
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 26.0
 pressed = true
 text = "enable music"
-align = 1
 
 [node name="HitboxesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 27.0
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 39.0
 text = "show hitboxes"
-align = 1
 
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 52.0
 text = "show playback controls"
-align = 1
+
+[node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 53.0
+margin_right = 157.0
+margin_bottom = 65.0
+custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
+text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 53.0
-margin_right = 146.0
+margin_top = 66.0
+margin_right = 157.0
 margin_bottom = 85.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 86.0
-margin_right = 146.0
+margin_right = 157.0
 margin_bottom = 98.0
 text = "done"
 
@@ -1780,6 +1845,11 @@ pitch_scale = 2.0
 bus = "UI"
 script = ExtResource( 49 )
 pitch_variation = 0.05
+
+[node name="ModLoaderHooks" type="Node" parent="."]
+
+[node name="MLMainHook" type="Node" parent="ModLoaderHooks"]
+script = ExtResource( 56 )
 
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
