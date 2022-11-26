@@ -27,6 +27,7 @@ var host
 var screenshake_frames = 0
 var screenshake_amount = 0
 var minimum_damage = 0
+var sdi_modifier = "1.0"
 
 func _init(state):
 	hit_height = state.hit_height
@@ -72,3 +73,5 @@ func _init(state):
 		counter_hit = state.is_counter_hit()
 	if state.get("minimum_damage") != null:
 		minimum_damage = state.minimum_damage
+	if state.get("sdi_modifier") != null:
+		sdi_modifier = state.sdi_modifier

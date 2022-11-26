@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=2]
+[gd_scene load_steps=71 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -56,6 +56,9 @@
 [ext_resource path="res://ui/ReplayControls.tscn" type="PackedScene" id=54]
 [ext_resource path="res://ui/ResimRequestScreen.gd" type="Script" id=55]
 [ext_resource path="res://modloader/MLMainHook.gd" type="Script" id=56]
+[ext_resource path="res://ui/SteamLobby/SteamLobbyList.tscn" type="PackedScene" id=57]
+[ext_resource path="res://ui/SteamLobby/SteamLobby.tscn" type="PackedScene" id=58]
+[ext_resource path="res://ui/BgCircle.gd" type="Script" id=59]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -781,6 +784,15 @@ anims/game_won = SubResource( 12 )
 [node name="UILayer" type="CanvasLayer" parent="."]
 script = ExtResource( 1 )
 
+[node name="BgCircle" type="Control" parent="UILayer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_top = -88.0
+margin_bottom = -88.0
+script = ExtResource( 59 )
+
 [node name="OpponentDisconnectedLabel" type="Label" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -904,7 +916,7 @@ size_flags_stretch_ratio = 4.79
 
 [node name="ActionButtons" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
-margin_right = 640.0
+margin_right = 641.0
 margin_bottom = 135.0
 rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
@@ -913,7 +925,7 @@ size_flags_vertical = 3
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_right = 319.0
+margin_right = 320.0
 margin_bottom = 135.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -923,13 +935,13 @@ alignment = 2
 [node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
-margin_right = 319.0
+margin_right = 320.0
 margin_bottom = 60.0
 mouse_filter = 2
 
 [node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
 unique_name_in_owner = true
-margin_right = 319.0
+margin_right = 320.0
 margin_bottom = 20.0
 mouse_filter = 2
 
@@ -983,14 +995,14 @@ unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 61.0
-margin_right = 319.0
+margin_right = 320.0
 margin_bottom = 135.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_left = 320.0
-margin_right = 640.0
+margin_left = 321.0
+margin_right = 641.0
 margin_bottom = 135.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -1067,7 +1079,7 @@ player_id = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
 margin_top = 136.0
-margin_right = 640.0
+margin_right = 641.0
 margin_bottom = 148.0
 custom_constants/margin_right = 10
 custom_constants/margin_left = 10
@@ -1075,7 +1087,7 @@ custom_constants/margin_left = 10
 [node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer"]
 unique_name_in_owner = true
 margin_left = 10.0
-margin_right = 630.0
+margin_right = 631.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1084,8 +1096,7 @@ alignment = 1
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 38.0
-margin_right = 179.0
+margin_right = 141.0
 margin_bottom = 12.0
 theme = ExtResource( 4 )
 pressed = true
@@ -1094,24 +1105,24 @@ text = "show prediction (buggy)"
 
 [node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 184.0
-margin_right = 265.0
+margin_left = 146.0
+margin_right = 227.0
 margin_bottom = 12.0
 pressed = true
 text = "afterimages"
 
 [node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 270.0
-margin_right = 448.0
+margin_left = 232.0
+margin_right = 410.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze prediction on turn ready"
 
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 453.0
-margin_right = 581.0
+margin_left = 415.0
+margin_right = 543.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
@@ -1150,6 +1161,13 @@ margin_bottom = 12.0
 rect_min_size = Vector2( 12, 0 )
 toggle_mode = true
 text = "x4"
+
+[node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 548.0
+margin_right = 621.0
+margin_bottom = 12.0
+text = "clear particles"
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1217,6 +1235,15 @@ margin_right = 139.0
 margin_bottom = 63.0
 size_flags_vertical = 0
 text = "quit"
+
+[node name="ForfeitButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 64.0
+margin_right = 139.0
+margin_bottom = 76.0
+size_flags_vertical = 0
+text = "forfeit"
 
 [node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
 margin_top = 64.0
@@ -1288,14 +1315,25 @@ margin_bottom = 41.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Multiplayer"
+text = "Multiplayer old"
 flat = true
 
-[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 42.0
 margin_right = 90.0
 margin_bottom = 62.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Multiplayer steam"
+flat = true
+
+[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 63.0
+margin_right = 90.0
+margin_bottom = 83.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1304,9 +1342,9 @@ flat = true
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 63.0
+margin_top = 84.0
 margin_right = 90.0
-margin_bottom = 83.0
+margin_bottom = 104.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1315,9 +1353,9 @@ flat = true
 
 [node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
+margin_top = 105.0
 margin_right = 90.0
-margin_bottom = 104.0
+margin_bottom = 125.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1326,9 +1364,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
+margin_top = 126.0
 margin_right = 90.0
-margin_bottom = 125.0
+margin_bottom = 146.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1381,6 +1419,7 @@ alignment = 2
 
 [node name="ItchButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
 unique_name_in_owner = true
+visible = false
 margin_left = 573.0
 margin_right = 595.0
 margin_bottom = 24.0
@@ -1394,7 +1433,9 @@ margin_left = 595.0
 margin_right = 617.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 20, 20 )
+mouse_default_cursor_shape = 2
 icon = ExtResource( 16 )
+flat = true
 icon_align = 1
 
 [node name="TwitterButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
@@ -1403,7 +1444,9 @@ margin_left = 617.0
 margin_right = 639.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 20, 20 )
+mouse_default_cursor_shape = 2
 icon = ExtResource( 17 )
+flat = true
 icon_align = 1
 
 [node name="VersionLabel" type="Label" parent="UILayer/MainMenu"]
@@ -1564,6 +1607,14 @@ text = "done"
 unique_name_in_owner = true
 visible = false
 direct_connect = false
+
+[node name="SteamLobbyList" parent="UILayer" instance=ExtResource( 57 )]
+unique_name_in_owner = true
+visible = false
+
+[node name="SteamLobby" parent="UILayer" instance=ExtResource( 58 )]
+unique_name_in_owner = true
+visible = false
 
 [node name="DirectConnectLobby" parent="UILayer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
@@ -1851,6 +1902,7 @@ pitch_variation = 0.05
 [node name="MLMainHook" type="Node" parent="ModLoaderHooks"]
 script = ExtResource( 56 )
 
+[connection signal="pressed" from="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]

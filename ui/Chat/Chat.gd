@@ -12,6 +12,8 @@ func _ready():
 	$"%ShowButton".connect("pressed", self, "toggle")
 	$"%LineEdit".connect("message_ready", self, "on_message_ready")
 	Network.connect("chat_message_received", self, "on_chat_message_received")
+	if static_:
+		$"%ShowButton".hide()
 #	toggle()
 
 func line_edit_focus():

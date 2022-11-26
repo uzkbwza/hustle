@@ -19,10 +19,12 @@ var turn_time = 30
 var p1_turn_time = 30
 var p2_turn_time = 30
 
+var draw_bg_circle = false
+
 var lock_in_tick = -INF
 
 const DISCORD_URL = "https://discord.gg/yomi"
-const TWITTER_URL = "https://twitter.com/ivy_sly_"
+const TWITTER_URL = "https://twitter.com/YomiHustle"
 const IVY_SLY_URL = "https://www.ivysly.com"
 const ITCH_URL = "https://ivysly.itch.io/yomi-hustle"
 const MIN_TURN_TIME = 5.0
@@ -46,18 +48,20 @@ var received_synced_time = false
 func _ready():
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
+	$"%SteamMultiplayerButton".connect("pressed", self, "_on_steam_multiplayer_pressed")
 	$"%DirectConnectButton".connect("pressed", self, "_on_direct_connect_button_pressed")
 	$"%RematchButton".connect("pressed", self, "_on_rematch_button_pressed")
 	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
+	$"%ForfeitButton".connect("pressed", self, "_on_forfeit_button_pressed")
 	$"%QuitProgramButton".connect("pressed", self, "_on_quit_program_button_pressed")
 	$"%ResumeButton".connect("pressed", self, "pause")
-	$"%ReplayButton".connect("pressed", self, "load_replays")
+	$"%ReplayButton".connect("pressed", self, "_on_view_replays_button_pressed")
 	$"%ReplayCancelButton".connect("pressed", self, "_on_replay_cancel_pressed")
 	$"%OpenReplayFolderButton".connect("pressed", self, "open_replay_folder")
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
-	$"%ShowAutosavedReplays".connect("pressed", self, "load_replays")
+	$"%ShowAutosavedReplays".connect("pressed", self, "_on_view_replays_button_pressed")
 	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
 	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
 	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
@@ -70,6 +74,8 @@ func _ready():
 	Network.connect("sync_timer_request", self, "_on_sync_timer_request")
 	Network.connect("check_players_ready", self, "check_players_ready")
 	Network.connect("force_open_action_buttons", self, "on_player_actionable")
+		
+	SteamLobby.connect("join_lobby_success", self, "_on_join_lobby_success")
 	
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
@@ -89,6 +95,7 @@ func _ready():
 	$"%PlaybackControls".connect("toggled", self, "_on_playback_controls_button_toggled")
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	
+	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
 	Global.save_options()
@@ -101,6 +108,24 @@ func _on_hitboxes_button_toggled(on):
 
 func _on_playback_controls_button_toggled(on):
 	Global.set_playback_controls(on)
+
+func _on_join_lobby_success():
+	$"%HudLayer".hide()
+	$"%SteamLobbyList".hide()
+	$"%SteamLobby".show()
+	$"%GameUI".hide()
+
+func _on_view_replays_button_pressed():
+	load_replays()
+	$"%MainMenu".hide()
+
+
+func _on_forfeit_button_pressed():
+	if is_instance_valid(game):
+		var player_id = Network.player_id
+		game.get_player(player_id).on_action_selected("Forfeit", null, null)
+		Network.forfeit()
+	$"%PausePanel".hide()
 
 func load_replays():
 	$"%ReplayWindow".show()
@@ -118,7 +143,6 @@ func load_replays():
 	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
-	$"%MainMenu".hide()
 
 func set_turn_time(time):
 #	print("setting turn time to " + str(time))
@@ -139,9 +163,36 @@ func _on_replay_button_pressed(path):
 func _on_replay_cancel_pressed():
 	get_tree().reload_current_scene()
 
+func _notification(what):
+	if (what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+		pass
+		if will_forfeit():
+			_on_forfeit_button_pressed()
+			yield(get_tree().create_timer(2.0), "timeout")
+			get_tree().quit()
+		elif can_quit():
+			print ("You are quit!")
+			get_tree().quit() # default behavior
+
+func will_forfeit():
+	return Network.multiplayer_active and is_instance_valid(game) and !game.game_finished and !game.forfeit and !ReplayManager.playback
+
+func can_quit():
+	return true
+#	return !(is_instance_valid(game) and game.forfeit and !ReplayManager.playback and Network.forfeiter == Network.player_id)
+
 func _on_quit_button_pressed():
-	Network.stop_multiplayer()
-	get_tree().reload_current_scene()
+	if will_forfeit():
+		_on_forfeit_button_pressed()
+	else:
+		if can_quit():
+			if !Network.steam:
+				Network.stop_multiplayer()
+				get_tree().reload_current_scene()
+			else:
+				$"%SteamLobby".show()
+				if is_instance_valid(game):
+					game.queue_free()
 
 func _on_quit_program_button_pressed():
 	get_tree().quit()
@@ -229,6 +280,11 @@ func _on_direct_connect_button_pressed():
 func _on_multiplayer_pressed():
 	lobby.show()
 	$"%MainMenu".hide()
+	
+func _on_steam_multiplayer_pressed():
+	$"%SteamLobbyList".show()
+	$"%MainMenu".hide()
+	
 
 func _on_turn_ready():
 	$"%P1TurnTimerBar".hide()
@@ -241,6 +297,7 @@ func _on_turn_ready():
 		1: false,
 		2: false
 	}
+
 
 func open_replay_folder():
 	var folder = ProjectSettings.globalize_path("user://replay")
@@ -346,6 +403,12 @@ func _on_turn_timer_timeout(player_id):
 func pause():
 	$"%PausePanel".visible = !$"%PausePanel".visible
 	if $"%PausePanel".visible:
+		if will_forfeit():
+			$"%QuitToMainMenuButton".hide()
+			$"%ForfeitButton".show()
+		else:
+			$"%QuitToMainMenuButton".show()
+			$"%ForfeitButton".hide()
 		$"%SaveReplayButton".disabled = false
 		$"%SaveReplayButton".text = "save replay"
 		$"%SaveReplayLabel".text = ""
@@ -435,7 +498,7 @@ func _process(delta):
 	$"%SoftlockResetButton".visible = false
 	if Network.multiplayer_active and is_instance_valid(game):
 		var my_action_buttons = p1_action_buttons if Network.player_id == 1 else p2_action_buttons
-		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5
+		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5 and !(game.game_finished or ReplayManager.playback)
 		if !$"%SoftlockResetButton".visible:
 			$"%SoftlockResetButton".disabled = false
 
@@ -443,6 +506,10 @@ func _process(delta):
 			actionable_time += delta
 		else:
 			actionable_time = 0
+
+func set_lobby_settings(settings):
+	$"%CharacterSelect".lobby_match_settings = settings
+	pass
 
 func start_timers():
 	yield(get_tree().create_timer(0.25), "timeout")
@@ -454,4 +521,12 @@ func _on_SoftlockResetButton_pressed():
 	Network.rpc_("send_chat_message", [Network.player_id, "-- wants to resync."])
 	Network.request_softlock_fix()
 	$"%SoftlockResetButton".disabled = true
+	pass # Replace with function body.
+
+
+
+func _on_ClearParticlesButton_pressed():
+	if is_instance_valid(game):
+		for particle in game.effects:
+			particle.hide()
 	pass # Replace with function body.

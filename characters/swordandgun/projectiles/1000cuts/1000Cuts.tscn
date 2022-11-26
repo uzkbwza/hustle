@@ -40,6 +40,7 @@ material = SubResource( 2 )
 z_index = 2
 script = ExtResource( 3 )
 extra_state_variables = "total_ticks"
+has_projectile_parry_window = false
 immunity_susceptible = false
 
 [node name="Sprite" parent="Flip" index="0"]
@@ -54,6 +55,7 @@ ticks_per_frame = 2
 endless = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 4 )
 x = 34
 y = 8
@@ -64,13 +66,16 @@ minimum_damage = 20
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
+sdi_modifier = "0.2"
 hit_height = 2
 hit_sound = ExtResource( 17 )
-knockback = "5.0"
+knockback = "2"
+ground_bounce = false
 start_tick = 2
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+z_index = 1000
 script = ExtResource( 4 )
 x = 31
 y = -11
@@ -81,14 +86,17 @@ minimum_damage = 15
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
+sdi_modifier = "0.2"
 hit_height = 0
 group = 1
 hit_sound = ExtResource( 17 )
-knockback = "5.0"
+knockback = "2"
+ground_bounce = false
 start_tick = 10
 active_ticks = 2
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/Default" index="2"]
+z_index = 1000
 script = ExtResource( 4 )
 x = 25
 y = -3
@@ -99,8 +107,10 @@ minimum_damage = 20
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
+sdi_modifier = "0.2"
 group = 2
 hit_sound = ExtResource( 18 )
-knockback = "5.0"
+knockback = "2"
+ground_bounce = false
 start_tick = 18
 active_ticks = 2

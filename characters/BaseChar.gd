@@ -6,6 +6,7 @@ signal action_selected(action, data)
 signal super_started()
 signal parried()
 signal undo()
+signal forfeit()
 #signal got_counter_hit()
 
 var MAX_HEALTH = 1000
@@ -76,6 +77,7 @@ export(Texture) var character_portrait
 
 onready var you_label = $YouLabel
 onready var actionable_label = $ActionableLabel
+onready var quitter_label = $"%QuitterLabel"
 
 var input_state = InputState.new()
 
@@ -93,6 +95,8 @@ var queued_extra = null
 var dummy_interruptable = false
 
 var game_over = false
+var forfeit = false
+var will_forfeit = false
 
 var colliding_with_opponent = true
 
@@ -128,6 +132,7 @@ var any_available_actions = true
 
 var state_changed = false
 var on_the_ground = false
+var nudge_amount = "1.0"
 
 
 var current_nudge = {
@@ -175,6 +180,7 @@ var throw_pos_y = -5
 
 var combo_damage = 0
 var hitlag_applied = 0
+var forfeit_ticks = 0
 
 var lowest_tick = 0
 
@@ -224,7 +230,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "lowest_tick", "state_changed", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "lowest_tick", "state_changed", "nudge_amount", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -391,7 +397,9 @@ func launched_by(hitbox):
 	
 	if hitbox.rumble:
 		rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
-
+	
+	nudge_amount = hitbox.sdi_modifier
+	
 	if !has_armor():
 		var state
 		if is_grounded():
@@ -437,7 +445,7 @@ func hit_by(hitbox):
 		if !projectile:
 			perfect_parry = always_perfect_parry or read_advantage or parried_last_state
 		else:
-			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW)
+			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window)
 		if perfect_parry:
 			parried_last_state = true
 
@@ -536,7 +544,6 @@ func process_extra(extra):
 	if "DI" in extra:
 		if di_enabled:
 			var di = extra["DI"]
-			nudge_distance_left = NUDGE_DISTANCE
 			current_nudge = xy_to_dir(di.x, di.y, str(NUDGE_DISTANCE))
 			current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
 		else:
@@ -603,6 +610,10 @@ func update_advantage():
 	read_advantage = new_adv
 
 func tick_before():
+	if queued_action == "Forfeit":
+		if forfeit:
+			queued_action = "Continue"
+
 	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
@@ -614,6 +625,10 @@ func tick_before():
 			queued_data = input["data"]
 			queued_extra = input["extra"]
 #			last_action = current_tick
+			if queued_action == "Forfeit":
+#				dummy = true
+				forfeit = true
+				Global.current_game.forfeit(id)
 	else:
 		if queued_action:
 #			last_action = current_tick
@@ -621,6 +636,8 @@ func tick_before():
 				queued_action = null
 				queued_data = null
 				return
+			if queued_action == "Forfeit":
+				forfeit = true
 #			if queued_action != "ContinueAuto":
 			if !is_ghost:
 				ReplayManager.frames[id][current_tick] = {
@@ -639,11 +656,21 @@ func tick_before():
 	queued_extra = null
 	lowest_tick = current_state().current_tick
 
-func tick():
+func toggle_quit_graphic(on=null):
+	if on == null:
+		quitter_label.visible = !quitter_label.visible
+		if quitter_label.visible:
+			play_sound("QuitterSound")
+	else:
+		quitter_label.visible = on
+		if on:
+			play_sound("QuitterSound")
 
+func tick():
 	if hitlag_ticks > 0:
 		if can_nudge:
 			if fixed.round(fixed.mul(fixed.vec_len(current_nudge.x, current_nudge.y), "100.0")) > 1:
+				current_nudge = fixed.vec_mul(current_nudge.x, current_nudge.y, nudge_amount)
 				spawn_particle_effect(preload("res://fx/NudgeIndicator.tscn"), Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(current_di.x, current_di.y).normalized())
 				move_directly(current_nudge.x, current_nudge.y if !is_grounded() else "0")
 			can_nudge = false
@@ -692,6 +719,12 @@ func tick():
 	if !(previous_state() is ParryState) or !(current_state() is ParryState):
 		parried_last_state = false
 #	lowest_tick = null
+	if forfeit:
+		forfeit_ticks += 1
+	if forfeit and forfeit_ticks > 2:
+		change_state("ForfeitExplosion")
+		forfeit = false
+		
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
@@ -740,8 +773,12 @@ func on_action_selected(action, data, extra):
 	state_hit_cancellable = false
 	if action == "Undo":
 		emit_signal("undo")
+#	if action == "Forfeit":
+#		emit_signal("forfeit")
 	emit_signal("action_selected", action, data, extra)
 
+func forfeit():
+	will_forfeit = true
 
 func _draw():
 #	if read_advantage:

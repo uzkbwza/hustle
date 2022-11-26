@@ -2,4 +2,4 @@
 
 [resource]
 entry/Windows.64 = "res://lib/tbfg.dll"
-dependency/Windows.64 = [  ]
+dependency/Windows.64 = [ "res://lib/vcruntime140.dll" ]

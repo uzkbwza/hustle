@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
@@ -8,8 +8,10 @@
 [ext_resource path="res://characters/wizard/Wizard.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=7]
 [ext_resource path="res://characters/robo/Robot.tscn" type="PackedScene" id=8]
+[ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=9]
 
 [node name="CharacterSelect" type="Panel"]
+self_modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 2 )
@@ -31,196 +33,8 @@ toggle_mode = true
 action_mode = 0
 text = "show settings"
 
-[node name="GameSettingsPanelContainer" type="MarginContainer" parent="."]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -64.0
-margin_top = -155.0
-margin_right = 64.0
-margin_bottom = -21.0
-size_flags_vertical = 0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="GameSettingsPanelContainer"]
-margin_right = 133.0
-margin_bottom = 134.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-scroll_horizontal_enabled = false
-
-[node name="GameSettingsContainer" type="VBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer"]
-unique_name_in_owner = true
-margin_right = 127.0
-margin_bottom = 138.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-margin_right = 127.0
-margin_bottom = 11.0
-
-[node name="StageWidthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
-margin_right = 57.0
-margin_bottom = 11.0
-text = "Stage Width"
-
-[node name="StageWidth" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 58.0
-margin_right = 127.0
-margin_bottom = 11.0
-size_flags_horizontal = 3
-min_value = 100.0
-max_value = 50000.0
-value = 1100.0
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 12.0
-margin_right = 127.0
-margin_bottom = 23.0
-
-[node name="CharDistLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer3"]
-margin_right = 70.0
-margin_bottom = 11.0
-text = "Start Distance"
-
-[node name="CharDist" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer3"]
-unique_name_in_owner = true
-margin_left = 71.0
-margin_right = 127.0
-margin_bottom = 11.0
-size_flags_horizontal = 3
-min_value = 16.0
-max_value = 300.0
-value = 50.0
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 24.0
-margin_right = 127.0
-margin_bottom = 35.0
-
-[node name="GameLengthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
-margin_right = 70.0
-margin_bottom = 11.0
-text = "Round Length "
-
-[node name="GameLength" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
-unique_name_in_owner = true
-margin_left = 71.0
-margin_right = 127.0
-margin_bottom = 11.0
-hint_tooltip = "Set the timer for the match (in frames)."
-size_flags_horizontal = 3
-min_value = 1.0
-max_value = 999999.0
-value = 3600.0
-
-[node name="TurnLengthContainer" type="HBoxContainer" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 36.0
-margin_right = 127.0
-margin_bottom = 47.0
-
-[node name="TurnLengthLabel" type="Label" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
-margin_right = 51.0
-margin_bottom = 11.0
-text = "Turn Clock"
-
-[node name="TurnLength" type="SpinBox" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
-unique_name_in_owner = true
-margin_left = 52.0
-margin_right = 127.0
-margin_bottom = 11.0
-hint_tooltip = "Set a timer for each player (in minutes). It counts down during each turn."
-size_flags_horizontal = 3
-min_value = 1.0
-max_value = 999999.0
-value = 30.0
-
-[node name="P2Dummy" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 48.0
-margin_right = 127.0
-margin_bottom = 60.0
-hint_tooltip = "Player 2 will not be prompted for input."
-size_flags_horizontal = 15
-text = "No P2 Input"
-expand_icon = true
-
-[node name="BurstEnabled" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 61.0
-margin_right = 127.0
-margin_bottom = 73.0
-hint_tooltip = "Allow the use of burst moves."
-size_flags_horizontal = 15
-pressed = true
-text = "Burst Enabled"
-expand_icon = true
-
-[node name="DIEnabled" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 74.0
-margin_right = 127.0
-margin_bottom = 86.0
-hint_tooltip = "Enable directional influence, affecting the characters' knockback trajectory when they are hit."
-size_flags_horizontal = 15
-pressed = true
-text = "DI Enabled"
-expand_icon = true
-
-[node name="TurboMode" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 87.0
-margin_right = 127.0
-margin_bottom = 99.0
-hint_tooltip = "Freely cancel moves into other moves."
-size_flags_horizontal = 15
-text = "Turbo Mode"
-expand_icon = true
-
-[node name="InfiniteResources" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 100.0
-margin_right = 127.0
-margin_bottom = 112.0
-hint_tooltip = "Never run out of super-meter or other character-specific resources."
-size_flags_horizontal = 15
-text = "Infinite Resources"
-expand_icon = true
-
-[node name="OneHitKO" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 113.0
-margin_right = 127.0
-margin_bottom = 125.0
-hint_tooltip = "Both players have 1 HP."
-size_flags_horizontal = 15
-text = "One-Hit KO"
-expand_icon = true
-
-[node name="AlwaysPerfectParry" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-margin_top = 126.0
-margin_right = 127.0
-margin_bottom = 138.0
-hint_tooltip = "Every block is a parry and lets you act immediately."
-size_flags_horizontal = 15
-text = "Always Perfect Parry"
-expand_icon = true
-
-[node name="FrameByFrame" type="CheckButton" parent="GameSettingsPanelContainer/ScrollContainer/GameSettingsContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 114.0
-margin_right = 128.0
-margin_bottom = 126.0
-hint_tooltip = "Play through the match frame-by-frame. Not recommended for multiplayer."
-size_flags_horizontal = 15
-text = "Frame By Frame"
-expand_icon = true
+[node name="GameSettingsPanelContainer" parent="." instance=ExtResource( 9 )]
+margin_bottom = -25.0
 
 [node name="CharacterButtonContainer" type="HBoxContainer" parent="."]
 unique_name_in_owner = true

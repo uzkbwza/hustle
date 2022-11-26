@@ -6,12 +6,16 @@ var drag_position
 
 onready var window_contents = $VBoxContainer/Contents
 
+export var static_ = false
+
 func _ready():
 	hint_tooltip = name
 	connect("gui_input", self, "_on_gui_input")
 	connect("draw", self, "snap_to_boundaries")
 
 func _on_gui_input(event: InputEvent):
+	if static_:
+		return
 	if event is InputEventMouseButton:
 		if event.pressed:
 			drag_position = get_global_mouse_position() - rect_global_position

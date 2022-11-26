@@ -4,6 +4,9 @@ func _frame_0():
 #	if current_tick == 0:
 	if host.read_advantage:
 		host.start_invulnerability()
+	var vel = host.get_vel()
+	if fixed.sign(vel.x) != host.get_facing_int():
+		host.reset_momentum()
 #	host.start_invulnerability()
 
 func _tick():

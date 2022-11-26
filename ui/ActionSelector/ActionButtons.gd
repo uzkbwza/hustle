@@ -28,6 +28,7 @@ var waiting_for_opponent_ready = false
 var active = false
 var turbo_mode = false
 var game
+var forfeit = false
 
 var continue_button
 
@@ -97,6 +98,10 @@ func space_pressed():
 func _physics_process(delta):
 	if is_instance_valid(game) and !game.game_paused:
 		visible = false
+		
+func _process(delta):
+	if active and is_instance_valid(fighter) and fighter.will_forfeit:
+		on_action_submitted("Forfeit", null, null)
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -118,6 +123,7 @@ func reset():
 	current_action = null
 	current_button = null
 	last_button = null
+	forfeit = false
 	buttons = []
 
 func init(game, id):
@@ -127,6 +133,7 @@ func init(game, id):
 	$"%DI".visible = fighter.di_enabled
 	fighter_extra = fighter.player_extra_params_scene.instance()
 	fighter_extra.connect("data_changed", self, "send_ui_action")
+	game.connect("forfeit_started", self, "_on_forfeit_started")
 	fighter_extra.set_fighter(fighter)
 	turbo_mode = fighter.turbo_mode
 	Network.action_button_panels[id] = self
@@ -143,6 +150,7 @@ func init(game, id):
 	sort_categories()
 	connect("action_selected", fighter, "on_action_selected")
 	fighter.connect("action_selected", self, "_on_fighter_action_selected")
+	fighter.connect("forfeit", self, "_on_fighter_forfeit")
 	hide()
 	$"%TopRowDataContainer".add_child(fighter_extra)
 	if player_id == 1:
@@ -161,6 +169,14 @@ func init(game, id):
 
 func _on_fighter_action_selected(_action, _data, _extra):
 	pass
+
+func _on_forfeit_started(id):
+	hide()
+
+func _on_fighter_forfeit():
+#	if active:
+#		on_action_submitted("Forfeit", null, null)
+	forfeit = true
 
 func sort_categories():
 	var children = $"%CategoryContainer".get_children()
@@ -467,6 +483,10 @@ func activate():
 	if fighter.dummy:
 		on_action_submitted("ContinueAuto", null)
 		hide()
+		
+	if fighter.will_forfeit:
+		on_action_submitted("Forfeit", null, null)
+		fighter.dummy = true
 
 	fighter.any_available_actions = any_available_actions
 	if user_facing and $"%AutoButton".pressed:
@@ -505,3 +525,4 @@ func activate():
 			var input = Network.p2_undo_action
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
+	

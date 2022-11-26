@@ -23,6 +23,8 @@ export(String, MULTILINE) var extra_state_variables
 
 export var damages_own_team = false
 
+export var has_projectile_parry_window = true
+
 onready var collision_box = $CollisionBox
 onready var hurtbox = $Hurtbox
 onready var particles = $"%Particles"

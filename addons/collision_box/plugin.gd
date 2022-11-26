@@ -18,3 +18,6 @@ func _exit_tree():
 	remove_custom_type("CollisionBox")
 	pass
 
+
+func on_selection_changed():
+	pass

@@ -1,0 +1,150 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/SteamLobby/SteamLobby.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+[ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/Chat/Chat.tscn" type="PackedScene" id=4]
+
+[node name="SteamLobby" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 620.0
+margin_bottom = 340.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 20
+alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+margin_right = 393.0
+margin_bottom = 320.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.11
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 392.0
+margin_bottom = 319.0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+margin_right = 391.0
+margin_bottom = 11.0
+text = "lobby name"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+margin_top = 12.0
+margin_right = 391.0
+margin_bottom = 318.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+margin_right = 391.0
+margin_bottom = 306.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 391.0
+alignment = 1
+
+[node name="UserList" type="ItemList" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 1.0
+margin_right = 391.0
+margin_bottom = 306.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.77
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/UserList"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/UserList/ScrollContainer"]
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_left = 413.0
+margin_right = 600.0
+margin_bottom = 320.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 10
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="GameSettingsPanelContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource( 3 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 187.0
+margin_bottom = 139.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ChatWindow" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource( 4 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 149.0
+margin_right = 187.0
+margin_bottom = 297.0
+size_flags_horizontal = 7
+size_flags_vertical = 7
+size_flags_stretch_ratio = 1.07
+static_ = true
+
+[node name="Buttons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 307.0
+margin_right = 187.0
+margin_bottom = 319.0
+alignment = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StartButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+margin_right = 187.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+disabled = true
+text = "start"
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+margin_left = 617.0
+margin_top = 346.0
+margin_right = 637.0
+margin_bottom = 358.0
+size_flags_horizontal = 0
+text = "quit"

@@ -132,7 +132,7 @@ knockback = "24.0"
 hitstun_ticks = 24
 
 [node name="DashForward" parent="StateMachine" index="13"]
-dash_speed = 15
+dash_speed = 14
 
 [node name="DashBackward" parent="StateMachine" index="14"]
 dash_speed = 9
@@ -203,7 +203,7 @@ Grounded
 Aerial"
 interrupt_into_string = "Aerial"
 hit_cancel_into_string = "AerialSuper"
-super_freeze_ticks = 10
+super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlash" index="0"]
 script = ExtResource( 1 )
@@ -317,7 +317,7 @@ Grounded
 Aerial"
 interrupt_into_string = "Aerial"
 hit_cancel_into_string = "AerialSuper"
-super_freeze_ticks = 10
+super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlashAir" index="0"]
 script = ExtResource( 1 )
@@ -436,12 +436,12 @@ __meta__ = {
 }
 anim_length = 30
 endless = true
-force_dir_x = "-0.76"
-force_dir_y = "-1"
+force_dir_x = "0.76"
+force_dir_y = "-1.45"
 force_speed = "5.0"
 force_tick = 3
 enter_force_dir_x = "1.0"
-enter_force_speed = "6.0"
+enter_force_speed = "7.0"
 title = "Uppercut"
 type = 2
 button_texture = ExtResource( 37 )
@@ -456,6 +456,7 @@ change_stance_to = "Normal"
 yomi_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Uppercut" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 12
 y = -14
@@ -476,13 +477,14 @@ start_tick = 4
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Uppercut" index="1"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 14
 y = -28
 width = 14
 height = 19
 damage = 60
-hitstun_ticks = 55
+hitstun_ticks = 50
 hitlag_ticks = 6
 victim_hitlag = 6
 group = 1
@@ -493,6 +495,7 @@ dir_y = "-2.5"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+knockdown_extends_hitstun = false
 start_tick = 6
 active_ticks = 3
 
@@ -1043,6 +1046,7 @@ NunChuk"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedSweep" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 26
 y = -5
@@ -1078,19 +1082,20 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DropKick" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 13
 y = -20
 width = 23
 height = 10
-damage = 90
-hitstun_ticks = 33
+damage = 115
+hitstun_ticks = 20
 hitlag_ticks = 7
 victim_hitlag = 7
 hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
-knockback = "12.0"
+knockback = "13.0"
 start_tick = 11
 
 [node name="AirAttack" type="Node2D" parent="StateMachine" index="51"]
@@ -1169,7 +1174,7 @@ change_stance_to = "Normal"
 [node name="ReleaseMomentum" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 50 )
 sprite_animation = "Summon"
-anim_length = 3
+anim_length = 7
 particle_scene = ExtResource( 54 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
@@ -1321,4 +1326,7 @@ width = 23
 height = 10
 start_tick = 4
 active_ticks = 8
+endless = true
+
+[node name="ForfeitExplosion" parent="StateMachine" index="66"]
 endless = true

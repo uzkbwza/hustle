@@ -1,4 +1,4 @@
-[gd_scene load_steps=233 format=2]
+[gd_scene load_steps=230 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -60,7 +60,6 @@
 [ext_resource path="res://characters/stickman/sprites/stickman49.png" type="Texture" id=58]
 [ext_resource path="res://characters/stickman/sprites/phantomdash3.png" type="Texture" id=59]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin4.png" type="Texture" id=60]
-[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=61]
 [ext_resource path="res://characters/wizard/sprites/burst.png" type="Texture" id=62]
 [ext_resource path="res://characters/wizard/sprites/idle.png" type="Texture" id=63]
 [ext_resource path="res://characters/wizard/sprites/landing.png" type="Texture" id=64]
@@ -225,8 +224,6 @@
 [ext_resource path="res://characters/wizard/sprites/magma_bolt4.png" type="Texture" id=223]
 [ext_resource path="res://sound/common/hit3.wav" type="AudioStream" id=224]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/boltofmagma.png" type="Texture" id=225]
-[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=226]
-[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=227]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=228]
 
 [sub_resource type="ShaderMaterial" id=5]
@@ -1102,51 +1099,15 @@ height = 100
 can_draw = false
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/WindForce" index="1"]
+z_index = 1000
 script = ExtResource( 159 )
 x = 10
 y = -22
 width = 14
 height = 19
-hitstun_ticks = 0
-hitlag_ticks = 30
-victim_hitlag = 4
-cancellable = false
-hits_otg = true
-hits_vs_grounded = false
-hit_height = true
-_c_Grouping = 1
-priority = 9999
-screenshake_amount = 0
-screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-rumble = null
-_c_Sfx = true
-whiff_sound = 0
-hit_sound = ExtResource( 226 )
-hit_bass_sound = ExtResource( 227 )
-whiff_sound_volume = ExtResource( 61 )
-hit_sound_volume = -8.0
-_c_Knockback = -5.0
-dir_x = "0"
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = "False"
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
 _c_Frame_Data = true
 start_tick = 7
-active_ticks = 25
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = 0
+active_ticks = 23
 throw_state = "Hold"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="2"]
@@ -1448,6 +1409,9 @@ start_throw_pos_y = -5
 [node name="AirHold" parent="StateMachine" index="46"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+z_index = 1000
 
 [node name="ForwardThrow" parent="StateMachine" index="49"]
 anim_length = 24

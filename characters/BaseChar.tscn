@@ -1,4 +1,4 @@
-[gd_scene load_steps=155 format=2]
+[gd_scene load_steps=158 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -152,6 +152,9 @@
 [ext_resource path="res://fx/DashFloorParticle.tscn" type="PackedScene" id=150]
 [ext_resource path="res://fx/DashBackFloorParticle.tscn" type="PackedScene" id=151]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=152]
+[ext_resource path="res://characters/states/ForfeitExplosion.gd" type="Script" id=153]
+[ext_resource path="res://fx/QuitterParticle.tscn" type="PackedScene" id=154]
+[ext_resource path="res://sound/common/quitter_alarm.wav" type="AudioStream" id=155]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -297,6 +300,11 @@ animations = [ {
 "name": "Landing",
 "speed": 5.0
 }, {
+"frames": [  ],
+"loop": true,
+"name": "New Anim",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 110 ), ExtResource( 110 ), ExtResource( 110 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 108 ) ],
 "loop": true,
 "name": "NunChukHeavy",
@@ -372,7 +380,7 @@ player_extra_params_scene = ExtResource( 122 )
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
 frames = SubResource( 3 )
-animation = "Knockdown"
+animation = "Wait"
 offset = Vector2( 0, -18 )
 __meta__ = {
 "_edit_group_": true,
@@ -417,12 +425,19 @@ bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.01
 
+[node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+stream = ExtResource( 155 )
+volume_db = -20.0
+bus = "Fx"
+
 [node name="CollisionBox" parent="." index="2"]
+z_index = 1000
 y = -14
 width = 10
 height = 14
 
 [node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 y = -16
 width = 14
 height = 16
@@ -825,7 +840,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
-super_freeze_ticks = 8
+super_freeze_ticks = 3
 
 [node name="WhiffInstantCancel" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 140 )
@@ -855,7 +870,7 @@ GroundedMovement"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 super_level = 0
-super_freeze_ticks = 8
+super_freeze_ticks = 3
 
 [node name="HurtGrounded" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 28 )
@@ -1097,6 +1112,13 @@ enter_sfx = ExtResource( 129 )
 interrupt_into_string = "Grounded
 Aerial"
 
+[node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="35"]
+script = ExtResource( 153 )
+particle_scene = ExtResource( 154 )
+particle_position = Vector2( 0, -16 )
+spawn_particle_on_enter = true
+enter_sfx = ExtResource( 141 )
+
 [node name="YouLabel" type="Label" parent="." index="5"]
 visible = false
 margin_left = -20.0
@@ -1107,7 +1129,23 @@ theme = ExtResource( 47 )
 text = "You"
 align = 1
 
-[node name="ActionableLabel" type="Label" parent="." index="6"]
+[node name="Node2D" type="Node2D" parent="." index="6"]
+scale = Vector2( 2, 2 )
+z_index = 4096
+
+[node name="QuitterLabel" type="Label" parent="Node2D" index="0"]
+unique_name_in_owner = true
+visible = false
+margin_left = -20.0
+margin_top = -30.0
+margin_right = 20.0
+margin_bottom = -16.0
+theme = ExtResource( 47 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+text = "QUITTER"
+align = 1
+
+[node name="ActionableLabel" type="Label" parent="." index="7"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5

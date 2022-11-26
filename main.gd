@@ -47,9 +47,12 @@ func _ready():
 	Network.connect("player_disconnected", self, "_on_player_disconnected")
 	$"%FreezeOnMyTurn".set_pressed_no_signal(Global.freeze_ghost_prediction)
 	$"%AfterimageButton".set_pressed_no_signal(Global.ghost_afterimages)
-
+#	setup_main_menu_game()
+	
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()
+	ui_layer._on_forfeit_button_pressed()
+	
 	if !is_instance_valid(game):
 		get_tree().reload_current_scene()
 
@@ -65,6 +68,7 @@ func _on_game_started(singleplayer):
 	$"%CharacterSelect".init(singleplayer)
 	$"%DirectConnectLobby".hide()
 	$"%Lobby".hide()
+	$"%SteamLobby".hide()
 
 func _on_ghost_wait_timer_timeout():
 	if is_instance_valid(game):
@@ -91,6 +95,10 @@ func setup_game(singleplayer, data):
 	if game:
 		game.queue_free()
 	call_deferred("setup_game_deferred", singleplayer, data)
+
+func setup_main_menu_game():
+	game = preload("res://Game.tscn").instance()
+	game_layer.add_child(game)
 
 func save_replay():
 	var filename = ReplayManager.save_replay(match_data, $"%ReplayName".text)
@@ -120,7 +128,8 @@ func setup_game_deferred(singleplayer, data):
 				"p2": data.selected_characters[2]["name"],
 			}
 	
-	game.start_game(singleplayer, data)
+	if game.start_game(singleplayer, data) is bool:
+		return
 	if data.has("turn_time"):
 		if !Network.undo:
 			ui_layer.set_turn_time(data.turn_time)
@@ -144,7 +153,7 @@ func setup_game_deferred(singleplayer, data):
 	$"%P1InfoContainer".move_child(p1_info_scene, 0)
 	$"%P2InfoContainer".add_child(p2_info_scene)
 	$"%P2InfoContainer".move_child(p2_info_scene, 0)
-	
+
 func _on_ghost_button_toggled(toggled):
 	if toggled:
 		start_ghost()
@@ -287,4 +296,4 @@ func _on_playback_requested():
 
 func _on_ReplayName_text_entered(_new_text):
 	save_replay()
-	pass # Replace with function body.
+	pass

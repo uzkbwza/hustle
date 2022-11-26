@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fx/particle_square_4x4.png" type="Texture" id=1]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0.990909 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 2 )]
+material = SubResource( 2 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+amount = 32
+lifetime = 5.73
+preprocess = 0.04
+speed_scale = 16.75
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 1 )
+spread = 180.0
+gravity = Vector2( 0, -0.537 )
+initial_velocity = 50.1
+initial_velocity_random = 1.0
+linear_accel = 1.12
+angle = 739.5
+angle_random = 1.0
+scale_amount = 5.07
+scale_amount_curve = SubResource( 1 )
+color = Color( 1, 0.2, 0.239216, 1 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
+amount = 32
+lifetime = 5.73
+preprocess = 0.04
+speed_scale = 16.75
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 1 )
+spread = 180.0
+gravity = Vector2( 0, -0.537 )
+initial_velocity = 50.1
+initial_velocity_random = 1.0
+linear_accel = 1.12
+angle = 739.5
+angle_random = 1.0
+scale_amount = 5.07
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.113725, 0.552941, 0.960784, 1 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="3"]
+amount = 32
+lifetime = 5.73
+preprocess = 0.04
+speed_scale = 16.75
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 1 )
+spread = 180.0
+gravity = Vector2( 0, -0.537 )
+initial_velocity = 50.1
+initial_velocity_random = 1.0
+linear_accel = 1.12
+angle = 739.5
+angle_random = 1.0
+scale_amount = 5.07
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.831373, 0.25098, 0.713726, 1 )
+
+[node name="CPUParticles2D4" type="CPUParticles2D" parent="." index="4"]
+amount = 32
+lifetime = 5.73
+preprocess = 0.04
+speed_scale = 16.75
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 1 )
+spread = 180.0
+gravity = Vector2( 0, -0.537 )
+initial_velocity = 50.1
+initial_velocity_random = 1.0
+linear_accel = 1.12
+angle = 739.5
+angle_random = 1.0
+scale_amount = 5.07
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.94902, 1, 0.192157, 1 )

@@ -1,6 +1,6 @@
 extends Node
 
-var VERSION = "0.3.0"
+var VERSION = "0.4.0-steam"
 
 var audio_player
 var music_enabled = true
@@ -27,11 +27,11 @@ var songs = {
 }
 
 func _enter_tree():
+	get_tree().set_auto_accept_quit(false)
 	audio_player = AudioStreamPlayer.new()
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"
 	var data = get_player_data()
-	
 	for key in data.options:
 		set(key, data.options[key])
 #	music_enabled = data.options.music_enabled

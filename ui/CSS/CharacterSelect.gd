@@ -10,6 +10,7 @@ var selected_characters = {}
 var singleplayer = true
 var current_player = 1
 var network_match_data = {}
+var lobby_match_settings = {}
 
 func _ready():
 	$"%GoButton".connect("pressed", self, "go")
@@ -28,7 +29,6 @@ func _on_network_character_selected(player_id, character):
 		if Network.is_host():
 			Network.rpc_("send_match_data", get_match_data())
 
-
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
 	go()
@@ -44,17 +44,14 @@ func init(singleplayer=true):
 	$"%GoButton".disabled = true
 	$"%GoButton".show()
 	self.singleplayer = singleplayer
+	$"%GameSettingsPanelContainer".init(singleplayer)
+#	$"%GameSettingsPanelContainer".singleplayer = singleplayer
 #	$"%P2Display".set_enabled(singleplayer)
 	$"%SelectingLabel".text = "P1 SELECT YOUR CHARACTER" if singleplayer else "SELECT YOUR CHARACTER"
 	$"%P1Display".init()
 	$"%P2Display".init()
-	$"%P2Dummy".visible = singleplayer
-	$"%TurnLengthContainer".visible = !singleplayer
-	if !singleplayer:
-		if !Network.is_host():
-			$"%ShowSettingsButton".hide()
-			$"%GameSettingsPanelContainer".hide()
-#		$"%DIEnabled".pressed = true
+
+
 	
 	hovered_characters = {
 		1: null,
@@ -131,22 +128,15 @@ func quit():
 	get_tree().reload_current_scene()
 
 func get_match_data():
-	return {
+	var data = {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
-		"stage_width": int($"%StageWidth".value),
-		"p2_dummy": $"%P2Dummy".pressed if singleplayer else false,
-		"di_enabled": $"%DIEnabled".pressed,
-		"turbo_mode": $"%TurboMode".pressed,
-		"infinite_resources": $"%InfiniteResources".pressed,
-		"one_hit_ko": $"%OneHitKO".pressed,
-		"game_length": int($"%GameLength".value),
-		"turn_time": int($"%TurnLength".value),
-		"burst_enabled": $"%BurstEnabled".pressed,
-		"frame_by_frame": $"%FrameByFrame".pressed,
-		"always_perfect_parry": $"%AlwaysPerfectParry".pressed,
-		"char_distance": int($"%CharDist".value),
 	}
+	if lobby_match_settings:
+		data.merge(lobby_match_settings)
+	else:
+		data.merge($"%GameSettingsPanelContainer".get_data())
+	return data
 
 func go():
 	if !singleplayer:

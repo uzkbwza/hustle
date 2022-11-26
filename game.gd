@@ -5,17 +5,13 @@ class_name Game
 const GHOST_FRAMES = 90
 const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
-
 const CAMERA_MAX_Y_DIST = 210
+const QUITTER_FOCUS_TICKS = 60
 
 export(int) var char_distance = 200
 export(int) var stage_width = 1100
 export(int) var max_char_distance = 600
 export(int) var time = 3000
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 signal player_actionable()
 signal player_actionable_network()
@@ -26,6 +22,7 @@ signal game_won(winner)
 signal ghost_finished()
 signal make_afterimage()
 signal ghost_my_turn()
+signal forfeit_started(id)
 
 var p1_data
 var p2_data
@@ -57,6 +54,11 @@ var game_finished = false
 
 var ghost_cleaned = true
 
+var forfeit = false
+
+var quitter_focus = false
+var quitter_focus_ticks = 0
+
 var advance_frame_input = false
 
 var frame_by_frame = false
@@ -69,6 +71,7 @@ var ghost_hidden = false
 var ghost_game
 var ghost_speed = 3
 var ghost_tick = 0
+var forfeit_player = null
 
 var match_data = null
 var simulated_once = false
@@ -164,11 +167,12 @@ func get_screen_position(player_id):
 	var result = player_position - screen_center
 	return result / camera.zoom.x
 
-func get_player(id):
+func get_player(id) -> Fighter:
 	if id == 1:
 		return p1
 	if id == 2:
 		return p2
+	return null
 
 func on_particle_effect_spawned(fx: ParticleEffect):
 	if ReplayManager.resimulating:
@@ -199,10 +203,29 @@ func on_parry():
 	super_freeze_ticks = 10 
 	parry_freeze = true
 
+func forfeit(id):
+	if forfeit:
+		return
+	forfeit = true
+	get_player(id).forfeit()
+	get_player((id % 2) + 1).on_action_selected("Continue", null, null)
+	emit_signal("forfeit_started", id)
+	quitter_focus = true
+	forfeit_player = get_player(id)
+	quitter_focus_ticks = QUITTER_FOCUS_TICKS
+
 func start_game(singleplayer: bool, match_data: Dictionary):
 	self.match_data = match_data
-	p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
-	p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
+	
+	if Global.name_paths.has(match_data.selected_characters[1]["name"]):
+		p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
+	else:
+		return false
+	if Global.name_paths.has(match_data.selected_characters[2]["name"]):
+		p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
+	else:
+		return false
+	
 	p1.connect("parried", self, "on_parry")
 	p2.connect("parried", self, "on_parry")
 	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)
@@ -275,8 +298,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2_data = p2.data
 	if !ReplayManager.resimulating:
 		show_state()
-	if ReplayManager.playback and !ReplayManager.resimulating:
-		yield(get_tree().create_timer(0.33), "timeout")
+	if ReplayManager.playback and !ReplayManager.resimulating and !is_ghost:
+		yield(get_tree().create_timer(0.15), "timeout")
 	game_started = true
 #	if is_afterimage:
 #		show_state()
@@ -311,7 +334,16 @@ func initialize_objects():
 			object.init()
 
 func tick():
-		
+	if quitter_focus and quitter_focus_ticks > 0:
+		if (QUITTER_FOCUS_TICKS - quitter_focus_ticks) % 10 == 0:
+			if forfeit_player:
+				forfeit_player.toggle_quit_graphic()
+		quitter_focus_ticks -= 1
+		return
+	else:
+		if forfeit_player:
+			forfeit_player.toggle_quit_graphic(false)
+		quitter_focus = false
 	frame_passed = true
 	if !singleplayer:
 		if !is_ghost:
@@ -389,7 +421,6 @@ func tick():
 				Network.autosave_match_replay(match_data)
 		end_game()
 
-
 func int_abs(n: int):
 	if n < 0:
 		n *= -1
@@ -404,7 +435,7 @@ func int_clamp(n: int, min_: int, max_: int):
 		return max_
 
 func should_game_end():
-	return current_tick > time or p1.hp <= 0 or p2.hp <= 0
+	return (current_tick > time or p1.hp <= 0 or p2.hp <= 0)
 
 func resolve_same_x_coordinate():
 	# prevent both players occupying the same x coordinate
@@ -621,6 +652,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	return hit_by
 
 func is_waiting_on_player():
+	if !game_started:
+		return false
 	return (p1.state_interruptable or p2.state_interruptable)
 
 func simulate_until_ready():
@@ -666,6 +699,7 @@ func end_game():
 	emit_signal("game_won", winner)
 
 func process_tick():
+	
 	super_active = super_freeze_ticks > 0
 	if super_freeze_ticks > 0:
 		super_freeze_ticks -= 1
@@ -813,6 +847,8 @@ func _physics_process(_delta):
 	if !is_ghost:
 		if snapping_camera:
 			var target = (p1.global_position + p2.global_position) / 2
+			if forfeit_player:
+				target = forfeit_player.global_position
 			if camera.global_position.distance_squared_to(target) > 10:
 				camera.global_position = lerp(camera.global_position, target, 0.28)
 	if is_instance_valid(ghost_game):

@@ -43,9 +43,10 @@ sprite_animation = ""
 anim_length = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 3 )
-width = 12
-height = 12
+width = 50
+height = 50
 damage = 90
 minimum_damage = 30
 hitstun_ticks = 25

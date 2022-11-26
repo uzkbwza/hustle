@@ -1,0 +1,84 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/SteamLobby/LobbyEntry.gd" type="Script" id=2]
+
+[node name="LobbyEntry" type="PanelContainer"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -7.0
+margin_bottom = 7.0
+rect_min_size = Vector2( 0, 20 )
+mouse_filter = 1
+size_flags_horizontal = 3
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="HoverRect" type="ColorRect" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 639.0
+margin_bottom = 19.0
+mouse_filter = 2
+color = Color( 0.168627, 0.168627, 0.168627, 1 )
+
+[node name="SelectRect" type="ColorRect" parent="."]
+visible = false
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 639.0
+margin_bottom = 19.0
+mouse_filter = 2
+color = Color( 0.298039, 0.298039, 0.298039, 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 639.0
+margin_bottom = 19.0
+mouse_filter = 2
+custom_constants/margin_right = 2
+custom_constants/margin_left = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 2.0
+margin_right = 636.0
+margin_bottom = 18.0
+mouse_filter = 2
+custom_constants/separation = 8
+
+[node name="LobbyName" type="Label" parent="MarginContainer/HBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 3.0
+margin_right = 309.0
+margin_bottom = 14.0
+rect_clip_content = true
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "Lobby Name"
+clip_text = true
+
+[node name="GameStatus" type="Label" parent="MarginContainer/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 317.0
+margin_top = 3.0
+margin_right = 471.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "In Game"
+
+[node name="PlayerCount" type="Label" parent="MarginContainer/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 479.0
+margin_top = 3.0
+margin_right = 634.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "0/32"
+align = 2
+
+[connection signal="mouse_entered" from="." to="." method="_on_LobbyEntry_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_LobbyEntry_mouse_exited"]

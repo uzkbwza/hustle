@@ -253,12 +253,12 @@ animations = [ {
 "name": "1000Cuts",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 198 ), ExtResource( 198 ), ExtResource( 195 ), ExtResource( 219 ), ExtResource( 196 ), ExtResource( 199 ), ExtResource( 199 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ) ],
+"frames": [ ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 194 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 197 ), ExtResource( 198 ), ExtResource( 198 ), ExtResource( 195 ), ExtResource( 219 ), ExtResource( 196 ), ExtResource( 199 ), ExtResource( 199 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 203 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 200 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ) ],
 "loop": true,
 "name": "3Combo",
 "speed": 60.0
 }, {
-"frames": [ ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 218 ), ExtResource( 218 ), ExtResource( 222 ), ExtResource( 225 ), ExtResource( 224 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 228 ) ],
+"frames": [ ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 221 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 218 ), ExtResource( 218 ), ExtResource( 222 ), ExtResource( 225 ), ExtResource( 224 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 223 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 227 ), ExtResource( 228 ) ],
 "loop": true,
 "name": "3ComboDown",
 "speed": 5.0
@@ -278,7 +278,7 @@ animations = [ {
 "name": "AirUpwardPunch",
 "speed": 60.0
 }, {
-"frames": [ ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ) ],
+"frames": [ ExtResource( 214 ), ExtResource( 214 ), ExtResource( 214 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 215 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 216 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 213 ) ],
 "loop": true,
 "name": "AnkleCutter",
 "speed": 5.0
@@ -373,7 +373,7 @@ animations = [ {
 "name": "HAirSlash",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
+"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
 "loop": true,
 "name": "HSlash",
 "speed": 60.0
@@ -589,8 +589,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "BackSlash"
-frame = 8
+animation = "3ComboDown"
+frame = 26
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -682,6 +682,7 @@ AerialAttack
 AerialSpecial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/3Combo" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = -11
 y = -56
@@ -697,6 +698,7 @@ start_tick = 8
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/3Combo" index="1"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 24
 y = -46
@@ -713,6 +715,7 @@ start_tick = 8
 active_ticks = 2
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/3Combo" index="2"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 9
 y = -45
@@ -746,6 +749,7 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox6" type="Node2D" parent="StateMachine/3Combo" index="4"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 39
 y = -27
@@ -763,12 +767,13 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox7" type="Node2D" parent="StateMachine/3Combo" index="5"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 3
 y = -39
 width = 21
 height = 14
-damage = 130
+damage = 180
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -777,16 +782,17 @@ screenshake_amount = 7
 hit_sound = ExtResource( 207 )
 dir_y = "0.2"
 knockback = "12.0"
-start_tick = 26
+start_tick = 25
 active_ticks = 3
 
 [node name="Hitbox8" type="Node2D" parent="StateMachine/3Combo" index="6"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 22
 y = -26
 width = 21
 height = 14
-damage = 130
+damage = 180
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -795,25 +801,7 @@ screenshake_amount = 7
 hit_sound = ExtResource( 207 )
 dir_y = "0.2"
 knockback = "12.0"
-start_tick = 26
-active_ticks = 3
-
-[node name="Hitbox9" type="Node2D" parent="StateMachine/3Combo" index="7"]
-script = ExtResource( 83 )
-x = 22
-y = -26
-width = 21
-height = 14
-damage = 130
-hitstun_ticks = 40
-hitlag_ticks = 7
-victim_hitlag = 10
-group = 2
-screenshake_amount = 7
-hit_sound = ExtResource( 207 )
-dir_y = "0.2"
-knockback = "12.0"
-start_tick = 26
+start_tick = 25
 active_ticks = 3
 
 [node name="3ComboDown" type="Node2D" parent="StateMachine" index="5"]
@@ -916,6 +904,7 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox6" type="Node2D" parent="StateMachine/3ComboDown" index="4"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 39
 y = -5
@@ -934,12 +923,13 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox7" type="Node2D" parent="StateMachine/3ComboDown" index="5"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 3
 y = 7
 width = 21
 height = 14
-damage = 130
+damage = 180
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -948,16 +938,17 @@ screenshake_amount = 7
 hit_sound = ExtResource( 207 )
 dir_y = "-0.2"
 knockback = "12.0"
-start_tick = 26
+start_tick = 25
 active_ticks = 3
 
 [node name="Hitbox8" type="Node2D" parent="StateMachine/3ComboDown" index="6"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 22
 y = -6
 width = 21
 height = 14
-damage = 130
+damage = 180
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -966,7 +957,7 @@ screenshake_amount = 7
 hit_sound = ExtResource( 207 )
 dir_y = "-0.2"
 knockback = "12.0"
-start_tick = 26
+start_tick = 25
 active_ticks = 3
 
 [node name="LightningSlice" type="Node2D" parent="StateMachine" index="6"]
@@ -1108,10 +1099,10 @@ script = ExtResource( 166 )
 [node name="HSlash" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 79 )
 sprite_animation = "HSlash"
-anim_length = 25
+anim_length = 17
 force_dir_x = "1.0"
-force_speed = "6.0"
-force_tick = 6
+force_speed = "8.0"
+force_tick = 4
 title = "Horiz. Slash"
 type = 1
 button_texture = ExtResource( 153 )
@@ -1124,6 +1115,7 @@ GroundedSpecial
 GroundedSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HSlash" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 45
 y = -19
@@ -1134,7 +1126,7 @@ hitstun_ticks = 14
 victim_hitlag = 4
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
-start_tick = 7
+start_tick = 5
 active_ticks = 2
 
 [node name="VSlash" type="Node2D" parent="StateMachine" index="12"]
@@ -1157,6 +1149,7 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/VSlash" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 37
 y = -26
@@ -1361,6 +1354,7 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/VAirSlash" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 22
 y = 2
@@ -1368,13 +1362,13 @@ width = 21
 height = 21
 damage = 70
 hitstun_ticks = 20
-victim_hitlag = 4
+victim_hitlag = 6
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
-dir_x = "0.5"
+dir_x = "0.75"
 dir_y = "0.25"
-knockback = "5.0"
+knockback = "4.0"
 start_tick = 5
 active_ticks = 2
 
@@ -1447,11 +1441,12 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Pommel" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 15
 y = -23
-width = 11
-height = 8
+width = 13
+height = 11
 damage = 40
 hitstun_ticks = 12
 victim_hitlag = 4
@@ -1540,6 +1535,7 @@ dir_y = "-1.0"
 grounded_hit_state = "HurtAerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IzunaDrop" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 width = 40
 height = 40
@@ -1564,7 +1560,7 @@ script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 25
+anim_length = 23
 force_dir_x = "1.0"
 force_speed = "3.0"
 force_tick = 9
@@ -1578,6 +1574,7 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AnkleCutter" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 54
 y = -8
@@ -1585,16 +1582,16 @@ width = 38
 height = 2
 damage = 70
 hitstun_ticks = 20
-hitlag_ticks = 2
+hitlag_ticks = 6
 hit_height = 2
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
-dir_y = "-0.2"
+dir_y = "-2.8"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 9
+start_tick = 7
 active_ticks = 2
 
 [node name="BackSlash" type="Node2D" parent="StateMachine" index="27"]
@@ -1615,8 +1612,10 @@ GroundedSpecial"
 interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSpecial
 GroundedSuper"
+yomi_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackSlash" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 25
 y = -26
@@ -1625,7 +1624,6 @@ height = 14
 damage = 80
 hitstun_ticks = 19
 hitlag_ticks = 7
-hits_vs_grounded = false
 group = 1
 hit_sound = ExtResource( 179 )
 dir_x = "-1.0"
@@ -1636,6 +1634,7 @@ start_tick = 5
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/BackSlash" index="1"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 10
 y = -56
