@@ -422,7 +422,7 @@ animations = [ {
 "name": "Landing",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 130 ) ],
+"frames": [ ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 131 ), ExtResource( 130 ) ],
 "loop": true,
 "name": "Liftoff",
 "speed": 5.0
@@ -432,7 +432,7 @@ animations = [ {
 "name": "MagicMissile",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 98 ) ],
+"frames": [ ExtResource( 94 ), ExtResource( 94 ), ExtResource( 94 ), ExtResource( 93 ), ExtResource( 93 ), ExtResource( 92 ), ExtResource( 92 ), ExtResource( 98 ) ],
 "loop": true,
 "name": "ManaStrike",
 "speed": 5.0
@@ -502,7 +502,7 @@ animations = [ {
 "name": "ThrowTech",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 209 ), ExtResource( 209 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 211 ), ExtResource( 211 ) ],
+"frames": [ ExtResource( 209 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 211 ), ExtResource( 211 ) ],
 "loop": true,
 "name": "TomeSlap",
 "speed": 5.0
@@ -564,6 +564,7 @@ material = null
 position = Vector2( 134, -144 )
 
 [node name="LiftoffSprite" type="AnimatedSprite" parent="Flip" index="2"]
+unique_name_in_owner = true
 visible = false
 material = SubResource( 3 )
 position = Vector2( 0, -16 )
@@ -648,6 +649,7 @@ type = 1
 button_texture = ExtResource( 170 )
 air_type = 1
 land_cancel = true
+iasa_at = 14
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
@@ -659,6 +661,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IceSpikeAir" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 35
 y = -36
@@ -734,6 +737,7 @@ sfx_tick = 5
 title = "Icicle"
 type = 1
 button_texture = ExtResource( 171 )
+iasa_at = 16
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
 GroundedAttack"
@@ -747,6 +751,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IceSpikeGround" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 42
 y = -25
@@ -773,12 +778,13 @@ script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 13
+anim_length = 12
 enter_force_dir_x = "1.0"
 enter_force_speed = "3.0"
 title = "Tome Slap"
 type = 1
 button_texture = ExtResource( 214 )
+iasa_at = 11
 interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Grounded"
@@ -790,6 +796,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/TomeSlap" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 17
 y = -23
@@ -803,7 +810,7 @@ hit_sound = ExtResource( 215 )
 dir_x = "1.00"
 dir_y = "-0.40"
 knockback = "5.0"
-start_tick = 5
+start_tick = 4
 active_ticks = 2
 
 [node name="Kick" type="Node2D" parent="StateMachine" index="7"]
@@ -829,6 +836,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Kick" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 12
 y = -5
@@ -851,9 +859,10 @@ start_tick = 7
 active_ticks = 13
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/Kick" index="1"]
+z_index = 1000
 script = ExtResource( 228 )
-y = -10
-height = 10
+y = -8
+height = 8
 start_tick = 7
 endless = true
 
@@ -871,6 +880,7 @@ type = 1
 data_ui_scene = ExtResource( 96 )
 button_texture = ExtResource( 173 )
 air_type = 2
+iasa_at = 13
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
 GroundedAttack
@@ -890,6 +900,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ManaStrike" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 y = -20
 width = 12
@@ -903,7 +914,7 @@ knockback = "12.0"
 launch_reversible = true
 pushback_x = "-1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 7
+start_tick = 6
 active_ticks = 1
 
 [node name="FlameWave" type="Node2D" parent="StateMachine" index="9"]
@@ -918,6 +929,7 @@ title = "Flame Wave"
 type = 2
 button_texture = ExtResource( 174 )
 air_type = 2
+iasa_at = 14
 interrupt_from_string = "Aerial
 Grounded
 AerialSpecial
@@ -952,6 +964,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Liftoff" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 width = 15
 height = 15
@@ -969,10 +982,11 @@ pushback_x = "2.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 9
+start_tick = 7
 active_ticks = 1
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Liftoff" index="1"]
+z_index = 1000
 script = ExtResource( 95 )
 y = -16
 width = 12
@@ -983,7 +997,7 @@ victim_hitlag = 4
 group = 1
 knockback = "5"
 ground_bounce = false
-start_tick = 10
+start_tick = 8
 active_ticks = 15
 
 [node name="MagicMissile" type="Node2D" parent="StateMachine" index="11"]
@@ -1064,10 +1078,6 @@ data_ui_scene = ExtResource( 139 )
 button_texture = ExtResource( 164 )
 air_type = 2
 land_cancel = true
-interrupt_from_string = "Grounded
-Aerial
-GroundedSuper
-AerialSuper"
 interrupt_into_string = "Aerial
 Grounded"
 
@@ -1091,6 +1101,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
 [node name="WindBox" type="Node2D" parent="StateMachine/WindForce" index="0"]
+z_index = 1000
 script = ExtResource( 155 )
 x = 110
 y = -128
@@ -1156,6 +1167,7 @@ Aerial"
 super_level = 0
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/OrbTeleport" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 y = -18
 width = 26
@@ -1178,6 +1190,7 @@ anim_length = 30
 title = "Conjure Storm"
 type = 1
 button_texture = ExtResource( 200 )
+iasa_at = 25
 interrupt_from_string = "GroundedAttack
 Grounded"
 interrupt_into_string = "Grounded"
@@ -1186,6 +1199,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 21
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ConjureStorm" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 36
 y = -20
@@ -1219,6 +1233,7 @@ start_tick = 12
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConjureStorm" index="2"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 87
 y = -20
@@ -1234,6 +1249,7 @@ start_tick = 19
 active_ticks = 3
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/ConjureStorm" index="3"]
+z_index = 1000
 script = ExtResource( 95 )
 x = -87
 y = -20
@@ -1288,6 +1304,7 @@ title = "Vile Clutch"
 type = 2
 button_texture = ExtResource( 199 )
 air_type = 2
+iasa_at = 12
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -1308,6 +1325,7 @@ sfx_tick = 4
 title = "Bolt of Magma"
 type = 1
 button_texture = ExtResource( 225 )
+iasa_at = 12
 interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Grounded"
@@ -1383,6 +1401,11 @@ active_ticks = 2
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
+
+[node name="DashBackward" parent="StateMachine" index="34"]
+interrupt_frames = [ 11 ]
+dash_speed = 9
+stop_frame = 9
 
 [node name="Roll" parent="StateMachine" index="35"]
 sprite_anim_length = -1

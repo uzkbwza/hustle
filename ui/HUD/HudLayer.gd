@@ -79,7 +79,8 @@ func init(game):
 	p2_super_meter.max_value = p2.MAX_SUPER_METER
 	p1_burst_meter.fighter = p1
 	p2_burst_meter.fighter = p2
-	if Network.multiplayer_active:
+
+	if Network.multiplayer_active and !SteamLobby.SPECTATING:
 		$"%P1Username".text = Network.pid_to_username(1)
 		$"%P2Username".text = Network.pid_to_username(2)
 	elif game.match_data.has("user_data"):
@@ -169,10 +170,13 @@ func _physics_process(_delta):
 		$"%P2SuperTexture".visible = game.p2_super
 		p1_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p1.supers_available < 1 else preload("res://ui/super_ready.tres")
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
-		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or game.real_tick % 2 == 0)
-		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or game.real_tick % 2 == 0)
-#		$"%P1AdvantageLabel".visible = game.game_paused and p1.read_advantage
-#		$"%P2AdvantageLabel".visible = game.game_paused and p2.read_advantage
+		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P1AdvantageLabel".visible = p1.read_advantage and p1.current_state().yomi_effect
+		$"%P2AdvantageLabel".visible = p2.read_advantage and p2.current_state().yomi_effect
+		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
+		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
+		
 		if game.super_active and !game.parry_freeze:
 			if !super_started:
 				if game.p1_super:

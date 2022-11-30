@@ -7,7 +7,7 @@ var selected_lobby
 
 func _ready():
 	$"%CreateLobbyButton".connect("pressed", self, "_on_create_lobby_button_pressed")
-	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
+#	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
 
@@ -28,7 +28,8 @@ func show():
 	.show()
 	$"%ConnectingLabel".show()
 	clear_lobby_list()
-	_on_refresh_timer_timeout()
+	SteamLobby.request_lobby_list()
+#	_on_refresh_timer_timeout()
 
 func get_lobby_name():
 	var lobby_text = lobby_name.text.strip_edges()
@@ -41,32 +42,36 @@ func clear_lobby_list():
 		child.free()
 
 func _on_lobby_match_list_received(lobbies):
-		$"%ConnectingLabel".hide()
-		# TODO - keep and update existing lobbies so your selection isnt cleared
+	$"%ConnectingLabel".hide()
+	# TODO - keep and update existing lobbies so your selection isnt cleared
 #		$"%LobbyList".clear()
-		clear_lobby_list()
-		for lobby in lobbies:
-			# Pull lobby data from Steam, these are specific to our example
-			var lobby_name: String = Steam.getLobbyData(lobby, "name")
-			var lobby_status: String = Steam.getLobbyData(lobby, "status")
-			
-			# Get the current number of members
-			var lobby_num_members: int = Steam.getNumLobbyMembers(lobby)
-			
-			var lobby_entry = preload("res://ui/SteamLobby/LobbyEntry.tscn").instance()
-			lobby_list.add_child(lobby_entry)
-			lobby_entry.connect("selected", self, "_on_lobby_clicked", [lobby_entry])
-			var data = {
-				"name": lobby_name,
-				"status": lobby_status,
-				"player_count": lobby_num_members,
-				"max_players": SteamLobby.LOBBY_MAX_MEMBERS,
-				"id": lobby,
-			}
-			lobby_entry.set_data(data)
-			if lobby == selected_lobby:
-				lobby_entry.select()
-			pass
+	clear_lobby_list()
+	for lobby in lobbies:
+		# Pull lobby data from Steam, these are specific to our example
+		var lobby_name: String = Steam.getLobbyData(lobby, "name")
+#			var lobby_status: String = Steam.getLobbyData(lobby, "status")
+		var lobby_version: String = Steam.getLobbyData(lobby, "version")
+		
+		# Get the current number of members
+		var lobby_num_members: int = Steam.getNumLobbyMembers(lobby)
+		
+		var lobby_entry = preload("res://ui/SteamLobby/LobbyEntry.tscn").instance()
+		lobby_list.add_child(lobby_entry)
+		lobby_entry.connect("selected", self, "_on_lobby_clicked", [lobby_entry])
+		var data = {
+			"name": lobby_name,
+#				"status": lobby_status,
+			"version": lobby_version,
+			"player_count": lobby_num_members,
+			"max_players": SteamLobby.LOBBY_MAX_MEMBERS,
+			"id": lobby,
+		}
+		lobby_entry.set_data(data)
+		if lobby == selected_lobby:
+			lobby_entry.select()
+		pass
+	yield(get_tree().create_timer(1.0), "timeout")
+	SteamLobby.request_lobby_list()
 
 func _on_lobby_clicked(entry):
 	if SteamLobby.LOBBY_ID != 0:
@@ -77,10 +82,10 @@ func _on_lobby_clicked(entry):
 	selected_lobby = entry.lobby_id
 	SteamLobby.join_lobby(entry.lobby_id)
 
-func _on_refresh_timer_timeout():
-	SteamLobby.request_lobby_list()
-	yield(SteamLobby, "lobby_match_list_received")
-	$"%RefreshTimer".start()
+#func _on_refresh_timer_timeout():
+#	SteamLobby.request_lobby_list()
+#	yield(SteamLobby, "lobby_match_list_received")
+#	$"%RefreshTimer".start()
 
 func _on_SteamLobbyList_visibility_changed():
 	if !visible:

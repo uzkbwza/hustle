@@ -5,9 +5,10 @@ export var dash_speed = 100
 export var fric = "0.05"
 export var spawn_particle = true
 export var startup_lag = 0
+export var stop_frame = 0
 
 func _enter():
-	if startup_lag != 0:
+	if startup_lag != 0 or stop_frame != 0:
 		interruptible_on_opponent_turn = false
 	else:
 		interruptible_on_opponent_turn = true
@@ -27,3 +28,5 @@ func _tick():
 		if spawn_particle:
 			spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 #		interruptible_on_opponent_turn = true
+	if stop_frame > 0 and current_tick == stop_frame:
+		host.reset_momentum()

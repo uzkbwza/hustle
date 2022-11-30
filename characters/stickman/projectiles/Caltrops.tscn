@@ -52,6 +52,7 @@ fizzle_on_ground = false
 fizzle_on_walls = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 3 )
 y = -4
 width = 3

@@ -9,6 +9,7 @@ export var free=true
 export var one_shot = true
 export var lifetime = 1.0
 export var start_enabled = true
+
 var enabled = true
 var tick = 0
 

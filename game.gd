@@ -23,6 +23,8 @@ signal ghost_finished()
 signal make_afterimage()
 signal ghost_my_turn()
 signal forfeit_started(id)
+signal actions_submitted()
+signal turn_started()
 
 var p1_data
 var p2_data
@@ -75,12 +77,18 @@ var forfeit_player = null
 
 var match_data = null
 var simulated_once = false
+var started_multiplayer = false
 
 var p1 = null
 var p2 = null
 
+var p1_username = null
+var p2_username = null
+var my_id = 1
+
 var snapping_camera = false 
 var waiting_for_player_prev = false
+var spectate_tick = -1
 
 var camera_snap_position = Vector2()
 
@@ -105,6 +113,8 @@ var ghost_actionable_freeze_ticks = 0
 var ghost_p1_actionable = false
 var ghost_p2_actionable = false
 var made_afterimage = false
+
+var spectating = false
 #var has_ghost_frozen_yet = false
 
 func get_ticks_left():
@@ -122,6 +132,10 @@ func _ready():
 		$GhostStartTimer.start()
 	else:
 		emit_signal("simulation_continue")
+
+#func _on_turn_started():
+#	if Network.multiplayer_active:
+		
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
@@ -217,6 +231,11 @@ func forfeit(id):
 func start_game(singleplayer: bool, match_data: Dictionary):
 	self.match_data = match_data
 	
+	if match_data.has("spectating"):
+		spectating = match_data.spectating
+		if is_ghost:
+			spectating = false
+
 	if Global.name_paths.has(match_data.selected_characters[1]["name"]):
 		p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
 	else:
@@ -267,6 +286,12 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.objs_map = objs_map
 	snapping_camera = true
 	self.singleplayer = singleplayer
+	if !singleplayer:
+		started_multiplayer = true
+		if Network.multiplayer_active:
+			p1_username = Network.pid_to_username(1)
+			p2_username = Network.pid_to_username(2)
+			my_id = Network.player_id
 	current_tick = -1
 	if !is_ghost:
 		if ReplayManager.playback:
@@ -275,7 +300,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			ReplayManager.init()
 		else:
 			get_max_replay_tick()
-			ReplayManager.playback = true
+			if ReplayManager.frames[1].size() > 0 or ReplayManager.frames[2].size() > 0:
+				ReplayManager.playback = true
 	if singleplayer:
 		if match_data["p2_dummy"]:
 			p2.dummy = true
@@ -311,6 +337,11 @@ func update_data():
 	p2_data = p2.data
 
 func get_max_replay_tick():
+#	if spectating:
+#		max_replay_tick = spectate_tick
+#		if max_replay_tick >= current_tick:
+#			ReplayManager.playback = true
+#		return
 	max_replay_tick = 0
 	for tick in ReplayManager.frames[1].keys():
 		if tick > max_replay_tick:
@@ -371,8 +402,8 @@ func tick():
 	p2.current_tick = current_tick
 #	p1.read_advantage = (p1.current_state().current_tick > p2.current_state().current_tick) or p1.parried_last_state
 #	p2.read_advantage = (p2.current_state().current_tick > p1.current_state().current_tick) or p2.parried_last_state
-	p1.lowest_tick = null
-	p2.lowest_tick = null
+	p1.lowest_tick = -1
+	p2.lowest_tick = -1
 	p1.tick_before()
 	p2.tick_before()
 	p1.update_advantage()
@@ -416,9 +447,9 @@ func tick():
 	else:
 		ReplayManager.frames.finished = true
 	if should_game_end():
-		if Network.multiplayer_active:
+		if started_multiplayer:
 			if !ReplayManager.playback:
-				Network.autosave_match_replay(match_data)
+				Network.autosave_match_replay(match_data, p1_username, p2_username)
 		end_game()
 
 func int_abs(n: int):
@@ -635,9 +666,9 @@ func apply_hitboxes():
 					objects_hit_each_other = true
 					objects_to_hit.append([obj_hit_by, object])
 		
-		if objects_hit_each_other:
-			for pair in objects_to_hit:
-				pair[0].hit(pair[1])
+	if objects_hit_each_other:
+		for pair in objects_to_hit:
+			pair[0].hit(pair[1])
 
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
@@ -652,6 +683,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	return hit_by
 
 func is_waiting_on_player():
+	if forfeit_player != null:
+		return false
 	if !game_started:
 		return false
 	return (p1.state_interruptable or p2.state_interruptable)
@@ -718,7 +751,7 @@ func process_tick():
 	if !Global.frame_advance:
 		if Global.playback_speed_mod > 0:
 			can_tick = real_tick % Global.playback_speed_mod == 0
-	if (Network.multiplayer_active) and !ghost_tick:
+	if (Network.multiplayer_active) and !ghost_tick and !spectating:
 		can_tick = network_simulate_ready
 	if ReplayManager.resimulating:
 		ReplayManager.playback = true
@@ -733,6 +766,8 @@ func process_tick():
 					if !Global.frame_advance:
 						snapping_camera = true
 					call_deferred("simulate_one_tick")
+#					if p1_turn or p2_turn:
+#						call_deferred("_on_turn_started")
 					p1_turn = false
 					p2_turn = false
 					if game_paused:
@@ -777,6 +812,8 @@ func process_tick():
 						network_sync_tick = current_tick
 						network_simulate_ready = false
 						Network.sync_unlock_turn()
+						Network.on_turn_started()
+#						SteamLobby.update_spectator_tick(current_tick)
 	else:
 		if ReplayManager.resimulating:
 			snapping_camera = true
@@ -813,6 +850,9 @@ func _process(delta):
 
 
 func _physics_process(_delta):
+	if forfeit:
+		game_paused = false
+		game_finished = true
 	camera.tick()
 	real_tick += 1
 	if !$GhostStartTimer.is_stopped():
@@ -861,6 +901,15 @@ func _physics_process(_delta):
 		game_finished = false
 		emit_signal("simulation_continue")
 		start_playback()
+
+	if spectating and !is_ghost and !ReplayManager.play_full:
+		for id in [1, 2]:
+			for input_tick in ReplayManager.frames[id].keys():
+				if current_tick == input_tick - 1:
+	#					ReplayManager.playback = true
+	#				if game.current_tick == input_tick:
+					var input = ReplayManager.frames[id][input_tick]
+					get_player(id).on_action_selected(input.action, input.data, input.extra)
 
 
 func ghost_tick():

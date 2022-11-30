@@ -6,8 +6,9 @@ var IS_OWNED: bool
 var STEAM_ID: int
 var STEAM_NAME: String = ""
 
-func _ready():
+func _enter_tree():
 	_initialize_steam()
+	pass
 
 func _initialize_steam():
 	var INIT: Dictionary = Steam.steamInit()

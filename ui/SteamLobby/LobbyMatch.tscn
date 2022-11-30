@@ -1,0 +1,126 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/SteamLobby/LobbyMatch.gd" type="Script" id=2]
+
+[node name="LobbyMatch" type="Panel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -138.0
+margin_top = -20.0
+margin_right = 138.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 40 )
+rect_pivot_offset = Vector2( -303, -172 )
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 7.0
+margin_right = 276.0
+margin_bottom = 21.0
+rect_min_size = Vector2( 0, 14 )
+size_flags_horizontal = 3
+custom_constants/margin_right = 10
+custom_constants/margin_left = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+margin_left = 10.0
+margin_right = 266.0
+margin_bottom = 14.0
+
+[node name="P1Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_top = 1.0
+margin_right = 84.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "USER1"
+clip_text = true
+
+[node name="Vs" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 85.0
+margin_top = 1.0
+margin_right = 170.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "versus"
+align = 1
+
+[node name="P2Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 171.0
+margin_top = 1.0
+margin_right = 256.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "USER2"
+align = 2
+clip_text = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 22.0
+margin_right = 276.0
+margin_bottom = 33.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 5
+custom_constants/margin_left = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer2"]
+margin_left = 5.0
+margin_right = 271.0
+margin_bottom = 11.0
+
+[node name="P1Character" type="Label" parent="VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.317647 )
+margin_right = 88.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "character"
+clip_text = true
+
+[node name="Control" type="Control" parent="VBoxContainer/MarginContainer2/HBoxContainer"]
+margin_left = 89.0
+margin_right = 177.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpectateButton" type="Button" parent="VBoxContainer/MarginContainer2/HBoxContainer/Control"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -30.5
+margin_top = -5.5
+margin_right = 30.5
+margin_bottom = 10.5
+rect_min_size = Vector2( 0, 16 )
+size_flags_horizontal = 0
+theme = ExtResource( 1 )
+theme_type_variation = "ChallengeButton"
+text = "spectate"
+
+[node name="P2Character" type="Label" parent="VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.317647 )
+margin_left = 178.0
+margin_right = 266.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "character"
+align = 2
+clip_text = true

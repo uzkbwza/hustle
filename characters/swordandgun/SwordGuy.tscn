@@ -373,7 +373,7 @@ animations = [ {
 "name": "HAirSlash",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
+"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
 "loop": true,
 "name": "HSlash",
 "speed": 60.0
@@ -645,6 +645,7 @@ sfx_tick = 7
 type = 2
 button_texture = ExtResource( 180 )
 air_type = 2
+iasa_at = 20
 burst_cancellable = false
 instant_cancellable = false
 interrupt_from_string = "Grounded
@@ -1028,6 +1029,7 @@ hit_cancel_exceptions_string = "LightningSlice"
 cancel = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/LightningSliceCancel" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 128
 y = -16
@@ -1058,6 +1060,7 @@ interrupt_into_string = "Grounded
 Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/LassoPull" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 damage = 40
 hitlag_ticks = 0
@@ -1099,7 +1102,7 @@ script = ExtResource( 166 )
 [node name="HSlash" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 79 )
 sprite_animation = "HSlash"
-anim_length = 17
+anim_length = 20
 force_dir_x = "1.0"
 force_speed = "8.0"
 force_tick = 4
@@ -1126,7 +1129,7 @@ hitstun_ticks = 14
 victim_hitlag = 4
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
-start_tick = 5
+start_tick = 6
 active_ticks = 2
 
 [node name="VSlash" type="Node2D" parent="StateMachine" index="12"]
@@ -1139,6 +1142,7 @@ force_tick = 2
 title = "Vert. Slash"
 type = 1
 button_texture = ExtResource( 154 )
+iasa_at = 18
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -1177,6 +1181,7 @@ enter_force_speed = "5.0"
 title = "Upward Swipe"
 type = 1
 button_texture = ExtResource( 155 )
+iasa_at = 22
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "Grounded
@@ -1216,6 +1221,7 @@ title = "Upward Swipe"
 type = 1
 button_texture = ExtResource( 155 )
 air_type = 1
+iasa_at = 22
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "Aerial
@@ -1253,6 +1259,7 @@ force_tick = 1
 title = "Stinger"
 type = 1
 button_texture = ExtResource( 156 )
+iasa_at = 16
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -1262,6 +1269,7 @@ GroundedAttack
 GroundedSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Poke" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 53
 y = -21
@@ -1427,7 +1435,7 @@ Aerial"
 
 [node name="Pommel" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 79 )
-anim_length = 9
+anim_length = 11
 enter_force_dir_x = "1.0"
 enter_force_speed = "2.0"
 type = 1
@@ -1601,7 +1609,7 @@ apply_fric = true
 apply_grav = true
 anim_length = 35
 force_dir_x = "-1.0"
-force_speed = "5.0"
+force_speed = "8.0"
 force_tick = 6
 type = 2
 button_texture = ExtResource( 210 )
@@ -1685,11 +1693,11 @@ spawn_particle = false
 
 [node name="DashBackward" parent="StateMachine" index="40"]
 spawn_particle_on_enter = false
-interrupt_frames = [ 7 ]
-dash_speed = 4
+interrupt_frames = [ 9 ]
+dash_speed = 3
 fric = "0.02"
 spawn_particle = false
-startup_lag = 0
+startup_lag = 1
 
 [node name="Jump" parent="StateMachine" index="42"]
 speed = "8.5"

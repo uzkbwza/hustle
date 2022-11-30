@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=2]
+[gd_scene load_steps=74 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -59,6 +59,9 @@
 [ext_resource path="res://ui/SteamLobby/SteamLobbyList.tscn" type="PackedScene" id=57]
 [ext_resource path="res://ui/SteamLobby/SteamLobby.tscn" type="PackedScene" id=58]
 [ext_resource path="res://ui/BgCircle.gd" type="Script" id=59]
+[ext_resource path="res://ui/NagWindow2.tscn" type="PackedScene" id=60]
+[ext_resource path="res://ui/HelpText.tscn" type="PackedScene" id=61]
+[ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.tscn" type="PackedScene" id=62]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -216,6 +219,9 @@ modulate = Color( 1, 1, 1, 0.243137 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="AfterImage1" type="TextureRect" parent="GhostLayer/Afterimages"]
 unique_name_in_owner = true
@@ -236,10 +242,19 @@ script = ExtResource( 47 )
 unique_name_in_owner = true
 modulate = Color( 1, 1, 1, 0.584314 )
 material = SubResource( 10 )
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -320.0
+margin_top = -180.0
+margin_right = 320.0
+margin_bottom = 180.0
 mouse_filter = 2
 stretch = true
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="GhostViewport" type="Viewport" parent="GhostLayer/GhostViewportContainer"]
 unique_name_in_owner = true
@@ -251,6 +266,7 @@ gui_disable_input = true
 
 [node name="HudLayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
+visible = false
 script = ExtResource( 8 )
 
 [node name="SuperDim" type="ColorRect" parent="HudLayer"]
@@ -720,7 +736,6 @@ text = "COUNTER!"
 
 [node name="P1AdvantageLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
-visible = false
 modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
 anchor_left = 0.5
 anchor_top = 0.5
@@ -731,7 +746,7 @@ margin_top = -103.0
 margin_right = -202.0
 margin_bottom = -92.0
 theme = ExtResource( 4 )
-text = "ADVANTAGE"
+text = "INITIATIVE"
 
 [node name="P2CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
@@ -746,10 +761,10 @@ margin_right = 246.0
 margin_bottom = -101.0
 theme = ExtResource( 4 )
 text = "COUNTER!"
+align = 2
 
 [node name="P2AdvantageLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
-visible = false
 modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
 anchor_left = 0.5
 anchor_top = 0.5
@@ -761,7 +776,8 @@ margin_right = 246.0
 margin_bottom = -92.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
-text = "ADVANTAGE"
+text = "INITIATIVE"
+align = 2
 
 [node name="WinLabel" type="Label" parent="HudLayer"]
 unique_name_in_owner = true
@@ -799,6 +815,7 @@ visible = false
 modulate = Color( 1, 0.2, 0.239216, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = 179.0
 theme = ExtResource( 4 )
 text = "OPPONENT DISCONNECTED"
 align = 1
@@ -844,6 +861,7 @@ align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -883,6 +901,20 @@ margin_right = 320.0
 margin_bottom = 11.0
 text = "E: Edit replay - ESC: Open menu - F1: Toggle HUD"
 align = 1
+
+[node name="AdvantageLabel" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 71.0
+margin_bottom = 85.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="BottomBar" type="VBoxContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1267,6 +1299,123 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="HelpScreen" type="ColorRect" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.694118 )
+
+[node name="HelpText3" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -253.0
+margin_top = -164.0
+margin_right = -19.0
+margin_bottom = -139.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "This is the healthbar. When it reaches 0,
+this player will lose."
+autowrap = true
+
+[node name="HelpText4" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = 21.0
+margin_top = -145.0
+margin_right = 123.0
+margin_bottom = -121.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "This is the burst meter. use it to escape combos or make whiffed moves safe."
+autowrap = true
+
+[node name="HelpText5" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -38.0
+margin_top = -164.0
+margin_right = 36.0
+margin_bottom = -83.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "This number represents the remaining amount of time (in frames) left in the battle."
+autowrap = true
+
+[node name="HelpText6" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = 163.0
+margin_top = -149.0
+margin_right = 275.0
+margin_bottom = -124.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "This represents how many air options this player has left. jumping, air-dashing, teleporting, and other moves that allow you to gain altitude generally consume one air option. When you run out, you cannot use those moves."
+autowrap = true
+
+[node name="HelpText7" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -316.0
+margin_top = 106.0
+margin_right = -55.0
+margin_bottom = 166.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "Here are all of this player's available actions. Click one to see how it might play out. A player may also click their opponent's moves to see what they might do, and predict the best action accordingly."
+autowrap = true
+
+[node name="HelpText8" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -50.0
+margin_top = 64.0
+margin_right = 55.0
+margin_bottom = 125.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "once you are ready, press \"lock in\" to submit your move and end your turn."
+autowrap = true
+
+[node name="HelpText9" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -50.0
+margin_top = 120.0
+margin_right = 55.0
+margin_bottom = 173.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "try hovering the mouse over different UI elements for more information."
+autowrap = true
+
+[node name="HelpText10" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -313.0
+margin_top = 47.0
+margin_right = -188.0
+margin_bottom = 100.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "The player's super meter. Gain levels by fighting, and spend them on super moves!"
+autowrap = true
+
+[node name="HelpText11" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = 96.0
+margin_top = 38.0
+margin_right = 193.0
+margin_bottom = 105.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "Use DI to alter this player's trajectory and throw off opponents when they're getting hit."
+autowrap = true
+
+[node name="HelpText12" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -152.0
+margin_top = 42.0
+margin_right = -45.0
+margin_bottom = 109.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "Action parameters may appear here: jump arcs, projectile direction, etc."
+autowrap = true
+
+[node name="HelpButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 28.0
+margin_bottom = 27.0
+action_mode = 0
+text = "?"
+
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true
 visible = false
@@ -1315,7 +1464,7 @@ margin_bottom = 41.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Multiplayer old"
+text = "Multiplayer"
 flat = true
 
 [node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
@@ -1340,11 +1489,22 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Direct Connect"
 flat = true
 
-[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 84.0
 margin_right = 90.0
 margin_bottom = 104.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Customize"
+flat = true
+
+[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 105.0
+margin_right = 90.0
+margin_bottom = 125.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1353,9 +1513,9 @@ flat = true
 
 [node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
+margin_top = 126.0
 margin_right = 90.0
-margin_bottom = 125.0
+margin_bottom = 146.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1364,9 +1524,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 126.0
+margin_top = 147.0
 margin_right = 90.0
-margin_bottom = 146.0
+margin_bottom = 167.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1663,6 +1823,10 @@ unique_name_in_owner = true
 wait_time = 10.0
 one_shot = true
 
+[node name="CustomizationScreen" parent="UILayer" instance=ExtResource( 62 )]
+unique_name_in_owner = true
+visible = false
+
 [node name="P1TurnTimerBar" type="TextureProgress" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -1670,6 +1834,7 @@ margin_left = 37.0
 margin_top = 19.0
 margin_right = 69.0
 margin_bottom = 51.0
+mouse_filter = 2
 theme = ExtResource( 4 )
 max_value = 1.0
 step = 0.001
@@ -1702,6 +1867,7 @@ margin_left = -69.0
 margin_top = 19.0
 margin_right = -37.0
 margin_bottom = 51.0
+mouse_filter = 2
 theme = ExtResource( 4 )
 max_value = 1.0
 step = 0.001
@@ -1789,19 +1955,13 @@ margin_bottom = 12.0
 size_flags_horizontal = 3
 text = "go back"
 
-[node name="AdvantageLabel" type="Label" parent="UILayer"]
+[node name="NagWindow" parent="UILayer" instance=ExtResource( 60 )]
 unique_name_in_owner = true
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_top = 71.0
-margin_bottom = 85.0
-theme = ExtResource( 4 )
-custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
-align = 1
-__meta__ = {
-"_edit_lock_": true
-}
+visible = false
+margin_left = -279.0
+margin_top = -121.0
+margin_right = -101.0
+margin_bottom = -9.0
 
 [node name="ResimRequestScreen" type="ColorRect" parent="UILayer"]
 visible = false

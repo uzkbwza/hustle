@@ -67,7 +67,7 @@ func _frame_4():
 #	host.move_directly(MOVE_DISTANCE / 4, 0)
 
 func _frame_5():
-	host.start_invulnerability()
+#	host.start_invulnerability()
 	host.move_directly(0, -2)
 
 
@@ -97,7 +97,7 @@ func _frame_6():
 	host.apply_force(move_vec.x,  fixed.mul(move_dir.y, "1.0"))
 	host.apply_force("0",  "-1")
 #	host.apply_force("20", "-1")
-	host.end_invulnerability()
+#	host.end_invulnerability()
 
 func _tick():
 	if current_tick > 6:

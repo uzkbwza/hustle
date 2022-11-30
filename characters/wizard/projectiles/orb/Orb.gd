@@ -3,6 +3,7 @@ extends BaseProjectile
 const ACCEL_SPEED = "0.30"
 const FRIC = "0.04"
 const DIRECT_MOVE_SPEED = "3.0"
+const PUSH_SPEED_LIMIT = "8"
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LOCK_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
@@ -16,6 +17,7 @@ var frozen = false
 var locked = false
 
 var push_ticks = 0
+var push_dir = null
 
 func _ready():
 	pass
@@ -49,12 +51,20 @@ func travel_towards_creator():
 	if travel_dir:
 		var force = fixed.vec_mul(travel_dir.x, travel_dir.y, ACCEL_SPEED)
 
+		if get_pos().y == 0:
+			var vel = get_vel()
+			set_vel(vel.x, fixed.mul(vel.y, "-1"))
+			if push_dir:
+				push_dir.y = "0"
+		apply_x_fric(FRIC)
+		apply_y_fric(FRIC)
 		apply_force(force.x, force.y)
 		if push_ticks > 0:
+			if push_dir != null:
+				apply_force(fixed.div(push_dir.x, "10"), fixed.div(push_dir.y, "10"))
+			limit_speed(PUSH_SPEED_LIMIT)
 			apply_forces_no_limit()
 		else:
-			apply_x_fric(FRIC)
-			apply_y_fric(FRIC)
 			apply_forces()
 		if get_pos().y > -5:
 			apply_force("0", "-" + ACCEL_SPEED)
@@ -79,9 +89,10 @@ func attack(attack_type):
 
 func push(fx, fy):
 	play_sound("Push")
-	reset_momentum()
+#	reset_momentum()
 	push_ticks = PUSH_TICKS
-	apply_force(fx, fy)
+	push_dir = FixedVec2String.new(fx, fy)
+#	apply_force(fx, fy)
 	spawn_particle_effect_relative(PUSH_PARTICLE)
 
 func disable():

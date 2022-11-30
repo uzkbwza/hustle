@@ -41,14 +41,19 @@ var game_started = false
 var timer_sync_tick = -1
 var actionable = false
 
+var forfeit_pressed = false
+
 var actionable_time = 0
 
 var received_synced_time = false
+
+var quit_on_rematch = true
 
 func _ready():
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
 	$"%SteamMultiplayerButton".connect("pressed", self, "_on_steam_multiplayer_pressed")
+	$"%CustomizeButton".connect("pressed", self, "_on_customize_pressed")
 	$"%DirectConnectButton".connect("pressed", self, "_on_direct_connect_button_pressed")
 	$"%RematchButton".connect("pressed", self, "_on_rematch_button_pressed")
 	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
@@ -79,9 +84,10 @@ func _ready():
 	
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
-	for lobby in [$"%Lobby", $"%DirectConnectLobby"]:
+	for lobby in [$"%Lobby", $"%DirectConnectLobby", SteamLobby]:
 		lobby.connect("quit_on_rematch", $"%RematchButton", "hide")
-	
+		lobby.connect("quit_on_rematch", self, "set", ["quit_on_rematch", true])
+	$"%HelpButton".connect("pressed", self, "toggle_help_screen")
 	$"%OptionsBackButton".connect("pressed", $"%OptionsContainer", "hide")
 	$"%OptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
@@ -94,8 +100,13 @@ func _ready():
 	$"%PlaybackControls".set_pressed_no_signal(Global.show_playback_controls)
 	$"%PlaybackControls".connect("toggled", self, "_on_playback_controls_button_toggled")
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
-	
-	
+	quit_on_rematch = false
+	if SteamLobby.LOBBY_ID != 0:
+		yield(get_tree(), "idle_frame") 
+#		yield(get_tree(), "idle_frame")
+		_on_join_lobby_success()
+	$"%HelpScreen".hide()
+
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
 	Global.save_options()
@@ -109,23 +120,39 @@ func _on_hitboxes_button_toggled(on):
 func _on_playback_controls_button_toggled(on):
 	Global.set_playback_controls(on)
 
+func toggle_help_screen():
+	$"%HelpScreen".visible = !$"%HelpScreen".visible
+
 func _on_join_lobby_success():
 	$"%HudLayer".hide()
 	$"%SteamLobbyList".hide()
 	$"%SteamLobby".show()
 	$"%GameUI".hide()
+	$"%MainMenu".hide()
 
 func _on_view_replays_button_pressed():
 	load_replays()
 	$"%MainMenu".hide()
 
-
 func _on_forfeit_button_pressed():
-	if is_instance_valid(game):
+	if is_instance_valid(game) and !game.game_finished:
 		var player_id = Network.player_id
 		game.get_player(player_id).on_action_selected("Forfeit", null, null)
 		Network.forfeit()
+		forfeit_pressed = true
 	$"%PausePanel".hide()
+
+func _on_opponent_disconnected():
+	if is_instance_valid(game) and !game.game_finished:
+		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
+		Network.forfeit(true)
+		forfeit_pressed = true
+	$"%PausePanel".hide()
+
+func _on_customize_pressed():
+	$"%MainMenu".hide()
+	$"%CustomizationScreen".show()
+	pass
 
 func load_replays():
 	$"%ReplayWindow".show()
@@ -163,23 +190,36 @@ func _on_replay_button_pressed(path):
 func _on_replay_cancel_pressed():
 	get_tree().reload_current_scene()
 
-func _notification(what):
-	if (what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
-		pass
-		if will_forfeit():
-			_on_forfeit_button_pressed()
-			yield(get_tree().create_timer(2.0), "timeout")
-			get_tree().quit()
-		elif can_quit():
-			print ("You are quit!")
-			get_tree().quit() # default behavior
+#func _notification(what):
+#	if (what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+#		pass
+#		if will_forfeit():
+#			_on_forfeit_button_pressed()
+#			yield(get_tree().create_timer(2.0), "timeout")
+#			get_tree().quit()
+#		elif can_quit():
+#			print ("You are quit!")
+#			get_tree().quit() # default behavior
 
 func will_forfeit():
-	return Network.multiplayer_active and is_instance_valid(game) and !game.game_finished and !game.forfeit and !ReplayManager.playback
+	return !SteamLobby.SPECTATING and Network.multiplayer_active and is_instance_valid(game) and !game.game_finished and !game.forfeit and !ReplayManager.playback and !forfeit_pressed
 
 func can_quit():
 	return true
 #	return !(is_instance_valid(game) and game.forfeit and !ReplayManager.playback and Network.forfeiter == Network.player_id)
+
+func reset_ui():
+	$"%HudLayer".hide()
+	p1_turn_timer.stop()
+	p2_turn_timer.stop()
+	$"%P1TurnTimerBar".hide()
+	$"%P1TurnTimerLabel".hide() 
+	$"%P2TurnTimerBar".hide()
+	$"%P2TurnTimerLabel".hide()
+	$"%GameUI".hide()
+	$"%ChatWindow".hide()
+	$"%PostGameButtons".hide()
+	$"%OpponentDisconnectedLabel".hide()
 
 func _on_quit_button_pressed():
 	if will_forfeit():
@@ -190,9 +230,9 @@ func _on_quit_button_pressed():
 				Network.stop_multiplayer()
 				get_tree().reload_current_scene()
 			else:
-				$"%SteamLobby".show()
-				if is_instance_valid(game):
-					game.queue_free()
+				SteamLobby.quit_match()
+				Network.stop_multiplayer()
+				get_tree().reload_current_scene()
 
 func _on_quit_program_button_pressed():
 	get_tree().quit()
@@ -227,12 +267,13 @@ func id_to_action_buttons(player_id):
 		return $"%P2ActionButtons"
 
 func init(game):
+	forfeit_pressed = false
 	if !ReplayManager.playback:
 		$PostGameButtons.hide()
 		$"%RematchButton".disabled = false
 	self.game = game
 	setup_action_buttons()
-	if Network.multiplayer_active:
+	if Network.multiplayer_active or SteamLobby.SPECTATING:
 		game.connect("playback_requested", self, "_on_game_playback_requested")
 		$"%P1TurnTimerLabel".show()
 		$"%P2TurnTimerLabel".show()
@@ -243,8 +284,9 @@ func init(game):
 
 func _on_player_turn_ready(player_id):
 	lock_in_tick = game.current_tick
-	if player_id != Network.player_id:
+	if player_id != Network.player_id or SteamLobby.SPECTATING:
 		$"%TurnReadySound".play()
+
 	turns_taken[player_id] = true
 	if player_id == 1:
 		$"%P1TurnTimerBar".hide()
@@ -263,11 +305,13 @@ func _on_rematch_button_pressed():
 func _on_game_playback_requested():
 	if Network.multiplayer_active and !ReplayManager.resimulating:
 		$PostGameButtons.show()
-		$"%RematchButton".show()
+		if !quit_on_rematch:
+			$"%RematchButton".show()
 		Network.rematch_menu = true
 
 func on_game_started():
 	lobby.hide()
+	$"%SteamLobby".hide()
 	$MainMenu.hide()
 
 func _on_singleplayer_pressed():
@@ -349,7 +393,7 @@ func on_player_actionable():
 #		p1_turn_timer.wait_time = MIN_TURN_TIME
 #	if p2_turn_timer.wait_time == 0:
 #		 p2_turn_timer.wait_time = MIN_TURN_TIME
-	if Network.multiplayer_active:
+	if Network.multiplayer_active or SteamLobby.SPECTATING:
 #		Network.rpc_("my_turn_started")
 		while !(Network.can_open_action_buttons):
 			yield(get_tree(), "physics_frame")
@@ -432,6 +476,9 @@ func _unhandled_input(event):
 #			if event.scancode == KEY_SPACE:
 #				p1_action_buttons.space_pressed()
 #				p2_action_buttons.space_pressed()
+	if event is InputEventMouseButton:
+		if event.pressed:
+			$"%ChatWindow".unfocus_line_edit()
 
 func time_convert(time_in_sec):
 	var seconds = time_in_sec%60
@@ -458,6 +505,10 @@ func _process(delta):
 				bar.visible = Utils.wave(-1, 1, 0.064) > 0
 	$"%P1TurnTimerLabel".text = time_convert(int(floor(p1_turn_timer.time_left)))
 	$"%P2TurnTimerLabel".text = time_convert(int(floor(p2_turn_timer.time_left)))
+#	if !is_instance_valid(game):
+#		reset_ui()
+#	else:
+#		$"%HudLayer".show()
 
 	if Input.is_action_just_pressed("pause"):
 		pause()
@@ -489,6 +540,7 @@ func _process(delta):
 	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu
+	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	if is_instance_valid(game) and !Network.multiplayer_active:
 		$"%ReplayControls".show()
 	else:
@@ -498,7 +550,7 @@ func _process(delta):
 	$"%SoftlockResetButton".visible = false
 	if Network.multiplayer_active and is_instance_valid(game):
 		var my_action_buttons = p1_action_buttons if Network.player_id == 1 else p2_action_buttons
-		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5 and !(game.game_finished or ReplayManager.playback)
+		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5 and !(game.game_finished or ReplayManager.playback) and !SteamLobby.SPECTATING
 		if !$"%SoftlockResetButton".visible:
 			$"%SoftlockResetButton".disabled = false
 

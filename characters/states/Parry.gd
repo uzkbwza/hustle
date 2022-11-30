@@ -34,6 +34,7 @@ func _frame_0():
 	parried = false
 	interruptible_on_opponent_turn = false
 	anim_length = 20
+	iasa_at = -1
 #
 #func _frame_1():
 #	parry_active = true

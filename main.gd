@@ -28,6 +28,7 @@ func _ready():
 	connect("game_started", ui_layer, "on_game_started")
 	Network.connect("start_game", self, "_on_game_started", [false])
 	Network.connect("match_ready", self, "_on_match_ready")
+	SteamLobby.connect("received_spectator_match_data", self, "_on_received_spectator_match_data")
 	$"%P1ActionButtons".connect("action_clicked", self, "on_action_clicked", [1])
 	$"%P2ActionButtons".connect("action_clicked", self, "on_action_clicked", [2])
 	$"%GhostButton".connect("toggled", self, "_on_ghost_button_toggled")
@@ -48,15 +49,23 @@ func _ready():
 	$"%FreezeOnMyTurn".set_pressed_no_signal(Global.freeze_ghost_prediction)
 	$"%AfterimageButton".set_pressed_no_signal(Global.ghost_afterimages)
 #	setup_main_menu_game()
-	
+	SteamLobby.SETTINGS_LOCKED = false
+	randomize()
+	$"%NagWindow".hide()
+	$"%NagWindow".rect_position = Vector2(randi() % 640, randi() % 360)
+	Global.connect("nag_window", $"%NagWindow", "show")
+	SteamLobby._stop_spectating()
+
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()
-	ui_layer._on_forfeit_button_pressed()
+#	ui_layer._on_forfeit_button_pressed()
+	ui_layer._on_opponent_disconnected()
 	
 	if !is_instance_valid(game):
 		get_tree().reload_current_scene()
 
 func _on_game_started(singleplayer):
+	ui_layer.reset_ui()
 	if is_instance_valid(game):
 		game.free()
 		game = null
@@ -78,11 +87,16 @@ func _on_loaded_replay(match_data):
 	match_data["replay"] = true
 	_on_match_ready(match_data)
 
+func _on_received_spectator_match_data(data):
+	data["spectating"] = true
+	_on_match_ready(data)
+
 func _on_match_ready(data):
 	match_data = data
 	singleplayer = true if match_data.has("replay") else data["singleplayer"]
 	if !match_data.has("replay"):
 		ReplayManager.playback = false
+	SteamLobby.SETTINGS_LOCKED = false
 	setup_game(singleplayer, data)
 	emit_signal("game_started")
 
@@ -92,7 +106,7 @@ func show_lobby():
 
 func setup_game(singleplayer, data):
 	hide_main_menu()
-	if game:
+	if is_instance_valid(game):
 		game.queue_free()
 	call_deferred("setup_game_deferred", singleplayer, data)
 
@@ -271,7 +285,7 @@ func fix_ghost_objects(ghost_game_):
 			object.is_ghost = true
 
 func stop_ghost():
-	if game:
+	if is_instance_valid(game):
 		game.ghost_game = null
 	for child in $"%GhostViewport".get_children():
 		child.hide()
@@ -286,13 +300,12 @@ func _on_simulation_continue():
 	call_deferred("stop_ghost")
 
 func _on_ghost_speed_changed(_value):
-	if game:
+	if is_instance_valid(game):
 		_start_ghost()
 
 func _on_playback_requested():
 	ReplayManager.playback = true
 	setup_game(singleplayer, match_data)
-
 
 func _on_ReplayName_text_entered(_new_text):
 	save_replay()

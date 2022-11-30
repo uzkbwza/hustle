@@ -7,6 +7,10 @@ var armor_pips = 1
 func _ready():
 	pass
 
+func init(pos=null):
+	.init(pos)
+	armor_pips = 1
+
 func on_got_hit():
 	if armor_pips > 0:
 		armor_pips -= 1

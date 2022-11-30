@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/HelpText.gd" type="Script" id=1]
+[ext_resource path="res://theme.tres" type="Theme" id=2]
+
+[node name="HelpText" type="Label"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -115.5
+margin_top = -19.0
+margin_right = 115.5
+margin_bottom = 19.0
+theme = ExtResource( 2 )
+text = "a"
+script = ExtResource( 1 )
+
+[connection signal="mouse_entered" from="." to="." method="_on_HelpText_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_HelpText_mouse_exited"]

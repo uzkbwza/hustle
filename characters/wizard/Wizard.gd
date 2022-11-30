@@ -9,6 +9,7 @@ const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
 const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "5"
+const ORB_PUSH_SPEED = "10.5"
 
 var hover_left = 0
 var hover_drain_amount = 5
@@ -22,7 +23,7 @@ var orb_projectile
 var can_flame_wave = true
 var can_vile_clutch = true
 
-onready var liftoff_sprite = $Flip/LiftoffSprite
+onready var liftoff_sprite = $"%LiftoffSprite"
 
 func init(pos=null):
 	.init(pos)
@@ -83,6 +84,8 @@ func tick():
 
 func process_extra(extra):
 	.process_extra(extra)
+	if current_state() is CharacterHurtState:
+		return
 	if can_hover():
 		if extra.has("hover"):
 			if is_ghost and ghost_started_hovering:
@@ -105,6 +108,11 @@ func process_extra(extra):
 				fast_falling = extra["fast_fall"]
 	else:
 		fast_falling = false
+	if extra.has("orb_push") and orb_projectile:
+		if !(extra.orb_push.x == 0 and extra.orb_push.y == 0):
+			var force = fixed.normalized_vec_times(str(extra.orb_push.x), str(extra.orb_push.y), ORB_PUSH_SPEED)
+			objs_map[orb_projectile].push(force.x, force.y)
+
 func can_fast_fall():
 	return !is_grounded()
 func can_hover():

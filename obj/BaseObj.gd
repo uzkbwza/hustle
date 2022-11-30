@@ -459,6 +459,12 @@ func apply_x_fric(fric):
 func apply_y_fric(fric):
 	chara.apply_y_fric(fric)
 
+func limit_speed(limit):
+	var vel = get_vel()
+	if fixed.gt(fixed.vec_len(vel.x, vel.y), limit):
+		var new_vel = fixed.normalized_vec_times(vel.x, vel.y, limit)
+		set_vel(new_vel.x, new_vel.y)
+
 func get_object_dir(obj):
 	var dir = Utils.int_sign(obj.get_pos().x - get_pos().x)
 	if dir == 0:

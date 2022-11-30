@@ -14,6 +14,8 @@ shader = ExtResource( 7 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=5]
 animations = [ {
@@ -40,7 +42,6 @@ _data = [ Vector2( 0, 1024 ), 0.0, 0.0, 0, 0, Vector2( 0.0180412, -1000 ), 0.0, 
 
 [node name="ParticleEffect" instance=ExtResource( 1 )]
 material = SubResource( 6 )
-scale = Vector2( -1, 1 )
 z_index = 100
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="0"]

@@ -86,6 +86,8 @@ var color = Color.white
 export(PackedScene) var player_info_scene
 export(PackedScene) var player_extra_params_scene
 
+export var damage_taken_modifier = "1.0"
+
 var opponent
 
 var queued_action = null
@@ -400,7 +402,7 @@ func launched_by(hitbox):
 	
 	nudge_amount = hitbox.sdi_modifier
 	
-	if !has_armor():
+	if hitbox.ignore_armor or !has_armor():
 		var state
 		if is_grounded():
 			state = hitbox.grounded_hit_state
@@ -420,6 +422,9 @@ func launched_by(hitbox):
 		busy_interrupt = true
 		can_nudge = true
 	
+		if hitbox.increment_combo:
+			opponent.incr_combo()
+		
 	emit_signal("got_hit")
 	take_damage(hitbox.damage, hitbox.minimum_damage)
 	state_tick()

@@ -1,6 +1,8 @@
 extends Node
 
-var VERSION = "0.4.0-steam"
+signal nag_window()
+
+var VERSION = "0.3.2-unstable"
 
 var audio_player
 var music_enabled = true
@@ -12,12 +14,11 @@ var frame_advance = false
 var show_playback_controls = false
 var playback_speed_mod = 1
 var default_dojo = 0
-
 var current_game = null
 
 var name_paths = {
-	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
+	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 	"Robot": "res://characters/robo/Robot.tscn",
 }
@@ -27,7 +28,7 @@ var songs = {
 }
 
 func _enter_tree():
-	get_tree().set_auto_accept_quit(false)
+#	get_tree().set_auto_accept_quit(false)
 	audio_player = AudioStreamPlayer.new()
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"
@@ -41,6 +42,12 @@ func _enter_tree():
 #	show_hitboxes = data.options.show_hitboxes
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
+
+func _ready():
+	yield(get_tree(), "idle_frame")
+	randomize()
+	if randi() % 20 == 0 and SteamYomi.IS_ONLINE:
+		emit_signal("nag_window")
 
 func set_music_enabled(on):
 	music_enabled = on
@@ -59,8 +66,10 @@ func set_fullscreen(on):
 	fullscreen = on
 	if fullscreen:
 		OS.window_fullscreen = true
+		OS.window_borderless = true
 	else:
 		OS.window_fullscreen = false
+		OS.window_borderless = false
 	save_options()
 
 func set_hitboxes(on):

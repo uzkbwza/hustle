@@ -38,6 +38,7 @@ export var hits_vs_grounded = true
 export var hits_vs_aerial = true
 export var can_counter_hit = true
 export var sdi_modifier = "1.0"
+export var ignore_armor = false
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -171,7 +172,7 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
-	return host.is_in_group("Fighter") and host.read_advantage and host.opponent.current_state().has_hitboxes
+	return can_counter_hit and (host.is_in_group("Fighter") and host.read_advantage and host.opponent.current_state().has_hitboxes)
 
 func spawn_whiff_particle():
 	if whiff_particle:
@@ -246,8 +247,6 @@ func hit(obj):
 			var opponent = obj.get("opponent")
 			
 			if opponent:
-				if increment_combo:
-					opponent.incr_combo()
 				if opponent != host:
 					opponent.add_pushback(pushback)
 			if hit_sound_player and !ReplayManager.resimulating:

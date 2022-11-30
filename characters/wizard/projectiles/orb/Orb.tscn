@@ -70,7 +70,8 @@ script = ExtResource( 12 )
 
 [node name="Push" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
 stream = ExtResource( 15 )
-volume_db = -8.0
+volume_db = -15.0
+pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 12 )
 

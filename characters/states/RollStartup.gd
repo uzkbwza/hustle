@@ -9,8 +9,6 @@ var accel
 
 
 func _enter():
-	host.start_invulnerability()
-	
 	force = xy_to_dir(data.x, 0, speed, "1")
 	accel = xy_to_dir(data.x, 0, accel_speed, "1")
 	if "-" in force.x:
@@ -28,7 +26,10 @@ func _enter():
 func _frame_1():
 	host.colliding_with_opponent = false
 
-func _frame_13():
+func _frame_2():
+	host.start_invulnerability()
+
+func _frame_8():
 	if !tech:
 		host.end_invulnerability()
 

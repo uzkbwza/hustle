@@ -1,6 +1,6 @@
 extends CharacterState
 
-func _frame_0():
+func _enter():
 	if !host.is_grounded():
 		return "Fall"
 

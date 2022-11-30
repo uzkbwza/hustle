@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/NagWindow.gd" type="Script" id=2]
+[ext_resource path="res://ui/unknown2.png" type="Texture" id=3]
+
+[node name="NagWindow" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 269.0
+margin_top = 147.0
+margin_right = -269.0
+margin_bottom = -147.0
+mouse_filter = 2
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 101.0
+margin_bottom = 65.0
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 100.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_vertical = 3
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 1
+
+[node name="Ticker" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 52.0
+margin_right = 100.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 0, 12 )
+rect_clip_content = true
+mouse_filter = 2
+
+[node name="TickerText" type="RichTextLabel" parent="VBoxContainer/Ticker"]
+unique_name_in_owner = true
+margin_left = 229.0
+margin_top = 1.0
+margin_right = 4519.0
+margin_bottom = 13.0
+mouse_filter = 2
+bbcode_enabled = true
+bbcode_text = "[color=#ff333d]SAVE A LIFE!!![/color] FOR ALL THAT IS GOOD AND HOLY, BUY THE YOMI HUSTLE SUPPORTER PACK ON THE STEAM STORE FOR $4.99 USD!!! GET YOUR SWAG ALL THE WAY ON WITH EXTRA COSMETIC FEATURES AND DIGITAL STATUS SYMBOLS WITH WHICH TO FLEX ON YOUR PEERS, AND DO IT RIGHT NOW OR ELSE IT'S OVER FOR ME, INDIE GAME'S DEVELOPER IVY SLY!!! MY LIFE WILL BE IN RUIN!!! MY WIFE WILL RUN AWAY!!! MY DOG WILL LEAVE ME!!! ALL THAT I KNOW AND LOVE WILL PERISH!!! WORST OF ALL: AS THE FINAL, STRAINED BREATH IS SQUEEZED FROM MY EMACIATED BODY, THE ENTIRE DEVELOPMENT EFFORT FOR HIT VIDEOGAME STICK FIGURE YOMI HUSTLE WILL CRUMBLE TO DUST!!! WITH NOBODY AT THE WHEEL, YOUR MAIN WILL STAY BOTTOM TIER FOR THE REMAINDER OF ETERNOTY!!! I BEG OF YOU, PURCHASE THE YOMI $4.99 SUPPORTER HUSTLE PACK ON STEAM IMMEDIATELY SO I MAY REPAY MY DEBT TO GOD!!!!!!1"
+text = "[color=#ff333d]SAVE A LIFE!!![/color] FOR ALL THAT IS GOOD AND HOLY, BUY THE YOMI HUSTLE SUPPORTER PACK ON THE STEAM STORE FOR $4.99 USD!!! GET YOUR SWAG ALL THE WAY ON WITH EXTRA COSMETIC FEATURES AND DIGITAL STATUS SYMBOLS WITH WHICH TO FLEX ON YOUR PEERS, AND DO IT RIGHT NOW OR ELSE IT'S OVER FOR ME, INDIE GAME'S DEVELOPER IVY SLY!!! MY LIFE WILL BE IN RUIN!!! MY WIFE WILL RUN AWAY!!! MY DOG WILL LEAVE ME!!! ALL THAT I KNOW AND LOVE WILL PERISH!!! WORST OF ALL: AS THE FINAL, STRAINED BREATH IS SQUEEZED FROM MY EMACIATED BODY, THE ENTIRE DEVELOPMENT EFFORT FOR HIT VIDEOGAME STICK FIGURE YOMI HUSTLE WILL CRUMBLE TO DUST!!! WITH NOBODY AT THE WHEEL, YOUR MAIN WILL STAY BOTTOM TIER FOR THE REMAINDER OF ETERNOTY!!! I BEG OF YOU, PURCHASE THE YOMI $4.99 SUPPORTER HUSTLE PACK ON STEAM IMMEDIATELY SO I MAY REPAY MY DEBT TO GOD!!!!!!1"
+fit_content_height = true
+scroll_active = false

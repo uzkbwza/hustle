@@ -83,6 +83,8 @@ shader = ExtResource( 57 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -90,6 +92,8 @@ shader = ExtResource( 57 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="Ninja" instance=ExtResource( 15 )]
 material = SubResource( 3 )
@@ -105,6 +109,7 @@ stored_momentum_x
 stored_momentum_y
 sticky_bombs_left"
 player_extra_params_scene = ExtResource( 63 )
+damage_taken_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
@@ -124,10 +129,6 @@ change_stance_to = "Normal"
 [node name="Burst" parent="StateMachine" index="2"]
 interrupt_exceptions_string = "WhiffCancel"
 
-[node name="Hitbox" parent="StateMachine/Burst" index="0"]
-hitstun_ticks = 24
-knockback = "24.0"
-
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 hitstun_ticks = 24
 
@@ -135,7 +136,7 @@ hitstun_ticks = 24
 dash_speed = 14
 
 [node name="DashBackward" parent="StateMachine" index="14"]
-dash_speed = 9
+dash_speed = 11
 
 [node name="Jump" parent="StateMachine" index="16"]
 y_modifier = "1.33"
@@ -148,6 +149,10 @@ Fall"
 [node name="WhiffInstantCancel" parent="StateMachine" index="21"]
 hit_cancel_exceptions_string = ""
 
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+z_index = 1000
+ignore_armor = null
+
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 5 )
 __meta__ = {
@@ -156,7 +161,7 @@ __meta__ = {
 anim_length = 11
 reset_momentum = true
 sfx = ExtResource( 43 )
-sfx_tick = 8
+sfx_tick = 4
 title = "Shuriken"
 type = 2
 data_ui_scene = ExtResource( 22 )
@@ -172,7 +177,7 @@ speed_modifier_amount = "3.5"
 script = ExtResource( 5 )
 anim_length = 11
 sfx = ExtResource( 43 )
-sfx_tick = 8
+sfx_tick = 4
 title = "Shuriken"
 type = 2
 data_ui_scene = ExtResource( 22 )
@@ -206,10 +211,11 @@ hit_cancel_into_string = "AerialSuper"
 super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlash" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -217,14 +223,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H2" type="Node2D" parent="StateMachine/QuickSlash" index="1"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -232,14 +239,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H3" type="Node2D" parent="StateMachine/QuickSlash" index="2"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -247,14 +255,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H4" type="Node2D" parent="StateMachine/QuickSlash" index="3"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -262,14 +271,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H5" type="Node2D" parent="StateMachine/QuickSlash" index="4"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -277,14 +287,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H6" type="Node2D" parent="StateMachine/QuickSlash" index="5"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -292,7 +303,7 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="QuickSlashAir" type="Node2D" parent="StateMachine" index="31"]
@@ -309,6 +320,7 @@ type = 3
 data_ui_scene = ExtResource( 19 )
 button_texture = ExtResource( 38 )
 air_type = 1
+uses_air_movement = true
 iasa_at = 20
 reversible = false
 interrupt_from_string = "GroundedSuper
@@ -320,10 +332,11 @@ hit_cancel_into_string = "AerialSuper"
 super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlashAir" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -331,14 +344,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H2" type="Node2D" parent="StateMachine/QuickSlashAir" index="1"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -346,14 +360,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H3" type="Node2D" parent="StateMachine/QuickSlashAir" index="2"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -361,14 +376,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H4" type="Node2D" parent="StateMachine/QuickSlashAir" index="3"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -376,14 +392,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H5" type="Node2D" parent="StateMachine/QuickSlashAir" index="4"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -391,14 +408,15 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="H6" type="Node2D" parent="StateMachine/QuickSlashAir" index="5"]
+z_index = 1000
 script = ExtResource( 1 )
 width = 10
 height = 10
-damage = 60
+damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 hit_sound = ExtResource( 45 )
@@ -406,7 +424,7 @@ dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 7
 active_ticks = 1
 
 [node name="Caltrops" type="Node2D" parent="StateMachine" index="32"]
@@ -463,7 +481,7 @@ y = -14
 width = 12
 height = 13
 damage = 120
-hitstun_ticks = 52
+hitstun_ticks = 60
 hitlag_ticks = 10
 victim_hitlag = 10
 screenshake_amount = 8
@@ -487,6 +505,7 @@ damage = 60
 hitstun_ticks = 50
 hitlag_ticks = 6
 victim_hitlag = 6
+cancellable = false
 group = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
@@ -509,6 +528,7 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "2.0"
 type = 2
 button_texture = ExtResource( 36 )
+iasa_at = 22
 interrupt_from_string = "GroundedSpecial
 Grounded"
 interrupt_into_string = "Grounded"
@@ -516,6 +536,7 @@ hit_cancel_into_string = "GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Stomp" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 36
 y = -4
@@ -897,6 +918,7 @@ x = 6
 y = -17
 width = 8
 height = 8
+ignore_armor = null
 start_tick = 10
 active_ticks = 4
 throw_state = "StickyBombThrow"
@@ -1001,6 +1023,7 @@ anim_length = 21
 title = "Kick"
 type = 1
 button_texture = ExtResource( 25 )
+iasa_at = 18
 interrupt_from_string = "GroundedAttack
 GroundedLight
 Grounded"
@@ -1238,7 +1261,10 @@ type = 2
 interrupt_from_string = "GroundedSpecial
 Grounded
 Reversal"
-interrupt_into_string = "Grounded"
+interrupt_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+GroundedMovement"
 allowed_stances_string = "Normal
 BackSway"
 change_stance_to = "BackSway"
@@ -1327,6 +1353,9 @@ height = 10
 start_tick = 4
 active_ticks = 8
 endless = true
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+ignore_armor = null
 
 [node name="ForfeitExplosion" parent="StateMachine" index="66"]
 endless = true

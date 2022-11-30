@@ -1,12 +1,13 @@
 extends Node
-# MODLOADER V1.1 
 
 
-func _ready(): # on ready,
+
+func _ready():
 
 	_addModToggle(ModLoader.active)
 	if ModLoader.active:
 		_addModList()
+		_addMisingList()
 	
 func _addModList():
 	# add the mod list container and
@@ -30,7 +31,7 @@ func _addModList():
 	label.align = Label.ALIGN_CENTER
 	label.modulate.a = 0.25
 	list.list_container.add_child(label)
-#	list.get_node("VBoxContainer").get_node("Contents").add_child(xbox)
+	#list.get_node("VBoxContainer").get_node("Contents").add_child(xbox)
 	# add content into contents list
 	for mod in ModLoader.active_mods:
 		var info = addContainer("ModInfoContainer", "Mod Info")
@@ -75,7 +76,7 @@ func _addModToggle(moddedState):
 
 func _toggle_mods_active(btn):
 	var file = File.new()
-	var moddedState = {"modsEnabled": btn.pressed}
+	var moddedState = {"modsEnabled":btn.pressed}
 	file.open("user://modded.json", File.WRITE)
 	file.store_string(JSON.print(moddedState, "  "))
 	file.close()
@@ -109,7 +110,7 @@ func generateButton(text_gen):
 	_button.text = text_gen
 	_button.flat = true
 	_button.set("mouse_default_cursor_shape", 2) #CURSOR_POINTING_HAND
-	_button.set("custom_colors/font_color_hover", Color(100.0, 0.20, 0.23, 1.0))
+	_button.set("custom_colors/font_color_hover", Color(100.0, 0.2, 0.23, 1.0))
 	return _button
 
 func generateCheckButton(text_gen):
@@ -128,13 +129,32 @@ func addMainMenuButton(_text):
 	return button_mainmenu
 	
 func addContainer(_name, _text):
-	# generating the mod list container
 	var container = generateContainer(_name)
-	# adding it to the scene
 	$"%MainMenu".add_child(container)
-	# setting the stuffs //TODO: do this better somehow? it seems scuffed
 	container.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").text = _text
-	# hiding it
 	container.set("visible", false)
-	# return it for use later
 	return container
+	
+func _addMisingList():
+	var mod_w_missing = ModLoader.mods_w_missing_depend
+	
+	var list = addContainer("ModMissingContainer", "Mod Missing Dependecies")
+	
+	
+	var close = generateButton("Close")
+	
+	
+	close.connect("pressed", self, "_modmissing_closebutton_pressed")
+	
+	
+	list.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
+	
+	if mod_w_missing.size() > 0:
+		for missing in mod_w_missing:
+			var label = Label.new()
+			label.text = missing + ": Missing Dependency " + str(mod_w_missing.get(missing))
+			list.list_container.add_child(label)
+		$"%MainMenu".get_node("ModMissingContainer").set("visible", true)
+	
+func _modmissing_closebutton_pressed():
+	$"%MainMenu".get_node("ModMissingContainer").set("visible", false)

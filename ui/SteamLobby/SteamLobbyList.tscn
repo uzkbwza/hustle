@@ -55,13 +55,14 @@ size_flags_vertical = 6
 size_flags_stretch_ratio = 0.85
 text = "Lobby Name"
 
-[node name="GameStatus" type="Label" parent="NetworkSetupScreen/Panel/MarginContainer/HBoxContainer2"]
+[node name="Version" type="Label" parent="NetworkSetupScreen/Panel/MarginContainer/HBoxContainer2"]
 margin_left = 153.0
 margin_right = 238.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
-text = "Game Status"
+text = "Game Version"
+align = 1
 
 [node name="PlayerCount" type="Label" parent="NetworkSetupScreen/Panel/MarginContainer/HBoxContainer2"]
 margin_left = 246.0

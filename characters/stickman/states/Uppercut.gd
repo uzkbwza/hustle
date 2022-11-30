@@ -7,6 +7,9 @@ func _frame_0():
 	var vel = host.get_vel()
 	if fixed.sign(vel.x) != host.get_facing_int():
 		host.reset_momentum()
+	else:
+		host.reset_momentum()
+		host.set_vel(fixed.div(vel.x, "3"), vel.y)
 #	host.start_invulnerability()
 
 func _tick():

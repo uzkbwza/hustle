@@ -22,7 +22,7 @@ var network_id = 0
 var player_name = "Me"
 
 var network_ids = {}
-var multiplayer_active = false
+var multiplayer_active = false setget ,get_multiplayer_active
 
 var game = null
 
@@ -125,7 +125,13 @@ func _ready():
 	timer.start(NETWORK_TIMER_CYCLE)
 	randomize()
 
+func get_multiplayer_active():
+	return multiplayer_active and !SteamLobby.SPECTATING
+
 func rpc_(function_name: String, arg=null, type="remotesync"):
+	if SteamLobby.SPECTATING:
+		return
+	
 	if !multiplayer_active:
 		return
 #	yield(get_tree().create_timer(rng.randf_range(0.5, 2.0)), "timeout")
@@ -181,7 +187,7 @@ func host_game_direct(new_player_name, port):
 func get_local_id():
 	if steam:
 		return SteamYomi.STEAM_ID
-	return get_local_id()
+	return get_tree().get_network_unique_id()
 
 func join_game_direct(ip, port, new_player_name):
 	_reset()
@@ -242,7 +248,6 @@ func _reset():
 	game = null
 	multiplayer_client = null
 	multiplayer_host = false
-	steam = false
 
 	replay_saved = false
 	direct_connect = false
@@ -327,6 +332,10 @@ func player_connected(id):
 		rpc_("register_player", [player_name, id, Global.VERSION])
 
 func pid_to_username(player_id):
+		if player_id != 1 and player_id != 2:
+			return ""
+		if SteamLobby.SPECTATING or !network_ids.has(player_id):
+			return Global.current_game.match_data.user_data["p" + str(player_id)]
 		if direct_connect:
 			return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
 		return players[network_ids[player_id]]
@@ -372,7 +381,8 @@ remote func player_disconnected(id):
 	else: # Game is not in progress.
 		# Unregister this player.
 		unregister_player(id)
-	end_game()
+	if !steam:
+		end_game()
 
 func _process(_delta):
 	if multiplayer_client:
@@ -398,6 +408,8 @@ func _connected_fail():
 
 remotesync func receive_player_timer(id, timer):
 	emit_signal("sync_timer_request", id, timer)
+	if steam:
+		SteamLobby.spectator_sync_timers(id, timer)
 
 func sync_timer(id, time):
 	rpc_("receive_player_timer", [id, time], "remotesync")
@@ -421,9 +433,10 @@ func get_sender_id():
 	return get_tree().get_rpc_sender_id()
 
 func unregister_player(id):
-	players.erase(id)
-	print("unregistering player: " + str(id))
-	emit_signal("player_list_changed")
+	if !steam:
+		players.erase(id)
+		print("unregistering player: " + str(id))
+		emit_signal("player_list_changed")
 
 func get_player_list():
 	return players.values()
@@ -482,16 +495,23 @@ func assign_players():
 func select_character(character):
 	rpc_("sync_character_selection", [player_id, character])
 
-func forfeit():
-	rpc_("player_forfeit", player_id)
+func forfeit(opponent=false):
+	if !opponent:
+		rpc_("player_forfeit", player_id)
+	else:
+		if is_instance_valid(game):
+			player_forfeit((game.my_id % 2) + 1)
 	pass
 
 remotesync func player_forfeit(player_id):
-	if game:
+	if is_instance_valid(game):
 		game.forfeit(player_id)
 		forfeiter = player_id
+		if steam and !SteamLobby.SPECTATING:
+			SteamLobby.spectate_forfeit(player_id)
 
 func begin_game():
+	SteamLobby.REMATCHING_ID = 0
 	rematch_menu = false
 	if is_host() or steam:
 		print("starting game")
@@ -538,18 +558,24 @@ remote func opponent_tick():
 		game.network_simulate_ready = true
 
 
-func autosave_match_replay(match_data):
+func autosave_match_replay(match_data, user1, user2):
 	if !replay_saved:
 		replay_saved = true
-		ReplayManager.save_replay_mp(match_data, pid_to_username(1), pid_to_username(2))
+		ReplayManager.save_replay_mp(match_data, user1, user2)
 
-func stop_multiplayer():
+func stop_multiplayer(leave_steam_lobby=false):
 	print("stopping multiplayer")
 	multiplayer_active = false
 	if peer:
 		peer.close_connection()
 	_reset()
-	SteamLobby.leave_Lobby()
+	if leave_steam_lobby:
+		SteamLobby.leave_Lobby()
+		steam = false
+	else:
+		if SteamLobby.LOBBY_ID != 0:
+			multiplayer_active = true
+
 	emit_signal("multiplayer_stopped")
 
 func _on_network_timer_timeout():
@@ -576,13 +602,14 @@ remote func my_turn_started(player_id):
 remote func receive_match_code(code):
 	emit_signal("match_code_received")
 
-remote func send_action(action, data, extra, id):
+remote func send_action(action, data, extra, player_id):
 		print("received action: " + str(action))
-#		action_inputs[id]["action"] = null
-#		action_inputs[id]["data"] = null
-#		action_inputs[id]["extra"] = null
-		player_objects[id].on_action_selected(action, data, extra)
+		action_inputs[player_id]["action"] = action
+		action_inputs[player_id]["data"] = data
+		action_inputs[player_id]["extra"] = extra
+		player_objects[player_id].on_action_selected(action, data, extra)
 		rpc_("opponent_received_action", null, "remote")
+		
 
 remote func opponent_received_action():
 	print("opponent received my action")
@@ -632,6 +659,8 @@ remotesync func multiplayer_turn_ready(id):
 	Network.turns_ready[id] = true
 	print("turn ready for player " + str(id))
 	emit_signal("player_turn_ready", id)
+	if steam:
+		SteamLobby.spectator_turn_ready(id)
 	if turn_ready(id):
 		action_submitted = true
 #		if is_host():
@@ -677,11 +706,12 @@ remotesync func check_players_ready():
 
 remotesync func register_player(new_player_name, id, version):
 	if !((version is String and Global.VERSION is String) or (version is Dictionary and Global.VERSION is Dictionary)):
-		emit_signal("game_error", "Failed to make lobby. One player is using mods while the other is not." % [Global.VERSION, version])
+		emit_signal("game_error", "Failed to make lobby. One player is using mods while the other is not.")
 		return
 	
 	if version != Global.VERSION:
-		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent please update to the newest version." % [Global.VERSION, version])
+#		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent please update to the newest version." % [Global.VERSION, version])
+		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, version])
 		return
 	if get_local_id() == id:
 		network_id = id
@@ -700,9 +730,13 @@ remotesync func sync_ids(network_ids):
 remotesync func send_rematch_request(player_id):
 	rematch_requested[player_id] = true
 	if rematch_requested[1] and rematch_requested[2]:
-		if is_host():
+		if is_host() or steam:
 			ReplayManager.init()
-			begin_game()
+			if steam:
+				SteamLobby.REMATCHING_ID = SteamLobby.OPPONENT_ID
+				get_tree().reload_current_scene()
+			else:
+				begin_game()
 
 remotesync func sync_character_selection(player_id, character):
 	print("player %s selected character" % [str(player_id)])
@@ -766,7 +800,10 @@ remote func receive_match_id(match_id):
 remote func player_connected_relay():
 	rpc_("register_player", [player_name, get_local_id(), Global.VERSION])
 
-# steam 
+func on_turn_started():
+	if steam:
+		SteamLobby.update_spectators(ReplayManager.frames)
+
 func rpc_steam(function_name, arg):
 	SteamLobby.rpc_(function_name, arg)
 	pass
@@ -779,6 +816,8 @@ func start_game_steam():
 	pass
 	
 func register_player_steam(steam_id):
+	if SteamLobby.SPECTATING:
+		return
 	if SteamYomi.STEAM_ID == steam_id:
 		network_id = steam_id
 	print("registering player: " + str(steam_id))

@@ -6,6 +6,7 @@ var active_mods = []
 var _savedObjects = [] # Things to keep to ensure they are not garbage collected
 var mods_w_depend = []
 var mods_w_overwrites = []
+var mods_w_missing_depend = {}
 var active = false
 
 func _init():
@@ -13,23 +14,22 @@ func _init():
 	file.open("user://modded.json", File.READ)
 	var mod_options = JSON.parse(file.get_as_text()).result
 	
-	if mod_options == null:
-		var moddedState = {"modsEnabled": false}	
-		file.open("user://modded.json", File.WRITE)	
-		file.store_string(JSON.print(moddedState, "  "))	
-		return
-		
 	file.close()
 	if !mod_options.modsEnabled:
 		return
 	active = true
 	Global.VERSION += " Modded" 
 	
+	#This script has to be installed before the mods or else it doesn't get extended
+	installScriptExtension("res://modloader/MLStateSounds.gd") 
+	
 	_loadMods()
 	print("----------------mods loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
 	installScriptExtension("res://modloader/ModHashCheck.gd")
+	
+
 
 func _loadMods():
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
@@ -87,18 +87,19 @@ func _initMods():
 		item.remove(0)
 	mods_w_overwrites.sort_custom(self, "_compareScriptPriority")
 	for item in mods_w_overwrites:
-		_overwriteCharacterTexs(item.subfolder, "Wizard")
-		_overwriteCharacterTexs(item.subfolder, "Ninja")
-		_overwriteCharacterTexs(item.subfolder, "Cowboy")
-		_overwriteCharacterTexs(item.subfolder, "Robot")
+		for character in Global.name_paths:
+			_overwriteCharacterTexs(item.subfolder, character)
 
 func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
+	var missing_dependices = modInfo[2].requires
 	for item in modInfo[2].requires:
 		var depend_loaded = false
 		for mod in active_mods:
 			if mod[2].name == item:
 				#initialize this mod
+				missing_dependices.erase(item)
+				
 				modInfo[0] = ResourceLoader.load(modInfo[0])
 				if modInfo[2].overwrites:
 					mods_w_overwrites.append(modSubFolder)
@@ -111,6 +112,8 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 			elif !first:
 				# dependency wasn't loaded at all
 				print(str(modInfo[2].friendly_name) + ": Missing Dependency " + str(modInfo[2].requires))
+				mods_w_missing_depend[modInfo[2].friendly_name] = modInfo[2].requires
+
 
 # Compares metadata priority, and if the same, uses the resource path of the Packed Scene
 func _compareScriptPriority(a, b):
@@ -168,24 +171,77 @@ func saveScene(modifiedScene, scenePath:String):
 	packed_scene.take_over_path(scenePath)
 	_savedObjects.append(packed_scene)
 
-func _overwriteCharacterTexs(modFolderName, charName): #Overwrite animation frame textures based on the given character name
-	var mediaImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName, "png") #Get all pngs to array (paths)
-	var loadedChars = Global.name_paths
-	if loadedChars.has(charName):
-		var instCharTS = load(loadedChars.get(charName)).instance()
-		var instCharAnim = instCharTS.get_node("Flip/Sprite")
-		var instCharFrames = instCharAnim.get_sprite_frames()
-		for media in mediaImages:
-			print()
-			var newFrameTex = _textureGet(media)
-			if charName == "Cowboy" and media.split("/")[-3] == "ShootingArm": #Gross Shooting Arm Fix but required really
-				instCharAnim = instCharTS.get_node("Flip/ShootingArm")
-				instCharFrames = instCharAnim.get_sprite_frames()
-				instCharFrames.set_frame(media.split("/")[-2], int(media.split("/")[-1]), newFrameTex)# [-1] : Frame Index
-			else:
-				instCharFrames.set_frame(media.split("/")[-2], int(media.split("/")[-1]), newFrameTex)# [-2] : Animation Name
-	else:
-		print("Wrong Name dummy")
+func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement support
+	#Load all custom user overwrites
+	var mediaImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName, "png")
+	var mediaSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/BaseSounds", "wav")
+	var mediaStateSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/StateSounds", "wav")
+	
+	mediaSounds.sort() #Sorts the array alphabetically
+	mediaStateSounds.sort() 
+	
+	#Instantiate replacable assets: visuals
+	var instCharTS = load(Global.name_paths.get(charName)).instance()
+	var instCharAnim = instCharTS.get_node("Flip/Sprite")
+	var instCharFrames = instCharAnim.get_sprite_frames()
+	#Instantiate replacable assets: sounds
+	var instCharSounds = instCharTS.get_node("Sounds").get_children()
+	var instCharStates = instCharTS.get_node("StateMachine").get_children()
+	#Replace all images in animation frames
+	for media in mediaImages:
+		var newFrameTex = _textureGet(media)
+		if media.split('/')[-2].to_lower() == 'wait':
+			instCharTS.character_portrait = newFrameTex
+		if charName == "Cowboy" and media.split("/")[ - 3] == "ShootingArm":
+			instCharAnim = instCharTS.get_node("Flip/ShootingArm")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+		else :
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			
+	#Replace all base character sounds
+	for charSound in instCharSounds:
+		for media in mediaSounds:
+			if media.get_file().split('.')[0] == charSound.name:
+				var file = File.new()
+				file.open(media, File.READ)
+				var buffer = file.get_buffer(file.get_len())
+				var stream = AudioStreamSample.new()
+				stream.format = AudioStreamSample.FORMAT_16_BITS
+				stream.data = buffer
+				file.close()
+				charSound.set_stream(stream)
+				
+				charSound.pitch_scale = 2
+				
+	#Replace all character state sounds
+	for state in instCharStates:
+		for media in mediaStateSounds:
+			#Gets the name of the file so it can focus on just the underscore
+			#".' is there because get_extnsion don't include it
+			var media_name = media.get_file().trim_suffix("."+media.get_extension()) 
+			if media_name.split('_')[0] == state.name:
+				var file = File.new()
+				file.open(media, File.READ)
+				var buffer = file.get_buffer(file.get_len())
+				var stream = AudioStreamSample.new()
+				stream.format = AudioStreamSample.FORMAT_16_BITS
+				stream.data = buffer
+				file.close()
+				#This checks to see if the name has enter stating that it's a on enter sfx
+				if media_name.split('_')[-1] != 'enter':
+					#if it isn't then it will set enter_sfx to null incase there isn't one
+					state.sfx = stream
+					state.enter_sfx = null
+				else:
+					#sets the enter_sfx if it's in the name
+					state.enter_sfx = stream
+				#state.pitch_var = 0.0 #Sets the current state pitch_variation to 0
+				state.pitch_scale = 2
+			
+	#Save out the scene
+	saveScene(instCharTS, Global.name_paths.get(charName))
+	instCharTS.queue_free()
 
 func _get_all_files(path: String, file_ext := "", files := [], full_path := true): #https://gist.github.com/hiulit/772b8784436898fd7f942750ad99e33e
 	var dir = Directory.new()
@@ -222,7 +278,6 @@ func _hash_file(path):
 	var modZIPHash = file.get_md5(path)
 	return modZIPHash
 	
-
 # Parses metadata
 # returns Variant with metadata or null if file doesn't exist
 func _checkMetadata(modSubFolder, zipFiles, modEntryPath):

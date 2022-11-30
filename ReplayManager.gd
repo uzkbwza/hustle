@@ -1,5 +1,7 @@
 extends Node
 
+const INVALID_FILE_CHARS = "<>:/\\|?*"
+
 var frames = {
 	1: {},
 	2: {},
@@ -30,6 +32,11 @@ func cut_replay(last_frame):
 		for frame in frames[id].keys():
 			if frame > last_frame:
 				frames[id].erase(frame)
+
+func get_last_action_tick(id):
+	var frame_numbers: Array = frames[id].keys()
+	frame_numbers.sort()
+	return frame_numbers[-1]
 
 func get_last_action(id):
 	var frame_numbers: Array = frames[id].keys()
@@ -73,6 +80,14 @@ func save_replay_mp(match_data, p1, p2):
 func save_replay(match_data: Dictionary, file_name="", autosave=false):
 	if file_name == "":
 		file_name = generate_replay_name() 
+	var filtered_file_name = ""
+	for char_ in file_name:
+		if not char_ in INVALID_FILE_CHARS:
+			filtered_file_name += char_
+		else:
+			filtered_file_name += "_"
+	file_name = filtered_file_name 
+	
 	var data = match_data.duplicate(true)
 	data["frames"] = frames
 

@@ -141,6 +141,8 @@ func refresh_match_list():
 func _on_host_pressed():
 	if name_edit.text == "":
 		error_label.text = "Invalid username!"
+		$AnimationPlayer.stop()
+		$AnimationPlayer.play("invalid_username")
 		return
 
 	start_button.show()

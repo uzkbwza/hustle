@@ -54,6 +54,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/collision_box/CollisionBox.gd"
 }, {
+"base": "ParticleEffect",
+"class": "CustomTrailParticle",
+"language": "GDScript",
+"path": "res://fx/CustomTrailParticle.gd"
+}, {
 "base": "ObjectState",
 "class": "DefaultFireball",
 "language": "GDScript",
@@ -239,6 +244,7 @@ _global_script_class_icons={
 "CharacterHurtState": "",
 "CharacterState": "",
 "CollisionBox": "",
+"CustomTrailParticle": "",
 "DefaultFireball": "",
 "EC_CreateCategory": "",
 "FGCharacter": "",
@@ -292,6 +298,7 @@ ModLoader="*res://modloader/ModLoader.gd"
 Network="*res://Network.gd"
 SteamYomi="*res://SteamY.gd"
 SteamLobby="*res://SteamLobby.gd"
+Custom="*res://DLC.gd"
 
 [debug]
 
@@ -313,7 +320,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/multirun/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/export_categories/plugin.cfg", "res://addons/multirun/plugin.cfg" )
 
 [gui]
 
@@ -402,6 +409,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-quality/driver/driver_name="GLES2"
 2d/snapping/use_gpu_pixel_snap=true
 environment/default_environment="res://default_env.tres"

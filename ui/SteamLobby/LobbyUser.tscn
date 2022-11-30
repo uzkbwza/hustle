@@ -1,0 +1,84 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/SteamLobby/LobbyUser.gd" type="Script" id=2]
+[ext_resource path="res://ui/SteamLobby/king_icon.png" type="Texture" id=3]
+
+[node name="LobbyUser" type="Panel"]
+margin_right = 116.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 0, 30 )
+size_flags_horizontal = 3
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 85.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+margin_right = 85.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 0, 15 )
+
+[node name="OwnerIcon" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 15.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 15, 0 )
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 4
+
+[node name="UsernameHolder" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 16.0
+margin_right = 16.0
+margin_bottom = 15.0
+
+[node name="Username" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/UsernameHolder"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 2.0
+margin_right = 73.0
+margin_bottom = 13.0
+size_flags_horizontal = 3
+text = "Username"
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 86.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 30, 30 )
+size_flags_horizontal = 0
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+custom_constants/margin_bottom = 1
+
+[node name="AvatarIcon" type="TextureRect" parent="HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 29.0
+margin_bottom = 29.0
+rect_min_size = Vector2( 20, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand = true
+
+[node name="ChallengeButton" type="Button" parent="."]
+unique_name_in_owner = true
+margin_top = 16.0
+margin_right = 97.0
+margin_bottom = 28.0
+size_flags_horizontal = 3
+theme = ExtResource( 1 )
+theme_type_variation = "SelectButton"
+text = "challenge"
+clip_text = true

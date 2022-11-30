@@ -10,7 +10,6 @@ var selected_characters = {}
 var singleplayer = true
 var current_player = 1
 var network_match_data = {}
-var lobby_match_settings = {}
 
 func _ready():
 	$"%GoButton".connect("pressed", self, "go")
@@ -19,6 +18,7 @@ func _ready():
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	init()
+
 
 func _on_network_character_selected(player_id, character):
 	selected_characters[player_id] = character
@@ -31,12 +31,16 @@ func _on_network_character_selected(player_id, character):
 
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
+	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
+		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "character", match_data.selected_characters[SteamLobby.PLAYER_SIDE].name)
 	go()
 
 func _on_show_settings_toggled(on):
 	$"%GameSettingsPanelContainer".visible = on
 
 func init(singleplayer=true):
+	if Network.steam:
+		$"%QuitButton".hide()
 	for button in buttons:
 		button.disabled = false
 #	$"%ShowSettingsButton".show()
@@ -50,7 +54,8 @@ func init(singleplayer=true):
 	$"%SelectingLabel".text = "P1 SELECT YOUR CHARACTER" if singleplayer else "SELECT YOUR CHARACTER"
 	$"%P1Display".init()
 	$"%P2Display".init()
-
+	if Network.steam:
+		$"%GameSettingsPanelContainer".hide()
 
 	
 	hovered_characters = {
@@ -73,7 +78,15 @@ func init(singleplayer=true):
 		$"%GoButton".hide()
 	pressed_button = null
 	buttons = []
-	for button in $"%CharacterButtonContainer".get_children():
+	for child in $"%CharacterButtonContainer".get_children():
+		child.queue_free()
+	for name in Global.name_paths:
+		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
+		button.character_scene = load(Global.name_paths[name])
+		$"%CharacterButtonContainer".add_child(button)
+		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+#		var character = button.character_scene.instance()
+		button.text = name
 		buttons.append(button)
 		if !button.is_connected("pressed", self, "_on_button_pressed"):
 			button.connect("pressed", self, "_on_button_pressed", [button])
@@ -132,8 +145,8 @@ func get_match_data():
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
 	}
-	if lobby_match_settings:
-		data.merge(lobby_match_settings)
+	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
+		data.merge(SteamLobby.MATCH_SETTINGS)
 	else:
 		data.merge($"%GameSettingsPanelContainer".get_data())
 	return data

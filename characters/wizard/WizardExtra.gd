@@ -8,6 +8,7 @@ onready var orb_push = $"%OrbPush"
 func _ready():
 	hover_button.connect("toggled", self, "_on_hover_button_toggled")
 	fast_fall_button.connect("toggled", self, "_on_fast_fall_button_toggled")
+	orb_push.connect("data_changed", self, "emit_signal", ["data_changed"])
 #	end_hover_button.connect("toggled", self, "_on_hover_button_toggled")
 
 func _on_hover_button_toggled(on):
@@ -20,9 +21,13 @@ func _on_fast_fall_button_toggled(on):
 		hover_button.set_pressed_no_signal(false)
 	emit_signal("data_changed")
 
+func reset():
+	orb_push._on_button_pressed(orb_push.get_node("%Neutral"))
+
 func show_options():
-#	orb_push.hide()
+	orb_push.hide()
 	orb_push.init()
+	orb_push.visible = fighter.orb_projectile != null
 	hover_button.hide()
 	fast_fall_button.hide()
 	fast_fall_button.set_pressed_no_signal(fighter.fast_falling)

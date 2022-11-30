@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
-[ext_resource path="res://ui/CustomColorPicker.gd" type="Script" id=2]
-[ext_resource path="res://ui/ColorSpectrum.gd" type="Script" id=3]
+[ext_resource path="res://ui/ColorPicker/CustomColorPicker.gd" type="Script" id=2]
+[ext_resource path="res://ui/ColorPicker/ColorSpectrum.gd" type="Script" id=3]
 [ext_resource path="res://ui/ValueRect.gd" type="Script" id=4]
 
 [sub_resource type="Shader" id=1]
@@ -44,6 +44,7 @@ void fragment() {
 }"
 
 [sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
 shader = SubResource( 1 )
 shader_param/value = 1.0
 
@@ -88,7 +89,9 @@ unique_name_in_owner = true
 material = SubResource( 2 )
 margin_right = 188.0
 margin_bottom = 188.0
-rect_min_size = Vector2( 0, 188 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 8.68
 script = ExtResource( 3 )
 
 [node name="ValueRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
@@ -104,9 +107,13 @@ script = ExtResource( 4 )
 [node name="ValuePickerRect" type="ColorRect" parent="MarginContainer/VBoxContainer/ValueRect"]
 unique_name_in_owner = true
 self_modulate = Color( 1, 1, 1, 0.372549 )
-margin_left = 186.0
-margin_right = 188.0
-margin_bottom = 8.0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -2.0
+margin_top = -4.0
+margin_bottom = 4.0
 mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
 
@@ -119,7 +126,7 @@ size_flags_vertical = 3
 
 [node name="HexEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_right = 110.0
+margin_right = 137.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 max_length = 7
@@ -127,12 +134,13 @@ placeholder_text = "hex code here"
 
 [node name="ColorDisplay" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 111.0
-margin_right = 161.0
+margin_left = 138.0
+margin_right = 188.0
 margin_bottom = 22.0
 rect_min_size = Vector2( 50, 0 )
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 margin_left = 162.0
 margin_right = 188.0
 margin_bottom = 22.0

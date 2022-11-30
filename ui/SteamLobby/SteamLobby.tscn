@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/SteamLobby/SteamLobby.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
 [ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=3]
 [ext_resource path="res://ui/Chat/Chat.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/SteamLobby/LobbyUser.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/SteamLobby/LobbyMatch.tscn" type="PackedScene" id=6]
 
 [node name="SteamLobby" type="Control"]
 anchor_right = 1.0
@@ -17,23 +19,26 @@ __meta__ = {
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 20
+custom_constants/margin_right = 50
 custom_constants/margin_top = 20
-custom_constants/margin_left = 20
+custom_constants/margin_left = 50
 custom_constants/margin_bottom = 20
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-margin_left = 20.0
+margin_left = 50.0
 margin_top = 20.0
-margin_right = 620.0
+margin_right = 590.0
 margin_bottom = 340.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 20
+custom_constants/separation = 10
 alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-margin_right = 393.0
+margin_right = 359.0
 margin_bottom = 320.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -42,53 +47,163 @@ size_flags_stretch_ratio = 2.11
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 392.0
+margin_right = 358.0
 margin_bottom = 319.0
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-margin_right = 391.0
+[node name="LobbyLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 357.0
 margin_bottom = 11.0
-text = "lobby name"
 align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
 margin_top = 12.0
-margin_right = 391.0
+margin_right = 357.0
 margin_bottom = 318.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
-margin_right = 391.0
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+margin_right = 357.0
 margin_bottom = 306.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 2
+custom_constants/margin_left = 2
+custom_constants/margin_bottom = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-margin_right = 391.0
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+margin_left = 2.0
+margin_right = 355.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+margin_right = 353.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 alignment = 1
 
-[node name="UserList" type="ItemList" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="UserListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 131.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.8
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel"]
+self_modulate = Color( 1, 1, 1, 0.45098 )
+margin_left = 1.0
 margin_top = 1.0
-margin_right = 391.0
-margin_bottom = 306.0
+margin_right = 130.0
+margin_bottom = 303.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 130.0
+margin_bottom = 303.0
+
+[node name="UserList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel/ScrollContainer"]
+unique_name_in_owner = true
+margin_right = 129.0
+margin_bottom = 302.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.77
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/UserList"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
+[node name="LobbyUser" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel/ScrollContainer/UserList" instance=ExtResource( 5 )]
+margin_right = 129.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/UserList/ScrollContainer"]
-mouse_filter = 2
+[node name="MatchListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 132.0
+margin_right = 353.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
+self_modulate = Color( 1, 1, 1, 0.45098 )
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 220.0
+margin_bottom = 303.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 220.0
+margin_bottom = 303.0
+
+[node name="MatchList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer"]
+unique_name_in_owner = true
+margin_right = 219.0
+margin_bottom = 302.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="LobbyMatch" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer/MatchList" instance=ExtResource( 6 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 219.0
+margin_bottom = 40.0
+
+[node name="LobbyMatch2" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer/MatchList" instance=ExtResource( 6 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 41.0
+margin_right = 219.0
+margin_bottom = 81.0
+
+[node name="LobbyMatch3" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer/MatchList" instance=ExtResource( 6 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 82.0
+margin_right = 219.0
+margin_bottom = 122.0
+
+[node name="LobbyMatch4" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer/MatchList" instance=ExtResource( 6 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 123.0
+margin_right = 219.0
+margin_bottom = 163.0
+
+[node name="LobbyMatch5" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer/MatchList" instance=ExtResource( 6 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 164.0
+margin_right = 219.0
+margin_bottom = 204.0
+
+[node name="NoMatchesLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
+unique_name_in_owner = true
+visible = false
+margin_left = 1.0
+margin_top = 146.0
+margin_right = 234.0
+margin_bottom = 157.0
+text = "No matches currently in progress..."
+align = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 413.0
-margin_right = 600.0
+margin_left = 369.0
+margin_right = 540.0
 margin_bottom = 320.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -104,10 +219,11 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 0.0
 margin_top = 0.0
-margin_right = 187.0
-margin_bottom = 139.0
+margin_right = 171.0
+margin_bottom = 149.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+steam = true
 
 [node name="ChatWindow" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource( 4 )]
 anchor_left = 0.0
@@ -115,15 +231,16 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 0.0
-margin_top = 149.0
-margin_right = 187.0
-margin_bottom = 297.0
+margin_top = 159.0
+margin_right = 171.0
+margin_bottom = 320.0
 size_flags_horizontal = 7
 size_flags_vertical = 7
 size_flags_stretch_ratio = 1.07
 static_ = true
 
 [node name="Buttons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
 margin_top = 307.0
 margin_right = 187.0
 margin_bottom = 319.0
@@ -140,10 +257,123 @@ size_flags_horizontal = 3
 disabled = true
 text = "start"
 
+[node name="LoadingLobbyRect" type="ColorRect" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 50.0
+margin_top = 20.0
+margin_right = 590.0
+margin_bottom = 340.0
+color = Color( 0, 0, 0, 0.780392 )
+
+[node name="Label" type="Label" parent="MarginContainer/LoadingLobbyRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Requesting lobby data..."
+align = 1
+valign = 1
+
+[node name="ChallengeDialogScreen" type="ColorRect" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 50.0
+margin_top = 20.0
+margin_right = 590.0
+margin_bottom = 340.0
+color = Color( 0, 0, 0, 0.803922 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ChallengeDialogScreen"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -61.0
+margin_top = -47.0
+margin_right = 61.0
+margin_bottom = 47.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="ChallengeLabel" type="Label" parent="MarginContainer/ChallengeDialogScreen/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 31.0
+margin_right = 122.0
+margin_bottom = 42.0
+grow_horizontal = 2
+text = "User has challenged you."
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ChallengeDialogScreen/VBoxContainer"]
+margin_top = 43.0
+margin_right = 122.0
+margin_bottom = 63.0
+alignment = 1
+
+[node name="ChallengeAcceptButton" type="Button" parent="MarginContainer/ChallengeDialogScreen/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 10.0
+margin_right = 60.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 50, 20 )
+text = "accept"
+clip_text = true
+
+[node name="ChallengeDeclineButton" type="Button" parent="MarginContainer/ChallengeDialogScreen/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 61.0
+margin_right = 111.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 50, 20 )
+text = "decline"
+
+[node name="SendChallengeDialogScreen" type="ColorRect" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 50.0
+margin_top = 20.0
+margin_right = 590.0
+margin_bottom = 340.0
+color = Color( 0, 0, 0, 0.803922 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/SendChallengeDialogScreen"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -61.0
+margin_top = -47.0
+margin_right = 61.0
+margin_bottom = 47.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="ChallengeLabel" type="Label" parent="MarginContainer/SendChallengeDialogScreen/VBoxContainer"]
+margin_top = 31.0
+margin_right = 122.0
+margin_bottom = 42.0
+grow_horizontal = 2
+text = "Challenging user..."
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/SendChallengeDialogScreen/VBoxContainer"]
+margin_top = 43.0
+margin_right = 122.0
+margin_bottom = 63.0
+alignment = 1
+
+[node name="ChallengeCancelButton" type="Button" parent="MarginContainer/SendChallengeDialogScreen/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 36.0
+margin_right = 86.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 50, 20 )
+text = "cancel"
+clip_text = true
+
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
-margin_left = 617.0
-margin_top = 346.0
+margin_left = 611.0
+margin_top = 344.0
 margin_right = 637.0
 margin_bottom = 358.0
 size_flags_horizontal = 0

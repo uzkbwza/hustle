@@ -96,9 +96,10 @@ func space_pressed():
 			_on_submit_pressed()
 
 func _physics_process(delta):
-	if is_instance_valid(game) and !game.game_paused:
-		visible = false
-		
+	if is_instance_valid(game):
+		if !game.game_paused:
+			visible = false
+
 func _process(delta):
 	if active and is_instance_valid(fighter) and fighter.will_forfeit:
 		on_action_submitted("Forfeit", null, null)
@@ -242,7 +243,7 @@ func create_category(category):
 
 func send_ui_action(action=null):
 	current_extra = get_extra()
-	if game == null:
+	if !is_instance_valid(game):
 		return
 	if action == null:
 		action = current_action
@@ -316,8 +317,9 @@ func on_action_submitted(action, data=null, extra=null):
 #	if Network.multiplayer_active:
 #		yield(get_tree().create_timer(1.0), "timeout")
 	emit_signal("action_selected", action, data, extra)
-	if Network.player_id == player_id:
-		Network.submit_action(action, data, extra)
+	if !SteamLobby.SPECTATING:
+		if Network.player_id == player_id:
+			Network.submit_action(action, data, extra)
 	
 #func debug_text():
 #	$"%DebugLabel".text = str(center_panel.rect_size)
@@ -375,7 +377,7 @@ func activate():
 		$"%UndoButton".set_disabled(true)
 	else:
 		$"%UndoButton".set_disabled(false)
-	if Network.multiplayer_active:
+	if Network.multiplayer_active or SteamLobby.SPECTATING:
 		$"%UndoButton".hide()
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)
@@ -405,7 +407,7 @@ func activate():
 	if !user_facing:
 		$"%SelectButton".disabled = true
 	else:
-		$"%SelectButton".disabled = false
+		$"%SelectButton".disabled = game.spectating
 
 	var cancel_into
 	if !fighter.busy_interrupt:
@@ -418,43 +420,48 @@ func activate():
 	else:
 		cancel_into = state.busy_interrupt_into
 	any_available_actions = false
+
 	fighter_extra.hide()
 	for button in buttons:
 		var found = false
 		for category in cancel_into:
-			if fighter.action_cancels.has(category):
-				for cancel_state in fighter.action_cancels[category]:
-					if cancel_state.state_name == button.action_name:
-						if cancel_state.is_usable() and (cancel_state.allowed_in_stance()):
-							if cancel_state.state_name == state.state_name:
-								if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
-									continue
-								elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
-									continue
-							if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
-								continue
-							elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
-								continue
-							var excepted = false
-							if fighter.state_hit_cancellable:
-								for c in state.hit_cancel_exceptions:
-									if c in cancel_state.interrupt_from:
-										excepted = true
-							if !excepted and fighter.state_interruptable:
-								for c in state.interrupt_exceptions:
-									if c in cancel_state.interrupt_from:
-										excepted = true
-							if excepted:
-								continue
-							found = true
-							$"%ReverseButton".set_disabled(false)
+			if !fighter.action_cancels.has(category):
+				continue
+			
+			for cancel_state in fighter.action_cancels[category]:
+				if !(cancel_state.state_name == button.action_name and \
+				cancel_state.is_usable() and (cancel_state.allowed_in_stance())):
+					continue
+				
+				if cancel_state.state_name == state.state_name:
+					if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
+						continue
+					elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
+						continue
+				if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
+					continue
+				elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
+					continue
+				var excepted = false
+				if fighter.state_hit_cancellable:
+					for c in state.hit_cancel_exceptions:
+						if c in cancel_state.interrupt_from:
+							excepted = true
+				if !excepted and fighter.state_interruptable:
+					for c in state.interrupt_exceptions:
+						if c in cancel_state.interrupt_from:
+							excepted = true
+				if excepted:
+					continue
+				found = true
+				$"%ReverseButton".set_disabled(false)
 #							$"%SelectButton".disabled = false
-							any_available_actions = true
-							
-							if showing:
-								button.set_disabled(false)
-								button.show()
-							break
+				any_available_actions = true
+				
+				if showing:
+					button.set_disabled(false)
+					button.show()
+				break
 
 #	if fighter.can_nudge and "Nudge" in cancel_into:
 #		nudge_button.show()
@@ -525,4 +532,3 @@ func activate():
 			var input = Network.p2_undo_action
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
-	
