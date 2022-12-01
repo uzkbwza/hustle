@@ -730,6 +730,7 @@ remotesync func sync_ids(network_ids):
 remotesync func send_rematch_request(player_id):
 	rematch_requested[player_id] = true
 	if rematch_requested[1] and rematch_requested[2]:
+		forfeiter = 0
 		if is_host() or steam:
 			ReplayManager.init()
 			if steam:

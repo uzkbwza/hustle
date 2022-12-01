@@ -155,6 +155,7 @@ func _on_forfeit_button_pressed():
 		game.get_player(player_id).on_action_selected("Forfeit", null, null)
 		Network.forfeit()
 		forfeit_pressed = true
+		actionable = false
 	$"%PausePanel".hide()
 
 func _on_opponent_disconnected():
@@ -162,6 +163,7 @@ func _on_opponent_disconnected():
 		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
 		Network.forfeit(true)
 		forfeit_pressed = true
+		actionable = false
 	$"%PausePanel".hide()
 
 func _on_customize_pressed():
@@ -239,6 +241,7 @@ func reset_ui():
 	$"%ChatWindow".hide()
 	$"%PostGameButtons".hide()
 	$"%OpponentDisconnectedLabel".hide()
+	forfeit_pressed = false
 
 func _on_quit_button_pressed():
 	if will_forfeit():
