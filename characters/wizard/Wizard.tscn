@@ -232,6 +232,8 @@ shader = ExtResource( 180 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -239,6 +241,8 @@ shader = ExtResource( 180 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=4]
 animations = [ {
@@ -624,6 +628,7 @@ Grounded"
 trigger_orb_type = "OrbDart"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 7
 y = 13
@@ -705,6 +710,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Combust" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 40
 y = 5
@@ -1116,12 +1122,13 @@ x = 10
 y = -22
 width = 14
 height = 19
-_c_Frame_Data = true
+hit_height = false
 start_tick = 7
 active_ticks = 23
 throw_state = "Hold"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="2"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 48
 y = -68
@@ -1216,6 +1223,7 @@ start_tick = 12
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/ConjureStorm" index="1"]
+z_index = 1000
 script = ExtResource( 95 )
 x = -36
 y = -20
@@ -1337,6 +1345,7 @@ trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BoltOfMagma" index="0"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 20
 y = -40
@@ -1353,6 +1362,7 @@ start_tick = 6
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/BoltOfMagma" index="1"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 69
 y = -58
@@ -1368,6 +1378,7 @@ start_tick = 6
 active_ticks = 2
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/BoltOfMagma" index="2"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 45
 y = -49
@@ -1383,6 +1394,7 @@ start_tick = 6
 active_ticks = 2
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/BoltOfMagma" index="3"]
+z_index = 1000
 script = ExtResource( 95 )
 x = 45
 y = -25
@@ -1433,8 +1445,8 @@ start_throw_pos_y = -5
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-z_index = 1000
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+hit_height = false
 
 [node name="ForwardThrow" parent="StateMachine" index="49"]
 anim_length = 24

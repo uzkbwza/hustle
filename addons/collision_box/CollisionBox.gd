@@ -142,6 +142,8 @@ func can_draw_box():
 	if Global.get("show_hitboxes"):
 		return Global.show_hitboxes
 
+func _ready():
+	z_index = 1000
 
 func _process(delta):
 	update()
@@ -151,5 +153,4 @@ func _process(delta):
 func _draw():
 	if !can_draw_box():
 		return
-	z_index = 1000
 	box_draw()

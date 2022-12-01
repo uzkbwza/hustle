@@ -7,6 +7,9 @@ signal singleplayer_started()
 signal multiplayer_started()
 signal loaded_replay(match_data)
 signal received_synced_time()
+#
+#const dark_mode_color = Color("0b0c0f")
+#const light_mode_color = Color("33394b")
 
 var game
 var turns_taken = {
@@ -25,7 +28,7 @@ var lock_in_tick = -INF
 
 const DISCORD_URL = "https://discord.gg/yomi"
 const TWITTER_URL = "https://twitter.com/YomiHustle"
-const IVY_SLY_URL = "https://www.ivysly.com"
+const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
 const ITCH_URL = "https://ivysly.itch.io/yomi-hustle"
 const MIN_TURN_TIME = 5.0
 
@@ -72,7 +75,7 @@ func _ready():
 	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
 	$"%ItchButton".connect("pressed", OS, "shell_open", [ITCH_URL])
 	$"%VersionLabel".text = "version " + Global.VERSION
-
+	$"%ResetZoomButton".connect("pressed", self, "_on_reset_zoom_pressed")
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
 	Network.connect("turn_ready", self, "_on_turn_ready")
@@ -93,12 +96,17 @@ func _ready():
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
+#	$"%LightModeButton".set_pressed_no_signal(Global.light_mode)
+#	$"%LightModeButton".connect("toggled", self, "_on_light_mode_toggled")
 	$"%FullscreenButton".set_pressed_no_signal(Global.fullscreen)
 	$"%FullscreenButton".connect("toggled", self, "_on_fullscreen_button_toggled")
 	$"%HitboxesButton".set_pressed_no_signal(Global.show_hitboxes)
 	$"%HitboxesButton".connect("toggled", self, "_on_hitboxes_button_toggled")
 	$"%PlaybackControls".set_pressed_no_signal(Global.show_playback_controls)
 	$"%PlaybackControls".connect("toggled", self, "_on_playback_controls_button_toggled")
+#	$"%BGColor".color = dark_mode_color
+#	if Global.light_mode:
+#		$"%BGColor".color = light_mode_color
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false
 	if SteamLobby.LOBBY_ID != 0:
@@ -107,6 +115,13 @@ func _ready():
 		_on_join_lobby_success()
 	$"%HelpScreen".hide()
 
+#func _on_light_mode_toggled(on):
+#	Global.set_light_mode(on)
+#	if Global.light_mode:
+#		$"%BGColor".color = light_mode_color
+#	else:
+#		$"%BGColor".color = dark_mode_color
+	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
 	Global.save_options()
@@ -170,6 +185,10 @@ func load_replays():
 	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
+
+func _on_reset_zoom_pressed():
+	if is_instance_valid(game):
+		game.reset_zoom()
 
 func set_turn_time(time):
 #	print("setting turn time to " + str(time))
@@ -541,6 +560,7 @@ func _process(delta):
 	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
 	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
+	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused
 	if is_instance_valid(game) and !Network.multiplayer_active:
 		$"%ReplayControls".show()
 	else:

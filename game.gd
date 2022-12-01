@@ -25,6 +25,7 @@ signal ghost_my_turn()
 signal forfeit_started(id)
 signal actions_submitted()
 signal turn_started()
+signal zoom_changed()
 
 var p1_data
 var p2_data
@@ -66,6 +67,8 @@ var advance_frame_input = false
 var frame_by_frame = false
 
 var network_simulate_ready = true
+
+var gravity_enabled = true
 
 var is_ghost = false
 var is_afterimage = false
@@ -115,6 +118,8 @@ var ghost_p2_actionable = false
 var made_afterimage = false
 
 var spectating = false
+
+var camera_zoom = 1.0
 #var has_ghost_frozen_yet = false
 
 func get_ticks_left():
@@ -203,6 +208,7 @@ func on_object_spawned(obj: BaseObj):
 	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
+	obj.gravity_enabled = gravity_enabled
 	for particle in obj.particles.get_children():
 		effects.append(particle)
 	connect_signals(obj)
@@ -272,6 +278,10 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.set_color(Color("ff7a81"))
 	p1.init()
 	p2.init()
+	if match_data.has("gravity_enabled"):
+		gravity_enabled = match_data.gravity_enabled
+		p1.gravity_enabled = match_data.gravity_enabled
+		p2.gravity_enabled = match_data.gravity_enabled
 	p1.connect("undo", self, "set", ["undoing", true])
 	p2.connect("undo", self, "set", ["undoing", true])
 	p1.connect("super_started", self, "_on_super_started", [p1])
@@ -308,8 +318,13 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		pass
 	elif !is_ghost:
 		Network.game = self
-	p1.set_pos(-char_distance, 0)
-	p2.set_pos(char_distance, 0)
+	var height = 0
+	if match_data.has("char_height"):
+		height = -match_data.char_height
+
+	p1.set_pos(-char_distance, height)
+	p2.set_pos(char_distance, height)
+
 	
 	p1.stage_width = stage_width
 	p2.stage_width = stage_width
@@ -844,10 +859,10 @@ func _process(delta):
 		if abs(p1.get_hurtbox_center().y - p2.get_hurtbox_center().y) > CAMERA_MAX_Y_DIST:
 			var dist_ratio = abs(dist) / float(CAMERA_MAX_Y_DIST)
 			camera.zoom = Vector2.ONE * dist_ratio
+		camera.zoom *= camera_zoom
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.zoom = camera.zoom
 	camera_snap_position = camera.position
-
 
 func _physics_process(_delta):
 	if forfeit:
@@ -975,6 +990,29 @@ func _unhandled_input(event: InputEvent):
 			if event.is_action_pressed("edit_replay"):
 				if ReplayManager.playback:
 					buffer_edit = true
+	if !is_ghost:
+		if event is InputEventMouseButton:
+			if event.pressed:
+				if event.button_index == BUTTON_WHEEL_UP:
+					zoom_in()
+				if event.button_index == BUTTON_WHEEL_DOWN:
+					zoom_out()
+
+func zoom_in():
+	emit_signal("zoom_changed")
+	camera_zoom -= 0.1
+	if camera_zoom < 0.2:
+		camera_zoom = 0.2
+
+func zoom_out():
+	emit_signal("zoom_changed")
+	camera_zoom += 0.1
+	if camera_zoom > 3.0:
+		camera_zoom = 3.0
+
+func reset_zoom():
+	camera_zoom = 1.0
+	emit_signal("zoom_changed")
 
 func _draw():
 	if is_ghost:

@@ -18,6 +18,8 @@ onready var settings_nodes = {
 	"frame_by_frame": $"%FrameByFrame",
 	"always_perfect_parry": $"%AlwaysPerfectParry",
 	"char_distance": $"%CharDist",
+	"char_height": $"%CharHeight",
+	"gravity_enabled": $"%GravityEnabled"
 }
 
 func _ready():

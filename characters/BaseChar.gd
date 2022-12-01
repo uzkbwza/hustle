@@ -168,6 +168,7 @@ var can_nudge = false
 var parried = false
 
 var read_advantage = false
+var aura_particle = null
 
 var last_action = 0
 
@@ -363,6 +364,7 @@ func hitbox_from_name(hitbox_name):
 			return objs_map[obj_name].hitboxes[hitbox_id]
 
 func _process(_delta):
+	hurtbox_pos_relative()
 	update()
 	if invulnerable:
 		if (Global.current_game.real_tick / 1) % 2 == 0:
@@ -374,6 +376,8 @@ func _process(_delta):
 #			sprite.get_material().set_shader_param("color", color)
 	else:
 		self_modulate.a = 1.0
+	if is_instance_valid(aura_particle):
+		aura_particle.position = hurtbox_pos_float()
 
 func debug_text():
 	.debug_text()

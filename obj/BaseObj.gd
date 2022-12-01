@@ -47,6 +47,8 @@ var current_tick = 0
 var hitlag_ticks = 0
 var combo_count = 0
 
+var gravity_enabled = true
+
 var is_ghost = false
 
 var spawn_data = null
@@ -72,7 +74,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "projectile_invulnerable", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -307,6 +309,9 @@ func hurtbox_pos_relative():
 		"y": hurtbox.y,
 	}
 
+func hurtbox_pos_float():
+	return Vector2(hurtbox.x, hurtbox.y)
+
 func hurtbox_pos_relative_float():
 	return Vector2(hurtbox.x * get_facing_int(), hurtbox.y)
 
@@ -445,10 +450,12 @@ func apply_forces_no_limit():
 	chara.apply_forces_no_limit()
 
 func apply_grav_custom(grav: String, fall_speed: String):
-	chara.apply_grav_custom(grav, fall_speed)
+	if gravity_enabled:
+		chara.apply_grav_custom(grav, fall_speed)
 
 func apply_grav():
-	chara.apply_grav()
+	if gravity_enabled:
+		chara.apply_grav()
 
 func apply_fric():
 	chara.apply_fric()

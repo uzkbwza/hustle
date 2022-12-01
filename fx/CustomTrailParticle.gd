@@ -4,10 +4,12 @@ class_name CustomTrailParticle
 
 var shape = preload("res://fx/particle_round_4x4.png")
 var shape_num
-var start_color
-var end_color
-var start_scale
-var end_scale
+var start_color = Color.white
+var end_color = Color.white
+var start_alpha = 1.0
+var end_alpha = 1.0
+var start_scale = 1.0
+var end_scale = 1.0
 
 onready var particles = $CPUParticles2D
 
@@ -18,6 +20,14 @@ var custom_set = {
 	"start_scale": "set_start_scale",
 	"end_scale": "set_end_scale",
 	"in_front": "set_in_front",
+	"rect_size_x": "set_rect_size_x",
+	"rect_size_y": "set_rect_size_y",
+	"gravity_x": "set_gravity_x",
+	"gravity_y": "set_gravity_y",
+	"start_alpha": "set_start_alpha",
+	"end_alpha": "set_end_alpha",
+	"x_offset": "set_x_offset",
+	"y_offset": "set_y_offset",
 }
 
 static func get_shapes():
@@ -31,12 +41,16 @@ static func get_default():
 	{
 		"in_front": false,
 		"shape": 0,
+		"amount": 16,
+		"alpha": 1.0,
 		"local_coords": false,
 		"speed_scale": 2.0,
 		"explosiveness": 0.0,
 		"lifetime_randomness": 0.5,
-		"gravity": Vector2(0, 0),
-		"emission_rect_extents": Vector2(4.0, 4.0),
+		"gravity_x": 0.0,
+		"gravity_y": 0.0,
+		"rect_size_x": 4.0,
+		"rect_size_y": 4.0,
 		"direction": Vector2(0, -1),
 		"spread": 0.0,
 		"initial_velocity": 16.0,
@@ -53,8 +67,71 @@ static func get_default():
 		"end_color": Color.white,
 		"start_scale": 1.0,
 		"end_scale": 1.0,
+		"x_offset": 0.0,
+		"y_offset": 0.0,
 		"scale_amount_random": 0.0
 	}
+
+static func get_setting_min(setting):
+	var minimums = {
+		"amount": 1,
+		"lifetime": 0.064,
+		"speed_scale": 0.0,
+		"explosiveness": 0.0,
+		"lifetime_randomness": 0.0,
+		"gravity_x": -100.0,
+		"gravity_y": -100.0,
+		"rect_size_x": 0.0,
+		"rect_size_y": 0.0,
+		"spread": 0.0,
+		"initial_velocity": -100.0,
+		"initial_velocity_random": 0.0,
+		"linear_accel": -100.0,
+		"linear_accel_random": 0.0,
+		"radial_accel": -100.0,
+		"radial_accel_random": 0.0,
+		"tangential_accel": -100.0,
+		"tangential_accel_random": 0.0,
+		"orbit_velocity": -100.0,
+		"orbit_velocity_random": 0.0,
+		"start_scale": 0.0,
+		"end_scale": 0.0,
+		"scale_amount_random": 0.0,
+		"x_offset": -24.0,
+		"y_offset": -24.0,
+	}
+	return minimums[setting] if minimums.has(setting) else null
+
+static func get_setting_max(setting):
+	var maximums = {
+		"amount": 32,
+		"lifetime": 2.0,
+		"speed_scale": 10.0,
+		"explosiveness": 1.0,
+		"lifetime_randomness": 1.0,
+		"gravity_x": 100.0,
+		"gravity_y": 100.0,
+		"rect_size_x": 32.0,
+		"rect_size_y": 32.0,
+		"spread": 180.0,
+		"initial_velocity": 100.0,
+		"initial_velocity_random": 1.0,
+		"linear_accel": 100.0,
+		"linear_accel_random": 1.0,
+		"radial_accel": 100.0,
+		"radial_accel_random": 1.0,
+		"tangential_accel": 100.0,
+		"tangential_accel_random": 1.0,
+		"orbit_velocity": 100.0,
+		"orbit_velocity_random": 1.0,
+		"start_scale": 5.0,
+		"end_scale": 5.0,
+		"x_offset": 24.0,
+		"y_offset": 24.0,
+		"scale_amount_random": 1.0,
+	}
+	return maximums[setting] if maximums.has(setting) else null
+
 
 func get_data():
 	pass
@@ -72,27 +149,86 @@ func set_in_front(on):
 
 func set_start_color(color):
 	start_color = color
+	update_color()
 	
 func set_end_color(color):
 	end_color = color
+	update_color()
+
+func set_start_alpha(a):
+#	particles.self_modulate.a = a
+	start_color.a = a
+	update_color()
+
+func set_end_alpha(a):
+	end_color.a = a
+	update_color()
+
+func update_color():
+	var gradient = Gradient.new()
+	gradient.set_color(0, start_color)
+	gradient.set_color(1, end_color)
+	particles.color_ramp = gradient
 
 func set_start_scale(sc):
 	start_scale = sc
+	update_scale()
 
 func set_end_scale(sc):
 	end_scale = sc
+	update_scale()
+
+func update_scale():
+	var curve = Curve.new()
+	var max_ = max(start_scale, end_scale)
+	var start = start_scale
+	var end = end_scale
+	if max_ > 0:
+		start = start_scale / max_
+		end = end_scale / max_
+	particles.scale_amount = max_
+	curve.add_point(Vector2(0, start))
+	curve.add_point(Vector2(1, end))
+	particles.scale_amount_curve = curve
+
+func set_rect_size_x(x):
+#	print("rect_x: " + str(x))
+	particles.set_emission_rect_extents(Vector2(x, particles.get_emission_rect_extents().y))
+
+func set_rect_size_y(y):
+	particles.set_emission_rect_extents(Vector2(particles.get_emission_rect_extents().x, y))
+
+func set_gravity_x(x):
+	particles.gravity.x = x
+
+func set_gravity_y(y):
+	particles.gravity.y = y
+
+func set_x_offset(x):
+	particles.position.x = x
+
+func set_y_offset(y):
+	particles.position.y = y
 
 func set_parameter(param, value):
+	var max_value = get_setting_max(param)
+	var min_value = get_setting_min(param)
+	if max_value and value > max_value:
+		value = max_value
+	if min_value and value < min_value:
+		value = min_value
 	if !(param in custom_set):
 		particles.set(param, value)
 	else:
 		call(custom_set[param], value)
 
 func load_defaults():
-	load_data(get_default())
+	load_settings(get_default())
 
-func load_data(data):
-	pass
+func load_settings(settings):
+	for setting in settings:
+		set_parameter(setting, settings[setting])
 
 func _ready():
-	load_defaults()
+#	load_defaults()
+	pass

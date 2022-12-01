@@ -10,8 +10,11 @@ var hitspark_dlc = {
 	"bash2": 0,
 }
 
-var simple_colors = ["94e4ff", "ffc1a1", "ecffa4", "fec2ff"]
-var simple_outlines = ["04579a", "85001f", "008561", "9f42ba"]
+var simple_colors = ["94e4ff", "ffc1a1", "ecffa4", "fec2ff", "04579a", "85001f", "008561", "9f42ba", "6e8696", "ffea5d", "343537", "ff9444"]
+var simple_outlines = ["04579a", "85001f", "008561", "9f42ba", "94e4ff", "ffc1a1", "ecffa4", "fec2ff", "343537", "ff9444", "6e8696", "ffea5d"]
+
+func is_combo_simple(color, outline):
+	return simple_colors.find(color) == simple_outlines.find(outline)
 
 func is_color_dlc(color):
 	if color is Color:
@@ -29,11 +32,17 @@ func hitspark_to_dlc(spark_name):
 	return 0
 
 func requires_dlc(data):
+	if data.show_aura:
+		return true
 	if is_color_dlc(data.character_color):
 		return true
 	if data.use_outline and is_outline_dlc(data.outline_color):
 		return true
+	if data.use_outline and !is_combo_simple(data.character_color, data.outline_color):
+		return true
 	if hitspark_to_dlc(data.hitspark) != 0:
 		return true
-	
 	return false
+
+func save_custom(custom):
+	pass

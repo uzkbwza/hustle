@@ -179,6 +179,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/robo/RobotState.gd"
 }, {
+"base": "Control",
+"class": "SettingsSlider",
+"language": "GDScript",
+"path": "res://ui/CustomizationScreen/SettingsSlider.gd"
+}, {
 "base": "Node",
 "class": "StateInterface",
 "language": "GDScript",
@@ -233,6 +238,11 @@ _global_script_classes=[ {
 "class": "WizardState",
 "language": "GDScript",
 "path": "res://characters/wizard/states/WizardState.gd"
+}, {
+"base": "Control",
+"class": "XYPlot",
+"language": "GDScript",
+"path": "res://ui/XYPlot/XYPlot.gd"
 } ]
 _global_script_class_icons={
 "ActionButton": "",
@@ -269,6 +279,7 @@ _global_script_class_icons={
 "ProfanityFilter": "",
 "QuadTree": "",
 "RobotState": "",
+"SettingsSlider": "",
 "StateInterface": "",
 "StateMachine": "",
 "StickyBomb": "",
@@ -279,7 +290,8 @@ _global_script_class_icons={
 "VariableSound": "",
 "VariableSound2D": "",
 "Window": "",
-"WizardState": ""
+"WizardState": "",
+"XYPlot": ""
 }
 
 [application]
@@ -298,7 +310,7 @@ ModLoader="*res://modloader/ModLoader.gd"
 Network="*res://Network.gd"
 SteamYomi="*res://SteamY.gd"
 SteamLobby="*res://SteamLobby.gd"
-Custom="*res://DLC.gd"
+Custom="*res://Custom.gd"
 
 [debug]
 
@@ -320,7 +332,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/export_categories/plugin.cfg", "res://addons/multirun/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/multirun/plugin.cfg" )
 
 [gui]
 

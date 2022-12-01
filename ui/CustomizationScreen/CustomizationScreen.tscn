@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.gd" type="Script" id=1]
 [ext_resource path="res://ui/ColorPicker/CustomColorPicker.tscn" type="PackedScene" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://characters/CharacterMaterial.tres" type="Material" id=4]
 [ext_resource path="res://characters/stickman/sprites/stickman1.png" type="Texture" id=5]
+[ext_resource path="res://ui/CustomizationScreen/TrailSettings.tscn" type="PackedScene" id=6]
 
 [node name="CustomizationScreen" type="Control"]
 anchor_right = 1.0
@@ -51,7 +52,7 @@ alignment = 1
 [node name="Panel" type="Panel" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -220.0
+margin_left = -215.0
 margin_top = 20.0
 margin_right = -8.0
 margin_bottom = 335.0
@@ -62,42 +63,42 @@ anchor_bottom = 1.0
 scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer2"]
-margin_right = 212.0
-margin_bottom = 315.0
+margin_right = 201.0
+margin_bottom = 1373.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_right = 212.0
+margin_right = 201.0
 margin_bottom = 12.0
 
 [node name="ColorsSimpleLabel" type="Label" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer"]
-margin_right = 54.0
+margin_right = 69.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-text = "Colors"
+text = "Color Scheme"
 
 [node name="ShowOutline" type="CheckButton" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 55.0
-margin_right = 138.0
+margin_left = 70.0
+margin_right = 124.0
 margin_bottom = 12.0
 size_flags_horizontal = 0
-text = "show outline"
+text = "outline"
 
 [node name="Control" type="Control" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer"]
-margin_left = 139.0
-margin_right = 148.0
+margin_left = 125.0
+margin_right = 137.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.33
 
 [node name="ResetColorButton" type="Button" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 149.0
-margin_right = 212.0
+margin_left = 138.0
+margin_right = 201.0
 margin_bottom = 12.0
 size_flags_horizontal = 0
 theme = ExtResource( 3 )
@@ -105,7 +106,7 @@ text = "reset colors"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
 margin_top = 17.0
-margin_right = 212.0
+margin_right = 201.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 custom_constants/margin_right = 5
@@ -114,25 +115,30 @@ custom_constants/margin_left = 5
 [node name="SimpleColorButtonContainer" type="HFlowContainer" parent="Panel/ScrollContainer2/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 margin_left = 5.0
-margin_right = 207.0
+margin_right = 196.0
 custom_constants/vseparation = 10
 custom_constants/hseparation = 10
 
 [node name="CenterContainer" type="CenterContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
 margin_top = 22.0
-margin_right = 212.0
+margin_right = 201.0
 margin_bottom = 22.0
 
-[node name="ColorsAdvancedLabel" type="Label" parent="Panel/ScrollContainer2/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Panel/ScrollContainer2/VBoxContainer"]
 margin_top = 27.0
-margin_right = 212.0
-margin_bottom = 38.0
+margin_right = 201.0
+margin_bottom = 31.0
+
+[node name="ColorsAdvancedLabel" type="Label" parent="Panel/ScrollContainer2/VBoxContainer"]
+margin_top = 36.0
+margin_right = 201.0
+margin_bottom = 47.0
 text = "Colors - Advanced"
 
 [node name="ColorPickers" type="TabContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 43.0
-margin_right = 212.0
-margin_bottom = 263.0
+margin_top = 52.0
+margin_right = 201.0
+margin_bottom = 272.0
 rect_min_size = Vector2( 0, 220 )
 tab_align = 0
 
@@ -161,38 +167,21 @@ margin_bottom = 210.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TrailStart" parent="Panel/ScrollContainer2/VBoxContainer/ColorPickers" instance=ExtResource( 2 )]
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 0.0
-margin_top = 11.0
-margin_right = 0.0
-margin_bottom = 0.0
-
-[node name="TrailEnd" parent="Panel/ScrollContainer2/VBoxContainer/ColorPickers" instance=ExtResource( 2 )]
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 0.0
-margin_top = 11.0
-margin_right = 0.0
-margin_bottom = 0.0
+[node name="HSeparator2" type="HSeparator" parent="Panel/ScrollContainer2/VBoxContainer"]
+margin_top = 277.0
+margin_right = 201.0
+margin_bottom = 281.0
 
 [node name="HitsparkLabel" type="Label" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 268.0
-margin_right = 212.0
-margin_bottom = 279.0
+margin_top = 286.0
+margin_right = 201.0
+margin_bottom = 297.0
 text = "Hit Spark"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 284.0
-margin_right = 212.0
-margin_bottom = 284.0
+margin_top = 302.0
+margin_right = 201.0
+margin_bottom = 302.0
 size_flags_horizontal = 3
 custom_constants/margin_right = 5
 custom_constants/margin_left = 5
@@ -200,52 +189,60 @@ custom_constants/margin_left = 5
 [node name="HitsparkButtonContainer" type="HFlowContainer" parent="Panel/ScrollContainer2/VBoxContainer/MarginContainer2"]
 unique_name_in_owner = true
 margin_left = 5.0
-margin_right = 207.0
+margin_right = 196.0
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/ScrollContainer2/VBoxContainer"]
+margin_top = 307.0
+margin_right = 201.0
+margin_bottom = 311.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 289.0
-margin_right = 212.0
-margin_bottom = 301.0
+margin_top = 316.0
+margin_right = 201.0
+margin_bottom = 328.0
 
 [node name="TrailEditLabel" type="Label" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer2"]
-margin_right = 137.0
+margin_right = 126.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "Particle Aura"
 
 [node name="ShowAura" type="CheckButton" parent="Panel/ScrollContainer2/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 138.0
-margin_right = 212.0
+margin_left = 127.0
+margin_right = 201.0
 margin_bottom = 12.0
 text = "show aura"
 
-[node name="TrailSettings" type="VBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 306.0
-margin_right = 212.0
-margin_bottom = 306.0
+[node name="TrailSettings" parent="Panel/ScrollContainer2/VBoxContainer" instance=ExtResource( 6 )]
+unique_name_in_owner = true
+margin_top = 333.0
+margin_right = 201.0
+margin_bottom = 1373.0
 
 [node name="MovingSprite" type="Sprite" parent="."]
 unique_name_in_owner = true
 material = ExtResource( 4 )
-position = Vector2( 264, 220 )
+position = Vector2( 232, 220 )
+z_index = 10
 texture = ExtResource( 5 )
 
 [node name="StaticSprite" type="Sprite" parent="."]
 unique_name_in_owner = true
 material = ExtResource( 4 )
-position = Vector2( 264, 156 )
+position = Vector2( 232, 156 )
+z_index = 10
 texture = ExtResource( 5 )
 
 [node name="HitsparkDisplay" type="Node2D" parent="."]
 unique_name_in_owner = true
-position = Vector2( 264, 96 )
+position = Vector2( 232, 96 )
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
-margin_left = 505.0
-margin_top = 339.0
-margin_right = 546.0
-margin_bottom = 356.0
+margin_left = 591.0
+margin_top = 337.0
+margin_right = 632.0
+margin_bottom = 354.0
 size_flags_horizontal = 0
 text = "go back"

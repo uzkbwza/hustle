@@ -1,4 +1,4 @@
-[gd_scene load_steps=161 format=2]
+[gd_scene load_steps=158 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -155,9 +155,6 @@
 [ext_resource path="res://characters/states/ForfeitExplosion.gd" type="Script" id=153]
 [ext_resource path="res://fx/QuitterParticle.tscn" type="PackedScene" id=154]
 [ext_resource path="res://sound/common/quitter_alarm.wav" type="AudioStream" id=155]
-[ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=156]
-[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=157]
-[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=158]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -457,7 +454,8 @@ __meta__ = {
 script = ExtResource( 4 )
 title = "Wait"
 show_in_menu = false
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 
 [node name="Wait" type="Node2D" parent="StateMachine" index="1"]
 script = ExtResource( 4 )
@@ -467,7 +465,8 @@ button_texture = ExtResource( 55 )
 interruptible_on_opponent_turn = true
 interrupt_from_string = "GroundedIdle
 Grounded"
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 
 [node name="Burst" type="Node2D" parent="StateMachine" index="2"]
 script = ExtResource( 48 )
@@ -960,41 +959,8 @@ y = -18
 width = 12
 height = 12
 hits_vs_aerial = false
-ignore_armor = null
-hit_height = false
-_c_Grouping = 1
-priority = 9999
-screenshake_amount = 0
-screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-rumble = null
-_c_Sfx = true
-whiff_sound = 0
-hit_sound = ExtResource( 158 )
-hit_bass_sound = ExtResource( 156 )
-whiff_sound_volume = ExtResource( 157 )
-hit_sound_volume = -8.0
-_c_Knockback = -5.0
-dir_x = 0
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
-_c_Frame_Data = true
 start_tick = 3
 active_ticks = 3
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
 throw_state = "Hold"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="28"]
@@ -1014,47 +980,15 @@ interrupt_into_string = "Aerial"
 allowed_stances_string = "All"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/AirGrab" index="0"]
+z_index = 1000
 script = ExtResource( 87 )
 x = 7
 y = -18
 width = 12
 height = 12
 hits_vs_grounded = false
-ignore_armor = null
-hit_height = false
-_c_Grouping = 1
-priority = 9999
-screenshake_amount = 0
-screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-rumble = null
-_c_Sfx = true
-whiff_sound = 0
-hit_sound = ExtResource( 158 )
-hit_bass_sound = ExtResource( 156 )
-whiff_sound_volume = ExtResource( 157 )
-hit_sound_volume = -8.0
-_c_Knockback = -5.0
-dir_x = 0
-dir_y = "1.0"
-knockback = "-1.0"
-launch_reversible = "10.0"
-pushback_x = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
-aerial_hit_state = "HurtGrounded"
-knockdown = "HurtAerial"
-knockdown_extends_hitstun = false
-_c_Frame_Data = true
 start_tick = 3
 active_ticks = 3
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
 throw_state = "AirHold"
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="29"]

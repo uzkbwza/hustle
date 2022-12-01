@@ -142,6 +142,9 @@ func get_value():
 	}
 	return values
 
+func get_value_float():
+	return Vector2(x_value_float, y_value_float)
+
 func _draw():
 	
 	var midpoint = midpoint()

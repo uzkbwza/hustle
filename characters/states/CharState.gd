@@ -149,7 +149,7 @@ func _enter_shared():
 	if !host.is_grounded():
 		started_in_air = true
 	if uses_air_movement:
-		if !host.infinite_resources:
+		if !host.infinite_resources and host.gravity_enabled:
 			host.air_movements_left -= 1
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:

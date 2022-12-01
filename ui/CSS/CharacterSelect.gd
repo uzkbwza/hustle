@@ -144,6 +144,7 @@ func get_match_data():
 	var data = {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
+#		"selected_customs": selected_customs,
 	}
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
 		data.merge(SteamLobby.MATCH_SETTINGS)

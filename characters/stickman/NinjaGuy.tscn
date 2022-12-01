@@ -109,7 +109,6 @@ stored_momentum_x
 stored_momentum_y
 sticky_bombs_left"
 player_extra_params_scene = ExtResource( 63 )
-damage_taken_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
@@ -150,8 +149,7 @@ Fall"
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-z_index = 1000
-ignore_armor = null
+_c_Frame_Data = true
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 5 )
@@ -584,6 +582,7 @@ x_modifier_amount = 10
 y_modifier_amount = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DiveKick" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 10
 y = -9
@@ -622,6 +621,7 @@ hit_cancel_into_string = "GroundedSuper
 AerialSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/JumpKick" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 9
 y = -28
@@ -662,6 +662,7 @@ NunChuk"
 change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLight" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 32
 y = -22
@@ -695,6 +696,7 @@ NunChuk"
 change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLightHigh" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 15
 y = -30
@@ -711,6 +713,7 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/NunChukLightHigh" index="1"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 28
 y = -39
@@ -727,6 +730,7 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukLightHigh" index="2"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 38
 y = -44
@@ -765,6 +769,7 @@ Jump"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukHeavy" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 27
 y = -27
@@ -800,6 +805,7 @@ hit_cancel_into_string = "Aerial"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukJump" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 5
 y = -2
@@ -831,6 +837,7 @@ NunChuk"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukSpin" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 3
 y = -29
@@ -849,6 +856,7 @@ loop_active_ticks = 4
 loop_inactive_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukSpin" index="1"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 25
 y = -9
@@ -918,7 +926,6 @@ x = 6
 y = -17
 width = 8
 height = 8
-ignore_armor = null
 start_tick = 10
 active_ticks = 4
 throw_state = "StickyBombThrow"
@@ -947,6 +954,7 @@ interrupt_into_string = "Grounded"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WhipWave" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 34
 y = -7
@@ -975,6 +983,7 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirUpwardPunch" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 17
 y = -29
@@ -1005,6 +1014,7 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedPunch" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 11
 y = -24
@@ -1034,6 +1044,7 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedKick" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 20
 y = -7
@@ -1135,6 +1146,7 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirAttack" index="0"]
+z_index = 1000
 script = ExtResource( 1 )
 x = 20
 y = -11
@@ -1353,9 +1365,6 @@ height = 10
 start_tick = 4
 active_ticks = 8
 endless = true
-
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-ignore_armor = null
 
 [node name="ForfeitExplosion" parent="StateMachine" index="66"]
 endless = true

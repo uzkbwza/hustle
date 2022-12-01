@@ -7,6 +7,7 @@ var character_color = Color.white
 var outline_color = Color.black
 
 var free_colors = []
+var custom_particles = []
 
 var selected_hitspark = "bash"
 
@@ -18,8 +19,9 @@ func get_custom_data():
 		"use_outline": $"%ShowOutline".pressed,
 		"outline_color": outline_color if $"%ShowOutline".pressed else null,
 		"hitspark": "bash" if selected_hitspark == null else selected_hitspark,
+		"show_aura": $"%ShowAura".pressed,
+		"aura_settings": $"%TrailSettings".get_settings() if $"%ShowAura".pressed else null
 	}
-
 
 func _ready():
 	for name in Global.name_paths:
@@ -53,6 +55,9 @@ func _ready():
 		button.connect("pressed", self, "select_hitspark", [hitspark])
 		button.rect_min_size = Vector2(50, 20)
 		$"%HitsparkButtonContainer".add_child(button)
+	$"%TrailSettings".connect("settings_changed", self, "_on_trail_settings_changed")
+	$"%ShowAura".connect("pressed", $"%TrailSettings", "_setting_value_changed")
+#	$"%ShowAura".connect("toggled", $"%TrailSettings", "_show_aura_toggled")
 
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
@@ -71,6 +76,26 @@ func _physics_process(delta):
 		spawn_hitspark()
 	else:
 		hitspark_scene.tick()
+	for particle in custom_particles:
+		if is_instance_valid(particle):
+			particle.tick()
+
+func _on_trail_settings_changed(settings):
+	call_deferred("create_aura", settings)
+
+func create_aura(trail_settings):
+	for particle in custom_particles:
+		if is_instance_valid(particle):
+			particle.queue_free()
+	custom_particles.clear()
+	if !$"%ShowAura".pressed:
+		return
+	for node in [$"%MovingSprite", $"%StaticSprite"]:
+		var particle = preload("res://fx/CustomTrailParticle.tscn").instance()
+		node.add_child(particle)
+		custom_particles.append(particle)
+		particle.load_settings(trail_settings)
+		
 
 func _on_back_button_pressed():
 	get_tree().reload_current_scene()

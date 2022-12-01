@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.3.2-unstable"
+var VERSION = "0.3.3"
 
 var audio_player
 var music_enabled = true
@@ -10,6 +10,7 @@ var freeze_ghost_prediction = true
 var ghost_afterimages = true
 var fullscreen = false
 var show_hitboxes = false
+var light_mode = false
 var frame_advance = false
 var show_playback_controls = false
 var playback_speed_mod = 1
@@ -20,7 +21,7 @@ var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
-	"Robot": "res://characters/robo/Robot.tscn",
+#	"Robot": "res://characters/robo/Robot.tscn",
 }
 
 var songs = {
@@ -109,6 +110,10 @@ func save_option(value, option):
 	set(option, value)
 	save_options()
 
+func set_light_mode(on):
+	light_mode = on
+	save_options()
+
 func save_options():
 	save_player_data({
 		"options": {
@@ -119,6 +124,7 @@ func save_options():
 			"show_hitboxes": show_hitboxes,
 			"show_playback_controls": show_playback_controls,
 			"default_dojo": 0,
+#			"light_mode": light_mode,
 		}
 	})
 
@@ -133,6 +139,7 @@ func get_default_player_data():
 			"show_hitboxes": false,
 			"show_playback_controls": false,
 			"default_dojo": 0,
+#			"light_mode": false,
 		}
 	}
 

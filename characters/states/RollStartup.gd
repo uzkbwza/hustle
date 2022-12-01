@@ -23,6 +23,11 @@ func _enter():
 			anim_name = "RollForward"
 	host.apply_force(force.x, str(0))
 
+func _frame_0():
+	if tech:
+		host.start_invulnerability()
+		host.colliding_with_opponent = false
+
 func _frame_1():
 	host.colliding_with_opponent = false
 

@@ -6,11 +6,14 @@ var IS_OWNED: bool
 var STEAM_ID: int
 var STEAM_NAME: String = ""
 
+var STARTED = false
+
 func _enter_tree():
-	_initialize_steam()
+#	_initialize_steam()
 	pass
 
 func _initialize_steam():
+	var STARTED = true
 	var INIT: Dictionary = Steam.steamInit()
 	print("Did steam initialize?: " + str(INIT))
 	
@@ -23,4 +26,5 @@ func _initialize_steam():
 	IS_OWNED = Steam.isSubscribed()
 
 func _process(_delta):
-	Steam.run_callbacks()
+	if STARTED:
+		Steam.run_callbacks()

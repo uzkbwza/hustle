@@ -245,6 +245,8 @@ shader = ExtResource( 190 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=4]
 animations = [ {
@@ -733,6 +735,7 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox5" type="Node2D" parent="StateMachine/3Combo" index="3"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 35
 y = -42
@@ -835,6 +838,7 @@ hit_cancel_exceptions_string = "3Combo"
 down = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/3ComboDown" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = -11
 y = 24
@@ -852,6 +856,7 @@ start_tick = 8
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/3ComboDown" index="1"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 24
 y = 14
@@ -870,6 +875,7 @@ start_tick = 8
 active_ticks = 2
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/3ComboDown" index="2"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 9
 y = 13
@@ -887,6 +893,7 @@ start_tick = 13
 active_ticks = 2
 
 [node name="Hitbox5" type="Node2D" parent="StateMachine/3ComboDown" index="3"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 35
 y = 10
@@ -987,6 +994,7 @@ Aerial
 LightningSliceCancel"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/LightningSlice" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 128
 y = -16
@@ -1098,6 +1106,9 @@ interrupt_from_string = "Lasso"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/LassoReel" index="0"]
 script = ExtResource( 166 )
+knockdown_extends_hitstun = false
+_c_Frame_Data = true
+active_ticks = 1
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 79 )
@@ -1191,6 +1202,7 @@ hit_cancel_into_string = "Aerial"
 GROUNDED_LIFT = "-12.0"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/UpwardSwipe" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 32
 y = -20
@@ -1231,6 +1243,7 @@ hit_cancel_into_string = "Aerial"
 GROUNDED_LIFT = "-12.0"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/UpwardSwipeAir" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 32
 y = -20
@@ -1304,6 +1317,7 @@ interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Impale" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 31
 y = -17
@@ -1325,6 +1339,7 @@ start_tick = 9
 active_ticks = 4
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Impale" index="1"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 31
 y = -12
@@ -1395,6 +1410,7 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HAirSlash" index="0"]
+z_index = 1000
 script = ExtResource( 83 )
 x = 36
 y = -17
@@ -1660,6 +1676,7 @@ start_tick = 7
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/BackSlash" index="2"]
+z_index = 1000
 script = ExtResource( 83 )
 x = -41
 y = -58

@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=2]
+[gd_scene load_steps=75 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -128,6 +128,8 @@ tracks/0/keys = {
 "values": [ true, false, true, false, true, false, true, false, true, false, true ]
 }
 
+[sub_resource type="CanvasItemMaterial" id=22]
+
 [sub_resource type="AnimatedTexture" id=17]
 resource_local_to_scene = true
 frames = 10
@@ -183,7 +185,8 @@ script = ExtResource( 2 )
 
 [node name="BGLayer" type="CanvasLayer" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="BGLayer"]
+[node name="BGColor" type="ColorRect" parent="BGLayer"]
+unique_name_in_owner = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -801,6 +804,7 @@ anims/game_won = SubResource( 12 )
 script = ExtResource( 1 )
 
 [node name="BgCircle" type="Control" parent="UILayer"]
+material = SubResource( 22 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -861,7 +865,6 @@ align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -1416,6 +1419,25 @@ margin_bottom = 27.0
 action_mode = 0
 text = "?"
 
+[node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 602.0
+margin_top = 9.0
+margin_right = 631.0
+margin_bottom = 28.0
+action_mode = 0
+
+[node name="Label" type="Label" parent="UILayer/GameUI/ResetZoomButton"]
+margin_left = 1.0
+margin_top = -1.0
+margin_right = 28.0
+margin_bottom = 19.0
+custom_constants/line_spacing = -3
+text = "reset
+zoom"
+align = 1
+clip_text = true
+
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true
 visible = false
@@ -1469,6 +1491,7 @@ flat = true
 
 [node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
+visible = false
 margin_top = 42.0
 margin_right = 90.0
 margin_bottom = 62.0
@@ -1480,9 +1503,9 @@ flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 63.0
+margin_top = 42.0
 margin_right = 90.0
-margin_bottom = 83.0
+margin_bottom = 62.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1491,9 +1514,10 @@ flat = true
 
 [node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
+visible = false
+margin_top = 63.0
 margin_right = 90.0
-margin_bottom = 104.0
+margin_bottom = 83.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1502,9 +1526,9 @@ flat = true
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
+margin_top = 63.0
 margin_right = 90.0
-margin_bottom = 125.0
+margin_bottom = 83.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1513,9 +1537,9 @@ flat = true
 
 [node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 126.0
+margin_top = 84.0
 margin_right = 90.0
-margin_bottom = 146.0
+margin_bottom = 104.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1524,9 +1548,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 147.0
+margin_top = 105.0
 margin_right = 90.0
-margin_bottom = 167.0
+margin_bottom = 125.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )

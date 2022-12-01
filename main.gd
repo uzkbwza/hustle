@@ -22,6 +22,8 @@ var p2_ghost_extra
 
 var match_data = {}
 
+
+
 func _ready():
 	ui_layer.connect("singleplayer_started", self, "_on_game_started", [true])
 	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")
@@ -129,6 +131,7 @@ func setup_game_deferred(singleplayer, data):
 	game.connect("simulation_continue", self, "_on_simulation_continue")
 	game.connect("player_actionable", self, "_on_player_actionable")
 	game.connect("playback_requested", self, "_on_playback_requested")
+	game.connect("zoom_changed", self, "_on_zoom_changed")
 	
 	if !data.has("user_data"):
 		if Network.multiplayer_active:
@@ -206,10 +209,11 @@ func _process(_delta):
 
 func align_afterimages():
 	if is_instance_valid(game):
-		var center = -game.camera_snap_position / game.camera.zoom.x
+		var zoom = game.camera.zoom.x * game.camera_zoom
+		var center = -game.camera_snap_position / zoom
 #		center.y = min(center.y, ghost_game.camera.limit_bottom)
 		for image in $"%Afterimages".get_children():
-			image.rect_position = center + image.start_position / game.camera.zoom.x + game.camera.offset / game.camera.zoom.x
+			image.rect_position = center + image.start_position / zoom + game.camera.offset / zoom
 			image.visible = $"%AfterimageButton".pressed
 
 func _start_ghost():
@@ -290,6 +294,10 @@ func stop_ghost():
 	for child in $"%GhostViewport".get_children():
 		child.hide()
 		child.ghost_hidden = true
+	for child in $"%Afterimages".get_children():
+		child.texture = null
+
+func _on_zoom_changed():
 	for child in $"%Afterimages".get_children():
 		child.texture = null
 

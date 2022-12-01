@@ -1,6 +1,8 @@
 extends Control
 onready var panel = $"%PlotPanel"
 
+class_name XYPlot
+
 signal data_changed()
 
 export var normalize_display = true
@@ -42,6 +44,9 @@ func _ready():
 
 func get_value():
 	return panel.get_value()
+
+func get_value_float():
+	return panel.get_value_float()
 
 func get_data():
 	return get_value()
