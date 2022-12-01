@@ -601,4 +601,8 @@ func _on_ClearParticlesButton_pressed():
 	if is_instance_valid(game):
 		for particle in game.effects:
 			particle.hide()
+		if game.get_player(1).aura_particle:
+			game.get_player(1).aura_particle.restart()
+		if game.get_player(2).aura_particle:
+			game.get_player(2).aura_particle.restart()
 	pass # Replace with function body.

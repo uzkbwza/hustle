@@ -78,5 +78,7 @@ func set_enabled(on):
 	enabled = on
 	set_process_internal(on)
 	for child in get_children():
-		if child is CPUParticles2D or child is Particles2D:
+		if child is Particles2D:
+			child.set_process_internal(on)
+		elif child is CPUParticles2D:
 			child.set_process_internal(on)

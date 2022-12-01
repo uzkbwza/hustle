@@ -28,6 +28,7 @@ var custom_set = {
 	"end_alpha": "set_end_alpha",
 	"x_offset": "set_x_offset",
 	"y_offset": "set_y_offset",
+	"lifetime": "set_lifetime",
 }
 
 static func get_shapes():
@@ -132,6 +133,12 @@ static func get_setting_max(setting):
 	}
 	return maximums[setting] if maximums.has(setting) else null
 
+func restart():
+	$CPUParticles2D.restart()
+	set_enabled(false)
+
+func _ready():
+	set_enabled(false)
 
 func get_data():
 	pass
@@ -154,6 +161,16 @@ func set_start_color(color):
 func set_end_color(color):
 	end_color = color
 	update_color()
+
+func _physics_process(_delta):
+	if !is_instance_valid(Global.current_game):
+		if !enabled:
+			start_emitting()
+			set_enabled(true)
+		tick()
+	elif Global.current_game:
+		if enabled:
+			set_enabled(false)
 
 func set_start_alpha(a):
 #	particles.self_modulate.a = a
@@ -210,6 +227,10 @@ func set_x_offset(x):
 func set_y_offset(y):
 	particles.position.y = y
 
+func set_lifetime(lifetime):
+	particles.lifetime = lifetime
+	particles.preprocess = lifetime
+
 func set_parameter(param, value):
 	var max_value = get_setting_max(param)
 	var min_value = get_setting_min(param)
@@ -228,7 +249,3 @@ func load_defaults():
 func load_settings(settings):
 	for setting in settings:
 		set_parameter(setting, settings[setting])
-
-func _ready():
-#	load_defaults()
-	pass

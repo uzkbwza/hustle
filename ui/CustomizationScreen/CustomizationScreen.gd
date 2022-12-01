@@ -13,9 +13,10 @@ var selected_hitspark = "bash"
 
 var hitspark_scene = null
 
-func get_custom_data():
+func get_style_data():
 	return {
-		"character_color": character_color.to_html(false) if character_color != null else null,
+		"style_name": Utils.filter_filename($"%StyleName".text.strip_edges()) if $"%StyleName".text.strip_edges() else "untitled" + str(int(Time.get_unix_time_from_system())),
+		"character_color": character_color if character_color != null else null,
 		"use_outline": $"%ShowOutline".pressed,
 		"outline_color": outline_color if $"%ShowOutline".pressed else null,
 		"hitspark": "bash" if selected_hitspark == null else selected_hitspark,
@@ -58,6 +59,25 @@ func _ready():
 	$"%TrailSettings".connect("settings_changed", self, "_on_trail_settings_changed")
 	$"%ShowAura".connect("pressed", $"%TrailSettings", "_setting_value_changed")
 #	$"%ShowAura".connect("toggled", $"%TrailSettings", "_show_aura_toggled")
+	$"%SaveButton".connect("pressed", self, "save_style")
+	$"%LoadStyleButton".connect("style_selected", self, "load_style")
+	$"%LoadStyleButton".update_styles()
+
+func show():
+	.show()
+	_on_reset_color_pressed()
+	
+func save_style():
+	var data = get_style_data()
+	Custom.save_style(data)
+	$"%LoadStyleButton".update_styles()
+	$"%StyleName".clear()
+	$"%SavedLabel".text = "saved to " + data.style_name + ".style"
+	$"%SavedLabel".show()
+	
+func load_style(style):
+	if style:
+		pass
 
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
@@ -76,9 +96,9 @@ func _physics_process(delta):
 		spawn_hitspark()
 	else:
 		hitspark_scene.tick()
-	for particle in custom_particles:
-		if is_instance_valid(particle):
-			particle.tick()
+#	for particle in custom_particles:
+#		if is_instance_valid(particle):
+#			particle.tick()
 
 func _on_trail_settings_changed(settings):
 	call_deferred("create_aura", settings)
@@ -95,7 +115,6 @@ func create_aura(trail_settings):
 		node.add_child(particle)
 		custom_particles.append(particle)
 		particle.load_settings(trail_settings)
-		
 
 func _on_back_button_pressed():
 	get_tree().reload_current_scene()
@@ -135,3 +154,13 @@ func _on_character_button_pressed(button):
 func _process(delta):
 	if visible:
 		$"%MovingSprite".position = moving_sprite_start + Vector2(Utils.wave(-50, 50, 2.0), 0)
+
+
+func _on_StyleName_text_entered(new_text):
+	save_style()
+	pass # Replace with function body.
+
+
+func _on_OpenFolderButton_pressed():
+	OS.shell_open(ProjectSettings.globalize_path("user://custom"))
+	pass # Replace with function body.

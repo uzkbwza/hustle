@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.gd" type="Script" id=1]
 [ext_resource path="res://ui/ColorPicker/CustomColorPicker.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://characters/CharacterMaterial.tres" type="Material" id=4]
 [ext_resource path="res://characters/stickman/sprites/stickman1.png" type="Texture" id=5]
 [ext_resource path="res://ui/CustomizationScreen/TrailSettings.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ui/CustomizationScreen/LoadStyleButton.tscn" type="PackedScene" id=7]
 
 [node name="CustomizationScreen" type="Control"]
 anchor_right = 1.0
@@ -24,12 +25,45 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 115.0
+margin_top = 15.0
+margin_right = 393.0
+margin_bottom = 28.0
+
+[node name="StyleName" type="LineEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 100.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 100, 0 )
+max_length = 64
+placeholder_text = "style name"
+
+[node name="SaveButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 101.0
+margin_right = 127.0
+margin_bottom = 13.0
+text = "save"
+
+[node name="LoadStyleButton" parent="HBoxContainer" instance=ExtResource( 7 )]
+margin_left = 128.0
+margin_right = 219.0
+text = "load"
+
+[node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 220.0
+margin_right = 278.0
+margin_bottom = 13.0
+text = "open folder"
+
 [node name="SeeOn" type="Label" parent="."]
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 75.0
 margin_bottom = 33.0
-text = "view customs
+text = "view style
 on character:"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
@@ -38,12 +72,12 @@ anchor_bottom = 0.5
 margin_left = 8.0
 margin_top = -140.0
 margin_right = 79.0
-margin_bottom = 140.0
+margin_bottom = 155.0
 
 [node name="CharacterButtonContainer" type="VBoxContainer" parent="ScrollContainer"]
 unique_name_in_owner = true
 margin_right = 71.0
-margin_bottom = 280.0
+margin_bottom = 295.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -64,7 +98,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer2"]
 margin_right = 201.0
-margin_bottom = 1373.0
+margin_bottom = 1463.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 5
@@ -109,15 +143,16 @@ margin_top = 17.0
 margin_right = 201.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-custom_constants/margin_right = 5
-custom_constants/margin_left = 5
+custom_constants/margin_right = 2
+custom_constants/margin_left = 2
 
-[node name="SimpleColorButtonContainer" type="HFlowContainer" parent="Panel/ScrollContainer2/VBoxContainer/MarginContainer"]
+[node name="SimpleColorButtonContainer" type="GridContainer" parent="Panel/ScrollContainer2/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
-margin_left = 5.0
-margin_right = 196.0
-custom_constants/vseparation = 10
-custom_constants/hseparation = 10
+margin_left = 2.0
+margin_right = 199.0
+custom_constants/vseparation = 3
+custom_constants/hseparation = 1
+columns = 6
 
 [node name="CenterContainer" type="CenterContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
 margin_top = 22.0
@@ -218,7 +253,7 @@ text = "show aura"
 unique_name_in_owner = true
 margin_top = 333.0
 margin_right = 201.0
-margin_bottom = 1373.0
+margin_bottom = 1463.0
 
 [node name="MovingSprite" type="Sprite" parent="."]
 unique_name_in_owner = true
@@ -246,3 +281,15 @@ margin_right = 632.0
 margin_bottom = 354.0
 size_flags_horizontal = 0
 text = "go back"
+
+[node name="SavedLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_left = 139.0
+margin_top = 31.0
+margin_right = 179.0
+margin_bottom = 42.0
+text = "style saved"
+
+[connection signal="text_entered" from="HBoxContainer/StyleName" to="." method="_on_StyleName_text_entered"]
+[connection signal="pressed" from="HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]

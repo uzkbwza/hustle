@@ -1,6 +1,5 @@
 extends Node
 
-const INVALID_FILE_CHARS = "<>:/\\|?*"
 
 var frames = {
 	1: {},
@@ -77,16 +76,12 @@ func generate_replay_name():
 func save_replay_mp(match_data, p1, p2):
 	save_replay(match_data, generate_mp_replay_name(p1, p2), true)
 
+
+
 func save_replay(match_data: Dictionary, file_name="", autosave=false):
 	if file_name == "":
 		file_name = generate_replay_name() 
-	var filtered_file_name = ""
-	for char_ in file_name:
-		if not char_ in INVALID_FILE_CHARS:
-			filtered_file_name += char_
-		else:
-			filtered_file_name += "_"
-	file_name = filtered_file_name 
+	file_name = Utils.filter_filename(file_name) 
 	
 	var data = match_data.duplicate(true)
 	data["frames"] = frames

@@ -4,24 +4,24 @@
 [ext_resource path="res://ui/CustomizationScreen/SimpleColorButton.gd" type="Script" id=2]
 
 [node name="Button" type="Button"]
-margin_right = 2.0
-margin_bottom = 12.0
-rect_min_size = Vector2( 40, 20 )
+margin_right = 32.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 32, 20 )
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="Fill" type="ColorRect" parent="."]
 margin_left = 2.0
 margin_top = 1.0
-margin_right = 29.0
+margin_right = 22.0
 margin_bottom = 18.0
 mouse_filter = 2
 color = Color( 0.92549, 1, 0.643137, 1 )
 
 [node name="Outline" type="ColorRect" parent="."]
-margin_left = 30.0
+margin_left = 23.0
 margin_top = 1.0
-margin_right = 38.0
+margin_right = 30.0
 margin_bottom = 18.0
 mouse_filter = 2
 color = Color( 0.392157, 0.823529, 0.419608, 1 )

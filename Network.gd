@@ -85,7 +85,7 @@ signal game_ended()
 signal game_error(what)
 signal start_game()
 signal player_turns_synced()
-signal character_selected(player_id, character)
+signal character_selected(player_id, character, style)
 signal player_turn_ready(player_id)
 signal turn_ready()
 signal match_code_received(code)
@@ -492,8 +492,8 @@ func assign_players():
 		network_ids[2] = player_ids[1]
 		rpc_("sync_ids", network_ids)
 
-func select_character(character):
-	rpc_("sync_character_selection", [player_id, character])
+func select_character(character, style=null):
+	rpc_("sync_character_selection", [player_id, character, style])
 
 func forfeit(opponent=false):
 	if !opponent:
@@ -738,9 +738,9 @@ remotesync func send_rematch_request(player_id):
 			else:
 				begin_game()
 
-remotesync func sync_character_selection(player_id, character):
+remotesync func sync_character_selection(player_id, character, style=null):
 	print("player %s selected character" % [str(player_id)])
-	emit_signal("character_selected", player_id, character)
+	emit_signal("character_selected", player_id, character, style)
 
 remotesync func open_chara_select():
 	print("opening character select")

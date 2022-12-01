@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterDisplay.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
 [ext_resource path="res://characters/CharacterMaterial.tres" type="Material" id=3]
+[ext_resource path="res://ui/CustomizationScreen/LoadStyleButton.tscn" type="PackedScene" id=4]
+[ext_resource path="res://characters/stickman/sprites/stickman1.png" type="Texture" id=5]
 
 [node name="Control" type="VBoxContainer"]
 margin_right = 287.0
@@ -14,25 +16,36 @@ script = ExtResource( 1 )
 
 [node name="PlayerLabel" type="Label" parent="."]
 unique_name_in_owner = true
-margin_top = 185.0
+margin_top = 178.0
 margin_right = 287.0
-margin_bottom = 196.0
+margin_bottom = 189.0
 text = "P1"
 align = 1
 
 [node name="CharacterPortrait" type="TextureRect" parent="."]
 unique_name_in_owner = true
 material = ExtResource( 3 )
-margin_top = 197.0
+margin_top = 190.0
 margin_right = 287.0
-margin_bottom = 261.0
+margin_bottom = 254.0
 rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 5 )
 expand = true
 stretch_mode = 4
 
 [node name="CharacterLabel" type="Label" parent="."]
 unique_name_in_owner = true
-margin_top = 262.0
+margin_top = 255.0
 margin_right = 287.0
-margin_bottom = 273.0
+margin_bottom = 266.0
 align = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+margin_top = 267.0
+margin_right = 287.0
+margin_bottom = 280.0
+
+[node name="LoadStyleButton" parent="CenterContainer" instance=ExtResource( 4 )]
+margin_left = 98.0
+margin_right = 189.0
+size_flags_horizontal = 0

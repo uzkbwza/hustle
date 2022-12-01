@@ -22,12 +22,13 @@ func _frame_0():
 	move_y_modifier = data.y * y_modifier_amount
 
 func _frame_11():
+	host.reset_momentum()
 	host.apply_force_relative(move_x + move_x_modifier, move_y + move_y_modifier)
 
 func _frame_12():
 #	host.update_facing()
 	moving = true
-	host.reset_momentum()
+	
 
 func _tick():
 	if moving:

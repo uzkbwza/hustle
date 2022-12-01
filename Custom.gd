@@ -10,8 +10,26 @@ var hitspark_dlc = {
 	"bash2": 0,
 }
 
-var simple_colors = ["94e4ff", "ffc1a1", "ecffa4", "fec2ff", "04579a", "85001f", "008561", "9f42ba", "6e8696", "ffea5d", "343537", "ff9444"]
-var simple_outlines = ["04579a", "85001f", "008561", "9f42ba", "94e4ff", "ffc1a1", "ecffa4", "fec2ff", "343537", "ff9444", "6e8696", "ffea5d"]
+var p1_selected_style = null
+var p2_selected_style = null
+
+var simple_colors = ["94e4ff", "ffc1a1", "ecffa4", "fec2ff", "6e8696", "ffea5d", "04579a", "85001f", "008561", "9f42ba", "343537", "ff9444"]
+var simple_outlines = ["04579a", "85001f", "008561", "9f42ba", "343537", "ff9444", "94e4ff", "ffc1a1", "ecffa4", "fec2ff", "6e8696", "ffea5d"]
+
+func _ready():
+	make_custom_folder()
+	
+func make_custom_folder():
+	var dir = Directory.new()
+	if !dir.dir_exists("user://custom"):
+		dir.make_dir("user://custom")
+
+func apply_style_to_material(style, material: ShaderMaterial):
+	material.set_shader_param("color", style.character_color)
+	material.set_shader_param("use_outline", style.use_outline)
+	material.set_shader_param("outline_color", style.outline_color)
+	pass
+
 
 func is_combo_simple(color, outline):
 	return simple_colors.find(color) == simple_outlines.find(outline)
@@ -44,5 +62,27 @@ func requires_dlc(data):
 		return true
 	return false
 
-func save_custom(custom):
-	pass
+func save_style(style):
+	make_custom_folder()
+	var file = File.new()
+	file.open("user://custom/"+ style.style_name + ".style", File.WRITE)
+	file.store_var(style, true)
+	file.close()
+
+func load_all_styles():
+	make_custom_folder()
+	var dir = Directory.new()
+	var files = []
+	var _directories = []
+	var styles = []
+	dir.open("user://custom")
+	dir.list_dir_begin(false, true)
+#	print(dir.get_current_dir())
+	Global.add_dir_contents(dir, files, _directories, false)
+	for path in files:
+		var file = File.new()
+		file.open(path, File.READ)
+		var data: Dictionary = file.get_var()
+		styles.append(data)
+		file.close()
+	return styles

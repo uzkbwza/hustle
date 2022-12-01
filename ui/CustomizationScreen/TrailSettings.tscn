@@ -163,73 +163,88 @@ margin_bottom = 515.0
 default_value = 12.0
 max_value = 32.0
 
-[node name="Lifetime Randomness" parent="." instance=ExtResource( 3 )]
+[node name="X Offset" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 520.0
 margin_bottom = 545.0
+min_value = -24.0
+max_value = 24.0
+
+[node name="Y Offset" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+margin_top = 550.0
+margin_bottom = 575.0
+min_value = -24.0
+max_value = 24.0
+
+[node name="Lifetime Randomness" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+margin_top = 580.0
+margin_bottom = 605.0
 default_value = 0.5
 max_value = 1.0
 
 [node name="Linear Accel" parent="." instance=ExtResource( 3 )]
-unique_name_in_owner = true
-margin_top = 550.0
-margin_bottom = 575.0
-min_value = -100.0
-step = 0.1
-
-[node name="Linear Accel Randomness" parent="." instance=ExtResource( 3 )]
-unique_name_in_owner = true
-margin_top = 580.0
-margin_bottom = 605.0
-max_value = 1.0
-step = 0.001
-
-[node name="Radial Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 610.0
 margin_bottom = 635.0
 min_value = -100.0
 step = 0.1
 
-[node name="Radial Accel Randomness" parent="." instance=ExtResource( 3 )]
+[node name="Linear Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 640.0
 margin_bottom = 665.0
 max_value = 1.0
 step = 0.001
 
-[node name="Tangential Accel" parent="." instance=ExtResource( 3 )]
+[node name="Radial Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 670.0
 margin_bottom = 695.0
 min_value = -100.0
 step = 0.1
 
-[node name="Tangential Accel Randomness" parent="." instance=ExtResource( 3 )]
+[node name="Radial Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 700.0
 margin_bottom = 725.0
 max_value = 1.0
 step = 0.001
 
-[node name="Orbit Velocity" parent="." instance=ExtResource( 3 )]
+[node name="Tangential Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 730.0
 margin_bottom = 755.0
 min_value = -100.0
 step = 0.1
 
-[node name="Orbit Velocity Randomness" parent="." instance=ExtResource( 3 )]
+[node name="Tangential Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 760.0
 margin_bottom = 785.0
 max_value = 1.0
 step = 0.001
 
-[node name="ColorPickers" type="TabContainer" parent="."]
+[node name="Orbit Velocity" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
 margin_top = 790.0
+margin_bottom = 815.0
+min_value = -3.0
+max_value = 3.0
+step = 0.1
+
+[node name="Orbit Velocity Randomness" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+margin_top = 820.0
+margin_bottom = 845.0
+max_value = 1.0
+step = 0.001
+
+[node name="ColorPickers" type="TabContainer" parent="."]
+margin_top = 850.0
 margin_right = 212.0
-margin_bottom = 1010.0
+margin_bottom = 1070.0
 rect_min_size = Vector2( 0, 220 )
 tab_align = 0
 
@@ -258,16 +273,16 @@ margin_bottom = 0.0
 
 [node name="Start Alpha" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 1015.0
-margin_bottom = 1040.0
+margin_top = 1075.0
+margin_bottom = 1100.0
 default_value = 1.0
 max_value = 1.0
 step = 0.001
 
 [node name="End Alpha" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 1045.0
-margin_bottom = 1070.0
+margin_top = 1105.0
+margin_bottom = 1130.0
 default_value = 1.0
 max_value = 1.0
 step = 0.001

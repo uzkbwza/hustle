@@ -154,7 +154,7 @@ func _enter_shared():
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		host.gain_super_meter(WHIFF_SUPER_GAIN)
-		
+
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances
 

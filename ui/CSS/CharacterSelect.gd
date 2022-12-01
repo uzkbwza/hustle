@@ -7,6 +7,10 @@ signal match_ready(data)
 var pressed_button = null
 var hovered_characters = {}
 var selected_characters = {}
+var selected_styles = {
+			1: null,
+			2: null
+		}
 var singleplayer = true
 var current_player = 1
 var network_match_data = {}
@@ -19,9 +23,9 @@ func _ready():
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	init()
 
-
-func _on_network_character_selected(player_id, character):
+func _on_network_character_selected(player_id, character, style=null):
 	selected_characters[player_id] = character
+	selected_styles[player_id] = style
 	if Network.is_host() and player_id == Network.player_id:
 		$"%GameSettingsPanelContainer".hide()
 	if selected_characters[1] != null and selected_characters[2] != null:
@@ -57,6 +61,10 @@ func init(singleplayer=true):
 	if Network.steam:
 		$"%GameSettingsPanelContainer".hide()
 
+	selected_styles = {
+		1: null,
+		2: null
+	}
 	
 	hovered_characters = {
 		1: null,
@@ -133,7 +141,7 @@ func _on_button_pressed(button):
 		if singleplayer:
 			$"%GoButton".disabled = false
 	if !singleplayer:
-		Network.select_character(data)
+		Network.select_character(data, $"%P1Display".selected_style if current_player == 1 else $"%P2Display".selected_style)
 
 func quit():
 	if Network.multiplayer_active:
@@ -141,9 +149,15 @@ func quit():
 	get_tree().reload_current_scene()
 
 func get_match_data():
+	if singleplayer:
+		selected_styles = {
+			1: $"%P1Display".selected_style,
+			2: $"%P2Display".selected_style
+		}
 	var data = {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
+		"selected_styles": selected_styles,
 #		"selected_customs": selected_customs,
 	}
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:

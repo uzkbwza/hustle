@@ -215,6 +215,19 @@ func init(pos=null):
 		supers_available = MAX_SUPERS
 		super_meter = MAX_SUPER_METER
 
+func apply_style(style):
+	if style == null:
+		return
+	if style.has("character_color"):
+		set_color(style.character_color)
+		Custom.apply_style_to_material(style, sprite.get_material())
+	if !is_ghost and style.has("show_aura") and style.has("aura_settings"):
+		aura_particle = preload("res://fx/CustomTrailParticle.tscn").instance()
+		particles.add_child(aura_particle)
+		aura_particle.load_settings(style.aura_settings)
+		aura_particle.position = hurtbox_pos_float()
+		aura_particle.start_emitting()
+
 func start_super():
 	emit_signal("super_started")
 
@@ -733,7 +746,8 @@ func tick():
 	if forfeit and forfeit_ticks > 2:
 		change_state("ForfeitExplosion")
 		forfeit = false
-		
+	if aura_particle:
+		aura_particle.position = hurtbox_pos_float()
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):

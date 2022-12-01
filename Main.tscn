@@ -1491,7 +1491,6 @@ flat = true
 
 [node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-visible = false
 margin_top = 42.0
 margin_right = 90.0
 margin_bottom = 62.0
@@ -1503,9 +1502,9 @@ flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 42.0
+margin_top = 63.0
 margin_right = 90.0
-margin_bottom = 62.0
+margin_bottom = 83.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1514,10 +1513,9 @@ flat = true
 
 [node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-visible = false
-margin_top = 63.0
+margin_top = 84.0
 margin_right = 90.0
-margin_bottom = 83.0
+margin_bottom = 104.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1526,9 +1524,9 @@ flat = true
 
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 63.0
+margin_top = 105.0
 margin_right = 90.0
-margin_bottom = 83.0
+margin_bottom = 125.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1537,9 +1535,9 @@ flat = true
 
 [node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
+margin_top = 126.0
 margin_right = 90.0
-margin_bottom = 104.0
+margin_bottom = 146.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1548,9 +1546,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
+margin_top = 147.0
 margin_right = 90.0
-margin_bottom = 125.0
+margin_bottom = 167.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )

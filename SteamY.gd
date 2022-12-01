@@ -28,3 +28,6 @@ func _initialize_steam():
 func _process(_delta):
 	if STARTED:
 		Steam.run_callbacks()
+
+func has_supporter_pack(_steam_id):
+	return true

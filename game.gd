@@ -278,6 +278,11 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.set_color(Color("ff7a81"))
 	p1.init()
 	p2.init()
+
+	if match_data.has("selected_styles"):
+		p1.apply_style(match_data.selected_styles[1])
+		p2.apply_style(match_data.selected_styles[2])
+
 	if match_data.has("gravity_enabled"):
 		gravity_enabled = match_data.gravity_enabled
 		p1.gravity_enabled = match_data.gravity_enabled

@@ -38,6 +38,8 @@ onready var settings_map = {
 	$"%EndColor": "end_color",
 	$"%Start Alpha": "start_alpha",
 	$"%End Alpha": "end_alpha",
+	$"%X Offset": "x_offset",
+	$"%Y Offset": "y_offset",
 	
 }
 

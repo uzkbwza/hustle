@@ -5,6 +5,7 @@ class_name Utils
 const cardinal_dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1)]
 const diagonal_dirs = [Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1), Vector2(-1, 1)]
 const dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1), Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1), Vector2(-1, 1)]
+const INVALID_FILE_CHARS = "<>:/\\|?*"
 
 #func _input(event):
 #	if event is InputEventKey:
@@ -20,6 +21,15 @@ const dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1), Vect
 #	fx.rotation = rotation
 #	return fx
 ##	await get_tree().physics_frame
+static func filter_filename(text):
+	var filtered_file_name = ""
+	for char_ in text:
+		if not char_ in INVALID_FILE_CHARS:
+			filtered_file_name += char_
+		else:
+			filtered_file_name += "_"
+	return filtered_file_name
+
 static func int_abs(n: int):
 	if n < 0:
 		n *= -1
