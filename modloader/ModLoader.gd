@@ -11,6 +11,11 @@ var active = false
 
 func _init():
 	var file = File.new()
+	if !file.file_exists("user://modded.json"):
+		file.open("user://modded.json", File.WRITE)
+		file.store_string(JSON.print({"modsEnabled":false}, "  "))
+		file.close()
+		
 	file.open("user://modded.json", File.READ)
 	var mod_options = JSON.parse(file.get_as_text()).result
 	
@@ -196,6 +201,13 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 			instCharAnim = instCharTS.get_node("Flip/ShootingArm")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+		#Changes the sprite for the in air sprite because it's a seperate node like coboys arm. -Valkarin
+		elif charName == "Wizard" and media.split("/")[ - 3 ] == "LiftoffAir":
+			
+			instCharAnim = instCharTS.get_node("Flip/LiftoffSprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			
 		else :
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			

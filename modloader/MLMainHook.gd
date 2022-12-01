@@ -10,7 +10,7 @@ func _ready():
 		_addMisingList()
 	
 func _addModList():
-	# add the mod list container and
+	# add the mod list container
 	var list = addContainer("ModListContainer", "Mod List")
 
 	# add the contents into it

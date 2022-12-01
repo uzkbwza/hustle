@@ -1,0 +1,13 @@
+{
+  "name": "",
+  "friendly_name": "",
+  "description": "",
+  "author": "",
+  "version": "",
+  "link": "",
+  "id": "",
+  "overwrites": true,
+  "requires": [""],
+  "client_side": true,
+  "priority": 0
+}
