@@ -17,6 +17,9 @@ signal received_challenge()
 signal challenge_declined()
 signal challenger_cancelled()
 signal received_spectator_match_data(data)
+signal client_validation_success()
+signal client_validation_failure(message)
+signal authentication_started()
 
 signal user_joined(user_id)
 signal user_left(user_id)
@@ -36,6 +39,9 @@ var LOBBY_VOTE_KICK: bool = false
 var LOBBY_MAX_MEMBERS: int = 64
 
 var SPECTATORS = []
+
+var TICKET: Dictionary
+var CLIENT_TICKET: Dictionary
 
 var OPPONENT_ID: int = 0
 var PLAYER_SIDE = 1
@@ -64,6 +70,8 @@ func _ready() -> void:
 	Steam.connect("persona_state_change", self, "_on_Persona_Change")
 	Steam.connect("p2p_session_request", self, "_on_P2P_Session_Request")
 	Steam.connect("p2p_session_connect_fail", self, "_on_P2P_Session_Connect_Fail")
+	Steam.connect("get_auth_session_ticket_response", self, "_get_Auth_Session_Ticket_Response")
+	Steam.connect("validate_auth_ticket_response", self, "_validate_Auth_Ticket_Response")
 	spectator_update_timer = Timer.new()
 	spectator_update_timer.connect("timeout", self, "_on_spectator_update_timer_timeout")
 	add_child(spectator_update_timer)
@@ -122,6 +130,8 @@ func challenge_user(user):
 	_send_P2P_Packet(user.steam_id, data)
 	SETTINGS_LOCKED = true
 	CHALLENGING_STEAM_ID = user.steam_id
+	OPPONENT_ID = user.steam_id
+	PLAYER_SIDE = 1
 
 func accept_challenge():
 	var steam_id = CHALLENGER_STEAM_ID
@@ -132,16 +142,22 @@ func accept_challenge():
 	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "2")
 	SETTINGS_LOCKED = true
 	MATCH_SETTINGS = match_settings
-	_setup_game_vs(steam_id)
+#	_setup_game_vs(steam_id)
 	_send_P2P_Packet(steam_id, {
 		"challenge_accepted": SteamYomi.STEAM_ID
 	})
+	authenticate_with(OPPONENT_ID)
+
+func authenticate_with(steam_id):
+	TICKET = Steam.getAuthSessionTicket()
+	emit_signal("authentication_started")
+	_send_P2P_Packet(steam_id, {"validate_auth_session": TICKET})
 
 func decline_challenge():
 	var steam_id = CHALLENGER_STEAM_ID
-	CHALLENGER_STEAM_ID = 0
 	_send_P2P_Packet(steam_id, {"challenge_declined": SteamYomi.STEAM_ID})
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
+	CHALLENGER_STEAM_ID = 0
 
 func quit_match():
 	if !SPECTATING:
@@ -153,6 +169,9 @@ func quit_match():
 		Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
+		if TICKET:
+			Steam.cancelAuthTicket(TICKET['id'])
+			Steam.endAuthSession(CLIENT_TICKET['id'])
 
 func leave_Lobby() -> void:
 	# If in a lobby, leave it
@@ -313,65 +332,122 @@ func _read_P2P_Packet() -> void:
 
 		# Make the packet data readable
 		var PACKET_CODE: PoolByteArray = PACKET['data']
-		var READABLE: Dictionary = bytes2var(PACKET_CODE)
+		var readable: Dictionary = bytes2var(PACKET_CODE)
 
 		# Print the packet to output
-#		print("Packet: "+str(READABLE))
+#		print("Packet: "+str(readable))
 		
-		if READABLE.has("rpc_data"):
+		if readable.has("rpc_data"):
 			print("received rpc")
-			_receive_rpc(READABLE)
-		if READABLE.has("challenge_from"):
-			_receive_challenge(READABLE.challenge_from, READABLE.match_settings)
-		if READABLE.has("challenge_accepted"):
+			_receive_rpc(readable)
+		if readable.has("challenge_from"):
+			_receive_challenge(readable.challenge_from, readable.match_settings)
+		if readable.has("challenge_accepted"):
 			PLAYER_SIDE = 1
 			Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "1")
-			_setup_game_vs(READABLE.challenge_accepted)
-		if READABLE.has("match_quit"):
+			authenticate_with(readable.challenge_accepted)
+
+		if readable.has("match_quit"):
 			if Network.rematch_menu:
 				emit_signal("quit_on_rematch")
 				Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
 			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 			Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 			Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
-		if READABLE.has("match_settings_updated"):
+		if readable.has("match_settings_updated"):
 			if SETTINGS_LOCKED:
-				NEW_MATCH_SETTINGS = READABLE.match_settings_updated
+				NEW_MATCH_SETTINGS = readable.match_settings_updated
 			else:
-				MATCH_SETTINGS = READABLE.match_settings_updated
-			emit_signal("received_match_settings", READABLE.match_settings_updated)
-		if READABLE.has("player_busy"):
+				MATCH_SETTINGS = readable.match_settings_updated
+			emit_signal("received_match_settings", readable.match_settings_updated)
+		if readable.has("player_busy"):
 			# TODO: show "player is busy" message
 			pass
-		if READABLE.has("request_match_settings"):
-			_send_P2P_Packet(READABLE.request_match_settings, {"match_settings_updated": MATCH_SETTINGS})
-		if READABLE.has("message"):
-			if READABLE.message == "handshake":
+		if readable.has("request_match_settings"):
+			_send_P2P_Packet(readable.request_match_settings, {"match_settings_updated": MATCH_SETTINGS})
+		if readable.has("message"):
+			if readable.message == "handshake":
 				emit_signal("handshake_made")
 		# Append logic here to deal with packet data
-		if READABLE.has("challenge_cancelled"):
+		if readable.has("challenge_cancelled"):
 			emit_signal("challenger_cancelled")
 			Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
-		if READABLE.has("challenge_declined"):
-			_on_challenge_declined(READABLE.challenge_declined)
-		if READABLE.has("spectate_accept"):
-			_on_spectate_request_accepted(READABLE)
-		if READABLE.has("spectator_replay_update"):
-			_on_received_spectator_replay(READABLE.spectator_replay_update)
-		if READABLE.has("request_spectate"):
-			_on_received_spectate_request(READABLE.request_spectate)
-		if READABLE.has("spectate_ended"):
-			_remove_spectator(READABLE.spectate_ended)
-		if READABLE.has("spectate_declined"):
+		if readable.has("challenge_declined"):
+			_on_challenge_declined(readable.challenge_declined)
+		if readable.has("spectate_accept"):
+			_on_spectate_request_accepted(readable)
+		if readable.has("spectator_replay_update"):
+			_on_received_spectator_replay(readable.spectator_replay_update)
+		if readable.has("request_spectate"):
+			_on_received_spectate_request(readable.request_spectate)
+		if readable.has("spectate_ended"):
+			_remove_spectator(readable.spectate_ended)
+		if readable.has("spectate_declined"):
 			_on_spectate_declined()
-		if READABLE.has("spectator_sync_timers"):
-			_on_spectate_sync_timers(READABLE.spectator_sync_timers)
-		if READABLE.has("spectator_turn_ready"):
-			_on_spectate_turn_ready(READABLE.spectator_turn_ready)
-		if READABLE.has("spectator_tick_update"):
-			_on_spectate_tick_update(READABLE.spectator_tick_update)
-		if READABLE.has("spectator_player_forfeit"):
-			Network.player_forfeit(READABLE.spectator_player_forfeit)
+		if readable.has("spectator_sync_timers"):
+			_on_spectate_sync_timers(readable.spectator_sync_timers)
+		if readable.has("spectator_turn_ready"):
+			_on_spectate_turn_ready(readable.spectator_turn_ready)
+		if readable.has("spectator_tick_update"):
+			_on_spectate_tick_update(readable.spectator_tick_update)
+		if readable.has("spectator_player_forfeit"):
+			Network.player_forfeit(readable.spectator_player_forfeit)
+		if readable.has("validate_auth_session"):
+			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
+
+# Callback from getting the auth ticket from Steam
+func _get_Auth_Session_Ticket_Response(auth_ticket: int, result: int) -> void:
+	print("Auth session result: "+str(result))
+	print("Auth session ticket handle: "+str(auth_ticket))
+
+# Callback from attempting to validate the auth ticket
+func _validate_Auth_Ticket_Response(authID: int, response: int, ownerID: int) -> void:
+	print("Ticket Owner: "+str(authID))
+
+	# Make the response more verbose, highly unnecessary but good for this example
+	var VERBOSE_RESPONSE: String
+	match response:
+		0: VERBOSE_RESPONSE = "Steam has verified the user is online, the ticket is valid and ticket has not been reused."
+		1: VERBOSE_RESPONSE = "The user in question is not connected to Steam."
+		2: VERBOSE_RESPONSE = "The user doesn't have a license for this App ID or the ticket has expired."
+		3: VERBOSE_RESPONSE = "The user is VAC banned for this game."
+		4: VERBOSE_RESPONSE = "The user account has logged in elsewhere and the session containing the game instance has been disconnected."
+		5: VERBOSE_RESPONSE = "VAC has been unable to perform anti-cheat checks on this user."
+		6: VERBOSE_RESPONSE = "The ticket has been canceled by the issuer."
+		7: VERBOSE_RESPONSE = "This ticket has already been used, it is not valid."
+		8: VERBOSE_RESPONSE = "This ticket is not from a user instance currently connected to steam."
+		9: VERBOSE_RESPONSE = "The user is banned for this game. The ban came via the web api and not VAC."
+	print("Auth response: "+str(VERBOSE_RESPONSE))
+	print("Game owner ID: "+str(ownerID))
+	
+	if response == 0:
+		emit_signal("client_validation_success")
+		_setup_game_vs(OPPONENT_ID)
+	else:
+		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
+		print(VERBOSE_RESPONSE)
+
+func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
+	var RESPONSE: int = Steam.beginAuthSession(ticket['buffer'], ticket['size'], steam_id)
+
+	# Get a verbose response; unnecessary but useful in this example
+	var VERBOSE_RESPONSE: String
+	match RESPONSE:
+		0: VERBOSE_RESPONSE = "Ticket is valid for this game and this Steam ID."
+		1: VERBOSE_RESPONSE = "The ticket is invalid."
+		2: VERBOSE_RESPONSE = "A ticket has already been submitted for this Steam ID."
+		3: VERBOSE_RESPONSE = "Ticket is from an incompatible interface version."
+		4: VERBOSE_RESPONSE = "Ticket is not for this game."
+		5: VERBOSE_RESPONSE = "Ticket has expired."
+	print("Auth verifcation response: "+str(VERBOSE_RESPONSE))
+
+	if RESPONSE == 0:
+		print("Validation successful, adding user to CLIENT_TICKETS")
+		CLIENT_TICKET = {"id": steam_id, "ticket": ticket['id']}
+	else:
+		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
+		quit_match()
+		get_tree().reload_current_scene()
 
 func _on_received_spectate_request(steam_id):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamYomi.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
@@ -429,12 +505,12 @@ func _setup_game_vs(steam_id):
 	print("registering players")
 	REMATCHING_ID = 0
 	OPPONENT_ID = steam_id
-#	var match_ =
 	Network.register_player_steam(steam_id)
 	Network.register_player_steam(SteamYomi.STEAM_ID)
 	Network.assign_players()
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
+
 
 func _get_default_lobby_member_data():
 	return {
@@ -494,7 +570,9 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 		LOBBY_OWNER = Steam.getLobbyOwner(LOBBY_ID)
 		
 		if LOBBY_OWNER != SteamYomi.STEAM_ID:
-			_send_P2P_Packet(LOBBY_OWNER, {"request_match_settings": SteamYomi.STEAM_ID})
+			request_match_settings()
+
+		
 
 		emit_signal("join_lobby_success")
 

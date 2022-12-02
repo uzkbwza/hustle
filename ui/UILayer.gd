@@ -242,6 +242,7 @@ func reset_ui():
 	$"%PostGameButtons".hide()
 	$"%OpponentDisconnectedLabel".hide()
 	forfeit_pressed = false
+	actionable = false
 
 func _on_quit_button_pressed():
 	if will_forfeit():

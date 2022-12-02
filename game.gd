@@ -280,13 +280,23 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.init()
 
 	if match_data.has("selected_styles"):
-		p1.apply_style(match_data.selected_styles[1])
-		p2.apply_style(match_data.selected_styles[2])
+		var style1 = match_data.selected_styles[1]
+		var style2 = match_data.selected_styles[2]
+#		if Custom.can_use_style(1, style1):
+		if is_ghost or Custom.can_use_style(1, style1):
+			p1.apply_style(style1)
+		
+#		if Custom.can_use_style(2, style1):
+		if is_ghost or Custom.can_use_style(2, style1):
+			p2.apply_style(style2)
 
 	if match_data.has("gravity_enabled"):
 		gravity_enabled = match_data.gravity_enabled
 		p1.gravity_enabled = match_data.gravity_enabled
 		p2.gravity_enabled = match_data.gravity_enabled
+	
+	
+	
 	p1.connect("undo", self, "set", ["undoing", true])
 	p2.connect("undo", self, "set", ["undoing", true])
 	p1.connect("super_started", self, "_on_super_started", [p1])

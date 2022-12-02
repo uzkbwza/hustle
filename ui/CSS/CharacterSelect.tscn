@@ -138,3 +138,5 @@ text = "quit"
 
 [node name="ButtonSoundPlayer" parent="." instance=ExtResource( 7 )]
 button_containers = [ NodePath("../CharacterButtonContainer") ]
+
+[connection signal="visibility_changed" from="." to="." method="_on_CharacterSelect_visibility_changed"]

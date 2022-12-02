@@ -243,6 +243,11 @@ _global_script_classes=[ {
 "class": "XYPlot",
 "language": "GDScript",
 "path": "res://ui/XYPlot/XYPlot.gd"
+}, {
+"base": "Panel",
+"class": "YomiColorPicker",
+"language": "GDScript",
+"path": "res://ui/ColorPicker/CustomColorPicker.gd"
 } ]
 _global_script_class_icons={
 "ActionButton": "",
@@ -291,7 +296,8 @@ _global_script_class_icons={
 "VariableSound2D": "",
 "Window": "",
 "WizardState": "",
-"XYPlot": ""
+"XYPlot": "",
+"YomiColorPicker": ""
 }
 
 [application]
@@ -314,6 +320,7 @@ Custom="*res://Custom.gd"
 
 [debug]
 
+settings/fps/force_fps=60
 gdscript/warnings/enable=false
 multirun/number_of_windows=2
 multirun/window_distance=1270

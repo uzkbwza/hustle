@@ -40,8 +40,28 @@ onready var settings_map = {
 	$"%End Alpha": "end_alpha",
 	$"%X Offset": "x_offset",
 	$"%Y Offset": "y_offset",
-	
+	$"%Angle": "angle",
+	$"%Angle Randomness": "angle_random",
 }
+
+var nodes_map = {}
+
+func load_settings(settings):
+	for setting in settings:
+		if setting in nodes_map:
+			var node = nodes_map[setting]
+			var value = settings[setting]
+			if value is float and node is SettingsSlider:
+				node.set_value(value)
+			if value is bool and node is BaseButton:
+				node.set_pressed(value)
+			if value is Color and node is YomiColorPicker:
+				node.set_color(value)
+			if (value is int or value is float) and node is SpinBox:
+				node.set_value(value)
+			if value is Vector2 and node is XYPlot:
+				node.set_value_float(value)
+#			yield(get_tree(), "idle_frame")
 
 func _ready():
 	$"%Shape".max_value = CustomTrailParticle.get_shapes().size() - 1
@@ -54,7 +74,8 @@ func _ready():
 			node.connect("data_changed", self, "_setting_value_changed")
 		if node.has_signal("color_changed"):
 			node.connect("color_changed", self, "_setting_value_changed")
-		pass
+		var setting = settings_map[node]
+		nodes_map[setting] = node
 	pass # Replace with function body.
 
 func _setting_value_changed(_value=null):

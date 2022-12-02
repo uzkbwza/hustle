@@ -16,6 +16,8 @@ var show_playback_controls = false
 var playback_speed_mod = 1
 var default_dojo = 0
 var current_game = null
+var css_open = false
+var has_supporter_pack_file = false
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
@@ -43,11 +45,21 @@ func _enter_tree():
 #	show_hitboxes = data.options.show_hitboxes
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
+	load_supporter_pack()
+
+func load_supporter_pack():
+	var success = ProjectSettings.load_resource_pack(OS.get_executable_path().get_base_dir() + "/Supporter.pck")
+	if success:
+		has_supporter_pack_file = true
+		print(has_supporter_pack_file)
 
 func _ready():
 	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
 	randomize()
-	if randi() % 20 == 0 and SteamYomi.IS_ONLINE:
+	if randi() % 1 == 0 and SteamYomi.IS_ONLINE and !SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID):
 		emit_signal("nag_window")
 
 func set_music_enabled(on):
@@ -58,6 +70,9 @@ func set_music_enabled(on):
 	else:
 		audio_player.stop()
 		pass
+
+func has_supporter_pack():
+	return has_supporter_pack_file
 
 func set_playback_controls(on):
 	show_playback_controls = on

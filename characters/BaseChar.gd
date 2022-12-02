@@ -216,17 +216,26 @@ func init(pos=null):
 		super_meter = MAX_SUPER_METER
 
 func apply_style(style):
-	if style == null:
-		return
-	if style.has("character_color"):
-		set_color(style.character_color)
-		Custom.apply_style_to_material(style, sprite.get_material())
-	if !is_ghost and style.has("show_aura") and style.has("aura_settings"):
-		aura_particle = preload("res://fx/CustomTrailParticle.tscn").instance()
-		particles.add_child(aura_particle)
-		aura_particle.load_settings(style.aura_settings)
-		aura_particle.position = hurtbox_pos_float()
-		aura_particle.start_emitting()
+	if style != null and !is_ghost:
+		if style.has("character_color") and style.character_color != null:
+			set_color(style.character_color)
+			Custom.apply_style_to_material(style, sprite.get_material())
+		if !is_ghost and style.show_aura and style.has("aura_settings"):
+			aura_particle = preload("res://fx/CustomTrailParticle.tscn").instance()
+			particles.add_child(aura_particle)
+			aura_particle.load_settings(style.aura_settings)
+			aura_particle.position = hurtbox_pos_float()
+			aura_particle.start_emitting()
+			if aura_particle.show_behind_parent:
+				aura_particle.z_index = -1
+		if style.has("hitspark"):
+			custom_hitspark = load(Custom.hitsparks[style.hitspark])
+			for hitbox in hitboxes:
+				hitbox.HIT_PARTICLE = custom_hitspark
+	if style != null and is_ghost:
+		sprite.get_material().set_shader_param("color", Color.white)
+		sprite.get_material().set_shader_param("use_outline", true)
+#		sprite.get_material().set_shader_param("outline_color", Color.white)
 
 func start_super():
 	emit_signal("super_started")
@@ -246,7 +255,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "lowest_tick", "state_changed", "nudge_amount", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "lowest_tick", "state_changed","nudge_amount", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -391,6 +400,7 @@ func _process(_delta):
 		self_modulate.a = 1.0
 	if is_instance_valid(aura_particle):
 		aura_particle.position = hurtbox_pos_float()
+		aura_particle.facing = get_facing_int()
 
 func debug_text():
 	.debug_text()
@@ -555,8 +565,9 @@ func can_parry_hitbox(hitbox):
 
 
 func set_color(color: Color):
-	sprite.get_material().set_shader_param("color", color)
-	self.color = color
+	if color != null:
+		sprite.get_material().set_shader_param("color", color)
+		self.color = color
 
 func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":

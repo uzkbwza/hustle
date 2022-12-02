@@ -1003,7 +1003,7 @@ height = 30
 damage = 90
 hitstun_ticks = 16
 hitlag_ticks = 2
-victim_hitlag = 10
+victim_hitlag = 4
 screenshake_amount = 2
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
@@ -1044,7 +1044,7 @@ y = -16
 damage = 40
 hitstun_ticks = 16
 hitlag_ticks = 2
-victim_hitlag = 10
+victim_hitlag = 4
 screenshake_amount = 2
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
@@ -1451,7 +1451,7 @@ Aerial"
 
 [node name="Pommel" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 79 )
-anim_length = 11
+anim_length = 15
 enter_force_dir_x = "1.0"
 enter_force_speed = "2.0"
 type = 1
@@ -1496,6 +1496,7 @@ GroundedSpecial
 Aerial
 AerialSpecial"
 interrupt_into_string = "Gun
+SlowHolster
 AerialSuper
 GroundedSuper"
 
@@ -1506,11 +1507,22 @@ anim_length = 4
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2
-interrupt_from_string = "Gun"
+interrupt_from_string = "FastHolster"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Shoot" type="Node2D" parent="StateMachine" index="23"]
+[node name="SlowHolster" type="Node2D" parent="StateMachine" index="23"]
+script = ExtResource( 79 )
+sprite_animation = "Holster"
+anim_length = 8
+type = 2
+button_texture = ExtResource( 160 )
+air_type = 2
+interrupt_from_string = "SlowHolster"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="Shoot" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot"
@@ -1520,14 +1532,14 @@ button_texture = ExtResource( 161 )
 air_type = 2
 iasa_at = 7
 interrupt_from_string = "Gun
-LassoThrow
-"
+LassoThrow"
 interrupt_into_string = "Gun
+FastHolster
 GroundedSuper
 AerialSuper"
 release_opponent_on_startup = true
 
-[node name="LassoHold" type="Node2D" parent="StateMachine" index="24"]
+[node name="LassoHold" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 168 )
 apply_forces = true
 apply_fric = true
@@ -1540,7 +1552,7 @@ interrupt_into_string = "LassoThrow
 "
 start_throw_pos_x = 16
 
-[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="25"]
+[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 169 )
 endless = true
 reset_momentum = true
@@ -1579,7 +1591,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 
-[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="26"]
+[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -1618,7 +1630,7 @@ knockdown_extends_hitstun = false
 start_tick = 7
 active_ticks = 2
 
-[node name="BackSlash" type="Node2D" parent="StateMachine" index="27"]
+[node name="BackSlash" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 209 )
 apply_forces = true
 apply_fric = true
@@ -1696,19 +1708,19 @@ knockback = "12.0"
 start_tick = 9
 active_ticks = 1
 
-[node name="DashStartup" parent="StateMachine" index="38"]
+[node name="DashStartup" parent="StateMachine" index="39"]
 title = "Walk"
 interrupt_from_string = "GroundedMovement
 Grounded
 Dash"
 
-[node name="DashForward" parent="StateMachine" index="39"]
+[node name="DashForward" parent="StateMachine" index="40"]
 spawn_particle_on_enter = false
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="40"]
+[node name="DashBackward" parent="StateMachine" index="41"]
 spawn_particle_on_enter = false
 interrupt_frames = [ 9 ]
 dash_speed = 3
@@ -1716,19 +1728,19 @@ fric = "0.02"
 spawn_particle = false
 startup_lag = 1
 
-[node name="Jump" parent="StateMachine" index="42"]
+[node name="Jump" parent="StateMachine" index="43"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="44"]
+[node name="DoubleJump" parent="StateMachine" index="45"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="45"]
+[node name="AirDash" parent="StateMachine" index="46"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="54"]
+[node name="AirGrab" parent="StateMachine" index="55"]
 land_cancel = true
 
-[node name="AirDownThrow" parent="StateMachine" index="59"]
+[node name="AirDownThrow" parent="StateMachine" index="60"]
 dir_x = "1.0"
 dir_y = "1.00"

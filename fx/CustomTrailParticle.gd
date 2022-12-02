@@ -11,6 +11,10 @@ var end_alpha = 1.0
 var start_scale = 1.0
 var end_scale = 1.0
 
+var default_gravity_x = 0
+var facing = 1
+var default_angle = 0
+
 onready var particles = $CPUParticles2D
 
 var custom_set = {
@@ -29,6 +33,7 @@ var custom_set = {
 	"x_offset": "set_x_offset",
 	"y_offset": "set_y_offset",
 	"lifetime": "set_lifetime",
+	"angle": "set_angle",
 }
 
 static func get_shapes():
@@ -36,6 +41,9 @@ static func get_shapes():
 		preload("res://fx/particle_round_4x4.png"),
 		preload("res://fx/particle_round_hollow_4x4.png"),
 		preload("res://fx/particle_square_4x4.png"),
+		preload("res://fx/TriUp.png"),
+		preload("res://fx/star.png"),
+		preload("res://fx/heart.png"),
 	]
 
 static func get_default():
@@ -70,7 +78,9 @@ static func get_default():
 		"end_scale": 1.0,
 		"x_offset": 0.0,
 		"y_offset": 0.0,
-		"scale_amount_random": 0.0
+		"scale_amount_random": 0.0,
+		"angle": 0.0,
+		"angle_random": 0.0,
 	}
 
 static func get_setting_min(setting):
@@ -100,6 +110,8 @@ static func get_setting_min(setting):
 		"scale_amount_random": 0.0,
 		"x_offset": -24.0,
 		"y_offset": -24.0,
+		"angle": -360.0,
+		"angle_random": 0.0,
 	}
 	return minimums[setting] if minimums.has(setting) else null
 
@@ -130,6 +142,8 @@ static func get_setting_max(setting):
 		"x_offset": 24.0,
 		"y_offset": 24.0,
 		"scale_amount_random": 1.0,
+		"angle": 360.0,
+		"angle_random": 1.0,
 	}
 	return maximums[setting] if maximums.has(setting) else null
 
@@ -150,9 +164,11 @@ func set_shape(shape_num):
 
 func set_in_front(on):
 	if on:
-		particles.z_index = 1
+		show_behind_parent = false
+#		particles.z_index = 1
 	else:
-		particles.z_index = -1
+		show_behind_parent = true
+#		particles.z_index = -1
 
 func set_start_color(color):
 	start_color = color
@@ -171,6 +187,11 @@ func _physics_process(_delta):
 	elif Global.current_game:
 		if enabled:
 			set_enabled(false)
+
+func tick():
+	.tick()
+	particles.gravity.x = default_gravity_x * facing
+	particles.angle = TAU - default_angle if facing == -1 else default_angle
 
 func set_start_alpha(a):
 #	particles.self_modulate.a = a
@@ -216,6 +237,7 @@ func set_rect_size_y(y):
 	particles.set_emission_rect_extents(Vector2(particles.get_emission_rect_extents().x, y))
 
 func set_gravity_x(x):
+	default_gravity_x = x
 	particles.gravity.x = x
 
 func set_gravity_y(y):
@@ -230,6 +252,10 @@ func set_y_offset(y):
 func set_lifetime(lifetime):
 	particles.lifetime = lifetime
 	particles.preprocess = lifetime
+
+func set_angle(angle):
+	default_angle = angle
+	particles.angle = angle
 
 func set_parameter(param, value):
 	var max_value = get_setting_max(param)
@@ -247,5 +273,6 @@ func load_defaults():
 	load_settings(get_default())
 
 func load_settings(settings):
-	for setting in settings:
-		set_parameter(setting, settings[setting])
+	if settings:
+		for setting in settings:
+			set_parameter(setting, settings[setting])

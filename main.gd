@@ -57,6 +57,7 @@ func _ready():
 	$"%NagWindow".rect_position = Vector2(randi() % 640, randi() % 360)
 	Global.connect("nag_window", $"%NagWindow", "show")
 	SteamLobby._stop_spectating()
+	SteamLobby.quit_match()
 
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()

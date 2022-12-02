@@ -9,11 +9,11 @@ var STEAM_NAME: String = ""
 var STARTED = false
 
 func _enter_tree():
-#	_initialize_steam()
+	_initialize_steam()
 	pass
 
 func _initialize_steam():
-	var STARTED = true
+	STARTED = true
 	var INIT: Dictionary = Steam.steamInit()
 	print("Did steam initialize?: " + str(INIT))
 	
@@ -29,5 +29,16 @@ func _process(_delta):
 	if STARTED:
 		Steam.run_callbacks()
 
-func has_supporter_pack(_steam_id):
-	return true
+func has_supporter_pack(steam_id):
+	if !STARTED:
+		print("steam not started, assuming true")
+		return true
+	if SteamLobby.OPPONENT_ID == steam_id:
+		if SteamLobby.CLIENT_TICKET:
+			print("checking if your opponent has the supporter pack...")
+			return Steam.userHasLicenseForApp(steam_id, Custom.SUPPORTER_PACK) == 0
+	elif steam_id == SteamYomi.STEAM_ID:
+		print("checking if you have the supporter pack...")
+		return Steam.isDLCInstalled(Custom.SUPPORTER_PACK)
+	print("this ID does not have the supporter pack.")
+	return false

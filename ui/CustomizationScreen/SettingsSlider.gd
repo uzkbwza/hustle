@@ -27,6 +27,10 @@ func _on_HSlider_value_changed(value):
 	emit_signal("value_changed", value)
 	$"%Value".text = str(value)
 
+func set_value(value):
+	slider.value = value
+	_on_HSlider_value_changed(value)
+
 func get_data():
 	return value
 

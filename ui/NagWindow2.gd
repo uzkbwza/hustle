@@ -11,7 +11,7 @@ var dir = Vector2(1, 1)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$"%ShowButton".connect("pressed", self, "queue_free")
-	$"%StoreButton".connect("pressed", OS, "shell_open", [STEAM_URL])
+	$"%StoreButton".connect("pressed", self, "_on_store_button_pressed")
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -22,6 +22,9 @@ func _on_LabelBlink_timeout():
 		$"%Title".modulate.a = 1.0
 	else:
 		$"%Title".modulate.a = 0.0
+
+func _on_store_button_pressed():
+	Steam.activateGameOverlayToStore(Custom.SUPPORTER_PACK)
 
 func _process(delta):
 	rect_position += MOVE_SPEED * dir * delta

@@ -21,7 +21,7 @@ func _ready():
 	$"%QuitButton".connect("pressed", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
-	init()
+#	init()
 
 func _on_network_character_selected(player_id, character, style=null):
 	selected_characters[player_id] = character
@@ -172,3 +172,9 @@ func go():
 	else:
 		emit_signal("match_ready", get_match_data())
 	hide()
+
+func _process(delta):
+	Global.css_open = visible
+
+func _on_CharacterSelect_visibility_changed():
+	pass # Replace with function body.

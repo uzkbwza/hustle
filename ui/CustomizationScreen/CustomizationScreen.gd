@@ -46,8 +46,8 @@ func _ready():
 		var outline = Custom.simple_outlines[i]
 		simple_color_button.init(color, outline)
 		$"%SimpleColorButtonContainer".add_child(simple_color_button)
-		simple_color_button.connect("pressed", self, "_on_character_color_changed", [Color(color)])
-		simple_color_button.connect("pressed", self, "_on_outline_color_changed", [Color(outline)])
+		simple_color_button.connect("pressed", self, "_on_character_color_changed", [color])
+		simple_color_button.connect("pressed", self, "_on_outline_color_changed", [outline])
 	$"%ResetColorButton".connect("pressed", self, "_on_reset_color_pressed")
 #	select_hitspark("default")
 	for hitspark in Custom.hitsparks:
@@ -61,9 +61,13 @@ func _ready():
 #	$"%ShowAura".connect("toggled", $"%TrailSettings", "_show_aura_toggled")
 	$"%SaveButton".connect("pressed", self, "save_style")
 	$"%LoadStyleButton".connect("style_selected", self, "load_style")
-	$"%LoadStyleButton".update_styles()
+	$"%DLCWarning".visible = false
+	update_warning()
 
 func show():
+	$"%LoadStyleButton".update_styles()
+	$"%DLCWarning".visible = false
+	update_warning()
 	.show()
 	_on_reset_color_pressed()
 	
@@ -72,16 +76,34 @@ func save_style():
 	Custom.save_style(data)
 	$"%LoadStyleButton".update_styles()
 	$"%StyleName".clear()
-	$"%SavedLabel".text = "saved to " + data.style_name + ".style"
+	$"%SavedLabel".text = "saved as " + data.style_name + ".style"
 	$"%SavedLabel".show()
-	
+
+func update_warning():
+	if !Global.has_supporter_pack():
+		$"%DLCWarning".visible = Custom.requires_dlc(get_style_data())
+
 func load_style(style):
 	if style:
-		pass
-
+		if style.show_aura:
+			$"%TrailSettings".load_settings(style.aura_settings)
+		$"%StyleName".text = style.style_name
+		$"%ShowOutline".pressed = style.use_outline
+		if style.use_outline:
+			$"%Outline".set_color(style.outline_color)
+		$"%ShowAura".pressed = style.show_aura
+		call_deferred("create_aura", style.aura_settings)
+		if style.character_color:
+			$"%Character".set_color(style.character_color)
+		for child in $"%HitsparkButtonContainer".get_children():
+			if child.text == style.hitspark.strip_edges():
+				child.pressed = true
+				select_hitspark(style.hitspark)
+	
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
 	spawn_hitspark()
+	update_warning()
 
 func spawn_hitspark():
 	if Custom.hitsparks.has(selected_hitspark):
@@ -102,6 +124,7 @@ func _physics_process(delta):
 
 func _on_trail_settings_changed(settings):
 	call_deferred("create_aura", settings)
+	update_warning()
 
 func create_aura(trail_settings):
 	for particle in custom_particles:
@@ -123,11 +146,13 @@ func _on_reset_color_pressed():
 	character_color = null
 	$"%StaticSprite".get_material().set_shader_param("color", Color.white)
 	_on_show_outline_toggled(false)
+	update_warning()
 
 func _on_character_color_changed(color):
 	$"%StaticSprite".get_material().set_shader_param("color", color)
 #	$"%MovingSprite".get_material().set_shader_param("color", color)
 	character_color = color
+	update_warning()
 
 func _on_outline_color_changed(color):
 	$"%ShowOutline".set_pressed_no_signal(true)
@@ -135,10 +160,12 @@ func _on_outline_color_changed(color):
 	$"%StaticSprite".get_material().set_shader_param("use_outline", true)
 #	$"%MovingSprite".get_material().set_shader_param("color", color)
 	outline_color = color
+	update_warning()
 
 func _on_show_outline_toggled(on):
 	$"%StaticSprite".get_material().set_shader_param("use_outline", on)
 	$"%ShowOutline".set_pressed_no_signal(on)
+	update_warning()
 
 func _on_character_button_pressed(button):
 	for button in buttons:
@@ -163,4 +190,8 @@ func _on_StyleName_text_entered(new_text):
 
 func _on_OpenFolderButton_pressed():
 	OS.shell_open(ProjectSettings.globalize_path("user://custom"))
+	pass # Replace with function body.
+
+
+func _on_DLCWarning_meta_clicked(meta):
 	pass # Replace with function body.

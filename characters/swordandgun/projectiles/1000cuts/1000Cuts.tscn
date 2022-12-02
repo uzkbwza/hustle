@@ -26,6 +26,8 @@ shader = ExtResource( 19 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -47,6 +49,12 @@ immunity_susceptible = false
 frames = SubResource( 1 )
 animation = "Slash"
 
+[node name="CollisionBox" parent="." index="2"]
+z_index = 1000
+
+[node name="Hurtbox" parent="." index="3"]
+z_index = 1000
+
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 2 )
 sprite_animation = "Slash"
@@ -66,7 +74,7 @@ minimum_damage = 20
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
-sdi_modifier = "0.2"
+sdi_modifier = "0.4"
 hit_height = 2
 hit_sound = ExtResource( 17 )
 knockback = "2"
@@ -86,7 +94,7 @@ minimum_damage = 15
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
-sdi_modifier = "0.2"
+sdi_modifier = "0.4"
 hit_height = 0
 group = 1
 hit_sound = ExtResource( 17 )
@@ -107,7 +115,7 @@ minimum_damage = 20
 hitstun_ticks = 14
 hitlag_ticks = 3
 victim_hitlag = 3
-sdi_modifier = "0.2"
+sdi_modifier = "0.4"
 group = 2
 hit_sound = ExtResource( 18 )
 knockback = "2"

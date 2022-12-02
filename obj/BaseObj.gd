@@ -41,6 +41,8 @@ var stage_width = 0
 
 var obj_name: String
 
+var custom_hitspark
+
 var data
 var obj_data
 var current_tick = 0
@@ -148,6 +150,9 @@ func init(pos=null):
 	update_data()
 	initialized = true
 	emit_signal("initialized")
+	if creator and creator.custom_hitspark:
+		for hitbox in hitboxes:
+			hitbox.HIT_PARTICLE = creator.custom_hitspark
 
 func reset_hurtbox():
 	hurtbox.x = default_hurtbox.x

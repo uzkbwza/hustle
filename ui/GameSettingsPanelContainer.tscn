@@ -26,8 +26,8 @@ scroll_horizontal_enabled = false
 
 [node name="GameSettingsContainer" type="VBoxContainer" parent="ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 152.0
-margin_bottom = 163.0
+margin_right = 158.0
+margin_bottom = 174.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

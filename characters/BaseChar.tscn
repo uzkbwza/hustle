@@ -383,7 +383,8 @@ damage_taken_modifier = "1.0"
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
 frames = SubResource( 3 )
-animation = "Wait"
+animation = "NunChukHeavy"
+frame = 8
 offset = Vector2( 0, -18 )
 __meta__ = {
 "_edit_group_": true,

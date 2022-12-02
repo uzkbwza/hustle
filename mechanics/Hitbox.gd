@@ -10,7 +10,7 @@ const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
 const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 0
 
 
-const HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
+var HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 #const DAMAGE_SUPER_GAIN_DIVISOR = 1
 

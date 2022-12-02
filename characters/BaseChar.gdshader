@@ -31,16 +31,16 @@ void fragment() {
 		float size_y = 1.0/float(textureSize(TEXTURE, 0).y);
 		vec4 sprite_color = texture(TEXTURE, UV);
 		float alpha = -8.0 * sprite_color.a;
-		alpha += texture(TEXTURE, UV + vec2(size_x, 0)).a;
-		alpha += texture(TEXTURE, UV + vec2(-size_x, 0)).a;
-		alpha += texture(TEXTURE, UV + vec2(0, size_y)).a;
-		alpha += texture(TEXTURE, UV + vec2(0, -size_y)).a;
+		alpha += texture(TEXTURE, UV + vec2(size_x, 0)).a * float(same_color(texture(TEXTURE, UV + vec2(size_x, 0)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(-size_x, 0)).a * float(same_color(texture(TEXTURE, UV + vec2(-size_x, 0)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(0, size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(0, size_y)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(0, -size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(0, -size_y)).rgb, replacement_color.rgb));
 		//For outlining corners
 		//Change the -4.0 to -8.0 in alpa if adding these lines
-		alpha += texture(TEXTURE, UV + vec2(size_x, size_y)).a;
-		alpha += texture(TEXTURE, UV + vec2(-size_x, size_y)).a;
-		alpha += texture(TEXTURE, UV + vec2(-size_x, -size_y)).a;
-		alpha += texture(TEXTURE, UV + vec2(size_x, -size_y)).a;
+		alpha += texture(TEXTURE, UV + vec2(size_x, size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(size_x, size_y)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(-size_x, size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(-size_x, size_y)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(-size_x, -size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(-size_x, -size_y)).rgb, replacement_color.rgb));
+		alpha += texture(TEXTURE, UV + vec2(size_x, -size_y)).a * float(same_color(texture(TEXTURE, UV + vec2(size_x, -size_y)).rgb, replacement_color.rgb));
 		vec4 final_color = mix(sprite_color, outline_color, clamp(alpha, 0.0, 1.0));
 		COLOR = vec4(final_color.rgb, clamp(abs(alpha) + sprite_color.a, 0.0, 1.0));
 	}

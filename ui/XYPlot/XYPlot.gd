@@ -42,6 +42,11 @@ func _ready():
 	panel.connect("data_changed", self, "emit_signal", ["data_changed"])
 	panel.parent = self
 
+func set_value_float(value):
+#	panel.x_value_float = value.x
+#	panel.y_value_float = value.y
+	panel.update_value(value)
+
 func get_value():
 	return panel.get_value()
 

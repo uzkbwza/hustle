@@ -47,6 +47,11 @@ var ticks = {
 	2: null
 }
 
+var styles = {
+	1: null,
+	2: null
+}
+
 var auto = false
 
 # Names for remote players in id:name format.
@@ -290,6 +295,11 @@ func _reset():
 		2: false
 	}
 
+	styles = {
+		1: null,
+		2: null
+	}
+	
 	action_inputs = {
 		1: {
 			"action": null,
@@ -374,6 +384,10 @@ remote func player_disconnected(id):
 #	multiplayer_active = false
 	if !(id in players):
 		return
+	if Global.css_open:
+		get_tree().reload_current_scene()
+		if steam:
+			SteamLobby.quit_match()
 	emit_signal("player_disconnected")
 	if is_host():
 		if players.has(id):
@@ -741,6 +755,7 @@ remotesync func send_rematch_request(player_id):
 
 remotesync func sync_character_selection(player_id, character, style=null):
 	print("player %s selected character" % [str(player_id)])
+	styles[player_id] = style
 	emit_signal("character_selected", player_id, character, style)
 
 remotesync func open_chara_select():
