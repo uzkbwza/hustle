@@ -93,13 +93,13 @@ func load_style(style):
 			$"%Outline".set_color(style.outline_color)
 		$"%ShowAura".pressed = style.show_aura
 		call_deferred("create_aura", style.aura_settings)
-		if style.character_color:
+		if style.character_color != null:
 			$"%Character".set_color(style.character_color)
 		for child in $"%HitsparkButtonContainer".get_children():
 			if child.text == style.hitspark.strip_edges():
 				child.pressed = true
 				select_hitspark(style.hitspark)
-	
+
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
 	spawn_hitspark()

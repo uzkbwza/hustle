@@ -13,6 +13,8 @@ shader = ExtResource( 6 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -24,10 +26,16 @@ animations = [ {
 
 [node name="FlameWave" instance=ExtResource( 1 )]
 material = SubResource( 2 )
-deletes_other_projectiles = true
+has_projectile_parry_window = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
+
+[node name="CollisionBox" parent="." index="2"]
+z_index = 1000
+
+[node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 2 )
@@ -37,16 +45,16 @@ num_hits = 5
 lifetime = 60
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 3 )
-damage = 40
+damage = 30
 hitstun_ticks = 14
 hitlag_ticks = 0
 victim_hitlag = 4
 hit_sound = ExtResource( 5 )
 dir_y = "-0.120"
-grounded_hit_state = "HurtAerial"
 start_tick = 1
 always_on = true
 looping = true
 loop_active_ticks = 1
-loop_inactive_ticks = 5
+loop_inactive_ticks = 4

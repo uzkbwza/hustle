@@ -13,6 +13,8 @@ shader = ExtResource( 6 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -28,6 +30,8 @@ shader = ExtResource( 6 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="MagicMissile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
@@ -42,10 +46,12 @@ material = SubResource( 3 )
 z_index = -4
 
 [node name="CollisionBox" parent="." index="2"]
+z_index = 1000
 width = 5
 height = 5
 
 [node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 width = 7
 height = 7
 
@@ -56,12 +62,14 @@ homing_turn_speed = "0.25"
 homing_accel = "0.15"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 2 )
 width = 6
 height = 6
 damage = 50
 hitstun_ticks = 10
 victim_hitlag = 4
+parry_meter_gain = 20
 hit_sound = ExtResource( 5 )
 knockback = "3.0"
 start_tick = 1

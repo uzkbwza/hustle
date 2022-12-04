@@ -245,6 +245,15 @@ func stop_particles():
 		particle.stop_emitting()
 	pass
 
+func get_current_sprite_frame() -> Texture:
+	return sprite.frames.get_frame(sprite.animation, sprite.frame)
+
+func get_current_sprite_frame_path() -> String:
+	return get_current_sprite_frame().resource_path
+
+func get_current_sprite_frame_number():
+	return Utils.number_from_string(get_current_sprite_frame_path().split("/")[-1].split(".")[0])
+
 func update_data():
 	data = get_data()
 	obj_data = data["object_data"]

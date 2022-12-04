@@ -30,11 +30,12 @@ var minimum_damage = 0
 var sdi_modifier = "1.0"
 var increment_combo = false
 var ignore_armor = false
-
+var damage_proration = 0
+var parry_meter_gain = -1
+var hitbox_type = 0
 
 func _init(state):
 	hit_height = state.hit_height
-	
 	if !state.has_method("get_real_hitstun"):
 		hitstun_ticks = state.hitstun_ticks
 	else:
@@ -82,3 +83,9 @@ func _init(state):
 		increment_combo = state.increment_combo
 	if state.get("ignore_armor") != null:
 		ignore_armor = state.ignore_armor
+	if state.get("damage_proration") != null:
+		damage_proration = state.damage_proration
+	if state.get("parry_meter_gain") != null:
+		parry_meter_gain = state.parry_meter_gain
+	if state.get("hitbox_type") != null:
+		hitbox_type = state.hitbox_type

@@ -1,4 +1,4 @@
-[gd_scene load_steps=230 format=2]
+[gd_scene load_steps=237 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -60,6 +60,7 @@
 [ext_resource path="res://characters/stickman/sprites/stickman49.png" type="Texture" id=58]
 [ext_resource path="res://characters/stickman/sprites/phantomdash3.png" type="Texture" id=59]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin4.png" type="Texture" id=60]
+[ext_resource path="res://characters/wizard/sprites/grab2_1.png" type="Texture" id=61]
 [ext_resource path="res://characters/wizard/sprites/burst.png" type="Texture" id=62]
 [ext_resource path="res://characters/wizard/sprites/idle.png" type="Texture" id=63]
 [ext_resource path="res://characters/wizard/sprites/landing.png" type="Texture" id=64]
@@ -224,7 +225,13 @@
 [ext_resource path="res://characters/wizard/sprites/magma_bolt4.png" type="Texture" id=223]
 [ext_resource path="res://sound/common/hit3.wav" type="AudioStream" id=224]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/boltofmagma.png" type="Texture" id=225]
+[ext_resource path="res://characters/wizard/sprites/grab2_3.png" type="Texture" id=226]
+[ext_resource path="res://characters/wizard/sprites/grab2_4.png" type="Texture" id=227]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=228]
+[ext_resource path="res://characters/wizard/sprites/grab2_2.png" type="Texture" id=229]
+[ext_resource path="res://characters/wizard/sounds/magic9.wav" type="AudioStream" id=230]
+[ext_resource path="res://characters/wizard/ConfusionParticle.tscn" type="PackedScene" id=231]
+[ext_resource path="res://characters/wizard/sprites/actionbuttons/confusing_touch.png" type="Texture" id=232]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -340,6 +347,11 @@ animations = [ {
 "loop": true,
 "name": "Grab",
 "speed": 60.0
+}, {
+"frames": [ ExtResource( 61 ), ExtResource( 61 ), ExtResource( 61 ), ExtResource( 61 ), ExtResource( 61 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 227 ) ],
+"loop": true,
+"name": "Grab2",
+"speed": 5.0
 }, {
 "frames": [ ExtResource( 66 ) ],
 "loop": true,
@@ -506,7 +518,7 @@ animations = [ {
 "name": "ThrowTech",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 209 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 211 ), ExtResource( 211 ) ],
+"frames": [ ExtResource( 209 ), ExtResource( 209 ), ExtResource( 213 ), ExtResource( 213 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 212 ), ExtResource( 211 ), ExtResource( 211 ) ],
 "loop": true,
 "name": "TomeSlap",
 "speed": 5.0
@@ -559,8 +571,8 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "Kick"
-frame = 6
+animation = "Grab2"
+frame = 0
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -720,6 +732,7 @@ damage = 115
 hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 11
+damage_proration = 2
 hit_height = 0
 screenshake_amount = 5
 whiff_sound = ExtResource( 140 )
@@ -808,16 +821,17 @@ x = 17
 y = -23
 width = 15
 height = 7
-damage = 60
+damage = 80
 hitstun_ticks = 20
 hitlag_ticks = 6
+damage_proration = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 215 )
 dir_x = "1.00"
 dir_y = "-0.40"
 knockback = "5.0"
-start_tick = 4
-active_ticks = 2
+start_tick = 5
+active_ticks = 3
 
 [node name="Kick" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 91 )
@@ -848,10 +862,11 @@ x = 12
 y = -5
 width = 23
 height = 4
-damage = 70
+damage = 60
 hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 6
+damage_proration = -1
 hit_height = 2
 screenshake_amount = 5
 hit_sound = ExtResource( 145 )
@@ -915,6 +930,7 @@ damage = 60
 hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 7
+damage_proration = 1
 dir_y = "-0.25"
 knockback = "12.0"
 launch_reversible = true
@@ -1103,6 +1119,7 @@ interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSuper"
+initiative_effect = true
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
@@ -1115,7 +1132,16 @@ width = 100
 height = 100
 can_draw = false
 
-[node name="ThrowBox" type="Node2D" parent="StateMachine/WindForce" index="1"]
+[node name="WindBox2" type="Node2D" parent="StateMachine/WindForce" index="1"]
+z_index = 1000
+script = ExtResource( 155 )
+x = 145
+y = -177
+width = 165
+height = 150
+can_draw = false
+
+[node name="ThrowBox" type="Node2D" parent="StateMachine/WindForce" index="2"]
 z_index = 1000
 script = ExtResource( 159 )
 x = 10
@@ -1127,7 +1153,7 @@ start_tick = 7
 active_ticks = 23
 throw_state = "Hold"
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="2"]
+[node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="3"]
 z_index = 1000
 script = ExtResource( 95 )
 x = 48
@@ -1213,6 +1239,7 @@ y = -20
 width = 14
 damage = 90
 victim_hitlag = 10
+damage_proration = -1
 cancellable = false
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -1230,6 +1257,7 @@ y = -20
 width = 14
 damage = 90
 victim_hitlag = 10
+damage_proration = -1
 cancellable = false
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -1248,6 +1276,7 @@ y = -20
 width = 17
 damage = 90
 victim_hitlag = 10
+damage_proration = -1
 group = 1
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -1264,6 +1293,7 @@ y = -20
 width = 17
 damage = 90
 victim_hitlag = 10
+damage_proration = -1
 group = 1
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -1322,7 +1352,39 @@ Aerial"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 60
 
-[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="21"]
+[node name="ConfusingTouch" type="Node2D" parent="StateMachine" index="21"]
+script = ExtResource( 91 )
+sprite_animation = "Grab2"
+anim_length = 24
+title = "Confusing Touch"
+type = 2
+button_texture = ExtResource( 232 )
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch" index="0"]
+z_index = 1000
+script = ExtResource( 95 )
+x = 59
+y = -19
+width = 10
+height = 10
+damage = 20
+hitbox_type = 1
+cancellable = false
+screenshake_amount = 0
+replace_hit_particle = true
+whiff_particle = ExtResource( 231 )
+whiff_sound = ExtResource( 230 )
+hit_sound = ExtResource( 146 )
+whiff_sound_volume = -15.0
+hit_sound_volume = -10.0
+dir_y = ""
+start_tick = 6
+active_ticks = 4
+
+[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 218 )
 apply_forces = true
 apply_fric = true
@@ -1409,46 +1471,52 @@ knockback = "4.0"
 start_tick = 6
 active_ticks = 2
 
-[node name="TechRoll" parent="StateMachine" index="31"]
+[node name="TechRoll" parent="StateMachine" index="32"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="DashBackward" parent="StateMachine" index="34"]
+[node name="DashBackward" parent="StateMachine" index="35"]
 interrupt_frames = [ 11 ]
 dash_speed = 9
 stop_frame = 9
 
-[node name="Roll" parent="StateMachine" index="35"]
+[node name="Roll" parent="StateMachine" index="36"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="Jump" parent="StateMachine" index="36"]
+[node name="Jump" parent="StateMachine" index="37"]
 speed = "8"
 y_modifier = "1.2"
 
-[node name="DoubleJump" parent="StateMachine" index="38"]
+[node name="DoubleJump" parent="StateMachine" index="39"]
 data_ui_scene = ExtResource( 126 )
 speed = "8"
 y_modifier = "1.1"
 
-[node name="AirDash" parent="StateMachine" index="39"]
+[node name="AirDash" parent="StateMachine" index="40"]
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="45"]
+[node name="Hold" parent="StateMachine" index="46"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
+release_throw_pos_x = 21
+release_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="46"]
+[node name="AirHold" parent="StateMachine" index="47"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
+release_throw_pos_x = 21
+release_throw_pos_y = -5
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 hit_height = false
+hit_sound = null
+hit_bass_sound = null
 
-[node name="ForwardThrow" parent="StateMachine" index="49"]
+[node name="ForwardThrow" parent="StateMachine" index="50"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1463,7 +1531,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="BackThrow" parent="StateMachine" index="50"]
+[node name="BackThrow" parent="StateMachine" index="51"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1478,7 +1546,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirForwardThrow" parent="StateMachine" index="51"]
+[node name="AirForwardThrow" parent="StateMachine" index="52"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1491,7 +1559,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirBackThrow" parent="StateMachine" index="52"]
+[node name="AirBackThrow" parent="StateMachine" index="53"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1504,7 +1572,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirDownThrow" parent="StateMachine" index="53"]
+[node name="AirDownThrow" parent="StateMachine" index="54"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1516,7 +1584,7 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="ThrowTech" parent="StateMachine" index="54"]
+[node name="ThrowTech" parent="StateMachine" index="55"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true

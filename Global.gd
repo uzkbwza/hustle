@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.0"
+var VERSION = "0.4.1-unstable"
 
 var audio_player
 var music_enabled = true
@@ -18,12 +18,15 @@ var default_dojo = 0
 var current_game = null
 var css_open = false
 var has_supporter_pack_file = false
+var enable_custom_colors = true
+var enable_custom_particles = true
+var enable_custom_hit_sparks = true
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
-#	"Robot": "res://characters/robo/Robot.tscn",
+	"Robot": "res://characters/robo/Robot.tscn",
 }
 
 var songs = {
@@ -59,7 +62,7 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	randomize()
-	if randi() % 1 == 0 and SteamYomi.IS_ONLINE and !SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID):
+	if randi() % 20 == 0 and SteamYomi.IS_ONLINE and !SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID):
 		emit_signal("nag_window")
 
 func set_music_enabled(on):
@@ -140,6 +143,9 @@ func save_options():
 			"show_playback_controls": show_playback_controls,
 			"default_dojo": 0,
 #			"light_mode": light_mode,
+			"enable_custom_colors": enable_custom_colors,
+			"enable_custom_particles": enable_custom_particles,
+			"enable_custom_hit_sparks": enable_custom_hit_sparks,
 		}
 	})
 
@@ -154,6 +160,9 @@ func get_default_player_data():
 			"show_hitboxes": false,
 			"show_playback_controls": false,
 			"default_dojo": 0,
+			"enable_custom_colors": true,
+			"enable_custom_particles": true,
+			"enable_custom_hit_sparks": true,
 #			"light_mode": false,
 		}
 	}

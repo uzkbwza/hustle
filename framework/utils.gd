@@ -368,3 +368,10 @@ static func vector_spring(vec:Vector2, vel:Vector2, target:Vector2, zeta:float, 
 	vel.y = t2[1]
 	vec = Vector2(x, y);
 	return [vec,vel];
+
+static func number_from_string(string):
+	var chars = ""
+	for char_ in string:
+		if char_.is_valid_integer():
+			chars += char_
+	return int(chars)

@@ -172,8 +172,8 @@ func _physics_process(_delta):
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
 		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
-		$"%P1AdvantageLabel".visible = p1.read_advantage and p1.current_state().yomi_effect
-		$"%P2AdvantageLabel".visible = p2.read_advantage and p2.current_state().yomi_effect
+		$"%P1AdvantageLabel".visible = p1.initiative and p1.current_state().initiative_effect
+		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
 		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
 		
@@ -196,18 +196,24 @@ func _physics_process(_delta):
 			var screen_center = game.get_viewport_rect().size/2
 			var p1_texture: Texture = p1.sprite.frames.get_frame(p1.sprite.animation, p1.sprite.frame)
 			var p2_texture: Texture = p2.sprite.frames.get_frame(p2.sprite.animation, p2.sprite.frame)
-			var p1_offset = (p1_texture.get_size() / 2) / game.camera.zoom.x
-			var p2_offset = (p2_texture.get_size() / 2) / game.camera.zoom.x
+			var p1_offset
+			var p2_offset
+			if p1_texture:
+				$"%P1SuperTexture".rect_size = p1_texture.get_size() / game.camera.zoom.x
+				p1_offset = (p1_texture.get_size() / 2) / game.camera.zoom.x
+			if p2_texture:
+				$"%P2SuperTexture".rect_size = p2_texture.get_size() / game.camera.zoom.x
+				p2_offset = (p2_texture.get_size() / 2) / game.camera.zoom.x
 			$"%P1SuperTexture".texture = p1_texture
 			$"%P1SuperTexture".flip_h = p1.flip.scale.x < 0
 			$"%P2SuperTexture".texture = p2_texture
 			$"%P2SuperTexture".flip_h = p2.flip.scale.x < 0
-			p1_super_effects_node.position = p1_offset
-			p2_super_effects_node.position = p2_offset
-			$"%P1SuperTexture".rect_size = p1_texture.get_size() / game.camera.zoom.x
-			$"%P2SuperTexture".rect_size = p2_texture.get_size() / game.camera.zoom.x
-			$"%P1SuperTexture".rect_global_position = game.get_screen_position(1) + screen_center - p1_offset - (Vector2(0, 4) / game.camera.zoom.x)
-			$"%P2SuperTexture".rect_global_position = game.get_screen_position(2) + screen_center - p2_offset - (Vector2(0, 4) / game.camera.zoom.x)
+			if p1_offset:
+				$"%P1SuperTexture".rect_global_position = game.get_screen_position(1) + screen_center - p1_offset - (Vector2(0, 4) / game.camera.zoom.x)
+				p1_super_effects_node.position = p1_offset
+			if p2_offset:
+				$"%P2SuperTexture".rect_global_position = game.get_screen_position(2) + screen_center - p2_offset - (Vector2(0, 4) / game.camera.zoom.x)
+				p2_super_effects_node.position = p2_offset
 		else:
 			super_started = false
 

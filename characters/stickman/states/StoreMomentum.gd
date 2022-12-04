@@ -1,4 +1,4 @@
-extends CharacterState
+extends SuperMove
 
 export var release = false
 

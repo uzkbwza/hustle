@@ -2,7 +2,7 @@ extends CharacterState
 #
 func _frame_0():
 #	if current_tick == 0:
-	if host.read_advantage:
+	if host.initiative:
 		host.start_invulnerability()
 	var vel = host.get_vel()
 	if fixed.sign(vel.x) != host.get_facing_int():

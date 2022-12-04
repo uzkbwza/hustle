@@ -31,6 +31,9 @@ func _frame_12():
 	
 
 func _tick():
+	if current_tick == 3:
+		if host.initiative:
+			current_tick = 9
 	if moving:
 		host.move_directly_relative(move_x + move_x_modifier, move_y + move_y_modifier)
 	else:

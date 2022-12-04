@@ -22,8 +22,6 @@ var p2_ghost_extra
 
 var match_data = {}
 
-
-
 func _ready():
 	ui_layer.connect("singleplayer_started", self, "_on_game_started", [true])
 	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")

@@ -29,6 +29,8 @@ shader = ExtResource( 2 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -43,17 +45,20 @@ material = SubResource( 1 )
 z_index = 2
 z_as_relative = false
 script = ExtResource( 19 )
+has_projectile_parry_window = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 animation = "Default"
 
 [node name="CollisionBox" parent="." index="2"]
+z_index = 1000
 y = 1
 width = 6
 height = 1
 
 [node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 width = 0
 height = 0
 
@@ -73,6 +78,7 @@ screenshake_amount = 3
 screenshake_ticks = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 3 )
 y = -2
 width = 26
@@ -87,6 +93,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 10
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+z_index = 1000
 script = ExtResource( 3 )
 x = 6
 y = -40

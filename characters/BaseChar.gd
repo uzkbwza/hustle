@@ -39,6 +39,9 @@ const MAX_GROUNDED_HITS = 7
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
+const P1_COLOR = Color("aca2ff")
+const P2_COLOR = Color("ff7a81")
+
 const GUTS_REDUCTIONS = {
 	"1": "1",
 #	"0.90": "1.10",
@@ -100,6 +103,12 @@ var game_over = false
 var forfeit = false
 var will_forfeit = false
 
+var applied_style = null
+var is_color_active = false
+var is_aura_active = false
+
+var ivy_effect = false
+
 var colliding_with_opponent = true
 
 var air_movements_left = 0
@@ -117,14 +126,16 @@ var infinite_resources = false
 var one_hit_ko = false
 var burst_enabled = true
 var always_perfect_parry = false
+var blocked_last_hit = false
 
 var trail_hp: int = MAX_HEALTH
 var hp: int = 0
 var super_meter: int = 0
 var supers_available: int = 0
+var combo_proration: int = 0
 
 var parried_last_state = false
-var yomi_effect = false
+var initiative_effect = false
 
 var burst_meter: int = 0
 var bursts_available: int = 0
@@ -167,7 +178,7 @@ var nudge_distance_left = 0
 var can_nudge = false
 var parried = false
 
-var read_advantage = false
+var initiative = false
 var aura_particle = null
 
 var last_action = 0
@@ -216,11 +227,17 @@ func init(pos=null):
 		super_meter = MAX_SUPER_METER
 
 func apply_style(style):
+	if !SteamYomi.STARTED:
+		return
 	if style != null and !is_ghost:
-		if style.has("character_color") and style.character_color != null:
+		is_color_active = true
+		applied_style = style
+		if Global.enable_custom_colors and style.has("character_color") and style.character_color != null:
 			set_color(style.character_color)
 			Custom.apply_style_to_material(style, sprite.get_material())
-		if !is_ghost and style.show_aura and style.has("aura_settings"):
+		if Global.enable_custom_particles and !is_ghost and style.show_aura and style.has("aura_settings"):
+			reset_aura()
+			is_aura_active = true
 			aura_particle = preload("res://fx/CustomTrailParticle.tscn").instance()
 			particles.add_child(aura_particle)
 			aura_particle.load_settings(style.aura_settings)
@@ -232,10 +249,21 @@ func apply_style(style):
 			custom_hitspark = load(Custom.hitsparks[style.hitspark])
 			for hitbox in hitboxes:
 				hitbox.HIT_PARTICLE = custom_hitspark
-	if style != null and is_ghost:
-		sprite.get_material().set_shader_param("color", Color.white)
-		sprite.get_material().set_shader_param("use_outline", true)
+#	if style != null and is_ghost and is_color_active:
+#		sprite.get_material().set_shader_param("color", Color.white)
+#		sprite.get_material().set_shader_param("use_outline", true)
 #		sprite.get_material().set_shader_param("outline_color", Color.white)
+
+func reset_color():
+	is_color_active = false
+	sprite.get_material().set_shader_param("color", P1_COLOR if id == 1 else P2_COLOR)
+	sprite.get_material().set_shader_param("use_outline", false)
+
+func reset_aura():
+	is_aura_active = false
+	if is_instance_valid(aura_particle):
+		aura_particle.queue_free()
+	aura_particle = null
 
 func start_super():
 	emit_signal("super_started")
@@ -255,14 +283,14 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "lowest_tick", "state_changed","nudge_amount", "yomi_effect", "reverse_state", "combo_moves_used", "parried_last_state", "read_advantage", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
 	state_machine.connect("state_changed", self, "on_state_changed")
 
 func on_state_changed(states_stack):
-#	state_changed = true
+
 	pass
 
 func on_got_hit():
@@ -329,7 +357,7 @@ func stack_move_in_combo(move_name):
 func gain_super_meter(amount):
 	amount = combo_stale_meter(amount)
 	super_meter += amount
-	if super_meter > MAX_SUPER_METER:
+	if super_meter >= MAX_SUPER_METER:
 		if supers_available < MAX_SUPERS:
 			super_meter -= MAX_SUPER_METER
 			supers_available += 1
@@ -363,6 +391,7 @@ func get_global_throw_pos():
 func reset_combo():
 	combo_count = 0
 	combo_damage = 0
+	combo_proration = 0
 	combo_moves_used = {}
 	opponent.grounded_hits_taken = 0
 	opponent.trail_hp = opponent.hp
@@ -386,7 +415,6 @@ func hitbox_from_name(hitbox_name):
 			return objs_map[obj_name].hitboxes[hitbox_id]
 
 func _process(_delta):
-	hurtbox_pos_relative()
 	update()
 	if invulnerable:
 		if (Global.current_game.real_tick / 1) % 2 == 0:
@@ -399,15 +427,25 @@ func _process(_delta):
 	else:
 		self_modulate.a = 1.0
 	if is_instance_valid(aura_particle):
+		aura_particle.visible = Global.enable_custom_particles
 		aura_particle.position = hurtbox_pos_float()
 		aura_particle.facing = get_facing_int()
+	
+	if is_color_active and !Global.enable_custom_colors:
+		reset_color()
+	if is_aura_active and !Global.enable_custom_particles:
+		reset_aura()
+	if applied_style and !is_color_active and Global.enable_custom_colors:
+		apply_style(applied_style)
+	if applied_style and !is_aura_active and Global.enable_custom_particles:
+		apply_style(applied_style)
 
 func debug_text():
 	.debug_text()
 	debug_info(
 		{
 			"lowest_tick": lowest_tick,
-			"read_advantage": read_advantage,
+			"initiative": initiative,
 		}
 	)
 
@@ -450,6 +488,8 @@ func launched_by(hitbox):
 		can_nudge = true
 	
 		if hitbox.increment_combo:
+			if opponent.combo_count == 0:
+				opponent.combo_proration = hitbox.damage_proration
 			opponent.incr_combo()
 		
 	emit_signal("got_hit")
@@ -466,26 +506,38 @@ func hit_by(hitbox):
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)
 	if !can_parry_hitbox(hitbox):
-		launched_by(hitbox)
+		# probably need to coalesce the "take damage" and "got hit" signals here
+		match hitbox.hitbox_type:
+			Hitbox.HitboxType.Normal:
+				launched_by(hitbox)
+			Hitbox.HitboxType.Flip:
+				set_facing(get_facing_int() * -1)
+				var vel = get_vel()
+				set_vel(fixed.mul(vel.x, "-1"), vel.y)
+				for hitbox in hitboxes:
+					hitbox.facing = get_facing()
+					pass
+				take_damage(hitbox.damage, hitbox.minimum_damage)
+			Hitbox.HitboxType.ThrowHit:
+				take_damage(hitbox.damage, hitbox.minimum_damage)
+				opponent.incr_combo()
 	else:
-		parried = true
 		opponent.got_parried = true
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
 
 		if !projectile:
-			perfect_parry = always_perfect_parry or read_advantage or parried_last_state
+			perfect_parry = always_perfect_parry or (initiative and !blocked_last_hit) or parried_last_state
 		else:
 			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window)
 		if perfect_parry:
 			parried_last_state = true
+		else:
+			blocked_last_hit = true
+		
+		parried = true
 
-#			print("parrying projectile")
-#		print("perfect parry: " + str(perfect_parry))
-#		print("me: %d, opponent: %d" % [current_state().current_tick, host.current_state().current_tick])
-#		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
-#		hitlag_ticks = (hitbox.hitlag_ticks * 2) / 3
 		hitlag_ticks = 0
 		parried_hitboxes.append(hitbox.name)
 		var particle_location = current_state().get("particle_location")
@@ -493,12 +545,14 @@ func hit_by(hitbox):
 		
 		if !particle_location:
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
+		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == -1 else hitbox.parry_meter_gain
+		
 		current_state().parry(perfect_parry)
 		if !perfect_parry:
 			take_damage(hitbox.damage / PARRY_CHIP_DIVISOR)
 			apply_force_relative(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), "0")
-			gain_super_meter(PARRY_METER / 3)
-			opponent.gain_super_meter(PARRY_METER / 3)
+			gain_super_meter(parry_meter / 3)
+			opponent.gain_super_meter(parry_meter / 3)
 			if !projectile:
 				current_state().anim_length = opponent.current_state().anim_length
 				current_state().endless = opponent.current_state().endless
@@ -512,7 +566,7 @@ func hit_by(hitbox):
 			play_sound("Parry")
 		else:
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
-			gain_super_meter(PARRY_METER)
+			gain_super_meter(parry_meter)
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
@@ -528,8 +582,9 @@ func take_damage(damage: int, minimum=0):
 		return
 	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
 	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	damage = Utils.int_max(damage, minimum)
+	hp -= damage
 	opponent.combo_damage += damage
-	hp -= Utils.int_max(damage, minimum)
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	if hp < 0:
@@ -555,14 +610,15 @@ func guts_stale_damage(damage: int):
 	return damage
 
 func combo_stale_damage(damage: int):
-	var staling = get_combo_stale(opponent.combo_count)
+	var staling = get_combo_stale(Utils.int_max(opponent.combo_count + (opponent.combo_proration if opponent.combo_count > 1 else 0) - 1, 0))
 	return fixed.round(fixed.mul(str(damage), staling))
 
 func can_parry_hitbox(hitbox):
 	if not current_state() is ParryState:
 		return false
+	if hitbox.hitbox_type == Hitbox.HitboxType.Flip:
+		return false
 	return current_state().can_parry_hitbox(hitbox)
-
 
 func set_color(color: Color):
 	if color != null:
@@ -616,16 +672,6 @@ func get_advantage():
 	var advantage = (opponent and opponent.lowest_tick <= lowest_tick) or parried_last_state
 	if state_interruptable and opponent.state_interruptable:
 		advantage = true
-
-#	read_advantage = (opponent and opponent.current_state().current_tick <= 0) or parried_last_state
-#	if opponent.state_interruptable and !opponent.busy_interrupt:
-#		read_advantage = true
-#	if !opponent.state_interruptable:
-#		read_advantage = false
-#	if opponent.busy_interrupt:
-#		read_advantage = false
-#	if busy_interrupt:
-#		read_advantage = false
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false
 	if opponent.current_state().state_name == "WhiffInstantCancel" or (opponent.previous_state() and opponent.previous_state().state_name == "WhiffInstantCancel" and opponent.current_state().has_hitboxes):
@@ -638,15 +684,15 @@ func set_lowest_tick(tick):
 
 func update_advantage():
 	var new_adv = get_advantage()
-	if new_adv and !read_advantage:
-		yomi_effect = true
-	read_advantage = new_adv
+	if new_adv and !initiative:
+		initiative_effect = true
+	initiative = new_adv
 
 func tick_before():
 	if queued_action == "Forfeit":
 		if forfeit:
 			queued_action = "Continue"
-
+	
 	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
@@ -757,8 +803,6 @@ func tick():
 	if forfeit and forfeit_ticks > 2:
 		change_state("ForfeitExplosion")
 		forfeit = false
-	if aura_particle:
-		aura_particle.position = hurtbox_pos_float()
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
@@ -815,7 +859,7 @@ func forfeit():
 	will_forfeit = true
 
 func _draw():
-#	if read_advantage:
+#	if initiative:
 #		draw_arc(Vector2(0, -16), 24, 0, TAU, 32, Color.green)
 #	if state_interruptable:
 #		draw_circle(Vector2(0, -16), 8, Color.red)

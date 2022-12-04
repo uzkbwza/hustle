@@ -27,6 +27,8 @@ shader = ExtResource( 2 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -51,10 +53,12 @@ frames = SubResource( 2 )
 animation = "Default"
 
 [node name="CollisionBox" parent="." index="2"]
+z_index = 1000
 width = 3
 height = 3
 
 [node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 width = 4
 height = 4
 
@@ -83,6 +87,7 @@ enter_sfx = ExtResource( 18 )
 enter_sfx_volume = -8.0
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Explode" index="0"]
+z_index = 1000
 script = ExtResource( 16 )
 width = 26
 height = 26

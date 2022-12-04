@@ -42,7 +42,6 @@ material = SubResource( 2 )
 z_index = 2
 script = ExtResource( 3 )
 extra_state_variables = "total_ticks"
-has_projectile_parry_window = false
 immunity_susceptible = false
 
 [node name="Sprite" parent="Flip" index="0"]

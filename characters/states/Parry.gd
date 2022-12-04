@@ -84,3 +84,6 @@ func _tick():
 
 	if current_tick >= 10 and perfect:
 		parry_active = false
+
+func _exit():
+	host.blocked_last_hit = false

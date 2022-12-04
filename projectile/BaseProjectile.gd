@@ -1,5 +1,7 @@
 extends BaseObj
 
+const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash.tscn")
+
 class_name BaseProjectile
 
 export var immunity_susceptible = true

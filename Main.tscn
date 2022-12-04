@@ -269,7 +269,6 @@ gui_disable_input = true
 
 [node name="HudLayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
-visible = false
 script = ExtResource( 8 )
 
 [node name="SuperDim" type="ColorRect" parent="HudLayer"]
@@ -385,7 +384,6 @@ modulate = Color( 0.67451, 0.635294, 1, 1 )
 margin_right = 32.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
-rect_clip_content = true
 expand = true
 stretch_mode = 4
 
@@ -531,7 +529,6 @@ margin_left = 534.0
 margin_right = 566.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
-rect_clip_content = true
 expand = true
 stretch_mode = 4
 flip_h = true
@@ -1694,7 +1691,7 @@ script = ExtResource( 53 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 160.0
-margin_bottom = 111.0
+margin_bottom = 141.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_right = 159.0
@@ -1715,7 +1712,7 @@ align = 1
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
 margin_right = 159.0
-margin_bottom = 110.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1724,11 +1721,11 @@ size_flags_vertical = 3
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 158.0
-margin_bottom = 99.0
+margin_bottom = 129.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 margin_right = 157.0
-margin_bottom = 98.0
+margin_bottom = 128.0
 size_flags_vertical = 3
 alignment = 1
 
@@ -1764,25 +1761,56 @@ margin_right = 157.0
 margin_bottom = 52.0
 text = "show playback controls"
 
-[node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="HSeparator" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 margin_top = 53.0
 margin_right = 157.0
-margin_bottom = 65.0
+margin_bottom = 57.0
+
+[node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 58.0
+margin_right = 157.0
+margin_bottom = 70.0
+text = "enable style colors"
+
+[node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 71.0
+margin_right = 157.0
+margin_bottom = 83.0
+text = "enable particle auras"
+
+[node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 84.0
+margin_right = 157.0
+margin_bottom = 96.0
+text = "enable custom hitsparks"
+
+[node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+margin_top = 97.0
+margin_right = 157.0
+margin_bottom = 101.0
+
+[node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 102.0
+margin_right = 157.0
+margin_bottom = 114.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 66.0
+margin_top = 115.0
 margin_right = 157.0
-margin_bottom = 85.0
+margin_bottom = 115.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 86.0
+margin_top = 116.0
 margin_right = 157.0
-margin_bottom = 98.0
+margin_bottom = 128.0
 text = "done"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]

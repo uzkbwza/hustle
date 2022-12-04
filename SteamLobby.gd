@@ -19,7 +19,8 @@ signal challenger_cancelled()
 signal received_spectator_match_data(data)
 signal client_validation_success()
 signal client_validation_failure(message)
-signal authentication_started()
+signal authentication_started(steam_id)
+signal authentication_complete()
 
 signal user_joined(user_id)
 signal user_left(user_id)
@@ -40,8 +41,10 @@ var LOBBY_MAX_MEMBERS: int = 64
 
 var SPECTATORS = []
 
+var AUTH_USERS = []
+
 var TICKET: Dictionary
-var CLIENT_TICKET: Dictionary
+var CLIENT_TICKETS: Dictionary
 
 var OPPONENT_ID: int = 0
 var PLAYER_SIDE = 1
@@ -77,7 +80,7 @@ func _ready() -> void:
 	add_child(spectator_update_timer)
 	spectator_update_timer.start(3)
 	_check_Command_Line()
-	
+
 
 func _on_spectator_update_timer_timeout():
 	SteamLobby.update_spectators(ReplayManager.frames)
@@ -94,18 +97,33 @@ class LobbyMember:
 	var opponent_id: int
 	var player_id: int
 	var spectating_id: int
+	var client_ticket
+	var authenticating = false
+	var has_supporter_pack = false
+	var supporter_pack_result = -1
 
 	func _init(steam_id: int, steam_name: String):
 		self.steam_id = steam_id
 		self.steam_name = steam_name
 		self.status = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "status")
 		self.character = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "character")
-		var player_id = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "opponent_id")
+		var player_id = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "player_id")
 		self.player_id = int(player_id) if player_id != "" else 0
 		var opponent_id = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "opponent_id")
 		self.opponent_id = int(opponent_id) if opponent_id != "" else 0
 		var spectating_id = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "spectating_id")
 		self.spectating_id = int(spectating_id) if spectating_id != "" else 0
+
+func get_lobby_member(steam_id):
+	for member in LOBBY_MEMBERS:
+		if member.steam_id == steam_id:
+			return member
+
+func get_player_id(steam_id):
+	return Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "player_id")
+
+func get_opponent(steam_id):
+	return Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "opponent_id")
 
 func create_lobby(availability: int):
 	if LOBBY_ID == 0:
@@ -115,6 +133,7 @@ func join_lobby(lobby_id: int):
 	print("Attempting to join lobby "+str(lobby_id)+"...")
 
 	# Clear any previous lobby members lists, if you were in a previous lobby
+	CLIENT_TICKETS.clear()
 	LOBBY_MEMBERS.clear()
 	
 	# Make the lobby join request to Steam
@@ -146,11 +165,15 @@ func accept_challenge():
 	_send_P2P_Packet(steam_id, {
 		"challenge_accepted": SteamYomi.STEAM_ID
 	})
-	authenticate_with(OPPONENT_ID)
+	_setup_game_vs(OPPONENT_ID)
 
 func authenticate_with(steam_id):
+	return # TODO: fix this
+	if steam_id in AUTH_USERS:
+		return 
 	TICKET = Steam.getAuthSessionTicket()
-	emit_signal("authentication_started")
+	AUTH_USERS.append(steam_id)
+	emit_signal("authentication_started", steam_id)
 	_send_P2P_Packet(steam_id, {"validate_auth_session": TICKET})
 
 func decline_challenge():
@@ -169,9 +192,11 @@ func quit_match():
 		Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
-		if TICKET:
-			Steam.cancelAuthTicket(TICKET['id'])
-			Steam.endAuthSession(CLIENT_TICKET['id'])
+
+func has_supporter_pack(steam_id):
+	# TODO: fix this
+#	return steam_id in CLIENT_TICKETS and CLIENT_TICKETS[steam_id].authenticated and Steam.userHasLicenseForApp(steam_id, Custom.SUPPORTER_PACK)
+	return true
 
 func leave_Lobby() -> void:
 	# If in a lobby, leave it
@@ -196,6 +221,13 @@ func leave_Lobby() -> void:
 		LOBBY_MEMBERS.clear()
 		MATCH_SETTINGS = {}
 		SETTINGS_LOCKED = false
+	if TICKET:
+		Steam.cancelAuthTicket(TICKET['id'])
+		TICKET = {}
+	for ticket in CLIENT_TICKETS.values():
+		Steam.endAuthSession(ticket['id'])
+	CLIENT_TICKETS.clear()
+	AUTH_USERS.clear()
 
 func send_chat_message(message: String) -> void:
 	# Get the entered chat message
@@ -345,7 +377,7 @@ func _read_P2P_Packet() -> void:
 		if readable.has("challenge_accepted"):
 			PLAYER_SIDE = 1
 			Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "1")
-			authenticate_with(readable.challenge_accepted)
+			_setup_game_vs(readable.challenge_accepted)
 
 		if readable.has("match_quit"):
 			if Network.rematch_menu:
@@ -402,6 +434,9 @@ func _get_Auth_Session_Ticket_Response(auth_ticket: int, result: int) -> void:
 
 # Callback from attempting to validate the auth ticket
 func _validate_Auth_Ticket_Response(authID: int, response: int, ownerID: int) -> void:
+#	if authID in CLIENT_TICKETS:
+#		print("Client ticket response already received, moving on...")
+#		return
 	print("Ticket Owner: "+str(authID))
 
 	# Make the response more verbose, highly unnecessary but good for this example
@@ -422,12 +457,17 @@ func _validate_Auth_Ticket_Response(authID: int, response: int, ownerID: int) ->
 	
 	if response == 0:
 		emit_signal("client_validation_success")
-		_setup_game_vs(OPPONENT_ID)
+		CLIENT_TICKETS[authID].authenticated = true
 	else:
 		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
-		print(VERBOSE_RESPONSE)
+		if CLIENT_TICKETS.has(authID):
+			if !CLIENT_TICKETS[authID].authenticated:
+				CLIENT_TICKETS.erase(authID)
 
 func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
+#	if steam_id in CLIENT_TICKETS:
+#		print("Client ticket already authorized, moving on...")
+#		return
 	var RESPONSE: int = Steam.beginAuthSession(ticket['buffer'], ticket['size'], steam_id)
 
 	# Get a verbose response; unnecessary but useful in this example
@@ -443,11 +483,12 @@ func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
 
 	if RESPONSE == 0:
 		print("Validation successful, adding user to CLIENT_TICKETS")
-		CLIENT_TICKET = {"id": steam_id, "ticket": ticket['id']}
+		CLIENT_TICKETS[steam_id] = {"id": steam_id, "ticket": ticket['id'], "authenticated": false}
 	else:
 		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
 		quit_match()
-		get_tree().reload_current_scene()
+		if is_instance_valid(Global.current_game):
+			get_tree().reload_current_scene()
 
 func _on_received_spectate_request(steam_id):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamYomi.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
@@ -559,6 +600,9 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 
 		# Get the lobby members
 		_get_Lobby_Members()
+		
+		for member in LOBBY_MEMBERS:
+			authenticate_with(member.steam_id)
 
 		# Make the initial handshake
 		_make_P2P_Handshake()
@@ -571,9 +615,7 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 		
 		if LOBBY_OWNER != SteamYomi.STEAM_ID:
 			request_match_settings()
-
 		
-
 		emit_signal("join_lobby_success")
 
 	# Else it failed for some reason
@@ -610,7 +652,6 @@ func _on_Lobby_Join_Requested(lobby_id: int, friendID: int) -> void:
 func _get_Lobby_Members() -> void:
 	# Clear your previous lobby list
 	LOBBY_MEMBERS.clear()
-
 	# Get the number of members from this lobby from Steam
 	var MEMBERS: int = Steam.getNumLobbyMembers(LOBBY_ID)
 	SPECTATORS.clear()
@@ -625,8 +666,11 @@ func _get_Lobby_Members() -> void:
 		# Get the member's Steam name
 		var steam_name: String = Steam.getFriendPersonaName(steam_id)
 
+		
+
 		# Add them to the list
 		LOBBY_MEMBERS.append(LobbyMember.new(steam_id, steam_name))
+
 	emit_signal("retrieved_lobby_members", LOBBY_MEMBERS)
 
 
@@ -740,6 +784,8 @@ func can_get_messages_from_user(steam_id):
 				return true 
 	return false
 
+
+
 func _on_Lobby_Chat_Update(lobby_id: int, change_id: int, making_change_id: int, chat_state: int) -> void:
 	# Get the user who has made the lobby change
 	var CHANGER: String = Steam.getFriendPersonaName(change_id)
@@ -775,7 +821,13 @@ func _on_Lobby_Chat_Update(lobby_id: int, change_id: int, making_change_id: int,
 	# Update the lobby now that a change has occurred
 	_get_Lobby_Members()
 
+func _user_joined_lobby(user_id):
+	authenticate_with(user_id)
+
 func _user_left_lobby(steam_id):
+	CLIENT_TICKETS.erase(steam_id)
+	AUTH_USERS.erase(steam_id)
+	Steam.endAuthSession(steam_id)
 	Network.player_disconnected(steam_id)
 	pass
 

@@ -11,6 +11,8 @@ shader = ExtResource( 4 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -30,10 +32,12 @@ frames = SubResource( 1 )
 offset = Vector2( 512, 0 )
 
 [node name="CollisionBox" parent="." index="2"]
+z_index = 1000
 width = 0
 height = 0
 
 [node name="Hurtbox" parent="." index="3"]
+z_index = 1000
 width = 0
 height = 0
 
@@ -51,6 +55,7 @@ damage = 90
 minimum_damage = 30
 hitstun_ticks = 25
 victim_hitlag = 4
+parry_meter_gain = 125
 screenshake_amount = 7
 dir_y = "-0.25"
 knockback = "12.0"

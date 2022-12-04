@@ -52,6 +52,12 @@ var received_synced_time = false
 
 var quit_on_rematch = true
 
+onready var global_option_check_buttons = {
+	$"%EnableStyleColorsButton": "enable_custom_colors",
+	$"%EnableAurasButton": "enable_custom_particles",
+	$"%EnableHitsparksButton": "enable_custom_hit_sparks",
+}
+
 func _ready():
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
@@ -107,13 +113,28 @@ func _ready():
 #	$"%BGColor".color = dark_mode_color
 #	if Global.light_mode:
 #		$"%BGColor".color = light_mode_color
+	if !SteamYomi.STARTED:
+		$"%SteamMultiplayerButton".hide()
+		$"%CustomizeButton".hide()
+		$"%EnableStyleColorsButton".hide()
+		$"%EnableAurasButton".hide()
+		$"%EnableHitsparksButton".hide()
+	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false
+	for node in global_option_check_buttons:
+		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
+		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
+	$"%HelpScreen".hide()
 	if SteamLobby.LOBBY_ID != 0:
 		yield(get_tree(), "idle_frame") 
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
-	$"%HelpScreen".hide()
+
+
+
+func _on_global_option_toggled(toggled, param):
+	Global.save_option(toggled, param)
 
 #func _on_light_mode_toggled(on):
 #	Global.set_light_mode(on)

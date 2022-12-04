@@ -27,6 +27,7 @@ var force_y
 
 func jump():
 	var vel = host.get_vel()
+	host.set_grounded(false)
 	host.set_vel(fixed.mul(vel.x, x_speed_preserved), "0")
 	var force = xy_to_dir(data["x"], data["y"])
 	var force_power = fixed.vec_mul(force.x, force.y, fixed.powu(fixed.vec_len(force.x, force.y), 2))

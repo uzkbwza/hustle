@@ -8,24 +8,27 @@ const FIGHTER_PULL_SPEED = "-2"
  
 
 onready var windbox = $WindBox
+onready var bigger_windbox = $WindBox2
 onready var throwbox = $ThrowBox
 
 func _tick():
 	$"%WindParticle".stop_emitting()
 	if throwbox.active and throwbox.enabled:
+		var wb = windbox if !host.initiative else bigger_windbox
 		$"%WindParticle".start_emitting()
 		var windbox_hitting = []
-		windbox.facing = host.get_facing()
+		wb.facing = host.get_facing()
 		var pos = host.get_pos()
-		windbox.update_position(pos.x, pos.y)
+		wb.update_position(pos.x, pos.y)
 		for obj in host.objs_map.values():
-			if obj is BaseObj and !obj == host and !obj.is_grounded() and obj.current_state().state_name != "Burst" and windbox.overlaps(obj.hurtbox):
+			if obj is BaseObj and !obj == host and !obj.is_grounded() and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox):
 					windbox_hitting.append(obj)
 		for obj in windbox_hitting:
 			pull_object(obj)
 
 func _exit():
 	$"%WindParticle".stop_emitting()
+	host.release_opponent()
 
 
 func pull_object(obj):

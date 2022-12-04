@@ -26,6 +26,17 @@ func init(member):
 		$"%ChallengeButton".text = status
 		if status == "fighting":
 			$"%ChallengeButton".text = "fighting " + Steam.getFriendPersonaName(int(Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, member.steam_id, "opponent_id")))
+	
+#func _process(_delta):
+#	$"%ChallengeButton".disabled = true
+#	$"%Username".modulate = Color.white
+#	if member:
+#		if member.steam_id in SteamLobby.CLIENT_TICKETS and SteamLobby.CLIENT_TICKETS[member.steam_id].authenticated:
+#		var m = SteamLobby.get_lobby_member(member.steam_id)
+#			$"%Username".modulate = Color.green
+#			$"%ChallengeButton".disabled = false
+#		if SteamLobby.has_supporter_pack(member.steam_id):
+#			$"%Username".modulate = Color.blue
 
 func update_avatar():
 	Steam.getPlayerAvatar(Steam.AVATAR_MEDIUM, member.steam_id)

@@ -3,7 +3,7 @@ extends CharacterState
 const FORWARD_FORCE = "1.2"
 
 func _frame_0():
-	if host.read_advantage:
+	if host.initiative:
 		host.start_invulnerability()
 
 func _frame_9():

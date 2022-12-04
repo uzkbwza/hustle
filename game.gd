@@ -430,8 +430,8 @@ func tick():
 	
 	p1.current_tick = current_tick
 	p2.current_tick = current_tick
-#	p1.read_advantage = (p1.current_state().current_tick > p2.current_state().current_tick) or p1.parried_last_state
-#	p2.read_advantage = (p2.current_state().current_tick > p1.current_state().current_tick) or p2.parried_last_state
+#	p1.initiative = (p1.current_state().current_tick > p2.current_state().current_tick) or p1.parried_last_state
+#	p2.initiative = (p2.current_state().current_tick > p1.current_state().current_tick) or p2.parried_last_state
 	p1.lowest_tick = -1
 	p2.lowest_tick = -1
 	p1.tick_before()
@@ -611,7 +611,6 @@ func apply_hitboxes():
 			p2_throwing = true
 			if !p1_hit_by.hits_otg and p1.is_otg():
 				p2_throwing = false
-
 	if p2_hit_by:
 		if !(p2_hit_by is ThrowBox):
 			p2_hit_by.hit(p2)
@@ -622,9 +621,12 @@ func apply_hitboxes():
 				p1_throwing = false
 
 	if !p2_hit and !p1_hit:
-		if p2_throwing and p1_throwing:
-			p1.state_machine.queue_state("ThrowTech")
-			p2.state_machine.queue_state("ThrowTech")
+		if p2_throwing and p1_throwing and p1.current_state().throw_techable and p2.current_state().throw_techable:
+				p1.state_machine.queue_state("ThrowTech")
+				p2.state_machine.queue_state("ThrowTech")
+				
+		elif p2_throwing and p1_throwing and !p1.current_state().throw_techable and !p2.current_state().throw_techable:
+			return
 
 		elif p1_throwing:
 			if p1.current_state().throw_techable and p2.current_state().throw_techable:

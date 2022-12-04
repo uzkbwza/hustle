@@ -8,9 +8,15 @@ const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED = "1.25"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
 const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 0
-
+const DEFAULT_HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 var HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
+
+enum HitboxType {
+	Normal,
+	Flip,
+	ThrowHit,
+}
 
 #const DAMAGE_SUPER_GAIN_DIVISOR = 1
 
@@ -28,9 +34,11 @@ export var damage: int = 0
 export var minimum_damage: int = 0
 
 export var _c_Hit_Properties = 0
+export(HitboxType) var hitbox_type = HitboxType.Normal
 export var hitstun_ticks: int = 30
 export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
+export var damage_proration: int = 0
 export var cancellable = true
 export var increment_combo = true
 export var hits_otg = false
@@ -38,6 +46,7 @@ export var hits_vs_grounded = true
 export var hits_vs_aerial = true
 export var can_counter_hit = true
 export var sdi_modifier = "1.0"
+export var parry_meter_gain = -1
 export var ignore_armor = false
 
 export(HitHeight) var hit_height = HitHeight.Mid
@@ -172,12 +181,12 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
-	return can_counter_hit and (host.is_in_group("Fighter") and host.read_advantage and host.opponent.current_state().has_hitboxes)
+	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes)
 
 func spawn_whiff_particle():
 	if whiff_particle:
 		var center = get_center()
-		host.spawn_particle_effect(whiff_particle, Vector2(center.x, center.y))
+		host.spawn_particle_effect(whiff_particle, Vector2(center.x, center.y), Vector2(x_facing(), 0))
 
 func spawn_particle(particle, obj, dir):
 	host.spawn_particle_effect(particle, get_overlap_center_float(obj.hurtbox), dir)
@@ -216,7 +225,7 @@ func otg_check(obj):
 	return !obj.is_otg() or hits_otg
 
 func hit(obj):
-	if !(obj.name in hit_objects) and !obj.invulnerable and otg_check(obj):
+	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit) and otg_check(obj):
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		var dir = get_dir_float(true)
 		if grounded_hit_state == "HurtGrounded" and obj.is_grounded():
@@ -238,12 +247,13 @@ func hit(obj):
 				if hit_particle:
 					spawn_particle(hit_particle, obj, dir)
 				if !replace_hit_particle:
-					spawn_particle(HIT_PARTICLE, obj, dir)
+					spawn_particle(HIT_PARTICLE if Global.enable_custom_hit_sparks else DEFAULT_HIT_PARTICLE, obj, dir)
 
 		if can_hit:
 			var pushback = host.fixed.mul(host.fixed.add(pushback_x, host.fixed.mul(str(host.combo_count), COMBO_PUSHBACK_COEFFICIENT)), "-1")
+			pushback = host.fixed.div(pushback, "2")
 			host.add_pushback(pushback)
-	#		obj.add_pushback(pushback)
+			obj.add_pushback(pushback)
 			var opponent = obj.get("opponent")
 			
 			if opponent:

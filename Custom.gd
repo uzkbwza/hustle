@@ -67,15 +67,21 @@ func can_use_style(player_id, style):
 #		return Global.has_supporter_pack()
 		return true
 	elif SteamYomi.STARTED:
+		if SteamLobby.SPECTATING:
+			return true
 		if player_id == SteamLobby.PLAYER_SIDE:
 			var has_supporter_pack = SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID)
 			if has_supporter_pack:
 				print("You have the supporter pack.")
+			else:
+				print("You do not have the supporter pack.")
 			return has_supporter_pack
 		elif SteamLobby.OPPONENT_ID != 0:
 			var has_supporter_pack = SteamYomi.has_supporter_pack(SteamLobby.OPPONENT_ID)
 			if has_supporter_pack:
 				print("Your opponent has the supporter pack.")
+			else:
+				print("Your opponent does not have the supporter pack.")
 			return has_supporter_pack
 	return false
 

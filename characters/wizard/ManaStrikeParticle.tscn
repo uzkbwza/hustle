@@ -15,6 +15,8 @@ shader = ExtResource( 8 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0.909091 ), 0.0, 0.0, 0, 0, Vector2( 0.796, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
@@ -69,5 +71,4 @@ color = Color( 0.831373, 0.25098, 0.713726, 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="3"]
 frames = SubResource( 1 )
-frame = 2
 playing = true

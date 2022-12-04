@@ -69,13 +69,13 @@ export(String) var change_stance_to = ""
 
 export var _c_Misc = 0
 export var release_opponent_on_startup = false
-export var yomi_effect = false
+export var initiative_effect = false
 
-var yomi_effect_spawned = false
+var initiative_effect_spawned = false
 
 var started_in_air = false
 var hit_yet = false
-
+var hit_cancelled = false
 
 var interrupt_into = []
 var interrupt_from = []
@@ -175,10 +175,13 @@ func _on_hit_something(obj, hitbox):
 
 func _tick_shared():
 	if current_tick == 0:
-		if yomi_effect and host.read_advantage:
-			if host.yomi_effect:
+		hit_cancelled = false
+#		hit_cancelled = false
+		if initiative_effect and host.initiative:
+			if host.initiative_effect:
 				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
-			host.yomi_effect = false
+			host.initiative_effect = false
+		
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:

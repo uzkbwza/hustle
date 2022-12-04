@@ -580,6 +580,7 @@ anim_length = 20
 title = "High Block"
 type = 4
 button_texture = ExtResource( 99 )
+reversible = false
 interrupt_from_string = "Grounded
 GroundedSpecial
 AerialSpecial
@@ -590,7 +591,7 @@ GroundedSpecial
 AerialSpecial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
-yomi_effect = true
+initiative_effect = true
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 68 )
@@ -598,6 +599,7 @@ anim_length = 20
 title = "Low Block"
 type = 4
 button_texture = ExtResource( 98 )
+reversible = false
 interrupt_from_string = "Grounded
 GroundedSpecial
 AerialSpecial
@@ -607,7 +609,7 @@ Aerial
 "
 allowed_stances_string = "All"
 change_stance_to = "Normal"
-yomi_effect = true
+initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 1
 
@@ -619,6 +621,7 @@ title = "Block"
 type = 4
 button_texture = ExtResource( 98 )
 air_type = 1
+reversible = false
 interrupt_from_string = "Aerial
 GroundedSpecial
 AerialSpecial
@@ -629,7 +632,7 @@ GroundedSpecial
 AerialSpecial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
-yomi_effect = true
+initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 2
 
@@ -941,7 +944,7 @@ interrupt_into_string = "AerialThrow"
 
 [node name="Grab" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 86 )
-anim_length = 30
+anim_length = 23
 type = 1
 button_texture = ExtResource( 112 )
 throw_techable = true
@@ -967,7 +970,7 @@ throw_state = "Hold"
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 86 )
 sprite_animation = "Grab"
-anim_length = 30
+anim_length = 23
 title = "Grab"
 type = 1
 button_texture = ExtResource( 112 )
@@ -1129,6 +1132,7 @@ reset_momentum = true
 enter_sfx = ExtResource( 129 )
 interrupt_into_string = "Grounded
 Aerial"
+change_stance_to = "Normal"
 
 [node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 153 )

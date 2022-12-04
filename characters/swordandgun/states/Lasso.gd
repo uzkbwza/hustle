@@ -5,7 +5,6 @@ const LASSO_LIFT = 6
 const THROW_SPEED = 14
 
 var lasso_hit = false
-var hit_cancelled = false
 var lasso_hit_frame = 0
 
 onready var ANIM_LENGTH = anim_length
@@ -13,7 +12,6 @@ onready var ANIM_LENGTH = anim_length
 func _enter():
 	anim_length = ANIM_LENGTH
 	lasso_hit = false
-	hit_cancelled = false
 #	endless = false
 	lasso_hit_frame = 0
 	fallback_state = "Wait"
@@ -27,14 +25,14 @@ func _frame_7():
 	obj.connect("lasso_hit", self, "on_lasso_hit")
 
 func on_lasso_hit(_opponent):
-	if !active:
-		return
+#	if !active:
+#		return
 	lasso_hit = true
 	lasso_hit_frame = current_tick
 	var opp_pos = host.opponent.get_hurtbox_center()
 	var obj = host.objs_map[host.lasso_projectile]
 	obj.set_pos(opp_pos.x, opp_pos.y)
-	queue_state_change("LassoHit")
+	host.change_state("LassoHit")
 #	endless = true
 
 func _tick():
@@ -52,3 +50,4 @@ func _exit():
 		if host.objs_map[host.lasso_projectile]:
 			host.objs_map[host.lasso_projectile].disable()
 		host.lasso_projectile = null
+		

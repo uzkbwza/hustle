@@ -27,6 +27,7 @@ export var ground_bounce = true
 export var screenshake_amount = 0
 export var screenshake_frames = 0
 export var hits_otg = false
+export var increment_combo = true
 #export var incr_combo = false
 
 var hit_height = Hitbox.HitHeight.Mid
@@ -36,17 +37,25 @@ var throw = true
 
 #	released = false
 
+func _frame_0():
+	host.opponent.change_state("Grabbed")
+	host.throw_pos_x = start_throw_pos_x
+	host.throw_pos_y = start_throw_pos_y
+	var throw_pos = host.get_global_throw_pos()
+	host.opponent.set_pos(throw_pos.x, throw_pos.y)
+
 func _tick_shared():
 	if current_tick == 0:
 		throw = true
-		host.opponent.change_state("Grabbed")
-		host.throw_pos_x = start_throw_pos_x
-		host.throw_pos_y = start_throw_pos_y
-		var throw_pos = host.get_global_throw_pos()
-		host.opponent.set_pos(throw_pos.x, throw_pos.y)
+#		host.opponent.change_state("Grabbed")
+#		host.throw_pos_x = start_throw_pos_x
+#		host.throw_pos_y = start_throw_pos_y
+#		var throw_pos = host.get_global_throw_pos()
+#		host.opponent.set_pos(throw_pos.x, throw_pos.y)
 		if reverse:
 			host.set_facing(-host.get_facing_int())
 		host.start_invulnerability()
+		released = false
 	._tick_shared()
 	if release and current_tick + 1 == release_frame:
 		_release()
@@ -66,7 +75,6 @@ func _exit():
 	released = false
 
 func _release():
-	
 	throw = false
 	host.throw_pos_x = release_throw_pos_x
 	host.throw_pos_y = release_throw_pos_y
@@ -75,7 +83,8 @@ func _release():
 	host.opponent.update_facing()
 	var throw_data = HitboxData.new(self)
 	host.opponent.hit_by(throw_data)
-	host.incr_combo()
+	if increment_combo:
+		host.incr_combo()
 	if screenshake_amount > 0 and screenshake_frames > 0 and !host.is_ghost:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		camera.bump(Vector2(), screenshake_amount, screenshake_frames / 60.0)
