@@ -124,6 +124,21 @@ theme = ExtResource( 4 )
 theme_type_variation = "SelectButton"
 text = "Lock In"
 
+[node name="FeintButton" type="CheckButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
+unique_name_in_owner = true
+visible = false
+margin_top = 20.0
+margin_right = 46.0
+margin_bottom = 39.0
+hint_tooltip = "Perform your action backwards."
+size_flags_horizontal = 3
+size_flags_vertical = 3
+action_mode = 0
+text = "Feint"
+align = 1
+icon_align = 1
+expand_icon = true
+
 [node name="ReverseButton" type="CheckButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
 unique_name_in_owner = true
 visible = false

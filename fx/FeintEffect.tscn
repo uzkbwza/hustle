@@ -30,12 +30,11 @@ lifetime_randomness = 0.46
 texture = ExtResource( 1 )
 spread = 180.0
 gravity = Vector2( 0, 0 )
-initial_velocity = 491.83
+initial_velocity = 270.78
 initial_velocity_random = 0.37
 damping = 934.93
 scale_amount = 0.57
 scale_amount_curve = SubResource( 1 )
-color = Color( 0.92549, 1, 0.643137, 1 )
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
 amount = 16
@@ -46,9 +45,8 @@ lifetime_randomness = 0.46
 texture = ExtResource( 3 )
 spread = 180.0
 gravity = Vector2( 0, 0 )
-initial_velocity = 250.86
+initial_velocity = 151.82
 initial_velocity_random = 0.37
 damping = 934.93
 scale_amount = 1.13
 scale_amount_curve = SubResource( 1 )
-color = Color( 0.94902, 1, 0.192157, 1 )

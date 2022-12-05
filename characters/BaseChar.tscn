@@ -379,6 +379,7 @@ character_portrait = ExtResource( 2 )
 player_info_scene = ExtResource( 39 )
 player_extra_params_scene = ExtResource( 122 )
 damage_taken_modifier = "1.0"
+num_feints = 2
 
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
@@ -435,13 +436,11 @@ volume_db = -20.0
 bus = "Fx"
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 y = -14
 width = 10
 height = 14
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 y = -16
 width = 14
 height = 16

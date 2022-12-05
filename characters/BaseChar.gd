@@ -91,6 +91,8 @@ export(PackedScene) var player_extra_params_scene
 
 export var damage_taken_modifier = "1.0"
 
+export var num_feints = 2
+
 var opponent
 
 var queued_action = null
@@ -147,6 +149,8 @@ var state_changed = false
 var on_the_ground = false
 var nudge_amount = "1.0"
 
+var feints = 2
+
 
 var current_nudge = {
 	"x": "0",
@@ -181,6 +185,8 @@ var parried = false
 var initiative = false
 var aura_particle = null
 
+var feinting = false
+
 var last_action = 0
 
 var stance = "Normal"
@@ -206,7 +212,7 @@ func init(pos=null):
 	.init(pos)
 	if !is_ghost:
 		Network.player_objects[id] = self
-		
+	feints = num_feints
 	if one_hit_ko:
 		MAX_HEALTH = 1
 	hp = MAX_HEALTH
@@ -283,7 +289,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -517,8 +523,10 @@ func hit_by(hitbox):
 				for hitbox in hitboxes:
 					hitbox.facing = get_facing()
 					pass
+				emit_signal("got_hit")
 				take_damage(hitbox.damage, hitbox.minimum_damage)
 			Hitbox.HitboxType.ThrowHit:
+				emit_signal("got_hit")
 				take_damage(hitbox.damage, hitbox.minimum_damage)
 				opponent.incr_combo()
 	else:
@@ -641,7 +649,11 @@ func process_extra(extra):
 		reverse_state = extra["reverse"]
 		if reverse_state:
 			ghost_reverse = true
-
+#	if "secret" in extra:
+#		if "feint" in extra.secret:
+#			feinting = extra.secret.feint
+#		else:
+#			feinting = false
 
 func refresh_air_movements():
 	air_movements_left = num_air_movements
@@ -810,7 +822,7 @@ func set_ghost_colors():
 		ghost_ready_tick = current_tick
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
 			set_color(Color.green)
-			if opponent.current_state().interruptible_on_opponent_turn:
+			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting:
 				opponent.ghost_ready_set = true
 				opponent.set_color(Color.green)
 		elif opponent.ghost_ready_tick < ghost_ready_tick:

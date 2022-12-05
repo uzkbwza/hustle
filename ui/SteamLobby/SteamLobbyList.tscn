@@ -83,7 +83,7 @@ size_flags_vertical = 3
 
 [node name="LobbyList" type="VBoxContainer" parent="NetworkSetupScreen/LobbyListContainer"]
 unique_name_in_owner = true
-margin_right = 110.0
+margin_right = 330.0
 margin_bottom = 356.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -246,6 +246,20 @@ margin_bottom = 5.5
 text = "Connecting to Steam..."
 align = 1
 
+[node name="LobbyConnectingLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -168.0
+margin_top = -5.5
+margin_right = 168.0
+margin_bottom = 5.5
+text = "Connecting to lobby..."
+align = 1
+
 [node name="RefreshTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
@@ -308,5 +322,17 @@ margin_top = 1.0
 margin_bottom = 13.0
 size_flags_horizontal = 0
 text = "go back"
+
+[node name="ErrorLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -169.0
+margin_top = 1.0
+margin_right = 124.0
+margin_bottom = 46.0
+autowrap = true
 
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]

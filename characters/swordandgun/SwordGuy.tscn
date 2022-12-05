@@ -604,6 +604,7 @@ lasso_projectile
 used_aerial_h_slash"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
+num_feints = 2
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
@@ -1592,6 +1593,7 @@ Aerial"
 script = ExtResource( 79 )
 sprite_animation = "Holster"
 anim_length = 8
+title = "Holster"
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2

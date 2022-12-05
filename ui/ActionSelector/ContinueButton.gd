@@ -9,6 +9,7 @@ var action_title = ""
 var data_node = null
 var container = null
 var reversible = false
+var state = null
 
 func setup(name, title, texture=null):
 	action_name = name

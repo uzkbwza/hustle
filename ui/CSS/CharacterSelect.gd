@@ -3,6 +3,7 @@ extends Control
 var buttons = []
 
 signal match_ready(data)
+signal opened()
 
 var pressed_button = null
 var hovered_characters = {}
@@ -43,6 +44,7 @@ func _on_show_settings_toggled(on):
 	$"%GameSettingsPanelContainer".visible = on
 
 func init(singleplayer=true):
+	emit_signal("opened")
 	if Network.steam:
 		$"%QuitButton".hide()
 	for button in buttons:
@@ -60,6 +62,7 @@ func init(singleplayer=true):
 	$"%P2Display".init()
 	if Network.steam:
 		$"%GameSettingsPanelContainer".hide()
+
 
 	selected_styles = {
 		1: null,

@@ -760,6 +760,7 @@ func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	# Else no known error
 	else:
 		print("WARNING: Session failure with "+str(steamID)+" [unknown error "+str(session_error)+"].")
+	get_tree().reload_current_scene()
 
 func can_get_messages_from_user(steam_id):
 	if steam_id == SteamYomi.STEAM_ID:

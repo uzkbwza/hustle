@@ -9,6 +9,7 @@ onready var hover_rect = $HoverRect
 onready var game_version = $"%GameVersion"
 
 var lobby_id
+var lobby_data
 
 var mouse_entered = false
 var selected = false
@@ -18,6 +19,7 @@ func set_data(lobby_data):
 	game_version.text = lobby_data.version
 	player_count.text = str(lobby_data.player_count) + "/" + str(lobby_data.max_players)
 	lobby_id = lobby_data.id
+	self.lobby_data = lobby_data 
 
 func _input(event):
 	if mouse_entered:

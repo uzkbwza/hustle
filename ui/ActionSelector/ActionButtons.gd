@@ -66,6 +66,7 @@ func _ready():
 	$"%DI".hint_tooltip = "Adjusts the angle and speed you are knocked back next time you are hit."
 	$"%DI".connect("data_changed", self, "send_ui_action")
 	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
+	$"%FeintButton".connect("pressed", self, "send_ui_action", [null])
 	if !player_id == 1:
 		var top_row_items = $"%TopRow".get_children()
 		top_row_items.invert()
@@ -146,7 +147,7 @@ func init(game, id):
 		for state in fighter.action_cancels[category]:
 			if state.show_in_menu and not state in states:
 				states.append(state)
-				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene, BUTTON_SCENE, state.button_texture, state.reversible, state.flip_icon)
+				create_button(state.name, state.title, state.get_ui_category(), state.data_ui_scene, BUTTON_SCENE, state.button_texture, state.reversible, state.flip_icon, state)
 #	nudge_button = create_button("Nudge", "DI", "Defense", NUDGE_SCENE)
 	sort_categories()
 	connect("action_selected", fighter, "on_action_selected")
@@ -205,12 +206,14 @@ func category_sort_func(a, b):
 	return cat_map[a.label_text] < cat_map[b.label_text]
 #	return false
 
-func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true, flip_icon=true):
+func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true, flip_icon=true, state=null):
 	var button
 	var data_node
 	button = button_scene.instance()
 	button.setup(name, title, texture)
 	buttons.append(button)
+	if state:
+		button.state = state
 	
 #	button_container.add_child(button)
 	if not category in button_category_containers:
@@ -292,16 +295,20 @@ func on_action_selected(action, button):
 		button.data_node.set_facing(dir)
 		button.data_node.init()
 		button.container.show_data_container()
-	if button.reversible:
-		$"%ReverseButton".set_disabled(false)
+	$"%ReverseButton".set_disabled(!button.reversible)
+	if button.state:
+		$"%FeintButton".set_disabled(!button.state.can_feint())
 	else:
-		$"%ReverseButton".set_disabled(true)
+		$"%FeintButton".set_disabled(true)
 	send_ui_action()
 
 func get_extra():
 	var extra = {
 		"DI": $"%DI".get_data(),
 		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled,
+#		"secret": {
+#			"feint": $"%FeintButton".pressed and !$"%FeintButton".disabled,
+#		}
 	}
 	if fighter_extra:
 		extra.merge(fighter_extra.get_extra())
@@ -382,6 +389,7 @@ func activate():
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)
 	$"%ReverseButton".pressed = false
+	$"%FeintButton".pressed = false
 #	tween_spread()
 	current_action = null
 	current_button = null

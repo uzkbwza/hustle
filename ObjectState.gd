@@ -109,6 +109,9 @@ func get_active_hitboxes():
 func _tick_before():
 	pass
 
+func process_feint():
+	return fallback_state
+
 func _tick_shared():
 #	if current_tick == -1:
 #		if has_method("_frame_0"):
@@ -121,17 +124,10 @@ func _tick_shared():
 
 	if current_tick < anim_length or endless:
 		current_tick += 1
+		if process_hitboxes() == true:
+			return process_feint()
 		update_sprite_frame()
 		update_hurtbox()
-		if hitbox_start_frames.has(current_tick + 1):
-			for hitbox in hitbox_start_frames[current_tick + 1]:
-				activate_hitbox(hitbox)
-		for hitbox in get_active_hitboxes():
-			hitbox.facing = host.get_facing()
-			if hitbox.active:
-				hitbox.tick()
-			else:
-				deactivate_hitbox(hitbox)
 		if current_tick == sfx_tick and sfx_player and !ReplayManager.resimulating:
 			sfx_player.play()
 		if current_tick == force_tick:
@@ -166,13 +162,24 @@ func _tick_shared():
 					return next_state
 			new_max = false
 
-	
 	if apply_fric:
 		host.apply_fric()
 	if apply_grav:
 		host.apply_grav()
 	if apply_forces:
 		host.apply_forces()
+
+func process_hitboxes():
+	if hitbox_start_frames.has(current_tick + 1):
+		for hitbox in hitbox_start_frames[current_tick + 1]:
+			activate_hitbox(hitbox)
+	for hitbox in get_active_hitboxes():
+		hitbox.facing = host.get_facing()
+		if hitbox.active:
+			hitbox.tick()
+		else:
+			deactivate_hitbox(hitbox)
+
 
 func update_hurtbox():
 	if current_hurtbox:

@@ -9,7 +9,8 @@ var STEAM_NAME: String = ""
 var STARTED = false
 
 func _enter_tree():
-	_initialize_steam()
+	if "steam" in Global.VERSION:
+		_initialize_steam()
 	pass
 	
 func _initialize_steam():

@@ -8,11 +8,20 @@ const BOUNCE_FRAMES = 4
 
 const DI_STRENGTH = "2.0"
 
+enum BOUNCE {
+	LEFT_WALL,
+	RIGHT_WALL,
+	NO_BOUNCE
+}
 
 var hitstun = 0
 var knockdown = false
 var can_act
 var bounce_frames = 0
+
+
+const BOUNCE_FACTOR = "-0.85"
+const BOUNCE_PARTICLE = preload("res://fx/LandingParticle.tscn")
 
 func _enter():
 	can_act = false
@@ -42,7 +51,34 @@ func _tick():
 	host.apply_x_fric(AIR_FRIC)
 	host.apply_grav_custom(HIT_GRAV, HIT_FALL_SPEED)
 	host.apply_forces_no_limit()
+
+	var vel = host.get_vel()
+	var bounce = BOUNCE.NO_BOUNCE
+	var col_box = host.get_collision_box()
 	
+	if (host.hitlag_ticks > 0 or (host.is_grounded() and bounce_frames > 0)):
+		pass
+	elif (col_box.x1 <= -host.stage_width and fixed.lt(vel.x, "0")):
+		bounce = BOUNCE.LEFT_WALL
+	elif (col_box.x2 >= host.stage_width and fixed.gt(vel.x, "0")):
+		bounce = BOUNCE.RIGHT_WALL
+
+	if (bounce != BOUNCE.NO_BOUNCE):
+		host.hitlag_ticks = 3
+		host.play_sound("Block")
+		host.set_vel(fixed.mul(vel.x, BOUNCE_FACTOR), vel.y)
+		
+		# Only show the effect if the velocity is decent
+		if (Vector2(vel.x, vel.y).length() > 5):
+			var particle_pos = Vector2(
+				(col_box.x1 if bounce == BOUNCE.LEFT_WALL else col_box.x2),
+				host.get_center_position_float().y
+			)
+			
+			var particle_dir = Vector2.DOWN if bounce == BOUNCE.LEFT_WALL else Vector2.UP
+			
+			host.spawn_particle_effect(BOUNCE_PARTICLE, particle_pos, particle_dir)
+
 	if bounce_frames > 0:
 		host.set_pos(host.get_pos().x, 0)
 		bounce_frames -= 1

@@ -1,6 +1,7 @@
 extends "res://characters/states/InstantCancel.gd"
 
 func _enter():
+	spawn_particle_relative(preload("res://fx/InstantCancelEffect.tscn"), host.hurtbox_pos_relative_float())
 	host.use_burst_meter(host.MAX_BURST_METER / 2)
 
 func is_usable():

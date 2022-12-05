@@ -56,6 +56,7 @@ export var self_hit_cancellable = true
 export var self_interruptable = true
 export var reversible = true
 export var instant_cancellable = true
+export var can_feint_if_possible = true
 
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
@@ -76,6 +77,8 @@ var initiative_effect_spawned = false
 var started_in_air = false
 var hit_yet = false
 var hit_cancelled = false
+
+var feinting = false
 
 var interrupt_into = []
 var interrupt_from = []
@@ -173,6 +176,16 @@ func _on_hit_something(obj, hitbox):
 	if hitbox.cancellable:
 		enable_hit_cancel()
 
+func process_hitboxes():
+#	if hitbox_start_frames.has(current_tick + 1) and host.feinting:
+#		host.feinting = false
+#		feinting = true
+#		return true
+	.process_hitboxes()
+
+func process_feint():
+	return "WhiffInstantCancel"
+
 func _tick_shared():
 	if current_tick == 0:
 		hit_cancelled = false
@@ -181,7 +194,7 @@ func _tick_shared():
 			if host.initiative_effect:
 				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
 			host.initiative_effect = false
-		
+			
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:
@@ -198,7 +211,9 @@ func _tick_shared():
 #		host.update_advantage()
 #		if host.opponent:
 #			host.opponent.update_advantage()
-	._tick_shared()
+	var next_state = ._tick_shared()
+	if next_state:
+		return next_state
 
 	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
 		queue_state_change("Landing")
@@ -209,6 +224,9 @@ func _tick_shared():
 func _tick_after():
 	host.set_lowest_tick(current_tick)
 	._tick_after()
+
+func can_feint():
+	return has_hitboxes and host.feints > 0 and can_feint_if_possible
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1

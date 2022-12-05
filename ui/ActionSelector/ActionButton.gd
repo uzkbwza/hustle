@@ -14,6 +14,7 @@ var container = null
 var custom_texture = false
 var reversible = false
 var flip_icon = true
+var state = null
 
 func setup(name, title, texture=null):
 	action_name = name

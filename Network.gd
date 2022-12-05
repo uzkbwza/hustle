@@ -694,6 +694,8 @@ remotesync func multiplayer_turn_ready(id):
 
 func send_current_action():
 	if last_action:
+#		last_action["extra"] = last_action["extra"].duplicate(true)
+#		last_action["extra"].secret = {}
 		rpc_("send_action", [last_action["action"], last_action["data"], last_action["extra"], player_id], "remote")
 
 func host_end_turn():

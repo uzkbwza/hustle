@@ -130,8 +130,7 @@ func _ready():
 		yield(get_tree(), "idle_frame") 
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
-
-
+	$"%CharacterSelect".connect("opened", self, "reset_ui")
 
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)

@@ -811,7 +811,7 @@ func process_tick():
 			game_paused = true
 			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
-				p2.busy_interrupt = (!p2.state_interruptable and !p2.current_state().interruptible_on_opponent_turn)
+				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting))
 				p2.state_interruptable = true
 				p1.show_you_label()
 				p1_turn = true
@@ -825,7 +825,7 @@ func process_tick():
 
 			elif p2.state_interruptable and !p2_turn:
 				someones_turn = true
-				p1.busy_interrupt = (!p1.state_interruptable and !p1.current_state().interruptible_on_opponent_turn)
+				p1.busy_interrupt = (!p1.state_interruptable and !(p1.current_state().interruptible_on_opponent_turn or p1.feinting))
 				p1.state_interruptable = true
 				p2.show_you_label()
 				p2_turn = true
@@ -966,7 +966,7 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p1.actionable_label.show()
 				emit_signal("ghost_my_turn")
-				if p2.current_state().interruptible_on_opponent_turn:
+				if p2.current_state().interruptible_on_opponent_turn or p2.feinting:
 					p2.actionable_label.show()
 					ghost_p2_actionable = true
 			else:
@@ -978,7 +978,7 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p2.actionable_label.show()
 				emit_signal("ghost_my_turn")
-				if p1.current_state().interruptible_on_opponent_turn:
+				if p1.current_state().interruptible_on_opponent_turn or p1.feinting:
 					ghost_p1_actionable = true
 					p1.actionable_label.show()
 			else:
