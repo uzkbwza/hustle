@@ -84,6 +84,10 @@ func get_center():
 		"y": (aabb.y1 + aabb.y2) / 2
 	}
 
+func get_center_float():
+	var aabb = get_aabb()
+	return Vector2((aabb.x1 + aabb.x2) / 2.0, (aabb.y1 + aabb.y2) / 2.0)
+
 func get_overlap_center_float(box: CollisionBox):
 	# used for hit effects
 	var overlap = get_overlap(box)

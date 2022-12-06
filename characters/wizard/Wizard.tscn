@@ -1384,6 +1384,28 @@ dir_y = ""
 start_tick = 6
 active_ticks = 4
 
+[node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
+z_index = 1000
+script = ExtResource( 95 )
+x = 10
+y = -19
+width = 10
+height = 10
+damage = 20
+hitbox_type = 1
+cancellable = false
+priority = 1
+screenshake_amount = 0
+replace_hit_particle = true
+whiff_particle = ExtResource( 231 )
+whiff_sound = ExtResource( 230 )
+hit_sound = ExtResource( 146 )
+whiff_sound_volume = -15.0
+hit_sound_volume = -10.0
+dir_y = ""
+start_tick = 3
+active_ticks = 2
+
 [node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 218 )
 apply_forces = true

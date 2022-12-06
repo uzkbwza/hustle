@@ -306,9 +306,7 @@ func get_extra():
 	var extra = {
 		"DI": $"%DI".get_data(),
 		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled,
-#		"secret": {
-#			"feint": $"%FeintButton".pressed and !$"%FeintButton".disabled,
-#		}
+		"feint": $"%FeintButton".pressed and !$"%FeintButton".disabled,
 	}
 	if fighter_extra:
 		extra.merge(fighter_extra.get_extra())
@@ -425,6 +423,9 @@ func activate():
 				cancel_into.append("Grounded")
 			else:
 				cancel_into.append("Aerial")
+		if fighter.feinting:
+			cancel_into.append("Grounded")
+			cancel_into.append("Aerial")
 	else:
 		cancel_into = state.busy_interrupt_into
 	any_available_actions = false

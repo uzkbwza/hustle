@@ -20,7 +20,7 @@ func _tick():
 		_release()
 		activate_hitbox(hitbox)
 		spawn_particle_relative(particle_scene)
-		queue_state_change("Landing", 14)
+		queue_state_change("Landing", 20)
 		host.opponent.update_facing()
 	if current_tick > 10 and current_tick % 8 == 0:
 		host.update_data()

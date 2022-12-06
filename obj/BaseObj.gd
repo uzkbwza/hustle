@@ -317,6 +317,9 @@ func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true
 func get_hurtbox_center():
 	return hurtbox.get_center()
 
+func get_hurtbox_center_float():
+	return hurtbox.get_center_float()
+
 func hurtbox_pos_relative():
 	return { 
 		"x": hurtbox.x * get_facing_int(),

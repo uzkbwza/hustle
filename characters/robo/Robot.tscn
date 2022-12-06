@@ -558,6 +558,3 @@ fall_anim = true
 
 [node name="AirDash" parent="StateMachine" index="22"]
 interrupt_from_string = ""
-
-[node name="WhiffInstantCancel" parent="StateMachine" index="24"]
-super_effect = true

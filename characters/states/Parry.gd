@@ -44,7 +44,7 @@ func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
 
 func _frame_10():
-	if !parried:
+	if !parried and perfect:
 		parry_active = false
 
 func parry(perfect=true):

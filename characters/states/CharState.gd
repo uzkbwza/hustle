@@ -183,11 +183,12 @@ func process_hitboxes():
 #		return true
 	.process_hitboxes()
 
-func process_feint():
-	return "WhiffInstantCancel"
+#func process_feint():
+#	return "WhiffInstantCancel"
 
 func _tick_shared():
 	if current_tick == 0:
+		feinting = host.feinting
 		hit_cancelled = false
 #		hit_cancelled = false
 		if initiative_effect and host.initiative:
@@ -232,6 +233,9 @@ func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
 
 func _exit_shared():
+	if feinting:
+		host.feinting = false
+	feinting = false
 #	host.update_advantage()
 #	host.opponent.update_advantage()
 	._exit_shared()

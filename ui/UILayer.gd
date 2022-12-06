@@ -115,10 +115,12 @@ func _ready():
 #		$"%BGColor".color = light_mode_color
 	if !SteamYomi.STARTED:
 		$"%SteamMultiplayerButton".hide()
+#		$"%CustomizeButton".hide()
+#		$"%EnableStyleColorsButton".hide()
+#		$"%EnableAurasButton".hide()
+#		$"%EnableHitsparksButton".hide()
+	if Global.demo_version:
 		$"%CustomizeButton".hide()
-		$"%EnableStyleColorsButton".hide()
-		$"%EnableAurasButton".hide()
-		$"%EnableHitsparksButton".hide()
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false

@@ -492,12 +492,20 @@ func launched_by(hitbox):
 
 		busy_interrupt = true
 		can_nudge = true
-	
+				
+		if opponent.combo_count == 0:
+			opponent.combo_proration = hitbox.damage_proration
+			var host = objs_map[hitbox.host]
+			var projectile = !host.is_in_group("Fighter")
+
+			if !projectile:
+				refresh_feints()
+				opponent.refresh_feints()
+
 		if hitbox.increment_combo:
-			if opponent.combo_count == 0:
-				opponent.combo_proration = hitbox.damage_proration
 			opponent.incr_combo()
-		
+
+
 	emit_signal("got_hit")
 	take_damage(hitbox.damage, hitbox.minimum_damage)
 	state_tick()
@@ -531,12 +539,12 @@ func hit_by(hitbox):
 				opponent.incr_combo()
 	else:
 		opponent.got_parried = true
+		opponent.feinting = false
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
-
 		if !projectile:
-			perfect_parry = always_perfect_parry or (initiative and !blocked_last_hit) or parried_last_state
+			perfect_parry = always_perfect_parry or opponent.current_state().feinting or (initiative and !blocked_last_hit) or parried_last_state
 		else:
 			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window)
 		if perfect_parry:
@@ -649,14 +657,18 @@ func process_extra(extra):
 		reverse_state = extra["reverse"]
 		if reverse_state:
 			ghost_reverse = true
-#	if "secret" in extra:
-#		if "feint" in extra.secret:
-#			feinting = extra.secret.feint
-#		else:
-#			feinting = false
+	if "feint" in extra:
+		feinting = extra.feint
+		if feinting:
+			feints -= 1
+	else:
+		feinting = false
 
 func refresh_air_movements():
 	air_movements_left = num_air_movements
+
+func refresh_feints():
+	feints = num_feints
 
 func clean_parried_hitboxes():
 #	if is_ghost:
@@ -736,12 +748,21 @@ func tick_before():
 					"data": queued_data,
 					"extra": queued_extra,
 				}
+	var feinted_last = feinting
+	var pressed_feint = false
 	if queued_extra:
 		process_extra(queued_extra)
+		pressed_feint = feinting
 	if queued_action:
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
+			if feinted_last:
+				var particle_pos = get_hurtbox_center_float()
+				spawn_particle_effect(preload("res://fx/FeintEffect.tscn"), particle_pos)
 			state_machine._change_state(queued_action, queued_data)
+			if pressed_feint:
+				feinting = true
+				current_state().feinting = true
 	queued_action = null
 	queued_data = null
 	queued_extra = null

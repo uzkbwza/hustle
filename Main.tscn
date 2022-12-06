@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=2]
+[gd_scene load_steps=76 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -62,6 +62,7 @@
 [ext_resource path="res://ui/NagWindow2.tscn" type="PackedScene" id=60]
 [ext_resource path="res://ui/HelpText.tscn" type="PackedScene" id=61]
 [ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.tscn" type="PackedScene" id=62]
+[ext_resource path="res://ui/HUD/FeintDisplay.gd" type="Script" id=63]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -312,9 +313,9 @@ __meta__ = {
 }
 
 [node name="AirMovementDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
-margin_left = 73.0
+margin_left = 76.0
 margin_top = 35.0
-margin_right = 567.0
+margin_right = 564.0
 margin_bottom = 48.0
 alignment = 1
 
@@ -338,15 +339,15 @@ script = ExtResource( 20 )
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
 margin_left = 53.0
-margin_right = 441.0
+margin_right = 435.0
 margin_bottom = 13.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="P2AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_left = 442.0
+margin_left = 436.0
 margin_top = 1.0
-margin_right = 494.0
+margin_right = 488.0
 margin_bottom = 12.0
 text = "Air Options"
 align = 1
@@ -361,6 +362,66 @@ margin_left = -25.0
 margin_right = 25.0
 margin_bottom = 16.0
 script = ExtResource( 20 )
+player_id = 2
+
+[node name="FeintDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -191.0
+margin_top = -171.0
+margin_right = 191.0
+margin_bottom = -99.0
+
+[node name="Label" type="Label" parent="HudLayer/HudLayer/FeintDisplay"]
+margin_top = 30.0
+margin_right = 68.0
+margin_bottom = 41.0
+rect_min_size = Vector2( 68, 0 )
+text = "Free Cancels"
+align = 1
+
+[node name="P1FeintDisplay" type="Control" parent="HudLayer/HudLayer/FeintDisplay/Label"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -31.0
+margin_top = 5.5
+margin_right = 31.0
+margin_bottom = 21.5
+grow_horizontal = 2
+script = ExtResource( 63 )
+
+[node name="Control" type="Control" parent="HudLayer/HudLayer/FeintDisplay"]
+margin_left = 69.0
+margin_right = 313.0
+margin_bottom = 72.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="HudLayer/HudLayer/FeintDisplay"]
+margin_left = 314.0
+margin_top = 30.0
+margin_right = 382.0
+margin_bottom = 41.0
+rect_min_size = Vector2( 68, 0 )
+text = "Free Cancels"
+align = 1
+
+[node name="P2FeintDisplay" type="Control" parent="HudLayer/HudLayer/FeintDisplay/Label2"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -31.0
+margin_top = 5.5
+margin_right = 31.0
+margin_bottom = 21.5
+grow_horizontal = 2
+script = ExtResource( 63 )
 player_id = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudLayer"]

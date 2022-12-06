@@ -66,7 +66,8 @@ func init(game):
 	p1_health_bar_trail.max_value = p1.MAX_HEALTH
 	p1_health_bar_trail.value = p1.MAX_HEALTH
 	p2_health_bar_trail.value = p2.MAX_HEALTH
-	
+	$"%P1FeintDisplay".fighter = p1
+	$"%P2FeintDisplay".fighter = p2
 	p1_ghost_health_bar_trail.max_value = p1.MAX_HEALTH
 	p2_ghost_health_bar_trail.max_value = p2.MAX_HEALTH
 	p1_ghost_health_bar_trail.value = p1.MAX_HEALTH
@@ -88,6 +89,8 @@ func init(game):
 			$"%P1Username".text = game.match_data.user_data.p1
 		if game.match_data.user_data.has("p2"):
 			$"%P2Username".text = game.match_data.user_data.p2
+	
+
 	
 	game.connect("game_won", self, "on_game_won")
 	pass
@@ -176,6 +179,7 @@ func _physics_process(_delta):
 		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
 		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
+		
 		
 		if game.super_active and !game.parry_freeze:
 			if !super_started:

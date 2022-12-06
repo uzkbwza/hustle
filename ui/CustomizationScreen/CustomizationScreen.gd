@@ -82,6 +82,7 @@ func save_style():
 func update_warning():
 	if !Global.has_supporter_pack():
 		$"%DLCWarning".visible = Custom.requires_dlc(get_style_data())
+	pass
 
 func load_style(style):
 	if style:

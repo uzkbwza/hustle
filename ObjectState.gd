@@ -124,8 +124,9 @@ func _tick_shared():
 
 	if current_tick < anim_length or endless:
 		current_tick += 1
-		if process_hitboxes() == true:
-			return process_feint()
+#		if process_hitboxes() == true:
+		process_hitboxes()
+#			return process_feint()
 		update_sprite_frame()
 		update_hurtbox()
 		if current_tick == sfx_tick and sfx_player and !ReplayManager.resimulating:

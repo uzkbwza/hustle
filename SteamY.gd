@@ -31,14 +31,15 @@ func _process(_delta):
 		Steam.run_callbacks()
 		
 func has_supporter_pack(steam_id):
-	if !STARTED:
-		print("steam not started, assuming true")
-		return true
-	if steam_id in SteamLobby.CLIENT_TICKETS and !steam_id == SteamYomi.STEAM_ID:
-		print("checking if player has the supporter pack...")
-		return SteamLobby.has_supporter_pack(steam_id)
-	elif steam_id == SteamYomi.STEAM_ID:
-		print("checking if you have the supporter pack...")
-		return Steam.isDLCInstalled(Custom.SUPPORTER_PACK)
-	print("this ID does not have the supporter pack.")
-	return false
+	return true
+#	if !STARTED:
+#		print("steam not started, assuming true")
+#		return true
+#	if steam_id in SteamLobby.CLIENT_TICKETS and !steam_id == SteamYomi.STEAM_ID:
+#		print("checking if player has the supporter pack...")
+#		return SteamLobby.has_supporter_pack(steam_id)
+#	elif steam_id == SteamYomi.STEAM_ID:
+#		print("checking if you have the supporter pack...")
+#		return Steam.isDLCInstalled(Custom.SUPPORTER_PACK)
+#	print("this ID does not have the supporter pack.")
+#	return false

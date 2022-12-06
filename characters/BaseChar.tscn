@@ -482,6 +482,7 @@ air_type = 2
 busy_interrupt_type = 2
 burst_cancellable = false
 instant_cancellable = false
+can_feint_if_possible = false
 interrupt_from_string = "BusyHurt
 Burst"
 interrupt_into_string = "Grounded

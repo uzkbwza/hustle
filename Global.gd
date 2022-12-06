@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.2-unstable"
+var VERSION = "0.4.4-unstable"
 
 var audio_player
 var music_enabled = true
@@ -21,12 +21,13 @@ var has_supporter_pack_file = false
 var enable_custom_colors = true
 var enable_custom_particles = true
 var enable_custom_hit_sparks = true
+var demo_version = true
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
-	"Robot": "res://characters/robo/Robot.tscn",
+#	"Robot": "res://characters/robo/Robot.tscn",
 }
 
 var songs = {
@@ -75,7 +76,7 @@ func set_music_enabled(on):
 		pass
 
 func has_supporter_pack():
-	return has_supporter_pack_file
+	return true
 
 func set_playback_controls(on):
 	show_playback_controls = on

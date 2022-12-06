@@ -32,10 +32,10 @@ func update_throw_position():
 
 # God help you
 func walk_back():
-	host.apply_force(WALK_BACK_SPEED, "0")
+	host.apply_force_relative(WALK_BACK_SPEED, "0")
 
 func walk_forward():
-	host.apply_force(WALK_FORWARD_SPEED, "0")
+	host.apply_force_relative(WALK_FORWARD_SPEED, "0")
 
 func _frame_0():
 	._frame_0()
@@ -44,24 +44,24 @@ func _frame_0():
 	is_in_combo = host.combo_count != 0
 
 func _frame_7():
-	host.move_directly(-16, 0)
+	host.move_directly_relative(-16, 0)
 
 func _frame_16():
 	walk_forward()
 
 func _frame_21():
 	ground_slam()
-	host.move_directly(16, 0)
+	host.move_directly_relative(16, 0)
 
 func _frame_28():
 	walk_back()
-	host.move_directly(-16, 0)
+	host.move_directly_relative(-16, 0)
 
 func _frame_36():
 	walk_forward()
 
 func _frame_39():
-	host.move_directly(16, 0)
+	host.move_directly_relative(16, 0)
 	
 func _frame_40():
 	ground_slam()
@@ -71,7 +71,9 @@ func _frame_44():
 	walk_back()
 
 func ground_slam():
-	spawn_particle_relative(particle_scene, particle_position)
+	var pos = particle_position
+	pos.x *= host.get_facing_int()
+	spawn_particle_relative(particle_scene, pos)
 	if !is_in_combo:
 		no_combo_hitbox.hit(host.opponent)
 	else:

@@ -88,7 +88,7 @@ alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="BottomRow"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 280.0
+margin_left = 273.0
 margin_right = 320.0
 margin_bottom = 62.0
 size_flags_horizontal = 0
@@ -98,7 +98,7 @@ size_flags_vertical = 0
 unique_name_in_owner = true
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 39.0
+margin_right = 46.0
 margin_bottom = 61.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
@@ -108,15 +108,15 @@ alignment = 2
 
 [node name="TurnButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
 unique_name_in_owner = true
-margin_right = 38.0
+margin_right = 45.0
 margin_bottom = 60.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SelectButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
 unique_name_in_owner = true
-margin_right = 38.0
-margin_bottom = 29.0
+margin_right = 45.0
+margin_bottom = 19.0
 hint_tooltip = "Submit the selected action and end your turn."
 mouse_default_cursor_shape = 2
 size_flags_vertical = 3
@@ -126,15 +126,14 @@ text = "Lock In"
 
 [node name="FeintButton" type="CheckButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
 unique_name_in_owner = true
-visible = false
 margin_top = 20.0
-margin_right = 46.0
+margin_right = 45.0
 margin_bottom = 39.0
-hint_tooltip = "Perform your action backwards."
+hint_tooltip = "Uses one charge of Free Cancel. Allows you to freely cancel your melee attack on the opponent's turn."
 size_flags_horizontal = 3
 size_flags_vertical = 3
 action_mode = 0
-text = "Feint"
+text = "Free"
 align = 1
 icon_align = 1
 expand_icon = true
@@ -162,8 +161,8 @@ margin_bottom = 39.0
 
 [node name="UndoButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
 unique_name_in_owner = true
-margin_top = 30.0
-margin_right = 38.0
+margin_top = 40.0
+margin_right = 45.0
 margin_bottom = 60.0
 hint_tooltip = "Resimulate the match until the previous turn."
 mouse_default_cursor_shape = 2

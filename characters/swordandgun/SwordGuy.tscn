@@ -604,7 +604,6 @@ lasso_projectile
 used_aerial_h_slash"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
-num_feints = 2
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
@@ -1143,6 +1142,7 @@ interrupt_from_string = "Lasso"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/LassoReel" index="0"]
 script = ExtResource( 166 )
+increment_combo = false
 knockdown_extends_hitstun = false
 _c_Frame_Data = true
 active_ticks = 1
@@ -1189,7 +1189,7 @@ apply_grav = true
 sprite_animation = "VSlash"
 anim_length = 30
 force_dir_x = "1.0"
-force_speed = "7.0"
+force_speed = "10.0"
 force_tick = 2
 title = "Vert. Slash"
 type = 1
@@ -1674,6 +1674,8 @@ start_throw_pos_y = 2
 knockback = "12.0"
 dir_y = "-1.0"
 grounded_hit_state = "HurtAerial"
+damage = 0
+increment_combo = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IzunaDrop" index="0"]
 z_index = 1000
@@ -1681,17 +1683,18 @@ script = ExtResource( 83 )
 width = 40
 height = 40
 damage = 165
-minimum_damage = 60
+minimum_damage = 80
 hitstun_ticks = 40
 hitlag_ticks = 1
 victim_hitlag = 10
 cancellable = false
+increment_combo = false
 screenshake_amount = 30
 screenshake_frames = 20
 camera_bump_dir = Vector2( 0, 1 )
 hit_sound = ExtResource( 143 )
 dir_x = "2.0"
-knockback = "18.0"
+knockback = "20.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
