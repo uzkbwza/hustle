@@ -576,39 +576,28 @@ change_stance_to = "Normal"
 
 [node name="ParryHigh" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 68 )
+sprite_animation = "ParryHigh"
 anim_length = 20
-title = "High Block"
+title = "Block High"
 type = 4
 button_texture = ExtResource( 99 )
-reversible = false
 interrupt_from_string = "Grounded
-GroundedSpecial
-AerialSpecial
-Parry"
+Aerial"
 interrupt_into_string = "Grounded
-Aerial
-GroundedSpecial
-AerialSpecial"
-allowed_stances_string = "All"
-change_stance_to = "Normal"
+Aerial"
 initiative_effect = true
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 68 )
+sprite_animation = "ParryLow"
 anim_length = 20
-title = "Low Block"
+title = "Block Low"
 type = 4
 button_texture = ExtResource( 98 )
-reversible = false
 interrupt_from_string = "Grounded
-GroundedSpecial
-AerialSpecial
-Parry"
+Aerial"
 interrupt_into_string = "Grounded
-Aerial
-"
-allowed_stances_string = "All"
-change_stance_to = "Normal"
+Aerial"
 initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 1
@@ -621,17 +610,10 @@ title = "Block"
 type = 4
 button_texture = ExtResource( 98 )
 air_type = 1
-reversible = false
-interrupt_from_string = "Aerial
-GroundedSpecial
-AerialSpecial
-Parry"
+interrupt_from_string = "Grounded
+Aerial"
 interrupt_into_string = "Grounded
-Aerial
-GroundedSpecial
-AerialSpecial"
-allowed_stances_string = "All"
-change_stance_to = "Normal"
+Aerial"
 initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 2

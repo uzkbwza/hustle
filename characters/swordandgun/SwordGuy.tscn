@@ -1817,9 +1817,6 @@ active_ticks = 1
 
 [node name="DashStartup" parent="StateMachine" index="42"]
 title = "Walk"
-interrupt_from_string = "GroundedMovement
-Grounded
-Dash"
 
 [node name="DashForward" parent="StateMachine" index="43"]
 spawn_particle_on_enter = false

@@ -1359,6 +1359,7 @@ anim_length = 24
 title = "Confusing Touch"
 type = 2
 button_texture = ExtResource( 232 )
+flip_icon = false
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded"

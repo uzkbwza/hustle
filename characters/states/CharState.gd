@@ -223,7 +223,7 @@ func _tick_shared():
 			enable_interrupt()
 
 func _tick_after():
-	host.set_lowest_tick(current_tick)
+	host.set_lowest_tick(current_real_tick)
 	._tick_after()
 
 func can_feint():

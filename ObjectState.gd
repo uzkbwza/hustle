@@ -61,6 +61,7 @@ var enter_sfx_player
 var sfx_player
 
 var current_tick = -1
+var current_real_tick = -1
 var fixed
 
 var anim_name
@@ -122,6 +123,7 @@ func _tick_shared():
 			spawn_particle_relative(particle_scene, particle_position)
 		apply_enter_force()
 
+	current_real_tick += 1
 	if current_tick < anim_length or endless:
 		current_tick += 1
 #		if process_hitboxes() == true:
@@ -300,6 +302,7 @@ func _enter_shared():
 	if reset_momentum:
 		host.reset_momentum()
 	current_tick = -1
+	current_real_tick = -1
 	if enter_sfx_player and !ReplayManager.resimulating:
 		enter_sfx_player.play()
 	emit_signal("state_started")

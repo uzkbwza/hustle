@@ -115,8 +115,8 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = ExtResource( 2 )
-animation = "GroundedSweep"
-frame = 0
+animation = "GroundedPunch"
+frame = 3
 
 [node name="Super2" parent="Sounds" index="4"]
 pitch_variation = 0.1
@@ -141,11 +141,6 @@ dash_speed = 11
 
 [node name="Jump" parent="StateMachine" index="16"]
 y_modifier = "1.33"
-
-[node name="AirDash" parent="StateMachine" index="19"]
-interrupt_into_string = "Aerial
-Grounded
-Fall"
 
 [node name="WhiffInstantCancel" parent="StateMachine" index="21"]
 hit_cancel_exceptions_string = ""
@@ -1034,9 +1029,9 @@ Jump"
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedPunch" index="0"]
 z_index = 1000
 script = ExtResource( 1 )
-x = 11
+x = 17
 y = -24
-width = 22
+width = 16
 height = 8
 damage = 30
 hitstun_ticks = 12

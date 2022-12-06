@@ -495,12 +495,13 @@ func launched_by(hitbox):
 				
 		if opponent.combo_count == 0:
 			opponent.combo_proration = hitbox.damage_proration
-			var host = objs_map[hitbox.host]
-			var projectile = !host.is_in_group("Fighter")
 
-			if !projectile:
-				refresh_feints()
-				opponent.refresh_feints()
+		var host = objs_map[hitbox.host]
+		var projectile = !host.is_in_group("Fighter")
+
+		if !projectile:
+			refresh_feints()
+			opponent.refresh_feints()
 
 		if hitbox.increment_combo:
 			opponent.incr_combo()
@@ -525,7 +526,7 @@ func hit_by(hitbox):
 			Hitbox.HitboxType.Normal:
 				launched_by(hitbox)
 			Hitbox.HitboxType.Flip:
-				set_facing(get_facing_int() * -1)
+				set_facing(get_facing_int() * -1, true)
 				var vel = get_vel()
 				set_vel(fixed.mul(vel.x, "-1"), vel.y)
 				for hitbox in hitboxes:
@@ -543,6 +544,7 @@ func hit_by(hitbox):
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
+		
 		if !projectile:
 			perfect_parry = always_perfect_parry or opponent.current_state().feinting or (initiative and !blocked_last_hit) or parried_last_state
 		else:
@@ -551,6 +553,7 @@ func hit_by(hitbox):
 			parried_last_state = true
 		else:
 			blocked_last_hit = true
+		
 		
 		parried = true
 
@@ -766,7 +769,7 @@ func tick_before():
 	queued_action = null
 	queued_data = null
 	queued_extra = null
-	lowest_tick = current_state().current_tick
+	lowest_tick = current_state().current_real_tick
 
 func toggle_quit_graphic(on=null):
 	if on == null:
