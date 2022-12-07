@@ -61,8 +61,9 @@ func hitspark_to_dlc(spark_name):
 	return 0
 
 func can_use_style(player_id, style):
-#	if !requires_dlc(style):
-#		return true
+	if !requires_dlc(style):
+		return Global.full_version()
+	return true
 #	if !Network.multiplayer_active:
 ##		return Global.has_supporter_pack()
 #		return true
@@ -83,7 +84,6 @@ func can_use_style(player_id, style):
 #			else:
 #				print("Your opponent does not have the supporter pack.")
 #			return has_supporter_pack
-	return false
 
 func requires_dlc(data):
 	if data == null:

@@ -215,6 +215,8 @@ func copy_to(state: ObjectState):
 			if value:
 				state.set(variable.name, value)
 	state.data = copy_data()
+	state.current_real_tick = current_real_tick
+	state.current_tick = current_real_tick
 
 func activate_hitbox(hitbox):
 	hitbox.activate()

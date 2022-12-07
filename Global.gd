@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.5"
+var VERSION = "0.4.9-unstable"
 
 var audio_player
 var music_enabled = true
@@ -27,12 +27,19 @@ var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
-#	"Robot": "res://characters/robo/Robot.tscn",
+	"Robot": "res://characters/robo/Robot.tscn",
 }
+
+var paid_characters = [
+	"Robot"
+]
 
 var songs = {
 	"bg1": preload("res://sound/music/bg1.mp3")
 }
+
+func full_version():
+	return (!demo_version) and SteamYomi.STARTED
 
 func _enter_tree():
 #	get_tree().set_auto_accept_quit(false)

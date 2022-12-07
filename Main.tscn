@@ -312,6 +312,33 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="HboxContainer" type="HBoxContainer" parent="HudLayer/HudLayer"]
+margin_left = 32.0
+margin_top = 52.0
+margin_right = 608.0
+margin_bottom = 64.0
+
+[node name="P1ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
+unique_name_in_owner = true
+margin_right = 46.0
+margin_bottom = 12.0
+text = "style"
+flat = true
+
+[node name="Control" type="Control" parent="HudLayer/HudLayer/HboxContainer"]
+margin_left = 47.0
+margin_right = 529.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+
+[node name="P2ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
+unique_name_in_owner = true
+margin_left = 530.0
+margin_right = 576.0
+margin_bottom = 12.0
+text = "style"
+flat = true
+
 [node name="AirMovementDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
 margin_left = 76.0
 margin_top = 35.0
@@ -335,12 +362,17 @@ anchor_bottom = 1.0
 margin_left = -25.0
 margin_right = 25.0
 margin_bottom = 16.0
+mouse_filter = 2
 script = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
 margin_left = 53.0
 margin_right = 435.0
 margin_bottom = 13.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -361,7 +393,11 @@ anchor_bottom = 1.0
 margin_left = -25.0
 margin_right = 25.0
 margin_bottom = 16.0
+mouse_filter = 2
 script = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
 player_id = 2
 
 [node name="FeintDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
@@ -606,6 +642,7 @@ unique_name_in_owner = true
 margin_right = 40.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 40, 60 )
+mouse_filter = 2
 script = ExtResource( 46 )
 
 [node name="P1HitLabel" type="Label" parent="HudLayer/HudLayer/HBoxContainer/P1ComboCounter"]
@@ -648,6 +685,7 @@ margin_left = 528.0
 margin_right = 568.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 40, 60 )
+mouse_filter = 2
 script = ExtResource( 46 )
 player_id = 2
 
@@ -755,31 +793,37 @@ align = 1
 
 [node name="UsernameBar" type="HBoxContainer" parent="HudLayer/HudLayer"]
 anchor_right = 1.0
-margin_left = 73.0
+margin_left = 62.0
 margin_top = 6.0
-margin_right = -73.0
-margin_bottom = 17.0
+margin_right = -62.0
+margin_bottom = 18.0
+custom_constants/separation = 10
 
 [node name="P1Username" type="Label" parent="HudLayer/HudLayer/UsernameBar"]
 unique_name_in_owner = true
+margin_right = 235.0
 margin_bottom = 11.0
+rect_min_size = Vector2( 235, 0 )
 custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
 valign = 2
+clip_text = true
 
 [node name="Control" type="Control" parent="HudLayer/HudLayer/UsernameBar"]
-margin_left = 1.0
-margin_right = 493.0
-margin_bottom = 11.0
+margin_left = 245.0
+margin_right = 271.0
+margin_bottom = 12.0
 size_flags_horizontal = 3
 
 [node name="P2Username" type="Label" parent="HudLayer/HudLayer/UsernameBar"]
 unique_name_in_owner = true
-margin_left = 494.0
-margin_right = 494.0
+margin_left = 281.0
+margin_right = 516.0
 margin_bottom = 11.0
+rect_min_size = Vector2( 235, 0 )
 custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
 align = 2
 valign = 2
+clip_text = true
 
 [node name="P1CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
@@ -918,7 +962,8 @@ __meta__ = {
 
 [node name="CurrentTick" type="Label" parent="UILayer"]
 anchor_right = 1.0
-margin_bottom = 14.0
+margin_top = -1.0
+margin_bottom = 13.0
 align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
@@ -933,6 +978,8 @@ __meta__ = {
 
 [node name="TopInfo" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+visible = false
+modulate = Color( 1, 1, 1, 0.584314 )
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -320.0
@@ -944,6 +991,7 @@ align = 1
 [node name="TopInfoMP" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
 visible = false
+modulate = Color( 1, 1, 1, 0.584314 )
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -320.0
@@ -955,6 +1003,7 @@ align = 1
 [node name="TopInfoReplay" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
 visible = false
+modulate = Color( 1, 1, 1, 0.584314 )
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -320.0
@@ -975,6 +1024,7 @@ margin_right = 320.0
 margin_bottom = -4.0
 mouse_filter = 2
 theme = ExtResource( 4 )
+custom_constants/separation = 0
 alignment = 1
 script = ExtResource( 11 )
 
@@ -995,8 +1045,8 @@ size_flags_stretch_ratio = 4.79
 
 [node name="ActionButtons" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
-margin_right = 641.0
-margin_bottom = 135.0
+margin_right = 640.0
+margin_bottom = 136.0
 rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -1004,8 +1054,8 @@ size_flags_vertical = 3
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_right = 320.0
-margin_bottom = 135.0
+margin_right = 319.0
+margin_bottom = 136.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1013,14 +1063,14 @@ alignment = 2
 
 [node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 40.0
-margin_right = 320.0
-margin_bottom = 60.0
+margin_top = 41.0
+margin_right = 319.0
+margin_bottom = 61.0
 mouse_filter = 2
 
 [node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
 unique_name_in_owner = true
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 20.0
 mouse_filter = 2
 
@@ -1073,16 +1123,16 @@ texture = ExtResource( 35 )
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 61.0
-margin_right = 320.0
-margin_bottom = 135.0
+margin_top = 62.0
+margin_right = 319.0
+margin_bottom = 136.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_left = 321.0
-margin_right = 641.0
-margin_bottom = 135.0
+margin_left = 320.0
+margin_right = 640.0
+margin_bottom = 136.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1090,9 +1140,9 @@ alignment = 2
 
 [node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 40.0
+margin_top = 41.0
 margin_right = 320.0
-margin_bottom = 60.0
+margin_bottom = 61.0
 mouse_filter = 2
 
 [node name="P2SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
@@ -1149,29 +1199,27 @@ mouse_filter = 2
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 61.0
+margin_top = 62.0
 margin_right = 320.0
-margin_bottom = 135.0
+margin_bottom = 136.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 player_id = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
 margin_top = 136.0
-margin_right = 641.0
+margin_right = 640.0
 margin_bottom = 148.0
 custom_constants/margin_right = 10
 custom_constants/margin_left = 10
 
-[node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer"]
+[node name="OptionsBar" type="HFlowContainer" parent="UILayer/GameUI/BottomBar/MarginContainer"]
 unique_name_in_owner = true
 margin_left = 10.0
-margin_right = 631.0
+margin_right = 630.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 5
-alignment = 1
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
@@ -1184,24 +1232,24 @@ text = "show prediction (buggy)"
 
 [node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 146.0
-margin_right = 227.0
+margin_left = 145.0
+margin_right = 226.0
 margin_bottom = 12.0
 pressed = true
 text = "afterimages"
 
 [node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 232.0
-margin_right = 410.0
+margin_left = 230.0
+margin_right = 408.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze prediction on turn ready"
 
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 415.0
-margin_right = 543.0
+margin_left = 412.0
+margin_right = 540.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
@@ -1243,8 +1291,8 @@ text = "x4"
 
 [node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 548.0
-margin_right = 621.0
+margin_left = 544.0
+margin_right = 617.0
 margin_bottom = 12.0
 text = "clear particles"
 
@@ -1536,7 +1584,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Singleplayer"
 flat = true
 
-[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 21.0
 margin_right = 96.0
@@ -1544,10 +1592,10 @@ margin_bottom = 41.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Multiplayer"
+text = "Multiplayer (Steam)"
 flat = true
 
-[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 42.0
 margin_right = 96.0
@@ -1555,7 +1603,7 @@ margin_bottom = 62.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Multiplayer (Steam)"
+text = "Multiplayer"
 flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]

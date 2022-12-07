@@ -108,6 +108,7 @@ var will_forfeit = false
 var applied_style = null
 var is_color_active = false
 var is_aura_active = false
+var is_style_active = null
 
 var ivy_effect = false
 
@@ -237,6 +238,7 @@ func apply_style(style):
 		return
 	if style != null and !is_ghost:
 		is_color_active = true
+		is_style_active = true
 		applied_style = style
 		if Global.enable_custom_colors and style.has("character_color") and style.character_color != null:
 			set_color(style.character_color)
@@ -270,6 +272,14 @@ func reset_aura():
 	if is_instance_valid(aura_particle):
 		aura_particle.queue_free()
 	aura_particle = null
+
+func reset_style():
+	reset_color()
+	reset_aura()
+	is_style_active = false
+
+func reapply_style():
+	apply_style(applied_style)
 
 func start_super():
 	emit_signal("super_started")
@@ -315,6 +325,7 @@ func copy_to(f):
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
 	f.update_data()
+	
 
 func gain_burst():
 	if bursts_available < MAX_BURSTS:
@@ -437,14 +448,15 @@ func _process(_delta):
 		aura_particle.position = hurtbox_pos_float()
 		aura_particle.facing = get_facing_int()
 	
+	if is_style_active:
+		if applied_style and !is_color_active and Global.enable_custom_colors:
+			apply_style(applied_style)
+		if applied_style and !is_aura_active and Global.enable_custom_particles:
+			apply_style(applied_style)
 	if is_color_active and !Global.enable_custom_colors:
 		reset_color()
 	if is_aura_active and !Global.enable_custom_particles:
 		reset_aura()
-	if applied_style and !is_color_active and Global.enable_custom_colors:
-		apply_style(applied_style)
-	if applied_style and !is_aura_active and Global.enable_custom_particles:
-		apply_style(applied_style)
 
 func debug_text():
 	.debug_text()
@@ -459,6 +471,7 @@ func has_armor():
 	return false
 
 func launched_by(hitbox):
+
 #		if hitlag_ticks < hitbox.victim_hitlag:
 	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
 	hitlag_applied = hitlag_ticks
@@ -520,6 +533,7 @@ func hit_by(hitbox):
 		return
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)
+		
 	if !can_parry_hitbox(hitbox):
 		# probably need to coalesce the "take damage" and "got hit" signals here
 		match hitbox.hitbox_type:
@@ -540,14 +554,15 @@ func hit_by(hitbox):
 				opponent.incr_combo()
 	else:
 		opponent.got_parried = true
-		opponent.feinting = false
+		
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
-		
 		if !projectile:
+			opponent.feinting = false
 			perfect_parry = always_perfect_parry or opponent.current_state().feinting or (initiative and !blocked_last_hit) or parried_last_state
 		else:
+#			opponent.feinting = false
 			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window)
 		if perfect_parry:
 			parried_last_state = true
@@ -697,6 +712,8 @@ func get_advantage():
 #	var minus_modifier = 1 if id == 1 else 0
 	var minus_modifier = 0
 	var advantage = (opponent and opponent.lowest_tick <= lowest_tick) or parried_last_state
+
+#		print(opponent.lowest_tick)
 	if state_interruptable and opponent.state_interruptable:
 		advantage = true
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):

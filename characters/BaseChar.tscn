@@ -582,7 +582,9 @@ title = "Block High"
 type = 4
 button_texture = ExtResource( 99 )
 interrupt_from_string = "Grounded
-Aerial"
+Aerial
+GroundedSpecial
+AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
@@ -595,7 +597,9 @@ title = "Block Low"
 type = 4
 button_texture = ExtResource( 98 )
 interrupt_from_string = "Grounded
-Aerial"
+Aerial
+GroundedSpecial
+AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
@@ -611,7 +615,9 @@ type = 4
 button_texture = ExtResource( 98 )
 air_type = 1
 interrupt_from_string = "Grounded
-Aerial"
+Aerial
+GroundedSpecial
+AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true

@@ -26,6 +26,8 @@ func get_style_data():
 
 func _ready():
 	for name in Global.name_paths:
+		if (name in Global.paid_characters) and !Global.full_version():
+			continue
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = load(Global.name_paths[name])
 		$"%CharacterButtonContainer".add_child(button)

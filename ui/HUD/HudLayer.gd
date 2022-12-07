@@ -50,8 +50,8 @@ func _ready():
 	$"%WinLabel".hide()
 
 func init(game):
-	self.game = game
 	show()
+	self.game = game
 	$"%GameUI".show()
 	$"%WinLabel".hide()
 	p1 = game.get_player(1)
@@ -90,6 +90,8 @@ func init(game):
 		if game.match_data.user_data.has("p2"):
 			$"%P2Username".text = game.match_data.user_data.p2
 	
+	$"%P1ShowStyle".set_pressed_no_signal(true)
+	$"%P2ShowStyle".set_pressed_no_signal(true)
 
 	
 	game.connect("game_won", self, "on_game_won")
@@ -153,7 +155,10 @@ func _physics_process(_delta):
 			p2_ghost_health_bar_trail.value = 0
 			p1_ghost_health_bar.visible = false
 			p2_ghost_health_bar.visible = false
-		
+#
+		$"%P1ShowStyle".visible = game.game_paused and p1.applied_style != null
+		$"%P2ShowStyle".visible = game.game_paused and p2.applied_style != null
+#
 		if !ReplayManager.playback or p1.combo_count > 1:
 			$"%P1DmgLabel".text = str(p1.combo_damage * 10) + " DMG"
 		else:
@@ -179,7 +184,6 @@ func _physics_process(_delta):
 		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
 		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
-		
 		
 		if game.super_active and !game.parry_freeze:
 			if !super_started:

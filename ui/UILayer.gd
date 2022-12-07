@@ -115,11 +115,15 @@ func _ready():
 #		$"%BGColor".color = light_mode_color
 	if !SteamYomi.STARTED:
 		$"%SteamMultiplayerButton".hide()
+		
 #		$"%CustomizeButton".hide()
 #		$"%EnableStyleColorsButton".hide()
 #		$"%EnableAurasButton".hide()
 #		$"%EnableHitsparksButton".hide()
-	if Global.demo_version:
+	else:
+		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
+	
+	if !Global.full_version():
 		$"%CustomizeButton".hide()
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
@@ -201,11 +205,11 @@ func load_replays():
 	var buttons = []
 	for key in replay_map:
 		var button = preload("res://ui/ReplayWindow/ReplayButton.tscn").instance()
-		button.text = key
-		button.path = replay_map[key]["path"]
-		button.modified = replay_map[key]["modified"]
+		add_child(button)
+		button.setup(replay_map, key)
 		button.connect("pressed", self, "_on_replay_button_pressed", [button.path])
 		buttons.append(button)
+		remove_child(button)
 	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)

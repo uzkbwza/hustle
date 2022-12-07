@@ -195,10 +195,12 @@ func copy_to(o: BaseObj):
 			o.set(variable, get(variable))
 	
 #	o.chara.set_facing(get_facing_int())
-	o.change_state(current_state.state_name, current_state.data)
 
+	o.change_state(current_state.state_name, current_state.data)
+	
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
+
 #	while o.current_state().current_tick < current_state.current_tick:
 #		o.normal_tick()
 #		o.set_pos(get_pos().x, get_pos().y)

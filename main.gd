@@ -56,6 +56,16 @@ func _ready():
 	Global.connect("nag_window", $"%NagWindow", "show")
 	SteamLobby._stop_spectating()
 	SteamLobby.quit_match()
+	$"%P1ShowStyle".connect("toggled", self, "_on_show_style_toggled", [1])
+	$"%P2ShowStyle".connect("toggled", self, "_on_show_style_toggled", [2])
+
+func _on_show_style_toggled(on, player_id):
+	if is_instance_valid(game):
+		var player = game.get_player(player_id)
+		if on:
+			player.reapply_style()
+		else:
+			player.reset_style()
 
 func _on_player_disconnected():
 	$"%OpponentDisconnectedLabel".show()

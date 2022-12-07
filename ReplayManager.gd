@@ -76,8 +76,6 @@ func generate_replay_name():
 func save_replay_mp(match_data, p1, p2):
 	save_replay(match_data, generate_mp_replay_name(p1, p2), true)
 
-
-
 func save_replay(match_data: Dictionary, file_name="", autosave=false):
 	if file_name == "":
 		file_name = generate_replay_name() 
@@ -85,6 +83,7 @@ func save_replay(match_data: Dictionary, file_name="", autosave=false):
 	
 	var data = match_data.duplicate(true)
 	data["frames"] = frames
+	data["version"] = Global.VERSION
 
 	var dir = Directory.new()
 	if !dir.dir_exists("user://replay"):
@@ -113,14 +112,18 @@ func load_replays(autosave=true):
 	Global.add_dir_contents(dir, files, _directories, autosave)
 	var replay_paths = {}
 	for path in files:
-		var file = File.new()
-		var modified = file.get_modified_time(path)
+		var replay_file = File.new()
+#		replay_file.open(path, File.READ)
+#		var match_data = replay_file.get_var()
+		var modified = replay_file.get_modified_time(path)
 		var data = {
 			"path": path,
 			"modified": modified,
+#			"version": match_data.version if match_data.has("version") else null
 		}
 		if ".replay" in path:
 			replay_paths[path.split("/")[-1].split(".")[0]] = data
+		replay_file.close()
 	return replay_paths
 
 func load_replay(path):
