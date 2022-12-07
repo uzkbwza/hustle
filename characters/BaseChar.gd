@@ -519,7 +519,6 @@ func launched_by(hitbox):
 		if hitbox.increment_combo:
 			opponent.incr_combo()
 
-
 	emit_signal("got_hit")
 	take_damage(hitbox.damage, hitbox.minimum_damage)
 	state_tick()
@@ -559,8 +558,9 @@ func hit_by(hitbox):
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
 		if !projectile:
+			perfect_parry = always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state
 			opponent.feinting = false
-			perfect_parry = always_perfect_parry or opponent.current_state().feinting or (initiative and !blocked_last_hit) or parried_last_state
+			opponent.current_state().feinting = false
 		else:
 #			opponent.feinting = false
 			perfect_parry = always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window)

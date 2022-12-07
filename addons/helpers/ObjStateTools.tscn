@@ -1,8 +1,24 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/helpers/ObjStateTools.gd" type="Script" id=1]
+[ext_resource path="res://AnimationEditor.tscn" type="PackedScene" id=2]
 
-[node name="Control" type="Control"]
+[node name="ObjStateTools" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 640.0
+margin_bottom = 360.0
+
+[node name="AnimationEditor" parent="HBoxContainer" instance=ExtResource( 2 )]
+
+[node name="StateSettings" type="Panel" parent="HBoxContainer"]
+visible = false
+margin_left = 540.0
+margin_right = 640.0
+margin_bottom = 360.0
+rect_min_size = Vector2( 100, 0 )

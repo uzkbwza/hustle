@@ -6,6 +6,8 @@ var IS_OWNED: bool
 var STEAM_ID: int
 var STEAM_NAME: String = ""
 
+var APP_ID
+
 var STARTED = false
 
 func _enter_tree():
@@ -20,7 +22,8 @@ func _initialize_steam():
 	
 	if INIT['status'] != 1:
 		print("Failed to initialize Steam. " + str(INIT['verbal']))
-		
+	
+	APP_ID = Steam.getAppID()
 	IS_ONLINE = Steam.loggedOn()
 	STEAM_ID = Steam.getSteamID()
 	STEAM_NAME = Steam.getPersonaName()

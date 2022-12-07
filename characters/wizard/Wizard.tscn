@@ -1148,7 +1148,6 @@ x = 10
 y = -22
 width = 14
 height = 19
-hit_height = false
 start_tick = 7
 active_ticks = 23
 throw_state = "Hold"
@@ -1533,11 +1532,6 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
-
-[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-hit_height = false
-hit_sound = null
-hit_bass_sound = null
 
 [node name="ForwardThrow" parent="StateMachine" index="50"]
 anim_length = 24

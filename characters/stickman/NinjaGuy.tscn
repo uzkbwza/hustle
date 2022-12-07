@@ -145,9 +145,6 @@ y_modifier = "1.33"
 [node name="WhiffInstantCancel" parent="StateMachine" index="21"]
 hit_cancel_exceptions_string = ""
 
-[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-_c_Frame_Data = true
-
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 5 )
 __meta__ = {

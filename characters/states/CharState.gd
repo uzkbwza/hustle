@@ -141,6 +141,7 @@ func get_categories(string: String):
 
 func _enter_shared():
 	._enter_shared()
+	
 #	host.update_advantage()
 #	if host.opponent:
 #		host.opponent.update_advantage()

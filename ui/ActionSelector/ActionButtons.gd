@@ -423,7 +423,7 @@ func activate():
 				cancel_into.append("Grounded")
 			else:
 				cancel_into.append("Aerial")
-		if fighter.feinting:
+		if fighter.feinting and fighter.opponent.current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
 			cancel_into.append("Grounded")
 			cancel_into.append("Aerial")
 	else:

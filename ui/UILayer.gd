@@ -123,7 +123,7 @@ func _ready():
 	else:
 		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
 	
-	if !Global.full_version():
+	if !SteamYomi.STARTED:
 		$"%CustomizeButton".hide()
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")

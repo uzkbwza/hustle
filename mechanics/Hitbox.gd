@@ -235,6 +235,9 @@ func hit(obj):
 		obj.hit_by(self.to_data())
 		var can_hit = true
 		if obj.is_in_group("Fighter"):
+			if host.is_in_group("Fighter"):
+				host.feinting = false
+				host.current_state().feinting = false
 			if !host.is_ghost:
 				camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames))
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:

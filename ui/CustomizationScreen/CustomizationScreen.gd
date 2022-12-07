@@ -82,7 +82,7 @@ func save_style():
 	$"%SavedLabel".show()
 
 func update_warning():
-	if !Global.has_supporter_pack():
+	if !Global.full_version():
 		$"%DLCWarning".visible = Custom.requires_dlc(get_style_data())
 	pass
 
@@ -197,4 +197,5 @@ func _on_OpenFolderButton_pressed():
 
 
 func _on_DLCWarning_meta_clicked(meta):
+	Steam.activateGameOverlayToStore(SteamYomi.APP_ID)
 	pass # Replace with function body.

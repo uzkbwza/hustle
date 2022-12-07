@@ -41,7 +41,7 @@ func init():
 	set_enabled(true)
 	$"%LoadStyleButton".update_styles()
 	$"%LoadStyleButton".hide()
-	if Global.full_version() and (!Network.multiplayer_active or player_id == Network.player_id):
+	if SteamYomi.STARTED and (!Network.multiplayer_active or player_id == Network.player_id):
 		$"%LoadStyleButton".show()
 
 func load_character_data(data):

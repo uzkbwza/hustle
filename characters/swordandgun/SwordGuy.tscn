@@ -1144,7 +1144,6 @@ interrupt_from_string = "Lasso"
 script = ExtResource( 166 )
 increment_combo = false
 knockdown_extends_hitstun = false
-_c_Frame_Data = true
 active_ticks = 1
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="12"]
