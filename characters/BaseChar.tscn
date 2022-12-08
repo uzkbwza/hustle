@@ -452,6 +452,7 @@ __meta__ = {
 
 [node name="Start" type="Node2D" parent="StateMachine" index="0"]
 script = ExtResource( 4 )
+sprite_animation = "Wait"
 title = "Wait"
 show_in_menu = false
 interrupt_into_string = "Grounded
@@ -660,6 +661,7 @@ allowed_stances_string = "All"
 
 [node name="TechRoll" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 54 )
+sprite_animation = "RollForward"
 anim_length = 16
 sprite_anim_length = 4
 loop_animation = true
@@ -723,6 +725,7 @@ stop_frame = 10
 
 [node name="Roll" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 54 )
+sprite_animation = "RollForward"
 anim_length = 16
 sprite_anim_length = 4
 loop_animation = true

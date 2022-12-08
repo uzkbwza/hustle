@@ -37,6 +37,13 @@ var throw = true
 
 #	released = false
 
+func update_throw_position():
+	var frame = host.get_current_sprite_frame()
+	if frame in throw_positions:
+		var pos = throw_positions[frame]
+		host.throw_pos_x = pos.x
+		host.throw_pos_y = pos.y
+
 func _frame_0():
 	host.opponent.change_state("Grabbed")
 	host.throw_pos_x = start_throw_pos_x

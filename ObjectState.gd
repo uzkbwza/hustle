@@ -5,6 +5,9 @@ class_name ObjectState
 signal state_started()
 signal state_ended()
 
+export var _c_Auto = 0
+export var throw_positions: Dictionary = {}
+
 export var _c_Physics = 0
 export var apply_forces = false
 export var apply_fric = false
@@ -54,8 +57,6 @@ export var projectile_tick = 1
 export var projectile_pos_x = 0
 export var projectile_pos_y = 0
 export var projectile_local_pos = true
-
-
 
 var enter_sfx_player
 var sfx_player

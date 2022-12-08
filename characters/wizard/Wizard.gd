@@ -115,5 +115,6 @@ func process_extra(extra):
 
 func can_fast_fall():
 	return !is_grounded()
+
 func can_hover():
 	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

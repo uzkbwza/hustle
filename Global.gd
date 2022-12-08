@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.10"
+var VERSION = "0.4.11-unstable-steam"
 
 var audio_player
 var music_enabled = true
@@ -21,7 +21,7 @@ var has_supporter_pack_file = false
 var enable_custom_colors = true
 var enable_custom_particles = true
 var enable_custom_hit_sparks = true
-var demo_version = true
+var demo_version = false
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=132 format=2]
+[gd_scene load_steps=137 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -126,8 +126,13 @@
 [ext_resource path="res://characters/robo/sprites/blast5.png" type="Texture" id=124]
 [ext_resource path="res://characters/robo/sprites/blast6.png" type="Texture" id=125]
 [ext_resource path="res://characters/robo/sprites/blast4.png" type="Texture" id=126]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/JumpActionUIData.tscn" type="PackedScene" id=127]
 [ext_resource path="res://sound/common/explosion1.wav" type="AudioStream" id=128]
 [ext_resource path="res://sound/common/explosion3.wav" type="AudioStream" id=129]
+[ext_resource path="res://fx/JumpParticle.tscn" type="PackedScene" id=130]
+[ext_resource path="res://characters/states/Jump.gd" type="Script" id=131]
+[ext_resource path="res://ui/ActionSelector/StateIcons/jump.png" type="Texture" id=132]
+[ext_resource path="res://sound/common/jump1.wav" type="AudioStream" id=133]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -339,7 +344,7 @@ animations = [ {
 "name": "RollBackward",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 80 ), ExtResource( 73 ), ExtResource( 79 ), ExtResource( 78 ) ],
+"frames": [ ExtResource( 80 ), ExtResource( 73 ), ExtResource( 79 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 78 ) ],
 "loop": true,
 "name": "RollForward",
 "speed": 5.0
@@ -347,6 +352,11 @@ animations = [ {
 "frames": [ ExtResource( 86 ), ExtResource( 86 ), ExtResource( 86 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 84 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 85 ), ExtResource( 85 ) ],
 "loop": true,
 "name": "Step",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 122 ) ],
+"loop": true,
+"name": "Test",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 50 ) ],
@@ -379,8 +389,8 @@ character_portrait = ExtResource( 76 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 3 )
-animation = "Blast"
-frame = 4
+animation = "Test"
+frame = 0
 offset = Vector2( 0, -16 )
 
 [node name="Step" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
@@ -476,7 +486,46 @@ knockback = "8.0"
 knockdown = true
 start_tick = 9
 
-[node name="Landing" parent="StateMachine" index="7"]
+[node name="Step2" type="Node2D" parent="StateMachine" index="7"]
+script = ExtResource( 87 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Test"
+force_dir_x = "1.0"
+force_speed = "10.0"
+force_tick = 3
+enter_force_dir_x = "1.0"
+enter_force_speed = "10.0"
+title = "STEP"
+interrupt_frames = [ 7 ]
+self_interruptable = false
+interrupt_from_string = "Grounded
+GroundedMovement"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "Grounded"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Step2" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 9
+width = 31
+damage = 60
+hitstun_ticks = 14
+hitlag_ticks = 6
+victim_hitlag = 8
+cancellable = false
+hits_otg = true
+hit_height = 2
+screenshake_amount = 5
+whiff_sound = ExtResource( 91 )
+hit_sound = ExtResource( 75 )
+dir_y = "1.0"
+knockback = "8.0"
+knockdown = true
+start_tick = 9
+
+[node name="Landing" parent="StateMachine" index="8"]
 script = ExtResource( 82 )
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Landing" index="0"]
@@ -499,7 +548,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="GroundSlam" type="Node2D" parent="StateMachine" index="8"]
+[node name="GroundSlam" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 119 )
 apply_forces = true
 apply_fric = true
@@ -547,7 +596,7 @@ dir_y = "1"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 
-[node name="CommandGrab" type="Node2D" parent="StateMachine" index="9"]
+[node name="CommandGrab" type="Node2D" parent="StateMachine" index="10"]
 script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
@@ -583,21 +632,44 @@ start_tick = 8
 active_ticks = 2
 throw_state = "GroundSlam"
 
-[node name="DashStartup" parent="StateMachine" index="16"]
+[node name="DashStartup" parent="StateMachine" index="17"]
 interrupt_from_string = ""
 
-[node name="Jump" parent="StateMachine" index="20"]
+[node name="Jump" type="Node2D" parent="StateMachine/Roll" index="0"]
+script = ExtResource( 131 )
+fallback_state = "Fall"
+sprite_animation = "Jump"
+anim_length = 120
+sprite_anim_length = 4
+loop_animation = true
+particle_scene = ExtResource( 130 )
+sfx = ExtResource( 133 )
+title = "Jump"
+data_ui_scene = ExtResource( 127 )
+button_texture = ExtResource( 132 )
+interrupt_frames = [ 7, 18, 60 ]
+interruptible_on_opponent_turn = true
+reversible = false
+interrupt_from_string = "GroundedMovement
+Grounded
+Jump"
+interrupt_into_string = "Aerial
+Grounded"
+allowed_stances_string = "All
+"
+change_stance_to = "Normal"
 speed = "6"
+y_modifier = "1.25"
 fall_anim = true
 
-[node name="SuperJump" parent="StateMachine" index="21"]
+[node name="SuperJump" parent="StateMachine" index="22"]
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="22"]
+[node name="DoubleJump" parent="StateMachine" index="23"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="23"]
+[node name="AirDash" parent="StateMachine" index="24"]
 interrupt_from_string = ""

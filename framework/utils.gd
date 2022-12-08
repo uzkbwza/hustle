@@ -357,6 +357,9 @@ static func spring(x:float,  v:float, xt:float, zeta:float, omega:float, h:float
 #     position = temp[0]
 #     velocity = temp[1]
 
+static func pass_signal_along(from: Node, to: Node, signal_name, to_signal_name:String=""):
+	from.connect(signal_name, to, "emit_signal", [signal_name if to_signal_name == "" else to_signal_name])
+
 static func vector_spring(vec:Vector2, vel:Vector2, target:Vector2, zeta:float,  omega:float,  h:float):
 	var x = vec.x;
 	var y = vec.y;

@@ -8,27 +8,27 @@ onready var no_combo_hitbox = $NoComboHitbox
 onready var hitbox = $Hitbox
 
 var is_in_combo = false
-
-var sprite_throw_positions = [
-	[191, 116],
-	[190, 114],
-	[159, 89],
-	[106, 69],
-	[96, 73],
-	[85, 85],
-	[85, 84],
-	[111, 82],
-	[195, 141],
-	[196, 141],
-	[195, 141],
-]
-
-func update_throw_position():
-	var current_frame = host.get_current_sprite_frame_number() - 1
-	if !released:
-		if sprite_throw_positions.size() > current_frame:
-			host.throw_pos_x = sprite_throw_positions[current_frame][0] - 128
-			host.throw_pos_y = sprite_throw_positions[current_frame][1] - 128
+#
+#var sprite_throw_positions = [
+#	[191, 116],
+#	[190, 114],
+#	[159, 89],
+#	[106, 69],
+#	[96, 73],
+#	[85, 85],
+#	[85, 84],
+#	[111, 82],
+#	[195, 141],
+#	[196, 141],
+#	[195, 141],
+#]
+#
+#func update_throw_position():
+#	var current_frame = host.get_current_sprite_frame_number() - 1
+#	if !released:
+#		if sprite_throw_positions.size() > current_frame:
+#			host.throw_pos_x = sprite_throw_positions[current_frame][0] - 128
+#			host.throw_pos_y = sprite_throw_positions[current_frame][1] - 128
 
 # God help you
 func walk_back():

@@ -1,0 +1,160 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/helpers/AnimationEditor/AnimationEditor.gd" type="Script" id=1]
+[ext_resource path="res://addons/helpers/AnimationEditor/FrameDisplay.gd" type="Script" id=2]
+
+[node name="AnimationEditor" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 800, 800 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_right = 800.0
+margin_bottom = 14.0
+text = "State Editor"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 18.0
+margin_right = 800.0
+margin_bottom = 330.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_constants/margin_right = 5
+custom_constants/margin_left = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+margin_left = 5.0
+margin_right = 795.0
+margin_bottom = 312.0
+
+[node name="TexturePanel" type="PanelContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+margin_right = 270.0
+margin_bottom = 312.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/TexturePanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 263.0
+margin_bottom = 305.0
+
+[node name="FrameLabel" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/TexturePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 256.0
+margin_bottom = 14.0
+
+[node name="FrameDisplay" type="TextureRect" parent="VBoxContainer/MarginContainer/HBoxContainer/TexturePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 256.0
+margin_bottom = 274.0
+rect_min_size = Vector2( 256, 256 )
+expand = true
+stretch_mode = 5
+script = ExtResource( 2 )
+
+[node name="ClearThrowPositionButton" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/TexturePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 278.0
+margin_right = 256.0
+margin_bottom = 298.0
+text = "clear throw position"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 274.0
+margin_right = 692.0
+margin_bottom = 312.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3"]
+margin_right = 418.0
+margin_bottom = 38.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer"]
+margin_right = 100.0
+margin_bottom = 38.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer"]
+margin_right = 100.0
+margin_bottom = 14.0
+size_flags_vertical = 0
+text = "State"
+
+[node name="SelectedState" type="OptionButton" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 100.0
+margin_bottom = 38.0
+size_flags_vertical = 0
+text = "State"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer"]
+margin_left = 104.0
+margin_right = 204.0
+margin_bottom = 38.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+margin_right = 100.0
+margin_bottom = 14.0
+size_flags_vertical = 0
+text = "Animation"
+
+[node name="SelectedAnimation" type="OptionButton" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 100.0
+margin_bottom = 38.0
+size_flags_vertical = 0
+text = "Animation"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 696.0
+margin_right = 790.0
+margin_bottom = 312.0
+
+[node name="SaveToState" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 94.0
+margin_bottom = 20.0
+text = "save to state"
+
+[node name="ReloadState" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 94.0
+margin_bottom = 44.0
+text = "reload state"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+margin_top = 334.0
+margin_right = 800.0
+margin_bottom = 434.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+scroll_vertical_enabled = false
+
+[node name="FrameButtonContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+margin_right = 800.0
+margin_bottom = 100.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 10
+
+[connection signal="gui_input" from="VBoxContainer/MarginContainer/HBoxContainer/TexturePanel/VBoxContainer/FrameDisplay" to="." method="_on_FrameDisplay_gui_input"]
