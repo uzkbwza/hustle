@@ -17,6 +17,7 @@ var frame_array = []
 
 var loaded_object: BaseObj
 var loaded_state: ObjectState = null
+var loaded_sprite: AnimatedSprite = null
 var loaded_sprite_frames: SpriteFrames = null
 
 var states = []
@@ -66,9 +67,12 @@ func save_to_state():
 	save_animation(anim_name)
 
 func save_animation(anim_name):
+	loaded_sprite_frames = loaded_sprite_frames.duplicate(true)
 	loaded_sprite_frames.clear(anim_name)
 	for frame in frame_array:
 		loaded_sprite_frames.add_frame(anim_name, frame)
+	loaded_sprite_frames.take_over_path(loaded_sprite_frames.resource_path)
+	loaded_sprite.frames = loaded_sprite_frames
 
 func reload_state():
 	load_state(loaded_state)
@@ -108,6 +112,7 @@ func load_node(node: BaseObj):
 		for animation in sprite.frames.get_animation_names():
 			anims.append(animation)
 			$"%SelectedAnimation".add_item(animation)
+	loaded_sprite = sprite
 
 	if states:
 		load_state(states[0])
@@ -200,13 +205,19 @@ func update_frame_array():
 		frame_array.append(current_frame)
 
 func insert_frame(i):
+	var old_map = {}
+	
 	for key in frame_map.keys():
 		if key > i:
 			var value = frame_map[key]
+			old_map[key] = value
 			frame_map.erase(key)
-			frame_map[key + 1] = value
-			if key == selected_frame:
-				_on_frame_button_pressed(key + 1)
+
+	for key in old_map:
+		frame_map[key + 1] = old_map[key]
+		if key == selected_frame:
+			_on_frame_button_pressed(key + 1)
+	
 	anim_length += 1
 	
 	update_frame_array()

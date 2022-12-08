@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=116 format=2]
+[gd_resource type="SpriteFrames" load_steps=124 format=2]
 
 [ext_resource path="res://characters/stickman/sprites/stickman46.png" type="Texture" id=1]
 [ext_resource path="res://characters/stickman/sprites/phantomdash2.png" type="Texture" id=2]
@@ -115,6 +115,14 @@
 [ext_resource path="res://characters/stickman/sprites/sway_slide_kick2.png" type="Texture" id=113]
 [ext_resource path="res://characters/stickman/sprites/sway_slide_kick1.png" type="Texture" id=114]
 [ext_resource path="res://characters/stickman/sprites/sway_slide_kick3.png" type="Texture" id=115]
+[ext_resource path="res://characters/stickman/sprites/taunt1.png" type="Texture" id=116]
+[ext_resource path="res://characters/stickman/sprites/taunt2.png" type="Texture" id=117]
+[ext_resource path="res://characters/stickman/sprites/taunt3.png" type="Texture" id=118]
+[ext_resource path="res://characters/stickman/sprites/taunt4.png" type="Texture" id=119]
+[ext_resource path="res://characters/stickman/sprites/taunt8.png" type="Texture" id=120]
+[ext_resource path="res://characters/stickman/sprites/taunt7.png" type="Texture" id=121]
+[ext_resource path="res://characters/stickman/sprites/taunt5.png" type="Texture" id=122]
+[ext_resource path="res://characters/stickman/sprites/taunt6.png" type="Texture" id=123]
 
 [resource]
 animations = [ {
@@ -352,6 +360,11 @@ animations = [ {
 "loop": true,
 "name": "Summon",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 116 ), ExtResource( 116 ), ExtResource( 116 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 120 ) ],
+"loop": true,
+"name": "Taunt",
+"speed": 60.0
 }, {
 "frames": [ ExtResource( 9 ) ],
 "loop": true,

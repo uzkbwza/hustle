@@ -20,10 +20,11 @@ func _on_button_pressed():
 	if keyframe:
 		emit_signal("pressed")
 
-
 func set_frame(i):
 	$"%Button".text = str(i + 1)
-
+	if i <= 0:
+		$"%InsertBefore".disabled = true
+		$"%Delete".disabled = true
 func set_image(texture):
 	$"%TextureRect".texture = texture
 

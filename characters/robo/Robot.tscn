@@ -234,7 +234,7 @@ animations = [ {
 "name": "Grabbed",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 110 ), ExtResource( 110 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 116 ), ExtResource( 116 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 116 ), ExtResource( 116 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 118 ), ExtResource( 98 ), ExtResource( 100 ), ExtResource( 97 ), ExtResource( 103 ), ExtResource( 106 ), ExtResource( 105 ), ExtResource( 101 ) ],
+"frames": [ ExtResource( 110 ), ExtResource( 110 ), ExtResource( 113 ), ExtResource( 113 ), ExtResource( 116 ), ExtResource( 116 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 116 ), ExtResource( 116 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 111 ), ExtResource( 111 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 112 ), ExtResource( 112 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ), ExtResource( 118 ) ],
 "loop": true,
 "name": "GroundSlam",
 "speed": 5.0
@@ -486,46 +486,7 @@ knockback = "8.0"
 knockdown = true
 start_tick = 9
 
-[node name="Step2" type="Node2D" parent="StateMachine" index="7"]
-script = ExtResource( 87 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Test"
-force_dir_x = "1.0"
-force_speed = "10.0"
-force_tick = 3
-enter_force_dir_x = "1.0"
-enter_force_speed = "10.0"
-title = "STEP"
-interrupt_frames = [ 7 ]
-self_interruptable = false
-interrupt_from_string = "Grounded
-GroundedMovement"
-interrupt_into_string = "Grounded"
-hit_cancel_into_string = "Grounded"
-
-[node name="Hitbox" type="Node2D" parent="StateMachine/Step2" index="0"]
-z_index = 1000
-script = ExtResource( 83 )
-x = 9
-width = 31
-damage = 60
-hitstun_ticks = 14
-hitlag_ticks = 6
-victim_hitlag = 8
-cancellable = false
-hits_otg = true
-hit_height = 2
-screenshake_amount = 5
-whiff_sound = ExtResource( 91 )
-hit_sound = ExtResource( 75 )
-dir_y = "1.0"
-knockback = "8.0"
-knockdown = true
-start_tick = 9
-
-[node name="Landing" parent="StateMachine" index="8"]
+[node name="Landing" parent="StateMachine" index="7"]
 script = ExtResource( 82 )
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Landing" index="0"]
@@ -548,14 +509,60 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="GroundSlam" type="Node2D" parent="StateMachine" index="9"]
+[node name="GroundSlam" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 119 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 60
+anim_length = 62
 particle_scene = ExtResource( 120 )
 particle_position = Vector2( 100, 0 )
+throw_positions = {
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+}
+}
 interrupt_into_string = "Grounded"
 release = true
 release_frame = 41
@@ -596,7 +603,7 @@ dir_y = "1"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 
-[node name="CommandGrab" type="Node2D" parent="StateMachine" index="10"]
+[node name="CommandGrab" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
@@ -632,7 +639,7 @@ start_tick = 8
 active_ticks = 2
 throw_state = "GroundSlam"
 
-[node name="DashStartup" parent="StateMachine" index="17"]
+[node name="DashStartup" parent="StateMachine" index="16"]
 interrupt_from_string = ""
 
 [node name="Jump" type="Node2D" parent="StateMachine/Roll" index="0"]
@@ -662,14 +669,14 @@ speed = "6"
 y_modifier = "1.25"
 fall_anim = true
 
-[node name="SuperJump" parent="StateMachine" index="22"]
+[node name="SuperJump" parent="StateMachine" index="21"]
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="23"]
+[node name="DoubleJump" parent="StateMachine" index="22"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="24"]
+[node name="AirDash" parent="StateMachine" index="23"]
 interrupt_from_string = ""
