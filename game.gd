@@ -37,6 +37,8 @@ onready var camera = $Camera2D
 onready var objects_node = $Objects
 onready var fx_node = $Fx
 
+var mouse_pressed = false
+
 var current_tick = -1
 var max_replay_tick = 0
 var game_started = false
@@ -537,7 +539,7 @@ func resolve_collisions(step=0):
 		edge_distance = int_abs(p1_right_edge - p2_left_edge)
 
 	if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
-		if x_pos < opp_x_pos or p1.get_facing() == "Right":
+		if x_pos < opp_x_pos or p1.get_opponent_dir() == -1:
 			var edge = p1_right_edge
 			var opp_edge = p2_left_edge
 			if opp_edge < edge:
@@ -545,7 +547,7 @@ func resolve_collisions(step=0):
 				p1.set_x(x_pos - overlap / 2)
 				p2.set_x(opp_x_pos + (overlap / 2))
 			
-		elif x_pos > opp_x_pos or p1.get_facing() == "Left":
+		elif x_pos > opp_x_pos or p1.get_opponent_dir() == 1:
 			var edge = p1_left_edge
 			var opp_edge = p2_right_edge
 			if opp_edge > edge:
@@ -611,6 +613,8 @@ func apply_hitboxes():
 			p2_throwing = true
 			if !p1_hit_by.hits_otg and p1.is_otg():
 				p2_throwing = false
+			if p1.throw_invulnerable:
+				p2_throwing = false
 	if p2_hit_by:
 		if !(p2_hit_by is ThrowBox):
 			p2_hit_by.hit(p2)
@@ -618,6 +622,8 @@ func apply_hitboxes():
 		else:
 			p1_throwing = true
 			if !p2_hit_by.hits_otg and p2.is_otg():
+				p1_throwing = false
+			if p2.throw_invulnerable:
 				p1_throwing = false
 
 	if !p2_hit and !p1_hit:
@@ -993,8 +999,10 @@ func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.pressed:
 			drag_position = camera.get_local_mouse_position()
+			mouse_pressed = true
 			raise()
 		else:
+			mouse_pressed = false
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
 		camera.global_position -= event.relative
@@ -1034,7 +1042,7 @@ func reset_zoom():
 func _draw():
 	if is_ghost:
 		return
-	if !snapping_camera:
+	if !snapping_camera and mouse_pressed:
 		draw_circle(camera.position, 3, Color.white * 0.5)
 	var line_color = Color.white
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)

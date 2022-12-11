@@ -1,10 +1,12 @@
 extends CharacterHurtState
 
 const GROUND_FRIC = "0.05"
-const DI_STRENGTH = "3.0"
+const DI_STRENGTH = "3.5"
 
 var hitstun = 0
 var can_act = false
+
+
 
 func _enter():
 	can_act = false
@@ -16,14 +18,15 @@ func _enter():
 			anim_name = "HurtGroundedMid"
 		Hitbox.HitHeight.Low:
 			anim_name = "HurtGroundedLow"
-	
-	hitstun = hitbox.hitstun_ticks + (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0)
+	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	counter = hitbox.counter_hit
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
 	knockback_force.y = "0"
 	var di_force = fixed.vec_mul(host.current_di.x, "0", DI_STRENGTH)
+	if host.touching_wall:
+		knockback_force.x = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)

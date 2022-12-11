@@ -52,13 +52,11 @@ frames = SubResource( 2 )
 animation = "Default"
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 y = 1
 width = 6
 height = 1
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 width = 0
 height = 0
 
@@ -85,6 +83,7 @@ width = 26
 height = 2
 damage = 80
 victim_hitlag = 10
+hits_otg = true
 hit_height = 2
 whiff_sound = ExtResource( 20 )
 dir_x = "0.0"

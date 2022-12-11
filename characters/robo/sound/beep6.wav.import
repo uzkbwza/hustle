@@ -2,12 +2,12 @@
 
 importer="wav"
 type="AudioStreamSample"
-path="res://.import/blast2.wav-41b96c46f29a8d2238d6d4a55f3bd5fe.sample"
+path="res://.import/beep6.wav-2c4b9c2c3fd3f65d334c064776dc3f71.sample"
 
 [deps]
 
-source_file="res://characters/robo/blast2.wav"
-dest_files=[ "res://.import/blast2.wav-41b96c46f29a8d2238d6d4a55f3bd5fe.sample" ]
+source_file="res://characters/robo/sound/beep6.wav"
+dest_files=[ "res://.import/beep6.wav-2c4b9c2c3fd3f65d334c064776dc3f71.sample" ]
 
 [params]
 

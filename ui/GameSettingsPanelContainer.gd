@@ -5,6 +5,9 @@ export var steam = false
 var singleplayer = true
 var init = false
 
+var loaded_formats = []
+var selected_format = ""
+
 onready var settings_nodes = {
 	"stage_width": $"%StageWidth",
 	"p2_dummy": $"%P2Dummy",
@@ -19,12 +22,15 @@ onready var settings_nodes = {
 	"always_perfect_parry": $"%AlwaysPerfectParry",
 	"char_distance": $"%CharDist",
 	"char_height": $"%CharHeight",
-	"gravity_enabled": $"%GravityEnabled"
+	"gravity_enabled": $"%GravityEnabled",
+	"chess_timer": $"%ChessTimer",
 }
 
 func _ready():
 	for setting in settings_nodes:
 		var node = settings_nodes[setting]
+		if not (node is Node):
+			continue
 		if node.has_signal("value_changed"):
 			node.connect("value_changed", self, "_setting_value_changed", [setting])
 		if node.has_signal("toggled"):
@@ -32,7 +38,15 @@ func _ready():
 		pass
 	SteamLobby.connect("received_match_settings", self, "_on_received_match_settings")
 	init = false
-	pass
+	update_menu()
+	if load_all_formats() == []:
+		save_format(get_data(), "default")
+	$"%GameFormats".connect("item_selected", self, "_on_game_formats_item_selected")
+	load_formats_to_menu()
+	
+func _on_game_formats_item_selected(item):
+	if loaded_formats.size() > item:
+		load_settings(loaded_formats[item])
 
 func disable():
 	for node in settings_nodes.values():
@@ -40,6 +54,7 @@ func disable():
 			node.editable = false
 		if node.get("disabled") != null:
 			node.disabled = true
+	update_menu()
 
 func enable():
 	for node in settings_nodes.values():
@@ -47,12 +62,12 @@ func enable():
 			node.editable = true
 		if node.get("disabled") != null:
 			node.disabled = false
-
+	update_menu()
 
 func _setting_value_changed(_value, _setting):
 	if init:
 		update_lobby_data()
-	pass
+	update_menu()
 
 func _on_received_match_settings(settings, force=false):
 	if SteamLobby.LOBBY_OWNER == SteamYomi.STEAM_ID:
@@ -60,6 +75,9 @@ func _on_received_match_settings(settings, force=false):
 			return
 		if !init:
 			update_lobby_data()
+	load_settings(settings)
+
+func load_settings(settings):
 	for setting in settings:
 		if !settings_nodes.has(setting):
 			print("invalid setting: " + str(setting))
@@ -69,6 +87,19 @@ func _on_received_match_settings(settings, force=false):
 			node.set_pressed_no_signal(settings[setting])
 		if node.get("value") != null and settings[setting] is int:
 			node.value = settings[setting]
+	$"%LineEdit".clear()
+	update_menu()
+
+func update_menu():
+	if $"%ChessTimer".pressed:
+		if $"%TurnLengthLabel".text != "Turn Clock (min)":
+			$"%TurnLength".value = 30
+		$"%TurnLengthLabel".text = "Turn Clock (min)"
+	else:
+		if $"%TurnLengthLabel".text != "Turn Clock (sec)":
+			$"%TurnLength".value = 30
+		$"%TurnLengthLabel".text = "Turn Clock (sec)"
+	pass
 
 func update_lobby_data():
 #	if SteamLobby.LOBBY_ID == 0:
@@ -77,7 +108,7 @@ func update_lobby_data():
 		return
 	print("updating lobby settings")
 	SteamLobby.update_match_settings(get_data())
-
+	
 func get_data():
 	var settings := {}
 	for setting in settings_nodes:
@@ -116,6 +147,7 @@ func get_data_overrides():
 
 func init(singleplayer=true):
 	$"%TurnLengthContainer".visible = !singleplayer
+	$"%ChessTimer".visible = !singleplayer
 	if !steam:
 		if !singleplayer:
 			if !Network.is_host():
@@ -124,3 +156,59 @@ func init(singleplayer=true):
 		init = true
 		pass
 	$"%P2Dummy".visible = singleplayer
+	update_menu()
+
+func load_formats_to_menu():
+	loaded_formats = load_all_formats()
+	$"%GameFormats".clear()
+	for format in loaded_formats:
+		$"%GameFormats".add_item(format.format_name)
+
+func make_formats_folder():
+	var dir = Directory.new()
+	if !dir.dir_exists("user://gameformats"):
+		dir.make_dir("user://gameformats")
+
+func save_format(format, format_name):
+	format_name = format_name.strip_edges()
+	if format_name == "":
+		format_name = "unnamed format"
+	make_formats_folder()
+	format = format.duplicate(true)
+	format["format_name"] = format_name
+	var file = File.new()
+	file.open("user://gameformats/"+ format.format_name + ".gameformat", File.WRITE)
+	file.store_var(format, true)
+	file.close()
+	load_formats_to_menu()
+
+func load_all_formats():
+	make_formats_folder()
+	var dir = Directory.new()
+	var files = []
+	var _directories = []
+	var formats = []
+	dir.open("user://gameformats")
+	dir.list_dir_begin(false, true)
+#	print(dir.get_current_dir())
+	Global.add_dir_contents(dir, files, _directories, false)
+	for path in files:
+		var file = File.new()
+		file.open(path, File.READ)
+		var data: Dictionary = file.get_var()
+		formats.append(data)
+		file.close()
+	return formats
+
+func save_current_format():
+	var text = Utils.filter_filename($"%LineEdit".text)
+	save_format(get_data(), text)
+
+func _on_LineEdit_text_entered(new_text):
+	save_current_format()
+	$"%LineEdit".clear()
+
+
+func _on_SaveButton_pressed():
+	save_current_format()
+	pass # Replace with function body.

@@ -20,7 +20,7 @@ func _tick():
 		_release()
 		activate_hitbox(hitbox)
 		spawn_particle_relative(particle_scene)
-		queue_state_change("Landing", 20)
+		queue_state_change("Landing", 40)
 		host.opponent.update_facing()
 	if current_tick > 10 and current_tick % 8 == 0:
 		host.update_data()
@@ -33,7 +33,7 @@ func _tick():
 		host.play_sound("IzunaSwish")
 	elif current_tick <= 10:
 		dir = host.get_facing_int()
-		
+
 	var flip = fixed.gt(host.get_vel().y, "0")
 	host.sprite.flip_v = flip
 	host.opponent.sprite.flip_v = flip

@@ -334,6 +334,12 @@ func hurtbox_pos_float():
 func hurtbox_pos_relative_float():
 	return Vector2(hurtbox.x * get_facing_int(), hurtbox.y)
 
+func start_throw_invulnerability():
+	throw_invulnerable = true
+
+func end_throw_invulnerability():
+	throw_invulnerable = false
+
 func start_projectile_invulnerability():
 	projectile_invulnerable = true
 

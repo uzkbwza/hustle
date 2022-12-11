@@ -49,12 +49,12 @@ material = SubResource( 3 )
 z_index = -1
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 width = 5
 height = 5
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
+width = 7
+height = 7
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 5 )

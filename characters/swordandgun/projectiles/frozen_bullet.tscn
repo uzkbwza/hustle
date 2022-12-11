@@ -47,12 +47,10 @@ bus = "Fx"
 script = ExtResource( 6 )
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 width = 0
 height = 0
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 width = 0
 height = 0
 
@@ -66,7 +64,7 @@ width = 5000
 height = 5000
 damage = 90
 minimum_damage = 30
-hitstun_ticks = 25
+hitstun_ticks = 18
 victim_hitlag = 10
 screenshake_amount = 7
 dir_y = "-0.25"

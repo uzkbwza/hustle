@@ -32,12 +32,10 @@ frames = SubResource( 1 )
 offset = Vector2( 512, 0 )
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 width = 0
 height = 0
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 width = 0
 height = 0
 
@@ -53,7 +51,7 @@ width = 50
 height = 50
 damage = 90
 minimum_damage = 30
-hitstun_ticks = 25
+hitstun_ticks = 20
 victim_hitlag = 4
 parry_meter_gain = 125
 screenshake_amount = 7

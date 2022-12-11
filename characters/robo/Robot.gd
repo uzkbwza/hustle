@@ -1,8 +1,13 @@
 extends Fighter
 
 const MAX_ARMOR_PIPS = 1
+const FLY_SPEED = "8"
+const FLY_TICKS = 20
 
 var armor_pips = 1
+var landed_move = false
+var flying_dir = null
+var fly_ticks_left = 0
 
 func _ready():
 	pass
@@ -20,11 +25,69 @@ func has_armor():
 
 func incr_combo():
 	if combo_count == 0:
-		armor_pips += 1
-		if armor_pips > MAX_ARMOR_PIPS:
-			armor_pips = MAX_ARMOR_PIPS
+		landed_move = true
 	.incr_combo()
 	pass
+
+func apply_grav():
+	if flying_dir == null:
+		.apply_grav()
+
+func big_landing_effect():
+	spawn_particle_effect_relative(preload("res://fx/LandingParticle.tscn"))
+	play_sound("BigLanding")
+	var camera = get_camera()
+	if camera:
+		camera.bump(Vector2.UP, 10, 20 / 60.0)
+
+func tick():
+	.tick()
+	if landed_move:
+		if not (current_state() is CharacterHurtState):
+			armor_pips += 1
+			if armor_pips > MAX_ARMOR_PIPS:
+				armor_pips = MAX_ARMOR_PIPS
+		landed_move = false
+	if flying_dir:
+		if !is_grounded():
+			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
+			set_vel(fly_vel.x, fixed.mul(fly_vel.y, "0.66"))
+			fly_ticks_left -= 1
+			if fly_ticks_left <= 0:
+				flying_dir = null
+				stop_fly_fx()
+		else:
+			flying_dir = null
+			stop_fly_fx()
+
+func start_fly_fx():
+	$"%FlyFx1".start_emitting()
+	$"%FlyFx2".start_emitting()
+
+func stop_fly_fx():
+	$"%FlyFx1".stop_emitting()
+	$"%FlyFx2".stop_emitting()
+
+func process_extra(extra):
+	.process_extra(extra)
+	if extra.has("fly_dir"):
+		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
+			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
+			if flying_dir == null or !same_dir:
+				fly_ticks_left = FLY_TICKS
+				air_movements_left -= 1
+				start_fly_fx()
+#			reset_momentum()
+			flying_dir = extra.fly_dir
+#		else:
+#
+#func on_state_started(state):
+#	.on_state_started(state)
+#	flying_states_left -= 1
+#	if flying_states_left == 0:
+#		flying_dir = null
+	
+
 
 #func launched_by(hitbox):
 #	if armor_pips > 0:

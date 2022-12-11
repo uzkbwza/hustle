@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.11-unstable-steam"
+var VERSION = "0.4.16-unstable"
 
 var audio_player
 var music_enabled = true
@@ -21,7 +21,7 @@ var has_supporter_pack_file = false
 var enable_custom_colors = true
 var enable_custom_particles = true
 var enable_custom_hit_sparks = true
-var demo_version = false
+var steam_demo_version = false
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
@@ -39,7 +39,7 @@ var songs = {
 }
 
 func full_version():
-	return (!demo_version) and SteamYomi.STARTED
+	return (!steam_demo_version) and SteamYomi.STARTED
 
 func _enter_tree():
 #	get_tree().set_auto_accept_quit(false)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=2]
 
-[ext_resource path="res://ui/PlayerInfo.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/PlayerInfo.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/SwordGuyPlayerInfo.gd" type="Script" id=2]
 [ext_resource path="res://characters/swordandgun/sprites/cylinder1.png" type="Texture" id=3]
 [ext_resource path="res://characters/swordandgun/sprites/cylinder11.png" type="Texture" id=4]

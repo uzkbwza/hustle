@@ -22,6 +22,8 @@ var turn_time = 30
 var p1_turn_time = 30
 var p2_turn_time = 30
 
+var chess_timer = false
+
 var draw_bg_circle = false
 
 var lock_in_tick = -INF
@@ -218,11 +220,11 @@ func _on_reset_zoom_pressed():
 	if is_instance_valid(game):
 		game.reset_zoom()
 
-func set_turn_time(time):
+func set_turn_time(time, minutes=false):
 #	print("setting turn time to " + str(time))
-	p1_turn_time = time * 60
-	p2_turn_time = time * 60
-	turn_time = time * 60
+	p1_turn_time = time * (60 if minutes else 1)
+	p2_turn_time = time * (60 if minutes else 1)
+	turn_time = time * (60 if minutes else 1)
 	p1_turn_timer.wait_time = p1_turn_time
 	p2_turn_timer.wait_time = p2_turn_time
 
@@ -287,6 +289,8 @@ func _on_quit_program_button_pressed():
 	get_tree().quit()
 
 func _on_sync_timer_request(id, time):
+	if !chess_timer:
+		return
 	if id == 1:
 		var paused = p1_turn_timer.paused
 		p1_turn_timer.start(time)
@@ -328,6 +332,7 @@ func init(game):
 		$"%P2TurnTimerLabel".show()
 		$"%ChatWindow".show()
 	game_started = false
+	chess_timer = game.match_data.has("chess_timer") and game.match_data.chess_timer
 	timer_sync_tick = -1
 	lock_in_tick = -INF
 
@@ -455,10 +460,15 @@ func on_player_actionable():
 			p2_turn_timer.start()
 			game_started = true
 		else:
-			if p1_turn_timer.time_left < MIN_TURN_TIME:
-				p1_turn_timer.start(MIN_TURN_TIME)
-			if p2_turn_timer.time_left < MIN_TURN_TIME:
-				p2_turn_timer.start(MIN_TURN_TIME)
+			if !chess_timer:
+				p1_turn_timer.start(turn_time)
+				p2_turn_timer.start(turn_time)
+				
+			else:
+				if p1_turn_timer.time_left < MIN_TURN_TIME:
+					p1_turn_timer.start(MIN_TURN_TIME)
+				if p2_turn_timer.time_left < MIN_TURN_TIME:
+					p2_turn_timer.start(MIN_TURN_TIME)
 
 		p1_turn_timer.paused = false
 		p2_turn_timer.paused = false
@@ -577,7 +587,7 @@ func _process(delta):
 			if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
 				var advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
 				if advantage >= 0:
-					advantage_label.set("custom_colors/font_color", Color("64d26b"))
+					advantage_label.set("custom_colors/font_color", Color("1d8df5"))
 					advantage_label.text = "frame advantage: +" + str(advantage)
 				else:
 					advantage_label.set("custom_colors/font_color", Color("ff333d"))

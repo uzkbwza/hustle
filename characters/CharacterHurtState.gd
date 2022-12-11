@@ -5,6 +5,7 @@ class_name CharacterHurtState
 const SMOKE_SPEED = "6.5"
 const SMOKE_FREQUENCY = 1
 const COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES = 5
+const HITSTUN_DECAY_PER_HIT = 1
 
 var counter = false
 
@@ -36,6 +37,9 @@ func _tick_shared():
 		var vel = host.get_vel()
 		if fixed.gt(fixed.vec_len(vel.x, vel.y), SMOKE_SPEED):
 			spawn_particle_relative(preload("res://fx/KnockbackSmoke.tscn"), host.hurtbox_pos_relative_float())
+
+func hitstun_modifier(hitbox):
+	return (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0) - ((HITSTUN_DECAY_PER_HIT * (host.opponent.combo_count) / 2) - 1)
 
 func get_x_dir(hitbox):
 	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")

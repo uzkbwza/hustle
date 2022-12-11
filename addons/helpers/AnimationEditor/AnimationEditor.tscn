@@ -72,12 +72,12 @@ text = "clear throw position"
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 274.0
-margin_right = 692.0
+margin_right = 690.0
 margin_bottom = 312.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3"]
-margin_right = 418.0
+margin_right = 416.0
 margin_bottom = 38.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer3/HBoxContainer"]
@@ -124,22 +124,29 @@ size_flags_vertical = 0
 text = "Animation"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 696.0
+margin_left = 694.0
 margin_right = 790.0
 margin_bottom = 312.0
 
 [node name="SaveToState" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 94.0
+margin_right = 96.0
 margin_bottom = 20.0
 text = "save to state"
 
 [node name="ReloadState" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 94.0
+margin_right = 96.0
 margin_bottom = 44.0
 text = "reload state"
+
+[node name="ReloadObject" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 48.0
+margin_right = 96.0
+margin_bottom = 68.0
+text = "reload object"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 margin_top = 334.0
@@ -151,7 +158,8 @@ scroll_vertical_enabled = false
 
 [node name="FrameButtonContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_bottom = 88.0
+margin_right = 800.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10

@@ -42,6 +42,7 @@ func _ready():
 	$"%ClearThrowPositionButton".connect("pressed", self, "_on_clear_throw_position_pressed")
 	$"%SaveToState".connect("pressed", self, "save_to_state")
 	$"%ReloadState".connect("pressed", self, "reload_state")
+	$"%ReloadObject".connect("pressed", self, "reload_object")
 
 func _on_animation_selected(index):
 #	print(anims)
@@ -77,6 +78,9 @@ func save_animation(anim_name):
 func reload_state():
 	load_state(loaded_state)
 
+func reload_object():
+	load_node(loaded_object)
+
 func set_throw_position():
 	var pos_x = texture_mouse_pos.x
 	var pos_y = texture_mouse_pos.y
@@ -94,6 +98,9 @@ func set_throw_position():
 	$"%FrameDisplay".set_throw_pos(texture_mouse_pos)
 	update_menu()
 
+func sort_states(a, b):
+	return a.name < b.name
+
 func load_node(node: BaseObj):
 	if loaded_object == node:
 		return
@@ -105,13 +112,18 @@ func load_node(node: BaseObj):
 	for state in node.get_node("StateMachine").get_children():
 		if state is ObjectState:
 			states.append(state)
-			$"%SelectedState".add_item(state.name)
+	
+	states.sort_custom(self, "sort_states")
+	for state in states:
+		$"%SelectedState".add_item(state.name)
 	
 	var sprite: AnimatedSprite = node.get_node("Flip/Sprite")
 	if sprite:
 		for animation in sprite.frames.get_animation_names():
 			anims.append(animation)
-			$"%SelectedAnimation".add_item(animation)
+	anims.sort()
+	for animation in anims:
+		$"%SelectedAnimation".add_item(animation)
 	loaded_sprite = sprite
 
 	if states:

@@ -121,7 +121,9 @@ func _tick_shared():
 
 	if current_tick == -1:
 		if spawn_particle_on_enter and particle_scene:
-			spawn_particle_relative(particle_scene, particle_position)
+			var pos = particle_position
+			pos.x *= host.get_facing_int()
+			spawn_particle_relative(particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
 		apply_enter_force()
 
 	current_real_tick += 1
@@ -148,7 +150,9 @@ func _tick_shared():
 
 		if current_tick == timed_spawn_particle_tick:
 			if timed_particle_scene:
-				spawn_particle_relative(timed_particle_scene, timed_particle_position)
+				var pos = timed_particle_position
+				pos.x *= host.get_facing_int()
+				spawn_particle_relative(timed_particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
 
 		var new_max = false
 		if current_tick > max_tick:

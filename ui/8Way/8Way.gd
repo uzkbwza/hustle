@@ -61,6 +61,17 @@ func try_hide_section(section):
 	if hidden:
 		section.hide()
 
+func set_dir(dir):
+	var dirs = ["NW", "N", "NE", "W", "Neutral", "E", "SW", "S", "SE"]
+	if dir in dirs:
+		var button = get_node("%" + dir_to_facing(dir)) if consider_facing else get_node("%"+dir)
+		_on_button_pressed(button)
+
+func get_dir():
+	if pressed_button:
+		return pressed_button.name
+	
+
 func dir_to_facing(dir):
 	if facing > 0:
 		return dir

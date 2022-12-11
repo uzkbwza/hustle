@@ -10,6 +10,8 @@ const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
 const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 0
 const DEFAULT_HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
+const MAX_KNOCKBACK = "30"
+
 var HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 enum HitboxType {
@@ -75,6 +77,7 @@ export(AudioStream) var hit_sound = preload("res://sound/common/hit1.wav")
 export(AudioStream) var hit_bass_sound = preload("res://sound/common/hit_bass.wav")
 export var whiff_sound_volume = -8.0
 export var hit_sound_volume = -5.0
+export var bass_on_whiff = false
 
 export var _c_Knockback = 0
 export var dir_x: String = "1.0"
@@ -89,6 +92,7 @@ export var grounded_hit_state = "HurtGrounded"
 export var aerial_hit_state = "HurtAerial"
 export var knockdown = false
 export var knockdown_extends_hitstun = true # if true, aerial victim will stay in hitstun until hitting the ground
+export var hard_knockdown = false
 export var disable_collision = true
 export var ground_bounce = true
 
@@ -158,6 +162,9 @@ func play_whiff_sound():
 		if can_play_whiff_sound:
 			played_whiff_sound = true
 			whiff_sound_player.play()
+			if bass_on_whiff and hit_bass_sound_player:
+				hit_bass_sound_player.play()
+
 
 func activate():
 	if active:
@@ -204,6 +211,8 @@ func get_real_knockback():
 			return knockback
 		var knockback_modifier = host.fixed.powu(COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED if host.opponent.is_grounded() else COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL, host.combo_moves_used[host.current_state().state_name])
 		var final_kb = host.fixed.mul(knockback, knockback_modifier)
+		if host.fixed.gt(final_kb, MAX_KNOCKBACK):
+			final_kb = MAX_KNOCKBACK
 #		var max_kb = host.fixed.mul(knockback, "2")
 #		if host.fixed.gt(final_kb, max_kb):
 #			return max_kb
@@ -264,7 +273,8 @@ func hit(obj):
 					opponent.add_pushback(pushback)
 			if hit_sound_player and !ReplayManager.resimulating:
 				hit_sound_player.play()
-				hit_bass_sound_player.play()
+				if !bass_on_whiff:
+					hit_bass_sound_player.play()
 			emit_signal("hit_something", obj, self)
 		
 func get_facing_int():

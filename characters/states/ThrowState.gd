@@ -28,6 +28,7 @@ export var screenshake_amount = 0
 export var screenshake_frames = 0
 export var hits_otg = false
 export var increment_combo = true
+export var hard_knockdown = false
 #export var incr_combo = false
 
 var hit_height = Hitbox.HitHeight.Mid

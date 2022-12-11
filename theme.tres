@@ -184,6 +184,7 @@ LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.752941 )
 LineEdit/styles/focus = SubResource( 23 )
 LineEdit/styles/normal = SubResource( 22 )
 LineEdit/styles/read_only = SubResource( 24 )
+OptionButton/icons/arrow = ExtResource( 7 )
 Panel/styles/panel = SubResource( 4 )
 PanelAlt/base_type = "Panel"
 PanelAlt/styles/panel = SubResource( 31 )

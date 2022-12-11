@@ -13,7 +13,6 @@ var bullet_location
 var dir
 var angle
 
-
 func _frame_1():
 	if !temporal:
 		host.play_sound("Shoot")
@@ -43,7 +42,7 @@ func _frame_1():
 		var barrel_location = host.get_barrel_location(angle)
 		spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(float(barrel_location.x) * host.get_facing_int(), float(barrel_location.y)), Vector2(float(dir.x), float(dir.y)))
 
-func _frame_2():
+func _frame_4():
 	if temporal:
 #		host.play_sound("Shoot")
 #		host.play_sound("ShootBass")
@@ -63,7 +62,7 @@ func _frame_2():
 		if camera:
 			camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
 		var pos = host.get_pos()
-		bullet_location = fixed.vec_add(str(pos.x), str(pos.y), bullet_location_local.x, bullet_location_local.y)
+		bullet_location = fixed.vec_add(str(pos.x), str(pos.y), fixed.mul(bullet_location_local.x, str(host.get_facing_int())), bullet_location_local.y)
 #		var opp_vel = host.opponent.get_vel()
 #		bullet_location.x = fixed.round(fixed.add(str(bullet_location.x), opp_vel.x))
 #		bullet_location.y = fixed.round(fixed.add(str(bullet_location.y), opp_vel.y))
@@ -72,12 +71,22 @@ func _frame_2():
 		bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
 		var barrel_location = host.get_barrel_location(angle)
 
-func _frame_5():
-	host.shooting_arm.frame = 1
-
 func _frame_8():
-	host.shooting_arm.frame = 2
+	if !temporal:
+		host.shooting_arm.frame = 2
 
+func _frame_5():
+	if !temporal:
+		host.shooting_arm.frame = 1
+
+
+func _frame_6():
+	if temporal:
+		host.shooting_arm.frame = 1
+
+func _frame_9():
+	if temporal:
+		host.shooting_arm.frame = 2
 
 func _exit():
 	host.shooting_arm.hide()

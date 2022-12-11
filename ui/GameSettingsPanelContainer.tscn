@@ -4,7 +4,6 @@
 [ext_resource path="res://ui/GameSettingsPanelContainer.gd" type="Script" id=2]
 
 [node name="GameSettingsPanelContainer" type="MarginContainer"]
-unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -17,91 +16,98 @@ size_flags_vertical = 0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 158.0
 margin_bottom = 174.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/separation = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+margin_right = 158.0
+margin_bottom = 146.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
-[node name="GameSettingsContainer" type="VBoxContainer" parent="ScrollContainer"]
+[node name="GameSettingsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 margin_right = 152.0
-margin_bottom = 163.0
+margin_bottom = 177.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/GameSettingsContainer"]
-margin_right = 158.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+margin_right = 152.0
 margin_bottom = 11.0
 
-[node name="StageWidthLabel" type="Label" parent="ScrollContainer/GameSettingsContainer/HBoxContainer"]
+[node name="StageWidthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
 margin_right = 57.0
 margin_bottom = 11.0
 text = "Stage Width"
 
-[node name="StageWidth" type="SpinBox" parent="ScrollContainer/GameSettingsContainer/HBoxContainer"]
+[node name="StageWidth" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 58.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 min_value = 100.0
 max_value = 50000.0
 value = 1100.0
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="ScrollContainer/GameSettingsContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 margin_top = 12.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 23.0
 
-[node name="CharDistLabel" type="Label" parent="ScrollContainer/GameSettingsContainer/HBoxContainer3"]
+[node name="CharDistLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer3"]
 margin_right = 70.0
 margin_bottom = 11.0
 text = "Start Distance"
 
-[node name="CharDist" type="SpinBox" parent="ScrollContainer/GameSettingsContainer/HBoxContainer3"]
+[node name="CharDist" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer3"]
 unique_name_in_owner = true
 margin_left = 71.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 min_value = 16.0
 max_value = 300.0
 value = 50.0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="ScrollContainer/GameSettingsContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 margin_top = 24.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 35.0
 
-[node name="CharHeightLabel" type="Label" parent="ScrollContainer/GameSettingsContainer/HBoxContainer4"]
+[node name="CharHeightLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer4"]
 margin_right = 58.0
 margin_bottom = 11.0
 text = "Start Height"
 
-[node name="CharHeight" type="SpinBox" parent="ScrollContainer/GameSettingsContainer/HBoxContainer4"]
+[node name="CharHeight" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer4"]
 unique_name_in_owner = true
 margin_left = 59.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 max_value = 50000.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="ScrollContainer/GameSettingsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 margin_top = 36.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 47.0
 
-[node name="GameLengthLabel" type="Label" parent="ScrollContainer/GameSettingsContainer/HBoxContainer2"]
+[node name="GameLengthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
 margin_right = 70.0
 margin_bottom = 11.0
 text = "Round Length "
 
-[node name="GameLength" type="SpinBox" parent="ScrollContainer/GameSettingsContainer/HBoxContainer2"]
+[node name="GameLength" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
 unique_name_in_owner = true
 margin_left = 71.0
-margin_right = 158.0
+margin_right = 152.0
 margin_bottom = 11.0
 hint_tooltip = "Set the timer for the match (in frames)."
 size_flags_horizontal = 3
@@ -109,21 +115,31 @@ min_value = 1.0
 max_value = 999999.0
 value = 3600.0
 
-[node name="TurnLengthContainer" type="HBoxContainer" parent="ScrollContainer/GameSettingsContainer"]
+[node name="ChessTimer" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
 margin_top = 48.0
-margin_right = 158.0
-margin_bottom = 59.0
+margin_right = 152.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Chess Timer"
 
-[node name="TurnLengthLabel" type="Label" parent="ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
-margin_right = 51.0
-margin_bottom = 11.0
-text = "Turn Clock"
-
-[node name="TurnLength" type="SpinBox" parent="ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
+[node name="TurnLengthContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_left = 52.0
-margin_right = 158.0
+margin_top = 61.0
+margin_right = 152.0
+margin_bottom = 72.0
+
+[node name="TurnLengthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
+unique_name_in_owner = true
+margin_right = 78.0
+margin_bottom = 11.0
+text = "Turn Clock (min)"
+
+[node name="TurnLength" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/TurnLengthContainer"]
+unique_name_in_owner = true
+margin_left = 79.0
+margin_right = 152.0
 margin_bottom = 11.0
 hint_tooltip = "Set a timer for each player (in minutes). It counts down during each turn."
 size_flags_horizontal = 3
@@ -131,90 +147,95 @@ min_value = 1.0
 max_value = 999999.0
 value = 30.0
 
-[node name="P2Dummy" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+margin_top = 73.0
+margin_right = 152.0
+margin_bottom = 73.0
+
+[node name="P2Dummy" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 60.0
-margin_right = 158.0
-margin_bottom = 72.0
+margin_top = 74.0
+margin_right = 152.0
+margin_bottom = 86.0
 hint_tooltip = "Player 2 will not be prompted for input."
 size_flags_horizontal = 15
 text = "No P2 Input"
 expand_icon = true
 
-[node name="GravityEnabled" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="GravityEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 73.0
-margin_right = 158.0
-margin_bottom = 85.0
+margin_top = 87.0
+margin_right = 152.0
+margin_bottom = 99.0
 hint_tooltip = "Player 2 will not be prompted for input."
 size_flags_horizontal = 15
 pressed = true
 text = "Gravity Enabled"
 expand_icon = true
 
-[node name="BurstEnabled" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="BurstEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 86.0
-margin_right = 158.0
-margin_bottom = 98.0
+margin_top = 100.0
+margin_right = 152.0
+margin_bottom = 112.0
 hint_tooltip = "Allow the use of burst moves."
 size_flags_horizontal = 15
 pressed = true
 text = "Burst Enabled"
 expand_icon = true
 
-[node name="DIEnabled" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="DIEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 99.0
-margin_right = 158.0
-margin_bottom = 111.0
+margin_top = 113.0
+margin_right = 152.0
+margin_bottom = 125.0
 hint_tooltip = "Enable directional influence, affecting the characters' knockback trajectory when they are hit."
 size_flags_horizontal = 15
 pressed = true
 text = "DI Enabled"
 expand_icon = true
 
-[node name="TurboMode" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="TurboMode" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 112.0
-margin_right = 158.0
-margin_bottom = 124.0
+margin_top = 126.0
+margin_right = 152.0
+margin_bottom = 138.0
 hint_tooltip = "Freely cancel moves into other moves."
 size_flags_horizontal = 15
 text = "Turbo Mode"
 expand_icon = true
 
-[node name="InfiniteResources" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="InfiniteResources" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 125.0
-margin_right = 158.0
-margin_bottom = 137.0
+margin_top = 139.0
+margin_right = 152.0
+margin_bottom = 151.0
 hint_tooltip = "Never run out of super-meter or other character-specific resources."
 size_flags_horizontal = 15
 text = "Infinite Resources"
 expand_icon = true
 
-[node name="OneHitKO" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="OneHitKO" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 138.0
-margin_right = 158.0
-margin_bottom = 150.0
+margin_top = 152.0
+margin_right = 152.0
+margin_bottom = 164.0
 hint_tooltip = "Both players have 1 HP."
 size_flags_horizontal = 15
 text = "One-Hit KO"
 expand_icon = true
 
-[node name="AlwaysPerfectParry" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="AlwaysPerfectParry" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 151.0
-margin_right = 158.0
-margin_bottom = 163.0
+margin_top = 165.0
+margin_right = 152.0
+margin_bottom = 177.0
 hint_tooltip = "Every block is a parry and lets you act immediately."
 size_flags_horizontal = 15
 text = "Always Perfect Parry"
 expand_icon = true
 
-[node name="FrameByFrame" type="CheckButton" parent="ScrollContainer/GameSettingsContainer"]
+[node name="FrameByFrame" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
 visible = false
 margin_top = 114.0
@@ -224,3 +245,33 @@ hint_tooltip = "Play through the match frame-by-frame. Not recommended for multi
 size_flags_horizontal = 15
 text = "Frame By Frame"
 expand_icon = true
+
+[node name="GameFormats" type="OptionButton" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 148.0
+margin_right = 158.0
+margin_bottom = 160.0
+size_flags_horizontal = 3
+theme_type_variation = "ChallengeButton"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 162.0
+margin_right = 158.0
+margin_bottom = 174.0
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 131.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+placeholder_text = "match format name"
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 132.0
+margin_right = 158.0
+margin_bottom = 12.0
+text = "save"
+
+[connection signal="text_entered" from="VBoxContainer/HBoxContainer/LineEdit" to="." method="_on_LineEdit_text_entered"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]

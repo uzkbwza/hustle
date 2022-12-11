@@ -1,4 +1,4 @@
-[gd_scene load_steps=249 format=2]
+[gd_scene load_steps=265 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -245,6 +245,22 @@
 [ext_resource path="res://characters/swordandgun/sprites/roll1.png" type="Texture" id=243]
 [ext_resource path="res://characters/swordandgun/sprites/roll4.png" type="Texture" id=244]
 [ext_resource path="res://characters/swordandgun/sprites/roll3.png" type="Texture" id=245]
+[ext_resource path="res://characters/swordandgun/sprites/taunt1.png" type="Texture" id=246]
+[ext_resource path="res://characters/swordandgun/sprites/taunt3.png" type="Texture" id=247]
+[ext_resource path="res://characters/swordandgun/sprites/taunt4.png" type="Texture" id=248]
+[ext_resource path="res://characters/swordandgun/sprites/taunt6.png" type="Texture" id=249]
+[ext_resource path="res://characters/swordandgun/sprites/taunt5.png" type="Texture" id=250]
+[ext_resource path="res://characters/swordandgun/sprites/taunt9.png" type="Texture" id=251]
+[ext_resource path="res://characters/swordandgun/sprites/taunt2.png" type="Texture" id=252]
+[ext_resource path="res://characters/swordandgun/sprites/taunt7.png" type="Texture" id=253]
+[ext_resource path="res://characters/swordandgun/sprites/taunt8.png" type="Texture" id=254]
+[ext_resource path="res://characters/swordandgun/states/Taunt.gd" type="Script" id=255]
+[ext_resource path="res://characters/swordandgun/sprites/down_cleave1.png" type="Texture" id=256]
+[ext_resource path="res://characters/swordandgun/sprites/down_cleave2.png" type="Texture" id=257]
+[ext_resource path="res://characters/swordandgun/sprites/down_cleave3.png" type="Texture" id=258]
+[ext_resource path="res://characters/swordandgun/states/DownwardCleave.gd" type="Script" id=259]
+[ext_resource path="res://characters/swordandgun/sprites/down_cleave4.png" type="Texture" id=260]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/DownwardCleave.png" type="Texture" id=261]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -327,6 +343,11 @@ animations = [ {
 "name": "DoubleJump",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 260 ) ],
+"loop": true,
+"name": "DownwardCleave",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 55 ) ],
 "loop": true,
 "name": "DropKick",
@@ -377,7 +398,7 @@ animations = [ {
 "name": "GunShoot",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 114 ), ExtResource( 103 ) ],
+"frames": [ ExtResource( 114 ), ExtResource( 114 ), ExtResource( 114 ), ExtResource( 103 ) ],
 "loop": true,
 "name": "GunShoot2",
 "speed": 5.0
@@ -542,6 +563,11 @@ animations = [ {
 "name": "RollForward",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 252 ), ExtResource( 252 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ) ],
+"loop": true,
+"name": "Taunt",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), null, null, null, ExtResource( 101 ), ExtResource( 101 ), ExtResource( 100 ) ],
 "loop": true,
 "name": "Teleport",
@@ -608,8 +634,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "Dash"
-frame = 0
+animation = "DownwardCleave"
+frame = 2
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -650,6 +676,9 @@ enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 iasa_at = 7
 reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+Jump"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
@@ -814,6 +843,7 @@ y = -39
 width = 21
 height = 14
 damage = 180
+minimum_damage = 90
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -833,6 +863,7 @@ y = -26
 width = 21
 height = 14
 damage = 180
+minimum_damage = 90
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -974,6 +1005,7 @@ y = 7
 width = 21
 height = 14
 damage = 180
+minimum_damage = 70
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -993,6 +1025,7 @@ y = -6
 width = 21
 height = 14
 damage = 180
+minimum_damage = 90
 hitstun_ticks = 40
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -1168,13 +1201,14 @@ GroundedSuper"
 z_index = 1000
 script = ExtResource( 83 )
 x = 45
-y = -19
+y = -22
 width = 39
-height = 8
-damage = 80
+height = 4
+damage = 100
 hitstun_ticks = 14
 victim_hitlag = 4
 damage_proration = 1
+hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
 start_tick = 6
@@ -1211,7 +1245,7 @@ x = 37
 y = -26
 width = 31
 height = 23
-damage = 90
+damage = 115
 hitstun_ticks = 40
 victim_hitlag = 4
 hit_height = 0
@@ -1223,39 +1257,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
 
-[node name="VSlash2" type="Node2D" parent="StateMachine" index="14"]
-script = ExtResource( 79 )
-sprite_animation = "VSlash"
-anim_length = 30
-force_dir_x = "1.0"
-force_speed = "7.0"
-force_tick = 2
-title = "Vert. Slash"
-type = 1
-button_texture = ExtResource( 154 )
-iasa_at = 18
-self_hit_cancellable = false
-
-[node name="Hitbox" type="Node2D" parent="StateMachine/VSlash2" index="0"]
-z_index = 1000
-script = ExtResource( 83 )
-x = 37
-y = -26
-width = 31
-height = 23
-damage = 90
-hitstun_ticks = 40
-victim_hitlag = 4
-hit_height = 0
-whiff_sound = ExtResource( 140 )
-hit_sound = ExtResource( 148 )
-dir_x = "0.5"
-dir_y = "1.0"
-grounded_hit_state = "HurtAerial"
-start_tick = 11
-active_ticks = 2
-
-[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="15"]
+[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -1285,6 +1287,7 @@ damage = 70
 hitstun_ticks = 29
 hitlag_ticks = 7
 victim_hitlag = 9
+sdi_modifier = "1.2"
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
 dir_x = "-0.15"
@@ -1294,7 +1297,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="16"]
+[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -1326,6 +1329,7 @@ damage = 70
 hitstun_ticks = 29
 hitlag_ticks = 7
 victim_hitlag = 9
+sdi_modifier = "1.2"
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
 dir_x = "-0.15"
@@ -1335,7 +1339,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="Poke" type="Node2D" parent="StateMachine" index="17"]
+[node name="Poke" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 79 )
 sprite_animation = "Poke"
 anim_length = 30
@@ -1353,6 +1357,8 @@ interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSpecial
 GroundedAttack
 GroundedSuper"
+interrupt_exceptions_string = "Teleport"
+hit_cancel_exceptions_string = "Teleport"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Poke" index="0"]
 z_index = 1000
@@ -1374,7 +1380,7 @@ knockdown = true
 start_tick = 11
 active_ticks = 2
 
-[node name="Impale" type="Node2D" parent="StateMachine" index="18"]
+[node name="Impale" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 127 )
 anim_length = 45
 force_dir_x = "-1.0"
@@ -1420,7 +1426,7 @@ y = -12
 width = 32
 height = 18
 damage = 250
-minimum_damage = 150
+minimum_damage = 90
 victim_hitlag = 4
 group = 1
 screenshake_amount = 6
@@ -1437,6 +1443,49 @@ knockdown = true
 ground_bounce = false
 start_tick = 23
 active_ticks = 4
+
+[node name="DownwardCleave" type="Node2D" parent="StateMachine" index="18"]
+script = ExtResource( 259 )
+apply_forces = true
+apply_fric = true
+anim_length = 20
+endless = true
+force_dir_y = "1.0"
+force_speed = "6.0"
+force_tick = 8
+title = "Downward Cleave"
+type = 1
+button_texture = ExtResource( 261 )
+air_type = 1
+land_cancel = true
+interrupt_from_string = "Aerial
+AerialAttack"
+interrupt_into_string = "Aerial
+Grounded"
+hit_cancel_into_string = "AerialAttack
+AerialSpecial
+AerialSuper
+GroundedAttack
+GroundedSpecial
+GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/DownwardCleave" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 48
+y = -13
+width = 26
+height = 10
+damage = 70
+hitstun_ticks = 11
+victim_hitlag = 8
+dir_x = "0.25"
+dir_y = "1.0"
+knockback = "12.0"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 9
+always_on = true
 
 [node name="VAirSlash" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 95 )
@@ -1458,9 +1507,10 @@ x = 22
 y = 2
 width = 21
 height = 21
-damage = 70
-hitstun_ticks = 20
+damage = 50
+hitstun_ticks = 14
 victim_hitlag = 6
+sdi_modifier = "1.2"
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
@@ -1472,7 +1522,10 @@ active_ticks = 2
 
 [node name="HAirSlash" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 189 )
-anim_length = 16
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 19
 force_dir_x = "1.0"
 title = "Horiz. Slash"
 type = 1
@@ -1481,8 +1534,12 @@ air_type = 1
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
-interrupt_into_string = "Aerial"
-hit_cancel_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
+hit_cancel_into_string = "Aerial
+GroundedAttack
+GroundedSpecial
+GroundedSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HAirSlash" index="0"]
 z_index = 1000
@@ -1492,9 +1549,8 @@ y = -17
 width = 24
 height = 14
 damage = 70
-hitstun_ticks = 22
-hitlag_ticks = 5
-victim_hitlag = 5
+hitstun_ticks = 17
+sdi_modifier = "1.2"
 hit_height = 0
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1521,7 +1577,8 @@ GroundedMovement
 GroundedSpecial
 Aerial
 AerialMovement
-AerialSpecial"
+AerialSpecial
+Teleport"
 interrupt_into_string = "Grounded
 Aerial"
 
@@ -1623,18 +1680,16 @@ super_effect = false
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
-anim_length = 8
+anim_length = 10
 sfx = ExtResource( 70 )
-sfx_tick = 2
+sfx_tick = 10
 sfx_volume = -6.0
 title = "Temporal Round"
 type = 3
 button_texture = ExtResource( 60 )
 air_type = 2
-iasa_at = 7
 interrupt_from_string = "Gun
-LassoThrow
-TimeBullet"
+LassoThrow"
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial"
@@ -1682,8 +1737,7 @@ script = ExtResource( 83 )
 width = 40
 height = 40
 damage = 165
-minimum_damage = 80
-hitstun_ticks = 40
+minimum_damage = 90
 hitlag_ticks = 1
 victim_hitlag = 10
 cancellable = false
@@ -1692,8 +1746,7 @@ screenshake_amount = 30
 screenshake_frames = 20
 camera_bump_dir = Vector2( 0, 1 )
 hit_sound = ExtResource( 143 )
-dir_x = "2.0"
-knockback = "20.0"
+knockback = "13.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -1755,6 +1808,7 @@ GroundedSpecial"
 interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSpecial
 GroundedSuper"
+hit_cancel_exceptions_string = "Teleport"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackSlash" index="0"]
 z_index = 1000
@@ -1814,17 +1868,19 @@ knockback = "12.0"
 start_tick = 9
 active_ticks = 1
 
-[node name="DashStartup" parent="StateMachine" index="42"]
+[node name="DashStartup" parent="StateMachine" index="43"]
 title = "Walk"
 
-[node name="DashForward" parent="StateMachine" index="43"]
+[node name="DashForward" parent="StateMachine" index="44"]
+enter_force_dir_x = "1.0"
+enter_force_speed = "0.5"
 spawn_particle_on_enter = false
 interrupt_frames = [ 8 ]
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="44"]
+[node name="DashBackward" parent="StateMachine" index="45"]
 spawn_particle_on_enter = false
 interrupt_frames = [ 11 ]
 dash_speed = 3
@@ -1832,19 +1888,42 @@ fric = "0.02"
 spawn_particle = false
 startup_lag = 1
 
-[node name="Jump" parent="StateMachine" index="46"]
+[node name="Jump" parent="StateMachine" index="47"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="48"]
+[node name="DoubleJump" parent="StateMachine" index="49"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="49"]
+[node name="AirDash" parent="StateMachine" index="50"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="58"]
+[node name="AirGrab" parent="StateMachine" index="59"]
 land_cancel = true
 
-[node name="AirDownThrow" parent="StateMachine" index="63"]
+[node name="AirDownThrow" parent="StateMachine" index="64"]
 dir_x = "1.0"
 dir_y = "1.00"
+
+[node name="Taunt" parent="StateMachine" index="66"]
+script = ExtResource( 255 )
+anim_length = 61
+force_dir_x = "-1.0"
+force_speed = "2.0"
+force_tick = 23
+enter_force_dir_x = "1.0"
+enter_force_speed = "4.0"
+reset_momentum = true
+hit_cancel_into_string = "Grounded
+Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Taunt" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 24
+y = -27
+width = 7
+height = 5
+damage = 20
+start_tick = 24
+active_ticks = 2

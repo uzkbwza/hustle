@@ -250,7 +250,7 @@ func request_lobby_list():
 	if LOBBY_ID == 0:
 			# Set distance to worldwide
 		Steam.addRequestLobbyListDistanceFilter(3)
-#		Steam.addRequestLobbyListResultCountFilter(100)
+		Steam.addRequestLobbyListResultCountFilter(500)
 		#	Before requesting the lobby list with requestLobbyList you can add more search queries like:
 		#	addRequestLobbyListStringFilter - which allows you to look for specific works in the lobby metadata
 		#	addRequestLobbyListNumericalFilter - which adds a numerical comparions filter (<=, <, =, >, >=, !=)

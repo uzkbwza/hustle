@@ -56,6 +56,7 @@ export var self_hit_cancellable = true
 export var self_interruptable = true
 export var reversible = true
 export var instant_cancellable = true
+export var force_feintable = false
 export var can_feint_if_possible = true
 
 export(String, MULTILINE) var interrupt_from_string
@@ -228,7 +229,7 @@ func _tick_after():
 	._tick_after()
 
 func can_feint():
-	return has_hitboxes and host.feints > 0 and can_feint_if_possible
+	return (has_hitboxes or force_feintable) and host.feints > 0 and can_feint_if_possible
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1

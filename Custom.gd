@@ -100,6 +100,7 @@ func requires_dlc(data):
 		return true
 	return false
 
+
 func save_style(style):
 	make_custom_folder()
 	var file = File.new()

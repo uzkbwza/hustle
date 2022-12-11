@@ -11,6 +11,7 @@ var backwards_stall_frames = 0
 func _frame_0():
 	iasa_at = 9
 	backwards_stall_frames = 0
+	host.start_throw_invulnerability()
 	if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
 		return
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
@@ -20,8 +21,10 @@ func _frame_0():
 		if backwards:
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
 	iasa_at += fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS))
-
+	
+	
 func _frame_4():
+	host.end_throw_invulnerability()
 	host.start_invulnerability()
 	host.colliding_with_opponent = false
 
@@ -32,6 +35,8 @@ func _frame_5():
 	var vel = host.get_vel()
 	host.set_vel(vel.x, "0")
 	var tele_force = xy_to_dir(data.x, data.y, MOMENTUM_FORCE)
+	if fixed.lt(tele_force.y, "0"):
+		tele_force.y = fixed.mul(tele_force.y, "0.666667")
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
 

@@ -157,8 +157,8 @@ func setup_game_deferred(singleplayer, data):
 	if game.start_game(singleplayer, data) is bool:
 		return
 	if data.has("turn_time"):
-		if !Network.undo:
-			ui_layer.set_turn_time(data.turn_time)
+		if !Network.undo or (data.has("chess_timer") and !data.chess_timer):
+			ui_layer.set_turn_time(data.turn_time, (data.has("chess_timer") and data.chess_timer))
 		else:
 			ui_layer.start_timers()
 	ui_layer.init(game)

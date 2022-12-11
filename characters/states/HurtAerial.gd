@@ -16,6 +16,7 @@ enum BOUNCE {
 
 var hitstun = 0
 var knockdown = false
+var hard_knockdown = false
 var can_act
 var bounce_frames = 0
 
@@ -27,7 +28,8 @@ func _enter():
 	can_act = false
 	bounce_frames = 0
 	knockdown = hitbox.knockdown
-	hitstun = hitbox.hitstun_ticks + (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0)
+	hard_knockdown = hitbox.hard_knockdown
+	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	counter = hitbox.counter_hit
 	if hitbox.ground_bounce and host.is_grounded() and fixed.gt(hitbox.dir_y, "0"):
 		hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
@@ -87,8 +89,11 @@ func _tick():
 	else:
 		if host.is_grounded() and fixed.ge(host.get_vel().y, "0"):
 			if knockdown or host.hp == 0:
+				if hard_knockdown:
+					return "HardKnockdown"
+				else:
 #				host.start_invulnerability()
-				return "Knockdown"
+					return "Knockdown"
 			else:
 				return "Landing"
 				

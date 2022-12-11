@@ -1,4 +1,4 @@
-[gd_scene load_steps=237 format=2]
+[gd_scene load_steps=262 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -232,6 +232,30 @@
 [ext_resource path="res://characters/wizard/sounds/magic9.wav" type="AudioStream" id=230]
 [ext_resource path="res://characters/wizard/ConfusionParticle.tscn" type="PackedScene" id=231]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/confusing_touch.png" type="Texture" id=232]
+[ext_resource path="res://characters/wizard/sprites/taunt14.png" type="Texture" id=233]
+[ext_resource path="res://characters/wizard/sprites/taunt13.png" type="Texture" id=234]
+[ext_resource path="res://characters/wizard/sprites/taunt10.png" type="Texture" id=235]
+[ext_resource path="res://characters/wizard/sprites/taunt11.png" type="Texture" id=236]
+[ext_resource path="res://characters/wizard/sprites/taunt12.png" type="Texture" id=237]
+[ext_resource path="res://characters/wizard/sprites/taunt9.png" type="Texture" id=238]
+[ext_resource path="res://characters/wizard/sprites/taunt15.png" type="Texture" id=239]
+[ext_resource path="res://characters/wizard/sprites/taunt6.png" type="Texture" id=240]
+[ext_resource path="res://characters/wizard/sprites/taunt8.png" type="Texture" id=241]
+[ext_resource path="res://characters/wizard/sprites/taunt1.png" type="Texture" id=242]
+[ext_resource path="res://characters/wizard/sprites/taunt2.png" type="Texture" id=243]
+[ext_resource path="res://characters/wizard/sprites/taunt3.png" type="Texture" id=244]
+[ext_resource path="res://characters/wizard/sprites/taunt4.png" type="Texture" id=245]
+[ext_resource path="res://characters/wizard/sprites/taunt5.png" type="Texture" id=246]
+[ext_resource path="res://characters/wizard/sprites/taunt7.png" type="Texture" id=247]
+[ext_resource path="res://characters/wizard/states/ConfusingTouch.gd" type="Script" id=248]
+[ext_resource path="res://characters/wizard/states/Sandstorm.gd" type="Script" id=249]
+[ext_resource path="res://characters/wizard/sprites/sandstorm5.png" type="Texture" id=250]
+[ext_resource path="res://characters/wizard/sprites/sandstorm4.png" type="Texture" id=251]
+[ext_resource path="res://characters/wizard/sprites/sandstorm1.png" type="Texture" id=252]
+[ext_resource path="res://characters/wizard/sprites/sandstorm2.png" type="Texture" id=253]
+[ext_resource path="res://characters/wizard/sprites/sandstorm3.png" type="Texture" id=254]
+[ext_resource path="res://characters/wizard/SandstormParticle.tscn" type="PackedScene" id=255]
+[ext_resource path="res://characters/wizard/sprites/actionbuttons/sandstorm.png" type="Texture" id=256]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -251,7 +275,7 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="SpriteFrames" id=4]
+[sub_resource type="SpriteFrames" id=6]
 animations = [ {
 "frames": [ ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 30 ) ],
 "loop": true,
@@ -508,9 +532,19 @@ animations = [ {
 "name": "RollForward",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 252 ), ExtResource( 252 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ) ],
+"loop": true,
+"name": "Sandstorm",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 205 ), ExtResource( 205 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 204 ) ],
 "loop": true,
 "name": "SparkBomb",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 242 ), ExtResource( 243 ), ExtResource( 244 ), ExtResource( 245 ), ExtResource( 246 ), ExtResource( 240 ), ExtResource( 247 ), ExtResource( 241 ), ExtResource( 238 ), ExtResource( 235 ), ExtResource( 236 ), ExtResource( 237 ), ExtResource( 234 ), ExtResource( 233 ), ExtResource( 239 ) ],
+"loop": true,
+"name": "Taunt",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 23 ) ],
@@ -538,6 +572,15 @@ animations = [ {
 "name": "Wait",
 "speed": 30.0
 } ]
+
+[sub_resource type="ShaderMaterial" id=7]
+resource_local_to_scene = true
+shader = ExtResource( 180 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -570,14 +613,20 @@ player_extra_params_scene = ExtResource( 3 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
-frames = SubResource( 4 )
-animation = "Grab2"
+frames = SubResource( 6 )
+animation = "Sandstorm"
 frame = 0
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
 material = null
 position = Vector2( 134, -144 )
+
+[node name="SandstormParticle" parent="Flip/Particles" index="1" instance=ExtResource( 255 )]
+unique_name_in_owner = true
+material = SubResource( 7 )
+position = Vector2( 64, -2 )
+z_index = 1000
 
 [node name="LiftoffSprite" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1103,7 +1152,49 @@ land_cancel = true
 interrupt_into_string = "Aerial
 Grounded"
 
-[node name="WindForce" type="Node2D" parent="StateMachine" index="15"]
+[node name="Sandstorm" type="Node2D" parent="StateMachine" index="15"]
+script = ExtResource( 249 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 30
+enter_sfx = ExtResource( 161 )
+type = 2
+button_texture = ExtResource( 256 )
+iasa_at = 24
+self_hit_cancellable = false
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedSpecial
+GroundedSuper"
+trigger_orb_type = "OrbDart"
+trigger_orb_delay = 30
+
+[node name="WindBox" type="Node2D" parent="StateMachine/Sandstorm" index="0"]
+z_index = 1000
+script = ExtResource( 155 )
+x = 123
+y = -10
+width = 150
+height = 10
+can_draw = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Sandstorm" index="1"]
+z_index = 1000
+script = ExtResource( 95 )
+x = 200
+y = -21
+damage = 50
+hitstun_ticks = 20
+hitlag_ticks = 1
+victim_hitlag = 9
+hits_vs_aerial = false
+knockback = "6.0"
+start_tick = 5
+active_ticks = 15
+
+[node name="WindForce" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 154 )
 apply_forces = true
 apply_fric = true
@@ -1172,7 +1263,7 @@ knockdown = true
 start_tick = 9
 active_ticks = 23
 
-[node name="OrbTeleport" type="Node2D" parent="StateMachine" index="16"]
+[node name="OrbTeleport" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 135 )
 apply_forces = true
 apply_fric = true
@@ -1213,7 +1304,7 @@ launch_reversible = true
 start_tick = 3
 active_ticks = 3
 
-[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="17"]
+[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 181 )
 apply_forces = true
 apply_fric = true
@@ -1302,7 +1393,7 @@ knockback = "8.0"
 start_tick = 19
 active_ticks = 3
 
-[node name="SparkBomb" type="Node2D" parent="StateMachine" index="18"]
+[node name="SparkBomb" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 196 )
 apply_forces = true
 apply_fric = true
@@ -1326,7 +1417,7 @@ AerialSuper"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="VileClutch" type="Node2D" parent="StateMachine" index="19"]
+[node name="VileClutch" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 197 )
 apply_forces = true
 apply_fric = true
@@ -1351,7 +1442,72 @@ Aerial"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 60
 
-[node name="ConfusingTouch" type="Node2D" parent="StateMachine" index="21"]
+[node name="ConfusingTouch" type="Node2D" parent="StateMachine" index="22"]
+script = ExtResource( 248 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Grab2"
+anim_length = 24
+title = "Confusing Touch"
+type = 2
+button_texture = ExtResource( 232 )
+flip_icon = false
+air_type = 2
+interrupt_from_string = "Grounded
+GroundedSpecial
+Aerial
+AerialSpecial"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+"
+trigger_orb_type = "OrbDart"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch" index="0"]
+z_index = 1000
+script = ExtResource( 95 )
+x = 59
+y = -19
+width = 10
+height = 10
+damage = 20
+hitbox_type = 1
+screenshake_amount = 0
+replace_hit_particle = true
+whiff_particle = ExtResource( 231 )
+whiff_sound = ExtResource( 230 )
+hit_sound = ExtResource( 146 )
+whiff_sound_volume = -15.0
+hit_sound_volume = -10.0
+dir_y = ""
+start_tick = 5
+active_ticks = 4
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
+z_index = 1000
+script = ExtResource( 95 )
+x = 17
+y = -19
+width = 14
+height = 10
+damage = 20
+hitbox_type = 1
+priority = 1
+screenshake_amount = 0
+replace_hit_particle = true
+whiff_particle = ExtResource( 231 )
+whiff_sound = ExtResource( 230 )
+hit_sound = ExtResource( 146 )
+whiff_sound_volume = -15.0
+hit_sound_volume = -10.0
+dir_y = ""
+start_tick = 3
+active_ticks = 2
+
+[node name="ConfusingTouch2" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 91 )
 sprite_animation = "Grab2"
 anim_length = 24
@@ -1359,11 +1515,9 @@ title = "Confusing Touch"
 type = 2
 button_texture = ExtResource( 232 )
 flip_icon = false
-interrupt_from_string = "Grounded
-GroundedSpecial"
-interrupt_into_string = "Grounded"
+trigger_orb_type = "OrbDart"
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch" index="0"]
+[node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch2" index="0"]
 z_index = 1000
 script = ExtResource( 95 )
 x = 59
@@ -1381,15 +1535,15 @@ hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
 dir_y = ""
-start_tick = 6
+start_tick = 5
 active_ticks = 4
 
-[node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch2" index="1"]
 z_index = 1000
 script = ExtResource( 95 )
-x = 10
+x = 17
 y = -19
-width = 10
+width = 14
 height = 10
 damage = 20
 hitbox_type = 1
@@ -1406,7 +1560,7 @@ dir_y = ""
 start_tick = 3
 active_ticks = 2
 
-[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="22"]
+[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 218 )
 apply_forces = true
 apply_fric = true
@@ -1493,47 +1647,47 @@ knockback = "4.0"
 start_tick = 6
 active_ticks = 2
 
-[node name="TechRoll" parent="StateMachine" index="32"]
+[node name="TechRoll" parent="StateMachine" index="35"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="DashBackward" parent="StateMachine" index="35"]
+[node name="DashBackward" parent="StateMachine" index="38"]
 interrupt_frames = [ 11 ]
 dash_speed = 9
 stop_frame = 9
 
-[node name="Roll" parent="StateMachine" index="36"]
+[node name="Roll" parent="StateMachine" index="39"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="Jump" parent="StateMachine" index="37"]
+[node name="Jump" parent="StateMachine" index="40"]
 speed = "8"
 y_modifier = "1.2"
 
-[node name="DoubleJump" parent="StateMachine" index="39"]
+[node name="DoubleJump" parent="StateMachine" index="42"]
 data_ui_scene = ExtResource( 126 )
 speed = "8"
 y_modifier = "1.1"
 
-[node name="AirDash" parent="StateMachine" index="40"]
+[node name="AirDash" parent="StateMachine" index="43"]
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="46"]
+[node name="Hold" parent="StateMachine" index="49"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="47"]
+[node name="AirHold" parent="StateMachine" index="50"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="ForwardThrow" parent="StateMachine" index="50"]
+[node name="ForwardThrow" parent="StateMachine" index="53"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1548,7 +1702,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="BackThrow" parent="StateMachine" index="51"]
+[node name="BackThrow" parent="StateMachine" index="54"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1563,7 +1717,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirForwardThrow" parent="StateMachine" index="52"]
+[node name="AirForwardThrow" parent="StateMachine" index="55"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1576,7 +1730,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirBackThrow" parent="StateMachine" index="53"]
+[node name="AirBackThrow" parent="StateMachine" index="56"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1589,7 +1743,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirDownThrow" parent="StateMachine" index="54"]
+[node name="AirDownThrow" parent="StateMachine" index="57"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1601,7 +1755,16 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="ThrowTech" parent="StateMachine" index="55"]
+[node name="ThrowTech" parent="StateMachine" index="58"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
+
+[node name="Taunt" parent="StateMachine" index="59"]
+apply_fric = false
+anim_length = 60
+ticks_per_frame = 4
+sfx = ExtResource( 230 )
+sfx_tick = 3
+sfx_volume = -10.0
+iasa_at = 45

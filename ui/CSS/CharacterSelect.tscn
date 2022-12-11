@@ -1,13 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
-[ext_resource path="res://ui/CSS/CharacterButton.tscn" type="PackedScene" id=3]
-[ext_resource path="res://characters/swordandgun/SwordGuy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/CSS/CharacterDisplay.tscn" type="PackedScene" id=5]
-[ext_resource path="res://characters/wizard/Wizard.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=7]
-[ext_resource path="res://characters/robo/Robot.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=9]
 
 [node name="CharacterSelect" type="Panel"]
@@ -31,6 +27,7 @@ action_mode = 0
 text = "show settings"
 
 [node name="GameSettingsPanelContainer" parent="." instance=ExtResource( 9 )]
+unique_name_in_owner = true
 margin_bottom = -25.0
 
 [node name="CharacterButtonContainer" type="HBoxContainer" parent="."]
@@ -44,32 +41,6 @@ margin_top = 10.0
 margin_right = 194.0
 margin_bottom = 70.0
 alignment = 1
-
-[node name="NinjaGuy" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
-margin_left = 103.0
-margin_right = 163.0
-text = "ninja"
-icon_align = 1
-expand_icon = true
-
-[node name="SwordGuy" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
-margin_left = 164.0
-margin_right = 224.0
-text = "cowboy"
-character_scene = ExtResource( 4 )
-
-[node name="Wizard" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
-margin_left = 225.0
-margin_right = 285.0
-text = "wizard"
-character_scene = ExtResource( 6 )
-
-[node name="Robot" parent="CharacterButtonContainer" instance=ExtResource( 3 )]
-visible = false
-margin_left = 255.0
-margin_right = 315.0
-text = "robot"
-character_scene = ExtResource( 8 )
 
 [node name="GoButton" type="Button" parent="."]
 unique_name_in_owner = true

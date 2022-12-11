@@ -99,13 +99,14 @@ func process_extra(extra):
 	else:
 		hovering = false
 	if can_fast_fall():
-		fast_falling = false
 		if extra.has("fast_fall"):
 			if extra["fast_fall"]:
 				if extra["fast_fall"] and !fast_falling:
 					play_sound("FastFall")
 					set_vel(get_vel().x, FAST_FALL_SPEED)
 				fast_falling = extra["fast_fall"]
+		else:
+			fast_falling = false
 	else:
 		fast_falling = false
 	if extra.has("orb_push") and orb_projectile:

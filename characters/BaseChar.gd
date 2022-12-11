@@ -109,6 +109,7 @@ var applied_style = null
 var is_color_active = false
 var is_aura_active = false
 var is_style_active = null
+var touching_wall = false
 
 var ivy_effect = false
 
@@ -299,7 +300,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -677,7 +678,7 @@ func process_extra(extra):
 			ghost_reverse = true
 	if "feint" in extra:
 		feinting = extra.feint
-		if feinting:
+		if feinting and !infinite_resources:
 			feints -= 1
 	else:
 		feinting = false
@@ -837,7 +838,6 @@ func tick():
 				gain_super_meter(Utils.int_max(Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR, 1))
 	#	if current_state().current_tick == -1:
 	#		state_tick()
-
 	if state_interruptable:
 		update_grounded()
 	gain_burst_meter()
@@ -846,6 +846,13 @@ func tick():
 		particle.tick()
 	any_available_actions = true
 	last_vel = get_vel()
+	touching_wall = false
+	var col_box = get_collision_box()
+	var vel = last_vel
+	if (col_box.x1 <= -stage_width and fixed.lt(vel.x, "0")):
+		touching_wall = true
+	if (col_box.x2 >= stage_width and fixed.gt(vel.x, "0")):
+		touching_wall = true
 	if !is_grounded():
 		last_aerial_vel = last_vel
 	if !(previous_state() is ParryState) or !(current_state() is ParryState):
@@ -859,15 +866,19 @@ func tick():
 
 func set_ghost_colors():
 	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
+#		var first_color = Color("37ff44")
+		var first_color = Color.green
+#		var second_color = Color("bd5a19")
+		var second_color = Color.orange
 		ghost_ready_set = true
 		ghost_ready_tick = current_tick
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
-			set_color(Color.green)
+			set_color(first_color)
 			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting:
 				opponent.ghost_ready_set = true
-				opponent.set_color(Color.green)
+				opponent.set_color(first_color)
 		elif opponent.ghost_ready_tick < ghost_ready_tick:
-			set_color(Color.orange)
+			set_color(second_color)
 
 func set_facing(facing: int, force=false):
 	if reverse_state and !force:

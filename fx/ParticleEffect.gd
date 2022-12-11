@@ -10,12 +10,14 @@ export var one_shot = true
 export var lifetime = 1.0
 export var start_enabled = true
 
+var emitting = true
 var enabled = true
 var tick = 0
 
 onready var tick_timer = $Timer
 
 func _ready():
+	emitting = start_enabled
 	for child in get_children():
 		if child is Particles2D:
 			child.one_shot = one_shot
@@ -43,6 +45,7 @@ func on_tick_timer_timeout():
 
 func start_emitting():
 	show()
+	emitting = true
 	set_enabled(true)
 	for child in get_children():
 		if child is Particles2D:
@@ -51,6 +54,7 @@ func start_emitting():
 			child.emitting = true
 
 func stop_emitting():
+	emitting = false
 	for child in get_children():
 		if child is Particles2D:
 			child.emitting = false
