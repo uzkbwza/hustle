@@ -1205,8 +1205,6 @@ damage = 90
 [node name="ThrowTech" type="Node2D" parent="StateMachine" index="38"]
 script = ExtResource( 94 )
 anim_length = 30
-enter_force_dir_x = "-1.0"
-enter_force_speed = "8.0"
 reset_momentum = true
 enter_sfx = ExtResource( 129 )
 interrupt_into_string = "Grounded

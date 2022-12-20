@@ -13,7 +13,7 @@ func shoot(fighter: Fighter):
 	var dir = fixed.normalized_vec_times(str(bullet_location_local.x), str(bullet_location_local.y), "1.0")
 	var bullet = spawn_object(BULLET_SCENE, bullet_location.x, bullet_location.y, true, bullet_location, false)
 	spawn_particle_effect_relative(MUZZLE_FLASH_SCENE, Vector2(), Vector2(float(dir.x), float(dir.y)))
-	var recoil = fixed.normalized_vec_times(dir.x, dir.y, "8")
+	var recoil = fixed.normalized_vec_times(fixed.mul(dir.x, "-1"), dir.y, "8")
 	apply_force(recoil.x, recoil.y)
 	play_sound("Shoot")
 	play_sound("ShootBass")

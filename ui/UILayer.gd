@@ -129,6 +129,7 @@ func _ready():
 	if !SteamHustle.STARTED:
 		$"%CustomizeButton".hide()
 	
+	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false
 	for node in global_option_check_buttons:

@@ -63,7 +63,7 @@ func _loadMods():
 # Attach the script instances to this singleton's scene to keep them alive.
 func _initMods():
 	for modFSPath in _modZipFiles:
-		var gdunzip = load('res://addons/gdunzip/gdunzip.gd').new()
+		var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
 		gdunzip.load(modFSPath)
 		var modHash = _hash_file(modFSPath)
 		for modEntryPath in gdunzip.files:
@@ -91,9 +91,11 @@ func _initMods():
 		print("Loaded " + item[2].friendly_name)
 		item.remove(0)
 	mods_w_overwrites.sort_custom(self, "_compareScriptPriority")
+	var doesExist = Directory.new()
 	for item in mods_w_overwrites:
 		for character in Global.name_paths:
-			_overwriteCharacterTexs(item.subfolder, character)
+			if doesExist.file_exists(Global.name_paths.get(character)):
+				_overwriteCharacterTexs(item.subfolder, character)
 
 func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
@@ -175,6 +177,10 @@ func saveScene(modifiedScene, scenePath:String):
 	packed_scene.pack(modifiedScene)
 	packed_scene.take_over_path(scenePath)
 	_savedObjects.append(packed_scene)
+	
+func _getTexsFromSheet(spritePath, columns, rows):
+	
+	pass
 
 func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement support
 	#Load all custom user overwrites

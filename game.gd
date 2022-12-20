@@ -538,7 +538,13 @@ func resolve_collisions(step=0):
 		edge_distance = int_abs(p1_right_edge - p2_left_edge)
 
 	if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
-		if (p1.get_facing_int() == 1 if current_tick % 2 == 0 else p2.get_facing_int() == -1):
+		var push_p1_left = (p1.get_facing_int() == 1 if current_tick % 2 == 0 else p2.get_facing_int() == -1)
+		if p1.reverse_state:
+			push_p1_left = !push_p1_left
+		var push_p2_left = (p1.get_facing_int() == -1 if current_tick % 2 == 0 else p2.get_facing_int() == 1)
+		if p2.reverse_state:
+			push_p2_left = !push_p2_left
+		if push_p1_left:
 			var edge = p1_right_edge
 			var opp_edge = p2_left_edge
 			if opp_edge < edge:
@@ -546,7 +552,7 @@ func resolve_collisions(step=0):
 				p1.set_x(x_pos - overlap / 2)
 				p2.set_x(opp_x_pos + (overlap / 2))
 			
-		elif (p1.get_facing_int() == -1 if current_tick % 2 == 0 else p2.get_facing_int() == 1):
+		elif push_p2_left:
 			var edge = p1_left_edge
 			var opp_edge = p2_right_edge
 			if opp_edge > edge:

@@ -49,16 +49,19 @@ func _addModList():
 		info.get_node("VBoxContainer").get_node("Contents").add_child(xbox2)
 		var name = "Name: " + mod[1].friendly_name
 		var name_lab = generateLabel(name, 0)
-		var desc = "Description: " + mod[1].description
-		var desc_lab = generateLabel(desc, 0)
+		var desc_header = generateLabel("Description: ", 0)
+		var desc = mod[1].description
+		var desc_lab = generateRichLabel(desc)
 		var auth = "Author: " + mod[1].author
 		var auth_lab = generateLabel(auth, 0)
 		var ver = "Version: " + mod[1].version
 		var ver_lab = generateLabel(ver, 0)
-		info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(name_lab)
-		info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(desc_lab)
-		info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(auth_lab)
-		info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(ver_lab)
+		var infoBox = info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer")
+		infoBox.add_child(name_lab)
+		infoBox.add_child(auth_lab)
+		infoBox.add_child(ver_lab)
+		infoBox.add_child(desc_header)
+		infoBox.add_child(desc_lab)
 		if mod[1].requires != [""]:
 			var req = "Requires: " + str(mod[1].requires)
 			var req_lab = generateLabel(req, 0)
@@ -104,6 +107,14 @@ func generateLabel(text_gen, align):
 	_label.text = text_gen
 	_label.align = align
 	return _label
+	
+func generateRichLabel(text_gen):
+	var _richLabel = load("res://modloader/ModdedRichText.gd").new()
+	_richLabel.bbcode_enabled= true
+	_richLabel.bbcode_text = text_gen
+	var pulseFX = RichTextPulse.new()
+	_richLabel.install_effect(pulseFX)
+	return _richLabel
 
 func generateButton(text_gen):
 	var _button = Button.new()

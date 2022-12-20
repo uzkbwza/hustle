@@ -533,7 +533,9 @@ func launched_by(hitbox):
 	
 	nudge_amount = hitbox.sdi_modifier
 	
-	if hitbox.ignore_armor or !has_armor():
+	var will_launch =  hitbox.ignore_armor or !has_armor()
+	
+	if will_launch:
 		var state
 		if is_grounded():
 			state = hitbox.grounded_hit_state
@@ -571,7 +573,7 @@ func launched_by(hitbox):
 	emit_signal("got_hit")
 	take_damage(hitbox.get_damage(), hitbox.minimum_damage)
 
-	if hitbox.ignore_armor or !has_armor():
+	if will_launch:
 		state_tick()
 
 func hit_by(hitbox):

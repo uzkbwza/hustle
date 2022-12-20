@@ -13,3 +13,7 @@ func _tick():
 
 func _got_parried():
 	host.disable()
+
+func _on_hit_something(obj, _hitbox):
+	if obj.is_in_group("Fighter"):
+		host.disable()

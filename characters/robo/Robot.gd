@@ -4,7 +4,7 @@ const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8"
 const FLY_TICKS = 20
 
-var armor_pips = 1
+var armor_pips = 0
 var landed_move = false
 var flying_dir = null
 var fly_ticks_left = 0
@@ -23,7 +23,7 @@ func _ready():
 
 func init(pos=null):
 	.init(pos)
-	armor_pips = 1
+	armor_pips = 0
 
 func on_got_hit():
 	if armor_pips > 0:
