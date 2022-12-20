@@ -74,6 +74,12 @@ func travel_towards_creator():
 			move_directly(local_pos.x, local_pos.y)
 		set_facing(get_object_dir(creator.opponent))
 
+func tick():
+	.tick()
+	if push_ticks > 0:
+		push_ticks -= 1
+#	print(push_ticks)
+
 func attempt_triggered_attack():
 	if triggered_attacks.has(current_tick):
 		attack(triggered_attacks[current_tick])
@@ -88,6 +94,8 @@ func attack(attack_type):
 			spawn_orb_dart()
 
 func push(fx, fy):
+	if fx == "0" and fy == "0":
+		return
 	play_sound("Push")
 #	reset_momentum()
 	push_ticks = PUSH_TICKS

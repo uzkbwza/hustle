@@ -9,6 +9,7 @@ signal got_hit()
 
 const RUMBLE_MODIFIER = 4.0
 const MAX_RUMBLE = 10
+const MIN_VELOCITY = "0.0001"
 
 export var id = 1
 export var dummy = false
@@ -358,7 +359,7 @@ func spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vect
 	if !initialized:
 		yield(self, "initialized")
 	call_deferred("_spawn_particle_effect", particle_effect, pos, dir)
-	
+
 func spawn_particle_effect_relative(particle_effect: PackedScene, pos: Vector2 = Vector2(), dir= Vector2.RIGHT):
 	if ReplayManager.resimulating:
 		return
@@ -386,7 +387,19 @@ func _spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vec
 	return obj
 
 func get_camera():
-	return get_tree().get_nodes_in_group("Camera")[0] if !is_ghost else null
+	var cameras = get_tree().get_nodes_in_group("Camera")
+	return cameras[0] if cameras.size() > 0 and !is_ghost else null
+
+func grab_camera_focus():
+	var camera = get_camera()
+	if camera:
+		camera.focused_object = self
+
+func release_camera_focus():
+	var camera = get_camera()
+	if camera:
+		camera.focused_object = null
+
 
 func screen_bump(dir=Vector2(), screenshake_amount=2.0, screenshake_time=0.1):
 	var camera = get_camera()
@@ -550,7 +563,10 @@ func set_grounded(on):
 
 func add_pushback(pushback):
 	chara.add_pushback(pushback)
-	
+
+func reset_pushback():
+	chara.reset_pushback()
+
 func update_grounded():
 	chara.update_grounded()
 
@@ -610,6 +626,9 @@ func state_tick():
 		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
 			state_machine.queue_state(state_machine.state.fallback_state)
 			state_machine.tick()
+
+func tick_after():
+	pass
 
 func previous_state():
 	return current_state()._previous_state()

@@ -5,19 +5,21 @@ class_name ParryState
 const LANDING_LAG = 8
 const AFTER_PARRY_ACTIVE_TICKS = 0
 
-export var particle_location = Vector2(14, -31)
-
 enum ParryHeight {
 	High,
 	Low,
 	Both,
 }
 
+export var particle_location = Vector2(14, -31)
+export var can_parry = true
+
 export(ParryHeight) var parry_type = ParryHeight.High
 
 var initial_parry_type
 var parry_tick = 0
 var parried = false
+var started_in_combo = false
 
 func _ready():
 	initial_parry_type = parry_type
@@ -26,6 +28,7 @@ var parry_active = false
 var perfect = true
 
 func _frame_0():
+	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
 	parry_type = initial_parry_type
@@ -44,16 +47,19 @@ func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
 
 func _frame_10():
-	if !parried and perfect:
-		parry_active = false
+	if can_parry:
+		if !parried and perfect:
+			parry_active = false
 
 func parry(perfect=true):
+	perfect = perfect and can_parry
 	if perfect:
 		enable_interrupt()
 	else:
 		parry_type = ParryHeight.Both
 	interruptible_on_opponent_turn = true
 	host.parried = true
+	parried = true
 	self.perfect = perfect
 
 func can_parry_hitbox(hitbox):
@@ -78,11 +84,15 @@ func _tick():
 	host.apply_fric()
 	if air_type == AirType.Aerial:
 		host.apply_grav()
+	if host.combo_count > 0:
+		if current_tick > 30 and parried:
+			enable_interrupt()
+			return fallback_state
 #		if !parry_active and host.is_grounded():
 #			queue_state_change("Landing", LANDING_LAG)
 	host.apply_forces()
 
-	if current_tick >= 10 and perfect:
+	if current_tick >= 10 and perfect and can_parry:
 		parry_active = false
 
 func _exit():

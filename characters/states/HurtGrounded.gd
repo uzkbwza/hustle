@@ -9,6 +9,7 @@ var can_act = false
 
 
 func _enter():
+
 	can_act = false
 	hitbox = data["hitbox"]
 	match hitbox.hit_height:
@@ -25,6 +26,9 @@ func _enter():
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
 	knockback_force.y = "0"
 	var di_force = fixed.vec_mul(host.current_di.x, "0", DI_STRENGTH)
+	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
+		di_force.x = "0"
+		di_force.y = "0"
 	if host.touching_wall:
 		knockback_force.x = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)

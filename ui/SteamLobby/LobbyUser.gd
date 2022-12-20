@@ -16,7 +16,7 @@ func init(member):
 	self.member = member
 	$"%OwnerIcon".visible = false
 	$"%ChallengeButton".hide()
-	if SteamYomi.STEAM_ID != member.steam_id:
+	if SteamHustle.STEAM_ID != member.steam_id:
 		$"%ChallengeButton".show()
 	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == member.steam_id:
 		$"%OwnerIcon".visible = true

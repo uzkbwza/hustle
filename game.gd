@@ -243,7 +243,6 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		spectating = match_data.spectating
 		if is_ghost:
 			spectating = false
-
 	if Global.name_paths.has(match_data.selected_characters[1]["name"]):
 		p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
 	else:
@@ -356,8 +355,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2_data = p2.data
 	if !ReplayManager.resimulating:
 		show_state()
-	if ReplayManager.playback and !ReplayManager.resimulating and !is_ghost:
-		yield(get_tree().create_timer(0.15), "timeout")
+	if ReplayManager.playback and !ReplayManager.replaying_ingame and !ReplayManager.resimulating and !is_ghost:
+		yield(get_tree().create_timer(0.5), "timeout")
 	game_started = true
 #	if is_afterimage:
 #		show_state()
@@ -539,7 +538,7 @@ func resolve_collisions(step=0):
 		edge_distance = int_abs(p1_right_edge - p2_left_edge)
 
 	if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
-		if x_pos < opp_x_pos or p1.get_opponent_dir() == -1:
+		if (p1.get_facing_int() == 1 if current_tick % 2 == 0 else p2.get_facing_int() == -1):
 			var edge = p1_right_edge
 			var opp_edge = p2_left_edge
 			if opp_edge < edge:
@@ -547,7 +546,7 @@ func resolve_collisions(step=0):
 				p1.set_x(x_pos - overlap / 2)
 				p2.set_x(opp_x_pos + (overlap / 2))
 			
-		elif x_pos > opp_x_pos or p1.get_opponent_dir() == 1:
+		elif (p1.get_facing_int() == -1 if current_tick % 2 == 0 else p2.get_facing_int() == 1):
 			var edge = p1_left_edge
 			var opp_edge = p2_right_edge
 			if opp_edge > edge:
@@ -750,6 +749,7 @@ func undo(cut=true):
 	start_playback()
 
 func start_playback():
+	ReplayManager.replaying_ingame = true
 	emit_signal("playback_requested")
 
 func end_game():
@@ -844,6 +844,7 @@ func process_tick():
 				player_actionable = true
 
 			if someones_turn:
+				ReplayManager.replaying_ingame = false
 				if Network.multiplayer_active:
 					if network_sync_tick != current_tick:
 						Network.rpc_("end_turn_simulation", [current_tick, Network.player_id])
@@ -927,6 +928,8 @@ func _physics_process(_delta):
 			var target = (p1.global_position + p2.global_position) / 2
 			if forfeit_player:
 				target = forfeit_player.global_position
+			if camera.focused_object:
+				target = camera.focused_object.get_center_position_float()
 			if camera.global_position.distance_squared_to(target) > 10:
 				camera.global_position = lerp(camera.global_position, target, 0.28)
 	if is_instance_valid(ghost_game):

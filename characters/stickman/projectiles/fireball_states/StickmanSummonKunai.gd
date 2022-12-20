@@ -44,6 +44,7 @@ func _frame_23():
 	host.apply_force_relative(kickback.x, kickback.y)
 	for i in range(-2, 1):
 		var dir = fixed.rotate_vec(str(data.x), str(data.y), fixed.deg2rad(str((i * host.get_facing_int()) * SPREAD_DEGREES)))
+		dir.x = fixed.abs(dir.x)
 		var kunai_data = { "dir": dir }
 		host.spawn_object(preload("res://characters/stickman/projectiles/Kunai.tscn"), 0, 0, true, kunai_data)
 	pass

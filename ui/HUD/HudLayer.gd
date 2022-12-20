@@ -32,6 +32,10 @@ onready var p1_ghost_health_bar_trail = $"%P1GhostHealthBarTrail"
 onready var p2_ghost_health_bar = $"%P2GhostHealthBar"
 onready var p2_ghost_health_bar_trail = $"%P2GhostHealthBarTrail"
 
+onready var p1_sadness_label = $"%P1SadnessLabel"
+onready var p2_sadness_label = $"%P2SadnessLabel"
+
+
 const TRAIL_DRAIN_RATE = 25
 
 var p1: Fighter
@@ -92,11 +96,18 @@ func init(game):
 	
 	$"%P1ShowStyle".set_pressed_no_signal(true)
 	$"%P2ShowStyle".set_pressed_no_signal(true)
-
+	
 	
 	game.connect("game_won", self, "on_game_won")
 	pass
 
+func healthbar_armor_effect(player, healthbar: TextureProgress, no_armor_image, armor_image):
+	if player.has_armor():
+		if healthbar.texture_progress == no_armor_image:
+			healthbar.texture_progress = armor_image
+	else:
+		if healthbar.texture_progress == armor_image:
+			healthbar.texture_progress = no_armor_image
 func on_game_won(winner):
 	$"HudAnimationPlayer".play("game_won")
 	if winner == 0:
@@ -156,6 +167,11 @@ func _physics_process(_delta):
 			p1_ghost_health_bar.visible = false
 			p2_ghost_health_bar.visible = false
 #
+		healthbar_armor_effect(p1, p1_healthbar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"))
+		healthbar_armor_effect(p1, p1_ghost_health_bar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"))
+		healthbar_armor_effect(p2, p2_healthbar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"))
+		healthbar_armor_effect(p2, p2_ghost_health_bar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"))
+
 		$"%P1ShowStyle".visible = game.game_paused and p1.applied_style != null
 		$"%P2ShowStyle".visible = game.game_paused and p2.applied_style != null
 #
@@ -184,7 +200,27 @@ func _physics_process(_delta):
 		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
 		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
+		p1_sadness_label.visible = p1.penalty > p1.PENALTY_MIN_DISPLAY
+		p2_sadness_label.visible = p2.penalty > p2.PENALTY_MIN_DISPLAY
 		
+		if p1.penalty_ticks <= 0:
+			p1_sadness_label.visible = p1_sadness_label.visible and Utils.wave(0, 1, 0.25) < 0.50
+			p1_sadness_label.text = "SAD!"
+			p1_sadness_label.modulate = Color("ff333d")
+		else:
+			p1_sadness_label.visible = true
+			p1_sadness_label.text = "SADNESS"
+			p1_sadness_label.modulate = Color("d440b6")
+		
+		if p2.penalty_ticks <= 0:
+			p2_sadness_label.visible = p2_sadness_label.visible and Utils.wave(0, 1, 0.25) < 0.50
+			p2_sadness_label.text = "SAD!"
+			p2_sadness_label.modulate = Color("ff333d")
+		else:
+			p2_sadness_label.visible = true
+			p2_sadness_label.text = "SADNESS"
+			p2_sadness_label.modulate = Color("d440b6")
+	
 		if game.super_active and !game.parry_freeze:
 			if !super_started:
 				if game.p1_super:

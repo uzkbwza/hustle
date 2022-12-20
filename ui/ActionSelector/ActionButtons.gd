@@ -55,7 +55,7 @@ func _ready():
 	if player_id == 1:
 		$"%BottomRow".alignment = BoxContainer.ALIGN_END
 		$"%TopRow".alignment = BoxContainer.ALIGN_END
-		$"%TopRowDataContainer".move_child($"%DI", 0)
+		$"%TopRowDataContainer".move_child($"%DIContainer", 0)
 		$"%TopRowDataContainer".grow_horizontal = Control.GROW_DIRECTION_END
 	else:
 		$"%BottomRow".alignment = BoxContainer.ALIGN_BEGIN

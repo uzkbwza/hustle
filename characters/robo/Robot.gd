@@ -8,9 +8,18 @@ var armor_pips = 1
 var landed_move = false
 var flying_dir = null
 var fly_ticks_left = 0
+var kill_process_super_level = 0
+
+onready var chainsaw_arm = $"%ChainsawArm"
+
+onready var chainsaw_arm_ghosts = [
+
+]
 
 func _ready():
-	pass
+	chainsaw_arm.set_material(sprite.get_material())
+	for ghost in chainsaw_arm_ghosts:
+		ghost.set_material(sprite.get_material())
 
 func init(pos=null):
 	.init(pos)
@@ -48,6 +57,9 @@ func tick():
 			if armor_pips > MAX_ARMOR_PIPS:
 				armor_pips = MAX_ARMOR_PIPS
 		landed_move = false
+	if is_grounded():
+		flying_dir = null
+		stop_fly_fx()
 	if flying_dir:
 		if !is_grounded():
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
@@ -56,9 +68,7 @@ func tick():
 			if fly_ticks_left <= 0:
 				flying_dir = null
 				stop_fly_fx()
-		else:
-			flying_dir = null
-			stop_fly_fx()
+
 
 func start_fly_fx():
 	$"%FlyFx1".start_emitting()
@@ -70,7 +80,7 @@ func stop_fly_fx():
 
 func process_extra(extra):
 	.process_extra(extra)
-	if extra.has("fly_dir"):
+	if extra.has("fly_dir") and !is_grounded():
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
 			if flying_dir == null or !same_dir:

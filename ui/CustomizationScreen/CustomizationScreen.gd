@@ -117,6 +117,8 @@ func spawn_hitspark():
 		$"%HitsparkDisplay".add_child(hitspark_scene)
 
 func _physics_process(delta):
+	if !visible:
+		return
 	if !is_instance_valid(hitspark_scene):
 		spawn_hitspark()
 	else:
@@ -197,5 +199,5 @@ func _on_OpenFolderButton_pressed():
 
 
 func _on_DLCWarning_meta_clicked(meta):
-	Steam.activateGameOverlayToStore(SteamYomi.APP_ID)
+	Steam.activateGameOverlayToStore(SteamHustle.APP_ID)
 	pass # Replace with function body.

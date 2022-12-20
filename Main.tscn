@@ -14,7 +14,7 @@
 [ext_resource path="res://ui/CSS/CharacterSelect.tscn" type="PackedScene" id=12]
 [ext_resource path="res://ui/GhostSpeed.gd" type="Script" id=13]
 [ext_resource path="res://ui/TurnTimer/turn_timer_progress.png" type="Texture" id=14]
-[ext_resource path="res://ui/title.png" type="Texture" id=15]
+[ext_resource path="res://ui/title2.png" type="Texture" id=15]
 [ext_resource path="res://ui/discord.png" type="Texture" id=16]
 [ext_resource path="res://ui/twitter.png" type="Texture" id=17]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=18]
@@ -364,9 +364,6 @@ margin_right = 25.0
 margin_bottom = 16.0
 mouse_filter = 2
 script = ExtResource( 20 )
-__meta__ = {
-"_edit_use_anchors_": true
-}
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
 margin_left = 53.0
@@ -395,9 +392,6 @@ margin_right = 25.0
 margin_bottom = 16.0
 mouse_filter = 2
 script = ExtResource( 20 )
-__meta__ = {
-"_edit_use_anchors_": true
-}
 player_id = 2
 
 [node name="FeintDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
@@ -853,6 +847,20 @@ margin_bottom = -92.0
 theme = ExtResource( 4 )
 text = "INITIATIVE"
 
+[node name="P1SadnessLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.2, 0.239216, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -247.0
+margin_top = -94.0
+margin_right = -194.0
+margin_bottom = -83.0
+theme = ExtResource( 4 )
+text = "SAD!"
+
 [node name="P2CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
 modulate = Color( 0.94902, 1, 0.192157, 1 )
@@ -882,6 +890,22 @@ margin_bottom = -92.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
 text = "INITIATIVE"
+align = 2
+
+[node name="P2SadnessLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.2, 0.239216, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 191.0
+margin_top = -94.0
+margin_right = 246.0
+margin_bottom = -83.0
+grow_horizontal = 0
+theme = ExtResource( 4 )
+text = "SAD!"
 align = 2
 
 [node name="WinLabel" type="Label" parent="HudLayer"]
@@ -1670,6 +1694,9 @@ margin_top = 40.0
 margin_right = 142.0
 margin_bottom = 90.0
 theme = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="TitleImage" type="TextureRect" parent="UILayer/MainMenu/Title"]
 anchor_left = 0.5
@@ -1800,7 +1827,7 @@ script = ExtResource( 53 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 160.0
-margin_bottom = 141.0
+margin_bottom = 154.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_right = 159.0
@@ -1821,7 +1848,7 @@ align = 1
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
 margin_right = 159.0
-margin_bottom = 140.0
+margin_bottom = 153.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1830,11 +1857,11 @@ size_flags_vertical = 3
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 158.0
-margin_bottom = 129.0
+margin_bottom = 142.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 margin_right = 157.0
-margin_bottom = 128.0
+margin_bottom = 141.0
 size_flags_vertical = 3
 alignment = 1
 
@@ -1875,51 +1902,59 @@ margin_top = 53.0
 margin_right = 157.0
 margin_bottom = 57.0
 
-[node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="EnableEmotes" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 58.0
 margin_right = 157.0
 margin_bottom = 70.0
-text = "enable style colors"
+pressed = true
+text = "show emotes"
 
-[node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 71.0
 margin_right = 157.0
 margin_bottom = 83.0
-text = "enable particle auras"
+text = "enable style colors"
 
-[node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 84.0
 margin_right = 157.0
 margin_bottom = 96.0
+text = "enable particle auras"
+
+[node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 97.0
+margin_right = 157.0
+margin_bottom = 109.0
 text = "enable custom hitsparks"
 
 [node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 97.0
+margin_top = 110.0
 margin_right = 157.0
-margin_bottom = 101.0
+margin_bottom = 114.0
 
 [node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 102.0
+margin_top = 115.0
 margin_right = 157.0
-margin_bottom = 114.0
+margin_bottom = 127.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 115.0
+margin_top = 128.0
 margin_right = 157.0
-margin_bottom = 115.0
+margin_bottom = 128.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 116.0
+margin_top = 129.0
 margin_right = 157.0
-margin_bottom = 128.0
+margin_bottom = 141.0
 text = "done"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]

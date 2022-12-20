@@ -76,6 +76,7 @@ func save_animation(anim_name):
 	loaded_sprite.frames = loaded_sprite_frames
 
 func reload_state():
+	load_node(loaded_object)
 	load_state(loaded_state)
 
 func reload_object():
@@ -141,7 +142,7 @@ func load_animation_data(node: ObjectState, animation=null):
 	throw_positions.clear()
 	var host = node.get_parent().get_parent()
 	var sprite = host.get_node("Flip/Sprite")
-	var frames = sprite.frames
+	var frames = sprite.frames.duplicate(true)
 	throw_positions = node.throw_positions.duplicate(true)
 	anim_name = get_anim_name(node) if !animation else animation
 	for i in range($"%SelectedAnimation".get_item_count()):

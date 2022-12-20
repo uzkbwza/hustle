@@ -142,7 +142,7 @@ func join_lobby(lobby_id: int):
 func challenge_user(user):
 	print("challenging user")
 	var data = {
-		"challenge_from": SteamYomi.STEAM_ID,
+		"challenge_from": SteamHustle.STEAM_ID,
 		"match_settings": MATCH_SETTINGS
 	}
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
@@ -163,7 +163,7 @@ func accept_challenge():
 	MATCH_SETTINGS = match_settings
 #	_setup_game_vs(steam_id)
 	_send_P2P_Packet(steam_id, {
-		"challenge_accepted": SteamYomi.STEAM_ID
+		"challenge_accepted": SteamHustle.STEAM_ID
 	})
 	_setup_game_vs(OPPONENT_ID)
 
@@ -178,7 +178,7 @@ func authenticate_with(steam_id):
 
 func decline_challenge():
 	var steam_id = CHALLENGER_STEAM_ID
-	_send_P2P_Packet(steam_id, {"challenge_declined": SteamYomi.STEAM_ID})
+	_send_P2P_Packet(steam_id, {"challenge_declined": SteamHustle.STEAM_ID})
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
 	CHALLENGER_STEAM_ID = 0
 
@@ -211,7 +211,7 @@ func leave_Lobby() -> void:
 		# Close session with all users
 		for MEMBER in LOBBY_MEMBERS:
 			# Make sure this isn't your Steam ID
-			if MEMBER.steam_id != SteamYomi.STEAM_ID:
+			if MEMBER.steam_id != SteamHustle.STEAM_ID:
 
 				# Close the P2P session
 				Steam.closeP2PSessionWithUser(MEMBER.steam_id)
@@ -267,7 +267,7 @@ func request_lobby_list():
 		Steam.requestLobbyList()
 
 func request_spectate(steam_id):
-	_send_P2P_Packet(steam_id, {"request_spectate": SteamYomi.STEAM_ID})
+	_send_P2P_Packet(steam_id, {"request_spectate": SteamHustle.STEAM_ID})
 
 func spectator_sync_timers(id, time):
 	for spectator in SPECTATORS:
@@ -279,7 +279,7 @@ func spectator_turn_ready(id):
 
 func end_spectate():
 	if SPECTATING and SPECTATING_ID != 0:
-		_send_P2P_Packet(SPECTATING_ID, {"spectate_ended": SteamYomi.STEAM_ID})
+		_send_P2P_Packet(SPECTATING_ID, {"spectate_ended": SteamHustle.STEAM_ID})
 		_stop_spectating()
 
 func update_spectators(replay):
@@ -293,12 +293,12 @@ func update_spectator_tick(tick):
 func cancel_challenge():
 	print("cancelling challenge")
 	
-	_send_P2P_Packet(CHALLENGING_STEAM_ID, {"challenge_cancelled": SteamYomi.STEAM_ID})
+	_send_P2P_Packet(CHALLENGING_STEAM_ID, {"challenge_cancelled": SteamHustle.STEAM_ID})
 	CHALLENGING_STEAM_ID = 0
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
 
 func _receive_challenge(steam_id, match_settings):
-	if Steam.getLobbyMemberData(LOBBY_ID, SteamYomi.STEAM_ID, "status") != "idle":
+	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") != "idle":
 		_send_P2P_Packet(steam_id, {"player_busy": null})
 		return
 	print("received challenge")
@@ -491,7 +491,7 @@ func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
 			get_tree().reload_current_scene()
 
 func _on_received_spectate_request(steam_id):
-	if Steam.getLobbyMemberData(LOBBY_ID, SteamYomi.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
+	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
 		_add_spectator(steam_id)
 	else:
 		_send_P2P_Packet(steam_id, {"spectate_declined": null})
@@ -521,7 +521,7 @@ func _stop_spectating():
 
 func _add_spectator(steam_id):
 	SPECTATORS.append(steam_id)
-	_send_P2P_Packet(steam_id, {"spectate_accept": SteamYomi.STEAM_ID, "match_data":Network.game.match_data, "replay": ReplayManager.frames })
+	_send_P2P_Packet(steam_id, {"spectate_accept": SteamHustle.STEAM_ID, "match_data":Network.game.match_data, "replay": ReplayManager.frames })
 
 func _remove_spectator(steam_id):
 	SPECTATORS.erase(steam_id)
@@ -547,7 +547,7 @@ func _setup_game_vs(steam_id):
 	REMATCHING_ID = 0
 	OPPONENT_ID = steam_id
 	Network.register_player_steam(steam_id)
-	Network.register_player_steam(SteamYomi.STEAM_ID)
+	Network.register_player_steam(SteamHustle.STEAM_ID)
 	Network.assign_players()
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
@@ -589,7 +589,7 @@ func _on_Lobby_Message(lobby_id: int, user: int, message: String, chat_type: int
 	pass
 
 func request_match_settings():
-	_send_P2P_Packet(LOBBY_OWNER, {"request_match_settings": SteamYomi.STEAM_ID})
+	_send_P2P_Packet(LOBBY_OWNER, {"request_match_settings": SteamHustle.STEAM_ID})
 
 func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response: int) -> void:
 	# If joining was successful
@@ -613,7 +613,7 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 
 		LOBBY_OWNER = Steam.getLobbyOwner(LOBBY_ID)
 		
-		if LOBBY_OWNER != SteamYomi.STEAM_ID:
+		if LOBBY_OWNER != SteamHustle.STEAM_ID:
 			request_match_settings()
 		
 		emit_signal("join_lobby_success")
@@ -660,7 +660,7 @@ func _get_Lobby_Members() -> void:
 		# Get the member's Steam ID
 		var steam_id: int = Steam.getLobbyMemberByIndex(LOBBY_ID, member)
 		if Steam.getLobbyMemberData(LOBBY_ID, steam_id, "status") == "spectating":
-			if int(Steam.getLobbyMemberData(LOBBY_ID, steam_id, "spectating_id")) == SteamYomi.STEAM_ID:
+			if int(Steam.getLobbyMemberData(LOBBY_ID, steam_id, "spectating_id")) == SteamHustle.STEAM_ID:
 				SPECTATORS.append(steam_id)
 
 		# Get the member's Steam name
@@ -676,7 +676,7 @@ func _get_Lobby_Members() -> void:
 
 func _make_P2P_Handshake() -> void:
 	print("Sending P2P handshake to the lobby")
-	_send_P2P_Packet(0, {"message":"handshake", "from":SteamYomi.STEAM_ID})
+	_send_P2P_Packet(0, {"message":"handshake", "from":SteamHustle.STEAM_ID})
 
 func _on_P2P_Session_Request(remote_id: int) -> void:
 	# Get the requester's name
@@ -723,7 +723,7 @@ func _send_P2P_Packet(target: int, packet_data: Dictionary) -> void:
 		if LOBBY_MEMBERS.size() > 1:
 			# Loop through all members that aren't you
 			for MEMBER in LOBBY_MEMBERS:
-				if MEMBER.steam_id != SteamYomi.STEAM_ID:
+				if MEMBER.steam_id != SteamHustle.STEAM_ID:
 					Steam.sendP2PPacket(MEMBER.steam_id, DATA, SEND_TYPE, CHANNEL)
 	# Else send it to someone specific
 	else:
@@ -763,9 +763,9 @@ func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	get_tree().reload_current_scene()
 
 func can_get_messages_from_user(steam_id):
-	if steam_id == SteamYomi.STEAM_ID:
+	if steam_id == SteamHustle.STEAM_ID:
 		return true
-	var status = Steam.getLobbyMemberData(LOBBY_ID, SteamYomi.STEAM_ID, "status")
+	var status = Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status")
 	if status == "idle" or status == "busy":
 		var other_status = Steam.getLobbyMemberData(LOBBY_ID, steam_id, "status")
 		return other_status == "idle" or other_status == "busy"

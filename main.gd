@@ -58,6 +58,7 @@ func _ready():
 	SteamLobby.quit_match()
 	$"%P1ShowStyle".connect("toggled", self, "_on_show_style_toggled", [1])
 	$"%P2ShowStyle".connect("toggled", self, "_on_show_style_toggled", [2])
+	ReplayManager.replaying_ingame = false
 
 func _on_show_style_toggled(on, player_id):
 	if is_instance_valid(game):

@@ -14,6 +14,8 @@ func _enter():
 		interruptible_on_opponent_turn = true
 
 func _frame_1():
+	if dir_x < 0:
+		host.add_penalty(5)
 	if startup_lag != 0:
 		return
 	host.apply_force_relative(dir_x * dash_speed, 0)

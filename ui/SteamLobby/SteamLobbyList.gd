@@ -34,7 +34,7 @@ func show():
 func get_lobby_name():
 	var lobby_text = lobby_name.text.strip_edges()
 	if lobby_text == "":
-		return SteamYomi.STEAM_NAME + "'s Lobby"
+		return SteamHustle.STEAM_NAME + "'s Lobby"
 	return lobby_text
 
 func clear_lobby_list():

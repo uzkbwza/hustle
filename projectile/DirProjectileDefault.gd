@@ -12,11 +12,13 @@ export var homing_accel = "1.0"
 export var max_homing_speed = "10"
 export var start_homing = false
 export var lifetime = 99999
+export var relative_data_dir = false
 
 var hit_something = false
 var hit_something_tick = 0
 
 func _frame_1():
+	
 	hit_something = false
 	hit_something_tick = 0
 	host.set_grounded(false)
@@ -44,7 +46,8 @@ func _tick():
 		var dir
 		if !homing:
 			dir = data["dir"]
-			var move_vec = fixed.normalized_vec_times(str(dir.x), str(dir.y), move_speed)
+			var dir_x = fixed.mul(dir.x, str(host.get_facing_int())) if relative_data_dir else dir.x
+			var move_vec = fixed.normalized_vec_times(dir_x, str(dir.y), move_speed)
 	#		print(fixed.vec_len(move_vec.x, move_vec.y))
 			host.move_directly(move_vec.x, move_vec.y)
 			host.sprite.rotation = float(fixed.vec_to_angle(dir.x, dir.y))

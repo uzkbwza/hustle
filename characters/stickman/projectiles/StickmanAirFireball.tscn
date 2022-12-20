@@ -1,14 +1,35 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://characters/stickman/projectiles/StickmanFireball.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="StickmanFireball" instance=ExtResource( 1 )]
+material = SubResource( 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 rotation = 0.785398
 animation = "Default"
 
 [node name="FireballTrail" parent="Flip/Particles" index="0"]
+material = SubResource( 2 )
 rotation = 0.785398
 
 [node name="Default" parent="StateMachine" index="0"]
@@ -18,5 +39,4 @@ move_y = 5
 [node name="Hitbox" parent="StateMachine/Default" index="0"]
 x = -2
 damage = 30
-hitstun_ticks = 10
 dir_y = "1.0"

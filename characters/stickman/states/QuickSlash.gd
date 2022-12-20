@@ -3,11 +3,8 @@ extends SuperMove
 const MOVE_DISTANCE = 120
 
 var hitboxes = []
-var move_dir
 
 var dist = MOVE_DISTANCE
-var start_pos_x
-var start_pos_y
 
 func _enter():
 	dist = MOVE_DISTANCE
@@ -17,15 +14,17 @@ func _enter():
 			hitboxes.append(child)
 			child.x = 0
 			child.y = 0
+	var move_dir
 	if data:
 		move_dir = xy_to_dir(data.x, data.y)
 #		move_dir = fixed.normalized_vec_times(move_dir.x, move_dir.y, "1.0")
 	else:
 		move_dir = { "x": str(host.get_facing_int()), "y": "0" }
-		
 	var move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, "20")
 
 	host.apply_force(move_vec.x,  fixed.div(move_vec.y, "2"))
+	host.quick_slash_move_dir_x = move_dir.x
+	host.quick_slash_move_dir_y = move_dir.y
 
 #	move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, str(MOVE_DISTANCE))
 #	var pos = host.get_pos()
@@ -59,8 +58,8 @@ func _enter():
 #
 func _frame_1():
 	var start_pos = host.get_pos().duplicate()
-	start_pos_x = start_pos.x
-	start_pos_y = start_pos.y
+	host.quick_slash_start_pos_x = start_pos.x
+	host.quick_slash_start_pos_y = start_pos.y
 
 func _frame_4():
 	if host.initiative:
@@ -70,12 +69,16 @@ func _frame_4():
 func _frame_5():
 	host.move_directly(0, -2)
 
+	var move_dir_x = host.quick_slash_move_dir_x
+	var move_dir_y = host.quick_slash_move_dir_y
 
-	var move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, str(MOVE_DISTANCE))
+	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
 
 
 	host.move_directly(move_vec.x, move_vec.y)
 	host.update_data()
+	var start_pos_x = host.quick_slash_start_pos_x
+	var start_pos_y = host.quick_slash_start_pos_y
 	
 	var end_pos = host.get_pos().duplicate()
 	if start_pos_x != null and start_pos_y != null and end_pos.x != null and end_pos.y != null:
@@ -92,9 +95,13 @@ func _frame_5():
 	host.update_data()
 
 func _frame_6():
+	
+	var move_dir_x = host.quick_slash_move_dir_x
+	var move_dir_y = host.quick_slash_move_dir_y
+
 	host.reset_momentum()
-	var move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, "10")
-	host.apply_force(move_vec.x,  fixed.mul(move_dir.y, "1.0"))
+	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
+	host.apply_force(move_dir_x,  fixed.mul(move_dir_y, "1.0"))
 	host.apply_force("0",  "-1")
 #	host.apply_force("20", "-1")
 	host.end_invulnerability()

@@ -28,10 +28,10 @@ var draw_bg_circle = false
 
 var lock_in_tick = -INF
 
-const DISCORD_URL = "https://discord.gg/yomi"
-const TWITTER_URL = "https://twitter.com/YomiHustle"
+const DISCORD_URL = "https://discord.gg/YourOnlyMoveIsHUSTLE"
+const TWITTER_URL = "https://twitter.com/YourMoveHUSTLE"
 const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
-const ITCH_URL = "https://ivysly.itch.io/yomi-hustle"
+const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
 const MIN_TURN_TIME = 5.0
 
 onready var lobby = $Lobby
@@ -58,6 +58,7 @@ onready var global_option_check_buttons = {
 	$"%EnableStyleColorsButton": "enable_custom_colors",
 	$"%EnableAurasButton": "enable_custom_particles",
 	$"%EnableHitsparksButton": "enable_custom_hit_sparks",
+	$"%EnableEmotes": "enable_emotes",
 }
 
 func _ready():
@@ -115,7 +116,7 @@ func _ready():
 #	$"%BGColor".color = dark_mode_color
 #	if Global.light_mode:
 #		$"%BGColor".color = light_mode_color
-	if !SteamYomi.STARTED:
+	if !SteamHustle.STARTED:
 		$"%SteamMultiplayerButton".hide()
 		
 #		$"%CustomizeButton".hide()
@@ -125,7 +126,7 @@ func _ready():
 	else:
 		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
 	
-	if !SteamYomi.STARTED:
+	if !SteamHustle.STARTED:
 		$"%CustomizeButton".hide()
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
@@ -520,7 +521,7 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_ENTER:
-				if Network.multiplayer_active and is_instance_valid(game):
+				if is_instance_valid(game):
 					$"%ChatWindow".show()
 					$"%ChatWindow".line_edit_focus()
 			if event.scancode == KEY_F1:

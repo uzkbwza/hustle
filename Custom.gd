@@ -5,11 +5,13 @@ const SUPPORTER_PACK = 2232850
 var hitsparks = {
 	"bash": "res://fx/HitEffect1.tscn",
 	"bash2": "res://fx/hitsparks/HitEffect1Alt.tscn",
+	"hearts": "res://fx/hitsparks/HeartHitEffect.tscn",
 }
 
 var hitspark_dlc = {
-	"bash": 0,
-	"bash2": 0,
+	"bash": false,
+	"bash2": false,
+	"hearts": true,
 }
 
 var p1_selected_style = null
@@ -67,18 +69,18 @@ func can_use_style(player_id, style):
 #	if !Network.multiplayer_active:
 ##		return Global.has_supporter_pack()
 #		return true
-#	elif SteamYomi.STARTED:
+#	elif SteamHustle.STARTED:
 #		if SteamLobby.SPECTATING:
 #			return true
 #		if player_id == SteamLobby.PLAYER_SIDE:
-#			var has_supporter_pack = SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID)
+#			var has_supporter_pack = SteamHustle.has_supporter_pack(SteamHustle.STEAM_ID)
 #			if has_supporter_pack:
 #				print("You have the supporter pack.")
 #			else:
 #				print("You do not have the supporter pack.")
 #			return has_supporter_pack
 #		elif SteamLobby.OPPONENT_ID != 0:
-#			var has_supporter_pack = SteamYomi.has_supporter_pack(SteamLobby.OPPONENT_ID)
+#			var has_supporter_pack = SteamHustle.has_supporter_pack(SteamLobby.OPPONENT_ID)
 #			if has_supporter_pack:
 #				print("Your opponent has the supporter pack.")
 #			else:
@@ -96,7 +98,7 @@ func requires_dlc(data):
 		return true
 	if data.use_outline and !is_combo_simple(data.character_color, data.outline_color):
 		return true
-	if hitspark_to_dlc(data.hitspark) != 0:
+	if hitspark_to_dlc(data.hitspark):
 		return true
 	return false
 

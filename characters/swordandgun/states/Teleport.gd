@@ -1,28 +1,35 @@
-extends CharacterState
+extends SuperMove
 
 const MOVE_DIST = "200"
 const BACKWARDS_STALL_FRAMES = 5
 const EXTRA_FRAME_PER = "0.45"
+const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
 const MOMENTUM_FORCE = "16.0"
 
 var backwards_stall_frames = 0
 
+
 func _frame_0():
 	iasa_at = 9
 	backwards_stall_frames = 0
 	host.start_throw_invulnerability()
-	if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
+	var comboing = false
+	if super_level > 0:
+		iasa_at = 7
+#		host.start_invulnerability()
 		return
+	else:
+		if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
+			comboing = true
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
 	var scaled = xy_to_dir(data.x, data.y)
 	var backwards = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
 	if fixed.gt(fixed.abs(scaled.x), "0.5"):
 		if backwards:
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
-	iasa_at += fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS))
-	
-	
+	iasa_at += fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
+
 func _frame_4():
 	host.end_throw_invulnerability()
 	host.start_invulnerability()

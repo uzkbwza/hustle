@@ -21,6 +21,7 @@ var damage
 var reversible
 var name
 var throw
+var combo_count = 0
 var knockdown_extends_hitstun = true
 var rumble
 var host
@@ -34,6 +35,13 @@ var damage_proration = 0
 var parry_meter_gain = -1
 var hitbox_type = 0
 var hard_knockdown = false
+var damage_in_combo = -1
+
+func get_damage():
+	if combo_count > 0:
+		return damage_in_combo
+	return damage
+	
 
 func _init(state):
 	hit_height = state.hit_height
@@ -45,7 +53,9 @@ func _init(state):
 	if !state.has_method("get_real_knockback"):
 		knockback = state.knockback
 	else:
-		knockback = state.get_real_knockback()
+		knockback = state.get_real_knockback()	
+
+	damage = state.damage
 	dir_y = state.dir_y
 	hitlag_ticks = state.hitlag_ticks
 	victim_hitlag = state.victim_hitlag
@@ -71,6 +81,12 @@ func _init(state):
 	if state.get("rumble") != null:
 		rumble = state.rumble
 	self.host = state.host.obj_name
+	if state.host.is_in_group("Fighter"):
+		combo_count = state.host.combo_count
+	else:
+		var id = state.host.id
+		if is_instance_valid(Global.current_game):
+			combo_count = Global.current_game.get_player(id).combo_count
 	if state.get("screenshake_amount") != null:
 		screenshake_amount = state.screenshake_amount
 	if state.get("screenshake_frames") != null:
@@ -91,3 +107,7 @@ func _init(state):
 		parry_meter_gain = state.parry_meter_gain
 	if state.get("hitbox_type") != null:
 		hitbox_type = state.hitbox_type
+	if state.get("damage_in_combo") != null:
+		damage_in_combo = state.damage_in_combo
+	if damage_in_combo == -1:
+		damage_in_combo = damage

@@ -39,11 +39,15 @@ func midpoint():
 
 func _on_mouse_entered():
 	mouse_over = true
+	$"%XLabel".show()
+	$"%YLabel".show()
 	pass
 
 func _on_mouse_exited():
 	mouse_over = false
 	mouse_clicked = false
+	$"%XLabel".hide()
+	$"%YLabel".hide()
 	pass
 
 func _input(event: InputEvent):
@@ -88,12 +92,15 @@ func update_value(p=null):
 		if parent.limit_symmetrical:
 			diff2 = Utils.angle_diff(angle, parent.limit_center + PI)
 			closest = diff if abs(diff) < abs(diff2) else diff2
-
+		
 		if abs(closest) > parent.limit_range / 2:
-			var real_point = point
-			point = point.rotated(closest).rotated((parent.limit_range / 2) * Utils.int_sign(-closest))
+			var length = point.length()
+			var center = Utils.ang2vec(parent.limit_center)
+			var ang_diff = Utils.angle_diff(angle, parent.limit_center)
+			
+			point = center.rotated((parent.limit_range / 2) * -sign(ang_diff))
+			point = point.normalized() * length
 			angle = point.angle()
-			point = point.normalized() * point.length()
 	
 	if parent.snap:
 		if point.length() >= (rect_size.x / 2) - SNAP_AMOUNT * (rect_size.x / 2):

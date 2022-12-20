@@ -3,8 +3,8 @@ extends WizardState
 const PUSH_SPEED = "5"
 const MAX_EXTRA_PUSH_DIST = "200"
 const MAX_EXTRA_PUSH = "10"
-const PUSH_FORCE = "3"
-const FIGHTER_PUSH_SPEED = "4"
+const PUSH_FORCE = "2"
+const FIGHTER_PUSH_SPEED = "2"
  
 
 onready var windbox = $WindBox
@@ -13,7 +13,7 @@ onready var windbox = $WindBox
 func _tick():
 	$"%SandstormParticle".stop_emitting()
 #	if throwbox.active and throwbox.enabled:
-	if current_tick < iasa_at and current_tick > 2:
+	if current_tick < iasa_at and current_tick > 4:
 		var wb = windbox
 		$"%SandstormParticle".start_emitting()
 		var windbox_hitting = []

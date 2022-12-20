@@ -7,7 +7,7 @@ class_name Hitbox
 const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED = "1.25"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
-const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 0
+const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 1
 const DEFAULT_HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 const MAX_KNOCKBACK = "30"
@@ -18,6 +18,8 @@ enum HitboxType {
 	Normal,
 	Flip,
 	ThrowHit,
+	OffensiveBurst,
+	Burst,
 }
 
 #const DAMAGE_SUPER_GAIN_DIVISOR = 1
@@ -33,6 +35,7 @@ enum HitHeight {
 
 export var _c_Damage = 0
 export var damage: int = 0
+export var damage_in_combo: int = -1
 export var minimum_damage: int = 0
 
 export var _c_Hit_Properties = 0
@@ -221,6 +224,17 @@ func get_real_knockback():
 	else:
 		return knockback
 
+func get_real_damage():
+	var is_combo = false
+	if host.is_in_group("Fighter"):
+		is_combo = host.combo_count > 0
+	else:
+		if is_instance_valid(Global.current_game):
+			is_combo = Global.current_game.get_player(host.id).combo_count > 0
+	if is_combo and damage_in_combo != -1:
+		return damage_in_combo
+	return damage
+
 func get_real_hitstun():
 	if host.is_in_group("Fighter"):
 		if not (host.current_state().state_name in host.combo_moves_used):
@@ -262,7 +276,8 @@ func hit(obj):
 					spawn_particle(HIT_PARTICLE if Global.enable_custom_hit_sparks else DEFAULT_HIT_PARTICLE, obj, dir)
 
 		if can_hit:
-			var pushback = host.fixed.mul(host.fixed.add(pushback_x, host.fixed.mul(str(host.combo_count), COMBO_PUSHBACK_COEFFICIENT)), "-1")
+			var pushback_modifier = host.fixed.mul(str(host.hitstun_decay_combo_count) if host.is_in_group("Fighter") else "0", COMBO_PUSHBACK_COEFFICIENT)
+			var pushback = host.fixed.mul(host.fixed.add(pushback_x, pushback_modifier), "-1")
 			pushback = host.fixed.div(pushback, "2")
 			host.add_pushback(pushback)
 			obj.add_pushback(pushback)

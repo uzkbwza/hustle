@@ -13,6 +13,8 @@ shader = ExtResource( 4 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -28,6 +30,8 @@ shader = ExtResource( 4 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
@@ -39,12 +43,21 @@ animation = "Default"
 [node name="FireballTrail" parent="Flip/Particles" index="0" instance=ExtResource( 6 )]
 material = SubResource( 3 )
 
+[node name="CollisionBox" parent="." index="2"]
+width = 15
+height = 5
+
+[node name="Hurtbox" parent="." index="3"]
+width = 18
+height = 5
+
 [node name="Default" parent="StateMachine" index="0"]
 ticks_per_frame = 3
 loop_animation = true
 move_x = 19
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 3 )
 x = -7
 width = 23

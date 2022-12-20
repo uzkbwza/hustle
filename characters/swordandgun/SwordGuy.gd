@@ -6,11 +6,14 @@ onready var shooting_arm = $"%ShootingArm"
 
 const BARREL_LOCATION_X = "26"
 const BARREL_LOCATION_Y = "-5"
+const GUN_PICKUP_DISTANCE = "26"
 
 var bullets_left = 6
 var cut_projectile = null
 var lasso_projectile = null
 var used_aerial_h_slash = false
+var has_gun = true
+var gun_projectile = null
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -32,7 +35,16 @@ func tick():
 			cut_projectile = null
 	if is_grounded() and used_aerial_h_slash:
 		used_aerial_h_slash = false
-		
+	if !has_gun and gun_projectile != null:
+		var gun = objs_map[gun_projectile]
+		if is_instance_valid(gun) and gun.data and !gun.disabled:
+			var dist = obj_local_center(gun)
+			if gun.can_be_picked_up and fixed.lt(fixed.vec_len(str(dist.x), str(dist.y)), GUN_PICKUP_DISTANCE):
+				gun.disable()
+				has_gun = true
+				gun_projectile = null
+				play_sound("GunPickup")
+
 func use_bullet():
 	if infinite_resources:
 		return

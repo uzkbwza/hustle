@@ -57,8 +57,10 @@ func _frame_0():
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
-	squat = super_jump or (air_type == AirType.Grounded and fixed.sign(str(data["x"])) != host.get_facing_int() and data["x"] != 0 and full_hop)
-	
+	var back = fixed.sign(str(data["x"])) != host.get_facing_int() and data["x"] != 0
+	squat = super_jump or (air_type == AirType.Grounded and back and full_hop)
+	if back:
+		host.add_penalty(10)
 	if !squat:
 		jump_tick = 1
 		jump()

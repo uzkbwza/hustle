@@ -34,7 +34,7 @@ func _ready():
 
 
 func _on_lobby_data_update(steam_id, member_id, success):
-	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamYomi.STEAM_ID:
+	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamHustle.STEAM_ID:
 		$"%GameSettingsPanelContainer".enable()
 		$"%GameSettingsPanelContainer".update_lobby_data()
 	SteamLobby._get_Lobby_Members()
@@ -65,7 +65,7 @@ func show():
 func init():
 	$"%LoadingLobbyRect".hide()
 	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "status", "idle")
-	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) != SteamYomi.STEAM_ID:
+	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) != SteamHustle.STEAM_ID:
 		SteamLobby.request_match_settings()
 		$"%LobbyLabel".text = Steam.getLobbyData(SteamLobby.LOBBY_ID, "name")
 		$"%GameSettingsPanelContainer".init(false)
@@ -79,7 +79,7 @@ func init():
 		$"%GameSettingsPanelContainer".init(false)
 		$"%GameSettingsPanelContainer"._on_received_match_settings(SteamLobby.MATCH_SETTINGS, true)
 #func _on_user_selected(index):
-#	if users[index].steam_id == SteamYomi.STEAM_ID:
+#	if users[index].steam_id == SteamHustle.STEAM_ID:
 #		return
 #	selected_user = users[index]
 #	$"%StartButton".disabled = false
@@ -143,7 +143,7 @@ func _on_retrieved_lobby_members(members):
 		child.update_avatar()
 		yield(child, "avatar_loaded")
 
-	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamYomi.STEAM_ID:
+	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamHustle.STEAM_ID:
 		$"%GameSettingsPanelContainer".enable()
 
 func _on_spectate_requested(player):

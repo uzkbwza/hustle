@@ -23,6 +23,8 @@ var current_speed = 0.0
 var current_direction = Vector2()
 var last_pos = Vector2()
 
+var focused_object = null
+
 class Offset extends Reference:
 	var rng: BetterRng
 	var dir = Vector2()
@@ -103,6 +105,7 @@ func tick():
 		var value = offs.get_value()
 		offset += value
 		offset_values.append(value)
+
 #		Debug.dbg("offsets", len(offset_values))
 #	else:
 #		smoothing_enabled = false

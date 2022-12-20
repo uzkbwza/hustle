@@ -22,7 +22,9 @@ func _on_fast_fall_button_toggled(on):
 	emit_signal("data_changed")
 
 func reset():
-	orb_push._on_button_pressed(orb_push.get_node("%Neutral"))
+	orb_push.set_dir("Neutral")
+	fast_fall_button.set_pressed_no_signal(fighter.fast_falling and fighter.current_state() != CharacterHurtState)
+	hover_button.set_pressed_no_signal(fighter.hovering and fighter.current_state() != CharacterHurtState)
 
 func show_options():
 	orb_push.hide()

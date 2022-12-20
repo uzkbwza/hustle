@@ -11,6 +11,10 @@ func _frame_4():
 		var my_pos = host.get_hurtbox_center()
 		host.set_pos(obj_pos.x, obj_pos.y)
 		obj.set_pos(my_pos.x, my_pos.y)
+		obj.set_facing(host.get_facing_int())
+		if host.reverse_state:
+			var vel = obj.get_vel()
+			obj.set_vel(fixed.mul(vel.x, "-1"), vel.y)
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 

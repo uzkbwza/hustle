@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/throwsplosion.wav-5dd496ef7f1db15602bf498c26f52d3c.sample"
+
+[deps]
+
+source_file="res://characters/robo/sound/throwsplosion.wav"
+dest_files=[ "res://.import/throwsplosion.wav-5dd496ef7f1db15602bf498c26f52d3c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

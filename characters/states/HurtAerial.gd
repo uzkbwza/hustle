@@ -39,6 +39,9 @@ func _enter():
 	
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var di_force = fixed.vec_mul(host.current_di.x, host.current_di.y, DI_STRENGTH)
+	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
+		di_force.x = "0"
+		di_force.y = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)
@@ -95,12 +98,14 @@ func _tick():
 #				host.start_invulnerability()
 					return "Knockdown"
 			else:
-				return "Landing"
+				if host.hp > 0:
+					return "Landing"
+				return "Knockdown"
 				
 	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown
 	
 	if !extended_hitstun and current_tick > hitstun:
-		if can_act:
+		if can_act and host.hp > 0:
 			return fallback_state
 		else:
 			enable_interrupt()

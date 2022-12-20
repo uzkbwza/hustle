@@ -34,7 +34,12 @@ func _tick():
 	host.apply_forces_no_limit()
 	if current_tick > 7:
 		if host.is_grounded():
-			return "Landing"
+			var vel = host.get_vel()
+			var landing_lag = 4
+			if !fixed.eq(vel.x, "0"):
+				if fixed.sign(vel.x) != host.get_facing_int():
+					landing_lag = 12
+			queue_state_change("Landing", landing_lag)
 	
 func _exit():
 	host.liftoff_sprite.hide()

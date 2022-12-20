@@ -49,6 +49,13 @@ func spawn_orb():
 		spawn_particle_effect_relative(ORB_PARTICLE_SCENE, Vector2(-10, -56))
 		orb_projectile = orb.obj_name
 
+func on_state_started(state):
+	.on_state_started(state)
+	if state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
+		fast_falling = false
+		hovering = false
+
+
 func tick():
 	.tick()
 	if hitlag_ticks <= 0:
@@ -56,9 +63,8 @@ func tick():
 			hovering = false
 			fast_falling = false
 		if hovering:
-			if current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
-				hovering = false
-			else:
+			fast_falling = false
+			if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
 				var vel = get_vel()
 				var modifier = HOVER_VEL_Y_POS_MODIFIER
 				if fixed.lt(vel.y, "0"):
@@ -71,9 +77,9 @@ func tick():
 							hovering = false
 							hover_left = 0
 		if fast_falling:
-			if current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
-				fast_falling = false
-		else:
+			hovering = false
+			apply_grav_fast_fall()
+		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
 			hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
 			if hover_left > HOVER_AMOUNT:
 				hover_left = HOVER_AMOUNT
@@ -84,8 +90,8 @@ func tick():
 
 func process_extra(extra):
 	.process_extra(extra)
-	if current_state() is CharacterHurtState:
-		return
+#	if current_state() is CharacterHurtState:
+#		return
 	if can_hover():
 		if extra.has("hover"):
 			if is_ghost and ghost_started_hovering:

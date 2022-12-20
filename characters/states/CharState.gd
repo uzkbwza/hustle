@@ -94,7 +94,7 @@ var is_hurt_state = false
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
 	connect("state_hit_cancellable", host, "on_state_hit_cancellable", [self])
-
+	host.connect("got_hit", self, "on_got_hit")
 	interrupt_into.append_array(get_categories(interrupt_into_string))
 	interrupt_from.append_array(get_categories(interrupt_from_string))
 	hit_cancel_into.append_array(get_categories(hit_cancel_into_string))
@@ -174,6 +174,7 @@ func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
+	host.add_penalty(-10)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
 		enable_hit_cancel()
@@ -228,11 +229,17 @@ func _tick_after():
 	host.set_lowest_tick(current_real_tick)
 	._tick_after()
 
+func update_parameters():
+	pass
+
 func can_feint():
 	return (has_hitboxes or force_feintable) and host.feints > 0 and can_feint_if_possible
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
+
+func on_got_hit():
+	pass
 
 func _exit_shared():
 	if feinting:
@@ -248,6 +255,7 @@ func _exit_shared():
 	host.got_parried = false
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
+	host.has_hyper_armor = false
 	host.state_hit_cancellable = false
 #	if host.reverse_state:
 #		host.set_facing(host.get_facing_int() * -1)

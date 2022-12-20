@@ -46,20 +46,18 @@ material = SubResource( 3 )
 z_index = -4
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 width = 5
 height = 5
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 width = 7
 height = 7
 
 [node name="Default" parent="StateMachine" index="0"]
-move_speed = "5.0"
+move_speed = "7.0"
 homing = true
-homing_turn_speed = "0.25"
-homing_accel = "0.15"
+homing_turn_speed = "0.35"
+homing_accel = "0.25"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
@@ -67,8 +65,8 @@ script = ExtResource( 2 )
 width = 6
 height = 6
 damage = 50
-hitstun_ticks = 10
-victim_hitlag = 4
+hitstun_ticks = 14
+hitlag_ticks = 7
 parry_meter_gain = 20
 hit_sound = ExtResource( 5 )
 knockback = "3.0"

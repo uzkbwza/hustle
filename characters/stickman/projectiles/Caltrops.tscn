@@ -12,6 +12,8 @@ shader = ExtResource( 5 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -48,6 +50,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 move_x = 0
+clash = false
 fizzle_on_ground = false
 fizzle_on_walls = false
 

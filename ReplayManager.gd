@@ -1,10 +1,13 @@
 extends Node
 
-
 var frames = {
 	1: {},
 	2: {},
 	"finished": false,
+	"emotes": {
+		1: {},
+		2: {},
+	}
 }
 
 var playback = false setget set_playback
@@ -12,6 +15,7 @@ var playback = false setget set_playback
 var resimulating = false
 var play_full = false
 var resim_tick = null
+var replaying_ingame = false
 
 func set_playback(p):
 	playback = p
@@ -21,6 +25,10 @@ func init():
 		1: {},
 		2: {},
 		"finished": false,
+		"emotes": {
+			1: {},
+			2: {},
+		}
 	}
 
 func frame_ids():
@@ -42,6 +50,10 @@ func get_last_action(id):
 	frame_numbers.sort()
 	return frames[id][frame_numbers[-1]]
 
+func emote(message, player_id, tick):
+	if !playback:
+		frames.emotes[player_id][tick] = message
+	
 func undo(cut=true):
 	if resimulating:
 		return

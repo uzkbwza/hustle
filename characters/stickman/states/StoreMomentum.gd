@@ -14,7 +14,7 @@ func _frame_1():
 	else:
 		host.reset_momentum()
 		host.storing_momentum = false
-		host.set_vel(fixed.mul(host.stored_momentum_x, RELEASE_MODIFIER), fixed.mul(host.stored_momentum_y, RELEASE_MODIFIER))
+		host.set_vel(fixed.mul(fixed.mul(host.stored_momentum_x, RELEASE_MODIFIER), str(host.get_facing_int())), fixed.mul(host.stored_momentum_y, RELEASE_MODIFIER))
 
 func _tick():
 	if !release:

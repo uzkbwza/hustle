@@ -13,6 +13,8 @@ shader = ExtResource( 6 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -46,8 +48,10 @@ homing_accel = "1.0"
 max_homing_speed = "10"
 start_homing = false
 lifetime = 6000
+relative_data_dir = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
 script = ExtResource( 4 )
 width = 10
 height = 10

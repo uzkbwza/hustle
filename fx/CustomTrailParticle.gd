@@ -3,7 +3,7 @@ extends ParticleEffect
 class_name CustomTrailParticle
 
 var shape = preload("res://fx/particle_round_4x4.png")
-var shape_num
+var shape_name = "circle"
 var start_color = Color.white
 var end_color = Color.white
 var start_alpha = 1.0
@@ -37,19 +37,20 @@ var custom_set = {
 }
 
 static func get_shapes():
-	return [
-		preload("res://fx/particle_round_4x4.png"),
-		preload("res://fx/particle_round_hollow_4x4.png"),
-		preload("res://fx/particle_square_4x4.png"),
-		preload("res://fx/TriUp.png"),
-		preload("res://fx/star.png"),
-		preload("res://fx/heart.png"),
-	]
+	return {
+		"circle": preload("res://fx/particle_round_4x4.png"),
+		"square": preload("res://fx/particle_square_4x4.png"),
+		"triangle": preload("res://fx/TriUp.png"),
+		"star": preload("res://fx/star.png"),
+		"heart": preload("res://fx/heart.png"),
+		"hollow circle": preload("res://fx/particle_round_hollow_4x4.png"),
+		"hollow square": preload("res://fx/particle_square_hollow_4x4.png"),
+	}
 
 static func get_default():
 	{
 		"in_front": false,
-		"shape": 0,
+		"shape": "circle",
 		"amount": 16,
 		"alpha": 1.0,
 		"local_coords": false,
@@ -157,10 +158,12 @@ func _ready():
 func get_data():
 	pass
 
-func set_shape(shape_num):
-	var shape = get_shapes()[shape_num]
-	particles.texture = shape
-	shape_num = shape_num
+func set_shape(shape_name):
+	var shapes = get_shapes()
+	if shape_name in shapes:
+		var shape = shapes[shape_name]
+		particles.texture = shape
+		self.shape_name = shape_name
 
 func set_in_front(on):
 	if on:

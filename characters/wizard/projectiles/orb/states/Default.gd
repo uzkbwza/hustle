@@ -1,6 +1,6 @@
 extends ObjectState
 
-export var LIFETIME = 3000
+export var LIFETIME = 30000
 
 func _tick():
 	if host.frozen:
@@ -10,5 +10,3 @@ func _tick():
 	host.attempt_triggered_attack()
 	if current_tick > LIFETIME:
 		host.disable()
-	if host.push_ticks > 0:
-		host.push_ticks -= 1

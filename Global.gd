@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.4.16-unstable"
+var VERSION = "0.5.14-steam"
 
 var audio_player
 var music_enabled = true
@@ -21,6 +21,7 @@ var has_supporter_pack_file = false
 var enable_custom_colors = true
 var enable_custom_particles = true
 var enable_custom_hit_sparks = true
+var enable_emotes = true
 var steam_demo_version = false
 
 var name_paths = {
@@ -39,7 +40,7 @@ var songs = {
 }
 
 func full_version():
-	return (!steam_demo_version) and SteamYomi.STARTED
+	return (!steam_demo_version) and SteamHustle.STARTED
 
 func _enter_tree():
 #	get_tree().set_auto_accept_quit(false)
@@ -56,13 +57,13 @@ func _enter_tree():
 #	show_hitboxes = data.options.show_hitboxes
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
-	load_supporter_pack()
-
-func load_supporter_pack():
-	var success = ProjectSettings.load_resource_pack(OS.get_executable_path().get_base_dir() + "/Supporter.pck")
-	if success:
-		has_supporter_pack_file = true
-		print(has_supporter_pack_file)
+#	load_supporter_pack()
+#
+#func load_supporter_pack():
+#	var success = ProjectSettings.load_resource_pack(OS.get_executable_path().get_base_dir() + "/Supporter.pck")
+#	if success:
+#		has_supporter_pack_file = true
+#		print(has_supporter_pack_file)
 
 func _ready():
 	yield(get_tree(), "idle_frame")
@@ -70,7 +71,7 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	randomize()
-	if randi() % 20 == 0 and SteamYomi.IS_ONLINE and !SteamYomi.has_supporter_pack(SteamYomi.STEAM_ID):
+	if randi() % 20 == 0 and SteamHustle.IS_ONLINE and !SteamHustle.has_supporter_pack(SteamHustle.STEAM_ID):
 		emit_signal("nag_window")
 
 func set_music_enabled(on):
@@ -151,6 +152,7 @@ func save_options():
 			"show_playback_controls": show_playback_controls,
 			"default_dojo": 0,
 #			"light_mode": light_mode,
+			"enable_emotes": enable_emotes,
 			"enable_custom_colors": enable_custom_colors,
 			"enable_custom_particles": enable_custom_particles,
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
@@ -168,6 +170,7 @@ func get_default_player_data():
 			"show_hitboxes": false,
 			"show_playback_controls": false,
 			"default_dojo": 0,
+			"enable_emotes": true,
 			"enable_custom_colors": true,
 			"enable_custom_particles": true,
 			"enable_custom_hit_sparks": true,

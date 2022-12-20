@@ -70,7 +70,7 @@ func _setting_value_changed(_value, _setting):
 	update_menu()
 
 func _on_received_match_settings(settings, force=false):
-	if SteamLobby.LOBBY_OWNER == SteamYomi.STEAM_ID:
+	if SteamLobby.LOBBY_OWNER == SteamHustle.STEAM_ID:
 		if !force:
 			return
 		if !init:
@@ -104,7 +104,7 @@ func update_menu():
 func update_lobby_data():
 #	if SteamLobby.LOBBY_ID == 0:
 #		return
-	if SteamYomi.STEAM_ID != Steam.getLobbyOwner(SteamLobby.LOBBY_ID):
+	if SteamHustle.STEAM_ID != Steam.getLobbyOwner(SteamLobby.LOBBY_ID):
 		return
 	print("updating lobby settings")
 	SteamLobby.update_match_settings(get_data())

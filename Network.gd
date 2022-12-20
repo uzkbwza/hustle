@@ -191,7 +191,7 @@ func host_game_direct(new_player_name, port):
 
 func get_local_id():
 	if steam:
-		return SteamYomi.STEAM_ID
+		return SteamHustle.STEAM_ID
 	return get_tree().get_network_unique_id()
 
 func join_game_direct(ip, port, new_player_name):
@@ -468,6 +468,12 @@ remote func receive_match_list(list):
 remote func receive_player_count(count):
 	emit_signal("player_count_received", count)
 
+remotesync func player_emote(player_id, message):
+	if is_instance_valid(Global.current_game):
+		var player = Global.current_game.get_player(player_id)
+		if player:
+			player.emote(message.split("/em ")[-1])
+
 func request_match_list():
 	if multiplayer_client and multiplayer_client.connected:
 		rpc_id(1, "fetch_match_list")
@@ -489,11 +495,11 @@ func assign_players():
 	if steam:
 		player_id = SteamLobby.PLAYER_SIDE
 		if SteamLobby.PLAYER_SIDE == 1:
-			network_ids[1] = SteamYomi.STEAM_ID
+			network_ids[1] = SteamHustle.STEAM_ID
 			network_ids[2] = SteamLobby.OPPONENT_ID
 		else:
 			network_ids[1] = SteamLobby.OPPONENT_ID
-			network_ids[2] = SteamYomi.STEAM_ID
+			network_ids[2] = SteamHustle.STEAM_ID
 #			emit_signal("player_ids_synced")
 		begin_game()
 
@@ -836,7 +842,7 @@ func start_game_steam():
 func register_player_steam(steam_id):
 	if SteamLobby.SPECTATING:
 		return
-	if SteamYomi.STEAM_ID == steam_id:
+	if SteamHustle.STEAM_ID == steam_id:
 		network_id = steam_id
 	print("registering player: " + str(steam_id))
 	players[steam_id] = Steam.getFriendPersonaName(steam_id)

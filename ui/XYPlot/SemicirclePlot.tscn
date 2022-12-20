@@ -72,7 +72,7 @@ mouse_filter = 2
 
 [node name="XLabel" type="Label" parent="VBoxContainer2/Control/VBoxContainer"]
 unique_name_in_owner = true
-modulate = Color( 1, 1, 1, 0.501961 )
+visible = false
 margin_top = 41.0
 margin_right = 80.0
 margin_bottom = 52.0
@@ -92,7 +92,7 @@ rect_min_size = Vector2( 80, 40 )
 
 [node name="YLabel" type="Label" parent="VBoxContainer2/Control/HBoxContainer"]
 unique_name_in_owner = true
-modulate = Color( 1, 1, 1, 0.501961 )
+visible = false
 margin_left = 81.0
 margin_right = 111.0
 margin_bottom = 50.0

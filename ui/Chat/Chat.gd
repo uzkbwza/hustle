@@ -59,7 +59,7 @@ func god_message(message: String):
 func on_steam_chat_message_received(steam_id: int, message: String):
 	if !SteamLobby.can_get_messages_from_user(steam_id):
 		return
-	var color = "ff333d" if (steam_id == SteamYomi.STEAM_ID) else "1d8df5"
+	var color = "ff333d" if (steam_id == SteamHustle.STEAM_ID) else "1d8df5"
 	var steam_name = Steam.getFriendPersonaName(steam_id)
 	
 	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + steam_name + "[/color]>: " + message)
@@ -67,7 +67,7 @@ func on_steam_chat_message_received(steam_id: int, message: String):
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
 	node.fit_content_height = true
-	if !(steam_id == SteamYomi.STEAM_ID):
+	if !(steam_id == SteamHustle.STEAM_ID):
 		$"ChatSound".play()
 	
 	$"%MessageContainer".call_deferred("add_child", node)
@@ -87,8 +87,42 @@ func on_message_ready(message):
 		else:
 			$"%TooLongLabel".show()
 			$"%TooLongLabel".text = "message too long (" + str(len(message)) + "/1000)"
+	else:
+		send_message(message)
+		$"%LineEdit".clear()
+
+func process_command(message: String):
+	if Network.multiplayer_active and !SteamLobby.SPECTATING:
+		if message.begins_with("/em "):
+			Network.rpc_("player_emote", [Network.player_id, message])
+			return true
+	else:
+		if message.begins_with("/em "):
+			if is_instance_valid(Global.current_game):
+				var player = Global.current_game.get_player(1)
+				if player:
+					player.emote(message.split("/em ")[-1])
+			return true
+		if message.begins_with("/em1 "):
+			if is_instance_valid(Global.current_game):
+				var player = Global.current_game.get_player(1)
+				if player:
+					player.emote(message.split("/em1 ")[-1])
+			return true
+		if message.begins_with("/em2 "):
+			if is_instance_valid(Global.current_game):
+				var player = Global.current_game.get_player(2)
+				if player:
+					player.emote(message.split("/em2 ")[-1])
+			return true
+	
+	return false
 
 func send_message(message):
+	if process_command(message):
+		return
+	if !Network.multiplayer_active:
+		on_chat_message_received(1, message)
 	if !Network.steam:
 		Network.rpc_("send_chat_message", [Network.player_id, message])
 	else:

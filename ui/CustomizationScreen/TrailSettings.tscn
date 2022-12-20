@@ -66,51 +66,51 @@ text = "local"
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_top = 137.0
 margin_right = 212.0
-margin_bottom = 148.0
+margin_bottom = 149.0
 
 [node name="Label" type="Label" parent="HBoxContainer"]
-margin_right = 30.0
+margin_right = 35.0
 margin_bottom = 11.0
-text = "Shape"
+text = "Shape: "
 
-[node name="Shape" type="SpinBox" parent="HBoxContainer"]
+[node name="Shape" type="OptionButton" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 31.0
-margin_right = 79.0
-margin_bottom = 11.0
-max_value = 3.0
+margin_left = 36.0
+margin_right = 80.0
+margin_bottom = 12.0
+text = "shape"
 
 [node name="Angle" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 153.0
-margin_bottom = 178.0
+margin_top = 154.0
+margin_bottom = 179.0
 min_value = -360.0
 max_value = 360.0
 
 [node name="Angle Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 183.0
-margin_bottom = 208.0
+margin_top = 184.0
+margin_bottom = 209.0
 max_value = 1.0
 
 [node name="Gravity X" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 213.0
-margin_bottom = 238.0
+margin_top = 214.0
+margin_bottom = 239.0
 min_value = -100.0
 step = 0.1
 
 [node name="Gravity Y" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 243.0
-margin_bottom = 268.0
+margin_top = 244.0
+margin_bottom = 269.0
 min_value = -100.0
 step = 0.1
 
 [node name="HFlowContainer2" type="HFlowContainer" parent="."]
-margin_top = 273.0
+margin_top = 274.0
 margin_right = 212.0
-margin_bottom = 335.0
+margin_bottom = 336.0
 
 [node name="Direction" parent="HFlowContainer2" instance=ExtResource( 4 )]
 unique_name_in_owner = true
@@ -123,139 +123,139 @@ default_value = Vector2( 0, -1 )
 
 [node name="Direction Spread" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 340.0
-margin_bottom = 365.0
+margin_top = 341.0
+margin_bottom = 366.0
 max_value = 180.0
 step = 1.0
 
 [node name="Initial Velocity" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 370.0
-margin_bottom = 395.0
+margin_top = 371.0
+margin_bottom = 396.0
 min_value = -100.0
 step = 0.1
 
 [node name="Initial Velocity Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 400.0
-margin_bottom = 425.0
+margin_top = 401.0
+margin_bottom = 426.0
 max_value = 1.0
 step = 0.001
 
 [node name="Linear Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 430.0
-margin_bottom = 455.0
+margin_top = 431.0
+margin_bottom = 456.0
 min_value = -100.0
 step = 0.1
 
 [node name="Linear Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 460.0
-margin_bottom = 485.0
+margin_top = 461.0
+margin_bottom = 486.0
 max_value = 1.0
 step = 0.001
 
 [node name="Radial Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 490.0
-margin_bottom = 515.0
+margin_top = 491.0
+margin_bottom = 516.0
 min_value = -100.0
 step = 0.1
 
 [node name="Radial Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 520.0
-margin_bottom = 545.0
+margin_top = 521.0
+margin_bottom = 546.0
 max_value = 1.0
 step = 0.001
 
 [node name="Tangential Accel" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 550.0
-margin_bottom = 575.0
+margin_top = 551.0
+margin_bottom = 576.0
 min_value = -100.0
 step = 0.1
 
 [node name="Tangential Accel Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 580.0
-margin_bottom = 605.0
+margin_top = 581.0
+margin_bottom = 606.0
 max_value = 1.0
 step = 0.001
 
 [node name="Orbit Velocity" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 610.0
-margin_bottom = 635.0
+margin_top = 611.0
+margin_bottom = 636.0
 min_value = -3.0
 max_value = 3.0
 step = 0.1
 
 [node name="Orbit Velocity Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 640.0
-margin_bottom = 665.0
+margin_top = 641.0
+margin_bottom = 666.0
 max_value = 1.0
 step = 0.001
 
 [node name="Start Scale" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 670.0
-margin_bottom = 695.0
+margin_top = 671.0
+margin_bottom = 696.0
 default_value = 1.0
 max_value = 5.0
 
 [node name="End Scale" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 700.0
-margin_bottom = 725.0
+margin_top = 701.0
+margin_bottom = 726.0
 default_value = 1.0
 max_value = 5.0
 
 [node name="Scale Randomness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 730.0
-margin_bottom = 755.0
+margin_top = 731.0
+margin_bottom = 756.0
 max_value = 1.0
 
 [node name="Explosiveness" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 760.0
-margin_bottom = 785.0
+margin_top = 761.0
+margin_bottom = 786.0
 max_value = 1.0
 
 [node name="Rect Size X" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 790.0
-margin_bottom = 815.0
+margin_top = 791.0
+margin_bottom = 816.0
 default_value = 12.0
 max_value = 32.0
 
 [node name="Rect Size Y" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 820.0
-margin_bottom = 845.0
+margin_top = 821.0
+margin_bottom = 846.0
 default_value = 12.0
 max_value = 32.0
 
 [node name="X Offset" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 850.0
-margin_bottom = 875.0
+margin_top = 851.0
+margin_bottom = 876.0
 min_value = -24.0
 max_value = 24.0
 
 [node name="Y Offset" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 880.0
-margin_bottom = 905.0
+margin_top = 881.0
+margin_bottom = 906.0
 max_value = 1.0
 
 [node name="ColorPickers" type="TabContainer" parent="."]
-margin_top = 910.0
+margin_top = 911.0
 margin_right = 212.0
-margin_bottom = 1130.0
+margin_bottom = 1131.0
 rect_min_size = Vector2( 0, 220 )
 tab_align = 0
 
@@ -284,16 +284,16 @@ margin_bottom = 0.0
 
 [node name="Start Alpha" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 1135.0
-margin_bottom = 1160.0
+margin_top = 1136.0
+margin_bottom = 1161.0
 default_value = 1.0
 max_value = 1.0
 step = 0.001
 
 [node name="End Alpha" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 1165.0
-margin_bottom = 1190.0
+margin_top = 1166.0
+margin_bottom = 1191.0
 default_value = 1.0
 max_value = 1.0
 step = 0.001

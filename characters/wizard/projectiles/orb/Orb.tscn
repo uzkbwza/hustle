@@ -24,6 +24,8 @@ shader = ExtResource( 17 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -39,6 +41,8 @@ shader = ExtResource( 17 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="Orb" instance=ExtResource( 1 )]
 material = SubResource( 2 )
@@ -46,7 +50,8 @@ script = ExtResource( 2 )
 extra_state_variables = "frozen
 locked
 push_ticks
-triggered_attacks"
+triggered_attacks
+push_dir"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
@@ -94,4 +99,4 @@ script = ExtResource( 10 )
 sprite_animation = "Orb"
 ticks_per_frame = 4
 loop_animation = true
-LIFETIME = 3000
+LIFETIME = 30000

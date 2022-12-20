@@ -46,6 +46,8 @@ onready var settings_map = {
 
 var nodes_map = {}
 
+var shape_names = []
+
 func load_settings(settings):
 	for setting in settings:
 		if setting in nodes_map:
@@ -64,7 +66,10 @@ func load_settings(settings):
 #			yield(get_tree(), "idle_frame")
 
 func _ready():
-	$"%Shape".max_value = CustomTrailParticle.get_shapes().size() - 1
+	var shapes = CustomTrailParticle.get_shapes()
+	for shape_name in shapes:
+		$"%Shape".add_item(shape_name)
+		shape_names.append(shape_name)
 	for node in settings_map:
 		if node.has_signal("value_changed"):
 			node.connect("value_changed", self, "_setting_value_changed")
@@ -93,10 +98,13 @@ func get_settings():
 	var map = {
 		"start_color": $"%StartColor".current_color,
 		"end_color": $"%EndColor".current_color,
+		"shape": shape_names[$"%Shape".selected],
 	}
 #	print("getting all aura settings")
 	for settings_node in settings_map:
 		var value
+		if settings_map[settings_node] in map:
+			continue
 		if settings_node is SettingsSlider:
 			value = settings_node.get_data()
 		elif settings_node is XYPlot:
