@@ -823,6 +823,7 @@ func tick_before():
 				queued_action = null
 				queued_data = null
 				return
+
 			if queued_action == "Forfeit":
 				forfeit = true
 #			if queued_action != "ContinueAuto":

@@ -22,6 +22,7 @@ var fast_falling = false
 var orb_projectile
 var can_flame_wave = true
 var can_vile_clutch = true
+var current_orb_push = null
 
 onready var liftoff_sprite = $"%LiftoffSprite"
 
@@ -87,6 +88,12 @@ func tick():
 		use_super_meter(ORB_SUPER_DRAIN)
 		if super_meter == 0 and supers_available == 0:
 			objs_map[orb_projectile].disable()
+	if current_orb_push != null:
+		if orb_projectile:
+			if !(current_orb_push.x == 0 and current_orb_push.y == 0):
+				var force = fixed.normalized_vec_times(str(current_orb_push.x), str(current_orb_push.y), ORB_PUSH_SPEED)
+				objs_map[orb_projectile].push(force.x, force.y)
+		current_orb_push = null
 
 func process_extra(extra):
 	.process_extra(extra)
@@ -116,9 +123,7 @@ func process_extra(extra):
 	else:
 		fast_falling = false
 	if extra.has("orb_push") and orb_projectile:
-		if !(extra.orb_push.x == 0 and extra.orb_push.y == 0):
-			var force = fixed.normalized_vec_times(str(extra.orb_push.x), str(extra.orb_push.y), ORB_PUSH_SPEED)
-			objs_map[orb_projectile].push(force.x, force.y)
+		current_orb_push = extra.orb_push
 
 func can_fast_fall():
 	return !is_grounded()

@@ -211,6 +211,8 @@ func on_object_spawned(obj: BaseObj):
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
 	obj.gravity_enabled = gravity_enabled
+	obj.fighter_owner = get_player(obj.id)
+	obj.update_data()
 	for particle in obj.particles.get_children():
 		effects.append(particle)
 	connect_signals(obj)
@@ -756,6 +758,7 @@ func undo(cut=true):
 
 func start_playback():
 	ReplayManager.replaying_ingame = true
+#	ReplayManager.resimulating = true
 	emit_signal("playback_requested")
 
 func end_game():
@@ -910,7 +913,11 @@ func _physics_process(_delta):
 
 	if !is_ghost:
 		if !game_finished:
-			process_tick()
+			if ReplayManager.playback:
+				for i in range(1):
+					process_tick()
+			else:
+				process_tick()
 		else:
 			call_deferred("simulate_one_tick")
 			if current_tick >= game_end_tick + 120:

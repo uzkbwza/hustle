@@ -638,7 +638,8 @@ fast_falling
 hover_left
 orb_projectile
 can_flame_wave
-can_vile_clutch"
+can_vile_clutch
+current_orb_push"
 damages_own_team = true
 character_portrait = ExtResource( 63 )
 player_info_scene = ExtResource( 4 )
@@ -1062,6 +1063,7 @@ air_type = 2
 uses_air_movement = true
 land_cancel = true
 self_hit_cancellable = false
+reversible = false
 interrupt_from_string = "GroundedSpecial
 AerialSpecial
 Grounded
@@ -1206,6 +1208,7 @@ type = 3
 button_texture = ExtResource( 268 )
 air_type = 2
 iasa_at = 8
+interruptible_on_opponent_turn = true
 interrupt_from_string = "GroundedSuper
 AerialSuper
 Grounded

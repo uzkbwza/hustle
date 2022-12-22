@@ -83,6 +83,8 @@ var hitboxes = []
 
 var previous_state = ""
 
+var fighter_owner
+
 var initialized = false
 var rng = BetterRng.new()
 
@@ -239,6 +241,9 @@ func copy_to(o: BaseObj):
 
 	chara.copy_to(o.chara)
 	o.chara.set_facing(get_facing_int())
+#	var vel = get_vel()
+#	o.set_vel(vel.x, vel.y)
+#	o.update_data()
 
 func get_frames():
 	return ReplayManager.frames[id]
@@ -260,10 +265,16 @@ func get_current_sprite_frame_number():
 func update_data():
 	data = get_data()
 	obj_data = data["object_data"]
-	data["state_data"] = {
-		"state": state_machine.state.state_name,
-		"frame": state_machine.state.current_tick,
-	}
+	if initialized:
+		data["state_data"] = {
+			"state": state_machine.state.state_name,
+			"frame": state_machine.state.current_tick,
+		}
+	else:
+		data["state_data"] = {
+			"state": "",
+			"frame": 0,
+		}
 	update_collision_boxes()
 
 func obj_local_pos(obj: BaseObj):
@@ -617,6 +628,7 @@ func tick():
 #	for particle in particles.get_children():
 #		particle.tick()
 	update_collision_boxes()
+	update_data()
 
 func state_tick():
 	var once = true

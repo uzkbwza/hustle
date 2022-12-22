@@ -50,7 +50,6 @@ func travel_towards_creator():
 	var travel_dir = get_travel_dir()
 	if travel_dir:
 		var force = fixed.vec_mul(travel_dir.x, travel_dir.y, ACCEL_SPEED)
-
 		if get_pos().y == 0:
 			var vel = get_vel()
 			set_vel(vel.x, fixed.mul(vel.y, "-1"))
@@ -73,12 +72,7 @@ func travel_towards_creator():
 		if fixed.lt(fixed.vec_len(str(local_pos.x), str(local_pos.y)), "1.5"):
 			move_directly(local_pos.x, local_pos.y)
 		set_facing(get_object_dir(creator.opponent))
-
-func tick():
-	.tick()
-	if push_ticks > 0:
-		push_ticks -= 1
-#	print(push_ticks)
+#		print(current_tick, get_vel())
 
 func attempt_triggered_attack():
 	if triggered_attacks.has(current_tick):
@@ -94,12 +88,15 @@ func attack(attack_type):
 			spawn_orb_dart()
 
 func push(fx, fy):
-	if fx == "0" and fy == "0":
+	if fixed.eq(fx,"0") and fixed.eq(fy,"0"):
 		return
 	play_sound("Push")
 #	reset_momentum()
 	push_ticks = PUSH_TICKS
-	push_dir = FixedVec2String.new(fx, fy)
+	push_dir = {
+		"x": fx,
+		"y": fy,
+	}
 #	apply_force(fx, fy)
 	spawn_particle_effect_relative(PUSH_PARTICLE)
 

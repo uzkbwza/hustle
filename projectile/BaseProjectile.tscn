@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://obj/BaseObj.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
 [ext_resource path="res://characters/stickman/projectiles/fireball_states/Default.gd" type="Script" id=3]
+[ext_resource path="res://theme.tres" type="Theme" id=4]
 [ext_resource path="res://projectile/BaseProjectile.gd" type="Script" id=5]
 
 [sub_resource type="ShaderMaterial" id=1]
@@ -26,3 +27,10 @@ fallback_state = "Default"
 sprite_animation = "Default"
 endless = true
 move_x = 2
+
+[node name="Label" type="Label" parent="." index="6"]
+margin_left = -44.0
+margin_top = -27.0
+margin_right = 44.0
+margin_bottom = -13.0
+theme = ExtResource( 4 )

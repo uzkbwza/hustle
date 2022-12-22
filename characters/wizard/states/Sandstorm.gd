@@ -21,8 +21,11 @@ func _tick():
 		var pos = host.get_pos()
 		wb.update_position(pos.x, pos.y)
 		for obj in host.objs_map.values():
-			if obj is BaseObj and !obj == host and (obj.is_grounded() or !obj.is_in_group("Fighter")) and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox):
-					windbox_hitting.append(obj)
+			if obj is BaseObj and !obj == host and (obj.is_grounded() or !(obj.is_in_group("Fighter")) and obj.current_state() and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox)):
+				if obj is BaseProjectile:
+					if obj.disabled:
+						continue
+				windbox_hitting.append(obj)
 		for obj in windbox_hitting:
 			push_object(obj)
 
@@ -32,6 +35,8 @@ func _exit():
 
 
 func push_object(obj):
+#	if obj.data.object_data == null:
+#		return
 	var obj_pos = obj.get_pos()
 	var pos = host.get_pos()
 	var diff = fixed.vec_sub(str(obj_pos.x), "0", str(pos.x), "0")

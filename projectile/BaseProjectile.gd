@@ -11,3 +11,8 @@ func disable():
 	for hitbox in get_active_hitboxes():
 		hitbox.deactivate()
 	stop_particles()
+
+func _process(delta):
+	$Label.text = str(get_pos())
+	if disabled:
+		$Label.hide()

@@ -229,8 +229,8 @@ func get_real_damage():
 	if host.is_in_group("Fighter"):
 		is_combo = host.combo_count > 0
 	else:
-		if is_instance_valid(Global.current_game):
-			is_combo = Global.current_game.get_player(host.id).combo_count > 0
+		if host.fighter_owner:
+			is_combo = host.fighter_owner.combo_count > 0
 	if is_combo and damage_in_combo != -1:
 		return damage_in_combo
 	return damage

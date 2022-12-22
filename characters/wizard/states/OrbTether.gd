@@ -9,7 +9,7 @@ func is_usable():
 func _frame_0():
 	if !host.is_grounded():
 		host.air_movements_left -= 1
-	interruptible_on_opponent_turn = false
+#	interruptible_on_opponent_turn = false
 	host.move_directly(0, -1)
 	host.set_grounded(false)
 
@@ -23,4 +23,3 @@ func _tick():
 	if current_tick > 8:
 		if host.is_grounded():
 			return "Landing"
-		interruptible_on_opponent_turn = true

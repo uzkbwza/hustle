@@ -288,19 +288,24 @@ func on_action_selected(action, button):
 
 	last_button = button
 	if button.data_node:
-		button.data_node.show()
-		var dir = fighter.get_opponent_dir()
-		if current_extra and current_extra.has("reverse") and current_extra["reverse"]:
-			dir *= -1
-		button.data_node.set_facing(dir)
-		button.data_node.init()
-		button.container.show_data_container()
+		call_deferred("show_button_data_node", button)
+
 	$"%ReverseButton".set_disabled(!button.reversible)
 	if button.state:
 		$"%FeintButton".set_disabled(!button.state.can_feint())
 	else:
 		$"%FeintButton".set_disabled(true)
 	send_ui_action()
+
+func show_button_data_node(button):
+	yield(get_tree(), "idle_frame")
+	button.data_node.show()
+	var dir = fighter.get_opponent_dir()
+	if current_extra and current_extra.has("reverse") and current_extra["reverse"]:
+		dir *= -1
+	button.data_node.set_facing(dir)
+#	button.data_node.init()
+	button.container.show_data_container()
 
 func get_extra():
 	var extra = {

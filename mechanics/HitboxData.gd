@@ -81,12 +81,12 @@ func _init(state):
 	if state.get("rumble") != null:
 		rumble = state.rumble
 	self.host = state.host.obj_name
+	combo_count = 0
 	if state.host.is_in_group("Fighter"):
 		combo_count = state.host.combo_count
 	else:
-		var id = state.host.id
-		if is_instance_valid(Global.current_game):
-			combo_count = Global.current_game.get_player(id).combo_count
+		if state.host.fighter_owner:
+			combo_count = state.host.fighter_owner.combo_count
 	if state.get("screenshake_amount") != null:
 		screenshake_amount = state.screenshake_amount
 	if state.get("screenshake_frames") != null:
