@@ -51,6 +51,7 @@ func _tick():
 	#		print(fixed.vec_len(move_vec.x, move_vec.y))
 			host.move_directly(move_vec.x, move_vec.y)
 			host.sprite.rotation = float(fixed.vec_to_angle(dir.x, dir.y))
+			host.set_facing(fixed.sign(dir_x))
 		else:
 			var target = host.obj_local_center(host.creator.opponent)
 			var vel = host.get_vel()

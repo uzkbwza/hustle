@@ -30,6 +30,7 @@ animations = [ {
 material = SubResource( 2 )
 z_index = -1
 gravity = "0.57"
+extra_state_variables = "stopped"
 
 [node name="Sprite" parent="Flip" index="0"]
 modulate = Color( 1, 1, 1, 0.92549 )

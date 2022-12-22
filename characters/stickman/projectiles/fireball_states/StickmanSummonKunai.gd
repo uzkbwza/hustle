@@ -19,7 +19,7 @@ func _frame_1():
 	create_particle()
 
 func _frame_0():
-	stopped = false
+	host.stopped = false
 	
 	var y = fixed.mul(fixed.mul(str(data.y), Y_MODIFIER), "-1")
 	var force = fixed.normalized_vec_times(ENTER_DIR_X, ENTER_DIR_Y, ENTER_FORCE)
@@ -27,11 +27,12 @@ func _frame_0():
 	host.apply_force_relative(force.x, force.y)
 
 func _frame_2():
-	stopped = true
+	host.stopped = true
 
 func _tick():
-	if stopped:
-		host.apply_grav()
+	if host.stopped:
+		host.apply_grav() 
+		host.update_data()
 		if fixed.ge(host.get_vel().y, "0"):
 			host.set_vel(host.get_vel().x, "0")
 	host.apply_fric()
@@ -39,7 +40,7 @@ func _tick():
 
 func _frame_23():
 	data.x = abs(data.x) * host.get_facing_int()
-	stopped = false
+	host.stopped = false
 	var kickback = fixed.normalized_vec_times(str(data.x), str(data.y), KICKBACK)
 	host.apply_force_relative(kickback.x, kickback.y)
 	for i in range(-2, 1):
