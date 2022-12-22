@@ -174,7 +174,7 @@ func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
-	host.add_penalty(-10)
+	host.add_penalty(-50)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
 		enable_hit_cancel()

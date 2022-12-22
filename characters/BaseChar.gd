@@ -564,6 +564,8 @@ func launched_by(hitbox):
 		if !projectile:
 			refresh_feints()
 			opponent.refresh_feints()
+#			reset_penalty()
+#			opponent.reset_penalty()
 
 		if hitbox.increment_combo:
 			opponent.incr_combo()
@@ -682,6 +684,7 @@ func take_damage(damage: int, minimum=0):
 	opponent.combo_damage += damage
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
+	add_penalty(-25)
 	if hp < 0:
 		hp = 0
 
@@ -952,6 +955,8 @@ func add_penalty(amount):
 	if penalty < MIN_PENALTY:
 		penalty = MIN_PENALTY
 
+func reset_penalty():
+	penalty = 0
 
 func is_in_hurt_state():
 	return current_state().busy_interrupt_type == CharacterState.BusyInterrupt.Hurt

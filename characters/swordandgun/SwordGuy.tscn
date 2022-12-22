@@ -1985,6 +1985,7 @@ dash_speed = 3
 fric = "0.02"
 spawn_particle = false
 startup_lag = 1
+back_penalty = 0
 
 [node name="Jump" parent="StateMachine" index="52"]
 speed = "8.5"

@@ -6,6 +6,7 @@ export var fric = "0.05"
 export var spawn_particle = true
 export var startup_lag = 0
 export var stop_frame = 0
+export var back_penalty = 5
 
 func _enter():
 	if startup_lag != 0 or stop_frame != 0:
@@ -15,7 +16,7 @@ func _enter():
 
 func _frame_1():
 	if dir_x < 0:
-		host.add_penalty(5)
+		host.add_penalty(back_penalty)
 	if startup_lag != 0:
 		return
 	host.apply_force_relative(dir_x * dash_speed, 0)
