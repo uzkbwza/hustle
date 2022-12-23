@@ -593,7 +593,7 @@ func get_pos():
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	var unscaled_force = fixed.vec_div(str(x), str(y), div)
 	var force = fixed.vec_mul(unscaled_force["x"], unscaled_force["y"], mul)
-	return FixedVec2String.new(force.x, force.y)
+	return Utils.fixed_vec2_string(force.x, force.y)
 	
 func on_state_started(state):
 	state_interruptable = false

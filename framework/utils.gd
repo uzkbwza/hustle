@@ -372,6 +372,12 @@ static func vector_spring(vec:Vector2, vel:Vector2, target:Vector2, zeta:float, 
 	vec = Vector2(x, y);
 	return [vec,vel];
 
+static func fixed_vec2_string(x: String, y: String):
+	return {
+		"x": x,
+		"y": y,
+	}
+
 static func number_from_string(string):
 	var chars = ""
 	for char_ in string:

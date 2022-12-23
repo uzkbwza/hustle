@@ -734,7 +734,10 @@ func process_extra(extra):
 			current_nudge = xy_to_dir(di.x, di.y, str(NUDGE_DISTANCE))
 			current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
 		else:
-			current_di = FixedVec2String.new(0, 0)
+			current_di = {
+				"x": 0,
+				"y": 0,
+			}
 	if "reverse" in extra:
 		reverse_state = extra["reverse"]
 		if reverse_state:
