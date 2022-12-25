@@ -3,7 +3,7 @@ extends CharacterState
 const MAX_X_DIST = 600
 const MAX_Y_DIST = 300
 
-func _frame_4():
+func _frame_6():
 	var projectiles = get_usable_projectiles()
 	if projectiles:
 		var obj = projectiles[-1]

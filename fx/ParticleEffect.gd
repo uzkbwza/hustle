@@ -54,7 +54,7 @@ func start_emitting():
 			child.emitting = true
 
 func stop_emitting():
-	emitting = false
+#	emitting = false
 	for child in get_children():
 		if child is Particles2D:
 			child.emitting = false

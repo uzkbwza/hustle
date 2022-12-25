@@ -40,7 +40,9 @@ material = SubResource( 2 )
 script = ExtResource( 2 )
 gravity = "0.4"
 max_air_speed = "20"
-extra_state_variables = "can_be_picked_up"
+max_fall_speed = "20"
+extra_state_variables = "can_be_picked_up
+shot"
 screenshake_amount = 12
 
 [node name="Sprite" parent="Flip" index="0"]
@@ -73,9 +75,6 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 endless = true
-enter_force_dir_x = "1.0"
-enter_force_dir_y = "-0.150"
-enter_force_speed = "12.0"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Spin" index="0"]
 z_index = 1000
@@ -86,6 +85,7 @@ damage = 80
 minimum_damage = 10
 hitstun_ticks = 35
 hitlag_ticks = 7
+sdi_modifier = "0.0"
 dir_x = "-1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
