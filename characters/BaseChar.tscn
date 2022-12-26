@@ -1,4 +1,4 @@
-[gd_scene load_steps=162 format=2]
+[gd_scene load_steps=163 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -159,6 +159,7 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/taunt.png" type="Texture" id=157]
 [ext_resource path="res://ui/ActionSelector/StateIcons/shield_high.png" type="Texture" id=158]
 [ext_resource path="res://ui/ActionSelector/StateIcons/shield_low.png" type="Texture" id=159]
+[ext_resource path="res://sound/common/catch.wav" type="AudioStream" id=160]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -587,10 +588,11 @@ parry_type = 2
 
 [node name="Wait" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 4 )
-anim_length = 10
+anim_length = 30
 title = "Wait"
 button_texture = ExtResource( 55 )
 interruptible_on_opponent_turn = true
+self_interruptable = false
 interrupt_from_string = "GroundedIdle
 Grounded"
 interrupt_into_string = "Grounded
@@ -1041,7 +1043,9 @@ x = 7
 y = -18
 width = 12
 height = 12
+increment_combo = false
 hits_vs_aerial = false
+hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
 throw_state = "Hold"
@@ -1069,7 +1073,9 @@ x = 7
 y = -18
 width = 12
 height = 12
+increment_combo = false
 hits_vs_grounded = false
+hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
 throw_state = "AirHold"

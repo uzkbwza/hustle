@@ -12,6 +12,8 @@ export var start_throw_pos_y = 0
 export var release_throw_pos_x = 0
 export var release_throw_pos_y = 0
 
+
+
 export var _c_Release_Data = 0
 export var hitstun_ticks: int = 0
 export var knockback: String = "1.0"
@@ -71,7 +73,8 @@ func _tick_shared():
 	if !released:
 		host.opponent.colliding_with_opponent = false
 		host.colliding_with_opponent = false
-	
+	update_throw_position()
+
 func _tick_after():
 	._tick_after()
 	if !released:

@@ -12,6 +12,7 @@ export var num_hits = 1
 export var lifetime = 999999
 export var fizzle_on_ground = true
 export var fizzle_on_walls = true
+export var follow_creator = false
 
 var hit_something = false
 var hit_something_tick = 0
@@ -36,6 +37,10 @@ func _tick():
 			host.move_directly_relative((move_x + data["speed_modifier"]) if move_x != 0 else 0, (move_y + data["speed_modifier"]) if move_y != 0 else 0)
 		else:
 			host.move_directly_relative(move_x, move_y)
+	if follow_creator:
+		if host.creator:
+			var creator_pos = host.creator.get_pos()
+			host.set_pos(creator_pos.x, creator_pos.y)
 
 func _on_hit_something(obj, _hitbox):
 	if clash:

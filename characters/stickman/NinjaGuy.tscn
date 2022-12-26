@@ -1,4 +1,4 @@
-[gd_scene load_steps=209 format=2]
+[gd_scene load_steps=214 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -205,6 +205,11 @@
 [ext_resource path="res://characters/stickman/sounds/chukswish.wav" type="AudioStream" id=203]
 [ext_resource path="res://characters/stickman/sprites/shield1.png" type="Texture" id=204]
 [ext_resource path="res://characters/stickman/sprites/shield2.png" type="Texture" id=205]
+[ext_resource path="res://characters/stickman/sprites/fthrow1.png" type="Texture" id=206]
+[ext_resource path="res://characters/stickman/sprites/fthrow3.png" type="Texture" id=207]
+[ext_resource path="res://characters/stickman/sprites/fthrow2.png" type="Texture" id=208]
+[ext_resource path="res://characters/stickman/sprites/fthrow4.png" type="Texture" id=209]
+[ext_resource path="res://characters/stickman/sprites/fthrow5.png" type="Texture" id=210]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -319,6 +324,11 @@ animations = [ {
 "frames": [ ExtResource( 153 ), ExtResource( 153 ), ExtResource( 153 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 172 ), ExtResource( 172 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 165 ) ],
 "loop": true,
 "name": "GroundedSweep",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 206 ), ExtResource( 206 ), ExtResource( 206 ), ExtResource( 206 ), ExtResource( 208 ), ExtResource( 208 ), ExtResource( 207 ), ExtResource( 207 ), ExtResource( 207 ), ExtResource( 209 ), ExtResource( 209 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 210 ), ExtResource( 210 ) ],
+"loop": true,
+"name": "GroundedThrow",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 116 ) ],
@@ -519,7 +529,7 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 4 )
-animation = "ShieldLow"
+animation = "GroundedThrow"
 frame = 0
 
 [node name="Super2" parent="Sounds" index="4"]
@@ -1309,7 +1319,9 @@ hitstun_ticks = 40
 knockback = "7.0"
 dir_x = "-1.0"
 dir_y = "1.0"
+grounded_hit_state = "HurtAerial"
 damage = 40
+ground_bounce = false
 screenshake_amount = 10
 screenshake_frames = 10
 
@@ -1329,7 +1341,6 @@ title = "Sticky Bomb"
 type = 2
 button_texture = ExtResource( 64 )
 air_type = 2
-land_cancel = true
 interrupt_from_string = "GroundedSpecial
 AerialSpecial
 Grounded
@@ -1808,6 +1819,107 @@ width = 19
 height = 7
 start_tick = 2
 active_ticks = 6
+
+[node name="ForwardThrow" parent="StateMachine" index="64"]
+sprite_animation = "GroundedThrow"
+force_dir_x = "1.0"
+force_speed = "4.0"
+force_tick = 10
+enter_force_dir_x = "1.0"
+enter_force_speed = "4.0"
+throw_positions = {
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
+},
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+}
+}
+burst_cancellable = false
+burstable = false
+start_throw_pos_x = 0
+start_throw_pos_y = 0
+release_throw_pos_y = 0
+damage = 0
+increment_combo = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/ForwardThrow" index="0"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 22
+y = -16
+damage = 90
+cancellable = false
+screenshake_amount = 8
+hit_sound = ExtResource( 41 )
+dir_x = "1"
+dir_y = "-0.30"
+knockback = "10"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 10
+active_ticks = 1
+
+[node name="BackThrow" parent="StateMachine" index="65"]
+sprite_animation = "GroundedThrow"
+throw_positions = {
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+}
+}
+burst_cancellable = false
+burstable = false
+start_throw_pos_x = 0
+start_throw_pos_y = 0
+release_throw_pos_y = 0
+damage = 0
+increment_combo = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/BackThrow" index="0"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 22
+y = -16
+damage = 90
+cancellable = false
+screenshake_amount = 8
+hit_sound = ExtResource( 41 )
+dir_x = "1"
+dir_y = "-0.30"
+knockback = "10"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 10
+active_ticks = 1
 
 [node name="Taunt" parent="StateMachine" index="70"]
 script = ExtResource( 201 )

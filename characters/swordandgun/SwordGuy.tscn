@@ -1,4 +1,4 @@
-[gd_scene load_steps=279 format=2]
+[gd_scene load_steps=280 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -275,6 +275,7 @@
 [ext_resource path="res://characters/swordandgun/LightningSliceEffect.tscn" type="PackedScene" id=273]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/airdash.png" type="Texture" id=274]
 [ext_resource path="res://characters/swordandgun/sprites/airdash.png" type="Texture" id=275]
+[ext_resource path="res://characters/swordandgun/ActionUIData/LSliceActionUIData.tscn" type="PackedScene" id=276]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -1104,6 +1105,7 @@ sfx_tick = 10
 sfx_volume = -5.0
 title = "Lightning Slice"
 type = 2
+data_ui_scene = ExtResource( 276 )
 button_texture = ExtResource( 187 )
 air_type = 2
 iasa_at = 25

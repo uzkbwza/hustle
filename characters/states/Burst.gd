@@ -21,6 +21,7 @@ func _tick():
 		host.end_invulnerability()
 	else:
 		host.start_invulnerability()
+	
 
 func _exit():
 	host.end_projectile_invulnerability()

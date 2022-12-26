@@ -470,12 +470,12 @@ func thrown_by(hitbox: ThrowBox):
 	state_machine._change_state("Grabbed")
 
 func hitbox_from_name(hitbox_name):
-		var hitbox_props = hitbox_name.split("_")
-		var obj_name = hitbox_props[0]
-		var hitbox_id = int(hitbox_props[-1])
-		var obj = objs_map[obj_name]
-		if obj:
-			return objs_map[obj_name].hitboxes[hitbox_id]
+	var hitbox_props = hitbox_name.split("_")
+	var obj_name = hitbox_props[0]
+	var hitbox_id = int(hitbox_props[-1])
+	var obj = objs_map[obj_name]
+	if obj:
+		return objs_map[obj_name].hitboxes[hitbox_id]
 
 func _process(_delta):
 	update()
@@ -735,8 +735,8 @@ func process_extra(extra):
 			current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
 		else:
 			current_di = {
-				"x": 0,
-				"y": 0,
+				"x": "0",
+				"y": "0",
 			}
 	if "reverse" in extra:
 		reverse_state = extra["reverse"]
@@ -842,6 +842,7 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
+		hitlag_ticks = 0
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:

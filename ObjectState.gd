@@ -303,7 +303,7 @@ func _got_parried():
 
 func spawn_particle_relative(scene: PackedScene, pos=Vector2(), dir=Vector2.RIGHT):
 	var p = host.get_pos_visual()
-	host.spawn_particle_effect(scene, p + pos, dir)
+	return host.spawn_particle_effect(scene, p + pos, dir)
 
 func _enter_shared():
 	if reset_momentum:

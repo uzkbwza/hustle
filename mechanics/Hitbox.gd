@@ -131,7 +131,7 @@ func copy_to(hitbox: CollisionBox):
 		hitbox.set(variable, get(variable))
 
 func setup_audio():
-#	if !host.is_ghost:
+	if !host.is_ghost:
 		if whiff_sound:
 			whiff_sound_player = VariableSound2D.new()
 			call_deferred("add_child", whiff_sound_player)
@@ -177,7 +177,8 @@ func activate():
 	tick = 0
 	active = true
 	enabled = true
-	cancellable = cancellable or (bool(host.get("turbo_mode")) and !throw)
+	if host.is_in_group("Fighter"):
+		cancellable = cancellable or (bool(host.get("turbo_mode")) and !throw)
 	if victim_hitlag == -1:
 		victim_hitlag = hitlag_ticks
 

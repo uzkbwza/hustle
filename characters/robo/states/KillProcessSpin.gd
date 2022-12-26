@@ -23,7 +23,7 @@ func _exit():
 	host.release_camera_focus()
 
 func _tick():
-	update_throw_position()
+#	update_throw_position()
 	host.apply_grav_custom("0.66", "20")
 	if current_tick % 12 == 0:
 		host.play_sound("ArmSpin")

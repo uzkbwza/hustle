@@ -9,7 +9,7 @@ const FALL_SPEED = "5"
 func _frame_0():
 	host.colliding_with_opponent = false
 	var vel = host.get_vel()
-	host.set_vel(vel.x, "0")
+#	host.set_vel(vel.x, "0")
 	pass
 
 func _tick():
@@ -19,7 +19,7 @@ func _tick():
 		host.bomb_projectile = obj.obj_name
 		var force = fixed.normalized_vec_times(fixed.mul(THROW_DIR_X, str(host.get_facing_int())), THROW_DIR_Y, THROW_SPEED)
 		obj.apply_force(force.x, force.y)
-	if current_tick > 2 and host.is_grounded():
+	if current_tick > 10 and host.is_grounded():
 		return "Landing"
 	host.apply_grav_custom(GRAV, FALL_SPEED)
 	

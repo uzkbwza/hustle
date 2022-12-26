@@ -6,6 +6,7 @@ const DIRECT_MOVE_SPEED = "3.0"
 const PUSH_SPEED_LIMIT = "8"
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
+const LIGHTNING_SCENE = preload("res://characters/wizard/projectiles/orb/OrbLightning.tscn")
 const LOCK_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 const DISABLE_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 const PUSH_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
@@ -86,6 +87,10 @@ func attack(attack_type):
 	match attack_type:
 		"OrbDart":
 			spawn_orb_dart()
+		"Sword":
+			state_machine.queue_state("Sword")
+		"Lightning":
+			spawn_lightning()
 
 func push(fx, fy):
 	if fixed.eq(fx,"0") and fixed.eq(fy,"0"):
@@ -104,6 +109,10 @@ func disable():
 	.disable()
 	creator.orb_projectile = null
 	spawn_particle_effect_relative(DISABLE_PARTICLE)
+
+func spawn_lightning():
+	spawn_object(LIGHTNING_SCENE, 0, 0, true)
+	play_sound("Lightning")
 
 func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)

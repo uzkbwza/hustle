@@ -1,7 +1,7 @@
 extends Window
 
 const MOVE_SPEED = 0.15 * 60
-var STEAM_URL = "https://store.steampowered.com/app/2212330/Yomi_Hustle/"
+var STEAM_URL = "https://store.steampowered.com/app/2212330/Your_Only_Move_Is_HUSTLE"
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -10,6 +10,9 @@ var dir = Vector2(1, 1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
+	dir.x = 1 if randi() % 2 == 0 else -1
+	dir.y = 1 if randi() % 2 == 0 else -1
 	$"%ShowButton".connect("pressed", self, "queue_free")
 	$"%StoreButton".connect("pressed", self, "_on_store_button_pressed")
 	pass # Replace with function body.
@@ -24,7 +27,8 @@ func _on_LabelBlink_timeout():
 		$"%Title".modulate.a = 0.0
 
 func _on_store_button_pressed():
-	Steam.activateGameOverlayToStore(Custom.SUPPORTER_PACK)
+#	Steam.activateGameOverlayToStore(Custom.SUPPORTER_PACK)
+	OS.shell_open(STEAM_URL)
 
 func _process(delta):
 	rect_position += MOVE_SPEED * dir * delta

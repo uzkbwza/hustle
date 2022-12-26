@@ -86,8 +86,8 @@ func ground_slam():
 	if camera:
 		camera.bump(Vector2.UP, 20, 20 / 60.0)
 
-func _tick():
-	update_throw_position()
+#func _tick():
+#	update_throw_position()
 
 func _exit():
 	is_in_combo = false

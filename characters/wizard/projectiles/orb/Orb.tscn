@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
@@ -17,6 +17,17 @@
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/push.wav" type="AudioStream" id=15]
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/shoot.wav" type="AudioStream" id=16]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=17]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=18]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword1.png" type="Texture" id=19]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword2.png" type="Texture" id=20]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword3.png" type="Texture" id=21]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword4.png" type="Texture" id=22]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword5.png" type="Texture" id=23]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword6.png" type="Texture" id=24]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword7.png" type="Texture" id=25]
+[ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword8.png" type="Texture" id=26]
+[ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=27]
+[ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=28]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -27,11 +38,16 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="SpriteFrames" id=4]
 animations = [ {
 "frames": [ ExtResource( 3 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "Orb",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 19 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 25 ), ExtResource( 26 ), ExtResource( 26 ), ExtResource( 26 ), ExtResource( 19 ), ExtResource( 19 ) ],
+"loop": true,
+"name": "Sword",
 "speed": 5.0
 } ]
 
@@ -54,7 +70,7 @@ triggered_attacks
 push_dir"
 
 [node name="Sprite" parent="Flip" index="0"]
-frames = SubResource( 1 )
+frames = SubResource( 4 )
 animation = "Orb"
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 11 )]
@@ -86,6 +102,12 @@ volume_db = -8.0
 bus = "Fx"
 script = ExtResource( 12 )
 
+[node name="Lightning" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
+stream = ExtResource( 28 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 12 )
+
 [node name="CollisionBox" parent="." index="2"]
 width = 9
 height = 9
@@ -100,3 +122,28 @@ sprite_animation = "Orb"
 ticks_per_frame = 4
 loop_animation = true
 LIFETIME = 30000
+
+[node name="Sword" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 10 )
+fallback_state = "Default"
+sprite_animation = "Sword"
+anim_length = 23
+loop_animation = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Sword" index="0"]
+z_index = 1000
+script = ExtResource( 18 )
+width = 31
+height = 31
+damage = 40
+hitstun_ticks = 18
+hitlag_ticks = 2
+victim_hitlag = 7
+sdi_modifier = "0.1"
+hit_sound = ExtResource( 27 )
+knockback = "4.0"
+start_tick = 11
+active_ticks = 4
+looping = true
+loop_active_ticks = 1
+loop_inactive_ticks = 1

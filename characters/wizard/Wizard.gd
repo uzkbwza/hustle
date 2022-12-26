@@ -9,7 +9,7 @@ const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
 const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
-const ORB_PUSH_SPEED = "10.5"
+const ORB_PUSH_SPEED = "8.5"
 
 var hover_left = 0
 var hover_drain_amount = 12

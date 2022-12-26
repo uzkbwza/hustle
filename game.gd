@@ -346,6 +346,9 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	
 	p1.stage_width = stage_width
 	p2.stage_width = stage_width
+	camera.limit_left = -stage_width - 2
+	camera.limit_right = stage_width + 2
+	
 #	p1.set_pos(0, 0)
 #	p2.set_pos(0, -100)
 	p1.opponent = p2
@@ -1062,8 +1065,8 @@ func _draw():
 		draw_circle(camera.position, 3, Color.white * 0.5)
 	var line_color = Color.white
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
-	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), line_color, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), line_color, 2.0)
+#	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), line_color, 2.0)
+#	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), line_color, 2.0)
 	var line_dist = 50
 	var num_lines = stage_width * 2 / line_dist
 	for i in range(num_lines):
