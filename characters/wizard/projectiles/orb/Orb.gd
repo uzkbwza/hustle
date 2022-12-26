@@ -40,7 +40,7 @@ func lock():
 func unlock():
 	locked = false
 	spawn_particle_effect_relative(LOCK_PARTICLE)
-	play_sound("Unock")
+	play_sound("Unlock")
 
 func get_travel_dir():
 	if creator:

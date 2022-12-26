@@ -58,6 +58,7 @@ height = 7
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 5 )
+relative_data_dir = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000

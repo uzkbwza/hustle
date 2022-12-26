@@ -842,13 +842,14 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
-		hitlag_ticks = 0
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:
 				var particle_pos = get_hurtbox_center_float()
 				spawn_particle_effect(preload("res://fx/FeintEffect.tscn"), particle_pos)
 			state_machine._change_state(queued_action, queued_data)
+			if !current_state().is_hurt_state:
+				hitlag_ticks = 0
 			if pressed_feint:
 				feinting = true
 				current_state().feinting = true
