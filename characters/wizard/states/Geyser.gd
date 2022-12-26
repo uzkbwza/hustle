@@ -40,5 +40,5 @@ func _frame_9():
 		"x": fixed.round(particle_pos.x) - diff_x,
 		"y": fixed.round(particle_pos.y) - diff_y - 16,
 	}
-	if obj_pos.y <= 0:
+	if obj_pos.y + pos.y <= 0:
 		var obj = host.spawn_object(PROJECTILE, obj_pos.x * host.get_facing_int(), obj_pos.y)

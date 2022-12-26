@@ -1154,6 +1154,7 @@ sfx_tick = 10
 sfx_volume = -5.0
 title = "Lightning Slice"
 type = 2
+data_ui_scene = ExtResource( 276 )
 button_texture = ExtResource( 187 )
 air_type = 2
 iasa_at = 25
