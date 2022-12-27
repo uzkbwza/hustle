@@ -113,6 +113,8 @@ func _ready():
 	$"%HitboxesButton".connect("toggled", self, "_on_hitboxes_button_toggled")
 	$"%PlaybackControls".set_pressed_no_signal(Global.show_playback_controls)
 	$"%PlaybackControls".connect("toggled", self, "_on_playback_controls_button_toggled")
+	$"%PredictionSettingsOpenButton".connect("pressed", self, "_on_open_prediction_settings_pressed")
+	$"%PredictionSettingsCloseButton".connect("pressed", self, "_on_close_prediction_settings_pressed")
 #	$"%BGColor".color = dark_mode_color
 #	if Global.light_mode:
 #		$"%BGColor".color = light_mode_color
@@ -164,6 +166,14 @@ func _on_hitboxes_button_toggled(on):
 
 func _on_playback_controls_button_toggled(on):
 	Global.set_playback_controls(on)
+
+func _on_open_prediction_settings_pressed():
+	$"%PredictionSettingsOpenButton".hide()
+	$"%OptionsBar".show()
+
+func _on_close_prediction_settings_pressed():
+	$"%PredictionSettingsOpenButton".show()
+	$"%OptionsBar".hide()
 
 func toggle_help_screen():
 	$"%HelpScreen".visible = !$"%HelpScreen".visible

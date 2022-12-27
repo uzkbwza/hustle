@@ -24,6 +24,8 @@ onready var settings_nodes = {
 	"char_height": $"%CharHeight",
 	"gravity_enabled": $"%GravityEnabled",
 	"chess_timer": $"%ChessTimer",
+	"extremely_turbo_mode": $"%ExtremelyTurboMode",
+	"clashing_enabled": $"%ClashingEnabled",
 }
 
 func _ready():

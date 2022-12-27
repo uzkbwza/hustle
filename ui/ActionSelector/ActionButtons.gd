@@ -438,44 +438,54 @@ func activate():
 	fighter_extra.hide()
 	for button in buttons:
 		var found = false
-		for category in cancel_into:
-			if !fighter.action_cancels.has(category):
-				continue
+		if fighter.extremely_turbo_mode and !fighter.busy_interrupt:
+			found = true
+			$"%ReverseButton".set_disabled(false)
+		#							$"%SelectButton".disabled = false
+			any_available_actions = true
 			
-			for cancel_state in fighter.action_cancels[category]:
-				if !(cancel_state.state_name == button.action_name and \
-				cancel_state.is_usable() and (cancel_state.allowed_in_stance())):
+			if showing:
+				button.set_disabled(false)
+				button.show()
+		else:
+			for category in cancel_into:
+				if !fighter.action_cancels.has(category):
 					continue
 				
-				if cancel_state.state_name == state.state_name:
-					if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
+				for cancel_state in fighter.action_cancels[category]:
+					if !(cancel_state.state_name == button.action_name and \
+					cancel_state.is_usable() and (cancel_state.allowed_in_stance())):
 						continue
-					elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
+					
+					if cancel_state.state_name == state.state_name:
+						if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
+							continue
+						elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
+							continue
+					if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
 						continue
-				if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
-					continue
-				elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
-					continue
-				var excepted = false
-				if fighter.state_hit_cancellable:
-					for c in state.hit_cancel_exceptions:
-						if c in cancel_state.interrupt_from:
-							excepted = true
-				if !excepted and fighter.state_interruptable:
-					for c in state.interrupt_exceptions:
-						if c in cancel_state.interrupt_from:
-							excepted = true
-				if excepted:
-					continue
-				found = true
-				$"%ReverseButton".set_disabled(false)
-#							$"%SelectButton".disabled = false
-				any_available_actions = true
-				
-				if showing:
-					button.set_disabled(false)
-					button.show()
-				break
+					elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
+						continue
+					var excepted = false
+					if fighter.state_hit_cancellable:
+						for c in state.hit_cancel_exceptions:
+							if c in cancel_state.interrupt_from:
+								excepted = true
+					if !excepted and fighter.state_interruptable:
+						for c in state.interrupt_exceptions:
+							if c in cancel_state.interrupt_from:
+								excepted = true
+					if excepted:
+						continue
+					found = true
+					$"%ReverseButton".set_disabled(false)
+	#							$"%SelectButton".disabled = false
+					any_available_actions = true
+					
+					if showing:
+						button.set_disabled(false)
+						button.show()
+					break
 
 #	if fighter.can_nudge and "Nudge" in cancel_into:
 #		nudge_button.show()

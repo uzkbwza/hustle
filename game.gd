@@ -46,6 +46,7 @@ var game_started = false
 var undoing = false
 var singleplayer = false
 var parry_freeze = false
+var clashing_enabled = false
 
 var game_paused = false
 
@@ -279,6 +280,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		frame_by_frame = match_data.frame_by_frame
 	if match_data.has("char_distance"):
 		char_distance = match_data["char_distance"]
+	if match_data.has("clashing_enabled"):
+		clashing_enabled = match_data["clashing_enabled"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
@@ -656,33 +659,37 @@ func apply_hitboxes():
 #	if p1_hit and p2_hit:
 	var clash_position = Vector2()
 	var clashed = false
-	for p1_hitbox in p1_hitboxes:
-		if p1_hitbox is ThrowBox:
-			continue
-		var p2_hitbox = get_colliding_hitbox(p2_hitboxes, p1_hitbox)
-		if p2_hitbox:
-			if p2_hitbox is ThrowBox:
+	if clashing_enabled:
+		for p1_hitbox in p1_hitboxes:
+			if p1_hitbox is ThrowBox:
 				continue
-			var valid_clash = false
-			if !p1_hit and !p2_hit:
-				valid_clash = true
-#
-#			if p1_hit and !p2_hit:
-#				if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
-#					valid_clash = true
-#
-#			if p2_hit and !p1_hit:
-#				if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
-#					valid_clash = true
-#
-			if p1_hit and p2_hit:
-				if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
+			var p2_hitbox = get_colliding_hitbox(p2_hitboxes, p1_hitbox)
+			if p2_hitbox:
+				if p2_hitbox is ThrowBox:
+					continue
+				var valid_clash = false
+				
+				if !p1_hit and !p2_hit:
 					valid_clash = true
-			
-			if valid_clash:
-				clashed = true
-				clash_position = p2_hitbox.get_overlap_center_float(p1_hitbox)
-				break
+	#
+	#			if p1_hit and !p2_hit:
+	#				if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
+	#					valid_clash = true
+	#
+	#			if p2_hit and !p1_hit:
+	#				if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
+	#					valid_clash = true
+	#
+				if p1_hit and p2_hit:
+					if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
+						valid_clash = true
+				
+				
+				
+				if valid_clash:
+					clashed = true
+					clash_position = p2_hitbox.get_overlap_center_float(p1_hitbox)
+					break
 
 	if clashed:
 		p1.clash()

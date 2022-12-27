@@ -7,6 +7,11 @@ func _ready():
 
 func _on_action_buttons_visibility_changed():
 	if !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
-		$"%OptionsBar".hide()
+		$"%OptionsBarContainer".hide()
+		$"%PredictionSettingsOpenButton".hide()
 	else:
-		$"%OptionsBar".show()
+		$"%OptionsBarContainer".show()
+		if !$"%OptionsBar".visible:
+			$"%PredictionSettingsOpenButton".show()
+		else:
+			$"%PredictionSettingsOpenButton".hide()

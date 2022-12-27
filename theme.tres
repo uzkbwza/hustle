@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=34 format=2]
+[gd_resource type="Theme" load_steps=45 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -65,6 +65,28 @@ bg_color = Color( 1, 1, 1, 1 )
 border_width_left = 1
 border_width_top = 6
 border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="ImageTexture" id=32]
+
+[sub_resource type="ImageTexture" id=33]
+
+[sub_resource type="ImageTexture" id=34]
+
+[sub_resource type="ImageTexture" id=35]
+
+[sub_resource type="ImageTexture" id=36]
+
+[sub_resource type="ImageTexture" id=37]
+
+[sub_resource type="StyleBoxEmpty" id=38]
+
+[sub_resource type="StyleBoxEmpty" id=39]
+
+[sub_resource type="StyleBoxEmpty" id=40]
+
+[sub_resource type="StyleBoxEmpty" id=41]
+
+[sub_resource type="StyleBoxEmpty" id=42]
 
 [sub_resource type="StyleBoxFlat" id=25]
 bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
@@ -178,6 +200,18 @@ HSlider/icons/tick = null
 HSlider/styles/grabber_area = SubResource( 18 )
 HSlider/styles/grabber_area_highlight = SubResource( 18 )
 HSlider/styles/slider = SubResource( 17 )
+InvisScrollbar/base_type = "VScrollBar"
+InvisScrollbar/icons/decrement = SubResource( 32 )
+InvisScrollbar/icons/decrement_highlight = SubResource( 33 )
+InvisScrollbar/icons/decrement_pressed = SubResource( 34 )
+InvisScrollbar/icons/increment = SubResource( 35 )
+InvisScrollbar/icons/increment_highlight = SubResource( 36 )
+InvisScrollbar/icons/increment_pressed = SubResource( 37 )
+InvisScrollbar/styles/grabber = SubResource( 38 )
+InvisScrollbar/styles/grabber_highlight = SubResource( 39 )
+InvisScrollbar/styles/grabber_pressed = SubResource( 40 )
+InvisScrollbar/styles/scroll = SubResource( 41 )
+InvisScrollbar/styles/scroll_focus = SubResource( 42 )
 ItemList/styles/bg = SubResource( 25 )
 ItemList/styles/bg_focus = SubResource( 25 )
 LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.752941 )

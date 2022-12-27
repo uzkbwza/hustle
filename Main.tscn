@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=2]
+[gd_scene load_steps=79 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -63,6 +63,9 @@
 [ext_resource path="res://ui/HelpText.tscn" type="PackedScene" id=61]
 [ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.tscn" type="PackedScene" id=62]
 [ext_resource path="res://ui/HUD/FeintDisplay.gd" type="Script" id=63]
+[ext_resource path="res://ui/ghostsettingsup.png" type="Texture" id=64]
+[ext_resource path="res://ui/help_button.png" type="Texture" id=65]
+[ext_resource path="res://ui/ghostsettingsdown.png" type="Texture" id=66]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -1043,9 +1046,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -320.0
-margin_top = -152.0
+margin_top = -153.0
 margin_right = 320.0
-margin_bottom = -4.0
+margin_bottom = -5.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 custom_constants/separation = 0
@@ -1230,22 +1233,26 @@ rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 player_id = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
+[node name="OptionsBarContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
+unique_name_in_owner = true
 margin_top = 136.0
 margin_right = 640.0
 margin_bottom = 148.0
-custom_constants/margin_right = 10
-custom_constants/margin_left = 10
+rect_min_size = Vector2( 0, 12 )
+custom_constants/margin_right = 5
+custom_constants/margin_left = 5
 
-[node name="OptionsBar" type="HFlowContainer" parent="UILayer/GameUI/BottomBar/MarginContainer"]
+[node name="OptionsBar" type="HFlowContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer"]
 unique_name_in_owner = true
-margin_left = 10.0
-margin_right = 630.0
+visible = false
+margin_left = 5.0
+margin_right = 635.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/hseparation = 3
 
-[node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+[node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
 margin_right = 141.0
 margin_bottom = 12.0
@@ -1254,37 +1261,37 @@ pressed = true
 action_mode = 0
 text = "show prediction (buggy)"
 
-[node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+[node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 145.0
-margin_right = 226.0
+margin_left = 144.0
+margin_right = 225.0
 margin_bottom = 12.0
 pressed = true
 text = "afterimages"
 
-[node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+[node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 230.0
-margin_right = 408.0
+margin_left = 228.0
+margin_right = 406.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze prediction on turn ready"
 
-[node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+[node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 412.0
-margin_right = 540.0
+margin_left = 409.0
+margin_right = 537.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
-[node name="Label" type="Label" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+[node name="Label" type="Label" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
 margin_right = 84.0
 margin_bottom = 11.0
 theme = ExtResource( 4 )
 text = "prediction speed:"
 
-[node name="1Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+[node name="1Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
 margin_left = 85.0
 margin_right = 113.0
@@ -1293,7 +1300,7 @@ rect_min_size = Vector2( 12, 0 )
 toggle_mode = true
 text = "x0.25"
 
-[node name="2Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+[node name="2Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
 margin_left = 114.0
 margin_right = 128.0
@@ -1303,7 +1310,7 @@ toggle_mode = true
 pressed = true
 text = "x1"
 
-[node name="3Speed" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/GhostSpeed"]
+[node name="3Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
 visible = false
 margin_left = 129.0
@@ -1313,12 +1320,19 @@ rect_min_size = Vector2( 12, 0 )
 toggle_mode = true
 text = "x4"
 
-[node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar"]
+[node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 544.0
-margin_right = 617.0
+margin_left = 540.0
+margin_right = 613.0
 margin_bottom = 12.0
 text = "clear particles"
+
+[node name="PredictionSettingsCloseButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 616.0
+margin_right = 630.0
+margin_bottom = 12.0
+icon = ExtResource( 66 )
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1528,12 +1542,15 @@ autowrap = true
 
 [node name="HelpButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 28.0
-margin_bottom = 27.0
+margin_left = 1.0
+margin_top = 2.0
+margin_right = 20.0
+margin_bottom = 21.0
+mouse_default_cursor_shape = 2
 action_mode = 0
-text = "?"
+icon = ExtResource( 65 )
+flat = true
+icon_align = 1
 
 [node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1567,6 +1584,20 @@ align = 1
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="PredictionSettingsOpenButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -9.5
+margin_top = -14.0
+margin_right = 9.5
+margin_bottom = -2.0
+mouse_default_cursor_shape = 2
+icon = ExtResource( 64 )
+icon_align = 1
 
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true
@@ -2256,7 +2287,7 @@ pitch_variation = 0.05
 [node name="MLMainHook" type="Node" parent="ModLoaderHooks"]
 script = ExtResource( 56 )
 
-[connection signal="pressed" from="UILayer/GameUI/BottomBar/MarginContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
+[connection signal="pressed" from="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]

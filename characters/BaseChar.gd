@@ -139,6 +139,7 @@ var got_parried = false
 
 var di_enabled = true
 var turbo_mode = false
+var extremely_turbo_mode = false
 var infinite_resources = false
 var one_hit_ko = false
 var burst_enabled = true
@@ -1059,6 +1060,10 @@ func on_action_selected(action, data, extra):
 		emit_signal("undo")
 #	if action == "Forfeit":
 #		emit_signal("forfeit")
+	var state = state_machine.get_state(action)
+	if state:
+		if !state.is_usable():
+			action = "Forfeit"
 	emit_signal("action_selected", action, data, extra)
 
 func forfeit():
