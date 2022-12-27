@@ -588,11 +588,10 @@ parry_type = 2
 
 [node name="Wait" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 4 )
-anim_length = 30
+anim_length = 10
 title = "Wait"
 button_texture = ExtResource( 55 )
 interruptible_on_opponent_turn = true
-self_interruptable = false
 interrupt_from_string = "GroundedIdle
 Grounded"
 interrupt_into_string = "Grounded

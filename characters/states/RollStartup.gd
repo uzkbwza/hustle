@@ -27,6 +27,7 @@ func _frame_0():
 	if tech:
 		host.start_invulnerability()
 		host.colliding_with_opponent = false
+	host.start_throw_invulnerability()
 
 func _frame_1():
 	host.colliding_with_opponent = false
@@ -37,6 +38,7 @@ func _frame_2():
 func _frame_8():
 	if !tech:
 		host.end_invulnerability()
+		host.end_throw_invulnerability()
 
 func _tick():
 	host.colliding_with_opponent = false

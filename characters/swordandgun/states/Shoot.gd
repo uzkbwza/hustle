@@ -14,9 +14,14 @@ var dir
 var angle
 
 
-
 func _frame_1():
+	
 	if !temporal:
+		var clash = false
+		if host.opponent.is_in_group("Cowboy"):
+			var opponent_state = host.opponent.current_state()
+			if opponent_state.name == "Shoot" and !opponent_state.temporal and opponent_state.start_tick == start_tick:
+				clash = true
 		host.play_sound("Shoot")
 		host.play_sound("ShootBass")
 		var bullet_location_local = host.obj_local_center(host.opponent)
@@ -38,8 +43,13 @@ func _frame_1():
 		bullet_location.x = fixed.round(fixed.add(str(bullet_location.x), opp_vel.x))
 		bullet_location.y = fixed.round(fixed.add(str(bullet_location.y), opp_vel.y))
 		var pos = host.get_pos()
-		var bullet = host.spawn_object(BULLET_SCENE, bullet_location.x, bullet_location.y, true, bullet_location, false)
-		bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
+		if !clash:
+			var bullet = host.spawn_object(BULLET_SCENE, bullet_location.x, bullet_location.y, true, bullet_location, false)
+			bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
+		else:
+			if host.id == 1:
+				host.parry_effect((host.opponent.get_center_position_float() + host.get_center_position_float()) / 2 + Vector2(0, -16), true)
+			queue_state_change("Holster")
 		var barrel_location = host.get_barrel_location(angle)
 		spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(float(barrel_location.x) * host.get_facing_int(), float(barrel_location.y)), Vector2(float(dir.x), float(dir.y)))
 

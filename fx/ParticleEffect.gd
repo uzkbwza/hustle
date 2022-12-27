@@ -14,6 +14,10 @@ var emitting = true
 var enabled = true
 var tick = 0
 
+var sounds_played = {
+	
+}
+
 onready var tick_timer = $Timer
 
 func _ready():
@@ -28,6 +32,8 @@ func _ready():
 		elif child is AnimatedSprite:
 			child.playing = false
 			child.frame = 0
+		elif child is AudioStreamPlayer2D:
+			sounds_played[child] = false
 #		if child is Node2D:
 #			child.set_material(get_material())
 	if !ReplayManager.playback:
@@ -71,6 +77,10 @@ func tick():
 				child.frame = tick
 			else:
 				child.queue_free()
+		if child is AudioStreamPlayer2D:
+			if !child.playing and !sounds_played[child]:
+				child.play()
+				sounds_played[child] = true
 	if free:
 		if tick / 60.0 >= lifetime:
 			queue_free()

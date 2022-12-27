@@ -647,7 +647,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[node name="Cowboy" instance=ExtResource( 1 )]
+[node name="Cowboy" groups=["Cowboy"] instance=ExtResource( 1 )]
 material = null
 script = ExtResource( 112 )
 __meta__ = {

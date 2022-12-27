@@ -7,6 +7,7 @@ signal super_started()
 signal parried()
 signal undo()
 signal forfeit()
+signal clashed()
 #signal got_counter_hit()
 
 var MAX_HEALTH = 1000
@@ -38,6 +39,10 @@ const MAX_GROUNDED_HITS = 7
 
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
+
+const HOLD_RESTARTS = [
+	"Wait"
+]
 
 const P1_COLOR = Color("aca2ff")
 const P2_COLOR = Color("ff7a81")
@@ -73,6 +78,8 @@ const NUDGE_DISTANCE = 20
 
 const PARRY_METER = 50
 const METER_GAIN_MODIFIER = "1.0"
+
+const CLASH_MOVE_BACK = 3
 
 const MIN_PENALTY = -50
 const MAX_PENALTY = 75
@@ -203,6 +210,7 @@ var initiative = false
 var aura_particle = null
 
 var feinting = false
+var clashing = false
 
 var last_action = 0
 
@@ -226,6 +234,18 @@ var lowest_tick = 0
 class InputState:
 	var name
 	var data
+
+func clash():
+	clashing = true
+	update_grounded()
+	on_state_interruptable(current_state())
+#	reset_momentum()
+	var vel = get_vel()
+	set_vel("0", vel.y)
+	
+#	apply_force_relative(-CLASH_MOVE_BACK, 0)
+	add_pushback(str(-CLASH_MOVE_BACK))
+	emit_signal("clashed")
 
 func init(pos=null):
 	.init(pos)
@@ -318,7 +338,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "has_hyper_armor", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "has_hyper_armor", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -662,11 +682,20 @@ func hit_by(hitbox):
 			play_sound("Block")
 			play_sound("Parry")
 		else:
-			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			gain_super_meter(parry_meter)
+			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+
+func parry_effect(location, absolute=false):
+	if !absolute:
+		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + location)
+	else:
+		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), location)
+	play_sound("Parry2")
+	play_sound("Parry")
+	emit_signal("parried")
 
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -803,7 +832,12 @@ func tick_before():
 	if queued_action == "Forfeit":
 		if forfeit:
 			queued_action = "Continue"
-	
+	if clashing:
+		if is_grounded():
+			change_state("Wait")
+		else:
+			change_state("Fall")
+		clashing = false
 	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
@@ -841,6 +875,11 @@ func tick_before():
 	if queued_extra:
 		process_extra(queued_extra)
 		pressed_feint = feinting
+	if queued_action == "Continue":
+		var current_state_name = current_state().name
+		if current_state_name in HOLD_RESTARTS:
+			queued_action = current_state_name
+		pass
 	if queued_action:
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
@@ -916,7 +955,7 @@ func tick():
 	any_available_actions = true
 	last_vel = get_vel()
 	var pos = get_pos()
-	
+
 	if !is_in_hurt_state() and combo_count <= 0 and penalty_ticks <= 0:
 #		var dir = Utils.int_sign(last_pos.x - pos.x)
 		var dir = fixed.sign(last_vel.x)

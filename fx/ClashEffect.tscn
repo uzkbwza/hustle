@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://fx/particle_square_4x4.png" type="Texture" id=1]
+[ext_resource path="res://sound/common/clash1.wav" type="AudioStream" id=2]
+[ext_resource path="res://sound/common/clash3.wav" type="AudioStream" id=3]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=4]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=5]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=6]
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=7]
+[ext_resource path="res://fx/big_filled_circle.png" type="Texture" id=8]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 6 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 1 ), 0.0, -1.44064, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0 ), 0.0, 3.09229, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=4]
+offsets = PoolRealArray( 0, 0.00704225, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[node name="ParticleEffect" instance=ExtResource( 5 )]
+material = SubResource( 1 )
+
+[node name="VariableSound2D" type="AudioStreamPlayer2D" parent="." index="1"]
+stream = ExtResource( 2 )
+volume_db = -5.0
+bus = "Fx"
+script = ExtResource( 4 )
+
+[node name="VariableSound2D2" type="AudioStreamPlayer2D" parent="." index="2"]
+stream = ExtResource( 3 )
+volume_db = -14.0
+bus = "Fx"
+script = ExtResource( 4 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="3"]
+amount = 10
+speed_scale = 8.48
+explosiveness = 1.0
+texture = ExtResource( 1 )
+spread = 180.0
+gravity = Vector2( 0, 31.31 )
+initial_velocity = 107.99
+initial_velocity_random = 1.0
+scale_amount = 4.99
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 2 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="4"]
+amount = 10
+speed_scale = 8.48
+explosiveness = 1.0
+texture = ExtResource( 7 )
+spread = 180.0
+gravity = Vector2( 0, 31.31 )
+initial_velocity = 155.59
+initial_velocity_random = 1.0
+scale_amount = 4.99
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 2 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="5"]
+amount = 2
+speed_scale = 10.25
+explosiveness = 1.0
+texture = ExtResource( 8 )
+emission_shape = 1
+emission_sphere_radius = 7.41
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 0.87
+initial_velocity_random = 1.0
+scale_amount = 4.54
+scale_amount_random = 0.79
+scale_amount_curve = SubResource( 3 )
+color_ramp = SubResource( 4 )

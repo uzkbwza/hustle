@@ -7,6 +7,7 @@ onready var shooting_arm = $"%ShootingArm"
 const BARREL_LOCATION_X = "26"
 const BARREL_LOCATION_Y = "-5"
 const GUN_PICKUP_DISTANCE = "26"
+const IS_COWBOY = true # lol
 
 var bullets_left = 6
 var cut_projectile = null
@@ -14,6 +15,7 @@ var lasso_projectile = null
 var used_aerial_h_slash = false
 var has_gun = true
 var gun_projectile = null
+
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())

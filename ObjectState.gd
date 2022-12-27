@@ -63,6 +63,7 @@ var sfx_player
 
 var current_tick = -1
 var current_real_tick = -1
+var start_tick = -1
 var fixed
 
 var anim_name
@@ -310,6 +311,7 @@ func _enter_shared():
 		host.reset_momentum()
 	current_tick = -1
 	current_real_tick = -1
+	start_tick = host.current_tick
 	if enter_sfx_player and !ReplayManager.resimulating:
 		enter_sfx_player.play()
 	emit_signal("state_started")

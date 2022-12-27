@@ -7,6 +7,7 @@ const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
+const CLASH_DAMAGE_DIFF = 60
 
 export(int) var char_distance = 200
 export(int) var stage_width = 1100
@@ -138,9 +139,19 @@ func _ready():
 	else:
 		emit_signal("simulation_continue")
 
-#func _on_turn_started():
-#	if Network.multiplayer_active:
-		
+func _spawn_particle_effect(particle_effect: PackedScene, pos: Vector2, dir= Vector2.RIGHT):
+	var obj = particle_effect.instance()
+	add_child(obj)
+	obj.tick()
+	var facing = -1 if dir.x < 0 else 1
+	obj.position = pos
+	if facing < 0:
+		obj.rotation = (dir * Vector2(-1, -1)).angle()
+	else:
+		obj.rotation = dir.angle()
+	obj.scale.x = facing
+	remove_child(obj)
+	on_particle_effect_spawned(obj)
 
 func connect_signals(object):
 	object.connect("object_spawned", self, "on_object_spawned")
@@ -221,6 +232,11 @@ func _on_fx_exit_tree(fx):
 func _on_obj_exit_tree(obj):
 	objects.erase(obj)
 
+func on_clash():
+	super_freeze_ticks = 5
+	parry_freeze = true
+	pass
+
 func on_parry():
 	super_freeze_ticks = 10 
 	parry_freeze = true
@@ -254,6 +270,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	
 	p1.connect("parried", self, "on_parry")
 	p2.connect("parried", self, "on_parry")
+	p1.connect("clashed", self, "on_clash")
+	p2.connect("clashed", self, "on_clash")
 	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)
 	if match_data.has("game_length"):
 		time = match_data["game_length"]
@@ -613,10 +631,10 @@ func apply_hitboxes():
 	var p2_hit = false
 	var p1_throwing = false
 	var p2_throwing = false
-	
+
 	if p1_hit_by:
 		if !(p1_hit_by is ThrowBox):
-			p1_hit_by.hit(p1)
+#			p1_hit_by.hit(p1)
 			p1_hit = true
 		else:
 			p2_throwing = true
@@ -626,7 +644,7 @@ func apply_hitboxes():
 				p2_throwing = false
 	if p2_hit_by:
 		if !(p2_hit_by is ThrowBox):
-			p2_hit_by.hit(p2)
+#			p2_hit_by.hit(p2)
 			p2_hit = true
 		else:
 			p1_throwing = true
@@ -634,6 +652,31 @@ func apply_hitboxes():
 				p1_throwing = false
 			if p2.throw_invulnerable:
 				p1_throwing = false
+#
+#	if p1_hit and p2_hit:
+	var clash_position = Vector2()
+	var clashed = false
+	for hitbox in p1_hitboxes:
+		if hitbox is ThrowBox:
+			continue
+		var colliding_box = get_colliding_hitbox(p2_hitboxes, hitbox)
+		if colliding_box:
+			if colliding_box is ThrowBox:
+				continue
+			if !p1_hit and !p2_hit or Utils.int_abs(colliding_box.get_real_damage() - hitbox.get_real_damage()) < CLASH_DAMAGE_DIFF:
+				clashed = true
+				clash_position = colliding_box.get_overlap_center_float(hitbox)
+				break
+
+	if clashed:
+		p1.clash()
+		p2.clash()
+		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
+	else:
+		if p1_hit:
+			p1_hit_by.hit(p1)
+		if p2_hit:
+			p2_hit_by.hit(p2)
 
 	if !p2_hit and !p1_hit:
 		if p2_throwing and p1_throwing and p1.current_state().throw_techable and p2.current_state().throw_techable:
@@ -721,7 +764,7 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
-			var grounded = hurtbox.get_parent().is_grounded()
+			var grounded = (hurtbox.get_parent().is_grounded() if !(hurtbox is Hitbox) else true)
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
 				continue
 

@@ -225,6 +225,7 @@ func get_real_knockback():
 	else:
 		return knockback
 
+
 func get_real_damage():
 	var is_combo = false
 	if host.is_in_group("Fighter"):
