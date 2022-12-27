@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.6.12-unstable"
+var VERSION = "0.6.13-unstable"
 
 var audio_player
 var music_enabled = true
@@ -71,7 +71,7 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	randomize()
-	if randi() % 20 == 0 and !SteamHustle.STARTED:
+	if randi() % 50 == 0 and !SteamHustle.STARTED:
 		emit_signal("nag_window")
 
 func set_music_enabled(on):

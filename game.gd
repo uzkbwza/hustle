@@ -656,16 +656,32 @@ func apply_hitboxes():
 #	if p1_hit and p2_hit:
 	var clash_position = Vector2()
 	var clashed = false
-	for hitbox in p1_hitboxes:
-		if hitbox is ThrowBox:
+	for p1_hitbox in p1_hitboxes:
+		if p1_hitbox is ThrowBox:
 			continue
-		var colliding_box = get_colliding_hitbox(p2_hitboxes, hitbox)
-		if colliding_box:
-			if colliding_box is ThrowBox:
+		var p2_hitbox = get_colliding_hitbox(p2_hitboxes, p1_hitbox)
+		if p2_hitbox:
+			if p2_hitbox is ThrowBox:
 				continue
-			if !p1_hit and !p2_hit or Utils.int_abs(colliding_box.get_real_damage() - hitbox.get_real_damage()) < CLASH_DAMAGE_DIFF:
+			var valid_clash = false
+			if !p1_hit and !p2_hit:
+				valid_clash = true
+#
+#			if p1_hit and !p2_hit:
+#				if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
+#					valid_clash = true
+#
+#			if p2_hit and !p1_hit:
+#				if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
+#					valid_clash = true
+#
+			if p1_hit and p2_hit:
+				if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
+					valid_clash = true
+			
+			if valid_clash:
 				clashed = true
-				clash_position = colliding_box.get_overlap_center_float(hitbox)
+				clash_position = p2_hitbox.get_overlap_center_float(p1_hitbox)
 				break
 
 	if clashed:
