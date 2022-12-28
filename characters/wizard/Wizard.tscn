@@ -1650,6 +1650,7 @@ type = 2
 data_ui_scene = ExtResource( 272 )
 button_texture = ExtResource( 278 )
 air_type = 2
+reversible = false
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial

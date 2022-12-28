@@ -1834,6 +1834,10 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
@@ -1841,10 +1845,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -1880,14 +1880,6 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
@@ -1895,6 +1887,14 @@ ExtResource( 209 ): {
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 }
 }
 burst_cancellable = false

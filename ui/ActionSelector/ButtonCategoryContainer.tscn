@@ -53,8 +53,8 @@ theme_type_variation = "InvisScrollbar"
 
 [node name="ButtonContainer" type="GridContainer" parent="ButtonCategoryContainer/VBoxContainer/ScrollContainer2"]
 unique_name_in_owner = true
-margin_right = 57.0
-margin_bottom = 52.0
+margin_right = 48.0
+margin_bottom = 47.0
 grow_horizontal = 2
 grow_vertical = 2
 rect_min_size = Vector2( 48, 47 )

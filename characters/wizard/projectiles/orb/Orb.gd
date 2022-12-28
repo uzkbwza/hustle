@@ -4,6 +4,8 @@ const ACCEL_SPEED = "0.30"
 const FRIC = "0.04"
 const DIRECT_MOVE_SPEED = "3.0"
 const PUSH_SPEED_LIMIT = "8"
+const LIGHTNING_Y = 132
+const LIGHTNING_PUSH_FORCE = "-5"
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LIGHTNING_SCENE = preload("res://characters/wizard/projectiles/orb/OrbLightning.tscn")
@@ -111,7 +113,15 @@ func disable():
 	spawn_particle_effect_relative(DISABLE_PARTICLE)
 
 func spawn_lightning():
-	spawn_object(LIGHTNING_SCENE, 0, 0, true)
+	var pos = get_pos()
+	var lightning_y = pos.y
+	if pos.y > -LIGHTNING_Y:
+		set_pos(pos.x, -LIGHTNING_Y)
+		var vel = get_vel()
+		set_vel(vel.x, LIGHTNING_PUSH_FORCE)
+		lightning_y = -LIGHTNING_Y
+		spawn_particle_effect_relative(PUSH_PARTICLE)
+	spawn_object(LIGHTNING_SCENE, pos.x, lightning_y, false, null, false)
 	play_sound("Lightning")
 
 func spawn_orb_dart():

@@ -7,7 +7,8 @@ const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
-const CLASH_DAMAGE_DIFF = 60
+const CLASH_DAMAGE_DIFF = 40
+const CAMERA_PADDING = 20
 
 export(int) var char_distance = 200
 export(int) var stage_width = 1100
@@ -366,8 +367,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p1.stage_width = stage_width
 	p2.stage_width = stage_width
 	if stage_width >= 320:
-		camera.limit_left = -stage_width - 2
-		camera.limit_right = stage_width + 2
+		camera.limit_left = -stage_width - CAMERA_PADDING
+		camera.limit_right = stage_width + CAMERA_PADDING
 	
 #	p1.set_pos(0, 0)
 #	p2.set_pos(0, -100)
@@ -669,8 +670,8 @@ func apply_hitboxes():
 					continue
 				var valid_clash = false
 				
-				if !p1_hit and !p2_hit:
-					valid_clash = true
+#				if !p1_hit and !p2_hit:
+#					valid_clash = true
 	#
 	#			if p1_hit and !p2_hit:
 	#				if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
@@ -680,11 +681,17 @@ func apply_hitboxes():
 	#				if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
 	#					valid_clash = true
 	#
-				if p1_hit and p2_hit:
+				if (!p1_hit and !p2_hit) or (p1_hit and p2_hit):
 					if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
 						valid_clash = true
-				
-				
+					elif p1_hitbox.damage > p2_hitbox.damage:
+						p1_hit = false
+						clash_position = p2_hitbox.get_center_float()
+						_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
+					elif p1_hitbox.damage < p2_hitbox.damage:
+						clash_position = p1_hitbox.get_center_float()
+						_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
+						p2_hit = false
 				
 				if valid_clash:
 					clashed = true
@@ -1107,21 +1114,33 @@ func _unhandled_input(event: InputEvent):
 				if event.button_index == BUTTON_WHEEL_DOWN:
 					zoom_out()
 
+func update_camera_limits():
+	if camera_zoom == 1.0:
+		camera.limit_left = -stage_width - CAMERA_PADDING
+		camera.limit_right = stage_width + CAMERA_PADDING
+	else:
+		camera.limit_left = -10000000
+		camera.limit_right = 10000000
+
 func zoom_in():
 	emit_signal("zoom_changed")
 	camera_zoom -= 0.1
 	if camera_zoom < 0.2:
 		camera_zoom = 0.2
+	update_camera_limits()
+
 
 func zoom_out():
 	emit_signal("zoom_changed")
 	camera_zoom += 0.1
 	if camera_zoom > 3.0:
 		camera_zoom = 3.0
+	update_camera_limits()
 
 func reset_zoom():
 	camera_zoom = 1.0
 	emit_signal("zoom_changed")
+	update_camera_limits()
 
 func _draw():
 	if is_ghost:
@@ -1130,9 +1149,9 @@ func _draw():
 		draw_circle(camera.position, 3, Color.white * 0.5)
 	var line_color = Color.white
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
-	if stage_width < 320:
-		draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -10000), line_color, 2.0)
-		draw_line(Vector2(stage_width, 0), Vector2(stage_width, -10000), line_color, 2.0)
+#	if stage_width < 320 or camera_zoom != 1.0:
+	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -100000), line_color, 2.0)
+	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -100000), line_color, 2.0)
 	var line_dist = 50
 	var num_lines = stage_width * 2 / line_dist
 	for i in range(num_lines):
