@@ -683,6 +683,9 @@ func hit_by(hitbox):
 			play_sound("Block")
 			play_sound("Parry")
 		else:
+			if projectile:
+				if host.has_method("on_got_parried"):
+					host.on_got_parried()
 			gain_super_meter(parry_meter)
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
@@ -696,7 +699,6 @@ func parry_effect(location, absolute=false):
 		spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), location)
 	play_sound("Parry2")
 	play_sound("Parry")
-	emit_signal("parried")
 
 func set_throw_position(x: int, y: int):
 	throw_pos_x = x
@@ -757,16 +759,19 @@ func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":
 		opponent.change_state("Fall")
 
+func get_scaled_di(di):
+	return xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
+
 func process_extra(extra):
 	if "DI" in extra:
 		if di_enabled:
 			var di = extra["DI"]
 			current_nudge = xy_to_dir(di.x, di.y, str(NUDGE_DISTANCE))
-			current_di = xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
+			current_di = di
 		else:
 			current_di = {
-				"x": "0",
-				"y": "0",
+				"x": 0,
+				"y": 0,
 			}
 	if "reverse" in extra:
 		reverse_state = extra["reverse"]
@@ -913,7 +918,8 @@ func tick():
 		if can_nudge:
 			if fixed.round(fixed.mul(fixed.vec_len(current_nudge.x, current_nudge.y), "100.0")) > 1:
 				current_nudge = fixed.vec_mul(current_nudge.x, current_nudge.y, nudge_amount)
-				spawn_particle_effect(preload("res://fx/NudgeIndicator.tscn"), Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(current_di.x, current_di.y).normalized())
+				var di_scaled = get_scaled_di(current_di)
+				spawn_particle_effect(preload("res://fx/NudgeIndicator.tscn"), Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(di_scaled.x, di_scaled.y).normalized())
 				move_directly(current_nudge.x, current_nudge.y if !is_grounded() else "0")
 			can_nudge = false
 		hitlag_ticks -= 1

@@ -25,7 +25,7 @@ func _enter():
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
 	knockback_force.y = "0"
-	var di_force = fixed.vec_mul(host.current_di.x, "0", DI_STRENGTH)
+	var di_force = fixed.vec_mul(host.get_scaled_di(host.current_di).x, "0", DI_STRENGTH)
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"

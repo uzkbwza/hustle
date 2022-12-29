@@ -1,4 +1,4 @@
-[gd_scene load_steps=280 format=2]
+[gd_scene load_steps=281 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -276,6 +276,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/airdash.png" type="Texture" id=274]
 [ext_resource path="res://characters/swordandgun/sprites/airdash.png" type="Texture" id=275]
 [ext_resource path="res://characters/swordandgun/ActionUIData/LSliceActionUIData.tscn" type="PackedScene" id=276]
+[ext_resource path="res://characters/swordandgun/ActionUIData/ShootActionUIData.tscn" type="PackedScene" id=277]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -664,7 +665,8 @@ cut_projectile
 lasso_projectile
 used_aerial_h_slash
 has_gun
-gun_projectile"
+gun_projectile
+consecutive_shots"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
 
@@ -1126,8 +1128,8 @@ z_index = 1000
 script = ExtResource( 83 )
 x = 128
 y = -16
-width = 30
-height = 30
+width = 23
+height = 23
 damage = 90
 hitstun_ticks = 16
 hitlag_ticks = 2
@@ -1154,7 +1156,6 @@ sfx_tick = 10
 sfx_volume = -5.0
 title = "Lightning Slice"
 type = 2
-data_ui_scene = ExtResource( 276 )
 button_texture = ExtResource( 187 )
 air_type = 2
 iasa_at = 25
@@ -1166,6 +1167,7 @@ Aerial
 LightningSliceCancel"
 hit_cancel_exceptions_string = "LightningSlice"
 cancel = true
+tracking = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/LightningSliceCancel" index="0"]
 z_index = 1000
@@ -1814,16 +1816,19 @@ fallback_state = "Holster"
 sprite_animation = "GunShoot"
 anim_length = 14
 type = 2
+data_ui_scene = ExtResource( 277 )
 button_texture = ExtResource( 161 )
 air_type = 2
 iasa_at = 7
 interrupt_from_string = "Gun
-LassoThrow"
+LassoThrow
+Shoot"
 interrupt_into_string = "Gun
 FastHolster
 GroundedSuper
 AerialSuper"
-interrupt_exceptions_string = "FastTeleport"
+interrupt_exceptions_string = "FastTeleport
+Shoot"
 release_opponent_on_startup = true
 super_level = 0
 super_effect = false

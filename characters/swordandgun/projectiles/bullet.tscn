@@ -53,7 +53,6 @@ damage = 150
 damage_in_combo = 90
 minimum_damage = 30
 hitstun_ticks = 20
-victim_hitlag = 4
 parry_meter_gain = 125
 screenshake_amount = 7
 dir_y = "-0.25"

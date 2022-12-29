@@ -13,9 +13,20 @@ var bullet_location
 var dir
 var angle
 
+func _frame_0():
+#	fallback_state = "Holster"
+	if !temporal:
+		if data and data.has("count"):
+			host.consecutive_shots = data.count
+		iasa_at = 7
+		if host.consecutive_shots > 0:
+			iasa_at = -1
+			host.consecutive_shots -= 1
+
+func on_got_parried():
+	queue_state_change("SlowHolster")
 
 func _frame_1():
-	
 	if !temporal:
 		var clash = false
 		if host.opponent.is_in_group("Cowboy"):
@@ -45,6 +56,7 @@ func _frame_1():
 		var pos = host.get_pos()
 		if !clash:
 			var bullet = host.spawn_object(BULLET_SCENE, bullet_location.x, bullet_location.y, true, bullet_location, false)
+			bullet.connect("got_parried", self, "on_got_parried")
 			bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
 		else:
 			if host.id == 1:
@@ -106,9 +118,15 @@ func _tick():
 	host.apply_fric()
 	host.apply_forces()
 	host.apply_grav()
+#	if host.opponent.current_state().get("parried"):
+#		return "SlowHolster"
 	if air_type == AirType.Aerial:
 		if current_tick > 2 and host.is_grounded():
 			return "Landing"
+	if current_tick == 7 and !temporal:
+		if host.consecutive_shots > 0:
+			if host.bullets_left > 0:
+				return "Shoot"
 
 func is_usable():
 	return .is_usable() and (host.bullets_left > 0 or (temporal)) and host.has_gun

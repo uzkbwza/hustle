@@ -10,6 +10,7 @@ const DEFAULT_HITBOX_Y = -16
 # var a = 2
 # var b = "text"
 export var cancel = false
+export var tracking = false
 
 onready var hitbox = $Hitbox
 
@@ -30,24 +31,26 @@ func _tick():
 	}
 	hitbox.x = DEFAULT_HITBOX_X
 	hitbox.y = DEFAULT_HITBOX_Y
-#	tracking_pos.x *= host.get_facing_int()
-#	var host_pos = host.get_pos()
-#	tracking_pos.x += host_pos.x
-#	tracking_pos.y += host_pos.y
-#	var enemy_local_pos = host.obj_local_center(host.opponent)
-#	var enemy_pos = host.opponent.get_hurtbox_center()
-#	var in_deadzone = fixed.lt(fixed.vec_len(str(enemy_local_pos.x), str(enemy_local_pos.y)), DEADZONE_RADIUS)
-#	var in_tracking_radius = fixed.lt(fixed.vec_dist(str(tracking_pos.x), str(tracking_pos.y), str(enemy_pos.x), str(enemy_pos.y)), TRACKING_DISTANCE)
-#	if !in_deadzone:
-#	if in_tracking_radius and !in_deadzone:
-#		hitbox.x = Utils.int_abs(enemy_local_pos.x)
-#		hitbox.y = enemy_local_pos.y -16
-#	if in_deadzone:
-#		hitbox.x = DEFAULT_HITBOX_X
-#		hitbox.y = DEFAULT_HITBOX_Y
-	var hitbox_pos = xy_to_dir(data.x, data.y, TRACKING_DISTANCE)
-	hitbox.x = DEFAULT_HITBOX_X + (fixed.round(hitbox_pos.x) * host.get_facing_int())
-	hitbox.y = DEFAULT_HITBOX_Y + fixed.round(hitbox_pos.y)
+	if tracking:
+		tracking_pos.x *= host.get_facing_int()
+		var host_pos = host.get_pos()
+		tracking_pos.x += host_pos.x
+		tracking_pos.y += host_pos.y
+		var enemy_local_pos = host.obj_local_center(host.opponent)
+		var enemy_pos = host.opponent.get_hurtbox_center()
+#		var in_deadzone = fixed.lt(fixed.vec_len(str(enemy_local_pos.x), str(enemy_local_pos.y)), DEADZONE_RADIUS)
+		var in_tracking_radius = fixed.lt(fixed.vec_dist(str(tracking_pos.x), str(tracking_pos.y), str(enemy_pos.x), str(enemy_pos.y)), TRACKING_DISTANCE)
+#		if !in_deadzone:
+		if in_tracking_radius:
+			hitbox.x = Utils.int_abs(enemy_local_pos.x)
+			hitbox.y = enemy_local_pos.y -16
+#		if in_deadzone:
+#			hitbox.x = DEFAULT_HITBOX_X
+#			hitbox.y = DEFAULT_HITBOX_Y
+	else:
+		var hitbox_pos = xy_to_dir(data.x, data.y, TRACKING_DISTANCE)
+		hitbox.x = DEFAULT_HITBOX_X + (fixed.round(hitbox_pos.x) * host.get_facing_int())
+		hitbox.y = DEFAULT_HITBOX_Y + fixed.round(hitbox_pos.y)
 #	if hitbox.y > 0:
 #		hitbox.y = 0
 
