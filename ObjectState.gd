@@ -88,8 +88,9 @@ func apply_enter_force():
 #		force.y = host.fixed.mul(force.y, "2.0")
 		host.apply_force_relative(force.x, force.y)
 
-func _on_hit_something(_obj, _hitbox):
-	pass
+func _on_hit_something(_obj, hitbox):
+	if hitbox.followup_state != "":
+		queue_state_change(hitbox.followup_state)
 
 func get_projectile_pos():
 	return { "x": projectile_pos_x, "y": projectile_pos_y }

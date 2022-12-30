@@ -1,4 +1,4 @@
-extends "res://characters/states/Taunt.gd"
+extends ThrowState
 
 func _frame_0():
 	host.play_sound("Swish")

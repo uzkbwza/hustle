@@ -102,14 +102,21 @@ func set_throw_position():
 func sort_states(a, b):
 	return a.name < b.name
 
-func load_node(node: BaseObj):
-	if loaded_object == node:
+func load_node(node: BaseObj, force=true):
+	var same_object = loaded_object == node
+	if same_object and !force:
 		return
+	var current_anim
+	if same_object:
+		current_anim = anim_name
+
 	loaded_object = node
 	states.clear()
 	anims.clear()
+
 	$"%SelectedState".clear()
 	$"%SelectedAnimation".clear()
+	
 	for state in node.get_node("StateMachine").get_children():
 		if state is ObjectState:
 			states.append(state)
@@ -128,8 +135,16 @@ func load_node(node: BaseObj):
 	loaded_sprite = sprite
 
 	if states:
-		load_state(states[0])
-	pass
+		if !same_object:
+			load_state(states[0])
+		else:
+			for state in states:
+				if get_anim_name(state) == current_anim:
+					load_state(state)
+					for i in range($"%SelectedState".get_item_count()):
+						if $"%SelectedState".get_item_text(i) == current_anim:
+							$"%SelectedState".selected = i
+					break
 
 func load_state(state):
 	loaded_state = state

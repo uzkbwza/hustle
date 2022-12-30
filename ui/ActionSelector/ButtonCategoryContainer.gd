@@ -10,6 +10,8 @@ var label_text = ""
 var selected_button_text = ""
 var active_button = null
 
+var mouse_over = false
+
 var game = null
 var player_id = null
 #
@@ -68,6 +70,7 @@ func refresh():
 
 
 func on_button_mouse_entered(button):
+	_on_ButtonContainer_mouse_entered()
 	$"%Label".text = button.action_title
 	if button.action_title == selected_button_text:
 		return
@@ -98,3 +101,14 @@ func hide_data_container():
 #		rect_global_position.x = viewport_size.x - rect_size.x
 #	if rect_global_position.y + rect_size.y > viewport_size.y:
 #		rect_global_position.y = viewport_size.y - rect_size.y
+
+
+func _on_ButtonContainer_mouse_entered():
+#	$"%ScrollContainer".rect_clip_content = false
+#	mouse_over = true
+	pass # Replace with function body.
+
+func _on_ButtonContainer_mouse_exited():
+#	$"%ScrollContainer".rect_clip_content = true
+#	mouse_over = false
+	pass # Replace with function body.

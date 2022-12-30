@@ -1,11 +1,12 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/ActionSelector/ButtonCategoryContainer.gd" type="Script" id=2]
+[ext_resource path="res://button_container_theme.tres" type="Theme" id=3]
 
 [node name="Control" type="Control"]
 show_behind_parent = true
-margin_right = 50.0
+margin_right = 55.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 55, 60 )
 size_flags_horizontal = 3
@@ -14,70 +15,94 @@ theme = ExtResource( 1 )
 theme_type_variation = "InvisScrollbar"
 script = ExtResource( 2 )
 
-[node name="ButtonCategoryContainer" type="PanelContainer" parent="."]
-self_modulate = Color( 1, 1, 1, 0 )
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+margin_right = 56.0
+margin_bottom = 77.0
+rect_min_size = Vector2( 55, 77 )
+custom_constants/separation = -10
+
+[node name="CenterContainer" type="Control" parent="VBoxContainer"]
+margin_right = 56.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 0, 12 )
+
+[node name="Label" type="Label" parent="VBoxContainer/CenterContainer"]
+unique_name_in_owner = true
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -27.5
-margin_right = 27.5
-margin_bottom = 60.0
+margin_left = -22.5
+margin_right = 22.5
+margin_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Category"
+align = 1
+
+[node name="ButtonCategoryContainer" type="PanelContainer" parent="VBoxContainer"]
+self_modulate = Color( 1, 1, 1, 0 )
+margin_top = 2.0
+margin_right = 56.0
+margin_bottom = 67.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-size_flags_horizontal = 12
-size_flags_vertical = 12
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme = ExtResource( 1 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ButtonCategoryContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ButtonCategoryContainer"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 58.0
+margin_right = 55.0
 margin_bottom = 64.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panel" type="PanelContainer" parent="ButtonCategoryContainer/VBoxContainer"]
+[node name="Panel" type="PanelContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_right = 57.0
+margin_right = 54.0
 margin_bottom = 10.0
 rect_min_size = Vector2( 0, 10 )
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer2" type="ScrollContainer" parent="ButtonCategoryContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 11.0
-margin_right = 57.0
+margin_right = 54.0
 margin_bottom = 63.0
-rect_min_size = Vector2( 57, 52 )
-theme = ExtResource( 1 )
+rect_min_size = Vector2( 54, 52 )
+theme = ExtResource( 3 )
 theme_type_variation = "InvisScrollbar"
 
-[node name="ButtonContainer" type="GridContainer" parent="ButtonCategoryContainer/VBoxContainer/ScrollContainer2"]
+[node name="ButtonContainer" type="GridContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 48.0
-margin_bottom = 47.0
+margin_right = 54.0
+margin_bottom = 52.0
 grow_horizontal = 2
-grow_vertical = 2
-rect_min_size = Vector2( 48, 47 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource( 3 )
 custom_constants/vseparation = 1
 custom_constants/hseparation = 1
 columns = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ButtonCategoryContainer/VBoxContainer"]
+[node name="ScrollContainer2" type="ScrollContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
 visible = false
-margin_top = 59.0
-margin_right = 53.0
-margin_bottom = 59.0
+margin_top = 82.0
+margin_right = 57.0
+margin_bottom = 82.0
 rect_min_size = Vector2( 48, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 follow_focus = true
 scroll_horizontal_enabled = false
 
-[node name="Panel2" type="Panel" parent="ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
+[node name="Panel2" type="Panel" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer2"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_right = 53.0
+margin_right = 57.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -108,15 +133,5 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 1 )
 
-[node name="Label" type="Label" parent="."]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -30.5
-margin_right = 30.5
-margin_bottom = 11.0
-grow_horizontal = 2
-grow_vertical = 2
-rect_clip_content = true
-text = "Category"
-align = 1
+[connection signal="mouse_entered" from="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer/ButtonContainer" to="." method="_on_ButtonContainer_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer/ButtonContainer" to="." method="_on_ButtonContainer_mouse_exited"]

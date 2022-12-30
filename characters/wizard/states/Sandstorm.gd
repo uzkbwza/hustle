@@ -21,7 +21,7 @@ func _tick():
 		var pos = host.get_pos()
 		wb.update_position(pos.x, pos.y)
 		for obj in host.objs_map.values():
-			if obj is BaseObj and !obj == host and (obj.is_grounded() or !(obj.is_in_group("Fighter")) and obj.current_state() and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox)):
+			if obj is BaseObj and !obj == host and ((obj.is_grounded() or !(obj.is_in_group("Fighter"))) and obj.current_state() and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox)):
 				if obj is BaseProjectile:
 					if obj.disabled:
 						continue

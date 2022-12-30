@@ -1046,9 +1046,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -320.0
-margin_top = -153.0
+margin_top = -156.0
 margin_right = 320.0
-margin_bottom = -5.0
+margin_bottom = -4.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 custom_constants/separation = 0
@@ -1073,7 +1073,7 @@ size_flags_stretch_ratio = 4.79
 [node name="ActionButtons" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
 margin_right = 640.0
-margin_bottom = 136.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -1082,7 +1082,7 @@ alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 margin_right = 319.0
-margin_bottom = 136.0
+margin_bottom = 140.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1090,9 +1090,9 @@ alignment = 2
 
 [node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 41.0
+margin_top = 45.0
 margin_right = 319.0
-margin_bottom = 61.0
+margin_bottom = 65.0
 mouse_filter = 2
 
 [node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
@@ -1150,16 +1150,16 @@ texture = ExtResource( 35 )
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 62.0
+margin_top = 66.0
 margin_right = 319.0
-margin_bottom = 136.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 margin_left = 320.0
 margin_right = 640.0
-margin_bottom = 136.0
+margin_bottom = 140.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1167,9 +1167,9 @@ alignment = 2
 
 [node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 41.0
+margin_top = 45.0
 margin_right = 320.0
-margin_bottom = 61.0
+margin_bottom = 65.0
 mouse_filter = 2
 
 [node name="P2SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
@@ -1226,19 +1226,20 @@ mouse_filter = 2
 unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 62.0
+margin_top = 66.0
 margin_right = 320.0
-margin_bottom = 136.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 73 )
 size_flags_horizontal = 3
 player_id = 2
 
 [node name="OptionsBarContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
-margin_top = 136.0
+margin_top = 140.0
 margin_right = 640.0
-margin_bottom = 148.0
+margin_bottom = 152.0
 rect_min_size = Vector2( 0, 12 )
+mouse_filter = 2
 custom_constants/margin_right = 5
 custom_constants/margin_left = 5
 

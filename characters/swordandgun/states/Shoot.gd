@@ -12,8 +12,10 @@ export var temporal = false
 var bullet_location
 var dir
 var angle
+var parried = false
 
 func _frame_0():
+	parried = false
 #	fallback_state = "Holster"
 	if !temporal:
 		if data and data.has("count"):
@@ -24,6 +26,7 @@ func _frame_0():
 			host.consecutive_shots -= 1
 
 func on_got_parried():
+	parried = true
 	queue_state_change("SlowHolster")
 
 func _frame_1():
@@ -102,7 +105,6 @@ func _frame_5():
 	if !temporal:
 		host.shooting_arm.frame = 1
 
-
 func _frame_6():
 	if temporal:
 		host.shooting_arm.frame = 1
@@ -127,6 +129,8 @@ func _tick():
 		if host.consecutive_shots > 0:
 			if host.bullets_left > 0:
 				return "Shoot"
+	if parried:
+		return "SlowHolster"
 
 func is_usable():
 	return .is_usable() and (host.bullets_left > 0 or (temporal)) and host.has_gun

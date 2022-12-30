@@ -53,6 +53,7 @@ export var can_counter_hit = true
 export var sdi_modifier = "1.0"
 export var parry_meter_gain = -1
 export var ignore_armor = false
+export var followup_state = ""
 
 export(HitHeight) var hit_height = HitHeight.Mid
 

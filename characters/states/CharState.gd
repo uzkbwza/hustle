@@ -46,6 +46,7 @@ export var iasa_at = -1
 export var interrupt_frames = []
 export var throw_techable = false
 export var interruptible_on_opponent_turn = false
+export var update_facing_on_exit = true
 
 
 export var _c_Interrupt_Categories = 0
@@ -248,7 +249,8 @@ func _exit_shared():
 #	host.update_advantage()
 #	host.opponent.update_advantage()
 	._exit_shared()
-	host.update_facing()
+	if update_facing_on_exit:
+		host.update_facing()
 	terminate_hitboxes()
 	host.end_invulnerability()
 	host.end_projectile_invulnerability()
