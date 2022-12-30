@@ -225,17 +225,17 @@ func get_real_knockback():
 	else:
 		return knockback
 
-
-func get_real_damage():
-	var is_combo = false
-	if host.is_in_group("Fighter"):
-		is_combo = host.combo_count > 0
-	else:
-		if host.fighter_owner:
-			is_combo = host.fighter_owner.combo_count > 0
-	if is_combo and damage_in_combo != -1:
-		return damage_in_combo
-	return damage
+#
+#func get_real_damage():
+#	var is_combo = false
+#	if host.is_in_group("Fighter"):
+#		is_combo = host.combo_count > 0
+#	else:
+#		if host.fighter_owner:
+#			is_combo = host.fighter_owner.combo_count > 0
+#	if is_combo and damage_in_combo != -1:
+#		return damage_in_combo
+#	return damage
 
 func get_real_hitstun():
 	if host.is_in_group("Fighter"):

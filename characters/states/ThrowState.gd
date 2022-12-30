@@ -23,6 +23,7 @@ export var knockdown: bool = true
 export var aerial_hit_state = "HurtAerial"
 export var grounded_hit_state = "HurtGrounded"
 export var damage = 10
+export var damage_in_combo = -1
 export var reverse = false
 export var disable_collision = true
 export var ground_bounce = true

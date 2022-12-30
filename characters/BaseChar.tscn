@@ -442,7 +442,7 @@ bus = "Fx"
 
 [node name="CollisionBox" parent="." index="2"]
 y = -14
-width = 10
+width = 12
 height = 14
 
 [node name="Hurtbox" parent="." index="3"]
@@ -741,6 +741,7 @@ particle_scene = ExtResource( 11 )
 spawn_particle_on_enter = true
 enter_sfx = ExtResource( 128 )
 enter_sfx_volume = -10.0
+iasa_at = 21
 busy_interrupt_type = 1
 change_stance_to = "Normal"
 
@@ -1102,7 +1103,8 @@ release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
 dir_y = "-0.30"
-damage = 90
+damage = 150
+damage_in_combo = 90
 
 [node name="BackThrow" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 90 )
@@ -1127,7 +1129,8 @@ release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
 dir_y = "-0.30"
-damage = 90
+damage = 150
+damage_in_combo = 90
 reverse = true
 
 [node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="35"]
@@ -1153,7 +1156,8 @@ start_throw_pos_y = -12
 release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
-damage = 90
+damage = 150
+damage_in_combo = 90
 
 [node name="AirBackThrow" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 90 )
@@ -1178,7 +1182,8 @@ start_throw_pos_y = -12
 release_throw_pos_x = 16
 release_throw_pos_y = -10
 knockback = "10.0"
-damage = 90
+damage = 150
+damage_in_combo = 90
 reverse = true
 
 [node name="AirDownThrow" type="Node2D" parent="StateMachine" index="37"]
@@ -1205,7 +1210,8 @@ release_throw_pos_y = -10
 knockback = "10.0"
 dir_x = "0.10"
 dir_y = "1.0"
-damage = 90
+damage = 150
+damage_in_combo = 90
 
 [node name="ThrowTech" type="Node2D" parent="StateMachine" index="38"]
 script = ExtResource( 94 )

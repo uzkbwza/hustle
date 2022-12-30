@@ -60,5 +60,6 @@ knockback = "12.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
+hard_knockdown = true
 start_tick = 1
 active_ticks = 2

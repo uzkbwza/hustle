@@ -134,7 +134,7 @@ func current_state():
 	return state_machine.state
 
 func is_otg():
-	return current_state().state_name == "Knockdown"
+	return current_state().state_name == "Knockdown" or current_state().state_name == "HardKnockdown"
 
 func init(pos=null):
 	chara.id = id

@@ -961,6 +961,10 @@ func _process(delta):
 	if camera.global_position.x < camera.limit_left + get_viewport_rect().size.x/2:
 		camera.global_position.x = camera.limit_left + get_viewport_rect().size.x/2
 	
+	if is_instance_valid(ghost_game):
+		ghost_game.camera_zoom = camera_zoom
+		ghost_game.update_camera_limits()
+
 	if game_started and !is_ghost:
 		camera.zoom = Vector2.ONE
 		var dist = p1.get_hurtbox_center().y - p2.get_hurtbox_center().y

@@ -16,7 +16,8 @@ var used_aerial_h_slash = false
 var has_gun = true
 var gun_projectile = null
 var consecutive_shots = 1
-
+var lightning_slice_x = 0
+var lightning_slice_y = 0
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())

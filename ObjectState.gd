@@ -182,6 +182,10 @@ func process_hitboxes():
 	if hitbox_start_frames.has(current_tick + 1):
 		for hitbox in hitbox_start_frames[current_tick + 1]:
 			activate_hitbox(hitbox)
+			if hitbox is Hitbox:
+				if hitbox.hitbox_type == Hitbox.HitboxType.ThrowHit:
+					hitbox.hit(host.opponent)
+					hitbox.deactivate()
 	for hitbox in get_active_hitboxes():
 		hitbox.facing = host.get_facing()
 		if hitbox.active:

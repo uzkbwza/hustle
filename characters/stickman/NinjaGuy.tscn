@@ -1830,12 +1830,12 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 206 ): {
 "x": 13,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 15,
 "y": -10
 },
 ExtResource( 208 ): {
@@ -1860,7 +1860,9 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 22
 y = -16
-damage = 90
+damage = 150
+damage_in_combo = 90
+hitbox_type = 2
 cancellable = false
 screenshake_amount = 8
 hit_sound = ExtResource( 41 )
@@ -1870,19 +1872,23 @@ knockback = "10"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 10
+start_tick = 9
 active_ticks = 1
 
 [node name="BackThrow" parent="StateMachine" index="65"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 },
 ExtResource( 208 ): {
 "x": 13,
@@ -1891,10 +1897,6 @@ ExtResource( 208 ): {
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
 }
 }
 burst_cancellable = false
@@ -1910,7 +1912,9 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 22
 y = -16
-damage = 90
+damage = 150
+damage_in_combo = 90
+hitbox_type = 2
 cancellable = false
 screenshake_amount = 8
 hit_sound = ExtResource( 41 )
@@ -1920,7 +1924,7 @@ knockback = "10"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 10
+start_tick = 9
 active_ticks = 1
 
 [node name="Taunt" parent="StateMachine" index="70"]

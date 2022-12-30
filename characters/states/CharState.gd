@@ -222,7 +222,7 @@ func _tick_shared():
 	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
 		queue_state_change("Landing")
 	if current_tick <= anim_length and !endless:
-		if can_interrupt():
+		if can_interrupt() and !interrupt_into.empty():
 			enable_interrupt()
 
 func _tick_after():

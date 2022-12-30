@@ -666,7 +666,9 @@ lasso_projectile
 used_aerial_h_slash
 has_gun
 gun_projectile
-consecutive_shots"
+consecutive_shots
+lightning_slice_x
+lightning_slice_y"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
 
@@ -1167,7 +1169,7 @@ Aerial
 LightningSliceCancel"
 hit_cancel_exceptions_string = "LightningSlice"
 cancel = true
-tracking = true
+followup = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/LightningSliceCancel" index="0"]
 z_index = 1000
