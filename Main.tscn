@@ -1726,9 +1726,6 @@ margin_top = 40.0
 margin_right = 142.0
 margin_bottom = 90.0
 theme = ExtResource( 4 )
-__meta__ = {
-"_edit_use_anchors_": true
-}
 
 [node name="TitleImage" type="TextureRect" parent="UILayer/MainMenu/Title"]
 anchor_left = 0.5
