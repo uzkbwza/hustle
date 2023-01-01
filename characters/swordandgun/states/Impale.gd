@@ -14,7 +14,7 @@ func _frame_0():
 	host.z_index = -2
 	hit = false
 
-func _frame_4():
+func _frame_6():
 	if teleport:
 		host.start_invulnerability()
 		var opp_pos = host.opponent.get_pos()
@@ -25,13 +25,13 @@ func _frame_4():
 		tp_vel_x = opp_vel.x
 		tp_vel_y = opp_vel.y
 
-func _frame_5():
+func _frame_7():
 	if teleport:
 		host.end_invulnerability()
 		host.set_vel(tp_vel_x, tp_vel_y)
 		host.set_pos(tp_pos_x, tp_pos_y)
 
-func _frame_6():
+func _frame_8():
 	if teleport:
 		host.update_facing()
 
@@ -47,7 +47,7 @@ func _tick():
 func _on_hit_something(obj, hitbox):
 	hit = true
 	._on_hit_something(obj, hitbox)
-	if teleport and obj.is_in_group("Fighter"):
-		if !host.is_grounded():
-			host.reset_momentum()
-			obj.reset_momentum()
+#	if teleport and obj.is_in_group("Fighter"):
+#		if !host.is_grounded():
+#			host.reset_momentum()
+#			obj.reset_momentum()

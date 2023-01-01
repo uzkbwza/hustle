@@ -470,6 +470,7 @@ anim_length = 20
 title = "Block High"
 type = 4
 button_texture = ExtResource( 99 )
+dynamic_iasa = false
 reversible = false
 interrupt_from_string = "Grounded
 Aerial
@@ -488,6 +489,7 @@ anim_length = 20
 title = "Block Low"
 type = 4
 button_texture = ExtResource( 98 )
+dynamic_iasa = false
 reversible = false
 interrupt_from_string = "Grounded
 Aerial
@@ -509,6 +511,7 @@ title = "Block"
 type = 4
 button_texture = ExtResource( 98 )
 air_type = 1
+dynamic_iasa = false
 reversible = false
 interrupt_from_string = "Grounded
 Aerial

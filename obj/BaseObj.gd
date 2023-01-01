@@ -244,6 +244,10 @@ func copy_to(o: BaseObj):
 #	var vel = get_vel()
 #	o.set_vel(vel.x, vel.y)
 #	o.update_data()
+	for state in state_machine.queued_states:
+		o.state_machine.queued_states.append(state)
+	for datum in state_machine.queued_data:
+		o.state_machine.queued_data.append(datum)
 
 func get_frames():
 	return ReplayManager.frames[id]

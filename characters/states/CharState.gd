@@ -47,6 +47,7 @@ export var interrupt_frames = []
 export var throw_techable = false
 export var interruptible_on_opponent_turn = false
 export var update_facing_on_exit = true
+export var dynamic_iasa = true
 
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
@@ -191,7 +192,8 @@ func process_hitboxes():
 
 func _tick_shared():
 	if current_tick == 0:
-		interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
+		if dynamic_iasa:
+			interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
 		feinting = host.feinting
 		hit_cancelled = false
 #		hit_cancelled = false
@@ -226,7 +228,8 @@ func _tick_shared():
 	if current_tick <= anim_length and !endless:
 		if can_interrupt() and !interrupt_into.empty():
 			enable_interrupt()
-			interruptible_on_opponent_turn = true
+			if dynamic_iasa:
+				interruptible_on_opponent_turn = true
 
 func _tick_after():
 	host.set_lowest_tick(current_real_tick)

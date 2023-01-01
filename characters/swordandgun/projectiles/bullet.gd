@@ -1,11 +1,11 @@
 extends BaseProjectile
 
-const DAMAGE_FALLOFF_PER_PIXEL = "1"
+const DAMAGE_FALLOFF_PER_PIXEL = "0.85"
 const MIN_DISTANCE_START_SCALING = "256"
 const HITSTUN_FALLOFF_PER_PIXEL = "1"
 
 const MIN_HITSTUN_DIVISOR = "3"
-const MIN_DAMAGE_DIVISOR = "3"
+const MIN_DAMAGE_DIVISOR = "2.5"
 
 var distance = "0.0"
 
