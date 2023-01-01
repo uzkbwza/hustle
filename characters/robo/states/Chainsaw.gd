@@ -21,8 +21,8 @@ onready var hitbox2 = $Hitbox2
 func _ready():
 	hitbox.start_tick = chainsaw_start_tick + 1
 	hitbox2.start_tick = chainsaw_start_tick + 1
-	hitbox.active_ticks = chainsaw_end_tick - chainsaw_start_tick
-	hitbox2.active_ticks = chainsaw_end_tick - chainsaw_start_tick
+	hitbox.active_ticks = chainsaw_end_tick - chainsaw_start_tick + 1
+	hitbox2.active_ticks = chainsaw_end_tick - chainsaw_start_tick + 1
 
 func _enter():
 	var start_vec = xy_to_dir(data["Start"].x, data["Start"].y)
@@ -51,7 +51,7 @@ func _frame_0():
 func _tick():
 	if current_tick < chainsaw_start_tick:
 		host.chainsaw_arm.visible = false
-	if current_tick >= chainsaw_start_tick and current_tick < chainsaw_end_tick:
+	if current_tick >= chainsaw_start_tick and current_tick <= chainsaw_end_tick:
 		var i = chainsaw_start_tick - current_tick
 		var end = chainsaw_end_tick - chainsaw_start_tick
 		host.chainsaw_arm.visible = true

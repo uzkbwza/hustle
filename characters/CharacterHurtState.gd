@@ -42,6 +42,9 @@ func hitstun_modifier(hitbox):
 	return (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0)
 #	return (COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES if hitbox.counter_hit else 0) - ((HITSTUN_DECAY_PER_HIT * (host.opponent.hitstun_decay_combo_count + Utils.int_max(host.combo_proration, 0)) / 2) - 1)
 
+func global_hitstun_modifier(ticks):
+	return fixed.round(fixed.mul(str(ticks), host.global_hitstun_modifier))
+
 func get_x_dir(hitbox):
 	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
 	if hitbox.reversible:

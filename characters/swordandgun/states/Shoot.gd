@@ -27,7 +27,7 @@ func _frame_0():
 
 func on_got_parried():
 	parried = true
-	queue_state_change("SlowHolster")
+#	queue_state_change("SlowHolster")
 
 func _frame_1():
 	if !temporal:
@@ -60,13 +60,19 @@ func _frame_1():
 		if !clash:
 			var bullet = host.spawn_object(BULLET_SCENE, bullet_location.x, bullet_location.y, true, bullet_location, false)
 			bullet.connect("got_parried", self, "on_got_parried")
+			
 			bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
+			bullet.distance = get_bullet_distance()
 		else:
 			if host.id == 1:
 				host.parry_effect((host.opponent.get_center_position_float() + host.get_center_position_float()) / 2 + Vector2(0, -16), true)
-			queue_state_change("Holster")
+#			queue_state_change("Holster")
 		var barrel_location = host.get_barrel_location(angle)
 		spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(float(barrel_location.x) * host.get_facing_int(), float(barrel_location.y)), Vector2(float(dir.x), float(dir.y)))
+
+func get_bullet_distance():
+	var diff = host.obj_local_center(host.opponent)
+	return fixed.vec_len(str(diff.x), str(diff.y))
 
 func _frame_4():
 	if temporal:
@@ -92,8 +98,9 @@ func _frame_4():
 #		var opp_vel = host.opponent.get_vel()
 #		bullet_location.x = fixed.round(fixed.add(str(bullet_location.x), opp_vel.x))
 #		bullet_location.y = fixed.round(fixed.add(str(bullet_location.y), opp_vel.y))
-
+		
 		var bullet = host.spawn_object(TEMPORAL_BULLET_SCENE, fixed.round(bullet_location.x), fixed.round(bullet_location.y), true, bullet_location, false)
+		
 		bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
 		var barrel_location = host.get_barrel_location(angle)
 
@@ -130,7 +137,7 @@ func _tick():
 			if host.bullets_left > 0:
 				return "Shoot"
 	if parried:
-		return "SlowHolster"
+		queue_state_change("SlowHolster")
 
 func is_usable():
 	return .is_usable() and (host.bullets_left > 0 or (temporal)) and host.has_gun

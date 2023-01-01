@@ -464,6 +464,12 @@ func set_pos(x, y):
 		return
 	chara.set_position_str(x, y)
 
+func set_snap_to_ground(snap: bool):
+	chara.set_snap_to_ground(snap)
+
+func get_snap_to_ground():
+	return chara.get_snap_to_ground()
+
 func get_data():
 	return chara.get_data()
 

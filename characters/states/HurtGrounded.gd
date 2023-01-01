@@ -19,7 +19,7 @@ func _enter():
 			anim_name = "HurtGroundedMid"
 		Hitbox.HitHeight.Low:
 			anim_name = "HurtGroundedLow"
-	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
+	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
@@ -36,6 +36,7 @@ func _enter():
 	host.apply_force(force_x, force_y)
 
 func _tick():
+	host.set_pos(host.get_pos().x, 0)
 	host.apply_x_fric(GROUND_FRIC)
 	host.apply_forces_no_limit()
 	if current_tick >= hitstun:

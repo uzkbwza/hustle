@@ -54,6 +54,7 @@ export var sdi_modifier = "1.0"
 export var parry_meter_gain = -1
 export var ignore_armor = false
 export var followup_state = ""
+export var force_grounded = false
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -265,7 +266,7 @@ func hit(obj):
 				host.feinting = false
 				host.current_state().feinting = false
 			if !host.is_ghost:
-				camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames))
+				camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier))
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")

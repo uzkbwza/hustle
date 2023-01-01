@@ -4,7 +4,7 @@ const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8"
 const FLY_TICKS = 20
 
-var armor_pips = 0
+var armor_pips = 1
 var landed_move = false
 var flying_dir = null
 var fly_ticks_left = 0
@@ -80,7 +80,10 @@ func stop_fly_fx():
 
 func process_extra(extra):
 	.process_extra(extra)
-	if extra.has("fly_dir") and !is_grounded():
+	var can_fly = true
+	if current_state().get("can_fly") != null and current_state().can_fly == false:
+		can_fly = false
+	if extra.has("fly_dir") and !is_grounded() and can_fly:
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
 			if flying_dir == null or !same_dir:

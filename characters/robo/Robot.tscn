@@ -569,6 +569,7 @@ num_air_movements = 3
 character_portrait = ExtResource( 76 )
 player_info_scene = ExtResource( 129 )
 player_extra_params_scene = ExtResource( 167 )
+damage_taken_modifier = "0.85"
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
@@ -1105,6 +1106,7 @@ interrupt_into_string = "Aerial
 Grounded"
 is_super = true
 super_level = 3
+can_fly = false
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/KillProcess" index="0"]
 script = ExtResource( 107 )

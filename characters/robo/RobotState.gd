@@ -7,6 +7,7 @@ export var super_level = 1
 export var supers_used = -1
 export var super_freeze_ticks = 15
 export var super_effect = true
+export var can_fly = true
 
 func is_usable():
 	if !is_super:

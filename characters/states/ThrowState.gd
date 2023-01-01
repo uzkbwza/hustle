@@ -13,7 +13,6 @@ export var release_throw_pos_x = 0
 export var release_throw_pos_y = 0
 
 
-
 export var _c_Release_Data = 0
 export var hitstun_ticks: int = 0
 export var knockback: String = "1.0"
@@ -32,6 +31,7 @@ export var screenshake_frames = 0
 export var hits_otg = false
 export var increment_combo = true
 export var hard_knockdown = false
+export var force_grounded = false
 #export var incr_combo = false
 
 var hit_height = Hitbox.HitHeight.Mid

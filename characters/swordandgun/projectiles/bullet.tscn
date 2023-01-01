@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/projectiles/states/BulletDefault.gd" type="Script" id=2]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=3]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=4]
+[ext_resource path="res://characters/swordandgun/projectiles/bullet.gd" type="Script" id=5]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -25,6 +26,8 @@ animations = [ {
 [node name="Bullet" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 z_index = -2
+script = ExtResource( 5 )
+extra_state_variables = "distance"
 
 [node name="Sprite" parent="Flip" index="0"]
 visible = false
@@ -49,8 +52,8 @@ z_index = 1000
 script = ExtResource( 3 )
 width = 50
 height = 50
-damage = 150
-damage_in_combo = 90
+damage = 170
+damage_in_combo = 100
 minimum_damage = 30
 hitstun_ticks = 20
 parry_meter_gain = 125

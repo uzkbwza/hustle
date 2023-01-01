@@ -1790,21 +1790,27 @@ AerialSuper
 GroundedSuper"
 
 [node name="Holster" type="Node2D" parent="StateMachine" index="28"]
-script = ExtResource( 79 )
+script = ExtResource( 167 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 sprite_animation = "Holster"
 anim_length = 4
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2
+land_cancel = true
 interrupt_from_string = "FastHolster"
 interrupt_into_string = "Grounded
 Aerial"
 
 [node name="SlowHolster" type="Node2D" parent="StateMachine" index="29"]
-script = ExtResource( 79 )
+script = ExtResource( 167 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 sprite_animation = "Holster"
 anim_length = 8
-title = "Holster"
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2

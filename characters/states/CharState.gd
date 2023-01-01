@@ -48,7 +48,6 @@ export var throw_techable = false
 export var interruptible_on_opponent_turn = false
 export var update_facing_on_exit = true
 
-
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
 export var burst_cancellable = true
@@ -91,6 +90,7 @@ var busy_interrupt_into = []
 var allowed_stances = []
 
 var is_hurt_state = false
+var start_interruptible_on_opponent_turn = false
 
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
@@ -102,7 +102,7 @@ func init():
 	hit_cancel_exceptions.append_array(get_categories(hit_cancel_exceptions_string))
 	allowed_stances.append_array(get_categories(allowed_stances_string))
 	interrupt_exceptions.append_array(get_categories(interrupt_exceptions_string))
-
+	start_interruptible_on_opponent_turn = interruptible_on_opponent_turn
 	if burst_cancellable:
 		hit_cancel_into.append("OffensiveBurst")
 	if instant_cancellable:
@@ -141,9 +141,11 @@ func is_usable():
 func get_categories(string: String):
 	return Utils.split_lines(string)
 
+func _frame_0():
+	interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
+
 func _enter_shared():
 	._enter_shared()
-	
 #	host.update_advantage()
 #	if host.opponent:
 #		host.opponent.update_advantage()
@@ -166,6 +168,7 @@ func allowed_in_stance():
 
 func enable_interrupt():
 #	host.update_advantage()
+	interruptible_on_opponent_turn = true
 	emit_signal("state_interruptable")
 
 func enable_hit_cancel():
@@ -219,8 +222,9 @@ func _tick_shared():
 	var next_state = ._tick_shared()
 	if next_state:
 		return next_state
-
-	if land_cancel and host.is_grounded() and started_in_air and fixed.gt(host.get_vel().y, "0"):
+#	if land_cancel:
+#		print(started_in_air)
+	if land_cancel and host.is_grounded() and started_in_air and fixed.ge(host.get_vel().y, "0"):
 		queue_state_change("Landing")
 	if current_tick <= anim_length and !endless:
 		if can_interrupt() and !interrupt_into.empty():

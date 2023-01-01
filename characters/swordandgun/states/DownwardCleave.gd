@@ -1,6 +1,5 @@
 extends CharacterState
 
-
 var moving_down = false
 
 func _frame_0():

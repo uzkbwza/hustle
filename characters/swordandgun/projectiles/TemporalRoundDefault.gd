@@ -5,6 +5,17 @@ onready var hitbox = $Hitbox
 
 var pos
 
+func _frame_29():
+	var diff = host.obj_local_center(host.creator.opponent)
+	host.distance = fixed.vec_len(str(diff.x), str(diff.y))
+	hitbox.damage = host.scale_damage(hitbox.damage)
+	hitbox.damage_in_combo = host.scale_damage(hitbox.damage_in_combo)
+	hitbox.minimum_damage = host.scale_damage(hitbox.minimum_damage)
+	hitbox.hitstun_ticks = host.scale_hitstun(hitbox.hitstun_ticks)
+	var facing = Utils.int_sign(diff.x)
+	if facing != 0:
+		host.set_facing(facing)
+
 func _frame_30():
 	pos = host.obj_local_center(host.creator.opponent)
 	var dir = fixed.normalized_vec(str(pos.x), str(pos.y))
@@ -14,7 +25,8 @@ func _frame_30():
 	host.sprite.hide()
 	hitbox.update_position(pos.x, pos.y)
 	hitbox.activate()
-	
+
+
 
 func _frame_31():
 	host.disable()

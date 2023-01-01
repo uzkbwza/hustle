@@ -33,6 +33,7 @@ var increment_combo = false
 var ignore_armor = false
 var damage_proration = 0
 var parry_meter_gain = -1
+var force_grounded = false
 var hitbox_type = 0
 var hard_knockdown = false
 var damage_in_combo = -1
@@ -69,6 +70,7 @@ func _init(state):
 	ground_bounce = state.ground_bounce
 	throw = state.throw
 	hard_knockdown = state.hard_knockdown
+	force_grounded = state.force_grounded
 	reversible = false if !state.get("launch_reversible") else state.launch_reversible
 	if state.has_method("get_absolute_position"):
 		var pos = state.get_absolute_position()

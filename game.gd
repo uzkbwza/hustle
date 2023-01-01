@@ -62,6 +62,8 @@ var game_finished = false
 
 var ghost_cleaned = true
 
+var asymmetrical_clashing = false
+
 var forfeit = false
 
 var quitter_focus = false
@@ -283,6 +285,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		char_distance = match_data["char_distance"]
 	if match_data.has("clashing_enabled"):
 		clashing_enabled = match_data["clashing_enabled"]
+	if match_data.has("asymmetrical_clashing"):
+		asymmetrical_clashing = match_data["asymmetrical_clashing"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
@@ -672,14 +676,14 @@ func apply_hitboxes():
 				
 #				if !p1_hit and !p2_hit:
 #					valid_clash = true
-	#
-	#			if p1_hit and !p2_hit:
-	#				if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
-	#					valid_clash = true
-	#
-	#			if p2_hit and !p1_hit:
-	#				if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
-	#					valid_clash = true
+				if asymmetrical_clashing:
+					if p1_hit and !p2_hit:
+						if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
+							valid_clash = true
+
+					if p2_hit and !p1_hit:
+						if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
+							valid_clash = true
 	#
 				if (!p1_hit and !p2_hit) or (p1_hit and p2_hit):
 					if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:

@@ -29,7 +29,8 @@ func _enter():
 	bounce_frames = 0
 	knockdown = hitbox.knockdown
 	hard_knockdown = hitbox.hard_knockdown
-	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
+#	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
+	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit
 	if hitbox.ground_bounce and host.is_grounded() and fixed.gt(hitbox.dir_y, "0"):
 		hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")

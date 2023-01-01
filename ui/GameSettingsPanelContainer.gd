@@ -26,7 +26,17 @@ onready var settings_nodes = {
 	"chess_timer": $"%ChessTimer",
 	"extremely_turbo_mode": $"%ExtremelyTurboMode",
 	"clashing_enabled": $"%ClashingEnabled",
+	"asymmetrical_clashing": $"%AsymmetricalClashing",
+	"global_damage_modifier": $"%DamageModifier",
+	"global_hitstun_modifier": $"%HitstunModifier",
+	"global_hitstop_modifier": $"%HitstopModifier",
 }
+
+var float_to_string = [
+	"global_damage_modifier",
+	"global_hitstop_modifier",
+	"global_hitstun_modifier",
+]
 
 func _ready():
 	for setting in settings_nodes:
@@ -89,6 +99,9 @@ func load_settings(settings):
 			node.set_pressed_no_signal(settings[setting])
 		if node.get("value") != null and settings[setting] is int:
 			node.value = settings[setting]
+		if node.get("value") != null and node.get("value") is float and settings[setting] is String:
+			node.value = float(settings[setting])
+
 	$"%LineEdit".clear()
 	update_menu()
 
@@ -115,7 +128,9 @@ func get_data():
 	var settings := {}
 	for setting in settings_nodes:
 		var node = settings_nodes[setting]
-		if node.get("value") != null:
+		if setting in float_to_string:
+			settings[setting] = str(node.value)
+		elif node.get("value") != null:
 			settings[setting] = int(node.value)
 		elif node.get("pressed") != null:
 			settings[setting] = node.pressed
@@ -213,4 +228,18 @@ func _on_LineEdit_text_entered(new_text):
 
 func _on_SaveButton_pressed():
 	save_current_format()
+	pass # Replace with function body.
+
+func _on_DamageModifier_value_changed(value):
+	$"%DamageModifierValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_HitstunModifier_value_changed(value):
+	$"%HitstunModifierValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_HitstopModifier_value_changed(value):
+	$"%HitstopModifierValueLabel".text = str(value)
 	pass # Replace with function body.

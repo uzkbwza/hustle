@@ -103,8 +103,12 @@ export(PackedScene) var player_info_scene
 export(PackedScene) var player_extra_params_scene
 
 export var damage_taken_modifier = "1.0"
+var global_damage_modifier = "1.0"
+var global_hitstun_modifier = "1.0"
+var global_hitstop_modifier = "1.0"
 
 export var num_feints = 2
+
 
 var opponent
 
@@ -364,6 +368,7 @@ func copy_to(f):
 	f.colliding_with_opponent = colliding_with_opponent
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
+#	f.set_grounded(is_grounded())
 	f.update_data()
 	
 
@@ -543,12 +548,16 @@ func launched_by(hitbox):
 
 #		if hitlag_ticks < hitbox.victim_hitlag:
 	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
+	hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), global_hitstop_modifier))
 	hitlag_applied = hitlag_ticks
 	
 	if objs_map.has(hitbox.host):
 		var host = objs_map[hitbox.host]
-		if host.hitlag_ticks < hitbox.hitlag_ticks:
-			host.hitlag_ticks = hitbox.hitlag_ticks
+		var host_hitlag_ticks = fixed.round(fixed.mul(str(hitbox.hitlag_ticks), global_hitstop_modifier))
+		if host.hitlag_ticks < host_hitlag_ticks:
+			host.hitlag_ticks = host_hitlag_ticks
+	
+	
 	
 	if hitbox.rumble:
 		rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
@@ -567,8 +576,9 @@ func launched_by(hitbox):
 		if state == "HurtGrounded":
 			grounded_hits_taken += 1
 			if grounded_hits_taken >= MAX_GROUNDED_HITS:
-				state = "HurtAerial"
-				grounded_hits_taken = 0
+				if !hitbox.force_grounded:
+					state = "HurtAerial"
+					grounded_hits_taken = 0
 
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
@@ -713,10 +723,11 @@ func take_damage(damage: int, minimum=0):
 	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
 	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
 	damage = Utils.int_max(damage, minimum)
-	hp -= damage
-	opponent.combo_damage += damage
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
+	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
+	opponent.combo_damage += damage
+	hp -= damage
 	add_penalty(-25)
 	if hp < 0:
 		hp = 0
@@ -811,6 +822,8 @@ func get_opponent_dir():
 
 func get_advantage():
 	if opponent == null:
+		return true
+	if combo_count > 0:
 		return true
 #	var minus_modifier = 1 if id == 1 else 0
 	var minus_modifier = 0

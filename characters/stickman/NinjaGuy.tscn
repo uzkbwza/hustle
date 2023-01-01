@@ -1839,40 +1839,43 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 },
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
 },
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 }
 }
 button_texture = ExtResource( 223 )
 interrupt_into_string = "Aerial
 Grounded"
 release = true
-release_frame = 13
+release_frame = 14
 start_throw_pos_x = 3
 release_throw_pos_x = 8
 release_throw_pos_y = 1
+hitstun_ticks = 30
+knockback = "4.0"
 knockdown = false
 aerial_hit_state = "HurtGrounded"
 damage = 0
 increment_combo = false
 hard_knockdown = true
+force_grounded = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrabFollowup" index="0"]
 z_index = 1000
@@ -1882,11 +1885,15 @@ y = -18
 width = 10
 height = 8
 damage = 60
+hitbox_type = 2
+hitstun_ticks = 31
 cancellable = false
 sdi_modifier = "0.0"
+force_grounded = true
 hit_height = 0
 hit_sound = ExtResource( 217 )
 knockback = "6.0"
+aerial_hit_state = "HurtGrounded"
 start_tick = 13
 active_ticks = 2
 
@@ -1960,14 +1967,6 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
-},
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
@@ -1975,6 +1974,14 @@ ExtResource( 208 ): {
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
+},
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
 }
 }
 burst_cancellable = false
@@ -2009,25 +2016,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="67"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
+},
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 }
 }
 burst_cancellable = false
