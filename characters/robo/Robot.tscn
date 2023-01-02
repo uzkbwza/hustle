@@ -1142,17 +1142,9 @@ reset_momentum = true
 enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 throw_positions = {
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
-},
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
-},
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
 },
 ExtResource( 200 ): {
 "x": 5,
@@ -1162,9 +1154,17 @@ ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
+},
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
+},
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
 }
 }
 release_throw_pos_x = 43
@@ -1215,49 +1215,49 @@ sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 109 ): {
 "x": 70,
+"y": 15
+},
+ExtResource( 118 ): {
+"x": 67,
 "y": 15
 },
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
 },
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
 },
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
 }
 }
 iasa_at = 49

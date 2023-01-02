@@ -482,7 +482,7 @@ animations = [ {
 "name": "ImpaleFollowup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 100 ), ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 278 ), ExtResource( 278 ), ExtResource( 278 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 125 ), ExtResource( 125 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ) ],
+"frames": [ ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 278 ), ExtResource( 278 ), ExtResource( 278 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 123 ), ExtResource( 125 ), ExtResource( 125 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 124 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ), ExtResource( 121 ) ],
 "loop": true,
 "name": "ImpaleTeleport",
 "speed": 5.0
@@ -1559,7 +1559,7 @@ active_ticks = 4
 [node name="ImpaleTeleport" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 127 )
 sprite_animation = "ImpaleTeleport"
-anim_length = 43
+anim_length = 41
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 enter_sfx = ExtResource( 138 )
@@ -1567,7 +1567,7 @@ enter_sfx_volume = -9.0
 title = "Impale"
 type = 2
 button_texture = ExtResource( 157 )
-reversible = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
@@ -1588,6 +1588,7 @@ hitlag_ticks = 3
 victim_hitlag = 3
 cancellable = false
 sdi_modifier = "0.5"
+ignore_armor = true
 followup_state = "ImpaleFollowup"
 screenshake_amount = 2
 rumble = false
@@ -1599,7 +1600,7 @@ grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
 knockdown = true
 disable_collision = false
-start_tick = 16
+start_tick = 13
 active_ticks = 4
 
 [node name="ImpaleFollowup" type="Node2D" parent="StateMachine" index="21"]
