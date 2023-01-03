@@ -367,6 +367,7 @@ func gain_burst_meter(amount=null):
 func copy_to(f):
 	.copy_to(f)
 	f.colliding_with_opponent = colliding_with_opponent
+	f.has_hyper_armor = has_hyper_armor
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
 #	f.set_grounded(is_grounded())
