@@ -46,8 +46,8 @@ fizzle_on_walls = false
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
 script = ExtResource( 2 )
-width = 16
-height = 16
+width = 18
+height = 18
 damage = 130
 hitstun_ticks = 18
 damage_proration = 1

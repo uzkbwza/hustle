@@ -11,6 +11,8 @@ const MIN_LAG_DIST = "200"
 
 const DIST = 16
 
+const max_lag_frames = 8
+
 var lag_frames = 0
 var dir = 1
 
@@ -29,7 +31,7 @@ func _frame_5():
 		var opp_pos_local = host.obj_local_center(host.opponent)
 		var distance = fixed.vec_len(str(opp_pos_local.x), str(opp_pos_local.y))
 		if fixed.gt(distance, MIN_LAG_DIST):
-			lag_frames = fixed.round(fixed.mul(EXTRA_FRAME_PER_PIXEL, fixed.sub(distance, MIN_LAG_DIST)))
+			lag_frames = Utils.int_min(fixed.round(fixed.mul(EXTRA_FRAME_PER_PIXEL, fixed.sub(distance, MIN_LAG_DIST))), max_lag_frames)
 		host.colliding_with_opponent = false
 		var opp_vel = host.opponent.get_vel()
 		tp_pos_x = opp_pos.x + DIST * host.get_opponent_dir()

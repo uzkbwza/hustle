@@ -7,6 +7,7 @@ const HOVER_AMOUNT = 1200
 const HOVER_MIN_AMOUNT = 50
 const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
+const HOVER_GROUND_FRIC = "0.025"
 const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
 const ORB_PUSH_SPEED = "8.5"
@@ -45,6 +46,16 @@ func apply_grav_custom(grav: String, fall_speed: String):
 	if !hovering:
 		.apply_grav_custom(grav, fall_speed)
 
+func apply_fric():
+	if !is_grounded():
+		.apply_fric()
+	else:
+		if hovering:
+			apply_x_fric(HOVER_GROUND_FRIC)
+		else:
+			.apply_fric()
+	pass
+
 func spawn_orb():
 		var orb = spawn_object(ORB_SCENE, -10, -56)
 		spawn_particle_effect_relative(ORB_PARTICLE_SCENE, Vector2(-10, -56))
@@ -54,14 +65,19 @@ func on_state_started(state):
 	.on_state_started(state)
 	if state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
 		fast_falling = false
+	if state is CharacterHurtState:
 		hovering = false
 
+func on_got_hit():
+	hovering = false
+	fast_falling = false
+	pass
 
 func tick():
 	.tick()
 	if hitlag_ticks <= 0:
 		if is_grounded():
-			hovering = false
+#			hovering = false
 			fast_falling = false
 		if hovering:
 			fast_falling = false
@@ -129,4 +145,5 @@ func can_fast_fall():
 	return !is_grounded()
 
 func can_hover():
-	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT
+#	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT
+	return hover_left > HOVER_MIN_AMOUNT

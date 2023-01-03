@@ -178,6 +178,8 @@ func _on_hit_something(obj, hitbox):
 	host.add_penalty(-50)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
+		if obj == host.opponent and obj.has_hyper_armor:
+			return
 		enable_hit_cancel()
 
 func process_hitboxes():

@@ -29,6 +29,7 @@ func _frame_9():
 	var dir = xy_to_dir(data["x"], data["y"])
 #	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
 	var opp_pos = host.obj_local_center(host.opponent)
+	var opp_vel = host.opponent.get_vel()
 	var dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
 	if fixed.gt(dist, MAX_DIST):
 		dist = MAX_DIST
@@ -41,4 +42,4 @@ func _frame_9():
 		"y": fixed.round(particle_pos.y) - diff_y - 16,
 	}
 	if obj_pos.y + pos.y <= 0:
-		var obj = host.spawn_object(PROJECTILE, obj_pos.x * host.get_facing_int(), obj_pos.y)
+		var obj = host.spawn_object(PROJECTILE, obj_pos.x * host.get_facing_int() + fixed.round(opp_vel.x), obj_pos.y + fixed.round(opp_vel.y))
