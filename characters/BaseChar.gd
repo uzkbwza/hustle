@@ -41,7 +41,7 @@ const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
 const HOLD_RESTARTS = [
-	"Wait"
+	"Wait",
 ]
 
 const P1_COLOR = Color("aca2ff")

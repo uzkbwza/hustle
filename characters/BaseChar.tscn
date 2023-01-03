@@ -1,4 +1,4 @@
-[gd_scene load_steps=163 format=2]
+[gd_scene load_steps=164 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -160,6 +160,7 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/shield_high.png" type="Texture" id=158]
 [ext_resource path="res://ui/ActionSelector/StateIcons/shield_low.png" type="Texture" id=159]
 [ext_resource path="res://sound/common/catch.wav" type="AudioStream" id=160]
+[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=161]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -438,6 +439,11 @@ pitch_variation = 0.01
 [node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
 stream = ExtResource( 155 )
 volume_db = -20.0
+bus = "Fx"
+
+[node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
+stream = ExtResource( 161 )
+volume_db = -5.0
 bus = "Fx"
 
 [node name="CollisionBox" parent="." index="2"]
