@@ -349,6 +349,8 @@ func init(game):
 	lock_in_tick = -INF
 
 func _on_player_turn_ready(player_id):
+	if !is_instance_valid(game):
+		return
 	lock_in_tick = game.current_tick
 	if player_id != Network.player_id or SteamLobby.SPECTATING:
 		$"%TurnReadySound".play()

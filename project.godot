@@ -424,6 +424,10 @@ toggle_frame_advance={
  ]
 }
 
+[logging]
+
+file_logging/enable_file_logging=true
+
 [memory]
 
 limits/message_queue/max_size_kb=58324

@@ -60,6 +60,8 @@ func tick():
 	if is_grounded():
 		flying_dir = null
 		stop_fly_fx()
+	if is_in_hurt_state():
+		flying_dir = null
 	if flying_dir:
 		if !is_grounded():
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)

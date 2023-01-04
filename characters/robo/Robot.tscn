@@ -609,6 +609,7 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -618,7 +619,6 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -628,7 +628,6 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -638,6 +637,7 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -647,7 +647,6 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -656,6 +655,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1321,7 +1321,7 @@ increment_combo = false
 [node name="NoComboHitbox" type="Node2D" parent="StateMachine/GroundSlam" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-damage = 180
+damage = 120
 minimum_damage = 85
 hitbox_type = 2
 damage_proration = -8
@@ -1535,7 +1535,6 @@ sfx_tick = 12
 sfx_volume = -8.0
 title = "VACUUM"
 type = 2
-air_type = 2
 interrupt_from_string = "GroundedSpecial
 Grounded
 AerialSpecial

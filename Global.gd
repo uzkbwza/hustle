@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.9.0"
+var VERSION = "0.9.2-steam"
 
 var audio_player
 var music_enabled = true
@@ -44,6 +44,7 @@ func full_version():
 
 func _enter_tree():
 #	get_tree().set_auto_accept_quit(false)
+	steam_demo_version = "steam" in VERSION and "beta" in VERSION
 	audio_player = AudioStreamPlayer.new()
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"

@@ -250,7 +250,8 @@ max_value = 24.0
 unique_name_in_owner = true
 margin_top = 881.0
 margin_bottom = 906.0
-max_value = 1.0
+min_value = -24.0
+max_value = 24.0
 
 [node name="ColorPickers" type="TabContainer" parent="."]
 margin_top = 911.0

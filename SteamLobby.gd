@@ -21,6 +21,7 @@ signal client_validation_success()
 signal client_validation_failure(message)
 signal authentication_started(steam_id)
 signal authentication_complete()
+signal spectate_declined()
 
 signal user_joined(user_id)
 signal user_left(user_id)
@@ -37,7 +38,7 @@ var LOBBY_ID: int = 0
 var LOBBY_MEMBERS: Array = []
 var DATA
 var LOBBY_VOTE_KICK: bool = false
-var LOBBY_MAX_MEMBERS: int = 64
+var LOBBY_MAX_MEMBERS: int = 16
 
 var SPECTATORS = []
 
@@ -368,7 +369,8 @@ func _read_P2P_Packet() -> void:
 
 		# Print the packet to output
 #		print("Packet: "+str(readable))
-		
+#		print("received packet")
+#		print(readable)
 		if readable.has("rpc_data"):
 			print("received rpc")
 			_receive_rpc(readable)
@@ -486,9 +488,9 @@ func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
 		CLIENT_TICKETS[steam_id] = {"id": steam_id, "ticket": ticket['id'], "authenticated": false}
 	else:
 		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
-		quit_match()
-		if is_instance_valid(Global.current_game):
-			get_tree().reload_current_scene()
+#		quit_match()
+#		if is_instance_valid(Global.current_game):
+#			get_tree().reload_current_scene()
 
 func _on_received_spectate_request(steam_id):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
@@ -760,7 +762,7 @@ func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	# Else no known error
 	else:
 		print("WARNING: Session failure with "+str(steamID)+" [unknown error "+str(session_error)+"].")
-	get_tree().reload_current_scene()
+#	get_tree().reload_current_scene()
 
 func can_get_messages_from_user(steam_id):
 	if steam_id == SteamHustle.STEAM_ID:
