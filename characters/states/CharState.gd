@@ -144,6 +144,8 @@ func get_categories(string: String):
 
 func _enter_shared():
 	._enter_shared()
+	if dynamic_iasa:
+		interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
 #	host.update_advantage()
 #	if host.opponent:
 #		host.opponent.update_advantage()
@@ -192,10 +194,10 @@ func process_hitboxes():
 #func process_feint():
 #	return "WhiffInstantCancel"
 
+
+
 func _tick_shared():
 	if current_tick == 0:
-		if dynamic_iasa:
-			interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
 		feinting = host.feinting
 		hit_cancelled = false
 #		hit_cancelled = false

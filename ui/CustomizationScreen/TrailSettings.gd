@@ -63,6 +63,12 @@ func load_settings(settings):
 				node.set_value(value)
 			if value is Vector2 and node is XYPlot:
 				node.set_value_float(value)
+	if "shape" in settings:
+		var shape = settings["shape"]
+		for id in $"%Shape".get_item_count():
+			if shape == $"%Shape".get_item_text(id):
+				$"%Shape".selected = id
+				break
 #			yield(get_tree(), "idle_frame")
 
 func _ready():

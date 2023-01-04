@@ -609,7 +609,6 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -619,6 +618,7 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -628,6 +628,7 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -637,7 +638,6 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -647,6 +647,7 @@ visible = false
 modulate = Color( 1, 1, 1, 0.2 )
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -655,7 +656,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1565,6 +1565,7 @@ sprite_animation = "Fall"
 
 [node name="Landing" parent="StateMachine" index="28"]
 script = ExtResource( 82 )
+dynamic_iasa = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Landing" index="0"]
 z_index = 1000

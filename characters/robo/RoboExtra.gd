@@ -33,7 +33,8 @@ func show_options():
 	return
 
 func reset():
-#	if current_dir:
-#		$"%FlyDir".set_dir(current_dir)
-#	$"%FlyEnabled".set_pressed_no_signal(false)
-	pass
+	if fighter.flying_dir:
+		$"%FlyDir".set_dir(fighter.flying_dir)
+		$"%FlyEnabled".set_pressed_no_signal(true)
+	else:
+		$"%FlyEnabled".set_pressed_no_signal(false)
