@@ -1412,12 +1412,13 @@ Aerial"
 release = true
 release_frame = 41
 release_throw_pos_x = 30
-release_throw_pos_y = -50
+release_throw_pos_y = -30
 hitstun_ticks = 25
-knockback = "4.0"
+knockback = "6.0"
 dir_y = "-1"
 knockdown = false
 grounded_hit_state = "HurtAerial"
+increment_combo = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DisembowelGrabFollowup" index="0"]
 z_index = 1000
