@@ -1,4 +1,4 @@
-[gd_scene load_steps=248 format=2]
+[gd_scene load_steps=276 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -237,10 +237,38 @@
 [ext_resource path="res://characters/robo/sprites/missile3.png" type="Texture" id=235]
 [ext_resource path="res://characters/robo/sprites/missile5.png" type="Texture" id=236]
 [ext_resource path="res://characters/robo/states/Missile.gd" type="Script" id=237]
-[ext_resource path="res://sound/common/explosion2.wav" type="AudioStream" id=238]
+[ext_resource path="res://sound/common/swish.wav" type="AudioStream" id=238]
 [ext_resource path="res://characters/robo/MissileParticle.tscn" type="PackedScene" id=239]
 [ext_resource path="res://characters/robo/sprites/grab1.png" type="Texture" id=240]
 [ext_resource path="res://characters/robo/sprites/hurt_mid.png" type="Texture" id=241]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab10.png" type="Texture" id=242]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab11.png" type="Texture" id=243]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab1.png" type="Texture" id=244]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab2.png" type="Texture" id=245]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab3.png" type="Texture" id=246]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab4.png" type="Texture" id=247]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab5.png" type="Texture" id=248]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab6.png" type="Texture" id=249]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab7.png" type="Texture" id=250]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab8.png" type="Texture" id=251]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab9.png" type="Texture" id=252]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup1.png" type="Texture" id=253]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup2.png" type="Texture" id=254]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup12.png" type="Texture" id=255]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup8.png" type="Texture" id=256]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup9.png" type="Texture" id=257]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup5.png" type="Texture" id=258]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup11.png" type="Texture" id=259]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup7.png" type="Texture" id=260]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup10.png" type="Texture" id=261]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup6.png" type="Texture" id=262]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup4.png" type="Texture" id=263]
+[ext_resource path="res://characters/robo/sprites/anti_air_grab_followup3.png" type="Texture" id=264]
+[ext_resource path="res://characters/states/ThrowState.gd" type="Script" id=265]
+[ext_resource path="res://characters/robo/sound/mechanical4.wav" type="AudioStream" id=266]
+[ext_resource path="res://characters/robo/sprites/actionicons/disembowel.png" type="Texture" id=267]
+[ext_resource path="res://characters/robo/sprites/actionicons/vacuum.png" type="Texture" id=268]
+[ext_resource path="res://sound/common/swish_long.wav" type="AudioStream" id=269]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -320,6 +348,16 @@ animations = [ {
 "frames": [ ExtResource( 72 ) ],
 "loop": true,
 "name": "DashForward",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 244 ), ExtResource( 244 ), ExtResource( 244 ), ExtResource( 245 ), ExtResource( 245 ), ExtResource( 245 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 252 ), ExtResource( 252 ), ExtResource( 252 ), ExtResource( 242 ), ExtResource( 242 ), ExtResource( 242 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 243 ) ],
+"loop": true,
+"name": "DisembowelGrab",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 264 ), ExtResource( 264 ), ExtResource( 264 ), ExtResource( 263 ), ExtResource( 263 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 262 ), ExtResource( 262 ), ExtResource( 260 ), ExtResource( 260 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 261 ), ExtResource( 261 ), ExtResource( 259 ), ExtResource( 259 ), ExtResource( 260 ), ExtResource( 260 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 261 ), ExtResource( 261 ), ExtResource( 259 ), ExtResource( 259 ), ExtResource( 260 ), ExtResource( 260 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 261 ), ExtResource( 261 ), ExtResource( 259 ), ExtResource( 259 ), ExtResource( 255 ), ExtResource( 255 ), ExtResource( 255 ), ExtResource( 255 ) ],
+"loop": true,
+"name": "DisembowelGrabFollowup",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 16 ), ExtResource( 37 ) ],
@@ -599,8 +637,8 @@ damage_taken_modifier = "0.85"
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 8 )
-animation = "Missile"
-frame = 12
+animation = "DisembowelGrabFollowup"
+frame = 0
 offset = Vector2( 0, -16 )
 
 [node name="ChainsawArmGhost1" type="AnimatedSprite" parent="Flip" index="1"]
@@ -1248,7 +1286,178 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 4
 
-[node name="GroundSlam" type="Node2D" parent="StateMachine" index="18"]
+[node name="DisembowelGrab" type="Node2D" parent="StateMachine" index="18"]
+script = ExtResource( 94 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 39
+sfx = ExtResource( 266 )
+sfx_tick = 5
+sfx_volume = -10.0
+title = "DISEMBOWEL"
+type = 2
+button_texture = ExtResource( 267 )
+iasa_at = 26
+interrupt_from_string = "Grounded
+GroundedSpecial"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/DisembowelGrab" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 106
+y = -79
+width = 16
+height = 17
+cancellable = false
+increment_combo = false
+hits_vs_grounded = false
+followup_state = "DisembowelGrabFollowup"
+hit_height = 0
+grounded_hit_state = "Grabbed"
+aerial_hit_state = "Grabbed"
+start_tick = 9
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/DisembowelGrab" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 73
+y = -62
+width = 16
+height = 17
+cancellable = false
+increment_combo = false
+hits_vs_grounded = false
+followup_state = "DisembowelGrabFollowup"
+hit_height = 0
+grounded_hit_state = "Grabbed"
+aerial_hit_state = "Grabbed"
+start_tick = 9
+active_ticks = 2
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/DisembowelGrab" index="2"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 40
+y = -36
+width = 16
+height = 26
+cancellable = false
+increment_combo = false
+hits_vs_grounded = false
+followup_state = "DisembowelGrabFollowup"
+hit_height = 0
+grounded_hit_state = "Grabbed"
+aerial_hit_state = "Grabbed"
+start_tick = 9
+active_ticks = 2
+
+[node name="Hitbox4" type="Node2D" parent="StateMachine/DisembowelGrab" index="3"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 13
+y = -22
+width = 18
+height = 18
+cancellable = false
+increment_combo = false
+hits_vs_grounded = false
+followup_state = "DisembowelGrabFollowup"
+hit_height = 0
+grounded_hit_state = "Grabbed"
+aerial_hit_state = "Grabbed"
+start_tick = 9
+active_ticks = 2
+
+[node name="DisembowelGrabFollowup" type="Node2D" parent="StateMachine" index="19"]
+script = ExtResource( 265 )
+anim_length = 52
+enter_sfx = ExtResource( 155 )
+enter_sfx_volume = -10.0
+throw_positions = {
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
+},
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
+},
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
+ExtResource( 263 ): {
+"x": 124,
+"y": -72
+},
+ExtResource( 264 ): {
+"x": 124,
+"y": -72
+}
+}
+interrupt_into_string = "Grounded
+Aerial"
+release = true
+release_frame = 41
+release_throw_pos_x = 30
+release_throw_pos_y = -50
+hitstun_ticks = 25
+knockback = "4.0"
+dir_y = "-1"
+knockdown = false
+grounded_hit_state = "HurtAerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/DisembowelGrabFollowup" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 36
+y = -42
+damage = 70
+hitbox_type = 2
+hitlag_ticks = 10
+cancellable = false
+hit_sound = ExtResource( 145 )
+start_tick = 18
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/DisembowelGrabFollowup" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 36
+y = -42
+damage = 70
+hitbox_type = 2
+hitlag_ticks = 10
+cancellable = false
+group = 1
+hit_sound = ExtResource( 145 )
+start_tick = 29
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/DisembowelGrabFollowup" index="2"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 36
+y = -42
+damage = 70
+hitbox_type = 2
+hitlag_ticks = 10
+cancellable = false
+group = 2
+hit_sound = ExtResource( 145 )
+start_tick = 40
+
+[node name="GroundSlam" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 119 )
 apply_forces = true
 apply_fric = true
@@ -1347,7 +1556,7 @@ dir_y = "1"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 
-[node name="CommandGrab" type="Node2D" parent="StateMachine" index="19"]
+[node name="CommandGrab" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 194 )
 apply_forces = true
 apply_fric = true
@@ -1391,7 +1600,7 @@ start_tick = 7
 active_ticks = 2
 throw_state = "GroundSlam"
 
-[node name="ClapJump" type="Node2D" parent="StateMachine" index="20"]
+[node name="ClapJump" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 134 )
 apply_forces = true
 apply_fric = true
@@ -1413,7 +1622,7 @@ interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Aerial"
 
-[node name="ClapLand" type="Node2D" parent="StateMachine" index="21"]
+[node name="ClapLand" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 137 )
 apply_forces = true
 apply_fric = true
@@ -1443,7 +1652,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 3
 
-[node name="Chainsaw" type="Node2D" parent="StateMachine" index="22"]
+[node name="Chainsaw" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 183 )
 apply_forces = true
 apply_fric = true
@@ -1517,7 +1726,7 @@ looping = true
 loop_active_ticks = 1
 loop_inactive_ticks = 1
 
-[node name="Vacuum" type="Node2D" parent="StateMachine" index="23"]
+[node name="Vacuum" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 237 )
 apply_forces = true
 apply_fric = true
@@ -1532,11 +1741,11 @@ timed_particle_position = Vector2( 0, -19 )
 timed_spawn_particle_tick = 12
 enter_sfx = ExtResource( 154 )
 enter_sfx_volume = -10.0
-sfx = ExtResource( 238 )
 sfx_tick = 12
 sfx_volume = -8.0
 title = "VACUUM"
 type = 2
+button_texture = ExtResource( 268 )
 interrupt_from_string = "GroundedSpecial
 Grounded
 AerialSpecial
@@ -1554,7 +1763,9 @@ height = -1
 damage = 65
 hitstun_ticks = 16
 victim_hitlag = 10
-hit_sound = ExtResource( 145 )
+whiff_sound = ExtResource( 269 )
+hit_sound = ExtResource( 238 )
+hit_sound_volume = -1.0
 dir_x = "-1.0"
 dir_y = "-0.35"
 knockback = "4.5"
@@ -1562,10 +1773,10 @@ pushback_x = "-1.0"
 start_tick = 13
 active_ticks = 3
 
-[node name="Fall" parent="StateMachine" index="27"]
+[node name="Fall" parent="StateMachine" index="29"]
 sprite_animation = "Fall"
 
-[node name="Landing" parent="StateMachine" index="28"]
+[node name="Landing" parent="StateMachine" index="30"]
 script = ExtResource( 82 )
 dynamic_iasa = false
 
@@ -1588,20 +1799,20 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="DashStartup" parent="StateMachine" index="33"]
+[node name="DashStartup" parent="StateMachine" index="35"]
 interrupt_from_string = ""
 
-[node name="SuperJump" parent="StateMachine" index="37"]
+[node name="SuperJump" parent="StateMachine" index="39"]
 speed = "18"
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="38"]
+[node name="DoubleJump" parent="StateMachine" index="40"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="39"]
+[node name="AirDash" parent="StateMachine" index="41"]
 interrupt_from_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]

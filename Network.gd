@@ -349,7 +349,8 @@ func pid_to_username(player_id):
 		if direct_connect:
 			return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
 		return players[network_ids[player_id]]
-		
+
+
 func opponent_id(pid=player_id):
 	if pid == 1:
 		return network_ids[2]

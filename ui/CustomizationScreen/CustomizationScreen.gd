@@ -21,7 +21,8 @@ func get_style_data():
 		"outline_color": outline_color if $"%ShowOutline".pressed else null,
 		"hitspark": "bash" if selected_hitspark == null else selected_hitspark,
 		"show_aura": $"%ShowAura".pressed,
-		"aura_settings": $"%TrailSettings".get_settings() if $"%ShowAura".pressed else null
+		"aura_settings": $"%TrailSettings".get_settings() if $"%ShowAura".pressed else null,
+		"ivy_effect": false,
 	}
 
 func _ready():

@@ -66,6 +66,7 @@ func disable():
 			node.editable = false
 		if node.get("disabled") != null:
 			node.disabled = true
+	$"%GameFormats".disabled = true
 	update_menu()
 
 func enable():
@@ -74,6 +75,7 @@ func enable():
 			node.editable = true
 		if node.get("disabled") != null:
 			node.disabled = false
+	$"%GameFormats".disabled = false
 	update_menu()
 
 func _setting_value_changed(_value, _setting):

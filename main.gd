@@ -143,6 +143,8 @@ func setup_game_deferred(singleplayer, data):
 	game.connect("playback_requested", self, "_on_playback_requested")
 	game.connect("zoom_changed", self, "_on_zoom_changed")
 	
+	Network.game = game
+	
 	if !data.has("user_data"):
 		if Network.multiplayer_active:
 			data["user_data"] = {

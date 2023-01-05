@@ -36,31 +36,42 @@ margin_left = 10.0
 margin_right = 266.0
 margin_bottom = 14.0
 
-[node name="P1Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_top = 1.0
+[node name="Control2" type="Control" parent="VBoxContainer/MarginContainer/HBoxContainer"]
 margin_right = 84.0
-margin_bottom = 12.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="P1Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/Control2"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 34.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
 text = "USER1"
-clip_text = true
 
 [node name="Vs" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+modulate = Color( 1, 1, 1, 0.419608 )
 margin_left = 85.0
 margin_top = 1.0
 margin_right = 170.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
-text = "versus"
+text = "vs"
 align = 1
 
-[node name="P2Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 171.0
-margin_top = 1.0
 margin_right = 256.0
-margin_bottom = 12.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="P2Username" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/Control"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -36.0
+grow_horizontal = 0
 size_flags_horizontal = 3
 size_flags_vertical = 6
 text = "USER2"

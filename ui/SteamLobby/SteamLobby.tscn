@@ -268,6 +268,7 @@ margin_bottom = 340.0
 color = Color( 0, 0, 0, 0.780392 )
 
 [node name="Label" type="Label" parent="MarginContainer/LoadingLobbyRect"]
+unique_name_in_owner = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 text = "Requesting lobby data..."
@@ -370,6 +371,22 @@ margin_bottom = 20.0
 rect_min_size = Vector2( 50, 20 )
 text = "cancel"
 clip_text = true
+
+[node name="LoadingSpectatorRect" type="ColorRect" parent="MarginContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 50.0
+margin_top = 20.0
+margin_right = 590.0
+margin_bottom = 340.0
+color = Color( 0, 0, 0, 0.780392 )
+
+[node name="Label" type="Label" parent="MarginContainer/LoadingSpectatorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Spectating..."
+align = 1
+valign = 1
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true

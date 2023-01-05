@@ -1,5 +1,7 @@
 extends Node
 
+const IVY_ID = 76561198255503675
+
 var IS_ONLINE: bool
 var IS_OWNED: bool
 

@@ -129,6 +129,7 @@ var is_style_active = null
 var touching_wall = false
 
 var ivy_effect = false
+var ivy_effect_t = 0.0
 
 var colliding_with_opponent = true
 
@@ -278,10 +279,22 @@ func init(pos=null):
 		super_meter = MAX_SUPER_METER
 	last_pos = get_pos()
 
+func is_ivy():
+	if !Network.multiplayer_active and !SteamLobby.SPECTATING:
+		var username = Network.pid_to_username(id)
+		if username == "ivy sly":
+			return true
+	else:
+		if id in Network.network_ids:
+			return Network.network_ids[id] == SteamHustle.IVY_ID
+	return false
+
 func apply_style(style):
 	if (!SteamHustle.STARTED) or Global.steam_demo_version:
 		return
+	
 	if style != null and !is_ghost:
+		ivy_effect = is_ivy() and style.style_name == "ivy"
 		is_color_active = true
 		is_style_active = true
 		applied_style = style
@@ -506,7 +519,13 @@ func hitbox_from_name(hitbox_name):
 	if obj:
 		return objs_map[obj_name].hitboxes[hitbox_id]
 
-func _process(_delta):
+func _process(delta):
+	if ivy_effect and !is_ghost:
+		sprite.get_material().set_shader_param("color", Color.from_hsv(ivy_effect_t, 0.8, 1))
+#		sprite.get_material().set_shader_param("outline_color", Color.from_hsv(1 - ivy_effect_t, 1.0, 1.0))
+		ivy_effect_t += delta
+		ivy_effect_t = fmod(ivy_effect_t, 1.0)
+#		print(ivy_effect_t)
 	update()
 	if invulnerable:
 		if (Global.current_game.real_tick / 1) % 2 == 0:

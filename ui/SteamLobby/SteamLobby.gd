@@ -148,7 +148,7 @@ func _on_retrieved_lobby_members(members):
 
 func _on_spectate_requested(player):
 	SteamLobby.request_spectate(player.steam_id)
-	pass
+	$"%LoadingSpectatorRect".show()
 
 func _on_back_button_pressed():
 	Network.stop_multiplayer(true)

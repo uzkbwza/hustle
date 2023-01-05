@@ -338,11 +338,18 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.objs_map = objs_map
 	snapping_camera = true
 	self.singleplayer = singleplayer
+	if singleplayer:
+		if match_data["p2_dummy"]:
+			p2.dummy = true
+		pass
+	elif !is_ghost:
+		Network.game = self
 	if !singleplayer:
 		started_multiplayer = true
 		if Network.multiplayer_active:
 			p1_username = Network.pid_to_username(1)
 			p2_username = Network.pid_to_username(2)
+
 			my_id = Network.player_id
 	current_tick = -1
 	if !is_ghost:
@@ -354,12 +361,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			get_max_replay_tick()
 			if ReplayManager.frames[1].size() > 0 or ReplayManager.frames[2].size() > 0:
 				ReplayManager.playback = true
-	if singleplayer:
-		if match_data["p2_dummy"]:
-			p2.dummy = true
-		pass
-	elif !is_ghost:
-		Network.game = self
+
 	var height = 0
 	if match_data.has("char_height"):
 		height = -match_data.char_height

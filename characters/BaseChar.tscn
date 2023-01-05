@@ -628,6 +628,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+release_opponent_on_startup = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Burst" index="0"]
 z_index = 1000
@@ -673,6 +674,7 @@ hit_cancel_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+release_opponent_on_startup = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/OffensiveBurst" index="0"]
 z_index = 1000
@@ -954,6 +956,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+release_opponent_on_startup = true
 super_freeze_ticks = 3
 
 [node name="WhiffInstantCancel" type="Node2D" parent="StateMachine" index="25"]
