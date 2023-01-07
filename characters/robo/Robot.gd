@@ -4,6 +4,9 @@ const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8"
 const FLY_TICKS = 20
 const GROUND_POUND_MIN_HEIGHT = -48
+const LOIC_METER = 1000
+const LOIC_GAIN = 7
+const LOIC_GAIN_NO_ARMOR = 7
 
 var armor_pips = 1
 var landed_move = false
@@ -16,6 +19,8 @@ var can_ground_pound = false
 var buffer_reset_ground_pound = false
 var orbital_strike_out = false
 var orbital_strike_projectile = null
+var can_loic = true
+var loic_meter = LOIC_METER
 
 onready var chainsaw_arm = $"%ChainsawArm"
 
@@ -30,7 +35,7 @@ func _ready():
 
 func init(pos=null):
 	.init(pos)
-	armor_pips = 0
+	armor_pips = 1
 
 func on_got_hit():
 	if armor_pips > 0:
@@ -91,6 +96,19 @@ func tick():
 			if fly_ticks_left <= 0:
 				flying_dir = null
 				stop_fly_fx()
+	
+	if loic_meter < LOIC_METER:
+		if armor_pips > 0:
+			loic_meter += LOIC_GAIN
+		else:
+			loic_meter += LOIC_GAIN_NO_ARMOR
+	if loic_meter >= LOIC_METER:
+		if !can_loic:
+			play_sound("LOICBeep")
+		can_loic = true
+		loic_meter = LOIC_METER
+	else:
+		can_loic = false
 	
 	if buffer_reset_ground_pound:
 		buffer_reset_ground_pound = false

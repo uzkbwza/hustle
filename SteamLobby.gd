@@ -488,9 +488,10 @@ func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
 		CLIENT_TICKETS[steam_id] = {"id": steam_id, "ticket": ticket['id'], "authenticated": false}
 	else:
 		emit_signal("client_validation_failure", VERBOSE_RESPONSE)
-#		quit_match()
-#		if is_instance_valid(Global.current_game):
-#			get_tree().reload_current_scene()
+		if steam_id == OPPONENT_ID and OPPONENT_ID != 0: 
+			quit_match()
+			if is_instance_valid(Global.current_game):
+				get_tree().reload_current_scene()
 
 func _on_received_spectate_request(steam_id):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
@@ -602,9 +603,9 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 
 		# Get the lobby members
 		_get_Lobby_Members()
-		
-		for member in LOBBY_MEMBERS:
-			authenticate_with(member.steam_id)
+#
+#		for member in LOBBY_MEMBERS:
+#			authenticate_with(member.steam_id)
 
 		# Make the initial handshake
 		_make_P2P_Handshake()

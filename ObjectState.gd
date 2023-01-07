@@ -350,8 +350,8 @@ func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	return host.xy_to_dir(x, y, mul, div)
 
 func update_sprite_frame():
-	if ReplayManager.resimulating:
-		return
+#	if ReplayManager.resimulating:
+#		return
 	if !host.sprite.frames.has_animation(anim_name):
 		return
 	if host.sprite.animation != anim_name:

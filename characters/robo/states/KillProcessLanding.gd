@@ -1,9 +1,9 @@
 extends RobotState
 
-const DAMAGE_PER_BAR = 100
-const COMBO_DAMAGE_PER_BAR = 45
-const MIN_DAMAGE_PER_BAR = 40
-const MIN_COMBO_DAMAGE_PER_BAR = 35
+const DAMAGE_PER_BAR = 80
+const COMBO_DAMAGE_PER_BAR = 40
+const MIN_DAMAGE_PER_BAR = 20
+const MIN_COMBO_DAMAGE_PER_BAR = 20
 
 onready var hitbox = $Hitbox
 

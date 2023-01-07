@@ -5,7 +5,9 @@ func _frame_0():
 	if host.creator:
 		host.creator.orbital_strike_out = false
 		host.creator.orbital_strike_projectile = null
-
+		host.creator.loic_meter = 0
+		host.creator.can_loic = false
+	host.line_drawer.z_index = 1000
 
 func _frame_50():
 	host.disable()

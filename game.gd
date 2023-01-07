@@ -827,6 +827,7 @@ func simulate_one_tick():
 func resimulate():
 	while ReplayManager.resimulating:
 		tick()
+		show_state()
 	show_state()
 	if Network.multiplayer_active:
 		Network.undo_finished()

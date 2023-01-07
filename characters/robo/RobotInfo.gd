@@ -1,14 +1,18 @@
 extends PlayerInfo
-#
-#func _process(delta):
-#	$"%ArmorTexture".visible = fighter.armor_pips > 0
-#
+
+const LOIC_READY_BAR = preload("res://characters/robo/loic_meter_progress2.png")
+const LOIC_CHARGING_BAR = preload("res://characters/robo/loic_meter_progress1.png")
+
 func set_fighter(fighter):
 	.set_fighter(fighter)
 	$HBoxContainer.alignment = BoxContainer.ALIGN_BEGIN if player_id == 1 else BoxContainer.ALIGN_END
+	if player_id == 2:
+		$HBoxContainer.move_child($HBoxContainer/LOICMeterContainer, 0)
+		$"%LOICMeter".fill_mode = TextureProgress.FILL_RIGHT_TO_LEFT
 
 func _process(delta):
-	$"%LandingIndicator".visible = fighter.can_ground_pound
+	$"%LandingIndicator".modulate.a = 0.15
 	if fighter.can_ground_pound:
 		$"%LandingIndicator".modulate.a = 1.0 if Utils.pulse(0.3, 0.65) else 0.75
-	pass
+	$"%LOICMeter".texture_progress = LOIC_READY_BAR if fighter.can_loic else LOIC_CHARGING_BAR
+	$"%LOICMeter".value = (fighter.loic_meter / float(fighter.LOIC_METER)) * $"%LOICMeter".max_value

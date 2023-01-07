@@ -14,4 +14,4 @@ func process_projectile(obj):
 	host.orbital_strike_projectile = obj.obj_name
 
 func is_usable():
-	return .is_usable() and !host.orbital_strike_out
+	return .is_usable() and !host.orbital_strike_out and host.can_loic

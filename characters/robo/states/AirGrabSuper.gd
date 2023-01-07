@@ -3,7 +3,7 @@ extends RobotState
 func _enter_shared():
 	host.kill_process_super_level = host.supers_available
 	if host.kill_process_super_level == 9:
-		host.kill_process_super_level = 10
+		host.kill_process_super_level = 200
 	._enter_shared()
 	for i in range(host.supers_available):
 		host.use_super_bar()

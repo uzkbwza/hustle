@@ -152,7 +152,7 @@ margin_bottom = 11.0
 size_flags_horizontal = 3
 min_value = 100.0
 max_value = 50000.0
-value = 1100.0
+value = 800.0
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 margin_top = 51.0
