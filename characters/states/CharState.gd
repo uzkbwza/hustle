@@ -73,6 +73,7 @@ export(String) var change_stance_to = ""
 export var _c_Misc = 0
 export var release_opponent_on_startup = false
 export var initiative_effect = false
+export var apply_pushback = true
 
 var initiative_effect_spawned = false
 
@@ -269,6 +270,7 @@ func _exit_shared():
 	host.state_interruptable = false
 	host.has_hyper_armor = false
 	host.state_hit_cancellable = false
+	host.clipping_wall = false
 #	if host.reverse_state:
 #		host.set_facing(host.get_facing_int() * -1)
 #	host.sprite.rotation = 0

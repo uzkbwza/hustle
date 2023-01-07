@@ -601,31 +601,31 @@ func resolve_collisions(step=0):
 		$Camera2D.reset_smoothing()
 
 	if step < 5:
-		if x_pos - p1.collision_box.width < -stage_width:
+		if !p1.clipping_wall and x_pos - p1.collision_box.width < -stage_width:
 			p1.set_x(-stage_width + p1.collision_box.width)
 			p1.update_data()
 			p2.update_data()
 			return resolve_collisions(step+1)
 			
-		elif x_pos + p1.collision_box.width > stage_width:
+		elif !p1.clipping_wall and x_pos + p1.collision_box.width > stage_width:
 			p1.set_x(stage_width - p1.collision_box.width)
 			p1.update_data()
 			p2.update_data()
 			return resolve_collisions(step+1)
 			
-		if opp_x_pos - p2.collision_box.width < -stage_width:
+		if !p2.clipping_wall and opp_x_pos - p2.collision_box.width < -stage_width:
 			p2.set_x(-stage_width + p2.collision_box.width)
 			p1.update_data()
 			p2.update_data()
 			return resolve_collisions(step+1)
 			
-		elif opp_x_pos + p2.collision_box.width > stage_width:
+		elif !p2.clipping_wall and opp_x_pos + p2.collision_box.width > stage_width:
 			p2.set_x(stage_width - p2.collision_box.width)
 			p1.update_data()
 			p2.update_data()
 			return resolve_collisions(step+1)
 		
-		if p1.collision_box.overlaps(p2.collision_box):
+		if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
 			p1.update_data()
 			p2.update_data()
 			return resolve_collisions(step+1)

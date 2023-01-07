@@ -1,4 +1,4 @@
-[gd_scene load_steps=284 format=2]
+[gd_scene load_steps=285 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -280,6 +280,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/teleport3.png" type="Texture" id=278]
 [ext_resource path="res://characters/swordandgun/states/ImpaleFollowup.gd" type="Script" id=279]
 [ext_resource path="res://characters/swordandgun/sprites/impale7.png" type="Texture" id=280]
+[ext_resource path="res://characters/swordandgun/sprites/wall_slam.png" type="Texture" id=281]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -651,6 +652,11 @@ animations = [ {
 "loop": true,
 "name": "Wait",
 "speed": 30.0
+}, {
+"frames": [ ExtResource( 281 ) ],
+"loop": true,
+"name": "WallSlam",
+"speed": 5.0
 } ]
 
 [sub_resource type="SpriteFrames" id=2]
@@ -688,8 +694,6 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "ImpaleFollowup"
-frame = 0
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1596,8 +1600,6 @@ hit_sound = ExtResource( 142 )
 dir_y = "0"
 knockback = "2.0"
 pushback_x = "-5.0"
-grounded_hit_state = "Grabbed"
-aerial_hit_state = "Grabbed"
 knockdown = true
 disable_collision = false
 start_tick = 13
@@ -2175,14 +2177,14 @@ speed = "7"
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="67"]
+[node name="AirGrab" parent="StateMachine" index="68"]
 land_cancel = true
 
-[node name="AirDownThrow" parent="StateMachine" index="72"]
+[node name="AirDownThrow" parent="StateMachine" index="73"]
 dir_x = "1.0"
 dir_y = "1.00"
 
-[node name="Taunt" parent="StateMachine" index="74"]
+[node name="Taunt" parent="StateMachine" index="75"]
 script = ExtResource( 255 )
 anim_length = 61
 force_dir_x = "-1.0"

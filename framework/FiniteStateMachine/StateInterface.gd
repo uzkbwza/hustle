@@ -22,7 +22,7 @@ func get_animation():
 		return animation
 
 func queue_state_change(state, data=null):
-	if !data:
+	if data == null:
 		emit_signal("queue_change", state, self)
 		return
 	emit_signal("queue_change_with_data", state, data, self)

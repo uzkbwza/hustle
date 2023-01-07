@@ -1,4 +1,4 @@
-[gd_scene load_steps=229 format=2]
+[gd_scene load_steps=230 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -223,6 +223,7 @@
 [ext_resource path="res://characters/stickman/sprites/hitgrab_followup1.png" type="Texture" id=221]
 [ext_resource path="res://characters/stickman/sprites/hitgrab_followup4.png" type="Texture" id=222]
 [ext_resource path="res://characters/stickman/sprites/actionicons/skull_shaker.png" type="Texture" id=223]
+[ext_resource path="res://characters/stickman/sprites/wall_slam.png" type="Texture" id=224]
 [ext_resource path="res://characters/stickman/sprites/hitgrab_followup5.png" type="Texture" id=226]
 [ext_resource path="res://characters/stickman/states/HitGrabFollowup.gd" type="Script" id=228]
 
@@ -526,6 +527,11 @@ animations = [ {
 "name": "Wait",
 "speed": 30.0
 }, {
+"frames": [ ExtResource( 224 ) ],
+"loop": true,
+"name": "WallSlam",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 141 ), ExtResource( 141 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 82 ), ExtResource( 82 ) ],
 "loop": true,
 "name": "WhipWave",
@@ -554,8 +560,6 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 4 )
-animation = "HitGrabFollowup"
-frame = 5
 
 [node name="Super2" parent="Sounds" index="4"]
 pitch_variation = 0.1
@@ -1850,10 +1854,6 @@ Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
 "y": -7
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
@@ -1861,6 +1861,10 @@ ExtResource( 222 ): {
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 }
 }
 button_texture = ExtResource( 223 )
@@ -1962,7 +1966,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="ForwardThrow" parent="StateMachine" index="66"]
+[node name="ForwardThrow" parent="StateMachine" index="67"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -1970,17 +1974,17 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
 },
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 },
 ExtResource( 209 ): {
 "x": 32,
@@ -2016,24 +2020,24 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="67"]
+[node name="BackThrow" parent="StateMachine" index="68"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 },
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 209 ): {
 "x": 32,
@@ -2069,10 +2073,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="72"]
+[node name="Taunt" parent="StateMachine" index="73"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="73"]
+[node name="ForfeitExplosion" parent="StateMachine" index="74"]
 endless = true

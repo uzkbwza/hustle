@@ -7,6 +7,12 @@ const SMOKE_FREQUENCY = 1
 const COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES = 5
 const HITSTUN_DECAY_PER_HIT = 1
 
+enum BOUNCE {
+	LEFT_WALL,
+	RIGHT_WALL,
+	NO_BOUNCE
+}
+
 var counter = false
 
 var hitbox

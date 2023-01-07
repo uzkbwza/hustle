@@ -1,4 +1,4 @@
-[gd_scene load_steps=284 format=2]
+[gd_scene load_steps=285 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -278,6 +278,7 @@
 [ext_resource path="res://characters/wizard/sprites/geyser1.png" type="Texture" id=276]
 [ext_resource path="res://characters/wizard/sounds/geyser.wav" type="AudioStream" id=277]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/geyser.png" type="Texture" id=278]
+[ext_resource path="res://characters/wizard/sprites/wall_slam.png" type="Texture" id=279]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -618,6 +619,11 @@ animations = [ {
 "loop": true,
 "name": "Wait",
 "speed": 30.0
+}, {
+"frames": [ ExtResource( 279 ) ],
+"loop": true,
+"name": "WallSlam",
+"speed": 5.0
 } ]
 
 [sub_resource type="ShaderMaterial" id=7]
@@ -662,8 +668,6 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 8 )
-animation = "Geyser"
-frame = 0
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -1833,19 +1837,19 @@ y_modifier = "1.1"
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="55"]
+[node name="Hold" parent="StateMachine" index="56"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="56"]
+[node name="AirHold" parent="StateMachine" index="57"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="ForwardThrow" parent="StateMachine" index="59"]
+[node name="ForwardThrow" parent="StateMachine" index="60"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1860,7 +1864,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="BackThrow" parent="StateMachine" index="60"]
+[node name="BackThrow" parent="StateMachine" index="61"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1875,7 +1879,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirForwardThrow" parent="StateMachine" index="61"]
+[node name="AirForwardThrow" parent="StateMachine" index="62"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1888,7 +1892,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirBackThrow" parent="StateMachine" index="62"]
+[node name="AirBackThrow" parent="StateMachine" index="63"]
 anim_length = 28
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1901,7 +1905,7 @@ knockback = "20.0"
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="AirDownThrow" parent="StateMachine" index="63"]
+[node name="AirDownThrow" parent="StateMachine" index="64"]
 anim_length = 24
 sfx = ExtResource( 141 )
 sfx_tick = 8
@@ -1913,11 +1917,11 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 screenshake_frames = 5
 
-[node name="ThrowTech" parent="StateMachine" index="64"]
+[node name="ThrowTech" parent="StateMachine" index="65"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
 
-[node name="Taunt" parent="StateMachine" index="65"]
+[node name="Taunt" parent="StateMachine" index="66"]
 script = ExtResource( 257 )
 apply_fric = false

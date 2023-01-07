@@ -3,12 +3,19 @@ extends Fighter
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8"
 const FLY_TICKS = 20
+const GROUND_POUND_MIN_HEIGHT = -48
 
 var armor_pips = 1
 var landed_move = false
 var flying_dir = null
 var fly_ticks_left = 0
+var fly_fx_started = false
 var kill_process_super_level = 0
+var start_fly = false
+var can_ground_pound = false
+var buffer_reset_ground_pound = false
+var orbital_strike_out = false
+var orbital_strike_projectile = null
 
 onready var chainsaw_arm = $"%ChainsawArm"
 
@@ -28,6 +35,11 @@ func init(pos=null):
 func on_got_hit():
 	if armor_pips > 0:
 		armor_pips -= 1
+	else:
+		if orbital_strike_projectile and orbital_strike_projectile in objs_map:
+			objs_map[orbital_strike_projectile].disable()
+			orbital_strike_out = false
+			orbital_strike_projectile = null
 
 func has_armor():
 	return armor_pips > 0
@@ -59,9 +71,18 @@ func tick():
 		landed_move = false
 	if is_grounded():
 		flying_dir = null
-		stop_fly_fx()
+		if fly_fx_started:
+			stop_fly_fx()
 	if is_in_hurt_state():
 		flying_dir = null
+	if flying_dir != null and current_state().get("can_fly") != null and !current_state().can_fly:
+		flying_dir = null
+	if start_fly and flying_dir != null:
+		fly_ticks_left = FLY_TICKS
+		air_movements_left -= 1
+		fly_fx_started = true
+		start_fly = false
+		start_fly_fx()
 	if flying_dir:
 		if !is_grounded():
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
@@ -70,28 +91,41 @@ func tick():
 			if fly_ticks_left <= 0:
 				flying_dir = null
 				stop_fly_fx()
+	
+	if buffer_reset_ground_pound:
+		buffer_reset_ground_pound = false
+		can_ground_pound = false
+	if is_grounded():
+		buffer_reset_ground_pound = true
 
+	if !can_ground_pound and get_pos().y < GROUND_POUND_MIN_HEIGHT and !is_in_hurt_state():
+		can_ground_pound = true
+		ground_pound_active_effect()
 
+func ground_pound_active_effect():
+	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -18))
+	play_sound("GroundPoundBeep")
+	pass
+	
 func start_fly_fx():
 	$"%FlyFx1".start_emitting()
 	$"%FlyFx2".start_emitting()
 
 func stop_fly_fx():
+	fly_fx_started = false
 	$"%FlyFx1".stop_emitting()
 	$"%FlyFx2".stop_emitting()
 
 func process_extra(extra):
 	.process_extra(extra)
 	var can_fly = true
-	if current_state().get("can_fly") != null and current_state().can_fly == false:
-		can_fly = false
+#	if current_state().get("can_fly") != null and current_state().can_fly == false:
+#		can_fly = false
 	if extra.has("fly_dir") and !is_grounded() and can_fly:
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
 			if flying_dir == null or !same_dir:
-				fly_ticks_left = FLY_TICKS
-				air_movements_left -= 1
-				start_fly_fx()
+				start_fly = true
 #			reset_momentum()
 			flying_dir = extra.fly_dir
 #		else:

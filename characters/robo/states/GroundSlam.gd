@@ -38,7 +38,7 @@ func walk_forward():
 	host.apply_force_relative(WALK_FORWARD_SPEED, "0")
 
 func _frame_0():
-	._frame_0()
+#	._frame_0()
 	host.opponent.z_index = -1
 	walk_back()
 	is_in_combo = host.combo_count != 0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=164 format=2]
+[gd_scene load_steps=168 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -161,6 +161,10 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/shield_low.png" type="Texture" id=159]
 [ext_resource path="res://sound/common/catch.wav" type="AudioStream" id=160]
 [ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=161]
+[ext_resource path="res://characters/states/WallSlam.gd" type="Script" id=162]
+[ext_resource path="res://characters/stickman/sprites/wall_slam.png" type="Texture" id=163]
+[ext_resource path="res://sound/common/explosion5.wav" type="AudioStream" id=164]
+[ext_resource path="res://fx/WallSlamEffect.tscn" type="PackedScene" id=165]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -372,6 +376,11 @@ animations = [ {
 "loop": true,
 "name": "Wait",
 "speed": 30.0
+}, {
+"frames": [ ExtResource( 163 ) ],
+"loop": true,
+"name": "WallSlam",
+"speed": 5.0
 } ]
 
 [node name="BaseChar" groups=["Fighter"] instance=ExtResource( 3 )]
@@ -390,8 +399,7 @@ num_feints = 2
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
 frames = SubResource( 3 )
-animation = "NunChukHeavy"
-frame = 8
+animation = "WallSlam"
 offset = Vector2( 0, -18 )
 __meta__ = {
 "_edit_group_": true,
@@ -986,6 +994,7 @@ AerialMovement
 GroundedMovement"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+release_opponent_on_startup = true
 super_level = 0
 super_freeze_ticks = 3
 
@@ -999,7 +1008,19 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 
-[node name="HurtAerial" type="Node2D" parent="StateMachine" index="27"]
+[node name="WallSlam" type="Node2D" parent="StateMachine" index="27"]
+script = ExtResource( 162 )
+endless = true
+reset_momentum = true
+particle_scene = ExtResource( 165 )
+particle_position = Vector2( 0, -16 )
+spawn_particle_on_enter = true
+enter_sfx = ExtResource( 164 )
+enter_sfx_volume = -5.0
+sfx = ExtResource( 141 )
+sfx_volume = -8.0
+
+[node name="HurtAerial" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 27 )
 endless = true
 reset_momentum = true
@@ -1009,14 +1030,14 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 
-[node name="Grabbed" type="Node2D" parent="StateMachine" index="28"]
+[node name="Grabbed" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 79 )
 endless = true
 busy_interrupt_type = 1
 burst_cancellable = false
 burstable = false
 
-[node name="Hold" type="Node2D" parent="StateMachine" index="29"]
+[node name="Hold" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1026,7 +1047,7 @@ type = 1
 throw_techable = true
 interrupt_into_string = "GroundedThrow"
 
-[node name="AirHold" type="Node2D" parent="StateMachine" index="30"]
+[node name="AirHold" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1037,7 +1058,7 @@ air_type = 1
 throw_techable = true
 interrupt_into_string = "AerialThrow"
 
-[node name="Grab" type="Node2D" parent="StateMachine" index="31"]
+[node name="Grab" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 86 )
 anim_length = 23
 type = 1
@@ -1064,7 +1085,7 @@ start_tick = 3
 active_ticks = 3
 throw_state = "Hold"
 
-[node name="AirGrab" type="Node2D" parent="StateMachine" index="32"]
+[node name="AirGrab" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 86 )
 sprite_animation = "Grab"
 anim_length = 23
@@ -1094,7 +1115,7 @@ start_tick = 3
 active_ticks = 3
 throw_state = "AirHold"
 
-[node name="ForwardThrow" type="Node2D" parent="StateMachine" index="33"]
+[node name="ForwardThrow" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1120,7 +1141,7 @@ dir_y = "-0.30"
 damage = 150
 damage_in_combo = 90
 
-[node name="BackThrow" type="Node2D" parent="StateMachine" index="34"]
+[node name="BackThrow" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1147,7 +1168,7 @@ damage = 150
 damage_in_combo = 90
 reverse = true
 
-[node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="35"]
+[node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1173,7 +1194,7 @@ knockback = "10.0"
 damage = 150
 damage_in_combo = 90
 
-[node name="AirBackThrow" type="Node2D" parent="StateMachine" index="36"]
+[node name="AirBackThrow" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1200,7 +1221,7 @@ damage = 150
 damage_in_combo = 90
 reverse = true
 
-[node name="AirDownThrow" type="Node2D" parent="StateMachine" index="37"]
+[node name="AirDownThrow" type="Node2D" parent="StateMachine" index="38"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1227,7 +1248,7 @@ dir_y = "1.0"
 damage = 150
 damage_in_combo = 90
 
-[node name="ThrowTech" type="Node2D" parent="StateMachine" index="38"]
+[node name="ThrowTech" type="Node2D" parent="StateMachine" index="39"]
 script = ExtResource( 94 )
 anim_length = 30
 reset_momentum = true
@@ -1236,7 +1257,7 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 
-[node name="Taunt" type="Node2D" parent="StateMachine" index="39"]
+[node name="Taunt" type="Node2D" parent="StateMachine" index="40"]
 script = ExtResource( 156 )
 apply_forces = true
 apply_fric = true
@@ -1253,7 +1274,7 @@ AerialSuper"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="40"]
+[node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="41"]
 script = ExtResource( 153 )
 particle_scene = ExtResource( 154 )
 particle_position = Vector2( 0, -16 )

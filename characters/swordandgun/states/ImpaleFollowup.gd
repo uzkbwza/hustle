@@ -1,6 +1,5 @@
 extends ThrowState
 
-
 func _frame_0():
 	if !host.is_grounded():
 		host.reset_momentum()

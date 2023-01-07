@@ -29,7 +29,7 @@ func _init():
 	installScriptExtension("res://modloader/MLStateSounds.gd") 
 	
 	_loadMods()
-	print("----------------mods loaded--------------------")
+	print("----------------mods------loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
 	installScriptExtension("res://modloader/ModHashCheck.gd")
@@ -102,16 +102,21 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 	var missing_dependices = modInfo[2].requires
 	for item in modInfo[2].requires:
 		var depend_loaded = false
-		for mod in active_mods:
-			if mod[2].name == item:
+		for mods in active_mods:
+			if mods[2].name == item:
 				#initialize this mod
 				missing_dependices.erase(item)
 				
-				modInfo[0] = ResourceLoader.load(modInfo[0])
+				
 				if modInfo[2].overwrites:
 					mods_w_overwrites.append(modSubFolder)
-				active_mods.append(modInfo)
-				depend_loaded = true
+				
+				if len(missing_dependices) == 0:
+					depend_loaded = true
+				else:
+					depend_loaded = false
+					
+				
 		if !depend_loaded:
 			if first:
 				# dependency wasn't loaded prior, set aside and load later
@@ -120,7 +125,9 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 				# dependency wasn't loaded at all
 				print(str(modInfo[2].friendly_name) + ": Missing Dependency " + str(modInfo[2].requires))
 				mods_w_missing_depend[modInfo[2].friendly_name] = modInfo[2].requires
-
+		else:
+			modInfo[0] = ResourceLoader.load(modInfo[0])
+			active_mods.append(modInfo)
 
 # Compares metadata priority, and if the same, uses the resource path of the Packed Scene
 func _compareScriptPriority(a, b):
@@ -148,11 +155,12 @@ func installScriptExtension(childScriptPath:String):
 	var parentScript = childScript.get_base_script()
 	if parentScript == null:
 		print("Missing dependencies")
-	if parentScript.resource_path != "res://Network.gd" or childScript.resource_path == "res://modloader/ModHashCheck.gd":
-		var parentScriptPath = parentScript.resource_path
-		childScript.take_over_path(parentScriptPath)
 	else:
-		print("You can't access network!")
+		if parentScript.resource_path != "res://Network.gd" or childScript.resource_path == "res://modloader/ModHashCheck.gd":
+			var parentScriptPath = parentScript.resource_path
+			childScript.take_over_path(parentScriptPath)
+		else:
+			print("You can't access network!")
 
 func appendNodeInScene(modifiedScene, nodeName:String = "", nodeParent = null, instancePath:String = "", isVisible:bool = true):
 	var newNode

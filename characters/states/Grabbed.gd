@@ -10,6 +10,7 @@ func _enter():
 	host.opponent.colliding_with_opponent = false
 	host.start_invulnerability()
 
+
 func _exit():
 	host.set_snap_to_ground(true)
 

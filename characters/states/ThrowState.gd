@@ -32,6 +32,7 @@ export var hits_otg = false
 export var increment_combo = true
 export var hard_knockdown = false
 export var force_grounded = false
+export var wall_slam = false
 #export var incr_combo = false
 
 var hit_height = Hitbox.HitHeight.Mid
@@ -48,7 +49,7 @@ func update_throw_position():
 		host.throw_pos_x = pos.x
 		host.throw_pos_y = pos.y
 
-func _frame_0():
+func _frame_0_shared():
 	host.opponent.change_state("Grabbed")
 	host.throw_pos_x = start_throw_pos_x
 	host.throw_pos_y = start_throw_pos_y
@@ -68,7 +69,7 @@ func _tick_shared():
 		host.start_invulnerability()
 		released = false
 	._tick_shared()
-	if release and current_tick + 1 == release_frame:
+	if !released and release and current_tick + 1 == release_frame:
 		_release()
 		released = true
 	if !released:
@@ -95,8 +96,8 @@ func _release():
 	host.opponent.update_facing()
 	var throw_data = HitboxData.new(self)
 	host.opponent.hit_by(throw_data)
-	if increment_combo:
-		host.incr_combo()
+#	if increment_combo:
+#		host.incr_combo()
 	if screenshake_amount > 0 and screenshake_frames > 0 and !host.is_ghost:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		camera.bump(Vector2(), screenshake_amount, screenshake_frames / 60.0)

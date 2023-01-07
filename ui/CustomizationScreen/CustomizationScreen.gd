@@ -64,12 +64,12 @@ func _ready():
 #	$"%ShowAura".connect("toggled", $"%TrailSettings", "_show_aura_toggled")
 	$"%SaveButton".connect("pressed", self, "save_style")
 	$"%LoadStyleButton".connect("style_selected", self, "load_style")
-	$"%DLCWarning".visible = false
+	if !SteamHustle.WORKSHOP_ENABLED:
+		$"%WorkshopButton".disabled = true
 	update_warning()
 
 func show():
 	$"%LoadStyleButton".update_styles()
-	$"%DLCWarning".visible = false
 	update_warning()
 	.show()
 	_on_reset_color_pressed()
@@ -83,8 +83,8 @@ func save_style():
 	$"%SavedLabel".show()
 
 func update_warning():
-	if !Global.full_version():
-		$"%DLCWarning".visible = Custom.requires_dlc(get_style_data())
+#	if !Global.full_version():
+#		$"%DLCWarning".visible = Custom.requires_dlc(get_style_data())
 	pass
 
 func load_style(style):
@@ -201,4 +201,8 @@ func _on_OpenFolderButton_pressed():
 
 func _on_DLCWarning_meta_clicked(meta):
 	Steam.activateGameOverlayToStore(SteamHustle.APP_ID)
+	pass # Replace with function body.
+
+
+func _on_WorkshopButton_pressed():
 	pass # Replace with function body.

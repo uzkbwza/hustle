@@ -8,14 +8,9 @@ const BOUNCE_FRAMES = 4
 
 const DI_STRENGTH = "2.0"
 
-enum BOUNCE {
-	LEFT_WALL,
-	RIGHT_WALL,
-	NO_BOUNCE
-}
-
 var hitstun = 0
 var knockdown = false
+var wall_slam = false
 var hard_knockdown = false
 var can_act
 var bounce_frames = 0
@@ -29,6 +24,7 @@ func _enter():
 	bounce_frames = 0
 	knockdown = hitbox.knockdown
 	hard_knockdown = hitbox.hard_knockdown
+	wall_slam = hitbox.wall_slam
 #	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit
@@ -71,6 +67,9 @@ func _tick():
 		bounce = BOUNCE.RIGHT_WALL
 
 	if (bounce != BOUNCE.NO_BOUNCE):
+		if wall_slam:
+			queue_state_change("WallSlam", bounce)
+			return
 		host.hitlag_ticks = 3
 		host.play_sound("Block")
 		host.set_vel(fixed.mul(vel.x, BOUNCE_FACTOR), vel.y)

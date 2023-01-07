@@ -1,0 +1,125 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
+[ext_resource path="res://characters/robo/projectiles/sprites/orbital_target3.png" type="Texture" id=3]
+[ext_resource path="res://characters/robo/projectiles/sprites/orbital_target2.png" type="Texture" id=4]
+[ext_resource path="res://characters/robo/projectiles/sprites/orbital_target4.png" type="Texture" id=5]
+[ext_resource path="res://characters/robo/projectiles/sprites/orbital_target1.png" type="Texture" id=6]
+[ext_resource path="res://characters/robo/projectiles/states/orbital_strike_default.gd" type="Script" id=7]
+[ext_resource path="res://characters/robo/projectiles/OrbitalStrike.gd" type="Script" id=8]
+[ext_resource path="res://characters/robo/projectiles/LineDrawer.gd" type="Script" id=9]
+[ext_resource path="res://characters/robo/projectiles/sprites/body_target.png" type="Texture" id=10]
+[ext_resource path="res://characters/robo/projectiles/states/OrbitalStrikeFire.gd" type="Script" id=11]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=12]
+[ext_resource path="res://characters/robo/projectiles/OrbitalStrikeParticle.tscn" type="PackedScene" id=13]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=14]
+[ext_resource path="res://characters/robo/sound/beep9.wav" type="AudioStream" id=15]
+[ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=16]
+[ext_resource path="res://characters/robo/sound/laser5.wav" type="AudioStream" id=17]
+[ext_resource path="res://characters/robo/sound/lasersplosion.wav" type="AudioStream" id=18]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ null ],
+"loop": true,
+"name": "Fire",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 1 )
+z_index = 100
+script = ExtResource( 8 )
+extra_state_variables = "aim_ticks"
+has_projectile_parry_window = false
+immunity_susceptible = false
+deletes_other_projectiles = false
+body_target_texture = ExtResource( 10 )
+
+[node name="Sprite" parent="Flip" index="0"]
+z_index = 1000
+frames = SubResource( 2 )
+animation = "Fire"
+offset = Vector2( 0, -32 )
+
+[node name="LineDrawer" type="Node2D" parent="Flip" index="2"]
+z_index = -200
+script = ExtResource( 9 )
+color = Color( 1, 0.2, 0.239216, 1 )
+
+[node name="Beep" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 15 )
+volume_db = -10.0
+pitch_scale = 1.5
+script = ExtResource( 14 )
+pitch_variation = 0.0
+
+[node name="CollisionBox" parent="." index="2"]
+y = 100
+width = 1
+height = 1
+
+[node name="Hurtbox" parent="." index="3"]
+y = 100
+width = 1
+height = 1
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 7 )
+apply_forces = true
+apply_fric = true
+sprite_animation = "default"
+anim_length = 4
+ticks_per_frame = 2
+loop_animation = true
+move_x = 0
+clash = false
+fizzle_on_ground = false
+fizzle_on_walls = false
+
+[node name="Fire" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 11 )
+fallback_state = "Fire"
+endless = true
+particle_scene = ExtResource( 13 )
+spawn_particle_on_enter = true
+enter_sfx = ExtResource( 17 )
+enter_sfx_volume = -3.0
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Fire" index="0"]
+z_index = 1000
+script = ExtResource( 12 )
+y = -200000
+height = 200000
+damage = 190
+minimum_damage = 50
+victim_hitlag = 10
+hits_otg = true
+hit_height = 0
+whiff_sound = ExtResource( 18 )
+hit_sound = ExtResource( 16 )
+whiff_sound_volume = -5.0
+dir_x = "0.25"
+dir_y = "1.0"
+knockback = "8.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 1
+active_ticks = 3

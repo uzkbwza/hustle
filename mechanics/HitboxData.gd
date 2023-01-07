@@ -37,6 +37,7 @@ var force_grounded = false
 var hitbox_type = 0
 var hard_knockdown = false
 var damage_in_combo = -1
+var wall_slam = false
 
 func get_damage():
 	if combo_count > 0:
@@ -71,6 +72,7 @@ func _init(state):
 	throw = state.throw
 	hard_knockdown = state.hard_knockdown
 	force_grounded = state.force_grounded
+	wall_slam = state.wall_slam
 	reversible = false if !state.get("launch_reversible") else state.launch_reversible
 	if state.has_method("get_absolute_position"):
 		var pos = state.get_absolute_position()

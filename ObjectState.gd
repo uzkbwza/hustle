@@ -80,7 +80,9 @@ var hurtbox_state_change_frames = {
 }
 
 var frame_methods = []
+var frame_methods_shared = []
 var max_tick = -1
+var max_tick_shared = -1
 
 func apply_enter_force():
 	if enter_force_speed != "0.0":
@@ -157,11 +159,28 @@ func _tick_shared():
 				spawn_particle_relative(timed_particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
 
 		var new_max = false
+		var new_max_shared = false
 		if current_tick > max_tick:
 			max_tick = current_tick
 			new_max = true
+			
+		if current_tick > max_tick_shared:
+			max_tick_shared = current_tick
+			new_max_shared = true
 		
-		if host.is_ghost or new_max or current_tick in frame_methods:
+		
+		if host.is_ghost or new_max or current_tick in frame_methods_shared:
+			var method_name = "_frame_" + str(current_tick) + "_shared"
+			# create methods called "_frame_1" or "_frame_27" etc to execute actions on those frames.
+			if has_method(method_name):
+				if not (current_tick in frame_methods_shared):
+					frame_methods_shared.append(current_tick)
+				var next_state = call(method_name)
+				if next_state != null:
+					return next_state
+			new_max = false
+			
+		if host.is_ghost or new_max_shared or current_tick in frame_methods:
 			var method_name = "_frame_" + str(current_tick)
 			# create methods called "_frame_1" or "_frame_27" etc to execute actions on those frames.
 			if has_method(method_name):
@@ -170,7 +189,8 @@ func _tick_shared():
 				var next_state = call(method_name)
 				if next_state != null:
 					return next_state
-			new_max = false
+			new_max_shared = false
+
 
 	if apply_fric:
 		host.apply_fric()

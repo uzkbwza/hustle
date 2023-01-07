@@ -157,6 +157,9 @@ static func wave(from, to, duration, offset=0):
 	var a = (to - from) * 0.5
 	return from + a + sin((((t) + duration * offset) / duration) * TAU) * a
 
+static func pulse(duration:float=1.0, width:float=0.5) -> bool:
+	return wave(0.0, 1.0, duration) < width
+
 static func remove_duplicates(array: Array):
 	var seen = []
 	var new = []

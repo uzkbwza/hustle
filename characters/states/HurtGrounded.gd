@@ -5,6 +5,7 @@ const DI_STRENGTH = "3.5"
 
 var hitstun = 0
 var can_act = false
+var wall_slam = false
 
 
 
@@ -20,6 +21,7 @@ func _enter():
 		Hitbox.HitHeight.Low:
 			anim_name = "HurtGroundedLow"
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
+	wall_slam = hitbox.wall_slam
 	counter = hitbox.counter_hit
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
@@ -39,6 +41,20 @@ func _tick():
 	host.set_pos(host.get_pos().x, 0)
 	host.apply_x_fric(GROUND_FRIC)
 	host.apply_forces_no_limit()
+	if wall_slam:
+		var vel = host.get_vel()
+		var bounce = BOUNCE.NO_BOUNCE
+		var col_box = host.get_collision_box()
+		
+		if (col_box.x1 <= -host.stage_width and fixed.lt(vel.x, "0")):
+			bounce = BOUNCE.LEFT_WALL
+		elif (col_box.x2 >= host.stage_width and fixed.gt(vel.x, "0")):
+			bounce = BOUNCE.RIGHT_WALL
+
+		if (bounce != BOUNCE.NO_BOUNCE):
+			queue_state_change("WallSlam", bounce)
+			return
+
 	if current_tick >= hitstun:
 		if can_act:
 			return fallback_state

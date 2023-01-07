@@ -33,10 +33,13 @@ func _addModList():
 	list.list_container.add_child(label)
 	#list.get_node("VBoxContainer").get_node("Contents").add_child(xbox)
 	# add content into contents list
-	for mod in ModLoader.active_mods:
+	for entry in ModLoader.active_mods:
+		var mod = entry.duplicate()
 		var info = addContainer("ModInfoContainer", "Mod Info")
 		var modclose = generateButton("Close")
 		#var b = generateLabel(mod[2].friendly_name, 1) # generate a button with that name ## 1 = ALIGN_CENTER
+		if mod.size() > 2:
+			mod.pop_at(1)
 		var b = generateButton(mod[1].friendly_name)
 		list.list_container.add_child(b) # and add it
 		b.connect("pressed", self, "_mod_button_pressed", [info])
@@ -66,6 +69,14 @@ func _addModList():
 			var req = "Requires: " + str(mod[1].requires)
 			var req_lab = generateLabel(req, 0)
 			info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(req_lab)
+	
+	#Shows the mods that are disabled because of missing dependencies
+	for missing in ModLoader.mods_w_missing_depend:
+		var b = generateButton(missing + " (Disabled Missing Dependencies)")
+		b.set("custom_colors/font_color_disabled", Color(1,0,0,.8))
+		b.disabled = true
+		list.list_container.add_child(b) # and add it
+	
 	# add the button into the main menu
 	var btn = addMainMenuButton("Mod List")
 	# function for the button

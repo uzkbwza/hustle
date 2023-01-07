@@ -100,6 +100,7 @@ export var knockdown_extends_hitstun = true # if true, aerial victim will stay i
 export var hard_knockdown = false
 export var disable_collision = true
 export var ground_bounce = true
+export var wall_slam = false
 
 export var _c_Frame_Data = 0
 export var start_tick: int = 0

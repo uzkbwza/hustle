@@ -12,6 +12,8 @@ var APP_ID
 
 var STARTED = false
 
+var WORKSHOP_ENABLED = true
+
 func _enter_tree():
 	if "steam" in Global.VERSION:
 		_initialize_steam()
