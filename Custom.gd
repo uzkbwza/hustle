@@ -5,14 +5,17 @@ const SUPPORTER_PACK = 2232850
 var hitsparks = {
 	"bash": "res://fx/HitEffect1.tscn",
 	"bash2": "res://fx/hitsparks/HitEffect1Alt.tscn",
+	"fire": "res://fx/hitsparks/FireHitEffect.tscn",
 	"hearts": "res://fx/hitsparks/HeartHitEffect.tscn",
+	"petals": "res://fx/hitsparks/PetalHitEffect.tscn",
+	"coins": "res://fx/hitsparks/CoinHitEffect.tscn",
 }
 
-var hitspark_dlc = {
-	"bash": false,
-	"bash2": false,
-	"hearts": true,
-}
+#var hitspark_dlc = {
+#	"bash": false,
+#	"bash2": false,
+#	"hearts": true,
+#}
 
 var p1_selected_style = null
 var p2_selected_style = null
@@ -58,8 +61,8 @@ func is_outline_dlc(color):
 	return !(color in simple_outlines)
 
 func hitspark_to_dlc(spark_name):
-	if spark_name in hitspark_dlc:
-		return hitspark_dlc[spark_name]
+#	if spark_name in hitspark_dlc:
+#		return hitspark_dlc[spark_name]
 	return 0
 
 func can_use_style(player_id, style):
@@ -88,18 +91,19 @@ func can_use_style(player_id, style):
 #			return has_supporter_pack
 
 func requires_dlc(data):
-	if data == null:
-		return false
-	if data.show_aura:
-		return true
-	if is_color_dlc(data.character_color):
-		return true
-	if data.use_outline and is_outline_dlc(data.outline_color):
-		return true
-	if data.use_outline and !is_combo_simple(data.character_color, data.outline_color):
-		return true
-	if hitspark_to_dlc(data.hitspark):
-		return true
+#	return false
+#	if data == null:
+#		return false
+#	if data.show_aura:
+#		return true
+#	if is_color_dlc(data.character_color):
+#		return true
+#	if data.use_outline and is_outline_dlc(data.outline_color):
+#		return true
+#	if data.use_outline and !is_combo_simple(data.character_color, data.outline_color):
+#		return true
+#	if hitspark_to_dlc(data.hitspark):
+#		return true
 	return false
 
 

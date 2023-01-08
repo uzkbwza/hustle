@@ -1,0 +1,81 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://fx/HitEffect1.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
+[ext_resource path="res://fx/hitsparks/petal.png" type="Texture" id=3]
+[ext_resource path="res://fx/hitsparks/petal_hitspark4.png" type="Texture" id=4]
+[ext_resource path="res://fx/hitsparks/petal_hitspark2.png" type="Texture" id=5]
+[ext_resource path="res://fx/hitsparks/petal_hitspark3.png" type="Texture" id=6]
+[ext_resource path="res://fx/hitsparks/petal_hitspark1.png" type="Texture" id=7]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Gradient" id=3]
+interpolation_mode = 2
+offsets = PoolRealArray( 0, 0.781457, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 1 )
+
+[node name="AnimatedSprite" parent="." index="0"]
+frames = SubResource( 4 )
+
+[node name="CPUParticles2D" parent="." index="1"]
+material = null
+amount = 20
+lifetime = 0.54
+preprocess = 0.06
+texture = ExtResource( 3 )
+emission_shape = 1
+emission_sphere_radius = 15.76
+gravity = Vector2( 280.899, 105.464 )
+initial_velocity_random = 0.63
+linear_accel = 0.73
+scale_amount = 1.47
+scale_amount_random = 1.0
+color_ramp = SubResource( 3 )
+
+[node name="CPUParticles2D3" parent="." index="2"]
+material = null
+amount = 20
+lifetime = 0.54
+preprocess = 0.06
+texture = ExtResource( 3 )
+emission_rect_extents = Vector2( 20, 15.92 )
+gravity = Vector2( 280.899, 105.464 )
+initial_velocity = 257.81
+initial_velocity_random = 1.0
+linear_accel = -159.62
+linear_accel_curve = null
+scale_amount = 1.47
+scale_amount_random = 1.0
+color_ramp = SubResource( 3 )
+
+[node name="CPUParticles2D2" parent="." index="3"]
+material = null
+amount = 20
+lifetime = 0.54
+preprocess = 0.06
+texture = ExtResource( 3 )
+gravity = Vector2( 280.899, 105.464 )
+initial_velocity_random = 0.63
+linear_accel = 0.73
+scale_amount = 1.47
+scale_amount_random = 1.0
+color_ramp = SubResource( 3 )

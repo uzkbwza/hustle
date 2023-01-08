@@ -1,0 +1,88 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/hitsparks/fire_hitspark1.png" type="Texture" id=2]
+[ext_resource path="res://fx/hitsparks/fire_hitspark2.png" type="Texture" id=3]
+[ext_resource path="res://fx/hitsparks/fire_hitspark3.png" type="Texture" id=4]
+[ext_resource path="res://fx/big_filled_circle.png" type="Texture" id=5]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=7]
+
+[sub_resource type="ShaderMaterial" id=6]
+resource_local_to_scene = true
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Curve" id=8]
+_data = [ Vector2( 0, 0.359091 ), 0.0, -2.01939, 0, 0, Vector2( 0.453781, 0.0886364 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.352273 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=9]
+offsets = PoolRealArray( 0, 0.280353, 0.373068, 0.494481, 0.604856, 1 )
+colors = PoolColorArray( 1, 0.486275, 0.121569, 1, 1, 0.486275, 0.121569, 1, 1, 0.2, 0.239216, 1, 1, 0.2, 0.239216, 1, 0.258824, 0.321569, 0.360784, 1, 0, 0, 0, 0 )
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 6 )
+z_index = 100
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="0"]
+z_index = 10
+frames = SubResource( 7 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+amount = 16
+lifetime = 2.52
+preprocess = 0.01
+speed_scale = 2.62
+explosiveness = 0.98
+randomness = 1.0
+lifetime_randomness = 1.0
+fract_delta = false
+local_coords = false
+texture = ExtResource( 5 )
+emission_shape = 1
+emission_sphere_radius = 12.3
+spread = 17.88
+gravity = Vector2( 0, -100 )
+initial_velocity = 156.85
+initial_velocity_random = 1.0
+linear_accel = -63.17
+scale_amount = 4.75
+scale_amount_random = 0.28
+scale_amount_curve = SubResource( 8 )
+color_ramp = SubResource( 9 )
+anim_speed = 5.8
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
+amount = 16
+lifetime = 0.97
+preprocess = 0.01
+speed_scale = 2.62
+explosiveness = 0.98
+randomness = 1.0
+lifetime_randomness = 1.0
+fract_delta = false
+local_coords = false
+texture = ExtResource( 5 )
+emission_shape = 1
+emission_sphere_radius = 12.3
+spread = 180.0
+gravity = Vector2( 0, -30 )
+initial_velocity = 106.53
+initial_velocity_random = 1.0
+linear_accel = -63.17
+damping = 29.29
+scale_amount = 0.26
+scale_amount_random = 0.33
+color_ramp = SubResource( 9 )
+anim_speed = 6.81

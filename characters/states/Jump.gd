@@ -1,6 +1,7 @@
 extends CharacterState
 
 const SPEED_REDUCTION = "50.0"
+const GLOBAL_JUMP_MODIFIER = "0.85"
 
 export var speed = "25.0"
 export var y_modifier = "1.5"
@@ -41,11 +42,13 @@ func jump():
 		if camera:
 			camera.bump(Vector2.UP, 10, 20 / 60.0)
 	force.y = fixed.mul(force.y, y_modifier)
+	if (host.combo_count <= 0 or host.opponent.on_the_ground) and !super_jump:
+		force.y = fixed.mul(force.y, GLOBAL_JUMP_MODIFIER)
 	host.apply_force(force.x, force.y)
 	force_x = force.x
 	force_y = force.y
 
-func _frame_4():
+func _frame_5():
 	if squat and !super_jump:
 		jump()
 
@@ -58,14 +61,16 @@ func _frame_0():
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
 	var back = fixed.sign(str(data["x"])) != host.get_facing_int() and data["x"] != 0
-	squat = super_jump or (air_type == AirType.Grounded and back and full_hop)
-	if back:
+	squat = super_jump or (air_type == AirType.Grounded and (back or host.combo_count <= 0) and full_hop)
+
+	if back and host.combo_count <= 0:
 		host.add_penalty(10)
+
 	if !squat:
 		jump_tick = 1
 		jump()
 	else:
-		jump_tick = 4 if !super_jump else 7
+		jump_tick = 5 if !super_jump else 7
 		anim_name = "Landing"
 
 	if !super_jump:

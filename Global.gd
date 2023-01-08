@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.9.15-unstable"
+var VERSION = "0.9.16-unstable"
 
 var audio_player
 var music_enabled = true
