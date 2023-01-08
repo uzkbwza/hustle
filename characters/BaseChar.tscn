@@ -1,4 +1,4 @@
-[gd_scene load_steps=168 format=2]
+[gd_scene load_steps=171 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -165,6 +165,9 @@
 [ext_resource path="res://characters/stickman/sprites/wall_slam.png" type="Texture" id=163]
 [ext_resource path="res://sound/common/explosion5.wav" type="AudioStream" id=164]
 [ext_resource path="res://fx/WallSlamEffect.tscn" type="PackedScene" id=165]
+[ext_resource path="res://sound/common/predict1.wav" type="AudioStream" id=166]
+[ext_resource path="res://sound/common/predict3.wav" type="AudioStream" id=167]
+[ext_resource path="res://sound/common/predict2.wav" type="AudioStream" id=168]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -444,12 +447,34 @@ bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.01
 
-[node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+[node name="Predict" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+stream = ExtResource( 166 )
+volume_db = -15.0
+pitch_scale = 1.5
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Predict2" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
+stream = ExtResource( 168 )
+volume_db = -15.0
+pitch_scale = 1.5
+bus = "Fx"
+script = ExtResource( 130 )
+pitch_variation = 0.11
+
+[node name="Predict3" type="AudioStreamPlayer2D" parent="Sounds" index="8"]
+stream = ExtResource( 167 )
+volume_db = -12.0
+bus = "Fx"
+script = ExtResource( 130 )
+pitch_variation = 0.01
+
+[node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="9"]
 stream = ExtResource( 155 )
 volume_db = -20.0
 bus = "Fx"
 
-[node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
+[node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
 stream = ExtResource( 161 )
 volume_db = -5.0
 bus = "Fx"
@@ -1291,7 +1316,20 @@ theme = ExtResource( 47 )
 text = "You"
 align = 1
 
-[node name="Node2D" type="Node2D" parent="." index="6"]
+[node name="PredictionLabel" type="Label" parent="." index="6"]
+visible = false
+margin_left = -20.0
+margin_top = -74.0
+margin_right = 20.0
+margin_bottom = -60.0
+grow_horizontal = 2
+theme = ExtResource( 47 )
+text = "State:
+Prediction: "
+align = 1
+
+[node name="Node2D" type="Node2D" parent="." index="7"]
+visible = false
 scale = Vector2( 2, 2 )
 z_index = 4096
 
@@ -1307,7 +1345,7 @@ custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 text = "QUITTER"
 align = 1
 
-[node name="ActionableLabel" type="Label" parent="." index="7"]
+[node name="ActionableLabel" type="Label" parent="." index="8"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5
@@ -1319,7 +1357,7 @@ theme = ExtResource( 47 )
 text = "Ready"
 align = 1
 
-[node name="EmoteLabel" type="Label" parent="." index="9"]
+[node name="EmoteLabel" type="Label" parent="." index="10"]
 margin_left = -141.0
 margin_top = -68.0
 margin_right = 141.0

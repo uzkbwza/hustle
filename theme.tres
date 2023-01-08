@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=45 format=2]
+[gd_resource type="Theme" load_steps=47 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -125,6 +125,20 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="StyleBoxFlat" id=43]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 0.196078 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=44]
+bg_color = Color( 0.392157, 0.823529, 0.419608, 0.529412 )
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
 [sub_resource type="StyleBoxFlat" id=13]
 bg_color = Color( 0.776471, 0.462745, 0.462745, 1 )
 border_width_left = 1
@@ -223,6 +237,9 @@ Panel/styles/panel = SubResource( 4 )
 PanelAlt/base_type = "Panel"
 PanelAlt/styles/panel = SubResource( 31 )
 PanelContainer/styles/panel = SubResource( 21 )
+PredictButton/base_type = "Button"
+PredictButton/styles/normal = SubResource( 43 )
+PredictButton/styles/pressed = SubResource( 44 )
 SelectButton/base_type = "Button"
 SelectButton/styles/hover = SubResource( 13 )
 SelectButton/styles/normal = SubResource( 14 )

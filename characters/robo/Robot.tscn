@@ -719,7 +719,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1419,6 +1418,8 @@ interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
 Aerial"
+initiative_effect = true
+initiative_startup_reduction_amount = 2
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DisembowelGrab" index="0"]
 z_index = 1000

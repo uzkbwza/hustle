@@ -113,6 +113,7 @@ var drag_position = null
 var real_tick = 0
 var super_freeze_ticks = 0
 var super_active = false
+var prediction_effect = false
 var p1_super = false
 var p2_super = false
 var ghost_freeze = false
@@ -182,13 +183,17 @@ func copy_to(game: Game):
 			else:
 				game.objs_map[str(game.objs_map.size() + 1)] = null
 
-func _on_super_started(player):
+func _on_super_started(player, ticks=null):
 	if is_ghost:
 		return
-	var state = player.current_state()
-	if state.get("super_freeze_ticks") != null:
-		if state.super_freeze_ticks > super_freeze_ticks:
-			super_freeze_ticks = state.super_freeze_ticks
+	if ticks == null:
+		ticks = 0
+		var state = player.current_state()
+		if state.get("super_freeze_ticks") != null:
+			if state.super_freeze_ticks > super_freeze_ticks:
+				ticks = state.super_freeze_ticks
+	super_freeze_ticks = ticks
+	
 	super_active = true
 	if player == p1:
 		p1_super = true
@@ -276,6 +281,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.connect("parried", self, "on_parry")
 	p1.connect("clashed", self, "on_clash")
 	p2.connect("clashed", self, "on_clash")
+	p1.connect("predicted", self, "on_prediction", [p1])
+	p2.connect("predicted", self, "on_prediction", [p2])
 	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)
 	if match_data.has("game_length"):
 		time = match_data["game_length"]
@@ -392,6 +399,11 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	game_started = true
 #	if is_afterimage:
 #		show_state()
+
+func on_prediction(player):
+	_on_super_started(player, 10)
+	prediction_effect = true
+	pass
 
 func update_data():
 	p1.update_data()
@@ -666,7 +678,7 @@ func apply_hitboxes():
 #	if p1_hit and p2_hit:
 	var clash_position = Vector2()
 	var clashed = false
-	if clashing_enabled:
+	if clashing_enabled and !p1.prediction_correct() and !p2.prediction_correct():
 		for p1_hitbox in p1_hitboxes:
 			if p1_hitbox is ThrowBox:
 				continue

@@ -1,4 +1,4 @@
-extends CharacterState
+extends SuperMove
 
 func _frame_0():
 	if host.bullets_left <= 0 or !host.is_ghost:
@@ -12,4 +12,4 @@ func _tick():
 	host.apply_grav()
 
 func is_usable():
-	return (host.bullets_left > 0 or host.supers_available > 0) and host.has_gun
+	return .is_usable() and (host.bullets_left > 0 or host.supers_available > 0) and host.has_gun

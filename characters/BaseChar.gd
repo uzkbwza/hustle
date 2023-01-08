@@ -8,6 +8,7 @@ signal parried()
 signal undo()
 signal forfeit()
 signal clashed()
+signal predicted()
 #signal got_counter_hit()
 
 var MAX_HEALTH = 1000
@@ -27,6 +28,8 @@ var MAX_HEALTH = 1000
 const MAX_STALES = 15
 const MIN_STALE_MODIFIER = "0.2"
 
+const INCORRECT_PREDICTION_LAG = 3
+
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
 const HITLAG_COLLISION_TICKS = 4
@@ -36,6 +39,8 @@ const BURST_ON_DAMAGE_AMOUNT = 5
 const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
 
 const MAX_GROUNDED_HITS = 7
+const PREDICTION_CORRECT_SUPER_GAIN = 30
+
 
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
@@ -166,6 +171,7 @@ var bursts_available: int = 0
 #var parried_this_frame = false
 var busy_interrupt = false
 var any_available_actions = true
+var refresh_prediction = false
 
 var state_changed = false
 var on_the_ground = false
@@ -183,6 +189,7 @@ var emote_tween: SceneTreeTween
 
 var feints = 2
 
+var current_prediction = -1
 
 var current_nudge = {
 	"x": "0",
@@ -219,6 +226,9 @@ var aura_particle = null
 
 var feinting = false
 var clashing = false
+
+var prediction_processed = true
+
 
 var last_action = 0
 
@@ -290,6 +300,9 @@ func is_ivy():
 			return Network.network_ids[id] == SteamHustle.IVY_ID
 	return false
 
+func prediction_correct():
+	return !is_in_hurt_state() and opponent and current_prediction == opponent.current_state().type
+
 func apply_style(style):
 	if (!SteamHustle.STARTED) or Global.steam_demo_version:
 		return
@@ -358,7 +371,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "refresh_prediction", "clipping_wall", "current_prediction", "prediction_processed", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -552,6 +565,12 @@ func _process(delta):
 		reset_color()
 	if is_aura_active and !Global.enable_custom_particles:
 		reset_aura()
+#	$PredictionLabel.show()
+#	if is_ghost or ReplayManager.playback:
+#		$PredictionLabel.text = "State: " + str(current_state().type) + "\nPrediction: " + str(current_prediction) 
+#	else:
+#		$PredictionLabel.text = ""
+
 
 func debug_text():
 	.debug_text()
@@ -586,7 +605,8 @@ func launched_by(hitbox):
 	
 	nudge_amount = hitbox.sdi_modifier
 	
-	var will_launch =  hitbox.ignore_armor or !has_armor()
+	var prediction_correct = opponent and current_prediction == opponent.current_state().type
+	var will_launch =  hitbox.ignore_armor or !(has_armor() or prediction_correct())
 	
 	if will_launch:
 		var state
@@ -815,6 +835,9 @@ func process_extra(extra):
 		feinting = extra.feint
 		if feinting and !infinite_resources:
 			feints -= 1
+	if "prediction" in extra:
+		current_prediction = extra["prediction"]
+		prediction_processed = false
 	else:
 		feinting = false
 
@@ -823,6 +846,20 @@ func refresh_air_movements():
 
 func refresh_feints():
 	feints = num_feints
+
+func process_prediction():
+	if current_prediction == -1:
+		prediction_processed = true
+		return
+	if prediction_correct():
+		play_sound("Predict")
+		play_sound("Predict2")
+		play_sound("Predict3")
+		gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
+		emit_signal("predicted")
+	else:
+		hitlag_ticks += INCORRECT_PREDICTION_LAG
+	prediction_processed = true
 
 func clean_parried_hitboxes():
 #	if is_ghost:
@@ -853,6 +890,8 @@ func get_advantage():
 
 #		print(opponent.lowest_tick)
 	if state_interruptable and opponent.state_interruptable:
+		advantage = true
+	if prediction_correct():
 		advantage = true
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false
@@ -914,6 +953,11 @@ func tick_before():
 				}
 	var feinted_last = feinting
 	var pressed_feint = false
+	if refresh_prediction:
+		refresh_prediction = false
+		current_prediction = -1
+	if !prediction_processed and !is_in_hurt_state():
+		process_prediction()
 	if queued_extra:
 		process_extra(queued_extra)
 		pressed_feint = feinting
@@ -950,6 +994,7 @@ func toggle_quit_graphic(on=null):
 			play_sound("QuitterSound")
 
 func tick():
+
 	if hitlag_ticks > 0:
 		if can_nudge:
 			if fixed.round(fixed.mul(fixed.vec_len(current_nudge.x, current_nudge.y), "100.0")) > 1:
@@ -1001,6 +1046,9 @@ func tick():
 	any_available_actions = true
 	last_vel = get_vel()
 	var pos = get_pos()
+
+#	if opponent.combo_count > 0:
+#		current_prediction = -1
 
 	if !is_in_hurt_state() and combo_count <= 0 and penalty_ticks <= 0:
 #		var dir = Utils.int_sign(last_pos.x - pos.x)
@@ -1085,12 +1133,15 @@ func update_facing():
 func on_state_interruptable(state):
 	if !dummy:
 		state_interruptable = true
+
 	else:
 		dummy_interruptable = true
+		refresh_prediction = true
 
 func on_state_hit_cancellable(state):
 	if !dummy:
 		state_hit_cancellable = true
+		refresh_prediction = true
 
 func on_action_selected(action, data, extra):
 #	if !state_interruptable:

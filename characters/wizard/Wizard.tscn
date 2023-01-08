@@ -1925,3 +1925,6 @@ spawn_particle_on_enter = true
 [node name="Taunt" parent="StateMachine" index="66"]
 script = ExtResource( 257 )
 apply_fric = false
+
+[node name="PredictionLabel" parent="." index="6"]
+visible = false

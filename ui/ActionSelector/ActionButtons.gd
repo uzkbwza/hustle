@@ -22,6 +22,7 @@ var current_action = null
 var current_button = null
 var current_extra = null
 var current_data = null
+var current_prediction = -1
 var button_pressed = null
 var any_available_actions = false
 var waiting_for_opponent_ready = false
@@ -29,6 +30,7 @@ var active = false
 var turbo_mode = false
 var game
 var forfeit = false
+var opposite_buttons = null
 
 var continue_button
 
@@ -73,6 +75,9 @@ func _ready():
 		for i in range(top_row_items.size()):
 			$"%TopRow".move_child(top_row_items[i], i)
 #		$"%DIPlotContainer".alignment = BoxContainer.ALIGN_BEGIN
+
+func _get_opposite_buttons():
+	return opposite_buttons
 
 func _on_submit_pressed():
 	var data = null
@@ -217,7 +222,10 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	
 #	button_container.add_child(button)
 	if not category in button_category_containers:
-		create_category(category)
+		var category_int = -1
+		if state:
+			category_int = state.type
+		create_category(category, category_int)
 	var container = button_category_containers[category]
 	container.add_button(button)
 	if button.get("flip_icon") != null:
@@ -235,14 +243,33 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	$"%ButtonSoundPlayer".add_container(button)
 	return button
 
-func create_category(category):
+func create_category(category, category_int=-1):
 	var scene = BUTTON_CATEGORY_CONTAINER_SCENE.instance()
 	button_category_containers[category] = scene
+	scene.category_int = category_int
 	scene.show_behind_parent = true
 	scene.init(category)
+#	scene.connect("prediction_selected", self, "send_ui_action")
+	scene.connect("prediction_selected", self, "_on_prediction_selected", [category])
 	scene.game = game
 	scene.player_id = player_id
 	$"%CategoryContainer".add_child(scene)
+
+func _on_prediction_selected(selected_category):
+	for category in button_category_containers:
+		if category != selected_category:
+			button_category_containers[category].reset_prediction()
+			button_category_containers[category].refresh()
+	for category in button_category_containers:
+		var prediction = button_category_containers[category].get_prediction()
+		if prediction and button_category_containers[category].visible:
+			current_prediction = button_category_containers[category].category_int
+			send_ui_action()
+			_get_opposite_buttons().send_ui_action()
+			return
+	current_prediction = -1
+	send_ui_action()
+	_get_opposite_buttons().send_ui_action()
 
 func send_ui_action(action=null):
 	current_extra = get_extra()
@@ -308,10 +335,12 @@ func show_button_data_node(button):
 	button.container.show_data_container()
 
 func get_extra():
+#	print(current_prediction)
 	var extra = {
 		"DI": $"%DI".get_data(),
 		"reverse": $"%ReverseButton".pressed and !$"%ReverseButton".disabled,
 		"feint": $"%FeintButton".pressed and !$"%FeintButton".disabled,
+		"prediction": _get_opposite_buttons().current_prediction,
 	}
 	if fighter_extra:
 		extra.merge(fighter_extra.get_extra())
@@ -366,10 +395,23 @@ func tween_spread():
 #	if active and Input.is_action_just_pressed("submit_action"):
 #		_on_submit_pressed()
 
+func reset_prediction():
+	current_prediction = -1
+	var can_predict = fighter.opponent.state_interruptable and !fighter.opponent.busy_interrupt
+	for container in button_category_containers.values():
+		if can_predict:
+			container.enable_predict_button()
+		else:
+			container.disable_predict_button()
+		container.reset_prediction()
+
 func activate():
 	if visible:
 		return
 	active = true
+	reset_prediction()
+	_get_opposite_buttons().reset_prediction()
+
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:

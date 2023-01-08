@@ -2,6 +2,8 @@ extends Control
 
 class_name ButtonCategoryContainer
 
+signal prediction_selected()
+
 onready var action_data_container = $"%ActionDataContainer"
 onready var action_data_panel_container = $"%ActionDataPanelContainer"
 onready var button_container = $"%ButtonContainer"
@@ -14,9 +16,10 @@ var mouse_over = false
 
 var game = null
 var player_id = null
-#
-#func _ready():
-#	connect("draw", self, "snap_to_boundaries")
+
+var category_int = -1
+
+var prediction_type = null
 
 func init(name):
 	label_text = name
@@ -50,13 +53,31 @@ func any_buttons_visible():
 #		action_data_panel_container.rect_global_position += active_button.data_node.display_offset
 #	action_data_panel_container.raise()
 
+func enable_predict_button():
+	$"%PredictButton".show()
+#	$"%PredictButton".modulate.a = 1.0
+
+func disable_predict_button():
+#	$"%PredictButton".modulate.a = 0.25
+	$"%PredictButton".hide()
+
 func add_button(button):
 	$"%ButtonContainer".add_child(button)
 	button.connect("mouse_entered", self, "on_button_mouse_entered", [button])
 	button.connect("mouse_exited", self, "on_button_mouse_exited")
-#	button.connect("toggled", self, "on_button_pressed", [button])
+
+func get_prediction():
+	return $"%PredictButton".pressed and $"%PredictButton".visible
+
+func reset_prediction():
+	$"%PredictButton".set_pressed_no_signal(false)
 
 func refresh():
+	if get_prediction():
+		$"%Label".text = label_text
+		$"%Label".modulate = Color.white
+		$"%Label".modulate.a = 1.0
+		return
 	for button in $"%ButtonContainer".get_children():
 		if button.is_pressed():
 			on_button_mouse_entered(button)
@@ -68,8 +89,9 @@ func refresh():
 	$"%Label".modulate = Color.white
 	$"%Label".modulate.a = 0.25
 
-
 func on_button_mouse_entered(button):
+	if get_prediction():
+		return
 	_on_ButtonContainer_mouse_entered()
 	$"%Label".text = button.action_title
 	if button.action_title == selected_button_text:
@@ -111,4 +133,21 @@ func _on_ButtonContainer_mouse_entered():
 func _on_ButtonContainer_mouse_exited():
 #	$"%ScrollContainer".rect_clip_content = true
 #	mouse_over = false
+	pass # Replace with function body.
+
+
+func _on_PredictButton_mouse_entered():
+	$"%PredictLabel".show()
+	$"%PredictLabel".text = "P" + str((player_id % 2) + 1) + " Prediction"
+	pass # Replace with function body.
+
+
+func _on_PredictButton_mouse_exited():
+	$"%PredictLabel".hide()
+	pass # Replace with function body.
+
+
+func _on_PredictButton_pressed():
+	refresh()
+	emit_signal("prediction_selected")
 	pass # Replace with function body.

@@ -12,6 +12,7 @@ const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
 const ORB_PUSH_SPEED = "8.5"
 
+
 var hover_left = 0
 var hover_drain_amount = 12
 var hover_gain_amount = 9

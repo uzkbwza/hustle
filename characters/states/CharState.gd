@@ -73,6 +73,7 @@ export(String) var change_stance_to = ""
 export var _c_Misc = 0
 export var release_opponent_on_startup = false
 export var initiative_effect = false
+export var initiative_startup_reduction_amount = 0
 export var apply_pushback = true
 
 var initiative_effect_spawned = false
@@ -93,6 +94,7 @@ var allowed_stances = []
 
 var is_hurt_state = false
 var start_interruptible_on_opponent_turn = false
+var initiative_startup_reduction = false
 
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
@@ -183,6 +185,8 @@ func _on_hit_something(obj, hitbox):
 	if hitbox.cancellable:
 		if obj == host.opponent and obj.has_hyper_armor:
 			return
+		if obj == host.opponent and obj.prediction_correct():
+			return
 		enable_hit_cancel()
 
 func process_hitboxes():
@@ -192,13 +196,9 @@ func process_hitboxes():
 #		return true
 	.process_hitboxes()
 
-#func process_feint():
-#	return "WhiffInstantCancel"
-
-
-
 func _tick_shared():
 	if current_tick == 0:
+		initiative_startup_reduction = false
 		feinting = host.feinting
 		hit_cancelled = false
 #		hit_cancelled = false
@@ -206,6 +206,8 @@ func _tick_shared():
 			if host.initiative_effect:
 				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
 			host.initiative_effect = false
+			if initiative_startup_reduction_amount > 0:
+				initiative_startup_reduction = true
 			
 		if release_opponent_on_startup:
 			host.release_opponent()
@@ -219,6 +221,9 @@ func _tick_shared():
 				host.update_data()
 		else:
 			host.reverse_state = false
+	if initiative_startup_reduction:
+		current_tick += initiative_startup_reduction_amount
+		initiative_startup_reduction = false
 #	if busy_interrupt_type != BusyInterrupt.Hurt:
 #		host.update_advantage()
 #		if host.opponent:

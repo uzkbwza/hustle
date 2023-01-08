@@ -433,7 +433,7 @@ animations = [ {
 "name": "GunThrow",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 109 ), ExtResource( 109 ), ExtResource( 109 ), ExtResource( 110 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 106 ), ExtResource( 108 ), ExtResource( 114 ) ],
+"frames": [ ExtResource( 109 ), ExtResource( 110 ), ExtResource( 107 ), ExtResource( 106 ), ExtResource( 108 ), ExtResource( 114 ) ],
 "loop": true,
 "name": "GunTwirl",
 "speed": 60.0
@@ -618,7 +618,7 @@ animations = [ {
 "name": "Taunt",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 100 ), ExtResource( 101 ), ExtResource( 101 ), null, null, null, ExtResource( 101 ), ExtResource( 101 ), ExtResource( 100 ) ],
+"frames": [ ExtResource( 100 ), ExtResource( 100 ), ExtResource( 101 ), null, null, null, ExtResource( 101 ), ExtResource( 101 ), ExtResource( 100 ) ],
 "loop": true,
 "name": "Teleport",
 "speed": 5.0
@@ -687,7 +687,8 @@ has_gun
 gun_projectile
 consecutive_shots
 lightning_slice_x
-lightning_slice_y"
+lightning_slice_y
+"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
 
@@ -1811,8 +1812,9 @@ active_ticks = 4
 [node name="Teleport" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 99 )
 anim_length = 20
-enter_sfx = ExtResource( 138 )
 enter_sfx_volume = -9.0
+sfx = ExtResource( 138 )
+sfx_tick = 2
 data_ui_scene = ExtResource( 102 )
 button_texture = ExtResource( 137 )
 air_type = 2
@@ -1896,11 +1898,11 @@ active_ticks = 2
 script = ExtResource( 116 )
 fallback_state = "Shoot"
 sprite_animation = "GunTwirl"
-anim_length = 10
+anim_length = 5
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"
-type = 2
+type = 3
 button_texture = ExtResource( 159 )
 air_type = 2
 interrupt_from_string = "Grounded
@@ -1970,7 +1972,7 @@ fallback_state = "Holster"
 sprite_animation = "GunShoot2"
 anim_length = 10
 sfx = ExtResource( 70 )
-sfx_tick = 10
+sfx_tick = 4
 sfx_volume = -6.0
 title = "Temporal Round"
 type = 3
@@ -1983,7 +1985,9 @@ Grounded
 Aerial"
 change_stance_to = "Normal"
 release_opponent_on_startup = true
+super_level = 0
 super_freeze_ticks = 5
+super_effect = false
 temporal = true
 
 [node name="IzunaDrop" type="Node2D" parent="StateMachine" index="34"]
