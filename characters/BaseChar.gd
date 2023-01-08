@@ -189,7 +189,7 @@ var emote_tween: SceneTreeTween
 
 var feints = 2
 
-var current_prediction = -1
+#var current_prediction = -1
 
 var current_nudge = {
 	"x": "0",
@@ -227,7 +227,7 @@ var aura_particle = null
 var feinting = false
 var clashing = false
 
-var prediction_processed = true
+#var prediction_processed = true
 
 
 var last_action = 0
@@ -299,9 +299,9 @@ func is_ivy():
 		if id in Network.network_ids:
 			return Network.network_ids[id] == SteamHustle.IVY_ID
 	return false
-
-func prediction_correct():
-	return !is_in_hurt_state() and opponent and current_prediction == opponent.current_state().type
+#
+#func prediction_correct():
+#	return !is_in_hurt_state() and opponent and current_prediction == opponent.current_state().type
 
 func apply_style(style):
 	if (!SteamHustle.STARTED) or Global.steam_demo_version:
@@ -371,7 +371,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "refresh_prediction", "clipping_wall", "current_prediction", "prediction_processed", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -605,10 +605,9 @@ func launched_by(hitbox):
 	
 	nudge_amount = hitbox.sdi_modifier
 	
-	var prediction_correct = opponent and current_prediction == opponent.current_state().type
-	var will_launch =  hitbox.ignore_armor or !(has_armor() or prediction_correct())
+	var will_launch =  hitbox.ignore_armor or !has_armor()
 	
-	current_prediction = -1
+#	current_prediction = -1
 	if will_launch:
 		var state
 		if is_grounded():
@@ -836,9 +835,9 @@ func process_extra(extra):
 		feinting = extra.feint
 		if feinting and !infinite_resources:
 			feints -= 1
-	if "prediction" in extra:
-		current_prediction = extra["prediction"]
-		prediction_processed = false
+#	if "prediction" in extra:
+#		current_prediction = extra["prediction"]
+#		prediction_processed = false
 	else:
 		feinting = false
 
@@ -848,19 +847,20 @@ func refresh_air_movements():
 func refresh_feints():
 	feints = num_feints
 
-func process_prediction():
-	if current_prediction == -1:
-		prediction_processed = true
-		return
-	if prediction_correct():
-		play_sound("Predict")
-		play_sound("Predict2")
-		play_sound("Predict3")
-		gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
-		emit_signal("predicted")
-	else:
-		hitlag_ticks += INCORRECT_PREDICTION_LAG
-	prediction_processed = true
+#func process_prediction():
+#	if current_prediction == -1:
+#		prediction_processed = true
+#		return
+#	if prediction_correct():
+#		play_sound("Predict")
+#		play_sound("Predict2")
+#		play_sound("Predict3")
+#		gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
+#		emit_signal("predicted")
+#	else:
+#		hitlag_ticks += INCORRECT_PREDICTION_LAG
+#		opponent.gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
+#	prediction_processed = true
 
 func clean_parried_hitboxes():
 #	if is_ghost:
@@ -892,8 +892,8 @@ func get_advantage():
 #		print(opponent.lowest_tick)
 	if state_interruptable and opponent.state_interruptable:
 		advantage = true
-	if prediction_correct():
-		advantage = true
+#	if prediction_correct():
+#		advantage = true
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false
 	if opponent.current_state().state_name == "WhiffInstantCancel" or (opponent.previous_state() and opponent.previous_state().state_name == "WhiffInstantCancel" and opponent.current_state().has_hitboxes):
@@ -956,9 +956,9 @@ func tick_before():
 	var pressed_feint = false
 	if refresh_prediction:
 		refresh_prediction = false
-		current_prediction = -1
-	if !prediction_processed and !is_in_hurt_state():
-		process_prediction()
+#		current_prediction = -1
+#	if !prediction_processed and !is_in_hurt_state():
+#		process_prediction()
 	if queued_extra:
 		process_extra(queued_extra)
 		pressed_feint = feinting

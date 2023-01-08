@@ -470,7 +470,8 @@ func tick():
 			object.set_pos(stage_width, pos.y)
 
 	for fx in effects:
-		fx.tick()
+		if is_instance_valid(fx):
+			fx.tick()
 	current_tick += 1
 	
 	p1.current_tick = current_tick
@@ -582,10 +583,10 @@ func resolve_collisions(step=0):
 		edge_distance = int_abs(p1_right_edge - p2_left_edge)
 
 	if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
-		var push_p1_left = (p1.get_facing_int() == 1 if current_tick % 2 == 0 else p2.get_facing_int() == -1)
+		var push_p1_left = (p1.get_facing_int() == 1)
 		if p1.reverse_state:
 			push_p1_left = !push_p1_left
-		var push_p2_left = (p1.get_facing_int() == -1 if current_tick % 2 == 0 else p2.get_facing_int() == 1)
+		var push_p2_left = (p1.get_facing_int() == -1)
 		if p2.reverse_state:
 			push_p2_left = !push_p2_left
 		if push_p1_left:
@@ -678,7 +679,7 @@ func apply_hitboxes():
 #	if p1_hit and p2_hit:
 	var clash_position = Vector2()
 	var clashed = false
-	if clashing_enabled and !p1.prediction_correct() and !p2.prediction_correct():
+	if clashing_enabled:
 		for p1_hitbox in p1_hitboxes:
 			if p1_hitbox is ThrowBox:
 				continue

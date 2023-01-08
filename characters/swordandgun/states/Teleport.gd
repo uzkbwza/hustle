@@ -3,6 +3,7 @@ extends SuperMove
 const MOVE_DIST = "200"
 const BACKWARDS_STALL_FRAMES = 5
 const BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA = 5
+const UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA = 5
 const EXTRA_FRAME_PER = "0.45"
 const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
@@ -29,8 +30,11 @@ func _frame_0():
 	if fixed.gt(fixed.abs(scaled.x), "0.5"):
 		if backwards:
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
-			if host.combo_count == 0:
+			if !comboing:
 				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
+	if !comboing and fixed.lt(scaled.y, "-0.2"):
+		backwards_stall_frames += UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA
+	
 	iasa_at += fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
 
 func _frame_4():

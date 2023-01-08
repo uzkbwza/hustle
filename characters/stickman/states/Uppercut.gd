@@ -1,8 +1,8 @@
 extends CharacterState
-#
+
 func _frame_0():
 #	if current_tick == 0:
-	if host.initiative:
+	if host.initiative and host.is_grounded():
 		host.start_invulnerability()
 	var vel = host.get_vel()
 	if fixed.sign(vel.x) != host.get_facing_int():

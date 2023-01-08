@@ -41,6 +41,7 @@ align = 1
 
 [node name="PredictButton" type="Button" parent="VBoxContainer/CenterContainer"]
 unique_name_in_owner = true
+visible = false
 show_behind_parent = true
 margin_right = 55.0
 margin_bottom = 12.0

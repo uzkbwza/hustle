@@ -1625,9 +1625,9 @@ active_ticks = 4
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
 z_index = 1000
 script = ExtResource( 95 )
-x = 17
+x = 19
 y = -19
-width = 14
+width = 17
 height = 10
 damage = 20
 hitbox_type = 1
@@ -1642,7 +1642,7 @@ whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
 dir_y = ""
 start_tick = 3
-active_ticks = 2
+active_ticks = 3
 
 [node name="Geyser" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 270 )
@@ -1660,6 +1660,8 @@ type = 2
 data_ui_scene = ExtResource( 272 )
 button_texture = ExtResource( 278 )
 air_type = 2
+iasa_at = 18
+self_interruptable = false
 reversible = false
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
@@ -1925,6 +1927,3 @@ spawn_particle_on_enter = true
 [node name="Taunt" parent="StateMachine" index="66"]
 script = ExtResource( 257 )
 apply_fric = false
-
-[node name="PredictionLabel" parent="." index="6"]
-visible = false

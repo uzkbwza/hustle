@@ -409,8 +409,8 @@ func activate():
 	if visible:
 		return
 	active = true
-	reset_prediction()
-	_get_opposite_buttons().reset_prediction()
+#	reset_prediction()
+#	_get_opposite_buttons().reset_prediction()
 
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:

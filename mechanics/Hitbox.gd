@@ -41,6 +41,7 @@ export var minimum_damage: int = 0
 export var _c_Hit_Properties = 0
 export(HitboxType) var hitbox_type = HitboxType.Normal
 export var hitstun_ticks: int = 30
+export var combo_hitstun_ticks: int = -1
 export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
 export var damage_proration: int = 0
@@ -210,6 +211,8 @@ func init():
 		height *= -1
 	if width < 0:
 		width *= -1
+	if combo_hitstun_ticks == -1:
+		combo_hitstun_ticks = hitstun_ticks
 	call_deferred("setup_audio")
 
 func get_real_knockback():
@@ -242,9 +245,10 @@ func get_real_knockback():
 
 func get_real_hitstun():
 	if host.is_in_group("Fighter"):
+		var ticks = hitstun_ticks if !host.combo_count > 0 else combo_hitstun_ticks
 		if not (host.current_state().state_name in host.combo_moves_used):
-			return hitstun_ticks
-		var final_hitstun = Utils.int_max(hitstun_ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (host.combo_moves_used[host.current_state().state_name] + 1)), hitstun_ticks / 2)
+			return ticks
+		var final_hitstun = Utils.int_max(ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (host.combo_moves_used[host.current_state().state_name] + 1)), ticks / 2)
 		return final_hitstun
 	else:
 		return hitstun_ticks
