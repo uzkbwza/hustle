@@ -28,7 +28,6 @@ var MAX_HEALTH = 1000
 const MAX_STALES = 15
 const MIN_STALE_MODIFIER = "0.2"
 
-const INCORRECT_PREDICTION_LAG = 3
 
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
@@ -40,6 +39,7 @@ const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
 
 const MAX_GROUNDED_HITS = 7
 const PREDICTION_CORRECT_SUPER_GAIN = 30
+const INCORRECT_PREDICTION_LAG = 7
 
 
 const PARRY_CHIP_DIVISOR = 3
@@ -608,6 +608,7 @@ func launched_by(hitbox):
 	var prediction_correct = opponent and current_prediction == opponent.current_state().type
 	var will_launch =  hitbox.ignore_armor or !(has_armor() or prediction_correct())
 	
+	current_prediction = -1
 	if will_launch:
 		var state
 		if is_grounded():
