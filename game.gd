@@ -35,7 +35,7 @@ var p2_data
 var p1_turn = false
 var p2_turn = false
 
-onready var camera = $Camera2D
+onready var camera: GoodCamera = $Camera2D
 onready var objects_node = $Objects
 onready var fx_node = $Fx
 
@@ -185,6 +185,8 @@ func copy_to(game: Game):
 				object.copy_to(new_obj)
 			else:
 				game.objs_map[str(game.objs_map.size() + 1)] = null
+	game.camera.limit_left = camera.limit_left
+	game.camera.limit_right = camera.limit_right
 
 func _on_super_started(player, ticks=null):
 	if is_ghost:
@@ -1023,6 +1025,9 @@ func _process(delta):
 		camera.zoom *= camera_zoom
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.zoom = camera.zoom
+		ghost_game.camera.position = camera.position
+		ghost_game.camera.position = camera.position
+
 	camera_snap_position = camera.position
 
 func _physics_process(_delta):
@@ -1168,12 +1173,15 @@ func _unhandled_input(event: InputEvent):
 					zoom_out()
 
 func update_camera_limits():
-	if camera_zoom == 1.0:
+	if camera_zoom == 1.0 and stage_width > 320:
 		camera.limit_left = -stage_width - CAMERA_PADDING
 		camera.limit_right = stage_width + CAMERA_PADDING
 	else:
 		camera.limit_left = -10000000
 		camera.limit_right = 10000000
+	if is_instance_valid(ghost_game):
+		ghost_game.update_camera_limits()
+		
 
 func zoom_in():
 	emit_signal("zoom_changed")
