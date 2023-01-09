@@ -457,6 +457,9 @@ func check_params(x, y):
 func set_x(x: int):
 	chara.set_x(x)
 
+func set_y(y: int):
+	chara.set_y(y)
+
 func get_center_position_float():
 	return Vector2(position.x + collision_box.x, position.y + collision_box.y)
 	
@@ -510,6 +513,9 @@ func apply_forces():
 	
 func apply_forces_no_limit():
 	chara.apply_forces_no_limit()
+
+func set_gravity_modifier(modifier: String):
+	chara.set_gravity_modifier(modifier)
 
 func apply_grav_custom(grav: String, fall_speed: String):
 	if gravity_enabled:

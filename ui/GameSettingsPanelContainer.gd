@@ -28,14 +28,18 @@ onready var settings_nodes = {
 	"clashing_enabled": $"%ClashingEnabled",
 	"asymmetrical_clashing": $"%AsymmetricalClashing",
 	"global_damage_modifier": $"%DamageModifier",
+	"has_ceiling": $"%CeilingEnabled",
 	"global_hitstun_modifier": $"%HitstunModifier",
 	"global_hitstop_modifier": $"%HitstopModifier",
+	"global_gravity_modifier": $"%GravityModifier",
+	"ceiling_height": $"%CeilingHeight",
 }
 
 var float_to_string = [
 	"global_damage_modifier",
 	"global_hitstop_modifier",
 	"global_hitstun_modifier",
+	"global_gravity_modifier",
 ]
 
 func _ready():
@@ -244,4 +248,9 @@ func _on_HitstunModifier_value_changed(value):
 
 func _on_HitstopModifier_value_changed(value):
 	$"%HitstopModifierValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_GravityModifier_value_changed(value):
+	$"%GravityModifierValueLabel".text = str(value)
 	pass # Replace with function body.

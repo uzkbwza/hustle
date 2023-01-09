@@ -31,6 +31,7 @@ var lock_in_tick = -INF
 const DISCORD_URL = "https://discord.gg/YourOnlyMoveIsHUSTLE"
 const TWITTER_URL = "https://twitter.com/YourMoveHUSTLE"
 const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
+const STEAM_URL = "https://store.steampowered.com/app/2212330"
 const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
 const MIN_TURN_TIME = 5.0
 
@@ -81,6 +82,7 @@ func _ready():
 	$"%ShowAutosavedReplays".connect("pressed", self, "_on_view_replays_button_pressed")
 	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
 	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
+	$"%WishlistButton".connect("pressed", OS, "shell_open", [STEAM_URL])
 	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
 	$"%ItchButton".connect("pressed", OS, "shell_open", [ITCH_URL])
 	$"%VersionLabel".text = "version " + Global.VERSION
@@ -120,12 +122,14 @@ func _ready():
 #		$"%BGColor".color = light_mode_color
 	if !SteamHustle.STARTED:
 		$"%SteamMultiplayerButton".hide()
+		$"%WishlistButton".show()
 		
 #		$"%CustomizeButton".hide()
 #		$"%EnableStyleColorsButton".hide()
 #		$"%EnableAurasButton".hide()
 #		$"%EnableHitsparksButton".hide()
 	else:
+		$"%WishlistButton".hide()
 		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
 	
 	if !SteamHustle.STARTED:

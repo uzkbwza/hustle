@@ -99,6 +99,7 @@ var my_id = 1
 var snapping_camera = false 
 var waiting_for_player_prev = false
 var spectate_tick = -1
+var global_gravity_modifier = "1.0"
 
 var camera_snap_position = Vector2()
 
@@ -119,6 +120,8 @@ var p2_super = false
 var ghost_freeze = false
 var player_actionable = true
 var network_sync_tick = -100
+var ceiling_height = 400
+var has_ceiling = true
 
 var ghost_actionable_freeze_ticks = 0
 var ghost_p1_actionable = false
@@ -229,6 +232,7 @@ func on_object_spawned(obj: BaseObj):
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
 	obj.gravity_enabled = gravity_enabled
+	obj.set_gravity_modifier(global_gravity_modifier)
 	obj.fighter_owner = get_player(obj.id)
 	obj.update_data()
 	for particle in obj.particles.get_children():
@@ -294,11 +298,19 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		clashing_enabled = match_data["clashing_enabled"]
 	if match_data.has("asymmetrical_clashing"):
 		asymmetrical_clashing = match_data["asymmetrical_clashing"]
+	if match_data.has("global_gravity_modifier"):
+		global_gravity_modifier = match_data["global_gravity_modifier"]
+	if match_data.has("has_ceiling"):
+		has_ceiling = match_data["has_ceiling"]
+	if match_data.has("ceiling_height"):
+		ceiling_height = match_data["ceiling_height"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
+	p1.set_gravity_modifier(global_gravity_modifier)
+	p2.set_gravity_modifier(global_gravity_modifier)
 	if !is_ghost:
 		Global.current_game = self
 	for value in match_data:
@@ -392,6 +404,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.update_data()
 	p1_data = p1.data
 	p2_data = p2.data
+	apply_hitboxes()
 	if !ReplayManager.resimulating:
 		show_state()
 	if ReplayManager.playback and !ReplayManager.replaying_ingame and !ReplayManager.resimulating and !is_ghost:
@@ -468,6 +481,8 @@ func tick():
 			object.set_pos(-stage_width, pos.y)
 		elif pos.x > stage_width:
 			object.set_pos(stage_width, pos.y)
+		if has_ceiling and pos.y < -ceiling_height:
+			object.set_y(-ceiling_height)
 
 	for fx in effects:
 		if is_instance_valid(fx):
@@ -613,6 +628,20 @@ func resolve_collisions(step=0):
 		p2.set_x(int_clamp(opp_x_pos, left + (p2.collision_box.width + p2.collision_box.x), right + (-p2.collision_box.width + p2.collision_box.x)))
 		$Camera2D.reset_smoothing()
 
+	var p1_y_pos = p1.data.object_data.position_y
+	var p2_y_pos = p2.data.object_data.position_y
+	
+	if has_ceiling:
+		if p1_y_pos - p1.collision_box.height * 2 < -ceiling_height:
+			p1.set_y(-ceiling_height + p1.collision_box.height * 2)
+			var vel = p1.get_vel()
+			p1.set_vel(vel.x, "0")
+		
+		if p2_y_pos - p2.collision_box.height * 2 < -ceiling_height:
+			p2.set_y(-ceiling_height + p2.collision_box.height * 2)
+			var vel = p2.get_vel()
+			p2.set_vel(vel.x, "0")
+			
 	if step < 5:
 		if !p1.clipping_wall and x_pos - p1.collision_box.width < -stage_width:
 			p1.set_x(-stage_width + p1.collision_box.width)
@@ -1172,10 +1201,13 @@ func _draw():
 	if !snapping_camera and mouse_pressed:
 		draw_circle(camera.position, 3, Color.white * 0.5)
 	var line_color = Color.white
+	var ceiling_draw_height = -100000 if !has_ceiling else -ceiling_height 
 	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
 #	if stage_width < 320 or camera_zoom != 1.0:
-	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, -100000), line_color, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, -100000), line_color, 2.0)
+	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, ceiling_draw_height), line_color, 2.0)
+	draw_line(Vector2(stage_width, 0), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
+	if has_ceiling:
+		draw_line(Vector2(-stage_width, ceiling_draw_height), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
 	var line_dist = 50
 	var num_lines = stage_width * 2 / line_dist
 	for i in range(num_lines):

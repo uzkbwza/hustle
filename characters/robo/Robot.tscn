@@ -726,7 +726,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -2129,6 +2128,9 @@ height = 14
 
 [node name="ForwardThrow" parent="StateMachine" index="58"]
 anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
@@ -2170,6 +2172,9 @@ screenshake_frames = 6
 
 [node name="BackThrow" parent="StateMachine" index="59"]
 anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
@@ -2189,6 +2194,9 @@ screenshake_frames = 6
 
 [node name="AirForwardThrow" parent="StateMachine" index="60"]
 anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
@@ -2208,6 +2216,9 @@ screenshake_frames = 6
 
 [node name="AirBackThrow" parent="StateMachine" index="61"]
 anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
@@ -2249,6 +2260,9 @@ screenshake_frames = 6
 
 [node name="AirDownThrow" parent="StateMachine" index="62"]
 anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
