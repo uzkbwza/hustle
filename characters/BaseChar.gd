@@ -28,6 +28,7 @@ var MAX_HEALTH = 1000
 const MAX_STALES = 15
 const MIN_STALE_MODIFIER = "0.2"
 
+const COMBO_DI_SCALING_DIVISOR = "3"
 
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
 const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
@@ -700,13 +701,12 @@ func hit_by(hitbox):
 			opponent.current_state().feinting = false
 		else:
 #			opponent.feinting = false
-			perfect_parry = current_state().can_parry and (always_perfect_parry or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
+			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
 		if perfect_parry:
 			parried_last_state = true
 		else:
 			blocked_last_hit = true
-		
-		
+
 		parried = true
 
 		hitlag_ticks = 0
@@ -814,7 +814,7 @@ func release_opponent():
 		opponent.change_state("Fall")
 
 func get_scaled_di(di):
-	return xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), "5"))))
+	return xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), COMBO_DI_SCALING_DIVISOR))))
 
 func process_extra(extra):
 	if "DI" in extra:

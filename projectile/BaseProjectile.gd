@@ -7,6 +7,7 @@ class_name BaseProjectile
 export var immunity_susceptible = true
 export var deletes_other_projectiles = true
 
+
 var got_parried = false
 
 var stopped = false

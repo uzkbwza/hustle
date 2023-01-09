@@ -1,4 +1,4 @@
-[gd_scene load_steps=312 format=2]
+[gd_scene load_steps=319 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -53,7 +53,7 @@
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light3.png" type="Texture" id=51]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin3.png" type="Texture" id=52]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin4.png" type="Texture" id=53]
-[ext_resource path="res://characters/stickman/sprites/stickman60.png" type="Texture" id=54]
+[ext_resource path="res://characters/robo/sprites/throw7.png" type="Texture" id=54]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_heavy1.png" type="Texture" id=55]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_heavy4.png" type="Texture" id=56]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_heavy3.png" type="Texture" id=57]
@@ -61,7 +61,7 @@
 [ext_resource path="res://characters/stickman/sprites/chuk_spin7.png" type="Texture" id=59]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin5.png" type="Texture" id=60]
 [ext_resource path="res://characters/stickman/sprites/chuk_jump3.png" type="Texture" id=61]
-[ext_resource path="res://characters/stickman/sprites/stickman59.png" type="Texture" id=62]
+[ext_resource path="res://characters/robo/sprites/throw4.png" type="Texture" id=62]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_heavy2.png" type="Texture" id=63]
 [ext_resource path="res://characters/stickman/sprites/chuk_spin1.png" type="Texture" id=64]
 [ext_resource path="res://characters/stickman/sprites/nunchuk_light2.png" type="Texture" id=65]
@@ -303,8 +303,15 @@
 [ext_resource path="res://characters/robo/sprites/LOIC7.png" type="Texture" id=301]
 [ext_resource path="res://characters/robo/sound/beep10.wav" type="AudioStream" id=302]
 [ext_resource path="res://characters/robo/sprites/actionicons/boot2.png" type="Texture" id=303]
+[ext_resource path="res://characters/robo/sprites/throw5.png" type="Texture" id=304]
+[ext_resource path="res://characters/robo/sprites/throw8.png" type="Texture" id=305]
 [ext_resource path="res://characters/robo/sprites/LOIC5.png" type="Texture" id=306]
 [ext_resource path="res://characters/robo/sprites/LOIC6.png" type="Texture" id=307]
+[ext_resource path="res://characters/robo/sprites/throw1.png" type="Texture" id=308]
+[ext_resource path="res://characters/robo/sprites/throw2.png" type="Texture" id=309]
+[ext_resource path="res://characters/robo/sprites/throw3.png" type="Texture" id=310]
+[ext_resource path="res://characters/robo/sprites/throw6.png" type="Texture" id=311]
+[ext_resource path="res://sound/common/hit2.wav" type="AudioStream" id=312]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -446,7 +453,7 @@ animations = [ {
 "name": "Fireball",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 54 ) ],
+"frames": [ ExtResource( 308 ), ExtResource( 308 ), ExtResource( 308 ), ExtResource( 308 ), ExtResource( 308 ), ExtResource( 308 ), ExtResource( 308 ), ExtResource( 309 ), ExtResource( 309 ), ExtResource( 309 ), ExtResource( 309 ), ExtResource( 309 ), ExtResource( 310 ), ExtResource( 310 ), ExtResource( 310 ), ExtResource( 62 ), ExtResource( 62 ), ExtResource( 304 ), ExtResource( 304 ), ExtResource( 304 ), ExtResource( 311 ), ExtResource( 311 ), ExtResource( 311 ), ExtResource( 54 ), ExtResource( 54 ), ExtResource( 54 ), ExtResource( 305 ), ExtResource( 305 ), ExtResource( 305 ) ],
 "loop": true,
 "name": "ForwardThrow",
 "speed": 5.0
@@ -2118,3 +2125,133 @@ height = 14
 x = 15
 width = 14
 height = 14
+
+[node name="ForwardThrow" parent="StateMachine" index="58"]
+anim_length = 29
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+throw_positions = {
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
+},
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
+},
+ExtResource( 308 ): {
+"x": -21,
+"y": -8
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
+},
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
+}
+}
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22
+release_throw_pos_x = 29
+release_throw_pos_y = 11
+hitstun_ticks = 20
+knockback = "14.0"
+dir_y = "1.0"
+knockdown_extends_hitstun = false
+damage = 170
+damage_in_combo = 95
+screenshake_amount = 8
+screenshake_frames = 6
+
+[node name="BackThrow" parent="StateMachine" index="59"]
+anim_length = 29
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22
+release_throw_pos_x = 29
+release_throw_pos_y = 11
+hitstun_ticks = 20
+knockback = "14.0"
+dir_y = "1.0"
+knockdown_extends_hitstun = false
+damage = 170
+damage_in_combo = 95
+screenshake_amount = 8
+screenshake_frames = 6
+
+[node name="AirForwardThrow" parent="StateMachine" index="60"]
+anim_length = 29
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22
+release_throw_pos_x = 29
+release_throw_pos_y = 11
+hitstun_ticks = 20
+knockback = "14.0"
+dir_y = "1.0"
+knockdown_extends_hitstun = false
+damage = 170
+damage_in_combo = 95
+screenshake_amount = 8
+screenshake_frames = 6
+
+[node name="AirBackThrow" parent="StateMachine" index="61"]
+anim_length = 29
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+throw_positions = {
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
+},
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
+},
+ExtResource( 308 ): {
+"x": -22,
+"y": -12
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
+},
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
+}
+}
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22
+release_throw_pos_x = 29
+release_throw_pos_y = 11
+hitstun_ticks = 20
+knockback = "14.0"
+dir_y = "1.0"
+knockdown_extends_hitstun = false
+damage = 170
+damage_in_combo = 95
+screenshake_amount = 8
+screenshake_frames = 6
+
+[node name="AirDownThrow" parent="StateMachine" index="62"]
+anim_length = 29
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+interrupt_from_string = ""
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22

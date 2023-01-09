@@ -19,6 +19,7 @@ export var knockback: String = "1.0"
 export var dir_x: String = "1.0"
 export var dir_y: String = "0.0"
 export var knockdown: bool = true
+export var knockdown_extends_hitstun: bool = true
 export var aerial_hit_state = "HurtAerial"
 export var grounded_hit_state = "HurtGrounded"
 export var damage = 10
@@ -46,6 +47,10 @@ func update_throw_position():
 	var frame = host.get_current_sprite_frame()
 	if frame in throw_positions:
 		var pos = throw_positions[frame]
+		host.throw_pos_x = pos.x
+		host.throw_pos_y = pos.y
+	elif frame in host.throw_positions:
+		var pos = host.throw_positions[frame]
 		host.throw_pos_x = pos.x
 		host.throw_pos_y = pos.y
 

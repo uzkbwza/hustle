@@ -64,7 +64,11 @@ func save_to_state():
 	if !loaded_state:
 		return
 	loaded_state.anim_length = anim_length
-	loaded_state.throw_positions = throw_positions.duplicate(true)
+	var positions = throw_positions.duplicate(true)
+	loaded_state.throw_positions = positions
+	for frame in positions:
+		if !frame in loaded_object.throw_positions:
+			loaded_object.throw_positions[frame] = positions[frame]
 	save_animation(anim_name)
 
 func save_animation(anim_name):

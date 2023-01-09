@@ -28,7 +28,7 @@ func _frame_0():
 			back = true
 		else:
 			anim_name = "DashForward"
-	if back:
+	if back and host.combo_count <= 0:
 		interruptible_on_opponent_turn = false
 		host.hitlag_ticks += BACKDASH_LAG_FRAMES
 		host.add_penalty(8)

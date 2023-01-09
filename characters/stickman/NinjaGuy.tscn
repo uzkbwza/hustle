@@ -929,8 +929,6 @@ Grounded
 Reversal"
 interrupt_into_string = "Grounded
 Aerial"
-hit_cancel_into_string = "GroundedSuper
-AerialSuper"
 allowed_stances_string = "BackSway
 Normal"
 change_stance_to = "Normal"

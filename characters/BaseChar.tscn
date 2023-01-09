@@ -449,14 +449,14 @@ pitch_variation = 0.01
 
 [node name="Predict" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
 stream = ExtResource( 166 )
-volume_db = -15.0
+volume_db = -18.0
 pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 130 )
 
 [node name="Predict2" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
 stream = ExtResource( 168 )
-volume_db = -15.0
+volume_db = -18.0
 pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 130 )
@@ -464,7 +464,7 @@ pitch_variation = 0.11
 
 [node name="Predict3" type="AudioStreamPlayer2D" parent="Sounds" index="8"]
 stream = ExtResource( 167 )
-volume_db = -12.0
+volume_db = -20.0
 bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.01
@@ -967,6 +967,7 @@ air_type = 1
 uses_air_movement = true
 interrupt_frames = [ 7 ]
 interruptible_on_opponent_turn = true
+reversible = false
 interrupt_from_string = "AerialMovement
 Aerial"
 interrupt_into_string = "Aerial

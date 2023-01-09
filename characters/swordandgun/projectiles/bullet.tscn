@@ -28,6 +28,8 @@ material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 5 )
 extra_state_variables = "distance"
+always_parriable = true
+deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
 visible = false

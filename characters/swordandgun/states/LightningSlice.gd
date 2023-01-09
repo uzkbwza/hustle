@@ -12,12 +12,21 @@ const DEFAULT_HITBOX_Y = -16
 export var cancel = false
 export var followup = false
 
+var stall = false
+
 onready var hitbox = $Hitbox
+
+func _frame_0():
+	stall = false
 
 func _frame_1():
 	var vel = host.get_vel()
-	host.set_vel(vel.x, "0")
-
+	if !host.used_aerial_l_slice:
+		host.set_vel(vel.x, "0")
+		host.used_aerial_l_slice = true
+		stall = true
+	else:
+		stall = false
 #func _frame_6():
 
 func _frame_8():
@@ -63,5 +72,5 @@ func _tick_after():
 	._tick_after()
 	if cancel and current_tick == 1:
 		current_tick = 3
-	if current_tick > 16:
+	if current_tick > 16 or !stall:
 		host.apply_grav()

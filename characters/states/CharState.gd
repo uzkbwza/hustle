@@ -187,6 +187,8 @@ func _on_hit_something(obj, hitbox):
 			return
 #		if obj == host.opponent and obj.prediction_correct():
 #			return
+		if ((!burst_cancellable) or host.bursts_available == 0) and hit_cancel_into == ["OffensiveBurst"]:
+			return
 		enable_hit_cancel()
 
 func process_hitboxes():

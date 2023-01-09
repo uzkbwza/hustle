@@ -683,11 +683,14 @@ extra_state_variables = "bullets_left
 cut_projectile
 lasso_projectile
 used_aerial_h_slash
+used_aerial_l_slice
 has_gun
 gun_projectile
 consecutive_shots
 lightning_slice_x
 lightning_slice_y
+shot_dir_x
+shot_dir_y
 "
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
@@ -1311,6 +1314,7 @@ force_tick = 4
 title = "Horiz. Slash"
 type = 1
 button_texture = ExtResource( 153 )
+iasa_at = 15
 self_hit_cancellable = false
 interrupt_from_string = "GroundedAttack
 Grounded"
@@ -1576,7 +1580,6 @@ enter_sfx_volume = -9.0
 title = "Impale"
 type = 2
 button_texture = ExtResource( 157 )
-can_feint_if_possible = false
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
@@ -1902,11 +1905,11 @@ active_ticks = 2
 script = ExtResource( 116 )
 fallback_state = "Shoot"
 sprite_animation = "GunTwirl"
-anim_length = 5
+anim_length = 9
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"
-type = 3
+type = 2
 button_texture = ExtResource( 159 )
 air_type = 2
 interrupt_from_string = "Grounded
@@ -1916,7 +1919,11 @@ AerialSpecial"
 interrupt_into_string = "Gun
 SlowHolster
 AerialSuper
-GroundedSuper"
+GroundedSuper
+Teleport"
+interrupt_exceptions_string = "FastTeleport"
+super_level = 0
+super_effect = false
 
 [node name="Holster" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 167 )
@@ -1925,7 +1932,7 @@ apply_fric = true
 apply_grav = true
 sprite_animation = "Holster"
 anim_length = 4
-type = 3
+type = 2
 button_texture = ExtResource( 160 )
 air_type = 2
 land_cancel = true
@@ -1940,7 +1947,7 @@ apply_fric = true
 apply_grav = true
 sprite_animation = "Holster"
 anim_length = 8
-type = 3
+type = 2
 button_texture = ExtResource( 160 )
 air_type = 2
 interrupt_from_string = "SlowHolster"
@@ -1950,21 +1957,20 @@ Aerial"
 [node name="Shoot" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
-sprite_animation = "GunShoot"
+sprite_animation = "GunShoot2"
 anim_length = 14
 type = 2
 data_ui_scene = ExtResource( 277 )
 button_texture = ExtResource( 161 )
 air_type = 2
-iasa_at = 7
+iasa_at = 10
 dynamic_iasa = false
 interrupt_from_string = "Gun
 LassoThrow
 Shoot"
-interrupt_into_string = "Gun
-FastHolster
-GroundedSuper
-AerialSuper"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial"
 interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 super_level = 0
@@ -1979,19 +1985,17 @@ sfx = ExtResource( 70 )
 sfx_tick = 4
 sfx_volume = -6.0
 title = "Temporal Round"
-type = 2
+type = 3
 button_texture = ExtResource( 60 )
 air_type = 2
 interrupt_from_string = "Gun
-LassoThrow"
-interrupt_into_string = "TimeBullet
-Grounded
+LassoThrow
+TimeBullet"
+interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 release_opponent_on_startup = true
-super_level = 0
 super_freeze_ticks = 5
-super_effect = false
 temporal = true
 
 [node name="IzunaDrop" type="Node2D" parent="StateMachine" index="34"]

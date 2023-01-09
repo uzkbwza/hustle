@@ -13,9 +13,12 @@ var bullets_left = 6
 var cut_projectile = null
 var lasso_projectile = null
 var used_aerial_h_slash = false
+var used_aerial_l_slice = false
 var has_gun = true
 var gun_projectile = null
 var consecutive_shots = 1
+var shot_dir_x = 100
+var shot_dir_y = 0
 var lightning_slice_x = 0
 var lightning_slice_y = 0
 
@@ -39,6 +42,8 @@ func tick():
 			cut_projectile = null
 	if is_grounded() and used_aerial_h_slash:
 		used_aerial_h_slash = false
+	if is_grounded() and used_aerial_l_slice:
+		used_aerial_l_slice = false
 	if !has_gun and gun_projectile != null:
 		var gun = objs_map[gun_projectile]
 		if is_instance_valid(gun) and gun.data and !gun.disabled:

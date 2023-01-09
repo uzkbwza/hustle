@@ -25,6 +25,9 @@ export(String, MULTILINE) var extra_state_variables
 export var damages_own_team = false
 
 export var has_projectile_parry_window = true
+export var always_parriable = false
+
+export var throw_positions: Dictionary = {}
 
 onready var collision_box = $CollisionBox
 onready var hurtbox = $Hurtbox
