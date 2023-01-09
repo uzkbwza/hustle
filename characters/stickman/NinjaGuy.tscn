@@ -932,6 +932,7 @@ Aerial"
 allowed_stances_string = "BackSway
 Normal"
 change_stance_to = "Normal"
+initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Uppercut" index="0"]
 z_index = 1000
@@ -1009,7 +1010,6 @@ AerialSuper"
 allowed_stances_string = "BackSway
 Normal"
 change_stance_to = "Normal"
-initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/UppercutAir" index="0"]
 z_index = 1000

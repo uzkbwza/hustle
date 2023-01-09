@@ -691,7 +691,7 @@ lightning_slice_x
 lightning_slice_y
 shot_dir_x
 shot_dir_y
-"
+up_swipe_momentum"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
 
