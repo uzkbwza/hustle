@@ -21,6 +21,7 @@ var shot_dir_x = 100
 var shot_dir_y = 0
 var lightning_slice_x = 0
 var lightning_slice_y = 0
+var up_swipe_momentum = true
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -40,10 +41,15 @@ func tick():
 		var proj = objs_map[cut_projectile]
 		if proj == null or proj.disabled:
 			cut_projectile = null
-	if is_grounded() and used_aerial_h_slash:
-		used_aerial_h_slash = false
-	if is_grounded() and used_aerial_l_slice:
-		used_aerial_l_slice = false
+	if is_grounded():
+		if used_aerial_h_slash:
+			used_aerial_h_slash = false
+		if used_aerial_l_slice:
+			used_aerial_l_slice = false
+		if !up_swipe_momentum:
+			up_swipe_momentum = true
+	if combo_count > 0:
+		up_swipe_momentum = true
 	if !has_gun and gun_projectile != null:
 		var gun = objs_map[gun_projectile]
 		if is_instance_valid(gun) and gun.data and !gun.disabled:
@@ -53,6 +59,9 @@ func tick():
 				has_gun = true
 				gun_projectile = null
 				play_sound("GunPickup")
+
+func on_hit_something():
+	pass
 
 func use_bullet():
 	if infinite_resources:
