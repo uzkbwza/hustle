@@ -668,6 +668,8 @@ player_extra_params_scene = ExtResource( 3 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 8 )
+animation = "AirKick"
+frame = 9
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -745,7 +747,22 @@ hit_cancel_into_string = "Aerial
 Grounded"
 trigger_orb_type = "Lightning"
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="0"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/AirKick" index="0"]
+z_index = 1000
+script = ExtResource( 95 )
+x = -3
+y = -10
+width = 10
+height = 10
+damage = 40
+hitstun_ticks = 14
+hit_height = 0
+knockback = "5.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+start_tick = 8
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="1"]
 z_index = 1000
 script = ExtResource( 95 )
 x = 7
@@ -753,9 +770,14 @@ y = 13
 width = 11
 height = 13
 damage = 70
+hitstun_ticks = 20
 victim_hitlag = 4
-dir_y = "-0.20"
-knockback = "8.0"
+hit_height = 0
+priority = 1
+dir_x = "0.0"
+dir_y = "1.0"
+knockback = "6.0"
+grounded_hit_state = "HurtAerial"
 start_tick = 8
 
 [node name="IceSpikeAir" type="Node2D" parent="StateMachine" index="10"]
@@ -765,6 +787,9 @@ apply_fric = true
 apply_grav = true
 fallback_state = "Fall"
 anim_length = 19
+force_dir_x = "1.0"
+force_speed = "4.0"
+force_tick = 5
 sfx = ExtResource( 147 )
 sfx_tick = 3
 title = "Icicle"

@@ -92,12 +92,12 @@ func _tick():
 		interruptible_on_opponent_turn = true
 	if current_tick >= jump_tick:
 		if "-" in force_x:
-			if host.get_facing() == "Right":
+			if host.get_facing() == "Right" and data.x != 0:
 				anim_name = "JumpBack"
 			else:
 				anim_name = sprite_animation
 		else:
-			if host.get_facing() == "Left":
+			if host.get_facing() == "Left" and data.x != 0:
 				anim_name = "JumpBack"
 			else:
 				anim_name = sprite_animation

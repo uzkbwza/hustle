@@ -763,8 +763,9 @@ func take_damage(damage: int, minimum=0):
 	if damage == 0:
 		return
 	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
-	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	var damage_score = Utils.int_max(damage, minimum)
 	damage = Utils.int_max(damage, minimum)
+	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
@@ -1168,6 +1169,7 @@ func forfeit():
 	will_forfeit = true
 
 func _draw():
+	draw_circle(Vector2(), 0.01, Color.transparent) # possible fix to esoteric graphics bug
 #	if initiative:
 #		draw_arc(Vector2(0, -16), 24, 0, TAU, 32, Color.green)
 #	if state_interruptable:

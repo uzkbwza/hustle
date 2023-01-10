@@ -17,13 +17,13 @@ func _frame_0():
 	var force = xy_to_dir(data.x, data.y, speed)
 	var back = false
 	if "-" in force.x:
-		if host.get_facing() == "Right":
+		if host.get_facing() == "Right" and data.x != 0:
 			anim_name = "DashBackward"
 			back = true
 		else:
 			anim_name = "DashForward"
 	else:
-		if host.get_facing() == "Left":
+		if host.get_facing() == "Left" and data.x != 0:
 			anim_name = "DashBackward"
 			back = true
 		else:
