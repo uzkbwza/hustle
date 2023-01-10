@@ -1,4 +1,4 @@
-[gd_scene load_steps=285 format=2]
+[gd_scene load_steps=286 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -281,6 +281,7 @@
 [ext_resource path="res://characters/swordandgun/states/ImpaleFollowup.gd" type="Script" id=279]
 [ext_resource path="res://characters/swordandgun/sprites/impale7.png" type="Texture" id=280]
 [ext_resource path="res://characters/swordandgun/sprites/wall_slam.png" type="Texture" id=281]
+[ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=282]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -751,6 +752,7 @@ Jump"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
+beats_backdash = true
 
 [node name="AirDash2" type="Node2D" parent="StateMachine" index="3"]
 script = ExtResource( 71 )
@@ -778,6 +780,7 @@ GroundedMovement
 Jump"
 interrupt_into_string = "Grounded
 Aerial"
+beats_backdash = true
 startup_invuln = false
 
 [node name="1000Cuts" type="Node2D" parent="StateMachine" index="4"]
@@ -1151,11 +1154,11 @@ z_index = 1000
 script = ExtResource( 83 )
 x = 128
 y = -16
-width = 23
-height = 23
+width = 19
+height = 19
 damage = 110
 damage_in_combo = 90
-hitstun_ticks = 10
+hitstun_ticks = 6
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
@@ -1841,35 +1844,7 @@ Aerial"
 super_level = 0
 super_effect = false
 
-[node name="FastTeleport" type="Node2D" parent="StateMachine" index="27"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 20
-enter_sfx = ExtResource( 138 )
-enter_sfx_volume = -9.0
-title = "Inst. Teleport"
-type = 3
-data_ui_scene = ExtResource( 102 )
-button_texture = ExtResource( 265 )
-air_type = 2
-uses_air_movement = true
-iasa_at = 9
-self_interruptable = false
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-GroundedSuper
-Aerial
-AerialMovement
-AerialSpecial
-AerialSuper
-FastTeleport"
-interrupt_into_string = "Grounded
-Aerial"
-super_freeze_ticks = 3
-
-[node name="Pommel" type="Node2D" parent="StateMachine" index="28"]
+[node name="Pommel" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 79 )
 anim_length = 14
 enter_force_dir_x = "1.0"
@@ -1900,6 +1875,34 @@ dir_x = "0.5"
 dir_y = "1.0"
 start_tick = 4
 active_ticks = 2
+
+[node name="FastTeleport" type="Node2D" parent="StateMachine" index="28"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 20
+enter_sfx = ExtResource( 138 )
+enter_sfx_volume = -9.0
+title = "Inst. Teleport"
+type = 3
+data_ui_scene = ExtResource( 102 )
+button_texture = ExtResource( 265 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+self_interruptable = false
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+GroundedSuper
+Aerial
+AerialMovement
+AerialSpecial
+AerialSuper
+FastTeleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_freeze_ticks = 3
 
 [node name="Brandish" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 116 )
@@ -2158,26 +2161,34 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="DashStartup" parent="StateMachine" index="52"]
-title = "Walk"
-
-[node name="DashForward" parent="StateMachine" index="53"]
+[node name="DashForward" parent="StateMachine" index="52"]
+loop_animation = true
+absolute_loop = true
 enter_force_dir_x = "1.0"
 enter_force_speed = "0.5"
 spawn_particle_on_enter = false
-interrupt_frames = [ 8 ]
+enter_sfx = ExtResource( 282 )
+enter_sfx_volume = -16.0
+title = "Walk Forward"
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="54"]
+[node name="DashBackward" parent="StateMachine" index="53"]
+loop_animation = true
+absolute_loop = true
 spawn_particle_on_enter = false
-interrupt_frames = [ 11 ]
+enter_sfx = ExtResource( 282 )
+enter_sfx_volume = -16.0
+title = "Walk Back"
 dash_speed = 3
 fric = "0.02"
 spawn_particle = false
 startup_lag = 1
 back_penalty = 0
+
+[node name="DashStartup" parent="StateMachine" index="54"]
+title = "Walk"
 
 [node name="Jump" parent="StateMachine" index="55"]
 speed = "8.5"

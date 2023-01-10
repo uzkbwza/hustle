@@ -699,6 +699,7 @@ script = ExtResource( 216 )
 title = "Orb"
 
 [node name="Roll" parent="StateMachine" index="4"]
+anim_length = 14
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
@@ -745,6 +746,8 @@ interrupt_into_string = "Aerial
 Grounded"
 hit_cancel_into_string = "Aerial
 Grounded"
+no_collision_start_frame = 2
+no_collision_end_frame = 13
 trigger_orb_type = "Lightning"
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/AirKick" index="0"]
@@ -759,7 +762,6 @@ hitstun_ticks = 14
 hit_height = 0
 knockback = "5.0"
 launch_reversible = true
-grounded_hit_state = "HurtAerial"
 start_tick = 8
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="1"]
@@ -769,14 +771,16 @@ x = 7
 y = 13
 width = 11
 height = 13
-damage = 70
+damage = 80
 hitstun_ticks = 20
 victim_hitlag = 4
+sdi_modifier = "0.25"
 hit_height = 0
 priority = 1
-dir_x = "0.0"
+dir_x = "0.2"
 dir_y = "1.0"
-knockback = "6.0"
+knockback = "7.2"
+pushback_x = "0.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 8
 
@@ -1843,11 +1847,10 @@ sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="DashForward" parent="StateMachine" index="44"]
+[node name="DashForward" parent="StateMachine" index="43"]
 dash_speed = 8
 
-[node name="DashBackward" parent="StateMachine" index="45"]
-interrupt_frames = [ 11 ]
+[node name="DashBackward" parent="StateMachine" index="44"]
 dash_speed = 8
 stop_frame = 9
 

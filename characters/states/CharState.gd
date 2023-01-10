@@ -48,6 +48,10 @@ export var throw_techable = false
 export var interruptible_on_opponent_turn = false
 export var update_facing_on_exit = true
 export var dynamic_iasa = true
+export var backdash_iasa = false
+
+var starting_iasa_at = -1
+var starting_interrupt_frames = []
 
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
@@ -59,6 +63,7 @@ export var reversible = true
 export var instant_cancellable = true
 export var force_feintable = false
 export var can_feint_if_possible = true
+
 
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
@@ -75,9 +80,13 @@ export var release_opponent_on_startup = false
 export var initiative_effect = false
 export var initiative_startup_reduction_amount = 0
 export var apply_pushback = true
+export var beats_backdash = false
+export var no_collision_start_frame = -1
+export var no_collision_end_frame = -1
 
 var initiative_effect_spawned = false
 
+var dash_iasa = false
 var started_in_air = false
 var hit_yet = false
 var hit_cancelled = false
@@ -123,6 +132,7 @@ func init():
 			pass
 	if iasa_at < 0:
 		iasa_at = anim_length + iasa_at
+	starting_iasa_at = iasa_at
 	.init()
 
 func get_ui_category():
@@ -169,7 +179,17 @@ func _enter_shared():
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances
 
-func enable_interrupt():
+func enable_interrupt(check_opponent=true):
+	if backdash_iasa:
+		var opponent_state = host.opponent.current_state()
+		if opponent_state.beats_backdash:
+			return
+	if check_opponent and beats_backdash and host.opponent.current_state().beats_backdash:
+		host.opponent.current_state().enable_interrupt(false)
+		queue_state_change(fallback_state)
+	if beats_backdash and host.opponent.current_state().backdash_iasa:
+		host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
+		queue_state_change(fallback_state)
 #	host.update_advantage()
 	emit_signal("state_interruptable")
 
@@ -204,13 +224,17 @@ func _tick_shared():
 		feinting = host.feinting
 		hit_cancelled = false
 #		hit_cancelled = false
-		if initiative_effect and host.initiative:
+		var forward_movement_initiative = host.was_moving_forward()
+		if (initiative_effect and host.initiative):
 			if host.initiative_effect:
 				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
 			host.initiative_effect = false
 			if initiative_startup_reduction_amount > 0:
 				initiative_startup_reduction = true
-			
+		elif forward_movement_initiative:
+			if initiative_effect:
+				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
+			host.moved_forward = false
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:
@@ -242,8 +266,32 @@ func _tick_shared():
 			enable_interrupt()
 			if dynamic_iasa:
 				interruptible_on_opponent_turn = true
+	if current_tick == no_collision_start_frame:
+		host.colliding_with_opponent = false
+	if current_tick == no_collision_end_frame:
+		host.colliding_with_opponent = true
 
 func _tick_after():
+#	if backdash_iasa:
+#		var opponent_state = host.opponent.current_state()
+#		if opponent_state.beats_backdash():
+#			iasa_at = -1
+#			interrupt_frames = []
+#			endless = true
+#			interruptible_on_opponent_turn = true
+#		else:
+#			iasa_at = starting_iasa_at
+#			interrupt_frames = starting_interrupt_frames
+#			endless = false
+#			interruptible_on_opponent_turn = false
+	if beats_backdash:
+		var opponent_state = host.opponent.current_state()
+		if opponent_state.backdash_iasa:
+			iasa_at = anim_length - 1
+#			interrupt_frames = []
+		else:
+			iasa_at = starting_iasa_at
+#			interrupt_frames = starting_interrupt_frames
 	host.set_lowest_tick(current_real_tick)
 	._tick_after()
 
@@ -260,6 +308,7 @@ func on_got_hit():
 	pass
 
 func _exit_shared():
+	beats_backdash = false
 	if feinting:
 		host.feinting = false
 	feinting = false

@@ -60,12 +60,17 @@ func _frame_0():
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
-	var back = fixed.sign(str(data["x"])) != host.get_facing_int() and data["x"] != 0
+	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
 #	squat = super_jump or (air_type == AirType.Grounded and (back or host.combo_count <= 0) and full_hop)
 	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
 
 	if back and host.combo_count <= 0:
 		host.add_penalty(10)
+		backdash_iasa = true
+		beats_backdash = false
+	else:
+		backdash_iasa = false
+		beats_backdash = true
 
 	if !squat:
 		jump_tick = 1
@@ -88,8 +93,9 @@ func _frame_0():
 #	host.move_directly_relative(0, -)
 
 func _tick():
-	if current_tick >= interrupt_frames[0]:
-		interruptible_on_opponent_turn = true
+	if interrupt_frames.size() > 0:
+		if current_tick >= interrupt_frames[0]:
+			interruptible_on_opponent_turn = true
 	if current_tick >= jump_tick:
 		if "-" in force_x:
 			if host.get_facing() == "Right" and data.x != 0:

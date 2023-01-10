@@ -3,6 +3,8 @@ extends CharacterState
 const MIN_AIRDASH_HEIGHT = 10
 const BACKDASH_LAG_FRAMES = 4
 const Y_MODIFIER = "0.60"
+const MIN_IASA = 0
+const MAX_IASA = 14
 
 export var dir_x = "3.0"
 export var dir_y = "-5.0"
@@ -15,7 +17,10 @@ func _frame_1():
 
 func _frame_0():
 	var force = xy_to_dir(data.x, data.y, speed)
+	var dir = xy_to_dir(data.x, data.y)
 	var back = false
+	starting_iasa_at = fixed.round(fixed.add(fixed.mul(fixed.vec_len(dir.x, dir.y), str(MAX_IASA - MIN_IASA)), str(MIN_IASA)))
+	iasa_at = starting_iasa_at
 	if "-" in force.x:
 		if host.get_facing() == "Right" and data.x != 0:
 			anim_name = "DashBackward"
@@ -29,11 +34,15 @@ func _frame_0():
 		else:
 			anim_name = "DashForward"
 	if back and host.combo_count <= 0:
-		interruptible_on_opponent_turn = false
+		backdash_iasa = true
+		beats_backdash = false
+#		interruptible_on_opponent_turn = false
 		host.hitlag_ticks += BACKDASH_LAG_FRAMES
 		host.add_penalty(8)
 	else:
-		interruptible_on_opponent_turn = true
+		backdash_iasa = false
+		beats_backdash = true
+#		interruptible_on_opponent_turn = true
 
 	host.apply_force(force.x, fixed.mul(force.y, Y_MODIFIER) if "-" in force.y else force.y)
 

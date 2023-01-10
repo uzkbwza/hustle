@@ -22,6 +22,8 @@ shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -42,6 +44,8 @@ shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
@@ -89,6 +93,7 @@ script = ExtResource( 6 )
 endless = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Explode" index="0"]
+z_index = 1000
 script = ExtResource( 12 )
 width = 16
 height = 16
@@ -96,6 +101,7 @@ damage = 80
 hitstun_ticks = 24
 hitlag_ticks = 1
 victim_hitlag = 10
+damage_proration = 3
 whiff_sound = ExtResource( 13 )
 hit_sound = ExtResource( 14 )
 dir_x = "-1.0"
@@ -111,6 +117,7 @@ sprite_animation = "Explode"
 endless = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BigExplode" index="0"]
+z_index = 1000
 script = ExtResource( 12 )
 width = 16
 height = 16

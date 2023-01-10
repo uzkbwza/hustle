@@ -17,6 +17,7 @@ export var anim_length = 1
 export var sprite_anim_length = -1
 export var ticks_per_frame = 1
 export var loop_animation = false
+export var absolute_loop = false
 export var endless = false
 
 export var _c_Static_Force = 0
@@ -359,5 +360,7 @@ func update_sprite_frame():
 		host.sprite.frame = 0
 	var sprite_tick = current_tick / ticks_per_frame
 #	var frame = host.fixed.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
+	if loop_animation and absolute_loop:
+		sprite_tick = host.current_tick / ticks_per_frame
 	var frame = (sprite_tick % sprite_anim_length) if loop_animation else Utils.int_min(sprite_tick, sprite_anim_length)
 	host.sprite.frame = frame

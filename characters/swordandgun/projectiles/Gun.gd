@@ -1,6 +1,6 @@
 extends BaseProjectile
 
-const BULLET_SCENE = preload("res://characters/swordandgun/projectiles/bullet.tscn")
+const BULLET_SCENE = preload("res://characters/swordandgun/projectiles/gun_throw_bullet.tscn")
 const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash.tscn")
 
 export var screenshake_amount = 12

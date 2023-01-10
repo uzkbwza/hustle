@@ -48,6 +48,8 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 
 const HOLD_RESTARTS = [
 	"Wait",
+	"DashForward",
+	"DashBackward",
 ]
 
 const P1_COLOR = Color("aca2ff")
@@ -174,6 +176,7 @@ var busy_interrupt = false
 var any_available_actions = true
 var refresh_prediction = false
 
+var moved_forward = false
 var state_changed = false
 var on_the_ground = false
 var nudge_amount = "1.0"
@@ -372,7 +375,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "moved_forward", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -895,11 +898,16 @@ func get_advantage():
 		advantage = true
 #	if prediction_correct():
 #		advantage = true
+	if was_moving_forward():
+		advantage = true
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false
 	if opponent.current_state().state_name == "WhiffInstantCancel" or (opponent.previous_state() and opponent.previous_state().state_name == "WhiffInstantCancel" and opponent.current_state().has_hitboxes):
 		advantage = false
 	return advantage
+
+func was_moving_forward():
+	return moved_forward
 
 func set_lowest_tick(tick):
 	if lowest_tick == null or tick < lowest_tick:
@@ -907,7 +915,7 @@ func set_lowest_tick(tick):
 
 func update_advantage():
 	var new_adv = get_advantage()
-	if new_adv and !initiative:
+	if new_adv and !initiative or was_moving_forward():
 		initiative_effect = true
 	initiative = new_adv
 
@@ -967,6 +975,7 @@ func tick_before():
 		var current_state_name = current_state().name
 		if current_state_name in HOLD_RESTARTS:
 			queued_action = current_state_name
+			queued_data = current_state().data
 		pass
 	if queued_action:
 		if queued_action in state_machine.states_map:
@@ -1043,6 +1052,8 @@ func tick():
 		hit_during_armor = false
 	gain_burst_meter()
 	update_data()
+	if current_state().beats_backdash:
+		moved_forward = true
 	for particle in particles.get_children():
 		particle.tick()
 	any_available_actions = true
@@ -1169,7 +1180,7 @@ func forfeit():
 	will_forfeit = true
 
 func _draw():
-	draw_circle(Vector2(), 0.01, Color.transparent) # possible fix to esoteric graphics bug
+#	draw_circle(Vector2(), 0.01, Color.transparent) # possible fix to esoteric graphics bug
 #	if initiative:
 #		draw_arc(Vector2(0, -16), 24, 0, TAU, 32, Color.green)
 #	if state_interruptable:

@@ -313,12 +313,12 @@ func get_dir_float(facing=false):
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
 func can_draw_box():
-	
 	if Global.get("show_hitboxes") and !Network.get("multiplayer_active"):
 		return (active and enabled and Global.show_hitboxes)
 	else:
 		return .can_draw_box()
 #	return .can_draw_box()
+	
 #
 func tick():
 	if looping:

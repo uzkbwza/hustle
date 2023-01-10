@@ -143,7 +143,7 @@ func can_draw_box():
 		return false
 	if !can_draw:
 		return false
-	if Global.get("show_hitboxes"):
+	if Global.get("show_hitboxes") != null:
 		return Global.show_hitboxes
 
 func _ready():

@@ -14,11 +14,13 @@ func _enter():
 	if "-" in force.x:
 		if host.get_facing() == "Right":
 			anim_name = "RollBackward"
+			force.x = fixed.mul(force.x, "0.3")
 		else:
 			anim_name = "RollForward"
 	else:
 		if host.get_facing() == "Left":
 			anim_name = "RollBackward"
+			force.x = fixed.mul(force.x, "0.3")
 		else:
 			anim_name = "RollForward"
 	host.apply_force(force.x, str(0))
@@ -28,6 +30,7 @@ func _frame_0():
 		host.start_invulnerability()
 		host.colliding_with_opponent = false
 	host.start_throw_invulnerability()
+	host.start_projectile_invulnerability()
 
 func _frame_1():
 	host.colliding_with_opponent = false
@@ -35,14 +38,16 @@ func _frame_1():
 func _frame_2():
 	host.start_invulnerability()
 
-func _frame_8():
+func _frame_10():
 	if !tech:
 		host.end_invulnerability()
 		host.end_throw_invulnerability()
+		host.end_projectile_invulnerability()
 
 func _tick():
 	host.colliding_with_opponent = false
 	if accel:
 		host.apply_force(accel.x, str(0))
-		host.apply_fric()
-		host.apply_forces()
+	host.apply_fric()
+	host.apply_forces()
+	host.apply_grav()

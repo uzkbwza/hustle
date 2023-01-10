@@ -1,4 +1,4 @@
-[gd_scene load_steps=171 format=2]
+[gd_scene load_steps=173 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -168,6 +168,8 @@
 [ext_resource path="res://sound/common/predict1.wav" type="AudioStream" id=166]
 [ext_resource path="res://sound/common/predict3.wav" type="AudioStream" id=167]
 [ext_resource path="res://sound/common/predict2.wav" type="AudioStream" id=168]
+[ext_resource path="res://ui/ActionSelector/StateIcons/dash_back.png" type="Texture" id=169]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/DashForwardActionUIData.tscn" type="PackedScene" id=170]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -577,9 +579,13 @@ title = "Dodge"
 type = 4
 data_ui_scene = ExtResource( 51 )
 button_texture = ExtResource( 100 )
+air_type = 2
 interrupt_from_string = "GroundedMovement
-Grounded"
-interrupt_into_string = "Grounded"
+Grounded
+Aerial
+AerialMovement"
+interrupt_into_string = "Grounded
+Aerial"
 
 [node name="ShieldHigh" type="Node2D" parent="StateMachine" index="5"]
 script = ExtResource( 68 )
@@ -828,20 +834,7 @@ interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
 tech = true
 
-[node name="DashStartup" type="Node2D" parent="StateMachine" index="17"]
-script = ExtResource( 50 )
-anim_length = 2
-title = "Dash"
-data_ui_scene = ExtResource( 51 )
-button_texture = ExtResource( 66 )
-reversible = false
-interrupt_from_string = "GroundedMovement
-Grounded
-Dash"
-allowed_stances_string = "All"
-change_stance_to = "Normal"
-
-[node name="DashForward" type="Node2D" parent="StateMachine" index="18"]
+[node name="DashForward" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 6 )
 anim_length = 15
 reset_momentum = true
@@ -850,14 +843,21 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 124 )
 enter_sfx_volume = -10.0
 title = "Dash Forward"
-interrupt_frames = [ 7 ]
+data_ui_scene = ExtResource( 170 )
+button_texture = ExtResource( 66 )
+iasa_at = 10
 interruptible_on_opponent_turn = true
+reversible = false
+interrupt_from_string = "GroundedMovement
+Grounded
+Dash"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+beats_backdash = true
 dash_speed = 12
 
-[node name="DashBackward" type="Node2D" parent="StateMachine" index="19"]
+[node name="DashBackward" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 6 )
 anim_length = 18
 reset_momentum = true
@@ -866,7 +866,13 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 124 )
 enter_sfx_volume = -10.0
 title = "Dash Back"
-interrupt_frames = [ 13 ]
+button_texture = ExtResource( 169 )
+iasa_at = 6
+backdash_iasa = true
+reversible = false
+interrupt_from_string = "GroundedMovement
+Grounded
+Dash"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
@@ -875,6 +881,16 @@ dash_speed = 7
 fric = "0.01"
 startup_lag = 3
 stop_frame = 10
+
+[node name="DashStartup" type="Node2D" parent="StateMachine" index="19"]
+script = ExtResource( 50 )
+anim_length = 2
+title = "Dash"
+data_ui_scene = ExtResource( 51 )
+button_texture = ExtResource( 66 )
+reversible = false
+allowed_stances_string = "All"
+change_stance_to = "Normal"
 
 [node name="Jump" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 8 )
@@ -965,7 +981,6 @@ data_ui_scene = ExtResource( 13 )
 button_texture = ExtResource( 66 )
 air_type = 1
 uses_air_movement = true
-interrupt_frames = [ 7 ]
 interruptible_on_opponent_turn = true
 reversible = false
 interrupt_from_string = "AerialMovement
@@ -1071,6 +1086,7 @@ apply_grav = true
 fallback_state = "ForwardThrow"
 type = 1
 throw_techable = true
+update_facing_on_exit = false
 interrupt_into_string = "GroundedThrow"
 
 [node name="AirHold" type="Node2D" parent="StateMachine" index="31"]

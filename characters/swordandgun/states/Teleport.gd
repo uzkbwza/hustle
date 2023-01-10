@@ -40,11 +40,12 @@ func _frame_0():
 func _frame_4():
 	host.end_throw_invulnerability()
 	host.start_invulnerability()
+	host.start_projectile_invulnerability()
 	host.colliding_with_opponent = false
 
 func _frame_5():
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
-	
+	host.end_throw_invulnerability()
 	host.move_directly(dir.x, dir.y)
 	var vel = host.get_vel()
 	host.set_vel(vel.x, "0")

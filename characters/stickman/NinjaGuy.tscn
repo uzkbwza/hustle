@@ -604,10 +604,10 @@ modulate = Color( 1, 1, 1, 0 )
 [node name="HurtboxState" parent="StateMachine/HardKnockdown" index="0"]
 modulate = Color( 1, 1, 1, 0 )
 
-[node name="DashForward" parent="StateMachine" index="18"]
+[node name="DashForward" parent="StateMachine" index="17"]
 dash_speed = 14
 
-[node name="DashBackward" parent="StateMachine" index="19"]
+[node name="DashBackward" parent="StateMachine" index="18"]
 dash_speed = 11
 
 [node name="Jump" parent="StateMachine" index="20"]
@@ -1682,11 +1682,10 @@ x = 13
 y = -20
 width = 23
 height = 10
-damage = 115
+damage = 105
 hitstun_ticks = 20
 hitlag_ticks = 7
 victim_hitlag = 7
-damage_proration = -2
 hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
@@ -2069,7 +2068,6 @@ y = -4
 width = 30
 height = 4
 damage = 70
-hitstun_ticks = 50
 hitlag_ticks = 10
 victim_hitlag = 10
 hits_otg = true
