@@ -16,11 +16,6 @@ var reversible = false
 var flip_icon = true
 var state = null
 
-func _process(delta):
-	if visible and is_instance_valid(state):
-		if state.flip_with_facing:
-			$"%TextureRect".flip_h = state.host.get_opponent_dir() < 0
-
 func setup(name, title, texture=null):
 	action_name = name
 	action_title = title
@@ -59,6 +54,11 @@ func _ready():
 	$"%Button".connect("mouse_entered", self, "emit_signal", ["mouse_entered"])
 	$"%Button".connect("mouse_exited", self, "emit_signal", ["mouse_exited"])
 	$"%Button".connect("toggled", self, "on_toggled")
+	connect("visibility_changed", self, "on_visibility_changed")
+
+func on_visibility_changed():
+	if state and state.flip_with_facing:
+		$"%TextureRect".flip_h = state.host.get_opponent_dir() < 0 if state.host.opponent.current_state().name != "Grabbed" else state.host.get_facing_int() < 0
 
 func on_toggled(on):
 	emit_signal("toggled", on)

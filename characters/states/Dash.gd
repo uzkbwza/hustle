@@ -1,8 +1,8 @@
 extends CharacterState
 
 const MIN_IASA = 7
-const MAX_IASA = 14
-const MIN_SPEED_RATIO = "0.25"
+const MAX_IASA = 13
+const MIN_SPEED_RATIO = "0.5"
 
 export var dir_x = 1
 export var dash_speed = 100
@@ -16,7 +16,7 @@ var updated = false
 var charged = false
 
 var dist_ratio = "1.0"
-#
+
 func _enter():
 	updated = false
 	charged = false

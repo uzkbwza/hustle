@@ -60,12 +60,12 @@ func _frame_5():
 
 func _frame_6():
 	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0:
-		iasa_at = iasa_at + extra_frames * 5
-		
+		iasa_at = iasa_at + extra_frames * 4
 	host.update_facing()
 
 func _frame_7():
 	host.end_invulnerability()
+	host.end_projectile_invulnerability()
 	host.colliding_with_opponent = true
 
 func _tick():

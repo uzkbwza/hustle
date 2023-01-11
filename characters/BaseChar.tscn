@@ -961,6 +961,7 @@ enter_force_dir_x = "-1.0"
 enter_force_speed = "2.0"
 timed_particle_scene = ExtResource( 150 )
 timed_spawn_particle_tick = 7
+title = "Super Dash"
 button_texture = ExtResource( 172 )
 flip_with_facing = true
 interruptible_on_opponent_turn = true
@@ -970,6 +971,7 @@ reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded"
 interrupt_into_string = "Grounded"
+beats_backdash = true
 
 [node name="SuperJump" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 8 )
@@ -1331,6 +1333,7 @@ anim_length = 16
 title = "Down Throw"
 type = 1
 button_texture = ExtResource( 144 )
+flip_with_facing = true
 air_type = 2
 reversible = false
 interrupt_from_string = "AerialThrow"
