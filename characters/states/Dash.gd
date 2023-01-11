@@ -1,8 +1,9 @@
 extends CharacterState
 
 const MIN_IASA = 7
-const MAX_IASA = 13
+const MAX_IASA = 14
 const MIN_SPEED_RATIO = "0.5"
+const MAX_SPEED_RATIO = "1.25"
 
 export var dir_x = 1
 export var dash_speed = 100
@@ -25,9 +26,10 @@ func _frame_1():
 	if dir_x < 0:
 		host.add_penalty(back_penalty)
 	else:
+		beats_backdash = true
 		dist_ratio = fixed.add(fixed.div(str(data.x), "100"), "0.0")
-		starting_iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), 1)
-		iasa_at = starting_iasa_at
+#		starting_iasa_at = 
+		iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), 1)
 #		print(iasa_at)
 	if startup_lag != 0:
 		return
@@ -36,7 +38,7 @@ func _frame_1():
 		dash_force = fixed.mul(dash_force, "2")
 		charged = true
 		data["charged"] = true
-	host.apply_force_relative(fixed.mul(dash_force, fixed.add(fixed.mul(dist_ratio, fixed.sub("1.0", MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
+	host.apply_force_relative(fixed.mul(dash_force, fixed.add(fixed.mul(dist_ratio, fixed.sub(MAX_SPEED_RATIO, MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
 	if spawn_particle:
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 
