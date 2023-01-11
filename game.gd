@@ -195,7 +195,7 @@ func _on_super_started(player, ticks=null):
 		ticks = 0
 		var state = player.current_state()
 		if state.get("super_freeze_ticks") != null:
-			if state.super_freeze_ticks > super_freeze_ticks:
+			if state.super_freeze_ticks > ticks:
 				ticks = state.super_freeze_ticks
 	super_freeze_ticks = ticks
 	

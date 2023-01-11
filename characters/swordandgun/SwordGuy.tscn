@@ -1904,7 +1904,7 @@ AerialSuper
 FastTeleport"
 interrupt_into_string = "Grounded
 Aerial"
-super_freeze_ticks = 3
+super_freeze_ticks = 5
 
 [node name="Brandish" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 116 )

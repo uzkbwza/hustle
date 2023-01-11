@@ -260,7 +260,8 @@ func _physics_process(_delta):
 				p2_super_effects_node.position = p2_offset
 		else:
 			super_started = false
-
+			$"%P1SuperTexture".visible = false
+			$"%P2SuperTexture".visible = false
 			for effect in p1_effects + p2_effects:
 				effect.queue_free()
 				p1_effects = []

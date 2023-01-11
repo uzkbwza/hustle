@@ -29,8 +29,10 @@ func _frame_1():
 		beats_backdash = true
 		dist_ratio = fixed.add(fixed.div(str(data.x), "100"), "0.0")
 #		starting_iasa_at = 
-		iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), 1)
+
+		starting_iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), 1)
 #		print(iasa_at)
+		iasa_at = starting_iasa_at
 	if startup_lag != 0:
 		return
 	var dash_force = str(dir_x * dash_speed)
