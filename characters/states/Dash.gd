@@ -11,12 +11,15 @@ export var spawn_particle = true
 export var startup_lag = 0
 export var stop_frame = 0
 export var back_penalty = 5
+export var auto_correct = true
 var updated = false
+var charged = false
 
 var dist_ratio = "1.0"
-
+#
 func _enter():
 	updated = false
+	charged = false
 
 func _frame_1():
 	if dir_x < 0:
@@ -28,13 +31,21 @@ func _frame_1():
 #		print(iasa_at)
 	if startup_lag != 0:
 		return
-	host.apply_force_relative(fixed.mul(str(dir_x * dash_speed), fixed.add(fixed.mul(dist_ratio, fixed.sub("1.0", MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
+	var dash_force = str(dir_x * dash_speed)
+	if _previous_state_name() == "ChargeDash" or data.has("charged"):
+		dash_force = fixed.mul(dash_force, "2")
+		charged = true
+		data["charged"] = true
+	host.apply_force_relative(fixed.mul(dash_force, fixed.add(fixed.mul(dist_ratio, fixed.sub("1.0", MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
 	if spawn_particle:
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 
 func _tick():
 	host.apply_x_fric(fric)
-	host.apply_forces()
+	if charged:
+		host.apply_forces_no_limit()
+	else:
+		host.apply_forces()
 	if startup_lag > 0 and current_tick == startup_lag:
 		host.apply_force_relative(dir_x * dash_speed, 0)
 		if spawn_particle:
@@ -42,7 +53,9 @@ func _tick():
 #		interruptible_on_opponent_turn = true
 	if stop_frame > 0 and current_tick == stop_frame:
 		host.reset_momentum()
-	if dir_x > 0 and !updated and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state():
+
+	if auto_correct and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
+		host.update_data()
 		var vel = host.get_vel()
 		if !fixed.eq(vel.x, "0") and fixed.sign(vel.x) != host.get_opponent_dir():
 			host.update_facing()

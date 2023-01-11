@@ -167,7 +167,7 @@ func init(game, id):
 		$"%TopRowDataContainer".move_child(fighter_extra, 2)
 	else:
 		$"%TopRowDataContainer".move_child(fighter_extra, 0)
-	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"))
+	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"), null, false)
 	continue_button.get_parent().remove_child(continue_button)
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
@@ -569,8 +569,8 @@ func activate():
 			current_action = "Continue"
 	$"%ReverseButton".hide()
 	yield(get_tree(), "idle_frame")
-	if !$"%ReverseButton".disabled:
-		$"%ReverseButton".show()
+#	if !$"%ReverseButton".disabled:
+	$"%ReverseButton".show()
 
 	if is_instance_valid(continue_button):
 		continue_button.show()

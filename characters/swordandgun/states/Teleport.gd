@@ -8,11 +8,14 @@ const EXTRA_FRAME_PER = "0.45"
 const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
 const MOMENTUM_FORCE = "16.0"
+const CROSS_THROUGH_RECOVERY = 10
 
 var backwards_stall_frames = 0
-
+var starting_dir = 0
+var extra_frames = 0
 
 func _frame_0():
+	starting_dir = host.get_opponent_dir()
 	iasa_at = 9
 	backwards_stall_frames = 0
 	host.start_throw_invulnerability()
@@ -34,18 +37,18 @@ func _frame_0():
 				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
 	if !comboing and fixed.lt(scaled.y, "-0.2"):
 		backwards_stall_frames += UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA
-	
-	iasa_at += fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
+	extra_frames = fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
+	iasa_at += extra_frames
 
 func _frame_4():
 	host.end_throw_invulnerability()
-	host.start_invulnerability()
+#	host.start_invulnerability()
 	host.start_projectile_invulnerability()
 	host.colliding_with_opponent = false
 
 func _frame_5():
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
-	host.end_throw_invulnerability()
+#	host.end_throw_invulnerability()
 	host.move_directly(dir.x, dir.y)
 	var vel = host.get_vel()
 	host.set_vel(vel.x, "0")
@@ -56,6 +59,9 @@ func _frame_5():
 	host.update_data()
 
 func _frame_6():
+	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0:
+		iasa_at = iasa_at + extra_frames * 5
+		
 	host.update_facing()
 
 func _frame_7():

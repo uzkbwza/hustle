@@ -579,41 +579,29 @@ volume_db = -7.0
 bus = "Fx"
 script = ExtResource( 202 )
 
-[node name="CollisionBox" parent="." index="2"]
-modulate = Color( 1, 1, 1, 0 )
-
-[node name="Hurtbox" parent="." index="3"]
-modulate = Color( 1, 1, 1, 0 )
-
 [node name="Wait" parent="StateMachine" index="8"]
 change_stance_to = "Normal"
 
 [node name="Burst" parent="StateMachine" index="9"]
 interrupt_exceptions_string = "WhiffCancel"
 
-[node name="Hitbox" parent="StateMachine/Burst" index="0"]
-modulate = Color( 1, 1, 1, 0 )
-
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 hitstun_ticks = 24
-
-[node name="HurtboxState" parent="StateMachine/Knockdown" index="0"]
-modulate = Color( 1, 1, 1, 0 )
-
-[node name="HurtboxState" parent="StateMachine/HardKnockdown" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 
 [node name="DashForward" parent="StateMachine" index="17"]
 dash_speed = 14
 
-[node name="DashBackward" parent="StateMachine" index="18"]
+[node name="ChargeDashForward" parent="StateMachine" index="18"]
+interrupt_from_string = ""
+dash_speed = 14
+
+[node name="DashBackward" parent="StateMachine" index="19"]
 dash_speed = 11
 
-[node name="Jump" parent="StateMachine" index="20"]
+[node name="Jump" parent="StateMachine" index="21"]
 y_modifier = "1.33"
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="25"]
+[node name="WhiffInstantCancel" parent="StateMachine" index="27"]
 hit_cancel_exceptions_string = ""
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
@@ -675,7 +663,6 @@ initiative_effect = true
 super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlash" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -693,7 +680,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H2" type="Node2D" parent="StateMachine/QuickSlash" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -711,7 +697,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H3" type="Node2D" parent="StateMachine/QuickSlash" index="2"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -729,7 +714,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H4" type="Node2D" parent="StateMachine/QuickSlash" index="3"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -747,7 +731,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H5" type="Node2D" parent="StateMachine/QuickSlash" index="4"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -765,7 +748,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H6" type="Node2D" parent="StateMachine/QuickSlash" index="5"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -808,7 +790,6 @@ initiative_effect = true
 super_freeze_ticks = 5
 
 [node name="H1" type="Node2D" parent="StateMachine/QuickSlashAir" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -826,7 +807,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H2" type="Node2D" parent="StateMachine/QuickSlashAir" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -844,7 +824,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H3" type="Node2D" parent="StateMachine/QuickSlashAir" index="2"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -862,7 +841,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H4" type="Node2D" parent="StateMachine/QuickSlashAir" index="3"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -880,7 +858,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H5" type="Node2D" parent="StateMachine/QuickSlashAir" index="4"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -898,7 +875,6 @@ start_tick = 7
 active_ticks = 1
 
 [node name="H6" type="Node2D" parent="StateMachine/QuickSlashAir" index="5"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 width = 10
@@ -963,7 +939,6 @@ change_stance_to = "Normal"
 initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Uppercut" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 12
@@ -986,7 +961,6 @@ start_tick = 4
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Uppercut" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 14
@@ -1042,7 +1016,6 @@ Normal"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/UppercutAir" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 12
@@ -1066,7 +1039,6 @@ start_tick = 6
 active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/UppercutAir" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 14
@@ -1115,7 +1087,6 @@ x_modifier_amount = 10
 y_modifier_amount = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DiveKick" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 10
@@ -1157,7 +1128,6 @@ AerialSpecial
 AerialSuper"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/JumpKick" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 9
@@ -1200,7 +1170,6 @@ NunChuk"
 change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLight" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 32
@@ -1235,7 +1204,6 @@ NunChuk"
 change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukLightHigh" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 15
@@ -1253,7 +1221,6 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/NunChukLightHigh" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 28
@@ -1271,7 +1238,6 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukLightHigh" index="2"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 38
@@ -1311,7 +1277,6 @@ Jump"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukHeavy" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 27
@@ -1348,7 +1313,6 @@ hit_cancel_into_string = "Aerial"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukJump" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 5
@@ -1566,7 +1530,6 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedPunch" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 17
@@ -1599,7 +1562,6 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedKick" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 20
@@ -1637,7 +1599,6 @@ NunChuk"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundedSweep" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 26
@@ -1675,7 +1636,6 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DropKick" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 13
@@ -1693,7 +1653,6 @@ knockback = "13.0"
 start_tick = 11
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DropKick" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 76 )
 x = 5
@@ -1716,7 +1675,6 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirAttack" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 20
@@ -1855,7 +1813,6 @@ allowed_stances_string = "BackSway"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/PalmStrike" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 14
@@ -1894,7 +1851,6 @@ allowed_stances_string = "BackSway"
 change_stance_to = "Normal"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/SlideKick" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 20
@@ -1916,7 +1872,6 @@ start_tick = 5
 active_ticks = 10
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/SlideKick" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 76 )
 x = 8
@@ -1945,7 +1900,6 @@ interrupt_into_string = "Grounded
 Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrab" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 15
@@ -1964,7 +1918,6 @@ start_tick = 8
 active_ticks = 2
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/HitGrab" index="1"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 76 )
 x = 8
@@ -2022,7 +1975,6 @@ hard_knockdown = true
 force_grounded = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrabFollowup" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 15
@@ -2060,7 +2012,6 @@ hit_cancel_into_string = "GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Stomp" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 36
@@ -2104,7 +2055,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="ForwardThrow" parent="StateMachine" index="68"]
+[node name="ForwardThrow" parent="StateMachine" index="70"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -2139,7 +2090,6 @@ damage_in_combo = 0
 increment_combo = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ForwardThrow" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 22
@@ -2159,7 +2109,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="69"]
+[node name="BackThrow" parent="StateMachine" index="71"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
 ExtResource( 209 ): {
@@ -2193,7 +2143,6 @@ damage_in_combo = 0
 increment_combo = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackThrow" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 22
@@ -2213,10 +2162,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="74"]
+[node name="Taunt" parent="StateMachine" index="76"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="75"]
+[node name="ForfeitExplosion" parent="StateMachine" index="77"]
 endless = true

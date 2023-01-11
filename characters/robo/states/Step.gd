@@ -9,6 +9,13 @@ const MOVE_AMOUNT = 10
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
+func _enter():
+	if host.reverse_state:
+		backdash_iasa = true
+		beats_backdash = false
+	else:
+		backdash_iasa = false
+		beats_backdash = true
 
 func _frame_6():
 	self_interruptable = false

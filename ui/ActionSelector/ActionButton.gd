@@ -16,6 +16,11 @@ var reversible = false
 var flip_icon = true
 var state = null
 
+func _process(delta):
+	if visible and is_instance_valid(state):
+		if state.flip_with_facing:
+			$"%TextureRect".flip_h = state.host.get_opponent_dir() < 0
+
 func setup(name, title, texture=null):
 	action_name = name
 	action_title = title

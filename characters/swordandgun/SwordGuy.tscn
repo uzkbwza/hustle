@@ -744,6 +744,7 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 button_texture = ExtResource( 264 )
+flip_with_facing = true
 iasa_at = 7
 reversible = false
 interrupt_from_string = "Grounded
@@ -770,6 +771,7 @@ enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 title = "Air Dash"
 button_texture = ExtResource( 274 )
+flip_with_facing = true
 air_type = 1
 land_cancel = true
 iasa_at = 7
@@ -1204,7 +1206,7 @@ script = ExtResource( 83 )
 x = 128
 y = -16
 damage = 40
-hitstun_ticks = 11
+hitstun_ticks = 7
 hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 2
@@ -1821,7 +1823,7 @@ active_ticks = 4
 
 [node name="Teleport" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 99 )
-anim_length = 20
+anim_length = 30
 enter_sfx_volume = -9.0
 sfx = ExtResource( 138 )
 sfx_tick = 2
@@ -2174,40 +2176,46 @@ dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="DashBackward" parent="StateMachine" index="53"]
+[node name="ChargeDashForward" parent="StateMachine" index="53"]
+anim_length = 25
+loop_animation = true
+absolute_loop = true
+dash_speed = 4
+
+[node name="DashBackward" parent="StateMachine" index="54"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
 enter_sfx = ExtResource( 282 )
 enter_sfx_volume = -16.0
 title = "Walk Back"
-dash_speed = 3
+dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 startup_lag = 1
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="54"]
+[node name="DashStartup" parent="StateMachine" index="55"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="55"]
+[node name="Jump" parent="StateMachine" index="56"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="57"]
+[node name="DoubleJump" parent="StateMachine" index="59"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="58"]
+[node name="AirDash" parent="StateMachine" index="60"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="68"]
+[node name="AirGrab" parent="StateMachine" index="70"]
 land_cancel = true
 
-[node name="AirDownThrow" parent="StateMachine" index="73"]
+[node name="AirDownThrow" parent="StateMachine" index="75"]
 dir_x = "1.0"
 dir_y = "1.00"
 
-[node name="Taunt" parent="StateMachine" index="75"]
+[node name="Taunt" parent="StateMachine" index="77"]
 script = ExtResource( 255 )
 anim_length = 61
 force_dir_x = "-1.0"

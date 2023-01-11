@@ -54,7 +54,8 @@ func _input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				mouse_clicked = true
+				if mouse_over:
+					mouse_clicked = true
 			else:
 				mouse_clicked = false
 				if buffer_update:

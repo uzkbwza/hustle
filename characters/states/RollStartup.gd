@@ -9,6 +9,7 @@ var accel
 
 
 func _enter():
+	host.used_air_dodge = true
 	force = xy_to_dir(data.x, 0, speed, "1")
 	accel = xy_to_dir(data.x, 0, accel_speed, "1")
 	if "-" in force.x:
@@ -51,3 +52,8 @@ func _tick():
 	host.apply_fric()
 	host.apply_forces()
 	host.apply_grav()
+
+func is_usable():
+	if !host.is_grounded():
+		return .is_usable() and !host.used_air_dodge
+	return .is_usable()

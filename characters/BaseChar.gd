@@ -177,9 +177,16 @@ var any_available_actions = true
 var refresh_prediction = false
 
 var moved_forward = false
+var buffer_moved_forward = false
+
+var moved_backward = false
+var buffer_moved_backward = false
+
+
 var state_changed = false
 var on_the_ground = false
 var nudge_amount = "1.0"
+var used_air_dodge = false
 
 var has_hyper_armor = false
 var hit_during_armor = false
@@ -375,13 +382,19 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "moved_forward", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "buffer_moved_backward", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
 	state_machine.connect("state_changed", self, "on_state_changed")
 
 func on_state_changed(states_stack):
+	if buffer_moved_forward:
+		buffer_moved_forward = false
+		moved_forward = true
+	if buffer_moved_backward:
+		buffer_moved_backward = false
+		moved_backward = true
 	pass
 
 func on_got_hit():
@@ -544,7 +557,7 @@ func _process(delta):
 		ivy_effect_t += delta
 		ivy_effect_t = fmod(ivy_effect_t, 1.0)
 #		print(ivy_effect_t)
-	update()
+#	update()
 	if invulnerable:
 		if (Global.current_game.real_tick / 1) % 2 == 0:
 			var transparent = color
@@ -898,8 +911,9 @@ func get_advantage():
 		advantage = true
 #	if prediction_correct():
 #		advantage = true
-	if was_moving_forward():
-		advantage = true
+	if was_moving_backward():
+		advantage = false
+
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false
 	if opponent.current_state().state_name == "WhiffInstantCancel" or (opponent.previous_state() and opponent.previous_state().state_name == "WhiffInstantCancel" and opponent.current_state().has_hitboxes):
@@ -907,7 +921,11 @@ func get_advantage():
 	return advantage
 
 func was_moving_forward():
-	return moved_forward
+	return moved_forward and current_state().has_hitboxes
+
+func was_moving_backward():
+	return moved_backward
+
 
 func set_lowest_tick(tick):
 	if lowest_tick == null or tick < lowest_tick:
@@ -915,7 +933,7 @@ func set_lowest_tick(tick):
 
 func update_advantage():
 	var new_adv = get_advantage()
-	if new_adv and !initiative or was_moving_forward():
+	if new_adv and !initiative:
 		initiative_effect = true
 	initiative = new_adv
 
@@ -1037,6 +1055,7 @@ func tick():
 		if !current_state() is ThrowState and current_state().apply_pushback:
 			chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
+			used_air_dodge = false
 			refresh_air_movements()
 		current_tick += 1
 		if not (current_state().is_hurt_state) and !(opponent.current_state().is_hurt_state):
@@ -1053,7 +1072,9 @@ func tick():
 	gain_burst_meter()
 	update_data()
 	if current_state().beats_backdash:
-		moved_forward = true
+		buffer_moved_forward = true
+	if current_state().backdash_iasa:
+		buffer_moved_backward = true
 	for particle in particles.get_children():
 		particle.tick()
 	any_available_actions = true

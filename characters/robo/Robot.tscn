@@ -1172,6 +1172,7 @@ enter_force_speed = "10.0"
 title = "STEP"
 button_texture = ExtResource( 221 )
 iasa_at = 7
+allow_framecheat = true
 self_interruptable = false
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
@@ -2097,23 +2098,29 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="DashStartup" parent="StateMachine" index="41"]
+[node name="DashForward" parent="StateMachine" index="41"]
 interrupt_from_string = ""
 
-[node name="SuperJump" parent="StateMachine" index="45"]
+[node name="DashBackward" parent="StateMachine" index="42"]
+interrupt_from_string = ""
+
+[node name="ChargeDash" parent="StateMachine" index="45"]
+fallback_state = "Step"
+
+[node name="SuperJump" parent="StateMachine" index="46"]
 speed = "18"
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="46"]
+[node name="DoubleJump" parent="StateMachine" index="47"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="47"]
+[node name="AirDash" parent="StateMachine" index="48"]
 interrupt_from_string = ""
 
-[node name="WallSlam" parent="StateMachine" index="51"]
+[node name="WallSlam" parent="StateMachine" index="52"]
 busy_interrupt_type = 1
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -2126,7 +2133,7 @@ x = 15
 width = 14
 height = 14
 
-[node name="ForwardThrow" parent="StateMachine" index="58"]
+[node name="ForwardThrow" parent="StateMachine" index="59"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2170,7 +2177,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="BackThrow" parent="StateMachine" index="59"]
+[node name="BackThrow" parent="StateMachine" index="60"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2192,7 +2199,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirForwardThrow" parent="StateMachine" index="60"]
+[node name="AirForwardThrow" parent="StateMachine" index="61"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2214,7 +2221,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirBackThrow" parent="StateMachine" index="61"]
+[node name="AirBackThrow" parent="StateMachine" index="62"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2258,7 +2265,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirDownThrow" parent="StateMachine" index="62"]
+[node name="AirDownThrow" parent="StateMachine" index="63"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"

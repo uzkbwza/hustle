@@ -35,6 +35,7 @@ export(ActionType) var type
 export(PackedScene) var data_ui_scene = null
 export(Texture) var button_texture = null
 export var flip_icon = true
+export var flip_with_facing = false
 
 export var _c_Air_Data = 0
 export(AirType) var air_type = AirType.Grounded
@@ -49,6 +50,7 @@ export var interruptible_on_opponent_turn = false
 export var update_facing_on_exit = true
 export var dynamic_iasa = true
 export var backdash_iasa = false
+export var allow_framecheat = false
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -186,10 +188,13 @@ func enable_interrupt(check_opponent=true):
 			return
 	if check_opponent and beats_backdash and host.opponent.current_state().beats_backdash:
 		host.opponent.current_state().enable_interrupt(false)
-		queue_state_change(fallback_state)
+		if !allow_framecheat: 
+			queue_state_change(fallback_state)
 	if beats_backdash and host.opponent.current_state().backdash_iasa:
-		host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
-		queue_state_change(fallback_state)
+		if !host.opponent.current_state().allow_framecheat:
+			host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
+		if !allow_framecheat:
+			queue_state_change(fallback_state)
 #	host.update_advantage()
 	emit_signal("state_interruptable")
 
@@ -231,10 +236,10 @@ func _tick_shared():
 			host.initiative_effect = false
 			if initiative_startup_reduction_amount > 0:
 				initiative_startup_reduction = true
-		elif forward_movement_initiative:
-			if initiative_effect:
-				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
-			host.moved_forward = false
+#		elif forward_movement_initiative:
+#			if initiative_effect:
+#				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
+		host.moved_forward = false
 		if release_opponent_on_startup:
 			host.release_opponent()
 		if !is_hurt_state and reversible:
@@ -247,6 +252,7 @@ func _tick_shared():
 				host.update_data()
 		else:
 			host.reverse_state = false
+		host.moved_backward = false
 	if initiative_startup_reduction:
 		current_tick += initiative_startup_reduction_amount
 		initiative_startup_reduction = false
