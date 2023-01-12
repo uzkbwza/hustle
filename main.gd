@@ -244,6 +244,8 @@ func _start_ghost():
 		return
 	if !is_instance_valid(game):
 		return
+	if !game.prediction_enabled:
+		return
 	
 	ghost_game = preload("res://Game.tscn").instance()
 	ghost_game.is_ghost = true

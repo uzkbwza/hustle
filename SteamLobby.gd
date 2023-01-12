@@ -549,12 +549,15 @@ func _setup_game_vs(steam_id):
 	print("registering players")
 	REMATCHING_ID = 0
 	OPPONENT_ID = steam_id
+	set_opponent_lobby_info(steam_id)
 	Network.register_player_steam(steam_id)
 	Network.register_player_steam(SteamHustle.STEAM_ID)
 	Network.assign_players()
+
+	
+func set_opponent_lobby_info(steam_id=null):
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
-
 
 func _get_default_lobby_member_data():
 	return {

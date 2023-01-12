@@ -50,7 +50,16 @@ const HOLD_RESTARTS = [
 	"Wait",
 	"DashForward",
 	"DashBackward",
+	"ParryHigh",
+	"ParryLow",
+	"ParryAir",
 ]
+
+var HOLD_FORCE_STATES = {
+	"ParryHigh": "Wait",
+	"ParryLow": "Wait",
+	"ParryAir": "Fall",
+}
 
 const P1_COLOR = Color("aca2ff")
 const P2_COLOR = Color("ff7a81")
@@ -989,13 +998,12 @@ func tick_before():
 	if queued_extra:
 		process_extra(queued_extra)
 		pressed_feint = feinting
-	if queued_action == "Continue":
-		var current_state_name = current_state().name
-		if current_state_name in HOLD_RESTARTS:
-			queued_action = current_state_name
-			queued_data = current_state().data
-		pass
 	if queued_action:
+		if queued_action == "Continue":
+			var current_state_name = current_state().name
+			if current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
+				queued_action = current_state_name
+				queued_data = current_state().data
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:

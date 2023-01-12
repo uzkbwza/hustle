@@ -88,6 +88,7 @@ var forfeit_player = null
 var match_data = null
 var simulated_once = false
 var started_multiplayer = false
+var prediction_enabled = true
 
 var p1 = null
 var p2 = null
@@ -306,6 +307,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		has_ceiling = match_data["has_ceiling"]
 	if match_data.has("ceiling_height"):
 		ceiling_height = match_data["ceiling_height"]
+	if match_data.has("prediction_enabled"):
+		prediction_enabled = match_data["prediction_enabled"]
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
@@ -455,6 +458,8 @@ func initialize_objects():
 			object.init()
 
 func tick():
+	if is_ghost and !prediction_enabled:
+		return
 	if quitter_focus and quitter_focus_ticks > 0:
 		if (QUITTER_FOCUS_TICKS - quitter_focus_ticks) % 10 == 0:
 			if forfeit_player:

@@ -28,6 +28,7 @@ onready var settings_nodes = {
 	"clashing_enabled": $"%ClashingEnabled",
 	"asymmetrical_clashing": $"%AsymmetricalClashing",
 	"global_damage_modifier": $"%DamageModifier",
+	"prediction_enabled": $"%PredictionEnabled",
 	"has_ceiling": $"%CeilingEnabled",
 	"global_hitstun_modifier": $"%HitstunModifier",
 	"global_hitstop_modifier": $"%HitstopModifier",

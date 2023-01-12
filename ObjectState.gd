@@ -37,6 +37,12 @@ export(PackedScene) var particle_scene = null
 export var particle_position = Vector2()
 export var spawn_particle_on_enter = false
 
+export var _c_Screenshake = 0
+export var state_screenshake_tick = -1
+export var state_screenshake_dir = Vector2()
+export var state_screenshake_length = 0.25
+export var state_screenshake_amount = 10
+
 export var _c_TimedParticles = 0
 export(PackedScene) var timed_particle_scene = null
 export var timed_particle_position = Vector2()
@@ -158,6 +164,9 @@ func _tick_shared():
 				var pos = timed_particle_position
 				pos.x *= host.get_facing_int()
 				spawn_particle_relative(timed_particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
+
+		if current_tick == state_screenshake_tick:
+			host.screen_bump(state_screenshake_dir, state_screenshake_amount, state_screenshake_length)
 
 		var new_max = false
 		var new_max_shared = false

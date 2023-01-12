@@ -4,6 +4,7 @@ const MOVE_AMOUNT = 10
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
+export var charged = false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -32,3 +33,10 @@ func _frame_9():
 	var camera = host.get_camera()
 	if camera:
 		camera.bump(Vector2.UP, 10, 6 / 60.0)
+
+func _tick():
+	if charged:
+		host.apply_forces_no_limit()
+	else:
+		host.apply_forces()
+	pass
