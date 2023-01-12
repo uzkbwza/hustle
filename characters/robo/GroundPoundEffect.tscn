@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.465909 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=2]
+interpolation_mode = 2
+offsets = PoolRealArray( 0, 0.861619, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0.485352, 0.485352, 0.485352, 1, 0.364258, 0.364258, 0.364258, 0 )
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 3 )
+lifetime = 2.0
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="1"]
+position = Vector2( 45.903, 0 )
+z_index = 4
+amount = 64
+lifetime = 0.68
+preprocess = 0.05
+speed_scale = 1.45
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 2 )
+emission_shape = 2
+emission_rect_extents = Vector2( 50, 1 )
+direction = Vector2( 0, -1 )
+spread = 11.62
+gravity = Vector2( 0, 500 )
+initial_velocity = 393.8
+initial_velocity_random = 1.0
+damping = 146.03
+scale_amount = 3.42
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.831373, 0.831373, 0.831373, 1 )
+color_ramp = SubResource( 2 )
