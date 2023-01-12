@@ -124,7 +124,11 @@ func generateRichLabel(text_gen):
 	_richLabel.bbcode_enabled= true
 	_richLabel.bbcode_text = text_gen
 	var pulseFX = RichTextPulse.new()
+	var rainFX = RichTextRain.new()
+	var ghostFX = RichTextGhost.new()
 	_richLabel.install_effect(pulseFX)
+	_richLabel.install_effect(rainFX)
+	_richLabel.install_effect(ghostFX)
 	return _richLabel
 
 func generateButton(text_gen):

@@ -208,20 +208,23 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 	var instCharStates = instCharTS.get_node("StateMachine").get_children()
 	#Replace all images in animation frames
 	for media in mediaImages:
-		var newFrameTex = _textureGet(media)
+		var newFrameTex = textureGet(media)
 		if media.split('/')[-2].to_lower() == 'wait':
 			instCharTS.character_portrait = newFrameTex
 		if charName == "Cowboy" and media.split("/")[ - 3] == "ShootingArm":
 			instCharAnim = instCharTS.get_node("Flip/ShootingArm")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			instCharAnim = instCharTS.get_node("Flip/Sprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
 		#Changes the sprite for the in air sprite because it's a seperate node like coboys arm. -Valkarin
 		elif charName == "Wizard" and media.split("/")[ - 3 ] == "LiftoffAir":
 			
 			instCharAnim = instCharTS.get_node("Flip/LiftoffSprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
-			
+			instCharAnim = instCharTS.get_node("Flip/Sprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
 		else :
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			
@@ -290,7 +293,7 @@ func _get_all_files(path: String, file_ext := "", files := [], full_path := true
 		print("An error occurred when trying to access %s." % path)
 	return files
 		
-func _textureGet(imagePath): #Snippet by: 
+func textureGet(imagePath): #Snippet by: 
 	var image = Image.new()
 	var err = image.load(imagePath)
 	if err != OK:
