@@ -17,6 +17,8 @@ func is_usable():
 
 func _enter_shared():
 	._enter_shared()
+	if throw_invuln_frames > 0:
+		host.start_throw_invulnerability()
 	if !is_super:
 		return
 	if super_effect:
@@ -31,7 +33,3 @@ func _tick_shared():
 	._tick_shared()
 	if current_tick == throw_invuln_frames:
 		host.end_throw_invulnerability()
-
-func _frame_0_shared():
-	if throw_invuln_frames > 0:
-		host.start_throw_invulnerability()

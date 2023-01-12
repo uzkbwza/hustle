@@ -830,7 +830,6 @@ func on_turn_started():
 		SteamLobby.update_spectators(ReplayManager.frames)
 
 func rpc_steam(function_name, arg):
-	SteamLobby.set_opponent_lobby_info(opponent_id(player_id))
 	SteamLobby.rpc_(function_name, arg)
 	pass
 

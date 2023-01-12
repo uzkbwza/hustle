@@ -134,8 +134,13 @@ func init():
 			pass
 	if iasa_at < 0:
 		iasa_at = anim_length + iasa_at
-	starting_iasa_at = iasa_at
+	if starting_iasa_at == -1:
+		starting_iasa_at = iasa_at
 	.init()
+
+func copy_to(state: ObjectState):
+	.copy_to(state)
+	pass
 
 func get_ui_category():
 	return ActionType.keys()[type]
@@ -208,7 +213,7 @@ func _on_hit_something(obj, hitbox):
 	host.add_penalty(-50)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
-		if obj == host.opponent and obj.has_hyper_armor:
+		if obj == host.opponent and obj.has_armor():
 			return
 #		if obj == host.opponent and obj.prediction_correct():
 #			return
@@ -290,13 +295,16 @@ func _tick_after():
 #			interrupt_frames = starting_interrupt_frames
 #			endless = false
 #			interruptible_on_opponent_turn = false
-	if beats_backdash:
-		var opponent_state = host.opponent.current_state()
-		if opponent_state.backdash_iasa:
-			iasa_at = anim_length - 1
-#			interrupt_frames = []
-		else:
-			iasa_at = starting_iasa_at
+#	iasa_at = starting_iasa_at
+
+#	if beats_backdash:
+#		var opponent_state = host.opponent.current_state()
+#		if opponent_state.backdash_iasa:
+#			iasa_at = anim_length - 1
+##			interrupt_frames = []
+#		else:
+#			iasa_at = starting_iasa_at
+
 #			interrupt_frames = starting_interrupt_frames
 	host.set_lowest_tick(current_real_tick)
 	._tick_after()

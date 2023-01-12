@@ -1116,6 +1116,7 @@ enter_sfx = ExtResource( 164 )
 enter_sfx_volume = -5.0
 sfx = ExtResource( 141 )
 sfx_volume = -8.0
+busy_interrupt_type = 1
 
 [node name="HurtAerial" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 27 )

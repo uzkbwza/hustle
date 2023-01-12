@@ -21,6 +21,7 @@ var orbital_strike_out = false
 var orbital_strike_projectile = null
 var can_loic = true
 var loic_meter = LOIC_METER
+var got_hit = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 
@@ -39,7 +40,8 @@ func init(pos=null):
 
 func on_got_hit():
 	if armor_pips > 0:
-		armor_pips -= 1
+#		armor_pips -= 1
+		got_hit = true
 	else:
 		if orbital_strike_projectile and orbital_strike_projectile in objs_map:
 			objs_map[orbital_strike_projectile].disable()
@@ -50,8 +52,8 @@ func has_armor():
 	return armor_pips > 0
 
 func incr_combo():
-	if combo_count == 0:
-		landed_move = true
+#	if combo_count == 0:
+#		landed_move = true
 	.incr_combo()
 	pass
 
@@ -68,6 +70,11 @@ func big_landing_effect():
 
 func tick():
 	.tick()
+	if opponent.current_state().name == "Grabbed":
+		landed_move = true
+	if got_hit:
+		armor_pips = 0
+		got_hit = false
 	if landed_move:
 		if not (current_state() is CharacterHurtState):
 			armor_pips += 1

@@ -722,7 +722,8 @@ buffer_reset_ground_pound
 orbital_strike_out
 orbital_strike_projectile
 loic_meter
-can_loic"
+can_loic
+got_hit"
 num_air_movements = 3
 character_portrait = ExtResource( 76 )
 player_info_scene = ExtResource( 129 )
@@ -1404,13 +1405,13 @@ reset_momentum = true
 enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 throw_positions = {
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
 },
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
 },
 ExtResource( 204 ): {
 "x": 8,
@@ -1420,13 +1421,13 @@ ExtResource( 203 ): {
 "x": -37,
 "y": -11
 },
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
 },
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
 }
 }
 update_facing_on_exit = false
@@ -1571,21 +1572,17 @@ anim_length = 52
 enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 throw_positions = {
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
+},
 ExtResource( 258 ): {
 "x": 78,
 "y": -50
 },
-ExtResource( 264 ): {
-"x": 124,
-"y": -72
-},
 ExtResource( 254 ): {
 "x": 124,
 "y": -72
-},
-ExtResource( 260 ): {
-"x": 40,
-"y": -34
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -1598,6 +1595,10 @@ ExtResource( 262 ): {
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
+},
+ExtResource( 264 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -1713,13 +1714,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -1752,37 +1753,25 @@ sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 112 ): {
 "x": -40,
 "y": -44
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
 },
 ExtResource( 118 ): {
 "x": 67,
@@ -1792,9 +1781,21 @@ ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 }
 }
 iasa_at = 49
@@ -2271,9 +2272,6 @@ fall_anim = true
 [node name="AirDash" parent="StateMachine" index="51"]
 interrupt_from_string = ""
 
-[node name="WallSlam" parent="StateMachine" index="55"]
-busy_interrupt_type = 1
-
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 x = 15
 width = 14
@@ -2293,9 +2291,17 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
+},
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
+},
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
 },
 ExtResource( 309 ): {
 "x": -21,
@@ -2304,14 +2310,6 @@ ExtResource( 309 ): {
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
-},
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
-},
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
 }
 }
 release_frame = 18
@@ -2381,9 +2379,17 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
+},
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
+},
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
 },
 ExtResource( 309 ): {
 "x": -21,
@@ -2392,14 +2398,6 @@ ExtResource( 309 ): {
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
-},
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
-},
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
 }
 }
 release_frame = 18

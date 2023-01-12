@@ -22,6 +22,7 @@ func _frame_0():
 	var comboing = false
 	if super_level > 0:
 		iasa_at = 7
+#		starting_iasa_at = iasa_at
 #		host.start_invulnerability()
 		return
 	else:
@@ -39,6 +40,7 @@ func _frame_0():
 		backwards_stall_frames += UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA
 	extra_frames = fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
 	iasa_at += extra_frames
+#	starting_iasa_at = iasa_at
 
 func _frame_4():
 	host.end_throw_invulnerability()
