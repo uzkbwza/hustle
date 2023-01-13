@@ -13,6 +13,7 @@ const CROSS_THROUGH_RECOVERY = 10
 var backwards_stall_frames = 0
 var starting_dir = 0
 var extra_frames = 0
+var in_place = false
 
 func _frame_0():
 	starting_dir = host.get_opponent_dir()
@@ -20,6 +21,8 @@ func _frame_0():
 	backwards_stall_frames = 0
 	host.start_throw_invulnerability()
 	var comboing = false
+	var scaled = xy_to_dir(data.x, data.y)
+	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
 	if super_level > 0:
 		iasa_at = 7
 #		starting_iasa_at = iasa_at
@@ -29,7 +32,6 @@ func _frame_0():
 		if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
 			comboing = true
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
-	var scaled = xy_to_dir(data.x, data.y)
 	var backwards = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
 	if fixed.gt(fixed.abs(scaled.x), "0.5"):
 		if backwards:
@@ -44,7 +46,8 @@ func _frame_0():
 
 func _frame_4():
 	host.end_throw_invulnerability()
-#	host.start_invulnerability()
+	if in_place:
+		host.start_invulnerability()
 	host.start_projectile_invulnerability()
 	host.colliding_with_opponent = false
 

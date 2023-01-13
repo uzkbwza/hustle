@@ -56,6 +56,7 @@ export var parry_meter_gain = -1
 export var ignore_armor = false
 export var followup_state = ""
 export var force_grounded = false
+export var can_clash = true
 
 export(HitHeight) var hit_height = HitHeight.Mid
 

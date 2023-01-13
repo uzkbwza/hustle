@@ -18,14 +18,14 @@ func _exit():
 		particle.queue_free()
 		particle = null
 
-func _frame_7():
+func _frame_10():
 	var dir = xy_to_dir(data["x"], data["y"])
 	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
 	var pos = host.get_pos()
 	center_x = pos.x
 	center_y = pos.y
 
-func _frame_9():
+func _frame_12():
 	var dir = xy_to_dir(data["x"], data["y"])
 #	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
 	var opp_pos = host.obj_local_center(host.opponent)

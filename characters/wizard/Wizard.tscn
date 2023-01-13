@@ -395,7 +395,7 @@ animations = [ {
 "name": "Getup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 275 ), ExtResource( 275 ), ExtResource( 275 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ) ],
+"frames": [ ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 276 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 273 ), ExtResource( 275 ), ExtResource( 275 ), ExtResource( 275 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ), ExtResource( 274 ) ],
 "loop": true,
 "name": "Geyser",
 "speed": 5.0
@@ -961,7 +961,6 @@ height = 7
 damage = 80
 hitstun_ticks = 17
 hitlag_ticks = 6
-damage_proration = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 215 )
 dir_x = "1.00"
@@ -1084,14 +1083,13 @@ script = ExtResource( 115 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 16
+anim_length = 19
 sfx = ExtResource( 152 )
 sfx_tick = 6
 title = "Flame Wave"
 type = 2
 button_texture = ExtResource( 174 )
 air_type = 2
-iasa_at = 14
 interrupt_from_string = "Aerial
 Grounded
 AerialSpecial
@@ -1303,6 +1301,7 @@ damage = 50
 hitstun_ticks = 20
 hitlag_ticks = 1
 victim_hitlag = 9
+damage_proration = 2
 hits_vs_aerial = false
 knockback = "6.0"
 start_tick = 5
@@ -1365,6 +1364,7 @@ y = -68
 width = 24
 height = 19
 damage = 20
+hitstun_ticks = 18
 hitlag_ticks = 8
 victim_hitlag = 10
 screenshake_amount = 2
@@ -1374,6 +1374,7 @@ dir_x = "-1.0"
 dir_y = "1.0"
 knockback = "2.0"
 knockdown = true
+knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 23
 
@@ -1641,6 +1642,7 @@ height = 10
 damage = 20
 hitbox_type = 1
 cancellable = false
+can_clash = false
 screenshake_amount = 0
 replace_hit_particle = true
 whiff_particle = ExtResource( 231 )
@@ -1661,6 +1663,7 @@ height = 10
 damage = 20
 hitbox_type = 1
 cancellable = false
+can_clash = false
 priority = 1
 screenshake_amount = 0
 replace_hit_particle = true
@@ -1678,7 +1681,7 @@ script = ExtResource( 270 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 31
+anim_length = 34
 particle_scene = ExtResource( 271 )
 particle_position = Vector2( 0, -16 )
 enter_sfx = ExtResource( 147 )
@@ -1689,7 +1692,7 @@ type = 2
 data_ui_scene = ExtResource( 272 )
 button_texture = ExtResource( 278 )
 air_type = 2
-iasa_at = 22
+iasa_at = 25
 self_interruptable = false
 reversible = false
 can_feint_if_possible = false

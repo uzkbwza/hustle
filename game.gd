@@ -719,9 +719,13 @@ func apply_hitboxes():
 		for p1_hitbox in p1_hitboxes:
 			if p1_hitbox is ThrowBox:
 				continue
+			if !p1_hitbox.can_clash:
+				continue
 			var p2_hitbox = get_colliding_hitbox(p2_hitboxes, p1_hitbox)
 			if p2_hitbox:
 				if p2_hitbox is ThrowBox:
+					continue
+				if !p2_hitbox.can_clash:
 					continue
 				var valid_clash = false
 				
@@ -735,7 +739,7 @@ func apply_hitboxes():
 					if p2_hit and !p1_hit:
 						if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
 							valid_clash = true
-	#
+
 				if (!p1_hit and !p2_hit) or (p1_hit and p2_hit):
 					if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
 						valid_clash = true

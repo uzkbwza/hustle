@@ -14,12 +14,14 @@ var wall_slam = false
 var hard_knockdown = false
 var can_act
 var bounce_frames = 0
+var ground_bounced = false
 
 
 const BOUNCE_FACTOR = "-0.85"
 const BOUNCE_PARTICLE = preload("res://fx/LandingParticle.tscn")
 
 func _enter():
+	ground_bounced = false
 	can_act = false
 	bounce_frames = 0
 	knockdown = hitbox.knockdown
@@ -31,6 +33,7 @@ func _enter():
 	if hitbox.ground_bounce and host.is_grounded() and fixed.gt(hitbox.dir_y, "0"):
 		hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
 		bounce_frames = BOUNCE_FRAMES
+		ground_bounced = true
 	var x = get_x_dir(hitbox)
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
 	
@@ -103,7 +106,7 @@ func _tick():
 					return "Landing"
 				return "Knockdown"
 				
-	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown
+	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown and !ground_bounced
 	
 	if !extended_hitstun and current_tick > hitstun:
 		if can_act and host.hp > 0:
