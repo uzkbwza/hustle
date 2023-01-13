@@ -1295,8 +1295,9 @@ can_draw = false
 [node name="Hitbox" type="Node2D" parent="StateMachine/Sandstorm" index="1"]
 z_index = 1000
 script = ExtResource( 95 )
-x = 106
+x = 35
 y = -21
+width = 30
 damage = 50
 hitstun_ticks = 20
 hitlag_ticks = 1

@@ -699,8 +699,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "DownwardCleave"
-frame = 8
+animation = "Poke"
+frame = 10
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1505,9 +1505,9 @@ hit_cancel_exceptions_string = "Teleport"
 [node name="Hitbox" type="Node2D" parent="StateMachine/Poke" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 53
+x = 66
 y = -21
-width = 29
+width = 41
 height = 4
 damage = 120
 hitlag_ticks = 7

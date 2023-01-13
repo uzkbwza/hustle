@@ -164,6 +164,7 @@ func _on_state_exited(state):
 	if buffer_armor:
 		armor_active = true
 		buffer_armor = false
+		armor_pips = 0
 	else:
 		armor_active = false
 
