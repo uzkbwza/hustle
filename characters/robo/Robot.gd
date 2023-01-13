@@ -22,6 +22,8 @@ var orbital_strike_projectile = null
 var can_loic = true
 var loic_meter = LOIC_METER
 var got_hit = false
+var armor_active = false
+var buffer_armor = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 
@@ -39,8 +41,7 @@ func init(pos=null):
 	armor_pips = 1
 
 func on_got_hit():
-	if armor_pips > 0:
-#		armor_pips -= 1
+	if armor_active:
 		got_hit = true
 	else:
 		if orbital_strike_projectile and orbital_strike_projectile in objs_map:
@@ -49,11 +50,11 @@ func on_got_hit():
 			orbital_strike_projectile = null
 
 func has_armor():
-	return armor_pips > 0
+	return armor_active and !(current_state() is CharacterHurtState)
 
 func incr_combo():
-#	if combo_count == 0:
-#		landed_move = true
+	if combo_count == 0:
+		landed_move = true
 	.incr_combo()
 	pass
 
@@ -70,11 +71,13 @@ func big_landing_effect():
 
 func tick():
 	.tick()
-	if opponent.current_state().name == "Grabbed":
-		landed_move = true
 	if got_hit:
 		armor_pips = 0
 		got_hit = false
+		buffer_armor = false
+		armor_active = false
+#	if armor_active:
+#		armor_pips = 0
 	if landed_move:
 		if not (current_state() is CharacterHurtState):
 			armor_pips += 1
@@ -103,7 +106,6 @@ func tick():
 			if fly_ticks_left <= 0:
 				flying_dir = null
 				stop_fly_fx()
-	
 	if loic_meter < LOIC_METER:
 		if armor_pips > 0:
 			loic_meter += LOIC_GAIN
@@ -126,6 +128,7 @@ func tick():
 	if !can_ground_pound and get_pos().y < GROUND_POUND_MIN_HEIGHT and !is_in_hurt_state():
 		can_ground_pound = true
 		ground_pound_active_effect()
+
 
 func ground_pound_active_effect():
 	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -18))
@@ -153,7 +156,20 @@ func process_extra(extra):
 				start_fly = true
 #			reset_momentum()
 			flying_dir = extra.fly_dir
-#		else:
+	if extra.has("armor_enabled") and armor_pips > 0:
+		buffer_armor = extra.armor_enabled
+
+func _on_state_exited(state):
+	._on_state_exited(state)
+	if buffer_armor:
+		armor_active = true
+		buffer_armor = false
+	else:
+		armor_active = false
+
+func on_state_interruptable(state):
+	.on_state_interruptable(state)
+	armor_active = false
 #
 #func on_state_started(state):
 #	.on_state_started(state)

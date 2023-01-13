@@ -1175,7 +1175,6 @@ func update_facing():
 func on_state_interruptable(state):
 	if !dummy:
 		state_interruptable = true
-
 	else:
 		dummy_interruptable = true
 		refresh_prediction = true
