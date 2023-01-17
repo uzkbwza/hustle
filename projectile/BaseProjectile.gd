@@ -6,6 +6,7 @@ class_name BaseProjectile
 
 export var immunity_susceptible = true
 export var deletes_other_projectiles = true
+export var fizzle_on_ceiling = false
 
 
 var got_parried = false
@@ -26,3 +27,7 @@ func disable():
 
 func on_got_parried():
 	emit_signal("got_parried")
+
+func on_hit_ceiling():
+	if fizzle_on_ceiling:
+		disable()

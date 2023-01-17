@@ -1,6 +1,6 @@
 extends WizardState
 
-const MAX_DIST = "512"
+const MAX_DIST = "300"
 const PARTICLE = preload("res://characters/wizard/GeyserParticleEffect.tscn")
 const PROJECTILE = preload("res://characters/wizard/projectiles/GeyserProjectile.tscn")
 
@@ -18,14 +18,14 @@ func _exit():
 		particle.queue_free()
 		particle = null
 
-func _frame_10():
+func _frame_7():
 	var dir = xy_to_dir(data["x"], data["y"])
 	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
 	var pos = host.get_pos()
 	center_x = pos.x
 	center_y = pos.y
 
-func _frame_12():
+func _frame_9():
 	var dir = xy_to_dir(data["x"], data["y"])
 #	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
 	var opp_pos = host.obj_local_center(host.opponent)

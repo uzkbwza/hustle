@@ -649,6 +649,9 @@ func tick():
 	update_collision_boxes()
 	update_data()
 
+func on_hit_ceiling():
+	pass
+
 func state_tick():
 	var once = true
 	while once or current_state().current_tick < 0:

@@ -26,6 +26,7 @@ func _frame_1():
 	if dir_x < 0:
 		MAX_SPEED_RATIO = "1.0"
 		host.add_penalty(back_penalty)
+		host.reset_momentum()
 	else:
 		MAX_SPEED_RATIO = "1.25"
 		beats_backdash = true
@@ -40,7 +41,7 @@ func _frame_1():
 	if startup_lag != 0:
 		return
 	var dash_force = str(dir_x * dash_speed)
-	if _previous_state_name() == "ChargeDash" or data.has("charged"):
+	if _previous_state_name() == "ChargeDash" or data and data.has("charged"):
 		dash_force = fixed.mul(dash_force, "2")
 		charged = true
 		data["charged"] = true
@@ -54,12 +55,13 @@ func _tick():
 		host.apply_forces_no_limit()
 	else:
 		host.apply_forces()
-	if startup_lag > 0 and current_tick == startup_lag:
+	var repeated = _previous_state() and _previous_state_name() == name
+	if (startup_lag > 0 and current_tick == startup_lag) and !repeated:
 		host.apply_force_relative(dir_x * dash_speed, 0)
 		if spawn_particle:
 			spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 #		interruptible_on_opponent_turn = true
-	if stop_frame > 0 and current_tick == stop_frame:
+	if stop_frame > 0 and current_tick == stop_frame and !repeated:
 		host.reset_momentum()
 
 	if auto_correct and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=286 format=2]
+[gd_scene load_steps=287 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -282,6 +282,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/impale7.png" type="Texture" id=280]
 [ext_resource path="res://characters/swordandgun/sprites/wall_slam.png" type="Texture" id=281]
 [ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=282]
+[ext_resource path="res://characters/swordandgun/sprites/sword_slash_horiz4.png" type="Texture" id=283]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -444,7 +445,7 @@ animations = [ {
 "name": "HAirSlash",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ) ],
+"frames": [ ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 82 ), ExtResource( 80 ), ExtResource( 80 ), ExtResource( 86 ), ExtResource( 86 ), ExtResource( 283 ) ],
 "loop": true,
 "name": "HSlash",
 "speed": 60.0
@@ -699,6 +700,8 @@ player_info_scene = ExtResource( 115 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
+animation = "HSlash"
+frame = 7
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1230,6 +1233,7 @@ type = 2
 button_texture = ExtResource( 180 )
 air_type = 2
 iasa_at = 20
+next_state_on_hold = false
 burst_cancellable = false
 instant_cancellable = false
 interrupt_from_string = "Grounded
@@ -1343,6 +1347,23 @@ hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
 start_tick = 6
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/HSlash" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 81
+y = -22
+width = 28
+height = 4
+damage = 100
+hitstun_ticks = 10
+victim_hitlag = 4
+damage_proration = 1
+hit_height = 0
+whiff_sound = ExtResource( 140 )
+hit_sound = ExtResource( 145 )
+start_tick = 8
 active_ticks = 2
 
 [node name="VSlash" type="Node2D" parent="StateMachine" index="15"]
@@ -1631,13 +1652,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2103,6 +2124,7 @@ interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSpecial
 GroundedSuper"
 hit_cancel_exceptions_string = "Teleport"
+initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackSlash" index="0"]
 z_index = 1000
@@ -2193,30 +2215,37 @@ title = "Walk Back"
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false
-startup_lag = 1
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="55"]
+[node name="DashStartup" parent="StateMachine" index="56"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="56"]
+[node name="Jump" parent="StateMachine" index="57"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="59"]
+[node name="DoubleJump" parent="StateMachine" index="60"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="60"]
+[node name="AirDash" parent="StateMachine" index="61"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="70"]
+[node name="AirGrab" parent="StateMachine" index="71"]
 land_cancel = true
 
-[node name="AirDownThrow" parent="StateMachine" index="75"]
+[node name="ForwardThrow" parent="StateMachine" index="72"]
+knockback = "11.0"
+dir_y = "0.0"
+
+[node name="BackThrow" parent="StateMachine" index="73"]
+knockback = "11.0"
+dir_y = "0.0"
+
+[node name="AirDownThrow" parent="StateMachine" index="76"]
 dir_x = "1.0"
 dir_y = "1.00"
 
-[node name="Taunt" parent="StateMachine" index="77"]
+[node name="Taunt" parent="StateMachine" index="78"]
 script = ExtResource( 255 )
 anim_length = 61
 force_dir_x = "-1.0"

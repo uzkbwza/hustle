@@ -38,7 +38,7 @@ frames = SubResource( 2 )
 frame = 3
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
-position = Vector2( 256, 0 )
+position = Vector2( 150, 0 )
 amount = 128
 lifetime = 2.39
 speed_scale = 3.08
@@ -46,7 +46,7 @@ explosiveness = 0.89
 lifetime_randomness = 1.0
 texture = ExtResource( 9 )
 emission_shape = 2
-emission_rect_extents = Vector2( 256, 8 )
+emission_rect_extents = Vector2( 150, 8 )
 direction = Vector2( 6.882, -1.27 )
 gravity = Vector2( 0, 63.812 )
 initial_velocity = 95.14

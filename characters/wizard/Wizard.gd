@@ -12,7 +12,6 @@ const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
 const ORB_PUSH_SPEED = "8.5"
 
-
 var hover_left = 0
 var hover_drain_amount = 12
 var hover_gain_amount = 9
@@ -20,6 +19,7 @@ var hover_gain_amount_air = 2
 var hovering = false
 var ghost_started_hovering = false
 var fast_falling = false
+var gusts_in_combo = 0
 
 var orb_projectile
 var can_flame_wave = true
@@ -111,6 +111,9 @@ func tick():
 				var force = fixed.normalized_vec_times(str(current_orb_push.x), str(current_orb_push.y), ORB_PUSH_SPEED)
 				objs_map[orb_projectile].push(force.x, force.y)
 		current_orb_push = null
+
+	if combo_count <= 0 and !opponent.current_state().endless:
+		gusts_in_combo = 0
 
 func process_extra(extra):
 	.process_extra(extra)

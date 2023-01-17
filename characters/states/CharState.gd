@@ -51,6 +51,7 @@ export var update_facing_on_exit = true
 export var dynamic_iasa = true
 export var backdash_iasa = false
 export var allow_framecheat = false
+export var next_state_on_hold = true
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -174,7 +175,7 @@ func _enter_shared():
 	host.update_grounded()
 	if change_stance_to:
 		host.change_stance_to(change_stance_to)
-	if !host.is_grounded():
+	if !host.is_grounded() or air_type == AirType.Aerial:
 		started_in_air = true
 	if uses_air_movement:
 		if !host.infinite_resources and host.gravity_enabled:

@@ -42,6 +42,7 @@ func _tick():
 		fizzle()
 		host.hurtbox.width = 0
 		host.hurtbox.height = 0
+		
 	elif !hit_something:
 		var dir
 		if !homing:

@@ -49,16 +49,18 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const HOLD_RESTARTS = [
 	"Wait",
 	"DashForward",
-	"DashBackward",
+#	"DashBackward",
 	"ParryHigh",
 	"ParryLow",
 	"ParryAir",
 ]
 
 var HOLD_FORCE_STATES = {
-	"ParryHigh": "Wait",
-	"ParryLow": "Wait",
-	"ParryAir": "Fall",
+#	"ParryHigh": "Wait",
+#	"ParryLow": "Wait",
+#	"ParryAir": "Fall",
+	"DashBackward": "Wait",
+#	"DashBackwardHold": "Wait",
 }
 
 const P1_COLOR = Color("aca2ff")
@@ -144,6 +146,7 @@ var is_color_active = false
 var is_aura_active = false
 var is_style_active = null
 var touching_wall = false
+var was_my_turn = false
 
 var ivy_effect = false
 var ivy_effect_t = 0.0
@@ -391,7 +394,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "buffer_moved_backward", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "was_my_turn", "buffer_moved_backward", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -789,8 +792,9 @@ func take_damage(damage: int, minimum=0):
 		return
 	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
 	var damage_score = Utils.int_max(damage, minimum)
+	damage = Utils.int_max(combo_stale_damage(damage), 1)
 	damage = Utils.int_max(damage, minimum)
-	damage = Utils.int_max(guts_stale_damage(combo_stale_damage(damage)), 1)
+	damage = Utils.int_max(guts_stale_damage(damage), 1)
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
@@ -1004,6 +1008,11 @@ func tick_before():
 			if current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state_name
 				queued_data = current_state().data
+			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
+				queued_action = HOLD_FORCE_STATES[current_state_name]
+			elif was_my_turn and !feinting and current_state().next_state_on_hold:
+				queued_action = current_state().fallback_state
+
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:
@@ -1015,9 +1024,11 @@ func tick_before():
 			if pressed_feint:
 				feinting = true
 				current_state().feinting = true
+
 	queued_action = null
 	queued_data = null
 	queued_extra = null
+	was_my_turn = false
 	lowest_tick = current_state().current_real_tick
 
 func toggle_quit_graphic(on=null):
@@ -1074,6 +1085,7 @@ func tick():
 	#		state_tick()
 	if state_interruptable:
 		update_grounded()
+
 	if hit_during_armor:
 		has_hyper_armor = false
 		hit_during_armor = false
@@ -1175,9 +1187,11 @@ func update_facing():
 func on_state_interruptable(state):
 	if !dummy:
 		state_interruptable = true
+		was_my_turn = true
 	else:
 		dummy_interruptable = true
 		refresh_prediction = true
+
 
 func on_state_hit_cancellable(state):
 	if !dummy:

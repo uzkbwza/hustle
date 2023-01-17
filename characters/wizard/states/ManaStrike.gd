@@ -5,7 +5,7 @@ onready var hitbox = $Hitbox
 const MAX_DISTANCE = "120"
 const MIN_DISTANCE = "30"
 
-const MAX_EXTRA_STARTUP = 3
+const MAX_EXTRA_STARTUP = 0
 
 var hitbox_x
 

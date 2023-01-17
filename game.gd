@@ -490,6 +490,7 @@ func tick():
 			object.set_pos(stage_width, pos.y)
 		if has_ceiling and pos.y < -ceiling_height:
 			object.set_y(-ceiling_height)
+			object.on_hit_ceiling()
 
 	for fx in effects:
 		if is_instance_valid(fx):
