@@ -21,7 +21,7 @@ func _enter():
 		Hitbox.HitHeight.Low:
 			anim_name = "HurtGroundedLow"
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
-	wall_slam = hitbox.wall_slam
+	wall_slam = hitbox.wall_slam and host.wall_slams < host.MAX_WALL_SLAMS
 	counter = hitbox.counter_hit
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
@@ -31,7 +31,7 @@ func _enter():
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"
-	if host.touching_wall:
+	if host.touching_wall and !wall_slam:
 		knockback_force.x = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)

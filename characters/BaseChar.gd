@@ -36,6 +36,8 @@ const HITLAG_COLLISION_TICKS = 4
 const PROJECTILE_PERFECT_PARRY_WINDOW = 3
 const BURST_ON_DAMAGE_AMOUNT = 5
 
+const MAX_WALL_SLAMS = 10
+
 const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
 
 const MAX_GROUNDED_HITS = 7
@@ -202,6 +204,8 @@ var used_air_dodge = false
 
 var has_hyper_armor = false
 var hit_during_armor = false
+
+var wall_slams = 0
 
 var last_pos = null
 var penalty = 0
@@ -394,7 +398,7 @@ func is_you():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "was_my_turn", "buffer_moved_backward", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "was_my_turn", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -542,6 +546,7 @@ func reset_combo():
 	combo_moves_used = {}
 	opponent.grounded_hits_taken = 0
 	opponent.trail_hp = opponent.hp
+	opponent.wall_slams = 0
 
 func incr_combo():
 	combo_count += 1

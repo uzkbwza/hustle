@@ -412,9 +412,12 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	apply_hitboxes()
 	if !ReplayManager.resimulating:
 		show_state()
-	if ReplayManager.playback and !ReplayManager.replaying_ingame and !ReplayManager.resimulating and !is_ghost:
-		yield(get_tree().create_timer(0.5), "timeout")
+	if ReplayManager.playback and !ReplayManager.resimulating and !is_ghost:
+		yield(get_tree().create_timer(0.5 if !ReplayManager.replaying_ingame else 0.1), "timeout")
 	game_started = true
+	if !is_ghost:
+		if SteamLobby.is_fighting():
+			SteamLobby.on_match_started()
 #	if is_afterimage:
 #		show_state()
 

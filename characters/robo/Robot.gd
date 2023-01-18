@@ -49,6 +49,11 @@ func on_got_hit():
 			orbital_strike_out = false
 			orbital_strike_projectile = null
 
+func copy_to(f: BaseObj):
+	.copy_to(f)
+	f.armor_active = armor_active
+	pass
+
 func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 

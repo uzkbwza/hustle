@@ -101,6 +101,7 @@ class LobbyMember:
 	var client_ticket
 	var authenticating = false
 	var has_supporter_pack = false
+	var game_started = false
 	var supporter_pack_result = -1
 
 	func _init(steam_id: int, steam_name: String):
@@ -114,7 +115,9 @@ class LobbyMember:
 		self.opponent_id = int(opponent_id) if opponent_id != "" else 0
 		var spectating_id = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "spectating_id")
 		self.spectating_id = int(spectating_id) if spectating_id != "" else 0
-
+		var game_started = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "game_started")
+		self.game_started = true if game_started and game_started == "true" else false
+	
 func get_lobby_member(steam_id):
 	for member in LOBBY_MEMBERS:
 		if member.steam_id == steam_id:
@@ -153,6 +156,9 @@ func challenge_user(user):
 	OPPONENT_ID = user.steam_id
 	PLAYER_SIDE = 1
 
+func on_match_started():
+	Steam.setLobbyMemberData(LOBBY_ID, "game_started", "true")
+
 func accept_challenge():
 	var steam_id = CHALLENGER_STEAM_ID
 	var match_settings = CHALLENGER_MATCH_SETTINGS
@@ -160,6 +166,7 @@ func accept_challenge():
 	OPPONENT_ID = steam_id
 	PLAYER_SIDE = 2
 	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "2")
+	
 	SETTINGS_LOCKED = true
 	MATCH_SETTINGS = match_settings
 #	_setup_game_vs(steam_id)
@@ -184,7 +191,7 @@ func decline_challenge():
 	CHALLENGER_STEAM_ID = 0
 
 func quit_match():
-	if !SPECTATING:
+	if !SPECTATING and is_fighting():
 		if OPPONENT_ID != 0:
 			_send_P2P_Packet(OPPONENT_ID, {
 				"match_quit": true
@@ -193,6 +200,7 @@ func quit_match():
 		Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
+		Steam.setLobbyMemberData(LOBBY_ID, "game_started", "false")
 
 func has_supporter_pack(steam_id):
 	# TODO: fix this
@@ -293,10 +301,10 @@ func update_spectator_tick(tick):
 
 func cancel_challenge():
 	print("cancelling challenge")
-	
-	_send_P2P_Packet(CHALLENGING_STEAM_ID, {"challenge_cancelled": SteamHustle.STEAM_ID})
-	CHALLENGING_STEAM_ID = 0
-	Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
+	if !CHALLENGING_STEAM_ID != 0:
+		_send_P2P_Packet(CHALLENGING_STEAM_ID, {"challenge_cancelled": SteamHustle.STEAM_ID})
+		CHALLENGING_STEAM_ID = 0
+		Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
 
 func _receive_challenge(steam_id, match_settings):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") != "idle":
@@ -405,7 +413,6 @@ func _read_P2P_Packet() -> void:
 		# Append logic here to deal with packet data
 		if readable.has("challenge_cancelled"):
 			emit_signal("challenger_cancelled")
-			Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
 		if readable.has("challenge_declined"):
 			_on_challenge_declined(readable.challenge_declined)
 		if readable.has("spectate_accept"):
@@ -428,6 +435,9 @@ func _read_P2P_Packet() -> void:
 			Network.player_forfeit(readable.spectator_player_forfeit)
 		if readable.has("validate_auth_session"):
 			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
+
+func set_status(status):
+	Steam.setLobbyMemberData(LOBBY_ID, "status", status)
 
 # Callback from getting the auth ticket from Steam
 func _get_Auth_Session_Ticket_Response(auth_ticket: int, result: int) -> void:
@@ -499,6 +509,9 @@ func _on_received_spectate_request(steam_id):
 	else:
 		_send_P2P_Packet(steam_id, {"spectate_declined": null})
 
+func is_fighting():
+	return Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") == "fighting"
+
 func _on_spectate_tick_update(tick):
 	if SPECTATING:
 		if is_instance_valid(Global.current_game):
@@ -563,6 +576,7 @@ func _get_default_lobby_member_data():
 		"player_id": "",
 		"spectating_id": "",
 		"character": "",
+		"game_started": "false"
 	}
 
 # A user's information has changed

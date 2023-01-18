@@ -21,6 +21,13 @@ func set_data(lobby_data):
 	lobby_id = lobby_data.id
 	self.lobby_data = lobby_data 
 
+func _ready():
+	yield(get_tree(), "idle_frame")
+	var rect = get_global_rect()
+	var mouse_position = get_global_mouse_position()
+	if rect.has_point(mouse_position):
+		_on_LobbyEntry_mouse_entered()
+		
 func _input(event):
 	if mouse_entered:
 		if event is InputEventMouseButton:

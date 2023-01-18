@@ -1,4 +1,4 @@
-[gd_scene load_steps=329 format=2]
+[gd_scene load_steps=334 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -322,6 +322,11 @@
 [ext_resource path="res://characters/robo/sprites/ground_pound8.png" type="Texture" id=320]
 [ext_resource path="res://characters/robo/GroundPoundEffect.tscn" type="PackedScene" id=321]
 [ext_resource path="res://characters/robo/sprites/actionicons/quake.png" type="Texture" id=322]
+[ext_resource path="res://characters/robo/sprites/slap_poke1.png" type="Texture" id=323]
+[ext_resource path="res://characters/robo/sprites/slap_poke4.png" type="Texture" id=324]
+[ext_resource path="res://characters/robo/sprites/slap_poke3.png" type="Texture" id=325]
+[ext_resource path="res://characters/robo/sprites/slap_poke2.png" type="Texture" id=326]
+[ext_resource path="res://characters/robo/sprites/actionicons/ping.png" type="Texture" id=327]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -643,6 +648,11 @@ animations = [ {
 "name": "SideKick",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ) ],
+"loop": true,
+"name": "Slap",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 86 ), ExtResource( 86 ), ExtResource( 86 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 84 ), ExtResource( 15 ), ExtResource( 15 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 48 ), ExtResource( 85 ), ExtResource( 85 ) ],
 "loop": true,
 "name": "Step",
@@ -735,8 +745,8 @@ damage_taken_modifier = "0.85"
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 8 )
-animation = "GroundPound"
-frame = 5
+animation = "Slap"
+frame = 7
 offset = Vector2( 0, -16 )
 
 [node name="ChainsawArm" type="AnimatedSprite" parent="Flip" index="1"]
@@ -1409,17 +1419,17 @@ reset_momentum = true
 enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 throw_positions = {
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
 },
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
 },
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
 },
 ExtResource( 203 ): {
 "x": -37,
@@ -1576,19 +1586,15 @@ anim_length = 52
 enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 throw_positions = {
-ExtResource( 253 ): {
-"x": 116,
-"y": -66
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
 },
 ExtResource( 262 ): {
 "x": 40,
 "y": -33
 },
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
-},
-ExtResource( 264 ): {
+ExtResource( 263 ): {
 "x": 124,
 "y": -72
 },
@@ -1596,9 +1602,13 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 263 ): {
+ExtResource( 264 ): {
 "x": 124,
 "y": -72
+},
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
 },
 ExtResource( 254 ): {
 "x": 124,
@@ -1757,33 +1767,17 @@ sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
 },
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
 },
 ExtResource( 117 ): {
 "x": 69,
@@ -1793,13 +1787,29 @@ ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
 }
 }
 iasa_at = 49
@@ -2137,7 +2147,51 @@ Aerial"
 is_super = true
 super_level = 0
 
-[node name="GroundPound" type="Node2D" parent="StateMachine" index="34"]
+[node name="Slap" type="Node2D" parent="StateMachine" index="34"]
+script = ExtResource( 94 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 20
+force_dir_x = "1.0"
+force_speed = "4.0"
+force_tick = 6
+sfx = ExtResource( 153 )
+sfx_tick = 5
+title = "PING"
+type = 1
+button_texture = ExtResource( 327 )
+iasa_at = 17
+interrupt_from_string = "Grounded
+GroundedAttack"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedSpecial
+GroundedSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Slap" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 40
+y = -26
+width = 45
+height = 5
+damage = 95
+hitstun_ticks = 12
+hitlag_ticks = 6
+damage_proration = 2
+cancellable = false
+screenshake_amount = 8
+whiff_sound = ExtResource( 238 )
+hit_sound = ExtResource( 159 )
+dir_y = "-0.1"
+knockback = "12.0"
+knockdown = true
+wall_slam = true
+start_tick = 8
+active_ticks = 3
+
+[node name="GroundPound" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
@@ -2228,10 +2282,10 @@ grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 2
 
-[node name="Fall" parent="StateMachine" index="37"]
+[node name="Fall" parent="StateMachine" index="38"]
 sprite_animation = "Fall"
 
-[node name="Landing" parent="StateMachine" index="38"]
+[node name="Landing" parent="StateMachine" index="39"]
 script = ExtResource( 82 )
 dynamic_iasa = false
 
@@ -2254,26 +2308,26 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="DashForward" parent="StateMachine" index="43"]
+[node name="DashForward" parent="StateMachine" index="44"]
 interrupt_from_string = ""
 
-[node name="DashBackward" parent="StateMachine" index="45"]
+[node name="DashBackward" parent="StateMachine" index="46"]
 interrupt_from_string = ""
 
-[node name="ChargeDash" parent="StateMachine" index="49"]
+[node name="ChargeDash" parent="StateMachine" index="50"]
 fallback_state = "ChargedStep"
 
-[node name="SuperJump" parent="StateMachine" index="50"]
+[node name="SuperJump" parent="StateMachine" index="51"]
 speed = "18"
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="51"]
+[node name="DoubleJump" parent="StateMachine" index="52"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="52"]
+[node name="AirDash" parent="StateMachine" index="53"]
 interrupt_from_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -2286,7 +2340,7 @@ x = 15
 width = 14
 height = 14
 
-[node name="ForwardThrow" parent="StateMachine" index="63"]
+[node name="ForwardThrow" parent="StateMachine" index="64"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2303,10 +2357,6 @@ ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
 ExtResource( 304 ): {
 "x": 29,
 "y": 11
@@ -2314,6 +2364,10 @@ ExtResource( 304 ): {
 ExtResource( 309 ): {
 "x": -21,
 "y": -9
+},
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
 }
 }
 release_frame = 18
@@ -2330,7 +2384,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="BackThrow" parent="StateMachine" index="64"]
+[node name="BackThrow" parent="StateMachine" index="65"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2352,7 +2406,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirForwardThrow" parent="StateMachine" index="65"]
+[node name="AirForwardThrow" parent="StateMachine" index="66"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2374,7 +2428,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirBackThrow" parent="StateMachine" index="66"]
+[node name="AirBackThrow" parent="StateMachine" index="67"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -2391,10 +2445,6 @@ ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
 ExtResource( 304 ): {
 "x": 34,
 "y": 7
@@ -2402,6 +2452,10 @@ ExtResource( 304 ): {
 ExtResource( 309 ): {
 "x": -21,
 "y": -11
+},
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
 }
 }
 release_frame = 18
@@ -2418,7 +2472,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirDownThrow" parent="StateMachine" index="67"]
+[node name="AirDownThrow" parent="StateMachine" index="68"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"

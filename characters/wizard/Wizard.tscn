@@ -1349,7 +1349,7 @@ hit_cancel_into_string = "GroundedSpecial
 GroundedSuper
 AerialSpecial
 AerialSuper"
-trigger_orb_type = "OrbDart"
+trigger_orb_attack = false
 
 [node name="WindBox" type="Node2D" parent="StateMachine/Gust" index="0"]
 z_index = 1000

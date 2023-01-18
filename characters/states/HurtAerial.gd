@@ -26,7 +26,7 @@ func _enter():
 	bounce_frames = 0
 	knockdown = hitbox.knockdown
 	hard_knockdown = hitbox.hard_knockdown
-	wall_slam = hitbox.wall_slam
+	wall_slam = hitbox.wall_slam and host.wall_slams < host.MAX_WALL_SLAMS
 #	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit

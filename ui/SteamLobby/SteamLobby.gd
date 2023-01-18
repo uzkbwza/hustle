@@ -28,8 +28,6 @@ func _ready():
 	$"%GameSettingsPanelContainer".init(false)
 	_on_retrieved_lobby_members(SteamLobby.LOBBY_MEMBERS)
 	yield(get_tree(), "idle_frame")
-	if SteamLobby.REMATCHING_ID != 0:
-		SteamLobby._setup_game_vs(SteamLobby.REMATCHING_ID)
 	handshake_made = false
 
 
@@ -63,8 +61,13 @@ func show():
 	init()
 
 func init():
+	if SteamLobby.REMATCHING_ID != 0:
+#		SteamLobby.set_status("busy")
+		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "game_started", "false")
+		SteamLobby._setup_game_vs(SteamLobby.REMATCHING_ID)
+	else:
+		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "status", "idle")
 	$"%LoadingLobbyRect".hide()
-	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "status", "idle")
 	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) != SteamHustle.STEAM_ID:
 		SteamLobby.request_match_settings()
 		$"%LobbyLabel".text = Steam.getLobbyData(SteamLobby.LOBBY_ID, "name")
@@ -94,6 +97,8 @@ func _on_start_button_pressed():
 
 func _on_challenger_cancelled():
 	$"%ChallengeDialogScreen".hide()
+	if !SteamLobby.is_fighting():
+		SteamLobby.set_status("idle")
 
 func _on_retrieved_lobby_members(members):
 	$"%LobbyLabel".text = Steam.getLobbyData(SteamLobby.LOBBY_ID, "name")
@@ -114,7 +119,7 @@ func _on_retrieved_lobby_members(members):
 		print("updating members")
 		users.append(member)
 		# setup match
-		if member.status == "fighting" and member.opponent_id != 0 and member.player_id != 0:
+		if member.status == "fighting" and member.opponent_id != 0 and member.player_id != 0 and member.game_started:
 			if not (member.opponent_id in matches):
 				var opponent
 				for potential_opponent in members:

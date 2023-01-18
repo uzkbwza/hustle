@@ -39,6 +39,8 @@ func _enter_shared():
 
 func _tick_shared():
 	._tick_shared()
+	if current_tick < 10:
+		host.release_opponent()
 	if current_tick % SMOKE_FREQUENCY == 0:
 		var vel = host.get_vel()
 		if fixed.gt(fixed.vec_len(vel.x, vel.y), SMOKE_SPEED):

@@ -377,7 +377,7 @@ func _on_rematch_button_pressed():
 func _on_game_playback_requested():
 	if Network.multiplayer_active and !ReplayManager.resimulating:
 		$PostGameButtons.show()
-		if !quit_on_rematch:
+		if !quit_on_rematch and !SteamLobby.SPECTATING:
 			$"%RematchButton".show()
 		Network.rematch_menu = true
 
