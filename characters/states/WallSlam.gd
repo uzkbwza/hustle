@@ -20,7 +20,7 @@ func _enter():
 func _frame_0():
 	var dir = 1 if data == CharacterHurtState.BOUNCE.LEFT_WALL else -1
 #	host.sprite.rotation = TAU/4 * -dir
-	host.screen_bump(Vector2.RIGHT * dir, 20, 0.48)
+	host.screen_bump(Vector2.RIGHT * dir, 15, 0.28)
 	var di = fixed.mul(host.get_scaled_di(host.current_di).y, DI_EFFECT)
 	var y_pos = Utils.int_min(host.get_pos().y, MIN_HEIGHT) + fixed.round(di)
 	

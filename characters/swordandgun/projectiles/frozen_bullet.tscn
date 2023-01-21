@@ -31,6 +31,7 @@ animations = [ {
 material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 9 )
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 3 )
@@ -74,4 +75,5 @@ knockback = "12.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
+wall_slam = true
 active_ticks = 2

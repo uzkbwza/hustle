@@ -1137,6 +1137,7 @@ screenshake_amount = 7
 dir_x = "2.0"
 knockback = "11.0"
 grounded_hit_state = "HurtAerial"
+wall_slam = true
 start_tick = 11
 active_ticks = 8
 
@@ -1644,6 +1645,7 @@ hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
 knockback = "13.0"
+wall_slam = true
 start_tick = 11
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DropKick" index="1"]
@@ -1822,6 +1824,7 @@ rumble = false
 hit_sound = ExtResource( 44 )
 dir_y = "-0.1"
 knockback = "20"
+wall_slam = true
 start_tick = 5
 
 [node name="SlideKick" type="Node2D" parent="StateMachine" index="57"]
@@ -1969,6 +1972,7 @@ damage = 0
 increment_combo = false
 hard_knockdown = true
 force_grounded = true
+wall_slam = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrabFollowup" index="0"]
 z_index = 1000
@@ -1987,6 +1991,7 @@ hit_height = 0
 hit_sound = ExtResource( 217 )
 knockback = "6.0"
 aerial_hit_state = "HurtGrounded"
+wall_slam = true
 start_tick = 13
 active_ticks = 2
 

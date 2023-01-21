@@ -62,6 +62,12 @@ func spawn_orb():
 		spawn_particle_effect_relative(ORB_PARTICLE_SCENE, Vector2(-10, -56))
 		orb_projectile = orb.obj_name
 
+func stack_move_in_combo(move_name):
+	.stack_move_in_combo(move_name)
+	if combo_moves_used.has("TomeSlap"):
+		if combo_moves_used["TomeSlap"] >= 5:
+			unlock_achievement("ACH_SUGARCOAT")
+
 func on_state_started(state):
 	.on_state_started(state)
 	if state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:

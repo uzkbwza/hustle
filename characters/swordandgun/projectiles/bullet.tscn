@@ -30,6 +30,7 @@ script = ExtResource( 5 )
 extra_state_variables = "distance"
 always_parriable = true
 deletes_other_projectiles = false
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 visible = false
@@ -66,5 +67,6 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 hard_knockdown = true
+wall_slam = true
 start_tick = 1
 active_ticks = 2

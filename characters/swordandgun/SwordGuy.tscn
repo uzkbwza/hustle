@@ -939,6 +939,7 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "0.2"
 knockback = "12.0"
+wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -960,6 +961,7 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "0.2"
 knockback = "12.0"
+wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1103,6 +1105,7 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "-0.2"
 knockback = "12.0"
+wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1124,6 +1127,7 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "-0.2"
 knockback = "12.0"
+wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1529,6 +1533,7 @@ dir_y = "-0.25"
 knockback = "14.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+wall_slam = true
 start_tick = 11
 active_ticks = 2
 
@@ -1794,13 +1799,10 @@ Grounded
 GroundedAttack"
 interrupt_into_string = "Aerial
 Grounded"
-hit_cancel_into_string = "AerialAttack
-AerialSpecial
-AerialSuper
-GroundedAttack
-GroundedSpecial
+hit_cancel_into_string = "AerialSuper
 GroundedSuper"
 jump_speed = "6"
+grounded = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DownwardCleaveGround" index="0"]
 z_index = 1000
@@ -1810,13 +1812,12 @@ y = -13
 width = 26
 height = 10
 damage = 70
-hitstun_ticks = 11
-victim_hitlag = 8
+hitstun_ticks = 8
+victim_hitlag = 7
 dir_x = "0.25"
 dir_y = "1.0"
 knockback = "12.0"
 knockdown = true
-knockdown_extends_hitstun = false
 start_tick = 9
 always_on = true
 

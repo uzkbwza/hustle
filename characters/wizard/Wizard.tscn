@@ -893,6 +893,7 @@ dir_y = "-1.5"
 knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
+wall_slam = true
 start_tick = 9
 active_ticks = 1
 
@@ -1516,6 +1517,7 @@ screenshake_amount = 8
 hit_sound = ExtResource( 179 )
 dir_y = "-0.20"
 knockback = "16.0"
+wall_slam = true
 start_tick = 11
 active_ticks = 3
 
@@ -1588,6 +1590,7 @@ whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 knockback = "8.0"
+wall_slam = true
 start_tick = 19
 active_ticks = 3
 
@@ -1606,6 +1609,7 @@ whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_x = "-1.0"
 knockback = "8.0"
+wall_slam = true
 start_tick = 19
 active_ticks = 3
 
