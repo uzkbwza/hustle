@@ -595,9 +595,6 @@ dash_speed = 14
 interrupt_from_string = ""
 dash_speed = 10
 
-[node name="DashBackward" parent="StateMachine" index="19"]
-dash_speed = 11
-
 [node name="Jump" parent="StateMachine" index="22"]
 y_modifier = "1.33"
 

@@ -1627,7 +1627,8 @@ anchor_bottom = 0.5
 margin_left = -45.0
 margin_top = -66.0
 margin_right = 51.0
-margin_bottom = 138.0
+margin_bottom = 101.0
+alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -1707,6 +1708,7 @@ flat = true
 
 [node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
+visible = false
 margin_top = 147.0
 margin_right = 96.0
 margin_bottom = 167.0
@@ -1719,9 +1721,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 168.0
+margin_top = 147.0
 margin_right = 96.0
-margin_bottom = 188.0
+margin_bottom = 167.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
