@@ -27,3 +27,8 @@ func on_got_hit():
 		if objs_map.has(bomb_projectile):
 			objs_map[bomb_projectile].disable()
 			bomb_projectile = null
+
+func stack_move_in_combo(move_name):
+	.stack_move_in_combo(move_name)
+	if combo_moves_used.has("PalmStrike") and combo_moves_used["PalmStrike"] >= 3:
+		unlock_achievement("ACH_STERNUM_EXPLODER")

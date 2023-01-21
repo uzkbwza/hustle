@@ -14,12 +14,15 @@ var STARTED = false
 
 var WORKSHOP_ENABLED = true
 
+
+
 func _enter_tree():
 	if "steam" in Global.VERSION:
 		_initialize_steam()
-	pass
 	
 func _initialize_steam():
+	Steam.connect("current_stats_received", self, "_on_current_stats_received")
+
 	STARTED = true
 	var INIT: Dictionary = Steam.steamInit()
 	print("Did steam initialize?: " + str(INIT))
@@ -33,20 +36,74 @@ func _initialize_steam():
 	STEAM_NAME = Steam.getPersonaName()
 	IS_OWNED = Steam.isSubscribed()
 	
+#	Steam.requestCurrentStats()
+	
 func _process(_delta):
 	if STARTED:
 		Steam.run_callbacks()
-		
+
+func record_winner(winner):
+	if !Network.multiplayer_active:
+		return
+	if !SteamHustle.STARTED:
+		return
+	if ReplayManager.playback or ReplayManager.replaying_ingame:
+		return
+	var is_me = winner == Network.player_id
+	var draw = winner == 0
+	if draw:
+		print("draw game :|")
+		incr_stat("num_draws")
+		unlock_achievement("ACH_DRAW_GAME")
+	elif is_me:
+		print("you won!:)")
+		incr_stat("num_wins")
+		unlock_achievement("ACH_WIN_ONCE")
+		var num_wins = Steam.getStatInt("num_wins")
+		if num_wins >= 10:
+			unlock_achievement("ACH_WIN_10_TIMES")
+		if num_wins >= 50:
+			unlock_achievement("ACH_WIN_50_TIMES")
+	else:
+		print("you lost! :(")
+		incr_stat("num_losses")
+		unlock_achievement("ACH_LOSE_ONCE")
+	incr_stat("num_matches")
+
+func print_all_achievements():
+	if !STARTED:
+		return
+	for i in range(Steam.getNumAchievements()):
+		var ach = Steam.getAchievementName(i)
+		print(ach + ": " + str(Steam.getAchievement(ach)["achieved"]))
+
+func incr_stat(stat_name: String):
+	if !STARTED:
+		return
+	var stat_count = Steam.getStatInt(stat_name)
+	if stat_count is int:
+		set_stat(stat_name, stat_count + 1)
+
+func set_stat(stat_name: String, value):
+	if !STARTED:
+		return
+	print("setting stat " + stat_name + " to value " + str(value))
+	if value is int:
+		Steam.setStatInt(stat_name, value)
+	Steam.storeStats()
+	
+func unlock_achievement(achievement_name: String):
+	if !STARTED:
+		return
+	print("unlocked achievement: " + achievement_name)
+	Steam.setAchievement(achievement_name)
+	Steam.storeStats()
+
 func has_supporter_pack(steam_id):
 	return true
-#	if !STARTED:
-#		print("steam not started, assuming true")
-#		return true
-#	if steam_id in SteamLobby.CLIENT_TICKETS and !steam_id == SteamHustle.STEAM_ID:
-#		print("checking if player has the supporter pack...")
-#		return SteamLobby.has_supporter_pack(steam_id)
-#	elif steam_id == SteamHustle.STEAM_ID:
-#		print("checking if you have the supporter pack...")
-#		return Steam.isDLCInstalled(Custom.SUPPORTER_PACK)
-#	print("this ID does not have the supporter pack.")
-#	return false
+
+func _on_current_stats_received(game_id: int, result: int, user_id: int):
+	if result == 1:
+		print("retrieved user stats")
+	else:
+		print("could not retrieve stats from steam")

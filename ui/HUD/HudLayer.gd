@@ -108,12 +108,14 @@ func healthbar_armor_effect(player, healthbar: TextureProgress, no_armor_image, 
 	else:
 		if healthbar.texture_progress == armor_image:
 			healthbar.texture_progress = no_armor_image
+
 func on_game_won(winner):
 	$"HudAnimationPlayer".play("game_won")
 	if winner == 0:
 		$"%WinLabel".text = "DRAW"
 	else:
 		$"%WinLabel".text = "P" + str(winner) + " WIN"
+	SteamHustle.record_winner(winner)
 
 func super_speed_scale(ticks):
 	return 15 * (15 / float(ticks))

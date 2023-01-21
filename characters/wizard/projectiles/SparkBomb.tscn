@@ -47,18 +47,17 @@ animations = [ {
 material = SubResource( 1 )
 script = ExtResource( 10 )
 deletes_other_projectiles = false
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 animation = "Default"
 
 [node name="CollisionBox" parent="." index="2"]
-z_index = 1000
 width = 3
 height = 3
 
 [node name="Hurtbox" parent="." index="3"]
-z_index = 1000
 width = 4
 height = 4
 

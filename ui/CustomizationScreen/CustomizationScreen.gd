@@ -77,6 +77,10 @@ func show():
 func save_style():
 	var data = get_style_data()
 	Custom.save_style(data)
+	SteamHustle.unlock_achievement("ACH_STYLISH")
+	if data.character_color == Color("0b0c0f"):
+		if !data.use_outline or data.outline_color == Color("0b0c0f"):
+			SteamHustle.unlock_achievement("ACH_SNEAKY")
 	$"%LoadStyleButton".update_styles()
 	$"%StyleName".clear()
 	$"%SavedLabel".text = "saved as " + data.style_name + ".style"

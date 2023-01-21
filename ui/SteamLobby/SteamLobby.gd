@@ -48,11 +48,13 @@ func _on_challenge_decline_pressed():
 func _on_received_challenge(steam_id):
 	$"%ChallengeLabel".text = Steam.getFriendPersonaName(steam_id) + " has challenged you."
 	$"%ChallengeDialogScreen".show()
+	if visible:
+		$ChallengeSound.play()
 
 func _on_challenge_cancelled():
 	SteamLobby.cancel_challenge()
 	$"%SendChallengeDialogScreen".hide()
-
+	
 func _on_user_challenge_pressed():
 	$"%SendChallengeDialogScreen".show()
 

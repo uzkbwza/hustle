@@ -907,14 +907,26 @@ func end_game():
 	game_finished = true
 	p1.game_over = true
 	p2.game_over = true
+
 	if !is_ghost:
 		ReplayManager.play_full = true
+		if !ReplayManager.playback and !ReplayManager.replaying_ingame:
+			SteamHustle.unlock_achievement("ACH_CHESS")
 	var winner = 0
 	if p2.hp > p1.hp:
 		winner = 2
 	elif p1.hp > p2.hp:
 		winner = 1
+	
+	var loser = 1
+	if winner == 1:
+		loser = 2
+	if get_player(loser).had_sadness:
+		if Network.multiplayer_active and winner == Network.player_id:
+			SteamHustle.unlock_achievement("ACH_WIN_VS_SADNESS")
+	
 	emit_signal("game_ended")
+
 	emit_signal("game_won", winner)
 
 func process_tick():

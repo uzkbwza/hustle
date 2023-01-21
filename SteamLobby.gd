@@ -555,7 +555,7 @@ func _on_spectate_request_accepted(data):
 	emit_signal("received_spectator_match_data", data.match_data)
 
 func _on_received_spectator_replay(replay):
-	print("here")
+#	print("here")
 	ReplayManager.frames = replay
 
 func _setup_game_vs(steam_id):

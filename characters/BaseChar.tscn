@@ -582,6 +582,7 @@ type = 4
 data_ui_scene = ExtResource( 51 )
 button_texture = ExtResource( 100 )
 air_type = 2
+reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
 Aerial
@@ -831,6 +832,7 @@ title = "Tech Dodge"
 type = 4
 data_ui_scene = ExtResource( 51 )
 button_texture = ExtResource( 100 )
+reversible = false
 interrupt_from_string = "OTG"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
@@ -1435,7 +1437,6 @@ z_index = 4096
 
 [node name="QuitterLabel" type="Label" parent="Node2D" index="0"]
 unique_name_in_owner = true
-visible = false
 margin_left = -20.0
 margin_top = -30.0
 margin_right = 20.0

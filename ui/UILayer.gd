@@ -206,6 +206,7 @@ func _on_opponent_disconnected():
 	if is_instance_valid(game) and !game.game_finished:
 		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
 		Network.forfeit(true)
+		
 		forfeit_pressed = true
 		actionable = false
 	$"%PausePanel".hide()

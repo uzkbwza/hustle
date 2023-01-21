@@ -24,6 +24,7 @@ var loic_meter = LOIC_METER
 var got_hit = false
 var armor_active = false
 var buffer_armor = false
+var can_unlock_gratuitous = true
 
 onready var chainsaw_arm = $"%ChainsawArm"
 
@@ -61,6 +62,10 @@ func incr_combo():
 	if combo_count == 0:
 		landed_move = true
 	.incr_combo()
+	if can_unlock_gratuitous and combo_moves_used.has("GroundSlam") and current_state().name != "GroundSlam":
+		unlock_achievement("ACH_GRATUITOUS")
+		can_unlock_gratuitous = false
+		pass
 	pass
 
 func apply_grav():

@@ -9,6 +9,7 @@ func _frame_1():
 	if fixed.lt(fixed.vec_len(str(dir.x), str(dir.y)), PUSH_DISTANCE):
 		var force = fixed.normalized_vec_times(str(dir.x), str(dir.y), PUSH_SPEED)
 		host.creator.apply_force(force.x, force.y)
+		host.creator.unlock_achievement("ACH_SPARK_JUMP") 
 
 func _frame_16():
 	host.disable()

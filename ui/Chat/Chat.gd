@@ -31,7 +31,7 @@ func line_edit_focus():
 
 func on_chat_message_received(player_id: int, message: String):
 	var color = "ff333d" if player_id == 2 else "1d8df5"
-	print("here")
+#	print("here")
 	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + Network.pid_to_username(player_id) + "[/color]>: " + message)
 	var node = RichTextLabel.new()
 	node.bbcode_enabled = true
@@ -121,6 +121,11 @@ func process_command(message: String):
 func send_message(message):
 	if process_command(message):
 		return
+	print(message)
+	print("[img" in message)
+	print("res://ui/unknown2.png" in message)
+	if "[img" in message and "ui/unknown2.png" in message:
+		SteamHustle.unlock_achievement("ACH_JUMPSCARE")
 	if !Network.multiplayer_active and !SteamLobby.SPECTATING:
 		on_chat_message_received(1, message)
 		return

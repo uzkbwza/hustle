@@ -884,7 +884,6 @@ damage = 115
 hitstun_ticks = 23
 hitlag_ticks = 6
 victim_hitlag = 11
-damage_proration = 2
 hit_height = 0
 screenshake_amount = 5
 whiff_sound = ExtResource( 140 )

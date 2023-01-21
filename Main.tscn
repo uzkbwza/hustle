@@ -1625,10 +1625,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -45.0
-margin_top = -50.0
-margin_right = 45.0
-margin_bottom = 75.0
-alignment = 1
+margin_top = -66.0
+margin_right = 51.0
+margin_bottom = 138.0
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
@@ -1706,11 +1705,23 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Options"
 flat = true
 
-[node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 147.0
 margin_right = 96.0
 margin_bottom = 167.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+disabled = true
+text = "Credits"
+flat = true
+
+[node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 168.0
+margin_right = 96.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -1810,12 +1821,21 @@ icon = ExtResource( 17 )
 flat = true
 icon_align = 1
 
-[node name="VersionLabel" type="Label" parent="UILayer/MainMenu"]
+[node name="ModListButtonContainer" type="HBoxContainer" parent="UILayer/MainMenu"]
 unique_name_in_owner = true
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -11.0
+margin_left = 2.0
+margin_top = -13.0
+margin_right = -2.0
+margin_bottom = -2.0
+mouse_filter = 2
+custom_constants/separation = 4
+
+[node name="VersionLabel" type="Label" parent="UILayer/MainMenu/ModListButtonContainer"]
+unique_name_in_owner = true
+margin_bottom = 11.0
 
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true

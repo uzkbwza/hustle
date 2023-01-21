@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/Lobby.gd" type="Script" id=2]
+[ext_resource path="res://sound/ui/multiplayer_fight_start.wav" type="AudioStream" id=3]
 
 [sub_resource type="Animation" id=1]
 length = 0.001
@@ -65,13 +66,13 @@ placeholder_text = "enter name here"
 unique_name_in_owner = true
 margin_top = 17.0
 margin_right = 208.0
-margin_bottom = 123.0
+margin_bottom = 124.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ServerList" type="OptionButton" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_top = 124.0
+margin_top = 125.0
 margin_right = 208.0
 margin_bottom = 137.0
 text = "Dojo 1 (NY)"
@@ -90,9 +91,9 @@ bbcode_enabled = true
 [node name="RoomCodeDisplay" type="LineEdit" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
 visible = false
-margin_top = 126.0
+margin_top = 117.0
 margin_right = 208.0
-margin_bottom = 146.0
+margin_bottom = 137.0
 rect_min_size = Vector2( 0, 20 )
 align = 1
 editable = false
@@ -193,10 +194,13 @@ unique_name_in_owner = true
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = -127.0
 margin_top = 16.0
-margin_bottom = 42.0
+margin_right = 127.0
+margin_bottom = 83.0
 grow_horizontal = 2
 grow_vertical = 2
+autowrap = true
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -254,3 +258,8 @@ align = 1
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 1 )
 anims/invalid_username = SubResource( 2 )
+
+[node name="ChallengeSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -5.0
+bus = "UI"

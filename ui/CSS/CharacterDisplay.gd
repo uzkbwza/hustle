@@ -33,7 +33,6 @@ func _on_style_selected(style):
 			aura_particle = particle
 			pass
 
-
 func init():
 	$"%LoadStyleButton".player_id = player_id
 	$"%CharacterLabel".text = ""

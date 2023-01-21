@@ -192,10 +192,10 @@ func _getTexsFromSheet(spritePath, columns, rows):
 
 func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement support
 	#Load all custom user overwrites
-	var mediaImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName, "png")
+	var charImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName, "png")
 	var mediaSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/BaseSounds", "wav")
 	var mediaStateSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/StateSounds", "wav")
-	
+	var charActionImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Buttons", "png")
 	mediaSounds.sort() #Sorts the array alphabetically
 	mediaStateSounds.sort() 
 	
@@ -207,7 +207,7 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 	var instCharSounds = instCharTS.get_node("Sounds").get_children()
 	var instCharStates = instCharTS.get_node("StateMachine").get_children()
 	#Replace all images in animation frames
-	for media in mediaImages:
+	for media in charImages:
 		var newFrameTex = textureGet(media)
 		if media.split('/')[-2].to_lower() == 'wait':
 			instCharTS.character_portrait = newFrameTex
@@ -243,8 +243,9 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 				
 				charSound.pitch_scale = 2
 				
-	#Replace all character state sounds
+	#Iterate through character states
 	for state in instCharStates:
+		#Replace all character state sounds
 		for media in mediaStateSounds:
 			#Gets the name of the file so it can focus on just the underscore
 			#".' is there because get_extnsion don't include it
@@ -267,6 +268,13 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 					state.enter_sfx = stream
 				#state.pitch_var = 0.0 #Sets the current state pitch_variation to 0
 				state.pitch_scale = 2
+		#Replace button textures
+		if state.button_texture != null:
+			for button in charActionImages:
+				var buttonName = button.get_file().trim_suffix("."+button.get_extension())
+				if buttonName == state.name:
+					var newButtonTex = textureGet(button)
+					state.button_texture = newButtonTex
 			
 	#Save out the scene
 	saveScene(instCharTS, Global.name_paths.get(charName))
@@ -361,3 +369,23 @@ func _verifyMetadata(metadataVar):
 	for key in metadataVar:
 		if key == null:
 			return key +" is empty"
+
+#Valk's script for grabbing all gdscripts from a path
+func get_scripts(path):
+	var scripts = []
+	var dir = Directory.new()
+	dir.open(path)
+	
+	if not dir.list_dir_begin() == OK:
+		print("FAILED TO LOAD SCRIPTS")
+		return
+	
+	while true:
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif not file.begins_with('.') and file.ends_with(".gd"):
+			scripts.append(file)
+			
+	dir.list_dir_end()
+	return scripts

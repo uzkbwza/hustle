@@ -138,10 +138,10 @@ func init():
 	if starting_iasa_at == -1:
 		starting_iasa_at = iasa_at
 	.init()
-
-func copy_to(state: ObjectState):
-	.copy_to(state)
-	pass
+#
+#func copy_to(state: ObjectState):
+#	.copy_to(state)
+#	pass
 
 func get_ui_category():
 	return ActionType.keys()[type]
@@ -266,6 +266,8 @@ func _tick_shared():
 #		host.update_advantage()
 #		if host.opponent:
 #			host.opponent.update_advantage()
+	if !host.is_grounded() or air_type == AirType.Aerial:
+		started_in_air = true
 	var next_state = ._tick_shared()
 	if next_state:
 		return next_state

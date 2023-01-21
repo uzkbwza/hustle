@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/SteamLobby/SteamLobby.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://ui/Chat/Chat.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/SteamLobby/LobbyUser.tscn" type="PackedScene" id=5]
 [ext_resource path="res://ui/SteamLobby/LobbyMatch.tscn" type="PackedScene" id=6]
+[ext_resource path="res://sound/ui/multiplayer_fight_start.wav" type="AudioStream" id=7]
 
 [node name="SteamLobby" type="Control"]
 anchor_right = 1.0
@@ -106,8 +107,7 @@ margin_bottom = 303.0
 
 [node name="UserList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 129.0
-margin_bottom = 302.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -136,8 +136,7 @@ margin_bottom = 303.0
 
 [node name="MatchList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 219.0
-margin_bottom = 302.0
+margin_bottom = 204.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -396,3 +395,8 @@ margin_right = 637.0
 margin_bottom = 358.0
 size_flags_horizontal = 0
 text = "quit"
+
+[node name="ChallengeSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -5.0
+bus = "UI"

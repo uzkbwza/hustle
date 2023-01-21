@@ -362,6 +362,7 @@ multirun/other_window_args="join"
 
 window/size/width=640
 window/size/height=360
+window/size/borderless=true
 window/size/test_width=1280
 window/size/test_height=720
 window/stretch/mode="viewport"

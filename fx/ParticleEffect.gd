@@ -40,6 +40,8 @@ func _ready():
 		set_enabled(false)
 		tick_timer.connect("timeout", self, "on_tick_timer_timeout")
 	yield(get_tree(), "idle_frame")
+	if !is_instance_valid(self):
+		return
 	for child in get_children():
 		if child is CPUParticles2D:
 			if scale.x < 0 or Utils.ang2vec(rotation).x < 0:

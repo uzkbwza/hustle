@@ -44,7 +44,6 @@ const MAX_GROUNDED_HITS = 7
 const PREDICTION_CORRECT_SUPER_GAIN = 30
 const INCORRECT_PREDICTION_LAG = 7
 
-
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
@@ -133,6 +132,8 @@ export var num_feints = 2
 
 var opponent
 
+var actions = 0
+
 var queued_action = null
 var queued_data = null
 var queued_extra = null
@@ -196,6 +197,7 @@ var buffer_moved_forward = false
 var moved_backward = false
 var buffer_moved_backward = false
 
+var had_sadness = false
 
 var state_changed = false
 var on_the_ground = false
@@ -387,13 +389,26 @@ func change_stance_to(stance):
 	self.stance = stance
 
 func show_you_label():
-	if is_you():
+	if is_you(false):
 		you_label.show()
 
-func is_you():
+func is_you(default=true):
 	if Network.multiplayer_active:
 		return id == Network.player_id
-	return false
+	return default
+
+func unlock_achievement(achievement_name, multiplayer_only=false):
+	if !can_unlock_achievements():
+		return
+	if is_you(!multiplayer_only):
+		SteamHustle.unlock_achievement(achievement_name)
+
+func can_unlock_achievements():
+	if ReplayManager.playback or ReplayManager.replaying_ingame:
+		return false
+	if is_ghost:
+		return false
+	return is_you()
 
 func _ready():
 	sprite.animation = "Wait"
@@ -496,7 +511,9 @@ func gain_super_meter(amount):
 			supers_available += 1
 		else:
 			super_meter = MAX_SUPER_METER
-			
+			if !infinite_resources:
+				unlock_achievement("ACH_ULTIMATE_POWER", true)
+
 func combo_stale_meter(meter: int):
 	var staling = get_combo_stale(combo_count)
 	return fixed.round(fixed.mul(fixed.mul(str(meter), staling), METER_GAIN_MODIFIER))
@@ -539,6 +556,13 @@ func get_global_throw_pos():
 	return pos
 
 func reset_combo():
+	if combo_damage >= 500:
+		unlock_achievement("ACH_5000_DAMAGE")
+	if combo_damage >= 1000:
+		if !one_hit_ko and !turbo_mode and !extremely_turbo_mode and !infinite_resources and fixed.eq(global_damage_modifier, "1") and fixed.eq(global_hitstop_modifier, "1") and fixed.eq(global_hitstun_modifier, "1"):
+			unlock_achievement("ACH_TOUCH_OF_DEATH")
+	if combo_count > 20:
+		unlock_achievement("ACH_RELENTLESS", true)
 	combo_count = 0
 	combo_damage = 0
 	hitstun_decay_combo_count = 0
@@ -551,6 +575,8 @@ func reset_combo():
 func incr_combo():
 	combo_count += 1
 	hitstun_decay_combo_count += 1
+	if combo_count == 2 and combo_moves_used.has("Burst"):
+		unlock_achievement("ACH_UNFAIR")
 
 func is_colliding_with_opponent():
 	return ((colliding_with_opponent or (current_state() is CharacterHurtState and (hitlag_applied - hitlag_ticks) < HITLAG_COLLISION_TICKS)) and current_state().state_name != "Grabbed")
@@ -982,6 +1008,7 @@ func tick_before():
 				Global.current_game.forfeit(id)
 	else:
 		if queued_action:
+			actions += 1
 #			last_action = current_tick
 			if queued_action == "Undo":
 				queued_action = null
@@ -1150,6 +1177,7 @@ func add_penalty(amount):
 		super_meter = 0
 		penalty = 0
 		penalty_ticks = PENALTY_TICKS
+		had_sadness = true
 	if penalty < MIN_PENALTY:
 		penalty = MIN_PENALTY
 

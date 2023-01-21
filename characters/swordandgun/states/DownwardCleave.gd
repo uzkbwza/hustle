@@ -1,5 +1,7 @@
 extends CharacterState
 
+export var jump_speed = "3"
+
 var moving_down = false
 
 func _frame_0():
@@ -8,7 +10,7 @@ func _frame_0():
 	if fixed.gt(vel.y, "0"):
 		vel.y = "0"
 	host.set_vel(vel.x, vel.y)
-	var force = fixed.normalized_vec_times("0.5", "-1", "3")
+	var force = fixed.normalized_vec_times("0.5", "-1", jump_speed)
 	host.move_directly(0, -8)
 	host.apply_force_relative(force.x, force.y)
 

@@ -18,7 +18,6 @@ var dir = 1
 
 export var teleport = false
 
-
 func _frame_0():
 	host.z_index = -2
 	lag_frames = 0
@@ -65,6 +64,9 @@ func _tick():
 
 func _on_hit_something(obj, hitbox):
 	hit = true
+	if host.actions == 1:
+		host.unlock_achievement("ACH_TELEPORTS_BEHIND_YOU", true)
+#		print("got here")
 	._on_hit_something(obj, hitbox)
 #	if teleport and obj.is_in_group("Fighter"):
 #		if !host.is_grounded():

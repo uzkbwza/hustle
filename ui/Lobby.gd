@@ -246,11 +246,14 @@ func refresh_lobby():
 #	item_list.add_item(Network.get_player_name() + " (You)")
 	for p in players:
 		item_list.add_item(p)
-
+	
+	var prev_disabled = start_button.disabled
 	if Network.direct_connect:
 		start_button.disabled = item_list.get_item_count() <= 1 or not get_tree().is_network_server()
 	else:
 		start_button.disabled = item_list.get_item_count() <= 1
+	if !start_button.disabled and prev_disabled:
+		$ChallengeSound.play()
 
 func _on_game_start():
 	hide()

@@ -9,7 +9,7 @@ remotesync func register_player(new_player_name, id, mods):
 	#if the other player is unmodded, for use of a player only using client sided mods
 	if typeof(mods) == TYPE_STRING:
 			if mods != Global.VERSION.replace(" Modded", ""):
-				emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, mods])
+				emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent must update to the newest version." % [Global.VERSION, mods])
 				return 
 			if get_local_id() == id:
 				network_id = id
@@ -28,7 +28,7 @@ remotesync func register_player(new_player_name, id, mods):
 				emit_signal("game_error", "Mismatched mod versions. Verify that both players have the same version of the mod.")
 				return 
 		if mods.version != Global.VERSION or mods.version != null:
-			emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Visit ivysly.itch.io/yomi-hustle to download the newest version." % [Global.VERSION, mods.version])
+			emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent must update to the newest version." % [Global.VERSION, mods.version])
 			return
 		if get_tree().get_network_unique_id() == id:
 			network_id = id

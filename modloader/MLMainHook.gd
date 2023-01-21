@@ -148,9 +148,8 @@ func addMainMenuButton(_text):
 	# generating the button
 	var button_mainmenu = generateButton(_text)
 	# adding it to the scene
-	button_mainmenu.rect_min_size.y = 20
-	$"%MainMenu".get_node("ButtonContainer").add_child(button_mainmenu, true)
-	$"%MainMenu".get_node("ButtonContainer").move_child(button_mainmenu, 4)
+	button_mainmenu.flat = false
+	$"%MainMenu".get_node("ModListButtonContainer").add_child(button_mainmenu, true)
 	
 	return button_mainmenu
 	

@@ -528,6 +528,8 @@ remotesync func player_forfeit(player_id):
 	if is_instance_valid(game):
 		game.forfeit(player_id)
 		forfeiter = player_id
+		if player_id != self.player_id:
+			SteamHustle.unlock_achievement("ACH_WIN_BY_FORFEIT")
 		if steam and !SteamLobby.SPECTATING:
 			SteamLobby.spectate_forfeit(player_id)
 
@@ -733,8 +735,8 @@ remotesync func register_player(new_player_name, id, version):
 		return
 	
 	if version != Global.VERSION:
-#		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent please update to the newest version." % [Global.VERSION, version])
-		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, version])
+		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent must update to the newest version." % [Global.VERSION, version])
+#		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, version])
 		return
 	if get_local_id() == id:
 		network_id = id
