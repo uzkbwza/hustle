@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://modloader/WorkshopModUploader.gd" type="Script" id=2]
+
+[node name="WorkshopModUploader" type="PanelContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -129.0
+margin_top = -5.0
+margin_right = 129.0
+margin_bottom = 8.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 257.0
+margin_bottom = 26.0
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_right = 78.0
+margin_bottom = 12.0
+size_flags_horizontal = 0
+text = "Request item ID"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 13.0
+margin_right = 256.0
+margin_bottom = 25.0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+margin_right = 96.0
+margin_bottom = 11.0
+text = "Upload to Workshop"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 97.0
+margin_right = 221.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+editable = false
+placeholder_text = "Workshop Update ID"
+
+[node name="UploadButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 222.0
+margin_right = 256.0
+margin_bottom = 12.0
+text = "Submit"
+
+[node name="Popup" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 257.0
+margin_bottom = 71.0
+popup_exclusive = true
+window_title = "Upload Mod To Workshop"
+dialog_text = "Are you sure you want to upload this mod to Steam Workshop?"
+dialog_autowrap = true
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/UploadButton" to="." method="_on_UploadButton_pressed"]

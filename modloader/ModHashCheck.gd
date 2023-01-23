@@ -48,6 +48,9 @@ remote func player_connected_relay():
 	#compare character mod hashes here in future maybe
 	#emit_signal("match_locked_in", match_data)
 
+func is_modded():
+	return !_get_hashes(ModLoader.active_mods).empty()
+
 func _get_hashes(active_mods):
 	var hashes = []
 	for item in active_mods:

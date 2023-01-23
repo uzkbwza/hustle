@@ -209,4 +209,20 @@ func _on_DLCWarning_meta_clicked(meta):
 
 
 func _on_WorkshopButton_pressed():
-	pass # Replace with function body.
+	var item = UGCItem.new()
+	item.connect("item_created", self, "_on_item_created")
+	$"%WorkshopButton".disabled = true
+
+func _on_item_created(p_file_id):
+	var data = get_style_data()
+	data["workshop_id"] = p_file_id
+	var folder_path = Custom.save_style_workshop(data)
+	
+	var item = UGCItem.new(p_file_id)
+	item.set_tags(["style"])
+	item.set_title($"%StyleName".text)
+	item.set_content(ProjectSettings.globalize_path(folder_path))
+	item.update("new style")
+
+func _on_StyleName_text_changed(new_text: String):
+	$"%WorkshopButton".disabled = new_text.strip_edges() == ""

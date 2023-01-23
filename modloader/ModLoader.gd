@@ -33,9 +33,20 @@ func _init():
 	_initMods()
 	print("----------------mods initialized--------------------")
 	installScriptExtension("res://modloader/ModHashCheck.gd")
+
+	call_deferred("append_hash")
+
+func append_hash():
+	var hashes = Network._get_hashes(ModLoader.active_mods)
+	var h = ""
+	for hash_ in hashes:
+		h += hash_
+	if SteamHustle.STARTED:
+		if h != "":
+			Global.VERSION += "-" + ("%10x" % hash(h)).strip_edges()
+		else:
+			Global.VERSION = Global.VERSION.split(" Modded")[0]
 	
-
-
 func _loadMods():
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":

@@ -76,7 +76,6 @@ func set_metadata(p_metadata : String = "") -> void:
 func get_id() -> int:
 	return _item_id
 
-
 func _on_item_created(p_result : int, p_file_id : int, p_accept_tos : bool) -> void:
 	if p_result == Steam.RESULT_OK:
 		_item_id = p_file_id
@@ -96,6 +95,7 @@ func _on_item_updated(p_result : int, p_accept_tos : bool) -> void:
 		var item_url = "Steam://url/CommunityFilePage/" + String(_item_id)
 		# Here your code to log/display success
 		Steam.activateGameOverlayToWebPage(item_url)
+		print(item_url)
 		emit_signal("item_updated")
 	else:
 		var error = "Failed updated workshop item. Error: " + String(p_result)

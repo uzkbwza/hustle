@@ -29,6 +29,7 @@ var game = null
 var multiplayer_client: MultiplayerClient = null
 var multiplayer_host = false
 
+
 var replay_saved = false
 var direct_connect = false
 var rematch_menu = false
@@ -528,7 +529,7 @@ remotesync func player_forfeit(player_id):
 	if is_instance_valid(game):
 		game.forfeit(player_id)
 		forfeiter = player_id
-		if player_id != self.player_id:
+		if player_id != self.player_id and !SteamLobby.SPECTATING and !ReplayManager.playback:
 			SteamHustle.unlock_achievement("ACH_WIN_BY_FORFEIT")
 		if steam and !SteamLobby.SPECTATING:
 			SteamLobby.spectate_forfeit(player_id)
@@ -826,6 +827,9 @@ remote func receive_match_id(match_id):
 
 remote func player_connected_relay():
 	rpc_("register_player", [player_name, get_local_id(), Global.VERSION])
+
+func is_modded():
+	return false
 
 func on_turn_started():
 	if steam:

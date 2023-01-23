@@ -80,7 +80,7 @@ func _on_lobby_clicked(entry):
 		if lobby != entry:
 			lobby.deselect()
 	if entry.lobby_data.version != Global.VERSION:
-		error("Mismatched versions. Make sure your game is fully updated, or you both have mods enabled.")
+		error("Mismatched versions. Make sure your game is fully updated, or you both have the same mods enabled.")
 		return
 	selected_lobby = entry.lobby_id
 	SteamLobby.join_lobby(entry.lobby_id)
@@ -89,11 +89,6 @@ func _on_lobby_clicked(entry):
 
 func error(text):
 	$"%ErrorLabel".text = text
-
-#func _on_refresh_timer_timeout():
-#	SteamLobby.request_lobby_list()
-#	yield(SteamLobby, "lobby_match_list_received")
-#	$"%RefreshTimer".start()
 
 func _on_SteamLobbyList_visibility_changed():
 	if !visible:

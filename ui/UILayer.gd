@@ -85,7 +85,6 @@ func _ready():
 	$"%WishlistButton".connect("pressed", OS, "shell_open", [STEAM_URL])
 	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
 	$"%ItchButton".connect("pressed", OS, "shell_open", [ITCH_URL])
-	$"%VersionLabel".text = "version " + Global.VERSION
 	$"%ResetZoomButton".connect("pressed", self, "_on_reset_zoom_pressed")
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")
@@ -147,6 +146,8 @@ func _ready():
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
 	$"%CharacterSelect".connect("opened", self, "reset_ui")
+	yield(get_tree(), "idle_frame")
+	$"%VersionLabel".text = "version " + Global.VERSION
 
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)

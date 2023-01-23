@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/title3.png-f5982ed663bef24fc4bfc6d5393aa8c5.stex"
+path="res://.import/grenade4.png-a2b9d6f891328b80de1dcb6d65b2c088.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/title3.png"
-dest_files=[ "res://.import/title3.png-f5982ed663bef24fc4bfc6d5393aa8c5.stex" ]
+source_file="res://characters/robo/sprites/grenade4.png"
+dest_files=[ "res://.import/grenade4.png-a2b9d6f891328b80de1dcb6d65b2c088.stex" ]
 
 [params]
 

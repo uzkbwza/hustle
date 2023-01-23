@@ -6,7 +6,7 @@ signal query_request_success
 
 var published_items  : Array
 
-var _app_id        : int =  ProjectSettings.get_setting("global/steam_app_id")
+var _app_id        : int =  SteamHustle.APP_ID
 var _query_handler : int
 var _page_number   : int = 1
 var _subscribed_items : Dictionary
@@ -30,6 +30,7 @@ func get_item_install_info(p_item_id : int) -> Dictionary:
 
 	if info["ret"] == false:
 		var warning = "Item " + String(p_item_id) + " isn't installed or has no content"
+		print(warning)
 		# Here your code to log/display errors
 
 	return info

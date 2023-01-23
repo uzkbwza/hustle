@@ -36,7 +36,7 @@ const HITLAG_COLLISION_TICKS = 4
 const PROJECTILE_PERFECT_PARRY_WINDOW = 3
 const BURST_ON_DAMAGE_AMOUNT = 5
 
-const MAX_WALL_SLAMS = 10
+const MAX_WALL_SLAMS = 3
 
 const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
 
@@ -407,6 +407,8 @@ func can_unlock_achievements():
 	if ReplayManager.playback or ReplayManager.replaying_ingame:
 		return false
 	if is_ghost:
+		return false
+	if SteamLobby.SPECTATING:
 		return false
 	return is_you()
 

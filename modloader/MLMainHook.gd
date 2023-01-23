@@ -1,7 +1,5 @@
 extends Node
 
-
-
 func _ready():
 
 	_addModToggle(ModLoader.active)
@@ -69,7 +67,7 @@ func _addModList():
 			var req = "Requires: " + str(mod[1].requires)
 			var req_lab = generateLabel(req, 0)
 			info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(req_lab)
-	
+
 	#Shows the mods that are disabled because of missing dependencies
 	for missing in ModLoader.mods_w_missing_depend:
 		var b = generateButton(missing + " (Disabled Missing Dependencies)")
@@ -118,7 +116,7 @@ func generateLabel(text_gen, align):
 	_label.text = text_gen
 	_label.align = align
 	return _label
-	
+
 func generateRichLabel(text_gen):
 	var _richLabel = load("res://modloader/ModdedRichText.gd").new()
 	_richLabel.bbcode_enabled= true

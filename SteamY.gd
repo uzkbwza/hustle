@@ -14,6 +14,7 @@ var STARTED = false
 
 var WORKSHOP_ENABLED = true
 
+var workshop
 
 
 func _enter_tree():
@@ -35,8 +36,9 @@ func _initialize_steam():
 	STEAM_ID = Steam.getSteamID()
 	STEAM_NAME = Steam.getPersonaName()
 	IS_OWNED = Steam.isSubscribed()
+	workshop = SteamWorkshop.new()
 	
-#	Steam.requestCurrentStats()
+	Steam.requestCurrentStats()
 	
 func _process(_delta):
 	if STARTED:
@@ -51,6 +53,8 @@ func record_winner(winner):
 		return
 	var is_me = winner == Network.player_id
 	var draw = winner == 0
+	if SteamLobby.SPECTATING:
+		return
 	if draw:
 		print("draw game :|")
 		incr_stat("num_draws")

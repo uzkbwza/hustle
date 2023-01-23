@@ -76,12 +76,17 @@ func _ready() -> void:
 	Steam.connect("p2p_session_connect_fail", self, "_on_P2P_Session_Connect_Fail")
 	Steam.connect("get_auth_session_ticket_response", self, "_get_Auth_Session_Ticket_Response")
 	Steam.connect("validate_auth_ticket_response", self, "_validate_Auth_Ticket_Response")
+	Network.connect("game_error", self, "_on_game_error")
 	spectator_update_timer = Timer.new()
 	spectator_update_timer.connect("timeout", self, "_on_spectator_update_timer_timeout")
 	add_child(spectator_update_timer)
 	spectator_update_timer.start(3)
 	_check_Command_Line()
 
+func _on_game_error(error):
+	print(error)
+#	quit_match()
+#	get_tree().reload_current_scene()
 
 func _on_spectator_update_timer_timeout():
 	SteamLobby.update_spectators(ReplayManager.frames)
@@ -206,6 +211,8 @@ func has_supporter_pack(steam_id):
 	# TODO: fix this
 #	return steam_id in CLIENT_TICKETS and CLIENT_TICKETS[steam_id].authenticated and Steam.userHasLicenseForApp(steam_id, Custom.SUPPORTER_PACK)
 	return true
+
+
 
 func leave_Lobby() -> void:
 	# If in a lobby, leave it
@@ -595,7 +602,11 @@ func _on_Lobby_Created(connect: int, lobby_id: int):
 		Steam.setLobbyJoinable(LOBBY_ID, true)
 		Steam.setLobbyData(LOBBY_ID, "name", LOBBY_NAME)
 #		Steam.setLobbyData(LOBBY_ID, "status", "Waiting")
-		Steam.setLobbyData(LOBBY_ID, "version", Global.VERSION)
+		var lobby_version = Global.VERSION
+		if !Network.is_modded():
+			lobby_version = Global.VERSION.split(" Modded")[0]
+		
+		Steam.setLobbyData(LOBBY_ID, "version", lobby_version)
 
 	var RELAY: bool = Steam.allowP2PPacketRelay(true)
 	print("Allowing Steam to relay backup: " + str(RELAY))

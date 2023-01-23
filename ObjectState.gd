@@ -62,6 +62,9 @@ export var projectile_pos_x = 0
 export var projectile_pos_y = 0
 export var projectile_local_pos = true
 
+export var _c_Flip = 0
+export var flip_frame = -1
+
 export var _c_Auto = 0
 export var throw_positions: Dictionary = {}
 
@@ -167,6 +170,9 @@ func _tick_shared():
 
 		if current_tick == state_screenshake_tick:
 			host.screen_bump(state_screenshake_dir, state_screenshake_amount, state_screenshake_length)
+
+		if current_tick == flip_frame:
+			host.set_facing(host.get_facing_int() * -1)
 
 		var new_max = false
 		var new_max_shared = false

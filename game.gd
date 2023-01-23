@@ -911,7 +911,8 @@ func end_game():
 	if !is_ghost:
 		ReplayManager.play_full = true
 		if !ReplayManager.playback and !ReplayManager.replaying_ingame:
-			SteamHustle.unlock_achievement("ACH_CHESS")
+			if !Network.multiplayer_active and !SteamLobby.SPECTATING:
+				SteamHustle.unlock_achievement("ACH_CHESS")
 	var winner = 0
 	if p2.hp > p1.hp:
 		winner = 2

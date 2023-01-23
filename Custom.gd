@@ -110,9 +110,23 @@ func requires_dlc(data):
 func save_style(style):
 	make_custom_folder()
 	var file = File.new()
-	file.open("user://custom/"+ style.style_name + ".style", File.WRITE)
+	var filename_ = "user://custom/"+ style.style_name + ".style"
+	file.open(filename_, File.WRITE)
 	file.store_var(style, true)
 	file.close()
+	return filename_
+
+func save_style_workshop(style):
+	var dir = Directory.new()
+	var file = File.new()
+	var folder_path = "user://custom/" + style.style_name
+	if !dir.dir_exists(folder_path):
+		dir.make_dir(folder_path)
+	var filename_ = folder_path + "/" + style.style_name + ".style"
+	file.open(filename_, File.WRITE)
+	file.store_var(style, true)
+	file.close()
+	return folder_path
 
 func load_all_styles():
 	make_custom_folder()

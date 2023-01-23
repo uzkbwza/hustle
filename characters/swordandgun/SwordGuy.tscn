@@ -939,7 +939,6 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "0.2"
 knockback = "12.0"
-wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -961,7 +960,6 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "0.2"
 knockback = "12.0"
-wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1105,7 +1103,6 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "-0.2"
 knockback = "12.0"
-wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1127,7 +1124,6 @@ hit_sound = ExtResource( 207 )
 hit_sound_volume = -2.0
 dir_y = "-0.2"
 knockback = "12.0"
-wall_slam = true
 start_tick = 25
 active_ticks = 3
 
@@ -1657,13 +1653,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2237,7 +2233,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="DashForward" parent="StateMachine" index="53"]
+[node name="DashForward" parent="StateMachine" index="54"]
 loop_animation = true
 absolute_loop = true
 enter_force_dir_x = "1.0"
@@ -2250,13 +2246,13 @@ dash_speed = 4
 fric = "0.02"
 spawn_particle = false
 
-[node name="ChargeDashForward" parent="StateMachine" index="54"]
+[node name="ChargeDashForward" parent="StateMachine" index="55"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="55"]
+[node name="DashBackward" parent="StateMachine" index="56"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -2268,35 +2264,35 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="57"]
+[node name="DashStartup" parent="StateMachine" index="58"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="58"]
+[node name="Jump" parent="StateMachine" index="59"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="61"]
+[node name="DoubleJump" parent="StateMachine" index="62"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="62"]
+[node name="AirDash" parent="StateMachine" index="63"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="72"]
+[node name="AirGrab" parent="StateMachine" index="73"]
 land_cancel = true
 
-[node name="ForwardThrow" parent="StateMachine" index="73"]
+[node name="ForwardThrow" parent="StateMachine" index="74"]
 knockback = "11.0"
 dir_y = "0.0"
 
-[node name="BackThrow" parent="StateMachine" index="74"]
+[node name="BackThrow" parent="StateMachine" index="75"]
 knockback = "11.0"
 dir_y = "0.0"
 
-[node name="AirDownThrow" parent="StateMachine" index="77"]
+[node name="AirDownThrow" parent="StateMachine" index="78"]
 dir_x = "1.0"
 dir_y = "1.00"
 
-[node name="Taunt" parent="StateMachine" index="79"]
+[node name="Taunt" parent="StateMachine" index="80"]
 script = ExtResource( 255 )
 anim_length = 61
 force_dir_x = "-1.0"
