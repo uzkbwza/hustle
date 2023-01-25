@@ -301,6 +301,8 @@ func on_action_selected(action, button):
 		if button != b:
 			b.set_pressed_no_signal(false)
 	button.set_pressed_no_signal(true)
+	if fighter_extra:
+		fighter_extra.update_selected_move(button.state)
 	var same_button = button == current_button
 	current_button = button
 	current_action = action

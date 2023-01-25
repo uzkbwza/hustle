@@ -9,6 +9,7 @@ const AUTO_AIM_DIST = "0.2"
 
 export var screenshake_amount = 12
 export var temporal = false
+export var dodge = false
 
 var bullet_location
 var dir
@@ -21,9 +22,12 @@ func _frame_0():
 	if !temporal:
 		if data and data.has("Shots") and data["Shots"].has("count"):
 			host.consecutive_shots = data["Shots"].count
+			if dodge:
+				host.consecutive_shots = 1
 		if data and data.has("Direction"):
 			host.shot_dir_x = data["Direction"].x
 			host.shot_dir_y = data["Direction"].y
+
 		iasa_at = 7
 		if host.consecutive_shots > 0:
 			iasa_at = -1
@@ -79,7 +83,7 @@ func _frame_3():
 		var bullet_location_local = host.obj_local_center(host.opponent)
 		dir = fixed.normalized_vec_times(str(bullet_location_local.x), str(bullet_location_local.y), "1.0")
 		angle = fixed.vec_to_angle(fixed.mul(dir.x, str(host.get_facing_int())), dir.y)
-		var auto = _previous_state_name() == "Shoot" and host.combo_count > 0
+		var auto = _previous_state_name() == "Shoot" and host.combo_count > 0 or data == null
 		if auto:
 			host.shot_dir_x = bullet_location_local.x
 			host.shot_dir_y = bullet_location_local.y
@@ -123,13 +127,16 @@ func _frame_3():
 #			queue_state_change("Holster")
 		var barrel_location = host.get_barrel_location(shot_angle)
 		spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(float(barrel_location.x) * host.get_facing_int(), float(barrel_location.y)), Vector2(float(host.shot_dir_x), float(host.shot_dir_y)))
-
+		if dodge:
+			host.start_invulnerability()
 
 func _frame_8():
 	if !temporal:
 		host.shooting_arm.frame = 2
 
 func _frame_5():
+	if dodge:
+		queue_state_change("TechRoll", {"x": host.get_facing_int()})
 	if !temporal:
 		host.shooting_arm.frame = 1
 
@@ -157,7 +164,7 @@ func _tick():
 		if host.consecutive_shots > 0:
 			if host.bullets_left > 0:
 				return "Shoot"
-	if parried:
+	if parried and !dodge:
 		queue_state_change("SlowHolster")
 
 func is_usable():

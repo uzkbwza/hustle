@@ -251,6 +251,7 @@ func copy_to(o: BaseObj):
 		o.state_machine.queued_states.append(state)
 	for datum in state_machine.queued_data:
 		o.state_machine.queued_data.append(datum)
+	
 
 func get_frames():
 	return ReplayManager.frames[id]

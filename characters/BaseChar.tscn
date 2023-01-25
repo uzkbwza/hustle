@@ -519,7 +519,9 @@ reversible = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+GroundedDefense
+AerialDefense"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -538,7 +540,9 @@ reversible = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+GroundedDefense
+AerialDefense"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -560,7 +564,9 @@ reversible = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+GroundedDefense
+AerialDefense"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -587,7 +593,9 @@ reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
 Aerial
-AerialMovement"
+AerialMovement
+GroundedDefense
+AerialDefense"
 interrupt_into_string = "Grounded
 Aerial"
 

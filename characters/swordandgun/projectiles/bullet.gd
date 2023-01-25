@@ -9,6 +9,10 @@ const MIN_DAMAGE_DIVISOR = "2.5"
 
 var distance = "0.0"
 
+func init(pos=null):
+	.init(pos)
+	creator.connect("got_hit", self, "disable")
+
 func scale_damage(damage: int):
 	if fixed.lt(distance, MIN_DISTANCE_START_SCALING):
 		return damage

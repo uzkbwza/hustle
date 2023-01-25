@@ -49,6 +49,7 @@ extra_state_variables = "aim_ticks"
 has_projectile_parry_window = false
 immunity_susceptible = false
 deletes_other_projectiles = false
+fizzle_on_ceiling = false
 body_target_texture = ExtResource( 10 )
 
 [node name="Sprite" parent="Flip" index="0"]

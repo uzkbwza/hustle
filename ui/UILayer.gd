@@ -103,6 +103,8 @@ func _ready():
 	$"%HelpButton".connect("pressed", self, "toggle_help_screen")
 	$"%OptionsBackButton".connect("pressed", $"%OptionsContainer", "hide")
 	$"%OptionsButton".connect("pressed", $"%OptionsContainer", "show")
+	$"%CreditsButton".connect("pressed", $"%Credits", "show")
+	$"%CreditsButton".connect("pressed", $"%MainMenu", "hide")
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
@@ -133,7 +135,6 @@ func _ready():
 	
 	if !SteamHustle.STARTED:
 		$"%CustomizeButton".hide()
-	
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false
@@ -214,6 +215,7 @@ func _on_opponent_disconnected():
 
 func _on_customize_pressed():
 	$"%MainMenu".hide()
+	$"%CustomizationScreen".init()
 	$"%CustomizationScreen".show()
 	pass
 

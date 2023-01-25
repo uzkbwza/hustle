@@ -35,7 +35,7 @@ func _tick():
 		for obj in windbox_hitting:
 			push_object(obj, dir)
 		var pushback_dir = xy_to_dir(data.x, data.y, "-1")
-		host.apply_force(fixed.mul(pushback_dir.x, PUSHBACK_SPEED_X), fixed.mul(pushback_dir.y, PUSHBACK_SPEED_Y))
+		host.apply_force(fixed.mul(pushback_dir.x, PUSHBACK_SPEED_X), fixed.mul(pushback_dir.y, PUSHBACK_SPEED_Y) if (!host.is_grounded() or host.hovering) else "0")
 
 func _exit():
 	$"%GustParticle".stop_emitting()

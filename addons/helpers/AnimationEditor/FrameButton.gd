@@ -9,6 +9,8 @@ signal delete()
 
 var keyframe = false
 
+var host_command = null
+
 func _ready():
 #	Utils.pass_along_signal($"%Button", self, "pressed")
 	$"%Button".connect("pressed", self, "_on_button_pressed")
@@ -17,7 +19,7 @@ func _ready():
 	Utils.pass_signal_along($"%Delete", self, "pressed", "delete")
 
 func _on_button_pressed():
-	if keyframe:
+#	if keyframe:
 		emit_signal("pressed")
 
 func set_frame(i):
@@ -32,7 +34,9 @@ func set_keyframe(on):
 	keyframe = on
 	if keyframe:
 		$"%TextureRect".modulate.a = 1.0
-		$"%Button".disabled = false
+		$"%Button".modulate.a = 1.0
+#		$"%Button".disabled = false
 	else:
+		$"%Button".modulate.a = 0.5
 		$"%TextureRect".modulate.a = 0.25
-		$"%Button".disabled = true
+#		$"%Button".disabled = true

@@ -1,6 +1,8 @@
 extends RobotState
 
-const SPEED = "2.0"
+const SPEED_LIMIT = "20"
+
+export var SPEED = "3.0"
 
 export var dir = 1
 
@@ -13,3 +15,4 @@ func _tick():
 		if current_tick % 12 == 0:
 			host.play_sound("DriveIdle")
 	host.apply_forces_no_limit()
+	host.limit_speed(SPEED_LIMIT)

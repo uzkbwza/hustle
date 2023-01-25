@@ -23,6 +23,10 @@ var loaded_sprite_frames: SpriteFrames = null
 var states = []
 var anims = []
 
+var tick_data = {
+	
+}
+
 var throw_positions = {
 
 }
@@ -117,14 +121,15 @@ func load_node(node: BaseObj, force=true):
 	loaded_object = node
 	states.clear()
 	anims.clear()
-
+	tick_data.clear()
+	
 	$"%SelectedState".clear()
 	$"%SelectedAnimation".clear()
-	
+
 	for state in node.get_node("StateMachine").get_children():
 		if state is ObjectState:
 			states.append(state)
-	
+
 	states.sort_custom(self, "sort_states")
 	for state in states:
 		$"%SelectedState".add_item(state.name)

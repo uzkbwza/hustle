@@ -5,7 +5,7 @@ onready var hitbox = $Hitbox
 
 var pos
 
-func _frame_29():
+func _frame_49():
 	var diff = host.obj_local_center(host.creator.opponent)
 	host.distance = fixed.vec_len(str(diff.x), str(diff.y))
 	hitbox.damage = host.scale_damage(hitbox.damage)
@@ -16,7 +16,7 @@ func _frame_29():
 	if facing != 0:
 		host.set_facing(facing)
 
-func _frame_30():
+func _frame_50():
 	pos = host.obj_local_center(host.creator.opponent)
 	var dir = fixed.normalized_vec(str(pos.x), str(pos.y))
 	spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(), Vector2(float(dir.x), float(dir.y)))
@@ -28,5 +28,5 @@ func _frame_30():
 
 
 
-func _frame_31():
+func _frame_51():
 	host.disable()

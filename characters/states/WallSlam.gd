@@ -21,7 +21,6 @@ func _enter():
 
 func _frame_0():
 	dir = 1 if data == CharacterHurtState.BOUNCE.LEFT_WALL else -1
-	host.opponent.combo_proration += 2
 #	host.sprite.rotation = TAU/4 * -dir
 	host.screen_bump(Vector2.RIGHT * dir, 15, 0.28)
 	var di = fixed.mul(host.get_scaled_di(host.current_di).y, DI_EFFECT)

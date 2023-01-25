@@ -40,7 +40,7 @@ func _frame_2():
 	host.start_invulnerability()
 
 func _frame_10():
-	if !tech:
+#	if !tech:
 		host.end_invulnerability()
 		host.end_throw_invulnerability()
 		host.end_projectile_invulnerability()

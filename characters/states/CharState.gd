@@ -220,6 +220,8 @@ func _on_hit_something(obj, hitbox):
 #			return
 		if ((!burst_cancellable) or host.bursts_available == 0) and hit_cancel_into == ["OffensiveBurst"]:
 			return
+		if hitbox is ThrowBox:
+			return
 		enable_hit_cancel()
 
 func process_hitboxes():

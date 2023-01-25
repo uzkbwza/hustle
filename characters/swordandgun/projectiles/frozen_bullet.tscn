@@ -31,6 +31,7 @@ animations = [ {
 material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 9 )
+has_projectile_parry_window = false
 fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]

@@ -22,6 +22,8 @@ var shot_dir_y = 0
 var lightning_slice_x = 0
 var lightning_slice_y = 0
 var up_swipe_momentum = true
+var buffer_bullet_cancelling = false
+var bullet_cancelling = false
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -29,6 +31,10 @@ func _ready():
 func init(pos=null):
 	.init(pos)
 	bullets_left = 6
+
+func copy_to(f):
+	.copy_to(f)
+	f.bullet_cancelling = bullet_cancelling
 
 func get_barrel_location(angle):
 	var barrel_location = fixed.rotate_vec(BARREL_LOCATION_X, BARREL_LOCATION_Y, angle)
@@ -59,6 +65,36 @@ func tick():
 				has_gun = true
 				gun_projectile = null
 				play_sound("GunPickup")
+	if buffer_bullet_cancelling:
+		bullet_cancelling = true
+		buffer_bullet_cancelling = false
+#	if bullet_cancelling and !("try_shoot" in current_state().host_commands.values()):
+#		bullet_cancelling = false
+
+func process_extra(extra):
+	.process_extra(extra)
+	if extra.has("gun_cancel"):
+		buffer_bullet_cancelling = extra.gun_cancel
+
+func can_bullet_cancel():
+	return bullets_left > 0 and has_gun
+
+func try_shoot():
+#	print("here")
+	if got_parried:
+		return
+	if !bullet_cancelling:
+		return
+	if !has_gun:
+		return
+	if bullets_left > 0:
+		bullet_cancelling = false
+		change_state("QuickerDraw")
+
+func on_state_ended(state):
+	.on_state_ended(state)
+	bullet_cancelling = false
+	pass
 
 func on_hit_something():
 	pass

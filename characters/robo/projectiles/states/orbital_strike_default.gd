@@ -28,6 +28,8 @@ func _tick():
 			t = MAX_T
 #		print(t)
 		host.set_pos(fixed.round(fixed.lerp_string(str(host.get_pos().x), str(host.get_pos().x + pos.x), t)), 0)
+	var drain_ratio = fixed.sub("1.0", fixed.div(str(current_tick), str(host.aim_ticks)))
+	host.creator.loic_meter = fixed.round(fixed.mul(str(Robot.LOIC_METER), drain_ratio))
 	if current_tick > host.aim_ticks:
 		return "Fire"
 #	var beep_mod = int(16 - ceil((current_tick / float(host.aim_ticks)) * 10))

@@ -65,6 +65,10 @@ export var projectile_local_pos = true
 export var _c_Flip = 0
 export var flip_frame = -1
 
+export var _c_Meta = 0
+export var host_commands = {
+}
+
 export var _c_Auto = 0
 export var throw_positions: Dictionary = {}
 
@@ -173,6 +177,14 @@ func _tick_shared():
 
 		if current_tick == flip_frame:
 			host.set_facing(host.get_facing_int() * -1)
+
+		if current_tick in host_commands:
+			var command = host_commands[current_tick]
+			if command is Array:
+				if !command.empty():
+					host.callv(command[0], command.slice(1, command.size() - 1))
+			elif command is String:
+				host.call(command)
 
 		var new_max = false
 		var new_max_shared = false

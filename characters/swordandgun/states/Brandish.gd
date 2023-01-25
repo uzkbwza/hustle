@@ -1,7 +1,9 @@
 extends SuperMove
 
+export var quicker = false
+
 func _frame_0():
-	if host.bullets_left <= 0 or !host.is_ghost:
+	if !quicker and (host.bullets_left <= 0 or !host.is_ghost):
 		fallback_state = "SlowHolster"
 	else:
 		fallback_state = "Shoot"

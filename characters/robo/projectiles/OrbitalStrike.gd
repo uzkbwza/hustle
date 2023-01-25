@@ -31,3 +31,4 @@ func _draw():
 
 func disable():
 	.disable()
+	creator.loic_draining = false

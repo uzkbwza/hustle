@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=2]
+[gd_scene load_steps=80 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -66,6 +66,7 @@
 [ext_resource path="res://ui/ghostsettingsup.png" type="Texture" id=64]
 [ext_resource path="res://ui/help_button.png" type="Texture" id=65]
 [ext_resource path="res://ui/ghostsettingsdown.png" type="Texture" id=66]
+[ext_resource path="res://ui/Credits.tscn" type="PackedScene" id=67]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -1708,22 +1709,20 @@ flat = true
 
 [node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-visible = false
 margin_top = 147.0
 margin_right = 96.0
 margin_bottom = 167.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-disabled = true
 text = "Credits"
 flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 147.0
+margin_top = 168.0
 margin_right = 96.0
-margin_bottom = 167.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -2152,6 +2151,10 @@ theme = ExtResource( 4 )
 text = "30:00"
 align = 1
 valign = 1
+
+[node name="Credits" parent="UILayer" instance=ExtResource( 67 )]
+unique_name_in_owner = true
+visible = false
 
 [node name="ReplayWindow" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true

@@ -25,7 +25,7 @@ func get_style_data():
 		"ivy_effect": false,
 	}
 
-func _ready():
+func init():
 	for name in Global.name_paths:
 		if (name in Global.paid_characters) and !Global.full_version():
 			continue

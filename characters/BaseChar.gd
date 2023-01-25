@@ -443,6 +443,7 @@ func gain_burst_meter(amount=null):
 
 func copy_to(f):
 	.copy_to(f)
+	f.got_parried = got_parried
 	f.colliding_with_opponent = colliding_with_opponent
 	f.has_hyper_armor = has_hyper_armor
 	f.update_data()

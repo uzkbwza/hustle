@@ -599,9 +599,9 @@ func resolve_collisions(step=0):
 	var x_pos = p1.data.object_data.position_x
 	var opp_x_pos = p2.data.object_data.position_x
 	var p1_right_edge = (x_pos + p1.collision_box.width + p1.collision_box.x)
-	var p1_left_edge = (x_pos - p1.collision_box.width - p1.collision_box.x)
+	var p1_left_edge = (x_pos - p1.collision_box.width + p1.collision_box.x)
 	var p2_right_edge = (opp_x_pos + p2.collision_box.width + p2.collision_box.x)
-	var p2_left_edge = (opp_x_pos - p2.collision_box.width - p2.collision_box.x)
+	var p2_left_edge = (opp_x_pos - p2.collision_box.width + p2.collision_box.x)
 	var edge_distance
 	if x_pos < opp_x_pos:
 		edge_distance = int_abs(p2_right_edge - p1_left_edge)

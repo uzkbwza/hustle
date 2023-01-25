@@ -1,13 +1,16 @@
 extends Fighter
 
+class_name Robot
+
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8"
 const FLY_TICKS = 20
 const GROUND_POUND_MIN_HEIGHT = -48
-const LOIC_METER = 1000
-const LOIC_GAIN = 7
-const LOIC_GAIN_NO_ARMOR = 7
+const LOIC_METER: int = 1000
+const LOIC_GAIN = 6
+const LOIC_GAIN_NO_ARMOR = 6
 
+var loic_draining = false
 var armor_pips = 1
 var landed_move = false
 var flying_dir = null
@@ -19,14 +22,15 @@ var can_ground_pound = false
 var buffer_reset_ground_pound = false
 var orbital_strike_out = false
 var orbital_strike_projectile = null
-var can_loic = true
-var loic_meter = LOIC_METER
+var can_loic = false
+var loic_meter = 0
 var got_hit = false
 var armor_active = false
 var buffer_armor = false
 var can_unlock_gratuitous = true
 
 onready var chainsaw_arm = $"%ChainsawArm"
+onready var drive_jump_sprite = $"%DriveJumpSprite"
 
 onready var chainsaw_arm_ghosts = [
 
@@ -34,6 +38,7 @@ onready var chainsaw_arm_ghosts = [
 
 func _ready():
 	chainsaw_arm.set_material(sprite.get_material())
+	drive_jump_sprite.set_material(sprite.get_material())
 	for ghost in chainsaw_arm_ghosts:
 		ghost.set_material(sprite.get_material())
 
@@ -116,7 +121,7 @@ func tick():
 			if fly_ticks_left <= 0:
 				flying_dir = null
 				stop_fly_fx()
-	if loic_meter < LOIC_METER:
+	if (loic_meter < LOIC_METER) and !loic_draining:
 		if armor_pips > 0:
 			loic_meter += LOIC_GAIN
 		else:
@@ -153,6 +158,13 @@ func stop_fly_fx():
 	fly_fx_started = false
 	$"%FlyFx1".stop_emitting()
 	$"%FlyFx2".stop_emitting()
+
+func start_hustle_fx():
+	$"%HustleEffect".start_emitting()
+
+func stop_hustle_fx():
+	$"%HustleEffect".stop_emitting()
+
 
 func process_extra(extra):
 	.process_extra(extra)

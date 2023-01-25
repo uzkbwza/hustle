@@ -7,6 +7,7 @@ func _frame_0():
 		host.creator.orbital_strike_projectile = null
 		host.creator.loic_meter = 0
 		host.creator.can_loic = false
+		host.creator.loic_draining = false
 	host.line_drawer.z_index = 1000
 
 func _frame_50():

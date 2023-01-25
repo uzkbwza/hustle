@@ -3,6 +3,10 @@ extends RobotState
 const MIN_AIM_TICKS = 20
 const MAX_AIM_TICKS = 85
 
+func _enter():
+	host.loic_draining = true
+	host.can_loic = false
+
 func process_projectile(obj):
 	obj.set_pos(host.opponent.get_pos().x, 0)
 	var t = data.x
