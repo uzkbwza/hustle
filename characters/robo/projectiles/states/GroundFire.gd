@@ -12,3 +12,4 @@ func _tick():
 		host.disable()
 	if current_tick % 20 == 0:
 		host.play_sound("Fire")
+	host.set_y(0)

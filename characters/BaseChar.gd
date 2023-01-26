@@ -9,6 +9,7 @@ signal undo()
 signal forfeit()
 signal clashed()
 signal predicted()
+
 #signal got_counter_hit()
 
 var MAX_HEALTH = 1000

@@ -521,7 +521,8 @@ Aerial
 GroundedSpecial
 AerialSpecial
 GroundedDefense
-AerialDefense"
+AerialDefense
+Parry"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -542,7 +543,8 @@ Aerial
 GroundedSpecial
 AerialSpecial
 GroundedDefense
-AerialDefense"
+AerialDefense
+Parry"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -566,7 +568,8 @@ Aerial
 GroundedSpecial
 AerialSpecial
 GroundedDefense
-AerialDefense"
+AerialDefense
+Parry"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
@@ -1412,7 +1415,8 @@ next_state_on_hold = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSuper
-AerialSuper"
+AerialSuper
+Hustle"
 interrupt_into_string = "Grounded
 Aerial"
 

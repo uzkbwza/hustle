@@ -15,6 +15,7 @@ func _frame_6():
 		if host.reverse_state:
 			var vel = obj.get_vel()
 			obj.set_vel(fixed.mul(vel.x, "-1"), vel.y)
+		obj.refresh_hitboxes()
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 

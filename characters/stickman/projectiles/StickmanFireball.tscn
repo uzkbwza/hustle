@@ -39,6 +39,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="StickmanFireball" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 script = ExtResource( 4 )
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=402 format=2]
+[gd_scene load_steps=403 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -393,6 +393,7 @@
 [ext_resource path="res://characters/robo/HustleEffect.tscn" type="PackedScene" id=391]
 [ext_resource path="res://characters/robo/sound/hustle.wav" type="AudioStream" id=392]
 [ext_resource path="res://characters/robo/HustleStartEffect.tscn" type="PackedScene" id=393]
+[ext_resource path="res://characters/robo/sprites/actionicons/flamethrower.png" type="Texture" id=394]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -1569,25 +1570,25 @@ ExtResource( 200 ): {
 "x": 5,
 "y": -12
 },
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
+},
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
-},
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
-},
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
 },
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
 }
 }
 update_facing_on_exit = false
@@ -1736,29 +1737,29 @@ ExtResource( 254 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 262 ): {
+ExtResource( 260 ): {
 "x": 40,
-"y": -33
-},
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
-},
-ExtResource( 264 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 253 ): {
-"x": 116,
-"y": -66
+"y": -34
 },
 ExtResource( 263 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 260 ): {
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
+},
+ExtResource( 262 ): {
 "x": 40,
-"y": -34
+"y": -33
+},
+ExtResource( 264 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -1874,13 +1875,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -1913,25 +1914,41 @@ sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
 },
 ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 },
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
 },
 ExtResource( 117 ): {
 "x": 69,
@@ -1940,22 +1957,6 @@ ExtResource( 117 ): {
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
 }
 }
 iasa_at = 49
@@ -2162,6 +2163,7 @@ projectile_tick = 11
 projectile_pos_x = 100
 title = "FLAME THROWER"
 type = 3
+button_texture = ExtResource( 394 )
 interrupt_from_string = "Grounded
 GroundedSuper"
 interrupt_into_string = "Grounded
@@ -2805,10 +2807,6 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 374 ): {
-"x": 14,
-"y": -7
-},
 ExtResource( 373 ): {
 "x": 34,
 "y": -11
@@ -2820,6 +2818,10 @@ ExtResource( 375 ): {
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
+},
+ExtResource( 374 ): {
+"x": 14,
+"y": -7
 }
 }
 interrupt_into_string = "Grounded"

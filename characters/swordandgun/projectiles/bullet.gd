@@ -1,5 +1,7 @@
 extends BaseProjectile
 
+export var frozen = false
+
 const DAMAGE_FALLOFF_PER_PIXEL = "0.85"
 const MIN_DISTANCE_START_SCALING = "256"
 const HITSTUN_FALLOFF_PER_PIXEL = "1"
@@ -11,7 +13,10 @@ var distance = "0.0"
 
 func init(pos=null):
 	.init(pos)
-	creator.connect("got_hit", self, "disable")
+	if frozen:
+		if creator:
+			creator.connect("got_hit", self, "disable")
+
 
 func scale_damage(damage: int):
 	if fixed.lt(distance, MIN_DISTANCE_START_SCALING):

@@ -4,6 +4,7 @@ onready var lobby_list = $"%LobbyList"
 onready var lobby_name = $"%LobbyName"
 
 var selected_lobby
+var lobbies = []
 
 func _ready():
 	$"%CreateLobbyButton".connect("pressed", self, "_on_create_lobby_button_pressed")
@@ -42,6 +43,7 @@ func clear_lobby_list():
 		child.free()
 
 func _on_lobby_match_list_received(lobbies):
+	self.lobbies = lobbies
 	$"%ConnectingLabel".hide()
 	# TODO - keep and update existing lobbies so your selection isnt cleared
 #		$"%LobbyList".clear()
@@ -51,6 +53,10 @@ func _on_lobby_match_list_received(lobbies):
 		var lobby_name: String = Steam.getLobbyData(lobby, "name")
 #			var lobby_status: String = Steam.getLobbyData(lobby, "status")
 		var lobby_version: String = Steam.getLobbyData(lobby, "version")
+		
+		if lobby_version != Global.VERSION:
+			if $"%FilterIncompatibleButton".pressed:
+				continue
 		
 		# Get the current number of members
 		var lobby_num_members: int = Steam.getNumLobbyMembers(lobby)
@@ -94,3 +100,7 @@ func _on_SteamLobbyList_visibility_changed():
 	if !visible:
 		$"%RefreshTimer".stop()
 	pass # Replace with function body.
+
+
+func _on_FilterIncompatibleButton_toggled(button_pressed):
+	_on_lobby_match_list_received(lobbies)

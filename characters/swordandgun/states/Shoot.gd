@@ -83,7 +83,7 @@ func _frame_3():
 		var bullet_location_local = host.obj_local_center(host.opponent)
 		dir = fixed.normalized_vec_times(str(bullet_location_local.x), str(bullet_location_local.y), "1.0")
 		angle = fixed.vec_to_angle(fixed.mul(dir.x, str(host.get_facing_int())), dir.y)
-		var auto = _previous_state_name() == "Shoot" and host.combo_count > 0 or data == null
+		var auto = _previous_state_name() == "Shoot" and host.combo_count > 0
 		if auto:
 			host.shot_dir_x = bullet_location_local.x
 			host.shot_dir_y = bullet_location_local.y

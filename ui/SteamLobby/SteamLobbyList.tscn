@@ -83,7 +83,7 @@ size_flags_vertical = 3
 
 [node name="LobbyList" type="VBoxContainer" parent="NetworkSetupScreen/LobbyListContainer"]
 unique_name_in_owner = true
-margin_right = 110.0
+margin_right = 330.0
 margin_bottom = 356.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -302,14 +302,22 @@ text = "public"
 
 [node name="LobbyName" type="LineEdit" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
-margin_left = 77.0
-margin_top = -13.0
-margin_right = 219.0
+margin_left = 75.0
+margin_top = -14.0
+margin_right = 228.0
 margin_bottom = -2.0
 max_length = 64
 placeholder_text = "lobby name"
 caret_blink = true
 caret_blink_speed = 0.5
+
+[node name="FilterIncompatibleButton" type="CheckButton" parent="CreateLobbyDialog"]
+unique_name_in_owner = true
+margin_left = 229.0
+margin_top = -14.0
+margin_right = 337.0
+margin_bottom = -2.0
+text = "only compatible"
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -330,9 +338,10 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -169.0
-margin_top = 1.0
-margin_right = 124.0
-margin_bottom = 46.0
+margin_top = 15.0
+margin_right = 169.0
+margin_bottom = 43.0
 autowrap = true
 
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]
+[connection signal="toggled" from="CreateLobbyDialog/FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]

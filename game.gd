@@ -234,6 +234,7 @@ func on_object_spawned(obj: BaseObj):
 	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
+	obj.connect("hitbox_refreshed", self, "on_hitbox_refreshed")
 	obj.gravity_enabled = gravity_enabled
 	obj.set_gravity_modifier(global_gravity_modifier)
 	obj.fighter_owner = get_player(obj.id)
@@ -247,6 +248,11 @@ func _on_fx_exit_tree(fx):
 
 func _on_obj_exit_tree(obj):
 	objects.erase(obj)
+
+func on_hitbox_refreshed(hitbox_name):
+	p1.parried_hitboxes.erase(hitbox_name)
+	p2.parried_hitboxes.erase(hitbox_name)
+	pass
 
 func on_clash():
 	super_freeze_ticks = 5

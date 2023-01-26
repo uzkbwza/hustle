@@ -565,7 +565,7 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 4 )
-animation = "UppercutAir"
+animation = "GroundedSweep"
 
 [node name="Super2" parent="Sounds" index="4"]
 pitch_variation = 0.1
@@ -588,14 +588,14 @@ interrupt_exceptions_string = "WhiffCancel"
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 hitstun_ticks = 24
 
-[node name="DashForward" parent="StateMachine" index="17"]
+[node name="DashForward" parent="StateMachine" index="18"]
 dash_speed = 14
 
-[node name="ChargeDashForward" parent="StateMachine" index="18"]
+[node name="ChargeDashForward" parent="StateMachine" index="19"]
 interrupt_from_string = ""
 dash_speed = 10
 
-[node name="Jump" parent="StateMachine" index="22"]
+[node name="Jump" parent="StateMachine" index="23"]
 y_modifier = "1.33"
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
@@ -1574,6 +1574,15 @@ knockback = "5.0"
 start_tick = 5
 active_ticks = 3
 
+[node name="HurtboxState" type="Node2D" parent="StateMachine/GroundedKick" index="1"]
+z_index = 1000
+script = ExtResource( 76 )
+y = -13
+width = 15
+height = 13
+start_tick = 0
+active_ticks = 7
+
 [node name="GroundedSweep" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 4 )
 anim_length = 29
@@ -1613,6 +1622,15 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 start_tick = 7
 active_ticks = 2
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/GroundedSweep" index="1"]
+z_index = 1000
+script = ExtResource( 76 )
+y = -13
+width = 15
+height = 13
+start_tick = 0
+active_ticks = 13
 
 [node name="DropKick" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 3 )
@@ -1939,21 +1957,21 @@ ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
 },
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
+},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
 }
 }
 button_texture = ExtResource( 223 )
@@ -2056,10 +2074,10 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="62"]
+[node name="WhiffInstantCancel" parent="StateMachine" index="63"]
 hit_cancel_exceptions_string = ""
 
-[node name="ForwardThrow" parent="StateMachine" index="71"]
+[node name="ForwardThrow" parent="StateMachine" index="72"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -2075,13 +2093,13 @@ ExtResource( 207 ): {
 "x": 15,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 }
 }
 burst_cancellable = false
@@ -2113,7 +2131,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="72"]
+[node name="BackThrow" parent="StateMachine" index="73"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
 ExtResource( 206 ): {
@@ -2124,17 +2142,17 @@ ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 },
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false
@@ -2166,10 +2184,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="77"]
+[node name="Taunt" parent="StateMachine" index="78"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="78"]
+[node name="ForfeitExplosion" parent="StateMachine" index="79"]
 endless = true

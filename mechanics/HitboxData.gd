@@ -29,6 +29,7 @@ var screenshake_frames = 0
 var screenshake_amount = 0
 var minimum_damage = 0
 var sdi_modifier = "1.0"
+var di_modifier = "1.0"
 var increment_combo = false
 var ignore_armor = false
 var damage_proration = 0
@@ -101,6 +102,8 @@ func _init(state):
 		minimum_damage = state.minimum_damage
 	if state.get("sdi_modifier") != null:
 		sdi_modifier = state.sdi_modifier
+	if state.get("di_modifier") != null:
+		di_modifier = state.di_modifier
 	if state.get("increment_combo") != null:
 		increment_combo = state.increment_combo
 	if state.get("ignore_armor") != null:

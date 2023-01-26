@@ -33,6 +33,7 @@ z_index = -2
 script = ExtResource( 9 )
 has_projectile_parry_window = false
 fizzle_on_ceiling = false
+frozen = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 3 )
@@ -66,10 +67,11 @@ z_index = 1000
 script = ExtResource( 3 )
 width = 5000
 height = 5000
-damage = 90
+damage = 70
 minimum_damage = 30
 hitstun_ticks = 18
-victim_hitlag = 10
+victim_hitlag = 5
+di_modifier = "2.0"
 screenshake_amount = 7
 dir_y = "-0.25"
 knockback = "12.0"

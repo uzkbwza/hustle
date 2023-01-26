@@ -6,6 +6,7 @@ signal object_spawned(object)
 signal particle_effect_spawned(particle)
 signal initialized()
 signal got_hit()
+signal hitbox_refreshed(hitbox)
 
 const RUMBLE_MODIFIER = 4.0
 const MAX_RUMBLE = 10
@@ -121,6 +122,11 @@ func play_sound(sound_name):
 		return
 	if sound_name in sounds:
 		sounds[sound_name].play()
+
+func refresh_hitboxes():
+	for hitbox in hitboxes:
+		hitbox.hit_objects = []
+		emit_signal("hitbox_refreshed", hitbox.name)
 
 func setup_hitbox_names():
 	for i in range(hitboxes.size()):

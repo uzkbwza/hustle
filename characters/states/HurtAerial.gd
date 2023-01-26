@@ -39,7 +39,7 @@ func _enter():
 	
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var di = host.get_scaled_di(host.current_di)
-	var di_force = fixed.vec_mul(di.x, di.y, DI_STRENGTH)
+	var di_force = fixed.vec_mul(di.x, di.y, fixed.mul(DI_STRENGTH, hitbox.di_modifier))
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"

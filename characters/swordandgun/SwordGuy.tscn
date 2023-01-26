@@ -718,7 +718,7 @@ player_extra_params_scene = ExtResource( 284 )
 material = SubResource( 3 )
 frames = SubResource( 4 )
 animation = "HSlashUp"
-frame = 8
+frame = 6
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1453,7 +1453,7 @@ apply_grav = true
 sprite_animation = "HSlashUp"
 anim_length = 20
 force_dir_x = "1.0"
-force_speed = "8.0"
+force_speed = "6.0"
 force_tick = 4
 host_commands = {
 10: "try_shoot"
@@ -1471,10 +1471,10 @@ GroundedSuper"
 [node name="Hitbox" type="Node2D" parent="StateMachine/HSlashUp" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 32
-y = -28
+x = 37
+y = -32
 width = 17
-height = 9
+height = 5
 damage = 100
 hitstun_ticks = 10
 victim_hitlag = 4
@@ -1489,10 +1489,10 @@ active_ticks = 2
 [node name="Hitbox3" type="Node2D" parent="StateMachine/HSlashUp" index="1"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 48
-y = -37
+x = 53
+y = -42
 width = 17
-height = 9
+height = 5
 damage = 100
 hitstun_ticks = 10
 victim_hitlag = 4
@@ -1507,10 +1507,10 @@ active_ticks = 2
 [node name="Hitbox4" type="Node2D" parent="StateMachine/HSlashUp" index="2"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 64
-y = -45
+x = 68
+y = -52
 width = 17
-height = 9
+height = 5
 damage = 100
 hitstun_ticks = 10
 victim_hitlag = 4
@@ -2201,10 +2201,14 @@ title = "Quick Draw"
 type = 2
 button_texture = ExtResource( 159 )
 air_type = 2
+interruptible_on_opponent_turn = true
 interrupt_into_string = "Gun
+SlowHolster
 AerialSuper
-GroundedSuper"
-interrupt_exceptions_string = "FastTeleport"
+GroundedSuper
+Parry"
+interrupt_exceptions_string = "FastTeleport
+Hustle"
 super_level = 0
 super_effect = false
 quicker = true
@@ -2470,6 +2474,7 @@ dir_y = "0.0"
 knockback = "12.0"
 knockdown = true
 knockdown_extends_hitstun = false
+wall_slam = true
 start_tick = 9
 active_ticks = 1
 
@@ -2554,3 +2559,9 @@ height = 5
 damage = 20
 start_tick = 24
 active_ticks = 2
+
+[node name="Node2D" parent="." index="7"]
+visible = true
+
+[node name="QuitterLabel" parent="Node2D" index="0"]
+visible = false

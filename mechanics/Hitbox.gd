@@ -51,6 +51,7 @@ export var hits_otg = false
 export var hits_vs_grounded = true
 export var hits_vs_aerial = true
 export var can_counter_hit = true
+export var di_modifier = "1.0"
 export var sdi_modifier = "1.0"
 export var parry_meter_gain = -1
 export var ignore_armor = false
