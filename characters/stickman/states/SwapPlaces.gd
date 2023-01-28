@@ -3,6 +3,8 @@ extends CharacterState
 const MAX_X_DIST = 600
 const MAX_Y_DIST = 300
 
+var obj_name
+
 func _frame_6():
 	var projectiles = get_usable_projectiles()
 	if projectiles:
@@ -15,9 +17,15 @@ func _frame_6():
 		if host.reverse_state:
 			var vel = obj.get_vel()
 			obj.set_vel(fixed.mul(vel.x, "-1"), vel.y)
-		obj.refresh_hitboxes()
+		obj_name = obj.obj_name
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
+
+func _frame_7():
+	if host.objs_map.has(obj_name):
+		if host.objs_map[obj_name] != null:
+			host.objs_map[obj_name].refresh_hitboxes()
+			
 
 func get_usable_projectiles():
 	var usable = []

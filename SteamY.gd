@@ -80,6 +80,7 @@ func print_all_achievements():
 	for i in range(Steam.getNumAchievements()):
 		var ach = Steam.getAchievementName(i)
 		print(ach + ": " + str(Steam.getAchievement(ach)["achieved"]))
+#		Steam.clearAchievement(ach)
 
 func incr_stat(stat_name: String):
 	if !STARTED:
@@ -98,6 +99,8 @@ func set_stat(stat_name: String, value):
 	
 func unlock_achievement(achievement_name: String):
 	if !STARTED:
+		return
+	if ReplayManager.playback or is_instance_valid(Global.current_game) and Global.current_game.is_in_replay:
 		return
 	print("unlocked achievement: " + achievement_name)
 	Steam.setAchievement(achievement_name)

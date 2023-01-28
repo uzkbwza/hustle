@@ -43,6 +43,12 @@ static func get_shapes():
 		"triangle": preload("res://fx/TriUp.png"),
 		"star": preload("res://fx/star.png"),
 		"heart": preload("res://fx/heart.png"),
+		"arrow": preload("res://fx/arrow.png"),
+		"cross": preload("res://fx/cross.png"),
+		"line": preload("res://fx/line.png"),
+		"diamond": preload("res://fx/diamond.png"),
+		"shine": preload("res://fx/four_point_star.png"),
+		"elec": preload("res://fx/elec.png"),
 		"hollow circle": preload("res://fx/particle_round_hollow_4x4.png"),
 		"hollow square": preload("res://fx/particle_square_hollow_4x4.png"),
 	}

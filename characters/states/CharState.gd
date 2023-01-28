@@ -329,6 +329,7 @@ func on_got_hit():
 func _exit_shared():
 	beats_backdash = false
 	if feinting:
+		host.update_facing()
 		host.feinting = false
 	feinting = false
 #	host.update_advantage()

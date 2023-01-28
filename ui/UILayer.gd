@@ -507,6 +507,8 @@ func on_player_actionable():
 #	$"%P2SuperContainer".rect_min_size.y = 40
 	$"%P1ActionButtons".activate()
 	$"%P2ActionButtons".activate()
+	if is_instance_valid(game):
+		game.is_in_replay = false
 	$"%AdvantageLabel".text = ""
 
 #		else:

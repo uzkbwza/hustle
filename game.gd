@@ -124,6 +124,8 @@ var network_sync_tick = -100
 var ceiling_height = 400
 var has_ceiling = true
 
+var is_in_replay = false
+
 var ghost_actionable_freeze_ticks = 0
 var ghost_p1_actionable = false
 var ghost_p2_actionable = false
@@ -544,6 +546,7 @@ func tick():
 	if !game_finished:
 		if ReplayManager.playback:
 			if !ReplayManager.resimulating:
+				is_in_replay = true
 				if current_tick > max_replay_tick and !(ReplayManager.frames.has("finished") and ReplayManager.frames.finished):
 					ReplayManager.set_deferred("playback", false)
 			else:
@@ -915,10 +918,10 @@ func end_game():
 	p2.game_over = true
 
 	if !is_ghost:
-		ReplayManager.play_full = true
-		if !ReplayManager.playback and !ReplayManager.replaying_ingame:
+		if !ReplayManager.playback and !ReplayManager.replaying_ingame and !is_in_replay:
 			if !Network.multiplayer_active and !SteamLobby.SPECTATING:
 				SteamHustle.unlock_achievement("ACH_CHESS")
+		ReplayManager.play_full = true
 	var winner = 0
 	if p2.hp > p1.hp:
 		winner = 2
