@@ -142,6 +142,18 @@ func _process(_delta):
 	if buffer_changed:
 		buffer_changed = false
 		call_deferred("emit_signal", "data_changed")
+	var rect = get_global_rect()
+	var mouse_position = get_global_mouse_position()
+	if(!rect.has_point(mouse_position)):
+		var p = get_parent()
+		while(p):
+			if(p.get("visible")==null):
+				break
+			if(!p.visible):
+				mouse_clicked = false
+				mouse_over = false
+				break
+			p = p.get_parent()
 
 func get_value():
 	var values = {

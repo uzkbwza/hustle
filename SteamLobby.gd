@@ -165,6 +165,8 @@ func on_match_started():
 	Steam.setLobbyMemberData(LOBBY_ID, "game_started", "true")
 
 func accept_challenge():
+	if CHALLENGER_STEAM_ID == 0:
+		return
 	var steam_id = CHALLENGER_STEAM_ID
 	var match_settings = CHALLENGER_MATCH_SETTINGS
 	print("accepting challenge")
@@ -211,8 +213,6 @@ func has_supporter_pack(steam_id):
 	# TODO: fix this
 #	return steam_id in CLIENT_TICKETS and CLIENT_TICKETS[steam_id].authenticated and Steam.userHasLicenseForApp(steam_id, Custom.SUPPORTER_PACK)
 	return true
-
-
 
 func leave_Lobby() -> void:
 	# If in a lobby, leave it
@@ -420,6 +420,7 @@ func _read_P2P_Packet() -> void:
 		# Append logic here to deal with packet data
 		if readable.has("challenge_cancelled"):
 			emit_signal("challenger_cancelled")
+			CHALLENGER_STEAM_ID = 0
 		if readable.has("challenge_declined"):
 			_on_challenge_declined(readable.challenge_declined)
 		if readable.has("spectate_accept"):

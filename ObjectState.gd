@@ -119,10 +119,12 @@ func process_projectile(_projectile):
 
 func get_active_hitboxes():
 	var hitboxes = []
+	var pos = host.get_pos()
 	for start_frame in hitbox_start_frames:
 		var items = hitbox_start_frames[start_frame]
 		for item in items:
 			if item is Hitbox:
+				item.update_position(pos.x,pos.y)
 				hitboxes.append(item)
 	return hitboxes
 
@@ -251,11 +253,6 @@ func update_hurtbox():
 			current_hurtbox.end(host)
 		current_hurtbox = hurtbox_state_change_frames[current_tick]
 		current_hurtbox.start(host)
-
-func _tick_after():
-	for hitbox in get_active_hitboxes():
-		var pos = host.get_pos()
-		hitbox.update_position(pos.x, pos.y)
 
 func copy_data():
 	var d = null

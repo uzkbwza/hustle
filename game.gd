@@ -131,6 +131,9 @@ var ghost_p1_actionable = false
 var ghost_p2_actionable = false
 var made_afterimage = false
 
+var p1_ghost_ready_tick
+var p2_ghost_ready_tick
+
 var spectating = false
 
 var camera_zoom = 1.0
@@ -1133,7 +1136,6 @@ func _physics_process(_delta):
 					var input = ReplayManager.frames[id][input_tick]
 					get_player(id).on_action_selected(input.action, input.data, input.extra)
 
-
 func ghost_tick():
 	p1.actionable_label.hide()
 	p2.actionable_label.hide()
@@ -1141,17 +1143,26 @@ func ghost_tick():
 	if ghost_speed == 1:
 		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
 	ghost_tick += 1
-
+	var ghost_advantage_tick = ghost_tick
+	var ghost_multiplier = 1
+	if ghost_speed == 1:
+		ghost_multiplier = 4
+	ghost_advantage_tick /= ghost_multiplier
 	for i in range(simulate_frames):
 		if ghost_actionable_freeze_ticks == 0:
 			simulate_one_tick()
 		if current_tick > GHOST_FRAMES:
 			emit_signal("ghost_finished")
-		p1.set_ghost_colors()
-		p2.set_ghost_colors()
 
-		if (p1.state_interruptable or p1.dummy_interruptable) and !ghost_p1_actionable:
+		if (p1.state_interruptable or p1.dummy_interruptable or p1.state_hit_cancellable) and not ghost_p1_actionable:
+			p1_ghost_ready_tick = ghost_advantage_tick+(p1.hitlag_ticks*ghost_multiplier if !ghost_p2_actionable else 0)
+		else:
+			p1_ghost_ready_tick = null
+		if(ghost_tick/ghost_multiplier==p1_ghost_ready_tick):
+			p1.ghost_ready_tick = p1_ghost_ready_tick
+			p1_ghost_ready_tick = null
 			ghost_p1_actionable = true
+			p1.set_ghost_colors()
 			if ghost_freeze:
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p1.actionable_label.show()
@@ -1159,11 +1170,17 @@ func ghost_tick():
 				if p2.current_state().interruptible_on_opponent_turn or p2.feinting:
 					p2.actionable_label.show()
 					ghost_p2_actionable = true
-			else:
+			else :
 				ghost_actionable_freeze_ticks = 1
-
-		if (p2.state_interruptable or p2.dummy_interruptable) and !ghost_p2_actionable:
+		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
+			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
+		else:
+			p2_ghost_ready_tick = null
+		if(ghost_tick/ghost_multiplier==p2_ghost_ready_tick):
+			p2.ghost_ready_tick = p2_ghost_ready_tick
+			p2_ghost_ready_tick = null
 			ghost_p2_actionable = true
+			p2.set_ghost_colors()
 			if ghost_freeze:
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p2.actionable_label.show()
@@ -1171,7 +1188,7 @@ func ghost_tick():
 				if p1.current_state().interruptible_on_opponent_turn or p1.feinting:
 					ghost_p1_actionable = true
 					p1.actionable_label.show()
-			else:
+			else :
 				ghost_actionable_freeze_ticks = 1
 
 func super_dim():

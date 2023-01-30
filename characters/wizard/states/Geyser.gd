@@ -26,20 +26,28 @@ func _frame_7():
 	center_y = pos.y
 
 func _frame_9():
-	var dir = xy_to_dir(data["x"], data["y"])
-#	particle = spawn_particle_relative(PARTICLE, particle_position, Vector2(float(dir.x), float(dir.y)))
-	var opp_pos = host.obj_local_center(host.opponent)
-	var opp_vel = host.opponent.get_vel()
-	var dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
-	if fixed.gt(dist, MAX_DIST):
-		dist = MAX_DIST
+	var dir = Vector2(data["x"], data["y"]).normalized()
 	var pos = host.get_pos()
-	var diff_x = pos.x - center_x
-	var diff_y = pos.y - center_y
-	var particle_pos = fixed.normalized_vec_times(dir.x, dir.y, dist)
-	var obj_pos = {
-		"x": fixed.round(particle_pos.x) - diff_x,
-		"y": fixed.round(particle_pos.y) - diff_y - 16,
-	}
-	if obj_pos.y + pos.y <= 0:
-		var obj = host.spawn_object(PROJECTILE, obj_pos.x * host.get_facing_int() + fixed.round(opp_vel.x), obj_pos.y + fixed.round(opp_vel.y))
+	var obj = host.spawn_object(PROJECTILE,0,0)
+	var default = obj.state_machine.get_node("Default")
+	var hitbox = default.get_node("Hitbox")
+	for f in get_tree().get_nodes_in_group("Fighter"):
+		if(f==host):
+			continue
+		if(f.is_ghost!=host.is_ghost):
+			continue
+		var fc = f.get_pos()
+		var floc = dir*min(int(MAX_DIST),Vector2(pos.x-fc.x,pos.y-fc.y).length())
+		var h = hitbox.duplicate()
+		hitbox.copy_to(h)
+		obj.hitboxes.append(h)
+		default.add_child(h)
+		h.init()
+		h.host = obj
+		h.x = int(floc.x*host.get_facing_int())
+		h.y = int(floc.y-f.hurtbox.height)
+	default.remove_child(hitbox)
+	obj.hitboxes.remove(0)
+	for i in obj.hitboxes.size():
+		var h = obj.hitboxes[i]
+		h.name = host.name+"_HB_"+str(i)

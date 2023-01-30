@@ -39,6 +39,7 @@ size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Hover"
+clip_text = true
 
 [node name="FastFallButton" type="CheckButton" parent="VBoxContainer" index="2"]
 unique_name_in_owner = true
@@ -50,3 +51,4 @@ size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "FastFall"
+clip_text = true

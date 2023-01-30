@@ -418,7 +418,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "was_my_turn", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "was_my_turn", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -823,6 +823,14 @@ func set_throw_position(x: int, y: int):
 	throw_pos_x = x
 	throw_pos_y = y
 
+func get_penalty_damage_modifier():
+	if penalty_ticks > 0:
+		return "2.0"
+	if penalty < 0:
+		return "1.0"
+	return fixed.add("1.0", fixed.div(str(penalty), str(MAX_PENALTY)))
+
+
 func take_damage(damage: int, minimum=0):
 	if opponent.combo_count == 0:
 		trail_hp = hp
@@ -833,6 +841,7 @@ func take_damage(damage: int, minimum=0):
 	damage = Utils.int_max(combo_stale_damage(damage), 1)
 	damage = Utils.int_max(damage, minimum)
 	damage = Utils.int_max(guts_stale_damage(damage), 1)
+	damage = fixed.round(fixed.mul(str(damage), get_penalty_damage_modifier()))
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
@@ -1151,6 +1160,9 @@ func tick():
 			add_penalty(1)
 		if dir != 0 and dir == opp_dir and current_tick % 4 == 0:
 			add_penalty(-1)
+		if current_tick % 6 == 0:
+			add_penalty(1)
+	
 	last_pos = pos
 	if penalty_ticks > 0:
 		penalty_ticks -= 1
@@ -1196,19 +1208,17 @@ func is_in_hurt_state():
 	return state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt or state.is_hurt_state
 
 func set_ghost_colors():
-	if !ghost_ready_set and (state_interruptable or dummy_interruptable):
-#		var first_color = Color("37ff44")
+	if not ghost_ready_set and (state_interruptable or dummy_interruptable or ghost_ready_tick!=null):
+#		print(current_state().name)
 		var first_color = Color.green
-#		var second_color = Color("bd5a19")
 		var second_color = Color.orange
 		ghost_ready_set = true
-		ghost_ready_tick = current_tick
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
 			set_color(first_color)
 			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting:
 				opponent.ghost_ready_set = true
 				opponent.set_color(first_color)
-		elif opponent.ghost_ready_tick < ghost_ready_tick:
+		elif ghost_ready_tick != null and opponent.ghost_ready_tick < ghost_ready_tick:
 			set_color(second_color)
 
 func set_facing(facing: int, force=false):

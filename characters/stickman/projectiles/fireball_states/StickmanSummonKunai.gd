@@ -30,6 +30,9 @@ func _frame_2():
 	host.stopped = true
 
 func _tick():
+	var pos = host.get_pos()
+	if(pos.x>=host.creator.stage_width-5 or pos.x<=5-host.creator.stage_width):
+		host.set_pos((host.creator.stage_width-6)*sign(pos.x),pos.y)
 	if host.stopped:
 		host.apply_grav() 
 		host.update_data()
@@ -37,6 +40,7 @@ func _tick():
 			host.set_vel(host.get_vel().x, "0")
 	host.apply_fric()
 	host.apply_forces()
+
 
 func _frame_23():
 	data.x = abs(data.x) * host.get_facing_int()

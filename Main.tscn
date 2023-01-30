@@ -996,6 +996,7 @@ align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -1838,6 +1839,56 @@ custom_constants/separation = 4
 unique_name_in_owner = true
 margin_bottom = 11.0
 
+[node name="RoadmapContainer" type="VBoxContainer" parent="UILayer/MainMenu"]
+unique_name_in_owner = true
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 149.0
+margin_bottom = 190.0
+
+[node name="RoadmapButton" type="Button" parent="UILayer/MainMenu/RoadmapContainer"]
+unique_name_in_owner = true
+margin_right = 46.0
+margin_bottom = 12.0
+size_flags_horizontal = 0
+toggle_mode = true
+action_mode = 0
+text = "ROADMAP"
+
+[node name="RoadmapListContainer" type="VBoxContainer" parent="UILayer/MainMenu/RoadmapContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 13.0
+margin_right = 147.0
+margin_bottom = 188.0
+
+[node name="Complete2" type="Label" parent="UILayer/MainMenu/RoadmapContainer/RoadmapListContainer"]
+margin_right = 147.0
+margin_bottom = 95.0
+text = "Hi it's me ivy sly the develogrammer of this game!
+the base game is all done but i plan to add cool new stuff over time so here's all that :)
+"
+autowrap = true
+
+[node name="Complete" type="Label" parent="UILayer/MainMenu/RoadmapContainer/RoadmapListContainer"]
+modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
+margin_top = 96.0
+margin_right = 147.0
+margin_bottom = 121.0
+text = "Complete:
+- Base game"
+autowrap = true
+
+[node name="Incomplete" type="Label" parent="UILayer/MainMenu/RoadmapContainer/RoadmapListContainer"]
+modulate = Color( 1, 1, 1, 0.482353 )
+margin_top = 122.0
+margin_right = 147.0
+margin_bottom = 175.0
+text = "Incomplete:
+- More characters
+- Steam workshop
+- Idk other stuff probably"
+
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -2329,6 +2380,7 @@ script = ExtResource( 56 )
 
 [connection signal="pressed" from="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
+[connection signal="toggled" from="UILayer/MainMenu/RoadmapContainer/RoadmapButton" to="UILayer" method="_on_RoadmapButton_toggled"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]
 [connection signal="pressed" from="UILayer/SoftlockResetButton" to="UILayer" method="_on_SoftlockResetButton_pressed"]

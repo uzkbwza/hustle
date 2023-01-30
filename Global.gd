@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "0.12.1-steam"
+var VERSION = "0.12.6-steam"
 
 var audio_player
 var music_enabled = true

@@ -92,7 +92,7 @@ func _ready():
 	Network.connect("sync_timer_request", self, "_on_sync_timer_request")
 	Network.connect("check_players_ready", self, "check_players_ready")
 	Network.connect("force_open_action_buttons", self, "on_player_actionable")
-		
+
 	SteamLobby.connect("join_lobby_success", self, "_on_join_lobby_success")
 	
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
@@ -124,17 +124,16 @@ func _ready():
 	if !SteamHustle.STARTED:
 		$"%SteamMultiplayerButton".hide()
 		$"%WishlistButton".show()
-		
+		$"%RoadmapContainer".hide()
+		$"%CustomizeButton".hide()
 #		$"%CustomizeButton".hide()
 #		$"%EnableStyleColorsButton".hide()
 #		$"%EnableAurasButton".hide()
 #		$"%EnableHitsparksButton".hide()
 	else:
 		$"%WishlistButton".hide()
+		$"%RoadmapContainer".show()
 		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
-	
-	if !SteamHustle.STARTED:
-		$"%CustomizeButton".hide()
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
 	quit_on_rematch = false
@@ -185,6 +184,8 @@ func toggle_help_screen():
 	$"%HelpScreen".visible = !$"%HelpScreen".visible
 
 func _on_join_lobby_success():
+	if is_instance_valid(Global.current_game):
+		return
 	$"%HudLayer".hide()
 	$"%SteamLobbyList".hide()
 	$"%SteamLobby".show()
@@ -391,6 +392,7 @@ func on_game_started():
 	$MainMenu.hide()
 
 func _on_singleplayer_pressed():
+	SteamLobby.leave_Lobby()
 	emit_signal("singleplayer_started")
 
 func _on_direct_connect_button_pressed():
@@ -398,6 +400,7 @@ func _on_direct_connect_button_pressed():
 	$"%MainMenu".hide()
 
 func _on_multiplayer_pressed():
+	SteamLobby.leave_Lobby()
 	lobby.show()
 	$"%MainMenu".hide()
 	
@@ -669,4 +672,9 @@ func _on_ClearParticlesButton_pressed():
 			game.get_player(1).aura_particle.restart()
 		if game.get_player(2).aura_particle:
 			game.get_player(2).aura_particle.restart()
+	pass # Replace with function body.
+
+
+func _on_RoadmapButton_toggled(button_pressed):
+	$"%RoadmapListContainer".visible = button_pressed
 	pass # Replace with function body.

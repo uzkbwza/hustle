@@ -158,6 +158,8 @@ func is_usable():
 	if uses_air_movement:
 		if host.air_movements_left <= 0:
 			return false
+	if type == ActionType.Defense and host.penalty_ticks > 0:
+		return false
 	return true
 
 func get_categories(string: String):

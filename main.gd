@@ -60,7 +60,6 @@ func _ready():
 	$"%P2ShowStyle".connect("toggled", self, "_on_show_style_toggled", [2])
 	ReplayManager.replaying_ingame = false
 	SteamHustle.print_all_achievements()
-	
 
 func _on_show_style_toggled(on, player_id):
 	if is_instance_valid(game):

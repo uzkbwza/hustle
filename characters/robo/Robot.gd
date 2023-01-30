@@ -126,7 +126,7 @@ func tick():
 			loic_meter += LOIC_GAIN
 		else:
 			loic_meter += LOIC_GAIN_NO_ARMOR
-	if loic_meter >= LOIC_METER:
+	if loic_meter >= LOIC_METER and supers_available > 0:
 		if !can_loic:
 			play_sound("LOICBeep")
 		can_loic = true

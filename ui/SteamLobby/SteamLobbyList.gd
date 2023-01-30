@@ -101,6 +101,5 @@ func _on_SteamLobbyList_visibility_changed():
 		$"%RefreshTimer".stop()
 	pass # Replace with function body.
 
-
 func _on_FilterIncompatibleButton_toggled(button_pressed):
 	_on_lobby_match_list_received(lobbies)

@@ -552,6 +552,7 @@ func activate():
 	
 	if !fighter.busy_interrupt:
 		fighter_extra.show()
+		fighter_extra.show_behind_parent = true
 		fighter_extra.show_options()
 	fighter_extra.reset()
 	

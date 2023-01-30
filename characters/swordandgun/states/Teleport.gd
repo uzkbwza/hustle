@@ -4,16 +4,18 @@ const MOVE_DIST = "200"
 const BACKWARDS_STALL_FRAMES = 5
 const BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA = 5
 const UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA = 5
-const EXTRA_FRAME_PER = "0.45"
+const EXTRA_FRAME_PER = "1000"
 const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
 const MOMENTUM_FORCE = "16.0"
-const CROSS_THROUGH_RECOVERY = 10
+const CROSS_THROUGH_RECOVERY = 8
+const FORWARD_SUPER = 50
 
 var backwards_stall_frames = 0
 var starting_dir = 0
 var extra_frames = 0
 var in_place = false
+var forward = false
 
 func _frame_0():
 	starting_dir = host.get_opponent_dir()
@@ -21,6 +23,7 @@ func _frame_0():
 	backwards_stall_frames = 0
 	host.start_throw_invulnerability()
 	var comboing = false
+	forward = false
 	var scaled = xy_to_dir(data.x, data.y)
 	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
 	if super_level > 0:
@@ -32,15 +35,20 @@ func _frame_0():
 		if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
 			comboing = true
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
-	var backwards = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
+	var backward = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
 	if fixed.gt(fixed.abs(scaled.x), "0.5"):
-		if backwards:
+		if backward:
+			host.add_penalty(10)
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
 			if !comboing:
 				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
+		else:
+			host.add_penalty(-5)
+	forward = !(backward or in_place)
 	if !comboing and fixed.lt(scaled.y, "-0.2"):
 		backwards_stall_frames += UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA
-	extra_frames = fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backwards else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
+		host.add_penalty(10)
+	extra_frames = fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backward else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
 	iasa_at += extra_frames
 #	starting_iasa_at = iasa_at
 
@@ -65,7 +73,10 @@ func _frame_5():
 
 func _frame_6():
 	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0:
-		iasa_at = iasa_at + extra_frames * 4
+		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
+	if forward:
+		if host.combo_count <= 0:
+			host.gain_super_meter(FORWARD_SUPER)
 	host.update_facing()
 
 func _frame_7():

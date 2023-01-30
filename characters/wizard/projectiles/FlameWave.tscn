@@ -37,8 +37,10 @@ frames = SubResource( 1 )
 script = ExtResource( 2 )
 particle_scene = ExtResource( 4 )
 move_x = 6
+clash = false
 num_hits = 5
 lifetime = 60
+fizzle_on_walls = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000

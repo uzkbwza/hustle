@@ -13,6 +13,8 @@ export var max_homing_speed = "10"
 export var start_homing = false
 export var lifetime = 99999
 export var relative_data_dir = false
+export var clash = true
+export var num_hits = 1
 
 var hit_something = false
 var hit_something_tick = 0
@@ -86,5 +88,11 @@ func fizzle():
 	terminate_hitboxes()
 	hit_something_tick = current_tick
 
-func _on_hit_something(_obj, _hitbox):
-	fizzle()
+func _on_hit_something(obj, _hitbox):
+	if clash:
+		if obj is BaseProjectile:
+			if !obj.deletes_other_projectiles:
+				return
+		num_hits -= 1
+		if num_hits == 0:
+			fizzle()
