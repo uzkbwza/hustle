@@ -33,7 +33,7 @@ scroll_horizontal_enabled = false
 [node name="GameSettingsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 margin_right = 152.0
-margin_bottom = 306.0
+margin_bottom = 319.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -369,11 +369,23 @@ pressed = true
 text = "DI Enabled"
 expand_icon = true
 
-[node name="ClashingEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+[node name="SadnessEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
 margin_top = 216.0
 margin_right = 152.0
 margin_bottom = 228.0
+hint_tooltip = "Fighters playing passively can get sad, increasing damage taken and reducing meter gai
+n."
+size_flags_horizontal = 15
+pressed = true
+text = "Sadness Enabled"
+expand_icon = true
+
+[node name="ClashingEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
+margin_top = 229.0
+margin_right = 152.0
+margin_bottom = 241.0
 hint_tooltip = "Enables melee attack clashing."
 size_flags_horizontal = 15
 pressed = true
@@ -382,9 +394,9 @@ expand_icon = true
 
 [node name="AsymmetricalClashing" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 229.0
+margin_top = 242.0
 margin_right = 152.0
-margin_bottom = 241.0
+margin_bottom = 254.0
 hint_tooltip = "Clashes will occur even if one hitbox would hit the opponent while the other wouldn't. Enable for \"cinematic\" gameplay, might break balance."
 size_flags_horizontal = 15
 text = "Asymmetrical Clashing"
@@ -392,9 +404,9 @@ expand_icon = true
 
 [node name="TurboMode" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 242.0
+margin_top = 255.0
 margin_right = 152.0
-margin_bottom = 254.0
+margin_bottom = 267.0
 hint_tooltip = "Freely cancel moves into other moves."
 size_flags_horizontal = 15
 text = "Turbo Mode"
@@ -402,9 +414,9 @@ expand_icon = true
 
 [node name="ExtremelyTurboMode" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 255.0
+margin_top = 268.0
 margin_right = 152.0
-margin_bottom = 267.0
+margin_bottom = 280.0
 hint_tooltip = "Enable at your own risk. Don't say I didn't warn you."
 size_flags_horizontal = 15
 text = "Extremely Turbo Mode"
@@ -412,9 +424,9 @@ expand_icon = true
 
 [node name="InfiniteResources" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 268.0
+margin_top = 281.0
 margin_right = 152.0
-margin_bottom = 280.0
+margin_bottom = 293.0
 hint_tooltip = "Never run out of super-meter or other character-specific resources."
 size_flags_horizontal = 15
 text = "Infinite Resources"
@@ -422,9 +434,9 @@ expand_icon = true
 
 [node name="OneHitKO" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 281.0
+margin_top = 294.0
 margin_right = 152.0
-margin_bottom = 293.0
+margin_bottom = 306.0
 hint_tooltip = "Both players have 1 HP."
 size_flags_horizontal = 15
 text = "One-Hit KO"
@@ -432,9 +444,9 @@ expand_icon = true
 
 [node name="AlwaysPerfectParry" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 294.0
+margin_top = 307.0
 margin_right = 152.0
-margin_bottom = 306.0
+margin_bottom = 319.0
 hint_tooltip = "Every block is a parry and lets you act immediately."
 size_flags_horizontal = 15
 text = "Always Perfect Parry"

@@ -34,6 +34,7 @@ onready var settings_nodes = {
 	"global_hitstop_modifier": $"%HitstopModifier",
 	"global_gravity_modifier": $"%GravityModifier",
 	"ceiling_height": $"%CeilingHeight",
+	"sadness_enabled": $"%SadnessEnabled",
 }
 
 var float_to_string = [

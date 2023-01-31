@@ -301,7 +301,7 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="SpriteFrames" id=8]
+[sub_resource type="SpriteFrames" id=10]
 animations = [ {
 "frames": [ ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 30 ) ],
 "loop": true,
@@ -593,7 +593,7 @@ animations = [ {
 "name": "SparkBomb",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 242 ), ExtResource( 243 ), ExtResource( 244 ), ExtResource( 245 ), ExtResource( 246 ), ExtResource( 240 ), ExtResource( 247 ), ExtResource( 241 ), ExtResource( 238 ), ExtResource( 235 ), ExtResource( 236 ), ExtResource( 237 ), ExtResource( 234 ), ExtResource( 233 ), ExtResource( 239 ) ],
+"frames": [ ExtResource( 242 ), ExtResource( 242 ), ExtResource( 243 ), ExtResource( 243 ), ExtResource( 244 ), ExtResource( 244 ), ExtResource( 245 ), ExtResource( 245 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 240 ), ExtResource( 240 ), ExtResource( 240 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 241 ), ExtResource( 241 ), ExtResource( 241 ), ExtResource( 241 ), ExtResource( 241 ), ExtResource( 238 ), ExtResource( 238 ), ExtResource( 238 ), ExtResource( 235 ), ExtResource( 235 ), ExtResource( 235 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 236 ), ExtResource( 237 ), ExtResource( 237 ), ExtResource( 237 ), ExtResource( 234 ), ExtResource( 234 ), ExtResource( 234 ), ExtResource( 233 ), ExtResource( 233 ), ExtResource( 233 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ), ExtResource( 239 ) ],
 "loop": true,
 "name": "Taunt",
 "speed": 5.0
@@ -681,7 +681,7 @@ player_extra_params_scene = ExtResource( 3 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
-frames = SubResource( 8 )
+frames = SubResource( 10 )
 animation = "ConjureWeapon"
 frame = 13
 

@@ -176,6 +176,7 @@ var one_hit_ko = false
 var burst_enabled = true
 var always_perfect_parry = false
 var blocked_last_hit = false
+var sadness_enabled = false
 
 var trail_hp: int = MAX_HEALTH
 var hp: int = 0
@@ -1192,6 +1193,8 @@ func tick():
 				emote(ReplayManager.frames.emotes[id][current_tick])
 
 func add_penalty(amount):
+	if !sadness_enabled:
+		return
 	penalty += amount
 	if penalty > MAX_PENALTY:
 		supers_available = 0

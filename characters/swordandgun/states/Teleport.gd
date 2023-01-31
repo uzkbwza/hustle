@@ -16,6 +16,7 @@ var starting_dir = 0
 var extra_frames = 0
 var in_place = false
 var forward = false
+var x_dist = "0"
 
 func _frame_0():
 	starting_dir = host.get_opponent_dir()
@@ -26,6 +27,7 @@ func _frame_0():
 	forward = false
 	var scaled = xy_to_dir(data.x, data.y)
 	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
+	x_dist = fixed.abs(scaled.x)
 	if super_level > 0:
 		iasa_at = 7
 #		starting_iasa_at = iasa_at
@@ -36,7 +38,7 @@ func _frame_0():
 			comboing = true
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
 	var backward = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
-	if fixed.gt(fixed.abs(scaled.x), "0.5"):
+	if fixed.gt(x_dist, "0.5"):
 		if backward:
 			host.add_penalty(10)
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
@@ -72,11 +74,11 @@ func _frame_5():
 	host.update_data()
 
 func _frame_6():
-	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0:
+	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0:
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
 	if forward:
 		if host.combo_count <= 0:
-			host.gain_super_meter(FORWARD_SUPER)
+			host.gain_super_meter(fixed.round(fixed.mul(FORWARD_SUPER, x_dist)))
 	host.update_facing()
 
 func _frame_7():

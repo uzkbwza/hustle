@@ -37,6 +37,11 @@ func tick(host):
 		ended = true
 		end(host)
 
+func copy_to(hurtbox_state):
+	hurtbox_state.current_tick = current_tick
+	if prev_state:
+		hurtbox_state.prev_state = prev_state.duplicate(true)
+
 func end(host):
 	if not started:
 		return

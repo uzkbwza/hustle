@@ -253,7 +253,7 @@ func update_hurtbox():
 			current_hurtbox.end(host)
 		current_hurtbox = hurtbox_state_change_frames[current_tick]
 		current_hurtbox.start(host)
-
+		
 func copy_data():
 	var d = null
 	if data:
@@ -273,6 +273,15 @@ func copy_to(state: ObjectState):
 	state.data = copy_data()
 	state.current_real_tick = current_real_tick
 	state.current_tick = current_real_tick
+
+func copy_hurtbox_states(state: ObjectState):
+	for i in range(get_child_count()):
+		var child = get_child(i)
+		if child is HurtboxState:
+			if child.started:
+				state.get_child(i).start(state.host)
+				state.current_hurtbox = state.get_child(i)
+			child.copy_to(state.get_child(i))
 
 func activate_hitbox(hitbox):
 	hitbox.activate()

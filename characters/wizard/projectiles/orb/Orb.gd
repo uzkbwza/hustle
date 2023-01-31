@@ -137,7 +137,7 @@ func spawn_lightning():
 	play_sound("Lightning")
 	if strikes_left > 0:
 		strikes_left -= 1
-		strike_ticks_left = 10
+		strike_ticks_left = 15
 
 func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)

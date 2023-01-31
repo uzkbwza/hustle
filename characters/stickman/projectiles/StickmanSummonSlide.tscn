@@ -35,6 +35,7 @@ material = SubResource( 2 )
 z_index = -1
 gravity = "0.37"
 ground_friction = "0.6"
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 modulate = Color( 1, 1, 1, 0.92549 )
@@ -71,6 +72,7 @@ x = 10
 y = -6
 width = 21
 height = 6
+damage = 65
 hitstun_ticks = 50
 victim_hitlag = 4
 hit_height = 2

@@ -472,38 +472,38 @@ func initialize_objects():
 			object.init()
 
 func tick():
-	if is_ghost and !prediction_enabled:
-		return
+	if is_ghost and not prediction_enabled:
+		return 
 	if quitter_focus and quitter_focus_ticks > 0:
 		if (QUITTER_FOCUS_TICKS - quitter_focus_ticks) % 10 == 0:
 			if forfeit_player:
 				forfeit_player.toggle_quit_graphic()
 		quitter_focus_ticks -= 1
-		return
-	else:
+		return 
+	else :
 		if forfeit_player:
 			forfeit_player.toggle_quit_graphic(false)
 		quitter_focus = false
 	frame_passed = true
-	if !singleplayer:
-		if !is_ghost:
+	if not singleplayer:
+		if not is_ghost:
 			Network.reset_action_inputs()
 
 	clean_objects()
 	for object in objects:
 		if object.disabled:
 			continue
-		if !object.initialized:
+		if not object.initialized:
 			object.init()
 		
 		object.tick()
 		var pos = object.get_pos()
-		if pos.x < -stage_width:
-			object.set_pos(-stage_width, pos.y)
+		if pos.x < - stage_width:
+			object.set_pos( - stage_width, pos.y)
 		elif pos.x > stage_width:
 			object.set_pos(stage_width, pos.y)
-		if has_ceiling and pos.y < -ceiling_height:
-			object.set_y(-ceiling_height)
+		if has_ceiling and pos.y < - ceiling_height:
+			object.set_y( - ceiling_height)
 			object.on_hit_ceiling()
 
 	for fx in effects:
@@ -513,16 +513,18 @@ func tick():
 	
 	p1.current_tick = current_tick
 	p2.current_tick = current_tick
-#	p1.initiative = (p1.current_state().current_tick > p2.current_state().current_tick) or p1.parried_last_state
-#	p2.initiative = (p2.current_state().current_tick > p1.current_state().current_tick) or p2.parried_last_state
-	p1.lowest_tick = -1
-	p2.lowest_tick = -1
-	p1.tick_before()
-	p2.tick_before()
-	p1.update_advantage()
-	p2.update_advantage()
-	p1.tick()
-	p2.tick()
+
+
+	p1.lowest_tick = - 1
+	p2.lowest_tick = - 1
+	var players = resolve_port_priority()
+	
+	players[0].tick_before()
+	players[1].tick_before()
+	players[0].update_advantage()
+	players[1].update_advantage()
+	players[0].tick()
+	players[1].tick()
 	
 	resolve_same_x_coordinate()
 	initialize_objects()
@@ -533,38 +535,117 @@ func tick():
 	p1_data = p1.data
 	p2_data = p2.data
 
-	if (p1.state_interruptable or p1.dummy_interruptable) and !p1.busy_interrupt:
+	if (p1.state_interruptable or p1.dummy_interruptable) and not p1.busy_interrupt:
 		p2.reset_combo()
 		
-	if (p2.state_interruptable or p2.dummy_interruptable) and !p2.busy_interrupt:
+	if (p2.state_interruptable or p2.dummy_interruptable) and not p2.busy_interrupt:
 		p1.reset_combo()
 
 	
 	if is_ghost:
-		if !ghost_hidden:
-			if !visible and current_tick >= 0:
+		if not ghost_hidden:
+			if not visible and current_tick >= 0:
 				show()
-		return
+		return 
 
-	if !game_finished:
+	if not game_finished:
 		if ReplayManager.playback:
-			if !ReplayManager.resimulating:
+			if not ReplayManager.resimulating:
 				is_in_replay = true
-				if current_tick > max_replay_tick and !(ReplayManager.frames.has("finished") and ReplayManager.frames.finished):
+				if current_tick > max_replay_tick and not (ReplayManager.frames.has("finished") and ReplayManager.frames.finished):
 					ReplayManager.set_deferred("playback", false)
-			else:
+			else :
 				if current_tick > (ReplayManager.resim_tick if ReplayManager.resim_tick >= 0 else max_replay_tick - 2):
-					if !Network.multiplayer_active:
+					if not Network.multiplayer_active:
 						ReplayManager.playback = false
 					ReplayManager.resimulating = false
 					camera.reset_shake()
-	else:
+	else :
 		ReplayManager.frames.finished = true
 	if should_game_end():
 		if started_multiplayer:
-			if !ReplayManager.playback:
+			if not ReplayManager.playback:
 				Network.autosave_match_replay(match_data, p1_username, p2_username)
 		end_game()
+
+var priorities = [
+	funcref(self,"comboing"),
+	funcref(self,"attacks"),
+	funcref(self,"lower_sadness"),
+	funcref(self,"forward_movement"),
+	funcref(self,"lower_health")
+]
+func resolve_port_priority():
+	var priority = 0
+	var p1_state = p1.current_state()
+	var p2_state = p2.current_state()
+	for p in priorities:
+		priority = p.call_func(p1_state,p2_state)
+		if(priority>0):
+			break
+	priority = max(1,priority)
+	return [p1,p2] if priority==1 else [p2,p1]
+
+func comboing(p1_state,p2_state):
+	if(p1_state.is_hurt_state):
+		return 2
+	if(p2_state.is_hurt_state):
+		return 1
+	return 0
+
+func attacks(p1_state,p2_state):
+	var p1_hitboxes = []
+	var p2_hitboxes = []
+	for c in p1_state.get_children():
+		if(c is Hitbox):
+			p1_hitboxes.append(c)
+	for c in p2_state.get_children():
+		if(c is Hitbox):
+			p2_hitboxes.append(c)
+	if(p1_hitboxes.size()==0 and p2_hitboxes.size()==0):
+		return 0
+	if(p1_hitboxes.size()==0):
+		return 2
+	if(p2_hitboxes.size()==0):
+		return 1
+	var p1_start_tick = 999
+	var p2_start_tick = 999
+	var p1_damage = 0
+	var p2_damage = 0
+	for h in p1_hitboxes:
+		if(h.start_tick<p1_start_tick):
+			p1_start_tick = h.start_tick
+			p1_damage = h.damage
+	for h in p2_hitboxes:
+		if(h.start_tick<p2_start_tick):
+			p2_start_tick = h.start_tick
+			p2_damage = h.damage
+	if(p1_start_tick!=p2_start_tick):
+		return 1 if p1_start_tick>p2_start_tick else 2
+	if(p1_damage!=p2_damage):
+		return 1 if p1_damage>p2_damage else 2
+	return 0
+
+func lower_sadness(_1,_2):
+	if(abs(p1.penalty-p2.penalty)<10):
+		return 0
+	return 1 if p1.penalty<p2.penalty else 2
+
+func forward_movement(p1_state,p2_state):
+	if(p1_state.beats_backdash and !p2_state.beats_backdash):
+		return 1
+	elif(p1_state.beats_backdash):
+		pass
+	elif(p2_state.beats_backdash):
+		return 2
+	return 0
+
+func lower_health(_1,_2):
+	var p1_hp = p1.hp/p1.MAX_HEALTH
+	var p2_hp = p2.hp/p2.MAX_HEALTH
+	if(p1_hp==p2_hp):
+		return 0
+	return 1 if p1_hp<p2_hp else 2
 
 func int_abs(n: int):
 	if n < 0:
@@ -779,10 +860,10 @@ func apply_hitboxes():
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else:
 		if p1_hit:
-			if p1_hit_by.active:
+#			if p1_hit_by.active:
 				p1_hit_by.hit(p1)
 		if p2_hit:
-			if p2_hit_by.active:
+#			if p2_hit_by.active:
 				p2_hit_by.hit(p2)
 
 	if !p2_hit and !p1_hit:

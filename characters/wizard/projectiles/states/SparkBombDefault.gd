@@ -1,9 +1,9 @@
 extends DefaultFireball
 
 const ACTIVATE_DISTANCE = "24"
-const MIN_LIFETIME = 20
+const MIN_LIFETIME = 16
 const Y_FRIC = "0.05"
-const MOVE_SPEED = "1.25"
+const MOVE_SPEED = "1.5"
 const AVOID_SPEED = "0.50"
 const AVOID_DISTANCE = "24.0"
 

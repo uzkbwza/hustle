@@ -257,7 +257,9 @@ func copy_to(o: BaseObj):
 		o.state_machine.queued_states.append(state)
 	for datum in state_machine.queued_data:
 		o.state_machine.queued_data.append(datum)
-	
+
+	for state in o.state_machine.states_map:
+		state_machine.states_map[state].copy_hurtbox_states(o.state_machine.states_map[state])
 
 func get_frames():
 	return ReplayManager.frames[id]
