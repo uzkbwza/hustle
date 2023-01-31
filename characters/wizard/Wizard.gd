@@ -11,6 +11,9 @@ const HOVER_GROUND_FRIC = "0.025"
 const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
 const ORB_PUSH_SPEED = "8.5"
+const TETHER_FALLOFF = "0.95"
+const TETHER_SPEED = "1.0"
+const TETHER_TICKS = 90
 
 var hover_left = 0
 var hover_drain_amount = 12
@@ -20,6 +23,7 @@ var hovering = false
 var ghost_started_hovering = false
 var fast_falling = false
 var gusts_in_combo = 0
+var tether_ticks = 0
 
 var orb_projectile
 var can_flame_wave = true
@@ -117,6 +121,18 @@ func tick():
 				var force = fixed.normalized_vec_times(str(current_orb_push.x), str(current_orb_push.y), ORB_PUSH_SPEED)
 				objs_map[orb_projectile].push(force.x, force.y)
 		current_orb_push = null
+
+	if tether_ticks > 0:
+		if orb_projectile and !is_grounded():
+			var orb = objs_map[orb_projectile]
+			if !orb.disabled:
+				var dir = obj_local_center(orb)
+				var falloff_power = fixed.round(fixed.div(str(TETHER_TICKS - tether_ticks), "3"))
+				var force = fixed.normalized_vec_times(str(dir.x), str(dir.y), fixed.mul(TETHER_SPEED, fixed.powu(TETHER_FALLOFF, falloff_power)))
+				apply_force(force.x, force.y)
+		tether_ticks -= 1
+		if is_grounded():
+			tether_ticks = 0
 
 	if combo_count <= 0 and !opponent.current_state().endless:
 		gusts_in_combo = 0

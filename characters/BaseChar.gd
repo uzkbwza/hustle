@@ -500,11 +500,13 @@ func stack_move_in_combo(move_name):
 		combo_moves_used[move_name] = 1
 
 func meter_gain_modified(amount):
-	if penalty > 0:
-		var pen = fixed.div(str(penalty), str(MAX_PENALTY))
-		amount = fixed.round(fixed.mul(fixed.sub("1", pen), str(amount)))
+#	if penalty > 0:
 	if penalty_ticks > 0:
 		return 0
+	var pen = fixed.div(str(penalty), str(MAX_PENALTY))
+	if penalty <= 0:
+		pen = fixed.div(pen, "5.0")
+	amount = fixed.round(fixed.mul(fixed.sub("1", pen), str(amount)))
 	return amount
 
 func gain_super_meter(amount):
@@ -1160,7 +1162,7 @@ func tick():
 			add_penalty(1)
 		if dir != 0 and dir == opp_dir and current_tick % 4 == 0:
 			add_penalty(-1)
-		if current_tick % 6 == 0:
+		if current_tick % 7 == 0:
 			add_penalty(1)
 	
 	last_pos = pos

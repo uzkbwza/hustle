@@ -1,4 +1,4 @@
-[gd_scene load_steps=230 format=2]
+[gd_scene load_steps=229 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -182,7 +182,6 @@
 [ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab5.png" type="Texture" id=180]
 [ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab2.png" type="Texture" id=181]
 [ext_resource path="res://characters/stickman/sprites/sway_slide_kick1.png" type="Texture" id=182]
-[ext_resource path="res://characters/stickman/sprites/palm_strike1.png" type="Texture" id=183]
 [ext_resource path="res://characters/stickman/sprites/palm_strike6.png" type="Texture" id=184]
 [ext_resource path="res://characters/stickman/sprites/backsway1.png" type="Texture" id=185]
 [ext_resource path="res://characters/stickman/sprites/sticky_bomb_grab3.png" type="Texture" id=186]
@@ -432,7 +431,7 @@ animations = [ {
 "name": "NunChukSpin",
 "speed": 60.0
 }, {
-"frames": [ ExtResource( 183 ), ExtResource( 183 ), ExtResource( 188 ), ExtResource( 191 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 184 ), ExtResource( 184 ) ],
+"frames": [ ExtResource( 188 ), ExtResource( 191 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 187 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 175 ), ExtResource( 184 ), ExtResource( 184 ) ],
 "loop": true,
 "name": "PalmStrike",
 "speed": 5.0
@@ -1205,12 +1204,13 @@ x = 15
 y = -30
 width = 11
 height = 11
-damage = 100
+damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
+grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
 
@@ -1225,6 +1225,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+priority = 1
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
@@ -1243,6 +1244,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+priority = 2
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
@@ -1813,7 +1815,7 @@ script = ExtResource( 74 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 31
+anim_length = 29
 enter_force_dir_x = "1.0"
 enter_force_speed = "3.0"
 type = 1
@@ -1844,7 +1846,7 @@ hit_sound = ExtResource( 44 )
 dir_y = "-0.1"
 knockback = "20"
 wall_slam = true
-start_tick = 5
+start_tick = 3
 
 [node name="SlideKick" type="Node2D" parent="StateMachine" index="57"]
 script = ExtResource( 58 )

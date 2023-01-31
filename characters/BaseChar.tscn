@@ -1199,11 +1199,12 @@ interrupt_into_string = "AerialThrow"
 
 [node name="Grab" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 86 )
-anim_length = 23
+anim_length = 15
 type = 1
 button_texture = ExtResource( 112 )
 throw_techable = true
 instant_cancellable = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 GroundedAttack
 GroundedGrab"
@@ -1227,13 +1228,14 @@ throw_state = "Hold"
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 86 )
 sprite_animation = "Grab"
-anim_length = 23
+anim_length = 15
 title = "Grab"
 type = 1
 button_texture = ExtResource( 112 )
 air_type = 1
 throw_techable = true
 instant_cancellable = false
+can_feint_if_possible = false
 interrupt_from_string = "Aerial
 AerialAttack
 AerialGrab"
@@ -1280,6 +1282,7 @@ hitstun_ticks = 30
 knockback = "10.0"
 dir_y = "-0.30"
 knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
 damage = 150
 damage_in_combo = 90
 
@@ -1309,6 +1312,7 @@ hitstun_ticks = 30
 knockback = "10.0"
 dir_y = "-0.30"
 knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
 damage = 150
 damage_in_combo = 90
 reverse = true
@@ -1339,6 +1343,7 @@ release_throw_pos_y = -10
 hitstun_ticks = 30
 knockback = "10.0"
 knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
 damage = 150
 damage_in_combo = 90
 
@@ -1368,6 +1373,7 @@ release_throw_pos_y = -10
 hitstun_ticks = 30
 knockback = "10.0"
 knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
 damage = 150
 damage_in_combo = 90
 reverse = true
@@ -1399,6 +1405,7 @@ knockback = "10.0"
 dir_x = "0.10"
 dir_y = "1.0"
 knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
 damage = 150
 damage_in_combo = 90
 

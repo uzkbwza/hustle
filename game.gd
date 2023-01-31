@@ -779,9 +779,11 @@ func apply_hitboxes():
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else:
 		if p1_hit:
-			p1_hit_by.hit(p1)
+			if p1_hit_by.active:
+				p1_hit_by.hit(p1)
 		if p2_hit:
-			p2_hit_by.hit(p2)
+			if p2_hit_by.active:
+				p2_hit_by.hit(p2)
 
 	if !p2_hit and !p1_hit:
 		if p2_throwing and p1_throwing and p1.current_state().throw_techable and p2.current_state().throw_techable:

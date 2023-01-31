@@ -213,7 +213,7 @@ func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
-	host.add_penalty(-50)
+	host.add_penalty(-25)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
 		if obj == host.opponent and obj.has_armor():

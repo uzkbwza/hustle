@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
@@ -28,6 +28,7 @@
 [ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword8.png" type="Texture" id=26]
 [ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=27]
 [ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=28]
+[ext_resource path="res://sound/common/slash4.wav" type="AudioStream" id=29]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -67,7 +68,11 @@ extra_state_variables = "frozen
 locked
 push_ticks
 triggered_attacks
-push_dir"
+push_dir
+strikes_left
+strike_ticks_left"
+has_projectile_parry_window = false
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 4 )
@@ -130,20 +135,55 @@ sprite_animation = "Sword"
 anim_length = 23
 loop_animation = true
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/Sword" index="0"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Sword" index="0"]
 z_index = 1000
 script = ExtResource( 18 )
-width = 31
-height = 31
-damage = 40
+width = 30
+height = 30
+damage = 60
 hitstun_ticks = 18
 hitlag_ticks = 2
 victim_hitlag = 7
 sdi_modifier = "0.1"
+group = 1
 hit_sound = ExtResource( 27 )
 knockback = "4.0"
+start_tick = 3
+active_ticks = 3
+loop_active_ticks = 1
+loop_inactive_ticks = 1
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Sword" index="1"]
+z_index = 1000
+script = ExtResource( 18 )
+width = 35
+height = 35
+damage = 75
+hitstun_ticks = 18
+hitlag_ticks = 7
+victim_hitlag = 14
+sdi_modifier = "0.1"
+group = 2
+hit_sound = ExtResource( 29 )
+knockback = "4.0"
 start_tick = 11
-active_ticks = 4
-looping = true
+active_ticks = 2
+loop_active_ticks = 1
+loop_inactive_ticks = 1
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/Sword" index="2"]
+z_index = 1000
+script = ExtResource( 18 )
+width = 35
+height = 35
+damage = 75
+hitstun_ticks = 18
+hitlag_ticks = 7
+victim_hitlag = 14
+sdi_modifier = "0.1"
+hit_sound = ExtResource( 29 )
+knockback = "4.0"
+start_tick = 13
+active_ticks = 2
 loop_active_ticks = 1
 loop_inactive_ticks = 1

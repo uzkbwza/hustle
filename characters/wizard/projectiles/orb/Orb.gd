@@ -20,6 +20,10 @@ var frozen = false
 var locked = false
 
 var push_ticks = 0
+
+var strikes_left = 0
+var strike_ticks_left = 0
+
 var push_dir = null
 
 func _ready():
@@ -92,6 +96,14 @@ func attack(attack_type):
 		"Sword":
 			state_machine.queue_state("Sword")
 		"Lightning":
+			strikes_left += 2
+			spawn_lightning()
+
+func tick():
+	.tick()
+	if strike_ticks_left > 0:
+		strike_ticks_left -= 1
+		if strike_ticks_left == 0:
 			spawn_lightning()
 
 func push(fx, fy):
@@ -123,6 +135,9 @@ func spawn_lightning():
 		spawn_particle_effect_relative(PUSH_PARTICLE)
 	spawn_object(LIGHTNING_SCENE, pos.x, lightning_y, false, null, false)
 	play_sound("Lightning")
+	if strikes_left > 0:
+		strikes_left -= 1
+		strike_ticks_left = 10
 
 func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)
