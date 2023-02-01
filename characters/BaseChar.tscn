@@ -1478,12 +1478,12 @@ Prediction: "
 align = 1
 
 [node name="Node2D" type="Node2D" parent="." index="7"]
-visible = false
 scale = Vector2( 2, 2 )
 z_index = 4096
 
 [node name="QuitterLabel" type="Label" parent="Node2D" index="0"]
 unique_name_in_owner = true
+visible = false
 margin_left = -20.0
 margin_top = -30.0
 margin_right = 20.0

@@ -867,7 +867,8 @@ damage_taken_modifier = "0.85"
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 8 )
-animation = "DriveWheelieThrow"
+animation = "Step"
+frame = 8
 offset = Vector2( 0, -16 )
 
 [node name="ChainsawArm" type="AnimatedSprite" parent="Flip" index="1"]
@@ -875,7 +876,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1363,6 +1363,27 @@ z_index = 1000
 script = ExtResource( 83 )
 x = 9
 width = 31
+damage = 60
+hitstun_ticks = 14
+hitlag_ticks = 6
+victim_hitlag = 8
+damage_proration = 1
+hits_otg = true
+hit_height = 2
+screenshake_amount = 5
+whiff_sound = ExtResource( 91 )
+hit_sound = ExtResource( 75 )
+dir_y = "1.0"
+knockback = "4.0"
+knockdown = true
+start_tick = 9
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Step" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+y = -17
+width = 16
+height = 18
 damage = 60
 hitstun_ticks = 14
 hitlag_ticks = 6

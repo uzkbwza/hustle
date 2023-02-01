@@ -778,7 +778,7 @@ func resolve_collisions(step=0):
 
 func apply_hitboxes(players):
 	if not is_ghost:
-		pass
+		return
 	var px1 = players[0]
 	var px2 = players[1]
 	var p1_hitboxes = px1.get_active_hitboxes()
@@ -790,6 +790,7 @@ func apply_hitboxes(players):
 	var p1_throwing = false
 	var p2_throwing = false
 
+
 	if p1_hit_by:
 		if not (p1_hit_by is ThrowBox):
 
@@ -798,7 +799,7 @@ func apply_hitboxes(players):
 			p2_throwing = true
 			if not p1_hit_by.hits_otg and px1.is_otg():
 				p2_throwing = false
-			if p1.throw_invulnerable:
+			if px1.throw_invulnerable:
 				p2_throwing = false
 	if p2_hit_by:
 		if not (p2_hit_by is ThrowBox):
@@ -808,7 +809,7 @@ func apply_hitboxes(players):
 			p1_throwing = true
 			if not p2_hit_by.hits_otg and px2.is_otg():
 				p1_throwing = false
-			if p2.throw_invulnerable:
+			if px2.throw_invulnerable:
 				p1_throwing = false
 
 
@@ -857,8 +858,8 @@ func apply_hitboxes(players):
 					break
 
 	if clashed:
-		p1.clash()
-		p2.clash()
+		px1.clash()
+		px2.clash()
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else :
 		if p1_hit:
@@ -869,17 +870,17 @@ func apply_hitboxes(players):
 				p2_hit_by.hit(px2)
 
 	if not p2_hit and not p1_hit:
-		if p2_throwing and p1_throwing and p1.current_state().throw_techable and p2.current_state().throw_techable:
-				p1.state_machine.queue_state("ThrowTech")
-				p2.state_machine.queue_state("ThrowTech")
+		if p2_throwing and p1_throwing and px1.current_state().throw_techable and p2.current_state().throw_techable:
+				px1.state_machine.queue_state("ThrowTech")
+				px2.state_machine.queue_state("ThrowTech")
 				
-		elif p2_throwing and p1_throwing and not p1.current_state().throw_techable and not p2.current_state().throw_techable:
+		elif p2_throwing and p1_throwing and not px1.current_state().throw_techable and not p2.current_state().throw_techable:
 			return 
 
 		elif p1_throwing:
-			if p1.current_state().throw_techable and p2.current_state().throw_techable:
-				p1.state_machine.queue_state("ThrowTech")
-				p2.state_machine.queue_state("ThrowTech")
+			if px1.current_state().throw_techable and p2.current_state().throw_techable:
+				px1.state_machine.queue_state("ThrowTech")
+				px2.state_machine.queue_state("ThrowTech")
 				return 
 			var can_hit = true
 			if px2.is_grounded() and not p2_hit_by.hits_vs_grounded:
@@ -893,8 +894,8 @@ func apply_hitboxes(players):
 				return 
 
 		elif p2_throwing:
-			if p1.current_state().throw_techable and p2.current_state().throw_techable:
-				p1.state_machine.queue_state("ThrowTech")
+			if px1.current_state().throw_techable and p2.current_state().throw_techable:
+				px1.state_machine.queue_state("ThrowTech")
 				p2.state_machine.queue_state("ThrowTech")
 				return 
 			var can_hit = true
@@ -916,10 +917,10 @@ func apply_hitboxes(players):
 			continue
 		for p in [px1, px2]:
 			var p_hit_by
-			if p == p1:
+			if p == px1:
 				if object.id == 1 and not object.damages_own_team:
 					continue
-			if p == p2:
+			if p == px2:
 				if object.id == 2 and not object.damages_own_team:
 					continue
 
