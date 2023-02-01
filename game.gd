@@ -777,8 +777,6 @@ func resolve_collisions(step=0):
 			return resolve_collisions(step+1)
 
 func apply_hitboxes(players):
-	if not is_ghost:
-		return
 	var px1 = players[0]
 	var px2 = players[1]
 	var p1_hitboxes = px1.get_active_hitboxes()
@@ -793,7 +791,6 @@ func apply_hitboxes(players):
 
 	if p1_hit_by:
 		if not (p1_hit_by is ThrowBox):
-
 			p1_hit = true
 		else :
 			p2_throwing = true
@@ -863,7 +860,6 @@ func apply_hitboxes(players):
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else :
 		if p1_hit:
-
 				p1_hit_by.hit(px1)
 		if p2_hit:
 
@@ -917,10 +913,10 @@ func apply_hitboxes(players):
 			continue
 		for p in [px1, px2]:
 			var p_hit_by
-			if p == px1:
+			if p == p1:
 				if object.id == 1 and not object.damages_own_team:
 					continue
-			if p == px2:
+			if p == p2:
 				if object.id == 2 and not object.damages_own_team:
 					continue
 

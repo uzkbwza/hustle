@@ -2522,22 +2522,22 @@ speed = "7"
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="AirGrab" parent="StateMachine" index="77"]
+[node name="AirGrab" parent="StateMachine" index="78"]
 land_cancel = true
 
-[node name="ForwardThrow" parent="StateMachine" index="78"]
+[node name="ForwardThrow" parent="StateMachine" index="79"]
 knockback = "11.0"
 dir_y = "0.0"
 
-[node name="BackThrow" parent="StateMachine" index="79"]
+[node name="BackThrow" parent="StateMachine" index="80"]
 knockback = "11.0"
 dir_y = "0.0"
 
-[node name="AirDownThrow" parent="StateMachine" index="82"]
+[node name="AirDownThrow" parent="StateMachine" index="83"]
 dir_x = "1.0"
 dir_y = "1.00"
 
-[node name="Taunt" parent="StateMachine" index="84"]
+[node name="Taunt" parent="StateMachine" index="85"]
 script = ExtResource( 255 )
 anim_length = 61
 force_dir_x = "-1.0"
@@ -2559,9 +2559,3 @@ height = 5
 damage = 20
 start_tick = 24
 active_ticks = 2
-
-[node name="Node2D" parent="." index="7"]
-visible = true
-
-[node name="QuitterLabel" parent="Node2D" index="0"]
-visible = false

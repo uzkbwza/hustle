@@ -273,9 +273,9 @@ func copy_to(state: ObjectState):
 	state.data = copy_data()
 	state.current_real_tick = current_real_tick
 	state.current_tick = current_real_tick
-	for h in get_children():
-		if(h is Hitbox):
-			h.copy_to(state.get_node(h.name))
+#	for h in get_children():
+#	    if(h is Hitbox):
+#    	    h.copy_to(state.get_node(h.name))
 
 func copy_hurtbox_states(state: ObjectState):
 	for i in range(get_child_count()):

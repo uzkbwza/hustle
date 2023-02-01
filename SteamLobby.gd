@@ -198,6 +198,8 @@ func decline_challenge():
 	CHALLENGER_STEAM_ID = 0
 
 func quit_match():
+	if get_status() != "fighting":
+		return
 	if !SPECTATING and is_fighting():
 		if OPPONENT_ID != 0:
 			_send_P2P_Packet(OPPONENT_ID, {

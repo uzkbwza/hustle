@@ -25,7 +25,7 @@ func _frame_7():
 	center_x = pos.x
 	center_y = pos.y
 
-func _frame_10():
+func _frame_9():
 	var dir = Vector2(data["x"], data["y"]).normalized()
 	var pos = host.get_pos()
 	var obj = host.spawn_object(PROJECTILE,0,0)
@@ -51,4 +51,4 @@ func _frame_10():
 	for i in obj.hitboxes.size():
 		var h = obj.hitboxes[i]
 		h.name = host.name+"_HB_"+str(i)
-		h.activate()
+#		h.activate()

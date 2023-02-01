@@ -302,7 +302,8 @@ func _on_quit_button_pressed():
 				Network.stop_multiplayer()
 				get_tree().reload_current_scene()
 			else:
-				SteamLobby.quit_match()
+				if !SteamLobby.SPECTATING:
+					SteamLobby.quit_match()
 				Network.stop_multiplayer()
 				get_tree().reload_current_scene()
 
