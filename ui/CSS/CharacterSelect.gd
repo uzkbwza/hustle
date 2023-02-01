@@ -45,8 +45,8 @@ func _on_show_settings_toggled(on):
 
 func init(singleplayer=true):
 	emit_signal("opened")
-	if Network.steam:
-		$"%QuitButton".hide()
+#	if Network.steam:
+#		$"%QuitButton".hide()
 	for button in buttons:
 		button.disabled = false
 #	$"%ShowSettingsButton".show()
@@ -151,6 +151,8 @@ func _on_button_pressed(button):
 func quit():
 	if Network.multiplayer_active:
 		Network.stop_multiplayer()
+#	if SteamLobby.LOBBY_ID != 0:
+	SteamLobby.quit_match()
 	get_tree().reload_current_scene()
 
 func get_match_data():

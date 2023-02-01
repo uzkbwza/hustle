@@ -165,8 +165,8 @@ func on_match_started():
 	Steam.setLobbyMemberData(LOBBY_ID, "game_started", "true")
 
 func accept_challenge():
-	if CHALLENGER_STEAM_ID == 0:
-		return
+#	if CHALLENGER_STEAM_ID == 0:
+#		return
 	var steam_id = CHALLENGER_STEAM_ID
 	var match_settings = CHALLENGER_MATCH_SETTINGS
 	print("accepting challenge")
@@ -244,6 +244,7 @@ func leave_Lobby() -> void:
 		Steam.endAuthSession(ticket['id'])
 	CLIENT_TICKETS.clear()
 	AUTH_USERS.clear()
+	OPPONENT_ID = 0
 
 func send_chat_message(message: String) -> void:
 	# Get the entered chat message
@@ -308,10 +309,11 @@ func update_spectator_tick(tick):
 
 func cancel_challenge():
 	print("cancelling challenge")
-	if !CHALLENGING_STEAM_ID != 0:
+	if CHALLENGING_STEAM_ID != 0:
 		_send_P2P_Packet(CHALLENGING_STEAM_ID, {"challenge_cancelled": SteamHustle.STEAM_ID})
-		CHALLENGING_STEAM_ID = 0
-		Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
+	CHALLENGING_STEAM_ID = 0
+	OPPONENT_ID = 0
+	Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
 
 func _receive_challenge(steam_id, match_settings):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") != "idle":
@@ -365,6 +367,11 @@ func _read_All_P2P_Packets(read_count: int = 0):
 		_read_P2P_Packet()
 		_read_All_P2P_Packets(read_count + 1)
 
+func _on_opponent_challenge_accepted(steam_id):
+	PLAYER_SIDE = 1
+	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "1")
+	_setup_game_vs(steam_id)
+
 func _read_P2P_Packet() -> void:
 	var PACKET_SIZE: int = Steam.getAvailableP2PPacketSize(0)
 
@@ -392,14 +399,16 @@ func _read_P2P_Packet() -> void:
 		if readable.has("challenge_from"):
 			_receive_challenge(readable.challenge_from, readable.match_settings)
 		if readable.has("challenge_accepted"):
-			PLAYER_SIDE = 1
-			Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "1")
-			_setup_game_vs(readable.challenge_accepted)
+			_on_opponent_challenge_accepted(readable.challenge_accepted)
+
 
 		if readable.has("match_quit"):
 			if Network.rematch_menu:
 				emit_signal("quit_on_rematch")
 				Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
+			if !is_instance_valid(Global.current_game):
+				if PACKET_SENDER == OPPONENT_ID:
+					get_tree().reload_current_scene()
 			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 			Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 			Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
@@ -563,10 +572,11 @@ func _on_spectate_request_accepted(data):
 	emit_signal("received_spectator_match_data", data.match_data)
 
 func _on_received_spectator_replay(replay):
-#	print("here")
 	ReplayManager.frames = replay
 
 func _setup_game_vs(steam_id):
+#	if is_instance_valid(Global.current_game):
+#		return
 	print("registering players")
 	REMATCHING_ID = 0
 	OPPONENT_ID = steam_id
@@ -575,7 +585,6 @@ func _setup_game_vs(steam_id):
 	Network.assign_players()
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
-
 
 func _get_default_lobby_member_data():
 	return {
@@ -730,6 +739,8 @@ func rpc_(function_name, arg):
 
 func _receive_rpc(data):
 	print("received steam rpc")
+	if OPPONENT_ID == 0:
+		return
 	var args = data.rpc_data.arg
 	if args == null:
 		args = []
@@ -790,6 +801,9 @@ func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	else:
 		print("WARNING: Session failure with "+str(steamID)+" [unknown error "+str(session_error)+"].")
 #	get_tree().reload_current_scene()
+
+func get_status():
+	return Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status")
 
 func can_get_messages_from_user(steam_id):
 	if steam_id == SteamHustle.STEAM_ID:

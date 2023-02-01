@@ -102,6 +102,8 @@ func unlock_achievement(achievement_name: String):
 		return
 	if ReplayManager.playback or is_instance_valid(Global.current_game) and Global.current_game.is_in_replay:
 		return
+	if SteamLobby.SPECTATING:
+		return
 	print("unlocked achievement: " + achievement_name)
 	Steam.setAchievement(achievement_name)
 	Steam.storeStats()
