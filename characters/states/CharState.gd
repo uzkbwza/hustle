@@ -86,6 +86,7 @@ export var apply_pushback = true
 export var beats_backdash = false
 export var no_collision_start_frame = -1
 export var no_collision_end_frame = -1
+export var can_be_counterhit = true
 
 var initiative_effect_spawned = false
 

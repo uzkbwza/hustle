@@ -199,7 +199,7 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
-	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes)
+	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit)
 
 func spawn_whiff_particle():
 	if whiff_particle:

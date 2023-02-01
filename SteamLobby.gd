@@ -134,9 +134,9 @@ func get_player_id(steam_id):
 func get_opponent(steam_id):
 	return Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "opponent_id")
 
-func create_lobby(availability: int):
+func create_lobby(availability: int, size: int):
 	if LOBBY_ID == 0:
-		Steam.createLobby(availability, LOBBY_MAX_MEMBERS)
+		Steam.createLobby(availability, size)
 
 func join_lobby(lobby_id: int):
 	print("Attempting to join lobby "+str(lobby_id)+"...")

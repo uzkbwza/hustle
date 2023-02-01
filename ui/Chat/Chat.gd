@@ -60,6 +60,8 @@ func on_steam_chat_message_received(steam_id: int, message: String):
 	if !SteamLobby.can_get_messages_from_user(steam_id):
 		return
 	var color = "ff333d" if (steam_id == SteamHustle.STEAM_ID) else "1d8df5"
+	if(Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "status")=="spectating"):
+		color = "999999"
 	var steam_name = Steam.getFriendPersonaName(steam_id)
 	
 	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + steam_name + "[/color]>: " + message)

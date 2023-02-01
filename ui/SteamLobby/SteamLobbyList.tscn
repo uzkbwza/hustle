@@ -300,11 +300,24 @@ margin_bottom = 30.0
 pressed = true
 text = "public"
 
+[node name="LobbySize" type="SpinBox" parent="CreateLobbyDialog"]
+unique_name_in_owner = true
+margin_left = 246.0
+margin_top = -14.0
+margin_right = 347.0
+margin_bottom = -2.0
+size_flags_vertical = 0
+min_value = 2.0
+max_value = 64.0
+value = 16.0
+align = 1
+suffix = "players"
+
 [node name="LobbyName" type="LineEdit" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
 margin_left = 75.0
 margin_top = -14.0
-margin_right = 228.0
+margin_right = 245.0
 margin_bottom = -2.0
 max_length = 64
 placeholder_text = "lobby name"
@@ -313,10 +326,10 @@ caret_blink_speed = 0.5
 
 [node name="FilterIncompatibleButton" type="CheckButton" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
-margin_left = 229.0
-margin_top = -14.0
-margin_right = 337.0
-margin_bottom = -2.0
+margin_left = 40.0
+margin_top = 268.0
+margin_right = 148.0
+margin_bottom = 280.0
 text = "only compatible"
 
 [node name="BackButton" type="Button" parent="."]

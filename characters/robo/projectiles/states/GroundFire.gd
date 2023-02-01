@@ -10,6 +10,8 @@ func _tick():
 			host.creator.opponent.take_damage(DAMAGE)
 	if current_tick > FIRE_TIME:
 		host.disable()
+		if host.creator:
+			host.creator.can_flamethrower = true
 	if current_tick % 20 == 0:
 		host.play_sound("Fire")
 	host.set_y(0)

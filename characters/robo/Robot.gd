@@ -28,6 +28,7 @@ var got_hit = false
 var armor_active = false
 var buffer_armor = false
 var can_unlock_gratuitous = true
+var can_flamethrower = true
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -58,6 +59,9 @@ func on_got_hit():
 func copy_to(f: BaseObj):
 	.copy_to(f)
 	f.armor_active = armor_active
+	f.flying_dir = flying_dir
+	if flying_dir != null:
+		f.flying_dir = flying_dir.duplicate(true)
 	pass
 
 func has_armor():

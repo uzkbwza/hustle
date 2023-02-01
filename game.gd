@@ -420,7 +420,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.update_data()
 	p1_data = p1.data
 	p2_data = p2.data
-	apply_hitboxes()
+	apply_hitboxes([p1,p2])
 	if !ReplayManager.resimulating:
 		show_state()
 	if ReplayManager.playback and !ReplayManager.resimulating and !is_ghost:
@@ -531,7 +531,7 @@ func tick():
 	p1_data = p1.data
 	p2_data = p2.data
 	resolve_collisions()
-	apply_hitboxes()
+	apply_hitboxes(players)
 	p1_data = p1.data
 	p2_data = p2.data
 
@@ -776,68 +776,70 @@ func resolve_collisions(step=0):
 			p2.update_data()
 			return resolve_collisions(step+1)
 
-func apply_hitboxes():
-	if !is_ghost:
+func apply_hitboxes(players):
+	if not is_ghost:
 		pass
-	var p1_hitboxes = p1.get_active_hitboxes()
-	var p2_hitboxes = p2.get_active_hitboxes()
-	var p2_hit_by = get_colliding_hitbox(p1_hitboxes, p2.hurtbox) if !p2.invulnerable else null
-	var p1_hit_by = get_colliding_hitbox(p2_hitboxes, p1.hurtbox) if !p1.invulnerable else null
+	var px1 = players[0]
+	var px2 = players[1]
+	var p1_hitboxes = px1.get_active_hitboxes()
+	var p2_hitboxes = px2.get_active_hitboxes()
+	var p2_hit_by = get_colliding_hitbox(p1_hitboxes, px2.hurtbox) if not px2.invulnerable else null
+	var p1_hit_by = get_colliding_hitbox(p2_hitboxes, px1.hurtbox) if not px1.invulnerable else null
 	var p1_hit = false
 	var p2_hit = false
 	var p1_throwing = false
 	var p2_throwing = false
 
 	if p1_hit_by:
-		if !(p1_hit_by is ThrowBox):
-#			p1_hit_by.hit(p1)
+		if not (p1_hit_by is ThrowBox):
+
 			p1_hit = true
-		else:
+		else :
 			p2_throwing = true
-			if !p1_hit_by.hits_otg and p1.is_otg():
+			if not p1_hit_by.hits_otg and px1.is_otg():
 				p2_throwing = false
 			if p1.throw_invulnerable:
 				p2_throwing = false
 	if p2_hit_by:
-		if !(p2_hit_by is ThrowBox):
-#			p2_hit_by.hit(p2)
+		if not (p2_hit_by is ThrowBox):
+
 			p2_hit = true
-		else:
+		else :
 			p1_throwing = true
-			if !p2_hit_by.hits_otg and p2.is_otg():
+			if not p2_hit_by.hits_otg and px2.is_otg():
 				p1_throwing = false
 			if p2.throw_invulnerable:
 				p1_throwing = false
-#
-#	if p1_hit and p2_hit:
+
+
 	var clash_position = Vector2()
 	var clashed = false
 	if clashing_enabled:
 		for p1_hitbox in p1_hitboxes:
 			if p1_hitbox is ThrowBox:
 				continue
-			if !p1_hitbox.can_clash:
+			if not p1_hitbox.can_clash:
 				continue
 			var p2_hitbox = get_colliding_hitbox(p2_hitboxes, p1_hitbox)
 			if p2_hitbox:
 				if p2_hitbox is ThrowBox:
 					continue
-				if !p2_hitbox.can_clash:
+				if not p2_hitbox.can_clash:
 					continue
 				var valid_clash = false
 				
-#				if !p1_hit and !p2_hit:
-#					valid_clash = true
+
+
 				if asymmetrical_clashing:
-					if p1_hit and !p2_hit:
+					if p1_hit and not p2_hit:
 						if p1_hitbox.damage - p2_hitbox.damage < CLASH_DAMAGE_DIFF:
 							valid_clash = true
 
-					if p2_hit and !p1_hit:
+					if p2_hit and not p1_hit:
 						if p2_hitbox.damage - p1_hitbox.damage < CLASH_DAMAGE_DIFF:
 							valid_clash = true
 
-				if (!p1_hit and !p2_hit) or (p1_hit and p2_hit):
+				if ( not p1_hit and not p2_hit) or (p1_hit and p2_hit):
 					if Utils.int_abs(p2_hitbox.damage - p1_hitbox.damage) < CLASH_DAMAGE_DIFF:
 						valid_clash = true
 					elif p1_hitbox.damage > p2_hitbox.damage:
@@ -858,67 +860,67 @@ func apply_hitboxes():
 		p1.clash()
 		p2.clash()
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
-	else:
+	else :
 		if p1_hit:
-#			if p1_hit_by.active:
-				p1_hit_by.hit(p1)
-		if p2_hit:
-#			if p2_hit_by.active:
-				p2_hit_by.hit(p2)
 
-	if !p2_hit and !p1_hit:
+				p1_hit_by.hit(px1)
+		if p2_hit:
+
+				p2_hit_by.hit(px2)
+
+	if not p2_hit and not p1_hit:
 		if p2_throwing and p1_throwing and p1.current_state().throw_techable and p2.current_state().throw_techable:
 				p1.state_machine.queue_state("ThrowTech")
 				p2.state_machine.queue_state("ThrowTech")
 				
-		elif p2_throwing and p1_throwing and !p1.current_state().throw_techable and !p2.current_state().throw_techable:
-			return
+		elif p2_throwing and p1_throwing and not p1.current_state().throw_techable and not p2.current_state().throw_techable:
+			return 
 
 		elif p1_throwing:
 			if p1.current_state().throw_techable and p2.current_state().throw_techable:
 				p1.state_machine.queue_state("ThrowTech")
 				p2.state_machine.queue_state("ThrowTech")
-				return
+				return 
 			var can_hit = true
-			if p2.is_grounded() and !p2_hit_by.hits_vs_grounded:
+			if px2.is_grounded() and not p2_hit_by.hits_vs_grounded:
 				can_hit = false
-			if !p2.is_grounded() and !p2_hit_by.hits_vs_aerial:
+			if not px2.is_grounded() and not p2_hit_by.hits_vs_aerial:
 				can_hit = false
 			if can_hit:
-				p2_hit_by.hit(p2)
+				p2_hit_by.hit(px2)
 				if p2_hit_by.throw_state:
-					p1.state_machine.queue_state(p2_hit_by.throw_state)
-				return
+					px1.state_machine.queue_state(p2_hit_by.throw_state)
+				return 
 
 		elif p2_throwing:
 			if p1.current_state().throw_techable and p2.current_state().throw_techable:
 				p1.state_machine.queue_state("ThrowTech")
 				p2.state_machine.queue_state("ThrowTech")
-				return
+				return 
 			var can_hit = true
-			if p1.is_grounded() and !p1_hit_by.hits_vs_grounded:
+			if px1.is_grounded() and not p1_hit_by.hits_vs_grounded:
 				can_hit = false
-			if !p1.is_grounded() and !p1_hit_by.hits_vs_aerial:
+			if not px1.is_grounded() and not p1_hit_by.hits_vs_aerial:
 				can_hit = false
 			if can_hit:
-				p1_hit_by.hit(p1)
+				p1_hit_by.hit(px1)
 				if p1_hit_by.throw_state:
-					p2.state_machine.queue_state(p1_hit_by.throw_state)
-				return
+					px2.state_machine.queue_state(p1_hit_by.throw_state)
+				return 
 
 	var objects_to_hit = []
 	var objects_hit_each_other = false
-
+	
 	for object in objects:
 		if object.disabled:
 			continue
-		for p in [p1, p2]:
+		for p in [px1, px2]:
 			var p_hit_by
 			if p == p1:
-				if object.id == 1 and !object.damages_own_team:
+				if object.id == 1 and not object.damages_own_team:
 					continue
 			if p == p2:
-				if object.id == 2 and !object.damages_own_team:
+				if object.id == 2 and not object.damages_own_team:
 					continue
 
 			if p:

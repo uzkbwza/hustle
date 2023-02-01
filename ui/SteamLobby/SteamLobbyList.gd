@@ -19,7 +19,7 @@ func _on_create_lobby_button_pressed():
 	else:
 		availability = SteamLobby.LOBBY_AVAILABILITY.FRIENDS
 	SteamLobby.LOBBY_NAME = get_lobby_name()
-	SteamLobby.create_lobby(availability)
+	SteamLobby.create_lobby(availability, $"%LobbySize".value)
 
 func _on_back_button_pressed():
 	Network.stop_multiplayer()
@@ -54,6 +54,8 @@ func _on_lobby_match_list_received(lobbies):
 #			var lobby_status: String = Steam.getLobbyData(lobby, "status")
 		var lobby_version: String = Steam.getLobbyData(lobby, "version")
 		
+		var lobby_max_members: int = Steam.getLobbyMemberLimit(lobby)
+		
 		if lobby_version != Global.VERSION:
 			if $"%FilterIncompatibleButton".pressed:
 				continue
@@ -69,7 +71,7 @@ func _on_lobby_match_list_received(lobbies):
 #				"status": lobby_status,
 			"version": lobby_version,
 			"player_count": lobby_num_members,
-			"max_players": SteamLobby.LOBBY_MAX_MEMBERS,
+			"max_players": lobby_max_members,
 			"id": lobby,
 		}
 		lobby_entry.set_data(data)

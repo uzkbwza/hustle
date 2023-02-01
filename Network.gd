@@ -202,6 +202,7 @@ func join_game_direct(ip, port, new_player_name):
 	peer.create_client(ip, int(port))
 	multiplayer_active = true
 	direct_connect = true
+	multiplayer_host = false
 	get_tree().set_network_peer(peer)
 
 func setup_relay_multiplayer(address):
