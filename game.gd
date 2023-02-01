@@ -866,15 +866,15 @@ func apply_hitboxes(players):
 				p2_hit_by.hit(px2)
 
 	if not p2_hit and not p1_hit:
-		if p2_throwing and p1_throwing and px1.current_state().throw_techable and p2.current_state().throw_techable:
+		if p2_throwing and p1_throwing and px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
 				
-		elif p2_throwing and p1_throwing and not px1.current_state().throw_techable and not p2.current_state().throw_techable:
+		elif p2_throwing and p1_throwing and not px1.current_state().throw_techable and not px2.current_state().throw_techable:
 			return 
 
 		elif p1_throwing:
-			if px1.current_state().throw_techable and p2.current_state().throw_techable:
+			if px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
 				return 
@@ -890,9 +890,9 @@ func apply_hitboxes(players):
 				return 
 
 		elif p2_throwing:
-			if px1.current_state().throw_techable and p2.current_state().throw_techable:
+			if px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
-				p2.state_machine.queue_state("ThrowTech")
+				px2.state_machine.queue_state("ThrowTech")
 				return 
 			var can_hit = true
 			if px1.is_grounded() and not p1_hit_by.hits_vs_grounded:
