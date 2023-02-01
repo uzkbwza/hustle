@@ -19,6 +19,7 @@ func _ready():
 	SteamLobby.connect("retrieved_lobby_members", self, "_on_retrieved_lobby_members", [], CONNECT_DEFERRED)
 	SteamLobby.connect("challenge_declined", self, "_on_challenge_declined")
 	SteamLobby.connect("challenger_cancelled", self, "_on_challenger_cancelled")
+	SteamLobby.connect("spectate_declined", self, "_on_spectate_declined")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
 	$"%StartButton".connect("pressed", self, "_on_start_button_pressed")
 	$"%ChallengeCancelButton".connect("pressed", self, "_on_challenge_cancelled")
@@ -29,7 +30,6 @@ func _ready():
 	_on_retrieved_lobby_members(SteamLobby.LOBBY_MEMBERS)
 	yield(get_tree(), "idle_frame")
 	handshake_made = false
-
 
 func _on_lobby_data_update(steam_id, member_id, success):
 	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamHustle.STEAM_ID:
@@ -88,6 +88,10 @@ func init():
 #		return
 #	selected_user = users[index]
 #	$"%StartButton".disabled = false
+
+func _on_spectate_declined():
+	$"%LoadingSpectatorRect".hide()
+	pass
 
 func _on_challenge_declined():
 	$"%ChallengeDialogScreen".hide()
@@ -156,6 +160,8 @@ func _on_retrieved_lobby_members(members):
 func _on_spectate_requested(player):
 	SteamLobby.request_spectate(player.steam_id)
 	$"%LoadingSpectatorRect".show()
+	yield(get_tree().create_timer(5), "timeout")
+	_on_spectate_declined()
 
 func _on_back_button_pressed():
 	Network.stop_multiplayer(true)
