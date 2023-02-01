@@ -331,6 +331,16 @@ margin_bottom = 13.0
 size_flags_horizontal = 0
 text = "go back"
 
+[node name="RefreshButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = 1.0
+margin_right = 40.0
+margin_bottom = 13.0
+size_flags_horizontal = 0
+text = "refresh"
+
 [node name="ErrorLabel" type="Label" parent="."]
 unique_name_in_owner = true
 anchor_left = 0.5
@@ -345,3 +355,4 @@ autowrap = true
 
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]
 [connection signal="toggled" from="CreateLobbyDialog/FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]
+[connection signal="pressed" from="RefreshButton" to="." method="_on_RefreshButton_pressed"]

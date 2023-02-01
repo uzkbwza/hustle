@@ -76,8 +76,7 @@ func _on_lobby_match_list_received(lobbies):
 		if lobby == selected_lobby:
 			lobby_entry.select()
 		pass
-	yield(get_tree().create_timer(1.0), "timeout")
-	SteamLobby.request_lobby_list()
+#	yield(get_tree().create_timer(1.0), "timeout")
 
 func _on_lobby_clicked(entry):
 	if SteamLobby.LOBBY_ID != 0:
@@ -103,3 +102,8 @@ func _on_SteamLobbyList_visibility_changed():
 
 func _on_FilterIncompatibleButton_toggled(button_pressed):
 	_on_lobby_match_list_received(lobbies)
+
+
+func _on_RefreshButton_pressed():
+	SteamLobby.request_lobby_list()
+	pass # Replace with function body.
