@@ -1,4 +1,4 @@
-[gd_scene load_steps=230 format=2]
+[gd_scene load_steps=231 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -224,6 +224,7 @@
 [ext_resource path="res://characters/stickman/sprites/hitgrab_followup4.png" type="Texture" id=222]
 [ext_resource path="res://characters/stickman/sprites/actionicons/skull_shaker.png" type="Texture" id=223]
 [ext_resource path="res://characters/stickman/sprites/wall_slam.png" type="Texture" id=224]
+[ext_resource path="res://fx/DashFloorParticle.tscn" type="PackedScene" id=225]
 [ext_resource path="res://characters/stickman/sprites/hitgrab_followup5.png" type="Texture" id=226]
 [ext_resource path="res://characters/stickman/states/HitGrabFollowup.gd" type="Script" id=228]
 
@@ -477,7 +478,7 @@ animations = [ {
 "name": "ShieldLow",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 182 ) ],
+"frames": [ ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 178 ), ExtResource( 182 ) ],
 "loop": true,
 "name": "SlideKick",
 "speed": 5.0
@@ -1857,6 +1858,10 @@ sprite_animation = "SlideKick"
 anim_length = 17
 force_dir_x = "1.0"
 force_speed = "12.0"
+particle_scene = ExtResource( 225 )
+spawn_particle_on_enter = true
+enter_sfx = ExtResource( 73 )
+enter_sfx_volume = -10.0
 title = "Slide Kick"
 type = 1
 button_texture = ExtResource( 192 )
@@ -1888,8 +1893,8 @@ knockback = "7.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 5
-active_ticks = 10
+start_tick = 7
+active_ticks = 8
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/SlideKick" index="1"]
 z_index = 1000
@@ -1983,6 +1988,7 @@ cancellable = false
 increment_combo = false
 ignore_armor = true
 followup_state = "HitGrabFollowup"
+hits_vs_dizzy = false
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 grounded_hit_state = "Grabbed"
@@ -2041,13 +2047,15 @@ release_throw_pos_y = 1
 hitstun_ticks = 30
 knockback = "2.0"
 knockdown = false
-aerial_hit_state = "HurtGrounded"
+aerial_hit_state = "HurtDizzy"
+grounded_hit_state = "HurtDizzy"
 damage = 0
 increment_combo = false
 hard_knockdown = true
 force_grounded = true
 wall_slam = true
 di_modifier = "0.5"
+hit_height = 0
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrabFollowup" index="0"]
 z_index = 1000
@@ -2065,7 +2073,8 @@ force_grounded = true
 hit_height = 0
 hit_sound = ExtResource( 217 )
 knockback = "6.0"
-aerial_hit_state = "HurtGrounded"
+grounded_hit_state = "HurtDizzy"
+aerial_hit_state = "HurtDizzy"
 wall_slam = true
 start_tick = 13
 active_ticks = 2
@@ -2134,10 +2143,10 @@ Aerial"
 [node name="WhiffInstantCancel" parent="StateMachine" index="64"]
 hit_cancel_exceptions_string = ""
 
-[node name="Grab" parent="StateMachine" index="71"]
+[node name="Grab" parent="StateMachine" index="72"]
 change_stance_to = "Normal"
 
-[node name="ForwardThrow" parent="StateMachine" index="73"]
+[node name="ForwardThrow" parent="StateMachine" index="74"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -2193,7 +2202,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="74"]
+[node name="BackThrow" parent="StateMachine" index="75"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
 ExtResource( 210 ): {
@@ -2248,10 +2257,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="79"]
+[node name="Taunt" parent="StateMachine" index="80"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="80"]
+[node name="ForfeitExplosion" parent="StateMachine" index="81"]
 endless = true

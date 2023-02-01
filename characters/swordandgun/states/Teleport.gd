@@ -9,7 +9,7 @@ const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
 const MOMENTUM_FORCE = "16.0"
 const CROSS_THROUGH_RECOVERY = 8
-const FORWARD_SUPER = 50
+const FORWARD_SUPER = 55
 
 var backwards_stall_frames = 0
 var starting_dir = 0
@@ -78,7 +78,7 @@ func _frame_6():
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
 	if forward:
 		if host.combo_count <= 0:
-			host.gain_super_meter(fixed.round(fixed.mul(FORWARD_SUPER, x_dist)))
+			host.gain_super_meter(fixed.round(fixed.mul(str(FORWARD_SUPER), x_dist)))
 	host.update_facing()
 
 func _frame_7():

@@ -39,6 +39,8 @@ var hitbox_type = 0
 var hard_knockdown = false
 var damage_in_combo = -1
 var wall_slam = false
+var hits_vs_dizzy = true
+
 
 func get_damage():
 	if combo_count > 0:
@@ -116,5 +118,7 @@ func _init(state):
 		hitbox_type = state.hitbox_type
 	if state.get("damage_in_combo") != null:
 		damage_in_combo = state.damage_in_combo
+	if state.get("hits_vs_dizzy") != null:
+		hits_vs_dizzy = state.hits_vs_dizzy
 	if damage_in_combo == -1:
 		damage_in_combo = damage

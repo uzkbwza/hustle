@@ -3,6 +3,8 @@ extends CharacterHurtState
 const GROUND_FRIC = "0.05"
 const DI_STRENGTH = "3.5"
 
+export var dizzy = false
+
 var hitstun = 0
 var can_act = false
 var wall_slam = false
@@ -33,6 +35,8 @@ func _enter():
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)
+	if dizzy:
+		host.start_throw_invulnerability()
 
 func _tick():
 	host.set_pos(host.get_pos().x, 0)

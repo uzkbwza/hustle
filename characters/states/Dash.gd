@@ -13,6 +13,7 @@ export var startup_lag = 0
 export var stop_frame = 0
 export var back_penalty = 5
 export var auto_correct = true
+export var speed_limit = "40"
 var updated = false
 var charged = false
 
@@ -55,6 +56,7 @@ func _tick():
 		host.apply_forces_no_limit()
 	else:
 		host.apply_forces()
+	host.limit_speed(speed_limit)
 	var repeated = _previous_state() and _previous_state_name() == name
 	if (startup_lag > 0 and current_tick == startup_lag) and !repeated:
 		host.apply_force_relative(dir_x * dash_speed, 0)

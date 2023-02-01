@@ -36,6 +36,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="MagicMissile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 z_index = 2
+fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
@@ -58,6 +59,7 @@ move_speed = "7.0"
 homing = true
 homing_turn_speed = "0.35"
 homing_accel = "0.25"
+relative_data_dir = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000

@@ -10,3 +10,6 @@ func _tick():
 	host.apply_forces_no_limit()
 	host.apply_x_fric(X_FRIC)
 	host.limit_speed(SPEED_LIMIT)
+
+func _frame_13():
+	host.end_projectile_invulnerability()

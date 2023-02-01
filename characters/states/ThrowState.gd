@@ -35,9 +35,9 @@ export var hard_knockdown = false
 export var force_grounded = false
 export var wall_slam = false
 export var di_modifier = "1.0"
+export(Hitbox.HitHeight) var hit_height = Hitbox.HitHeight.Mid
 #export var incr_combo = false
 
-var hit_height = Hitbox.HitHeight.Mid
 var hitlag_ticks = 0
 var victim_hitlag = 0
 var throw = true

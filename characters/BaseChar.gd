@@ -511,6 +511,8 @@ func meter_gain_modified(amount):
 	return amount
 
 func gain_super_meter(amount):
+	if amount == null:
+		return
 	amount = combo_stale_meter(amount)
 	amount = meter_gain_modified(amount)
 	super_meter += amount
@@ -729,9 +731,10 @@ func hit_by(hitbox):
 		return
 	if !hitbox.hits_otg and is_otg():
 		return
+	if !hitbox.hits_vs_dizzy and current_state().state_name == "HurtDizzy":
+		return
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)
-		
 	if !can_parry_hitbox(hitbox):
 		# probably need to coalesce the "take damage" and "got hit" signals here
 		match hitbox.hitbox_type:
@@ -827,12 +830,12 @@ func set_throw_position(x: int, y: int):
 	throw_pos_y = y
 
 func get_penalty_damage_modifier():
+	var min_penalty_for_damage = 20
 	if penalty_ticks > 0:
-		return "2.0"
-	if penalty < 0:
+		return "1.5"
+	if penalty < min_penalty_for_damage:
 		return "1.0"
-	return fixed.add("1.0", fixed.div(str(penalty), str(MAX_PENALTY)))
-
+	return fixed.add("1.0", fixed.mul(fixed.div(str(penalty - min_penalty_for_damage), str(MAX_PENALTY - min_penalty_for_damage)), "0.5"))
 
 func take_damage(damage: int, minimum=0):
 	if opponent.combo_count == 0:

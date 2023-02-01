@@ -58,6 +58,7 @@ export var ignore_armor = false
 export var followup_state = ""
 export var force_grounded = false
 export var can_clash = true
+export var hits_vs_dizzy = true
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -279,6 +280,9 @@ func hit(obj):
 				emit_signal("got_parried")
 			if obj.on_the_ground:
 				if !hits_otg:
+					can_hit = false
+			if !hits_vs_dizzy:
+				if obj.current_state().state_name == "HurtDizzy":
 					can_hit = false
 			if can_hit and spawn_particle_effect:
 				if hit_particle:
