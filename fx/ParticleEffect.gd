@@ -39,9 +39,18 @@ func _ready():
 	if !ReplayManager.playback:
 		set_enabled(false)
 		tick_timer.connect("timeout", self, "on_tick_timer_timeout")
-	yield(get_tree(), "idle_frame")
-	if !is_instance_valid(self):
-		return
+	call_deferred("update_dir")
+
+func update_dir():
+	var timer = Timer.new()
+	timer.wait_time = 0.016
+	add_child(timer)
+	timer.one_shot = true
+	timer.pause_mode = Node.PAUSE_MODE_PROCESS
+	timer.start()
+	timer.connect("timeout", self, "on_update_timer_timeout")
+
+func on_update_timer_timeout():
 	for child in get_children():
 		if child is CPUParticles2D:
 			if scale.x < 0 or Utils.ang2vec(rotation).x < 0:

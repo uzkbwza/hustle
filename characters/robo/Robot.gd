@@ -9,7 +9,7 @@ const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
 const LOIC_GAIN = 6
 const LOIC_GAIN_NO_ARMOR = 6
-const MAGNET_TICKS = 60
+const MAGNET_TICKS = 70
 const MAGNET_STRENGTH = "2"
 const COMBO_MAGNET_STRENGTH = "0.5"
 
@@ -65,6 +65,7 @@ func on_got_hit():
 func copy_to(f: BaseObj):
 	.copy_to(f)
 	f.armor_active = armor_active
+	f.magnet_ticks_left = magnet_ticks_left
 	f.flying_dir = flying_dir
 	if flying_dir != null:
 		f.flying_dir = flying_dir.duplicate(true)

@@ -1248,10 +1248,12 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p1.actionable_label.show()
 				emit_signal("ghost_my_turn")
-				if p2.current_state().interruptible_on_opponent_turn or p2.feinting:
-					p2.actionable_label.show()
-					ghost_p2_actionable = true
-			else :
+			else:
+				ghost_actionable_freeze_ticks = 1
+			if p2.current_state().interruptible_on_opponent_turn or p2.feinting:
+				p2.actionable_label.show()
+				ghost_p2_actionable = true
+			else:
 				ghost_actionable_freeze_ticks = 1
 		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
 			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
@@ -1266,10 +1268,12 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 				p2.actionable_label.show()
 				emit_signal("ghost_my_turn")
-				if p1.current_state().interruptible_on_opponent_turn or p1.feinting:
-					ghost_p1_actionable = true
-					p1.actionable_label.show()
-			else :
+			else:
+				ghost_actionable_freeze_ticks = 1
+			if p1.current_state().interruptible_on_opponent_turn or p1.feinting:
+				ghost_p1_actionable = true
+				p1.actionable_label.show()
+			else:
 				ghost_actionable_freeze_ticks = 1
 
 func super_dim():
