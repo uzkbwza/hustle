@@ -393,6 +393,7 @@ func on_game_started():
 	$MainMenu.hide()
 
 func _on_singleplayer_pressed():
+	Global.frame_advance = false
 	SteamLobby.leave_Lobby()
 	emit_signal("singleplayer_started")
 

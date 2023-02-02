@@ -342,6 +342,9 @@ config/name="Your Only Move Is HUSTLE"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="YourOnlyMoveIsHUSTLE"
+boot_splash/image="res://splash.png"
+boot_splash/use_filter=false
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon2.png"
 
 [autoload]

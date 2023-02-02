@@ -200,7 +200,7 @@ func _physics_process(_delta):
 func tick():
 	.tick()
 	particles.gravity.x = default_gravity_x * facing
-	particles.angle = TAU - default_angle if facing == -1 else default_angle
+	particles.angle = 360 - default_angle if facing == -1 else default_angle
 
 func set_start_alpha(a):
 #	particles.self_modulate.a = a

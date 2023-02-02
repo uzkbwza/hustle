@@ -600,9 +600,12 @@ func _get_default_lobby_member_data():
 
 # A user's information has changed
 func _on_Persona_Change(steam_id: int, _flag: int) -> void:
-	print("[STEAM] A user ("+str(steam_id)+") had information change, update the lobby list")
+	if LOBBY_ID == 0:
+		return
+	print("[STEAM] A user ("+str(steam_id)+") had information change, updating the lobby member list")
 
 	# Update the player list
+	
 	_get_Lobby_Members()
 
 func _on_Lobby_Created(connect: int, lobby_id: int):
@@ -690,6 +693,8 @@ func _on_Lobby_Join_Requested(lobby_id: int, friendID: int) -> void:
 	join_lobby(lobby_id)
 
 func _get_Lobby_Members() -> void:
+	if LOBBY_ID == 0:
+		return
 	# Clear your previous lobby list
 	LOBBY_MEMBERS.clear()
 	# Get the number of members from this lobby from Steam
@@ -705,8 +710,6 @@ func _get_Lobby_Members() -> void:
 
 		# Get the member's Steam name
 		var steam_name: String = Steam.getFriendPersonaName(steam_id)
-
-		
 
 		# Add them to the list
 		LOBBY_MEMBERS.append(LobbyMember.new(steam_id, steam_name))

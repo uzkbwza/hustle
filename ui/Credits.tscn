@@ -1,15 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/Credits.gd" type="Script" id=2]
+[ext_resource path="res://godot_small.png" type="Texture" id=3]
+[ext_resource path="res://godot_small_white.png" type="Texture" id=4]
 
 [node name="Control" type="PanelContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 236.0
-margin_top = 49.0
+margin_top = 20.0
 margin_right = -236.0
-margin_bottom = -49.0
+margin_bottom = -20.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
@@ -17,18 +19,18 @@ script = ExtResource( 2 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 167.0
-margin_bottom = 261.0
+margin_bottom = 319.0
 size_flags_horizontal = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2"]
 margin_right = 166.0
-margin_bottom = 247.0
+margin_bottom = 305.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer"]
-margin_right = 35.0
-margin_bottom = 234.0
+margin_right = 166.0
+margin_bottom = 305.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
@@ -133,11 +135,41 @@ text = "chibi, grafx, dennis, dic, wi-fi, sewer, tengoku, steven4547466, sire fo
 align = 1
 autowrap = true
 
-[node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0.380392 )
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 margin_top = 209.0
 margin_right = 166.0
-margin_bottom = 247.0
+margin_bottom = 241.0
+custom_constants/separation = 5
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5"]
+margin_left = 20.0
+margin_top = 3.0
+margin_right = 109.0
+margin_bottom = 28.0
+text = "proudly made with
+GODOT ENGINE!!!!"
+align = 1
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5"]
+margin_left = 114.0
+margin_right = 146.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture_normal = ExtResource( 3 )
+texture_pressed = ExtResource( 3 )
+texture_hover = ExtResource( 4 )
+expand = true
+stretch_mode = 3
+
+[node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0.380392 )
+margin_top = 251.0
+margin_right = 166.0
+margin_bottom = 305.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
 text = "if i forgot to mention you please let me know lol im just forgetful"
@@ -147,9 +179,10 @@ autowrap = true
 
 [node name="Button" type="Button" parent="VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 248.0
+margin_top = 306.0
 margin_right = 166.0
-margin_bottom = 260.0
+margin_bottom = 318.0
 text = "back"
 
+[connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5/TextureButton" to="." method="_on_TextureButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/Button" to="." method="_on_Button_pressed"]

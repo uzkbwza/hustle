@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://modloader/ModLoaderCredits.gd" type="Script" id=1]
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=2]
+
+[node name="ModLoaderCredits" instance=ExtResource( 2 )]
+margin_top = -55.0
+margin_bottom = 57.0
+script = ExtResource( 1 )
+
+[node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+text = "Modloader Credits"
+
+[node name="Close" type="Button" parent="VBoxContainer/TitleBar" index="1"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 12.0
+text = "Close"
+flat = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/Contents" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 267.0
+margin_bottom = 99.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Contents/ScrollContainer" index="0"]
+margin_right = 266.0
+margin_bottom = 98.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/Contents/ScrollContainer/VBoxContainer" index="0"]
+margin_top = 1.0
+margin_right = 266.0
+margin_bottom = 96.0
+text = "ZT2wo#2089
+Ted#0420
+
+Additional Help:
+Valkarin#1312
+
+Based off ΔV: Rings of Saturn Modloader"
+align = 1

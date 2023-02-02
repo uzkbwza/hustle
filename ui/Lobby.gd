@@ -30,6 +30,8 @@ var servers = [
 	"ws://localhost:52450"
 ]
 
+var steam_dojo = "ws://168.235.89.33:52450"
+
 func _ready():
 	# Called every time the node is added to the scene.
 	Network.connect("connection_failed", self, "_on_connection_failed")
@@ -75,7 +77,10 @@ func _on_refresh_timer_timeout():
 		$"%RefreshTimer".stop()
 
 func get_server_address():
-	return servers[$"%ServerList".selected]
+	if SteamHustle.STARTED:
+		return steam_dojo
+	else:
+		return servers[$"%ServerList".selected]
 
 func _on_room_code_edit_text_changed(text):
 	if !direct_connect:
@@ -108,6 +113,10 @@ func show():
 		host_button.disabled = true
 		join_button.disabled = true
 		$"%ConnectingLabel".show()
+		if SteamHustle.STARTED:
+			$"%ServerList".disabled = true
+			$"%ServerList".text = "Steam Dojo"
+			
 		yield(Network.multiplayer_client, "connection_succeeded")
 		$"%ConnectingLabel".hide()
 		$"%RefreshTimer".start()

@@ -1,11 +1,32 @@
 extends Node
 
 func _ready():
-
 	_addModToggle(ModLoader.active)
 	if ModLoader.active:
-		_addModList()
+		#old
+		#_addModList()
+		#_addMisingList()
+
+		var menu = _add_modlist()
+		_populate_mod_menu(menu)
 		_addMisingList()
+
+#Creates mod menu and places it in the options container
+func _add_modlist():
+	var menu = load("res://modloader/ModLoaderMenu.tscn").instance()
+	var credits = load("res://modloader/ModLoaderCredits.tscn").instance()
+	var uilayer = $"%OptionsContainer/.."
+	uilayer.add_child_below_node($"%OptionsContainer", credits, true)
+	uilayer.add_child_below_node($"%OptionsContainer", menu, true)
+		
+	var btn:Node = addMainMenuButton("Mod List")
+	btn.connect("pressed", menu, "_mainmenu_button_pressed")
+	return menu
+
+#Calls function from ModLoaderMenu.gd to populate list of mods
+func _populate_mod_menu(menu):
+	for mod in ModLoader.active_mods:
+		menu.add_mod(mod)
 	
 func _addModList():
 	# add the mod list container
@@ -80,31 +101,31 @@ func _addModList():
 	# function for the button
 	btn.connect("pressed", self, "_modlist_button_pressed")
 
+#Main Menu button and Mod Toggle
+#needed
+func addMainMenuButton(_text):
+	# generating the button
+	var button_mainmenu = generateButton(_text)
+	# adding it to the scene
+	button_mainmenu.rect_min_size.y = 20
+	$"%MainMenu".get_node("ButtonContainer").add_child(button_mainmenu, true)
+	$"%MainMenu".get_node("ButtonContainer").move_child(button_mainmenu, 4)
+	
+	return button_mainmenu
+	
+#needed
 func _addModToggle(moddedState):
 	var modToggleBtn = $"%ModToggle"
 	modToggleBtn.pressed = moddedState
 	modToggleBtn.connect("pressed", self, "_toggle_mods_active", [modToggleBtn])
 	
-
+#needed
 func _toggle_mods_active(btn):
 	var file = File.new()
 	var moddedState = {"modsEnabled":btn.pressed}
 	file.open("user://modded.json", File.WRITE)
 	file.store_string(JSON.print(moddedState, "  "))
 	file.close()
-
-func _modlist_button_pressed():
-	$"%MainMenu".get_node("ModListContainer").set("visible", true)
-
-func _modlist_closebutton_pressed():
-	$"%MainMenu".get_node("ModListContainer").set("visible", false)
-
-func _mod_button_pressed(panel):
-	panel.set("visible", true)
-	panel.raise()
-
-func _mod_closebutton_pressed(panel):
-	panel.set("visible", false)
 
 func generateContainer(name_gen):
 	var _container = preload("res://modloader/ModLoaderWindow.tscn").instance()
@@ -141,16 +162,8 @@ func generateCheckButton(text_gen):
 	var _checkButton = CheckButton.new()
 	_checkButton.text = text_gen
 	return _checkButton
-	
-func addMainMenuButton(_text):
-	# generating the button
-	var button_mainmenu = generateButton(_text)
-	# adding it to the scene
-	button_mainmenu.flat = false
-	$"%MainMenu".get_node("ModListButtonContainer").add_child(button_mainmenu, true)
-	
-	return button_mainmenu
-	
+
+
 func addContainer(_name, _text):
 	var container = generateContainer(_name)
 	$"%MainMenu".add_child(container)
@@ -160,18 +173,10 @@ func addContainer(_name, _text):
 	
 func _addMisingList():
 	var mod_w_missing = ModLoader.mods_w_missing_depend
-	
 	var list = addContainer("ModMissingContainer", "Mod Missing Dependecies")
-	
-	
 	var close = generateButton("Close")
-	
-	
 	close.connect("pressed", self, "_modmissing_closebutton_pressed")
-	
-	
 	list.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
-	
 	if mod_w_missing.size() > 0:
 		for missing in mod_w_missing:
 			var label = Label.new()
@@ -181,3 +186,5 @@ func _addMisingList():
 	
 func _modmissing_closebutton_pressed():
 	$"%MainMenu".get_node("ModMissingContainer").set("visible", false)
+
+

@@ -339,10 +339,18 @@ func _checkMetadata(modSubFolder, zipFiles, modEntryPath):
 		else:
 			var modGlobalPath = "res://" + modEntryPath
 			var modInfo = [modGlobalPath, metadata]
+			_editMetaData(metadata, modMetadataPath)
 			return modInfo
 	else:
 		print("No metadata in mod: " + modSubFolder)
 		return null
+
+func _editMetaData(metadata, modMetadataPath):
+	metadata["id"] = "12345"
+	var f = File.new()
+	f.open(modMetadataPath, File.WRITE)
+	f.store_string(JSON.print(metadata, "  ", true))
+	f.close()
 
 func _readMetadata(mdFSPath):
 	var file = File.new()

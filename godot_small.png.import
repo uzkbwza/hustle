@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/godot_trail.png-a1470f335d0a69edadcced018844d290.stex"
+path="res://.import/godot_small.png-7027ef865a64c5d5a46de38080208fdd.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://godot_trail.png"
-dest_files=[ "res://.import/godot_trail.png-a1470f335d0a69edadcced018844d290.stex" ]
+source_file="res://godot_small.png"
+dest_files=[ "res://.import/godot_small.png-7027ef865a64c5d5a46de38080208fdd.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

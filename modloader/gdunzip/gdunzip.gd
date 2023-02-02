@@ -112,6 +112,8 @@ func load(path):
 	# Fill in self.files with all the file data
 	return self._get_files()
 
+
+
 # Uncompress the given file. Returns false if uncompressing fails, or when the
 # file isn't available in the currently loaded zip file.
 func uncompress(file_name):
