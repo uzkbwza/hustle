@@ -48,7 +48,7 @@ func _frame_9():
 		h.y = int(floc.y-f.hurtbox.height)
 	default.remove_child(hitbox)
 	obj.hitboxes.remove(0)
-	for i in obj.hitboxes.size():
-		var h = obj.hitboxes[i]
-		h.name = host.name+"_HB_"+str(i)
+#	for i in obj.hitboxes.size():
+#		var h = obj.hitboxes[i]
+#		h.name = host.name+"_HB_"+str(i)
 #		h.activate()

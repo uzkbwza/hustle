@@ -1,6 +1,6 @@
 extends RobotState
 
-const MOVE_AMOUNT = 10
+const MOVE_AMOUNT = 15
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"

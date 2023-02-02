@@ -9,6 +9,9 @@ const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
 const LOIC_GAIN = 6
 const LOIC_GAIN_NO_ARMOR = 6
+const MAGNET_TICKS = 60
+const MAGNET_STRENGTH = "2"
+const COMBO_MAGNET_STRENGTH = "0.5"
 
 var loic_draining = false
 var armor_pips = 1
@@ -29,6 +32,7 @@ var armor_active = false
 var buffer_armor = false
 var can_unlock_gratuitous = true
 var can_flamethrower = true
+var magnet_ticks_left = 0
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -55,6 +59,8 @@ func on_got_hit():
 			objs_map[orbital_strike_projectile].disable()
 			orbital_strike_out = false
 			orbital_strike_projectile = null
+#		if magnet_ticks_left > 1:
+#			magnet_ticks_left = 1
 
 func copy_to(f: BaseObj):
 	.copy_to(f)
@@ -88,6 +94,12 @@ func big_landing_effect():
 	if camera:
 		camera.bump(Vector2.UP, 10, 20 / 60.0)
 
+func magnetize():
+	var my_pos_relative = opponent.obj_local_center(self)
+	if fixed.gt(fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y)), "32"):
+		var force = fixed.normalized_vec_times(str(my_pos_relative.x), str(my_pos_relative.y), MAGNET_STRENGTH if combo_count <= 0 else COMBO_MAGNET_STRENGTH)
+		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
+
 func tick():
 	.tick()
 	if got_hit:
@@ -97,6 +109,12 @@ func tick():
 		armor_active = false
 #	if armor_active:
 #		armor_pips = 0
+	if magnet_ticks_left > 0:
+		start_magnet_fx()
+		magnetize()
+		magnet_ticks_left -= 1
+	if magnet_ticks_left == 0:
+		stop_magnet_fx()
 	if landed_move:
 		if not (current_state() is CharacterHurtState):
 			armor_pips += 1
@@ -148,6 +166,9 @@ func tick():
 		can_ground_pound = true
 		ground_pound_active_effect()
 
+func start_magnetizing():
+	magnet_ticks_left = MAGNET_TICKS
+	pass
 
 func ground_pound_active_effect():
 	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -18))
@@ -168,6 +189,12 @@ func start_hustle_fx():
 
 func stop_hustle_fx():
 	$"%HustleEffect".stop_emitting()
+	
+func start_magnet_fx():
+	$"%MagnetEffect".start_emitting()
+
+func stop_magnet_fx():
+	$"%MagnetEffect".stop_emitting()
 
 
 func process_extra(extra):
