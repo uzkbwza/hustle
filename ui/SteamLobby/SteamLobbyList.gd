@@ -81,6 +81,7 @@ func _on_lobby_match_list_received(lobbies):
 #	yield(get_tree().create_timer(1.0), "timeout")
 
 func _on_lobby_clicked(entry):
+	print("here")
 	if SteamLobby.LOBBY_ID != 0:
 		return
 	for lobby in lobby_list.get_children():

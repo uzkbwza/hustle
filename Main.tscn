@@ -1629,7 +1629,7 @@ anchor_bottom = 0.5
 margin_left = -45.0
 margin_top = -66.0
 margin_right = 51.0
-margin_bottom = 101.0
+margin_bottom = 114.0
 custom_constants/separation = 0
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
@@ -1774,14 +1774,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -50.0
+margin_left = -36.0
 margin_top = 37.0
-margin_right = 51.0
+margin_right = 37.0
 margin_bottom = 48.0
 grow_horizontal = 2
 focus_mode = 2
 custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
-text = "WISHLIST ON STEAM!!"
+text = "BUY THE FULL VERSION ON STEAM!!"
 underline = 1
 
 [node name="SocialLinks" type="HBoxContainer" parent="UILayer/MainMenu"]

@@ -31,7 +31,7 @@ func _ready():
 func _input(event):
 	if mouse_entered:
 		if event is InputEventMouseButton:
-			if event.pressed:
+			if event.pressed and event.button_index == 1:
 				select()
 
 func select():
