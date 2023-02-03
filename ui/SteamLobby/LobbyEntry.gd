@@ -12,6 +12,7 @@ var lobby_id
 var lobby_data
 
 var mouse_entered = false
+var mouse_clicked = false
 var selected = false
 
 func set_data(lobby_data):
@@ -28,11 +29,16 @@ func _ready():
 	if rect.has_point(mouse_position):
 		_on_LobbyEntry_mouse_entered()
 		
-func _input(event):
-	if mouse_entered:
-		if event is InputEventMouseButton:
-			if event.pressed and event.button_index == 1:
-				select()
+#func _input(event):
+#	if mouse_entered:
+#		if event is InputEventMouseButton:
+#			if event.pressed and event.button_index == 1 and !mouse_clicked:
+#				mouse_clicked = true
+#
+#func _process(delta):
+#	if mouse_clicked:
+#		mouse_clicked = false
+#		select()
 
 func select():
 	selected = true
@@ -52,4 +58,9 @@ func _on_LobbyEntry_mouse_entered():
 func _on_LobbyEntry_mouse_exited():
 	mouse_entered = false
 	hover_rect.hide()
+	pass # Replace with function body.
+
+
+func _on_Button_pressed():
+	select()
 	pass # Replace with function body.

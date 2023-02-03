@@ -48,6 +48,13 @@ func _on_lobby_match_list_received(lobbies):
 	# TODO - keep and update existing lobbies so your selection isnt cleared
 #		$"%LobbyList".clear()
 	clear_lobby_list()
+	var sorting_methods = [
+		"sort_player_count",
+		"sort_name",
+	]
+	
+	lobbies.sort_custom(self, sorting_methods[$"%SortButton".selected])
+
 	for lobby in lobbies:
 		# Pull lobby data from Steam, these are specific to our example
 		var lobby_name: String = Steam.getLobbyData(lobby, "name")
@@ -80,6 +87,13 @@ func _on_lobby_match_list_received(lobbies):
 		pass
 #	yield(get_tree().create_timer(1.0), "timeout")
 
+func sort_player_count(a, b):
+	return Steam.getNumLobbyMembers(a) > Steam.getNumLobbyMembers(b)
+
+func sort_name(a, b):
+	return Steam.getLobbyData(a, "name") > Steam.getLobbyData(b, "name")
+	pass
+
 func _on_lobby_clicked(entry):
 	print("here")
 	if SteamLobby.LOBBY_ID != 0:
@@ -109,4 +123,9 @@ func _on_FilterIncompatibleButton_toggled(button_pressed):
 
 func _on_RefreshButton_pressed():
 	SteamLobby.request_lobby_list()
+	pass # Replace with function body.
+
+
+func _on_SortButton_item_selected(index):
+	_on_lobby_match_list_received(lobbies)
 	pass # Replace with function body.
