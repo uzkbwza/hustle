@@ -83,6 +83,7 @@ func init():
 	else:
 		$"%GameSettingsPanelContainer".init(false)
 		$"%GameSettingsPanelContainer"._on_received_match_settings(SteamLobby.MATCH_SETTINGS, true)
+	$"%RoomCode".text = SteamLobby.get_lobby_code()
 #func _on_user_selected(index):
 #	if users[index].steam_id == SteamHustle.STEAM_ID:
 #		return

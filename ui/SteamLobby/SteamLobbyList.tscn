@@ -312,26 +312,46 @@ margin_bottom = 31.0
 pressed = true
 text = "public"
 
-[node name="LobbySize" type="SpinBox" parent="CreateLobbyDialog"]
+[node name="LobbySize" type="HSlider" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 75.0
+margin_left = 140.0
 margin_top = 287.0
-margin_right = -141.0
+margin_right = -111.0
 margin_bottom = 33.0
-size_flags_vertical = 0
 min_value = 2.0
 max_value = 64.0
 value = 16.0
-align = 1
-suffix = "players"
+
+[node name="LobbySizeLabel" type="Label" parent="CreateLobbyDialog"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -260.0
+margin_top = 21.0
+margin_right = -221.0
+margin_bottom = 33.0
+text = "max players:"
+
+[node name="LobbySizeLabelCount" type="Label" parent="CreateLobbyDialog"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -108.0
+margin_top = 21.0
+margin_right = -66.0
+margin_bottom = 33.0
+text = "16"
 
 [node name="LobbyName" type="LineEdit" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
 margin_left = 75.0
 margin_top = 268.0
-margin_right = 245.0
+margin_right = 296.0
 margin_bottom = 286.0
 max_length = 64
 placeholder_text = "lobby name"
@@ -345,21 +365,46 @@ margin_top = 267.0
 margin_right = 572.0
 margin_bottom = 436.0
 
+[node name="CodeSearch" type="LineEdit" parent="."]
+unique_name_in_owner = true
+margin_left = 167.0
+margin_top = -17.0
+margin_right = 300.0
+margin_bottom = -1.0
+align = 1
+max_length = 64
+placeholder_text = "search by lobby code"
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="SearchButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -37.0
+margin_top = -285.0
+margin_bottom = -269.0
+size_flags_horizontal = 0
+text = "search"
+
 [node name="FilterIncompatibleButton" type="CheckButton" parent="."]
 unique_name_in_owner = true
 margin_left = 41.0
 margin_top = -17.0
-margin_right = 149.0
+margin_right = 129.0
 margin_bottom = -1.0
-text = "only compatible"
+text = "same version"
 
 [node name="SortButton" type="OptionButton" parent="."]
 unique_name_in_owner = true
-margin_left = 223.0
+margin_left = 130.0
 margin_top = -17.0
-margin_right = 338.0
+margin_right = 166.0
 margin_bottom = -1.0
 text = "sort by player count"
+clip_text = true
 items = [ "sort by player count", null, false, 0, null, "sort by name", null, false, 1, null ]
 selected = 0
 
@@ -386,6 +431,9 @@ size_flags_horizontal = 0
 text = "refresh"
 
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]
+[connection signal="value_changed" from="CreateLobbyDialog/LobbySize" to="." method="_on_LobbySize_value_changed"]
+[connection signal="text_entered" from="CodeSearch" to="." method="_on_CodeSearch_text_entered"]
+[connection signal="pressed" from="SearchButton" to="." method="_on_SearchButton_pressed"]
 [connection signal="toggled" from="FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]
 [connection signal="item_selected" from="SortButton" to="." method="_on_SortButton_item_selected"]
 [connection signal="pressed" from="RefreshButton" to="." method="_on_RefreshButton_pressed"]

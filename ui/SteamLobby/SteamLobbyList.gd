@@ -27,6 +27,7 @@ func _on_back_button_pressed():
 
 func show():
 	.show()
+	_on_LobbySize_value_changed($"%LobbySize".value)
 	$"%ConnectingLabel".show()
 	clear_lobby_list()
 	SteamLobby.request_lobby_list()
@@ -95,7 +96,7 @@ func sort_name(a, b):
 	pass
 
 func _on_lobby_clicked(entry):
-	print("here")
+#	print("here")
 	if SteamLobby.LOBBY_ID != 0:
 		return
 	for lobby in lobby_list.get_children():
@@ -128,4 +129,18 @@ func _on_RefreshButton_pressed():
 
 func _on_SortButton_item_selected(index):
 	_on_lobby_match_list_received(lobbies)
+	pass # Replace with function body.
+
+
+func _on_SearchButton_pressed():
+	SteamLobby.request_lobby_list($"%CodeSearch".text)
+	pass # Replace with function body.
+
+
+func _on_CodeSearch_text_entered(new_text):
+	SteamLobby.request_lobby_list(new_text)
+	pass # Replace with function body.
+
+func _on_LobbySize_value_changed(value):
+	$"%LobbySizeLabelCount".text = str(value)
 	pass # Replace with function body.

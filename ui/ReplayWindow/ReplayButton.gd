@@ -1,11 +1,12 @@
-extends HBoxContainer
+extends Control
 
 var path
 var modified
 
-onready var button = $Button
+onready var button = $"%Button"
 
 signal pressed()
+signal data_updated()
 
 
 func setup(replay_map, key):
@@ -16,3 +17,12 @@ func setup(replay_map, key):
 	modified = data["modified"]
 #	if data.has("version"):
 #		$VersionLabel.text = str(data.version) if data.version else ("unknown")
+
+func show_data():
+	var match_data = ReplayManager.load_replay(path)
+	if !("version" in match_data):
+		return
+	$"%VersionLabel".show()
+	$"%VersionLabel".text = str(match_data["version"])
+	yield(get_tree(), "idle_frame")
+	emit_signal("data_updated")

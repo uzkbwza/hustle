@@ -126,6 +126,7 @@ func _ready():
 		$"%WishlistButton".show()
 		$"%RoadmapContainer".hide()
 		$"%CustomizeButton".hide()
+		$"%SteamBetaReplayTip".hide()
 #		$"%CustomizeButton".hide()
 #		$"%EnableStyleColorsButton".hide()
 #		$"%EnableAurasButton".hide()
@@ -190,11 +191,20 @@ func _on_join_lobby_success():
 	$"%SteamLobbyList".hide()
 	$"%SteamLobby".show()
 	$"%GameUI".hide()
-	$"%MainMenu".hide()
+	hide_main_menu(true)
+#	$"%MainMenu".hide()
+
+func hide_main_menu(all=false):
+	if all:
+		$"%MainMenu".hide()
+	else:
+		$"%MainMenuButtonContainer".hide()
+		$"%Title".hide()
+		$"%RoadmapContainer".hide()
 
 func _on_view_replays_button_pressed():
 	load_replays()
-	$"%MainMenu".hide()
+	hide_main_menu()
 
 func _on_forfeit_button_pressed():
 	if is_instance_valid(game) and !game.game_finished:
@@ -236,6 +246,17 @@ func load_replays():
 	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
+	for i in range(len(buttons)):
+		if !is_instance_valid(self):
+			break
+		if !$"%ReplayWindow".visible:
+			break
+		if !is_instance_valid(buttons[i]):
+			break
+		var button = buttons[i]
+		button.show_data()
+		if i % 10 == 0:
+			yield(button, "data_updated")
 
 func _on_reset_zoom_pressed():
 	if is_instance_valid(game):
@@ -399,16 +420,16 @@ func _on_singleplayer_pressed():
 
 func _on_direct_connect_button_pressed():
 	direct_connect_lobby.show()
-	$"%MainMenu".hide()
+	hide_main_menu()
 
 func _on_multiplayer_pressed():
 	SteamLobby.leave_Lobby()
 	lobby.show()
-	$"%MainMenu".hide()
+	hide_main_menu()
 	
 func _on_steam_multiplayer_pressed():
 	$"%SteamLobbyList".show()
-	$"%MainMenu".hide()
+	hide_main_menu()
 	
 
 func _on_turn_ready():

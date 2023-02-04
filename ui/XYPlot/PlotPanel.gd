@@ -18,7 +18,7 @@ var buffer_update = false
 var buffer_changed = false
 
 func init():
-	call_deferred("update_value", parent.get_default_value())
+	call_deferred("update_value", parent.get_default_value(), false)
 	emit_signal("data_changed")
 
 func _ready():
@@ -27,7 +27,7 @@ func _ready():
 	connect("mouse_exited", self, "_on_mouse_exited")
 	x_value_float = 0
 	y_value_float = 0
-	call_deferred("update_value", Vector2())
+	call_deferred("update_value", Vector2(), false)
 	$"%UpdateTimer".connect("timeout", self, "on_update_timer_timeout")
 
 func on_update_timer_timeout():
@@ -69,8 +69,9 @@ func _input(event: InputEvent):
 func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
 
-func update_value(p=null):
-	buffer_update = true
+func update_value(p=null, update=true):
+	if update:
+		buffer_update = true
 	mpos = get_local_mouse_position()
 	var point
 	if p == null:
