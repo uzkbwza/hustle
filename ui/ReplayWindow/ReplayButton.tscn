@@ -18,7 +18,7 @@ rect_clip_content = true
 
 [node name="Button" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_right = 305.0
+margin_right = 245.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -26,10 +26,10 @@ clip_text = true
 
 [node name="VersionLabel" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 309.0
+margin_left = 249.0
 margin_top = 3.0
 margin_right = 409.0
 margin_bottom = 17.0
-rect_min_size = Vector2( 100, 0 )
+rect_min_size = Vector2( 160, 0 )
 rect_clip_content = true
 clip_text = true
