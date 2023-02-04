@@ -107,8 +107,12 @@ func _physics_process(delta):
 			visible = false
 
 func _process(delta):
-	if active and is_instance_valid(fighter) and fighter.will_forfeit:
-		on_action_submitted("Forfeit", null, null)
+	$"%DI".set_flash(false)
+	if active and is_instance_valid(fighter):
+		if fighter.will_forfeit:
+			on_action_submitted("Forfeit", null, null)
+		if fighter.is_in_hurt_state():
+			$"%DI".set_flash(Utils.pulse(0.55, 0.10))
 
 func reset():
 	for button_category_container in button_category_containers.values():

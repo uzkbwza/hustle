@@ -17,6 +17,8 @@ var y_value_float = 0.0
 var buffer_update = false
 var buffer_changed = false
 
+var flash = false
+
 func init():
 	call_deferred("update_value", parent.get_default_value(), false)
 	emit_signal("data_changed")
@@ -68,6 +70,9 @@ func _input(event: InputEvent):
 					call_deferred("emit_signal", "data_changed")
 func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
+
+func set_flash(on):
+	flash = on
 
 func update_value(p=null, update=true):
 	if update:
@@ -155,6 +160,7 @@ func _process(_delta):
 				mouse_over = false
 				break
 			p = p.get_parent()
+	update()
 
 func get_value():
 	var values = {
@@ -167,7 +173,6 @@ func get_value_float():
 	return Vector2(x_value_float, y_value_float)
 
 func _draw():
-	
 	var midpoint = midpoint()
 	var values = get_value()
 	var pos = midpoint + Vector2((values.x / float(parent.range_)) * rect_size.x / 2, (values.y / float(parent.range_)) * rect_size.y / 2).round()
@@ -180,10 +185,12 @@ func _draw():
 	limit_bg_color.a *= 0.25
 	var padding = 2
 	var draw_min_length = parent.min_length > 0
+	bg_color = bg_color if !flash else Color("141414")
+	
 	if !semicircle:
 		draw_circle(midpoint, midpoint.x, bg_color)
 	else:
-		draw_circle_arc_poly(midpoint, rect_size.x / 2, PI, TAU, bg_color)
+		draw_circle_arc_poly(midpoint, rect_size.x / 2, PI, TAU, bg_color) 
 	
 	if parent.snap_radius > 0.0:
 		var snap_radius_color = Color.green

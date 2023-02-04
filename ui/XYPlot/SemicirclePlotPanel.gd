@@ -17,6 +17,12 @@ var y_value_float = 0.0
 var buffer_update = false
 var buffer_changed = false
 
+var flash = false
+
+
+func set_flash(on):
+	flash = on
+
 func init():
 	call_deferred("update_value", parent.get_default_value())
 	emit_signal("data_changed")
@@ -55,6 +61,7 @@ func _input(event: InputEvent):
 			if event.pressed:
 				if mouse_over:
 					update_value(Vector2())
+
 
 func mouse_in_bounds():
 	return !(mpos.x < 0 or mpos.x > rect_size.x or mpos.y < 0 or mpos.y > rect_size.y)
@@ -125,6 +132,7 @@ func _process(_delta):
 	if buffer_changed:
 		buffer_changed = false
 		call_deferred("emit_signal", "data_changed")
+	update()
 
 func get_value():
 	var values = {
@@ -147,7 +155,8 @@ func _draw():
 	var padding = 2
 	var draw_min_length = parent.min_length > 0
 	draw_arc(midpoint, midpoint.x, PI, TAU, 32, bg_color)
-	
+	bg_color = bg_color if !flash else Color("333333")
+
 	if parent.snap_radius > 0.0:
 		var snap_radius_color = Color.green
 		snap_radius_color.a = 0.5

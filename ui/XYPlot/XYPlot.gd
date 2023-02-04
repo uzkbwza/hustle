@@ -24,6 +24,9 @@ var limit_range setget ,get_limit_range
 
 var facing = 1
 
+func set_flash(on):
+	panel.set_flash(on)
+
 func get_default_value():
 	var d = default_value
 	d.x *= facing
