@@ -395,6 +395,7 @@ margin_left = 41.0
 margin_top = -17.0
 margin_right = 129.0
 margin_bottom = -1.0
+pressed = true
 text = "same version"
 
 [node name="SortButton" type="OptionButton" parent="."]
