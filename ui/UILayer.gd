@@ -198,7 +198,7 @@ func hide_main_menu(all=false):
 	if all:
 		$"%MainMenu".hide()
 	else:
-		$"%MainMenuButtonContainer".hide()
+		$"%ButtonContainer".hide()
 		$"%Title".hide()
 		$"%RoadmapContainer".hide()
 
