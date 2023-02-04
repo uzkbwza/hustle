@@ -111,7 +111,7 @@ func _process(delta):
 	if active and is_instance_valid(fighter):
 		if fighter.will_forfeit:
 			on_action_submitted("Forfeit", null, null)
-		if fighter.is_in_hurt_state():
+		if fighter.is_in_hurt_state() and fighter.busy_interrupt:
 			$"%DI".set_flash(Utils.pulse(0.55, 0.10))
 
 func reset():
