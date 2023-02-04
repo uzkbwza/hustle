@@ -572,9 +572,10 @@ func reset_combo():
 	if touch_of_death and combo_damage >= 1000:
 		if !one_hit_ko and !turbo_mode and !extremely_turbo_mode and !infinite_resources and fixed.eq(global_damage_modifier, "1") and fixed.eq(global_hitstop_modifier, "1") and fixed.eq(global_hitstun_modifier, "1"):
 			unlock_achievement("ACH_TOUCH_OF_DEATH")
-	if combo_count > 20:
+	if combo_count >= 20:
 		unlock_achievement("ACH_RELENTLESS", true)
-	touch_of_death = false
+	if combo_count > 0 and !is_ghost:
+		touch_of_death = false
 	combo_count = 0
 	combo_damage = 0
 	hitstun_decay_combo_count = 0

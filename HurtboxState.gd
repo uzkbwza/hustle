@@ -26,7 +26,7 @@ func start(host):
 	}
 	host.hurtbox.width = width
 	host.hurtbox.height = height
-	host.hurtbox.x = x
+	host.hurtbox.x = x*host.get_facing_int()
 	host.hurtbox.y = y
 	host.hurtbox.can_draw = can_draw
 	current_tick = 0

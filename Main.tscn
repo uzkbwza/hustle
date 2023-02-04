@@ -1621,7 +1621,8 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="ButtonContainer" type="VBoxContainer" parent="UILayer/MainMenu"]
+[node name="MainMenuButtonContainer" type="VBoxContainer" parent="UILayer/MainMenu"]
+unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1632,7 +1633,7 @@ margin_right = 51.0
 margin_bottom = 114.0
 custom_constants/separation = 0
 
-[node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_right = 96.0
 margin_bottom = 20.0
@@ -1642,7 +1643,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Singleplayer"
 flat = true
 
-[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 20.0
 margin_right = 96.0
@@ -1653,7 +1654,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Multiplayer (Steam)"
 flat = true
 
-[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
 margin_right = 96.0
@@ -1664,7 +1665,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Multiplayer"
 flat = true
 
-[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 60.0
 margin_right = 96.0
@@ -1675,7 +1676,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Direct Connect"
 flat = true
 
-[node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 80.0
 margin_right = 96.0
@@ -1686,7 +1687,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Customize"
 flat = true
 
-[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 100.0
 margin_right = 96.0
@@ -1697,7 +1698,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Replays"
 flat = true
 
-[node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="OptionsButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 120.0
 margin_right = 96.0
@@ -1708,7 +1709,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Options"
 flat = true
 
-[node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="CreditsButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 140.0
 margin_right = 96.0
@@ -1719,7 +1720,7 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Credits"
 flat = true
 
-[node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/MainMenuButtonContainer"]
 unique_name_in_owner = true
 margin_top = 160.0
 margin_right = 96.0
@@ -2217,59 +2218,103 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -188.0
-margin_top = -136.0
-margin_right = 188.0
-margin_bottom = 136.0
+margin_left = -235.0
+margin_top = -155.0
+margin_right = 235.0
+margin_bottom = 127.0
 theme = ExtResource( 4 )
+
+[node name="Control" type="Control" parent="UILayer/ReplayWindow"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 469.0
+margin_bottom = 281.0
+
+[node name="SteamBetaReplayTip" type="Label" parent="UILayer/ReplayWindow/Control"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.647059 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -204.0
+margin_top = 7.0
+margin_right = 204.0
+margin_bottom = 32.0
+grow_horizontal = 2
+text = "Tip: to view or edit broken replays from older versions, right-click Your Only Move Is HUSTLE 
+in your Steam library, select \"properties\", then \"betas\", and select the correct patch."
+align = 1
+valign = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ReplayWindow"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 375.0
-margin_bottom = 271.0
+margin_right = 469.0
+margin_bottom = 281.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer"]
+margin_right = 468.0
+margin_bottom = 11.0
+
+[node name="Label" type="Label" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer2"]
+margin_right = 301.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.83
+text = "Replay"
+align = 1
+
+[node name="Label2" type="Label" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer2"]
+margin_left = 302.0
+margin_right = 468.0
+margin_bottom = 11.0
+size_flags_horizontal = 3
+text = "Game Version"
 
 [node name="Panel" type="Panel" parent="UILayer/ReplayWindow/VBoxContainer"]
-margin_right = 374.0
-margin_bottom = 257.0
+margin_top = 12.0
+margin_right = 468.0
+margin_bottom = 267.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UILayer/ReplayWindow/VBoxContainer/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+scroll_horizontal_enabled = false
 
 [node name="ReplayContainer" type="VBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer/Panel/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 374.0
-margin_bottom = 257.0
+margin_right = 468.0
+margin_bottom = 255.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer"]
-margin_top = 258.0
-margin_right = 374.0
-margin_bottom = 270.0
+margin_top = 268.0
+margin_right = 468.0
+margin_bottom = 280.0
 alignment = 2
 
 [node name="OpenReplayFolderButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_right = 114.0
+margin_right = 161.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 text = "open folder"
 
 [node name="ShowAutosavedReplays" type="CheckButton" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 115.0
-margin_right = 258.0
+margin_left = 162.0
+margin_right = 305.0
 margin_bottom = 12.0
 text = "show autosaved replays"
 
 [node name="ReplayCancelButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 259.0
-margin_right = 374.0
+margin_left = 306.0
+margin_right = 468.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 text = "go back"
@@ -2336,7 +2381,7 @@ size_flags_horizontal = 3
 text = "no"
 
 [node name="ButtonSoundPlayer" parent="UILayer" instance=ExtResource( 18 )]
-button_containers = [ NodePath("../MainMenu/ButtonContainer"), NodePath("../GameUI/PausePanel/VBoxContainer"), NodePath("../OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer") ]
+button_containers = [ NodePath("../MainMenu/MainMenuButtonContainer"), NodePath("../GameUI/PausePanel/VBoxContainer"), NodePath("../OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer") ]
 
 [node name="TurnReadySound" type="AudioStreamPlayer" parent="UILayer"]
 unique_name_in_owner = true

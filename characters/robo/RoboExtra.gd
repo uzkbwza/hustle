@@ -10,7 +10,7 @@ func _ready():
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
 	return {
-		"fly_dir": $"%FlyDir".get_data(),
+		"fly_dir": $"%FlyDir".get_data() if visible else fighter.flying_dir,
 		"fly_enabled": $"%FlyEnabled".pressed,
 		"armor_enabled": $"%ArmorEnabled".pressed,
 	}

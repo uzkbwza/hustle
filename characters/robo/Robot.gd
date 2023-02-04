@@ -79,7 +79,7 @@ func incr_combo():
 		landed_move = true
 	.incr_combo()
 	if can_unlock_gratuitous and combo_moves_used.has("GroundSlam") and current_state().name != "GroundSlam":
-		("ACH_GRATUITOUS")
+		unlock_achievement("ACH_GRATUITOUS")
 		can_unlock_gratuitous = false
 		pass
 	pass
@@ -203,6 +203,8 @@ func process_extra(extra):
 	var can_fly = true
 #	if current_state().get("can_fly") != null and current_state().can_fly == false:
 #		can_fly = false
+	if busy_interrupt:
+		can_fly = false
 	if extra.has("fly_dir") and !is_grounded() and can_fly:
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)

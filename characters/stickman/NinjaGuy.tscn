@@ -2027,13 +2027,13 @@ ExtResource( 221 ): {
 "x": 27,
 "y": 1
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
 "y": -7
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 }
 }
 button_texture = ExtResource( 223 )
@@ -2158,6 +2158,10 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
@@ -2165,10 +2169,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -2209,6 +2209,14 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
@@ -2216,14 +2224,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
 }
 }
 burst_cancellable = false

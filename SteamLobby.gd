@@ -39,6 +39,7 @@ var LOBBY_MEMBERS: Array = []
 var DATA
 var LOBBY_VOTE_KICK: bool = false
 var LOBBY_MAX_MEMBERS: int = 16
+var LOBBY_CODE: String = ""
 
 var SPECTATORS = []
 
@@ -122,7 +123,15 @@ class LobbyMember:
 		self.spectating_id = int(spectating_id) if spectating_id != "" else 0
 		var game_started = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "game_started")
 		self.game_started = true if game_started and game_started == "true" else false
-	
+
+func generate_lobby_code(size: int = 4):
+	var code = ""
+	var chars = "1234567890A"
+	randomize()
+	for i in range(size):
+		code += chars[randi() % len(chars)]
+	return code
+
 func get_lobby_member(steam_id):
 	for member in LOBBY_MEMBERS:
 		if member.steam_id == steam_id:
@@ -265,15 +274,18 @@ func spectate_forfeit(player_id):
 	for spectator in SPECTATORS:
 		_send_P2P_Packet(spectator, {"spectator_player_forfeit": player_id})
 
-func request_lobby_list():
+func request_lobby_list(code: String=""):
 	if LOBBY_ID == 0:
 			# Set distance to worldwide
 		Steam.addRequestLobbyListDistanceFilter(3)
 		Steam.addRequestLobbyListResultCountFilter(5000)
+		if code != "":
+			Steam.addRequestLobbyListStringFilter("code", code.to_upper(), 0)
 		#	Before requesting the lobby list with requestLobbyList you can add more search queries like:
 		#	addRequestLobbyListStringFilter - which allows you to look for specific works in the lobby metadata
 		#	addRequestLobbyListNumericalFilter - which adds a numerical comparions filter (<=, <, =, >, >=, !=)
 		#	addRequestLobbyListNearValueFilter - which gives results closes to the specified value you give
+
 		#	addRequestLobbyListFilterSlotsAvailable - which only returns lobbies with a specified amount of open slots available
 		#	addRequestLobbyListResultCountFilter - which sets how many results you want returned
 		#	addRequestLobbyListDistanceFilter - which sets the distance to search for lobbies, like:
@@ -608,14 +620,21 @@ func _on_Persona_Change(steam_id: int, _flag: int) -> void:
 	
 	_get_Lobby_Members()
 
+func get_lobby_code():
+	return Steam.getLobbyData(LOBBY_ID, "code")
+
 func _on_Lobby_Created(connect: int, lobby_id: int):
 	if connect == 1:
 		# set lobby id
 		LOBBY_ID = lobby_id
+		var lobby_code = generate_lobby_code()
+		
 		print("Created a lobby: " + str(LOBBY_ID))
 
 		Steam.setLobbyJoinable(LOBBY_ID, true)
 		Steam.setLobbyData(LOBBY_ID, "name", LOBBY_NAME)
+		Steam.setLobbyData(LOBBY_ID, "code", lobby_code)
+		print("lobby code: " + lobby_code)
 #		Steam.setLobbyData(LOBBY_ID, "status", "Waiting")
 		var lobby_version = Global.VERSION
 		if !Network.is_modded():
@@ -830,7 +849,9 @@ func can_get_messages_from_user(steam_id):
 			return true
 		if Steam.getLobbyMemberData(LOBBY_ID, steam_id, "status") == "spectating":
 			if int(Steam.getLobbyMemberData(LOBBY_ID, steam_id, "spectating_id")) == SPECTATING_ID:
-				return true 
+				return true
+			if int(Steam.getLobbyMemberData(LOBBY_ID, steam_id, "spectating_id")) == int(Steam.getLobbyMemberData(LOBBY_ID, SPECTATING_ID, "opponent_id")):
+				return true
 	return false
 
 

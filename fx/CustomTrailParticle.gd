@@ -51,6 +51,8 @@ static func get_shapes():
 		"elec": preload("res://fx/elec.png"),
 		"hollow circle": preload("res://fx/particle_round_hollow_4x4.png"),
 		"hollow square": preload("res://fx/particle_square_hollow_4x4.png"),
+		"checkerboard 1": preload("res://fx/checkerboard_1.png"),
+		"checkerboard 2": preload("res://fx/checkerboard_2.png"),
 	}
 
 static func get_default():

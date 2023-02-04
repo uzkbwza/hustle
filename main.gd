@@ -85,7 +85,7 @@ func _on_game_started(singleplayer):
 		stop_ghost()
 	self.singleplayer = singleplayer
 	Network.replay_saved = false
-	hide_main_menu()
+	hide_main_menu(true)
 	$"%CharacterSelect".show()
 	$"%CharacterSelect".init(singleplayer)
 	$"%DirectConnectLobby".hide()
@@ -118,7 +118,7 @@ func show_lobby():
 	$"%Lobby".show()
 
 func setup_game(singleplayer, data):
-	hide_main_menu()
+	hide_main_menu(true)
 	if is_instance_valid(game):
 		game.queue_free()
 	call_deferred("setup_game_deferred", singleplayer, data)
@@ -133,8 +133,8 @@ func save_replay():
 	$"%SaveReplayButton".text = "saved"
 	$"%SaveReplayLabel".text = "saved replay to " + filename
 
-func hide_main_menu():
-	$"%MainMenu".hide()
+func hide_main_menu(all=false):
+	ui_layer.hide_main_menu(all)
 
 func setup_game_deferred(singleplayer, data):
 	game = preload("res://Game.tscn").instance()
