@@ -180,7 +180,6 @@ __meta__ = {
 _import_path = NodePath("Cube")
 use_in_baked_light = true
 mesh = SubResource( 3 )
-material/0 = null
 
 [node name="NavMesh" type="NavigationMeshInstance" parent="Level"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0452547, 0 )
@@ -232,9 +231,6 @@ _import_path = NodePath("Sphere")
 transform = Transform( -0.22646, 0, -2.49146e-08, 0, 0.423557, 0, 1.97978e-08, 0, -0.284989, 0, 0.328851, 0 )
 use_in_baked_light = true
 mesh = SubResource( 13 )
-material/0 = null
-material/1 = null
-material/2 = null
 
 [node name="AntiGravity" type="CPUParticles" parent="RobotBase/Robot"]
 transform = Transform( 1, 3.75509e-06, -3.78323e-07, -1.06179e-07, -4.37106e-08, -0.672847, -1.60933e-06, 1.48622, -3.3204e-08, 0, -0.231445, 0 )
@@ -245,4 +241,5 @@ gravity = Vector3( 0, 0, 0.98 )
 initial_velocity = 1.0
 angular_velocity = 1.0
 scale_amount = 0.1
+
 [connection signal="button_down" from="ui/back_btn" to="." method="_on_back_btn_button_down"]

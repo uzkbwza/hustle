@@ -417,7 +417,8 @@ func activate():
 	active = true
 #	reset_prediction()
 #	_get_opposite_buttons().reset_prediction()
-
+	if is_instance_valid(fighter):
+		$"%DI".set_label("DI" + " x%.1f" % float(fighter.get_di_scaling()))
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:

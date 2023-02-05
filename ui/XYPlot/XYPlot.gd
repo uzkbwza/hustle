@@ -40,6 +40,9 @@ func get_limit_range():
 
 var range_ = 100
 
+func set_label(text):
+	$"%Label".text = text
+
 func _ready():
 	$"%Label".text = name
 	panel.connect("data_changed", self, "emit_signal", ["data_changed"])

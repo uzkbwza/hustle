@@ -137,6 +137,9 @@ func copy_to(hitbox: CollisionBox):
 	for variable in ["x", "y", "pos_x", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
 		hitbox.set(variable, get(variable))
 
+func is_projectile():
+	return !host.is_in_group("Fighter")
+
 func setup_audio():
 	if !host.is_ghost:
 		if whiff_sound:
@@ -174,7 +177,6 @@ func play_whiff_sound():
 			whiff_sound_player.play()
 			if bass_on_whiff and hit_bass_sound_player:
 				hit_bass_sound_player.play()
-
 
 func activate():
 	if active:

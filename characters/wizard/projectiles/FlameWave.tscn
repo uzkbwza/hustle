@@ -28,7 +28,6 @@ animations = [ {
 material = SubResource( 2 )
 has_projectile_parry_window = false
 deletes_other_projectiles = false
-fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )

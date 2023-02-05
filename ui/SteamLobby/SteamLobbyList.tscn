@@ -83,7 +83,7 @@ size_flags_vertical = 3
 
 [node name="LobbyList" type="VBoxContainer" parent="NetworkSetupScreen/LobbyListContainer"]
 unique_name_in_owner = true
-margin_right = 330.0
+margin_right = 110.0
 margin_bottom = 356.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -321,7 +321,7 @@ margin_top = 287.0
 margin_right = -111.0
 margin_bottom = 33.0
 min_value = 2.0
-max_value = 64.0
+max_value = 32.0
 value = 16.0
 
 [node name="LobbySizeLabel" type="Label" parent="CreateLobbyDialog"]

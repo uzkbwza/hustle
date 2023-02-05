@@ -80,6 +80,7 @@ export(String) var change_stance_to = ""
 
 export var _c_Misc = 0
 export var release_opponent_on_startup = false
+export var release_opponent_on_exit = false
 export var initiative_effect = false
 export var initiative_startup_reduction_amount = 0
 export var apply_pushback = true
@@ -344,6 +345,8 @@ func _exit_shared():
 	host.end_invulnerability()
 	host.end_projectile_invulnerability()
 	host.end_throw_invulnerability()
+	if release_opponent_on_exit:
+		host.release_opponent()
 	host.got_parried = false
 	host.colliding_with_opponent = true
 	host.state_interruptable = false

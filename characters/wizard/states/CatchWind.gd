@@ -22,7 +22,12 @@ func _tick():
 		wb.update_position(pos.x, pos.y)
 		for obj in host.objs_map.values():
 			if obj is BaseObj and !obj == host and !obj.is_grounded() and obj.current_state().state_name != "Burst" and wb.overlaps(obj.hurtbox):
-					windbox_hitting.append(obj)
+				if obj is BaseProjectile:
+					if obj.disabled:
+						continue
+					if !obj.movable:
+						continue
+				windbox_hitting.append(obj)
 		for obj in windbox_hitting:
 			pull_object(obj)
 

@@ -19,6 +19,8 @@ material = SubResource( 1 )
 script = ExtResource( 5 )
 immunity_susceptible = true
 deletes_other_projectiles = true
+fizzle_on_ceiling = false
+movable = true
 
 [node name="Default" type="Node2D" parent="StateMachine" index="0"]
 script = ExtResource( 3 )

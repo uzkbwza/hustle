@@ -31,6 +31,8 @@ func _tick():
 				if obj is BaseProjectile:
 					if obj.disabled:
 						continue
+					if !obj.movable:
+						continue
 				windbox_hitting.append(obj)
 		for obj in windbox_hitting:
 			push_object(obj, dir)

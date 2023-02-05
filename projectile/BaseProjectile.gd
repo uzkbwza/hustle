@@ -7,7 +7,7 @@ class_name BaseProjectile
 export var immunity_susceptible = true
 export var deletes_other_projectiles = true
 export var fizzle_on_ceiling = false
-
+export var movable = true
 
 var got_parried = false
 

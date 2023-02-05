@@ -115,12 +115,12 @@ func load_settings(settings):
 
 func update_menu():
 	if $"%ChessTimer".pressed:
-		if $"%TurnLengthLabel".text != "Turn Clock (min)":
-			$"%TurnLength".value = 30
+#		if $"%TurnLengthLabel".text != "Turn Clock (min)":
+#			$"%TurnLength".value = 30
 		$"%TurnLengthLabel".text = "Turn Clock (min)"
 	else:
-		if $"%TurnLengthLabel".text != "Turn Clock (sec)":
-			$"%TurnLength".value = 30
+#		if $"%TurnLengthLabel".text != "Turn Clock (sec)":
+#			$"%TurnLength".value = 30
 		$"%TurnLengthLabel".text = "Turn Clock (sec)"
 	pass
 

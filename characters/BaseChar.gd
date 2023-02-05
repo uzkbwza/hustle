@@ -362,10 +362,7 @@ func apply_style(style):
 			custom_hitspark = load(Custom.hitsparks[style.hitspark])
 			for hitbox in hitboxes:
 				hitbox.HIT_PARTICLE = custom_hitspark
-#	if style != null and is_ghost and is_color_active:
-#		sprite.get_material().set_shader_param("color", Color.white)
-#		sprite.get_material().set_shader_param("use_outline", true)
-#		sprite.get_material().set_shader_param("outline_color", Color.white)
+
 
 func reset_color():
 	is_color_active = false
@@ -423,6 +420,8 @@ func _ready():
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
+	connect("got_hit_by_fighter", self, "on_got_hit_by_fighter")
+	connect("got_hit_by_projectile", self, "on_got_hit_by_projectile")
 	state_machine.connect("state_changed", self, "on_state_changed")
 
 func on_state_changed(states_stack):
@@ -435,6 +434,12 @@ func on_state_changed(states_stack):
 	pass
 
 func on_got_hit():
+	pass
+
+func on_got_hit_by_fighter():
+	pass
+
+func on_got_hit_by_projectile():
 	pass
 
 func gain_burst_meter(amount=null):
@@ -897,8 +902,11 @@ func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":
 		opponent.change_state("Fall")
 
+func get_di_scaling():
+	return fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), COMBO_DI_SCALING_DIVISOR)))
+
 func get_scaled_di(di):
-	return xy_to_dir(di.x, di.y, fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), COMBO_DI_SCALING_DIVISOR))))
+	return xy_to_dir(di.x, di.y, get_di_scaling())
 
 func process_extra(extra):
 	if "DI" in extra:
@@ -1097,13 +1105,16 @@ func toggle_quit_graphic(on=null):
 			play_sound("QuitterSound")
 
 func tick():
-
 	if hitlag_ticks > 0:
 		if can_nudge:
 			if fixed.round(fixed.mul(fixed.vec_len(current_nudge.x, current_nudge.y), "100.0")) > 1:
 				current_nudge = fixed.vec_mul(current_nudge.x, current_nudge.y, nudge_amount)
 				var di_scaled = get_scaled_di(current_di)
-				spawn_particle_effect(preload("res://fx/NudgeIndicator.tscn"), Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(di_scaled.x, di_scaled.y).normalized())
+				var di_scaling = fixed.round(get_di_scaling())
+#				for i in range(min(di_scaling, 2)):
+				var particle = preload("res://fx/NudgeIndicator.tscn") if  di_scaling <= 2 else preload("res://fx/NudgeIndicatorStrong.tscn")
+				spawn_particle_effect(particle, Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(di_scaled.x, di_scaled.y).normalized())
+#					spawn_particle_effect(preload("res://fx/NudgeIndicatorStrong.tscn"), Vector2(get_pos().x, get_pos().y + hurtbox.y), Vector2(di_scaled.x, di_scaled.y).normalized())
 				move_directly(current_nudge.x, current_nudge.y if !is_grounded() else "0")
 			can_nudge = false
 		hitlag_ticks -= 1

@@ -386,7 +386,6 @@ unique_name_in_owner = true
 margin_top = 229.0
 margin_right = 152.0
 margin_bottom = 241.0
-hint_tooltip = "Player 2 will not be prompted for input."
 size_flags_horizontal = 15
 pressed = true
 text = "Gravity Enabled"

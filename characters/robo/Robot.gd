@@ -51,10 +51,12 @@ func init(pos=null):
 	.init(pos)
 	armor_pips = 1
 
-func on_got_hit():
+func on_got_hit_by_fighter():
 	if armor_active:
 		got_hit = true
-	else:
+
+func on_got_hit():
+	if !armor_active:
 		if orbital_strike_projectile and orbital_strike_projectile in objs_map:
 			objs_map[orbital_strike_projectile].disable()
 			orbital_strike_out = false

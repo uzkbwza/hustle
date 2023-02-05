@@ -6,6 +6,8 @@ signal object_spawned(object)
 signal particle_effect_spawned(particle)
 signal initialized()
 signal got_hit()
+signal got_hit_by_fighter()
+signal got_hit_by_projectile()
 signal hitbox_refreshed(hitbox)
 
 const RUMBLE_MODIFIER = 4.0
@@ -234,7 +236,7 @@ func copy_to(o: BaseObj):
 #	o.set_facing(get_facing_int())
 	o.update_data()
 	o.sprite.rotation = sprite.rotation
-	o.chara.set_facing(get_facing_int())
+	o.set_facing(get_facing_int())
 	var pos = get_pos()
 	for i in range(hitboxes.size()):
 		o.hitboxes[i].hit_objects = hitboxes[i].hit_objects.duplicate()
@@ -249,7 +251,7 @@ func copy_to(o: BaseObj):
 	o.invulnerable = invulnerable
 
 	chara.copy_to(o.chara)
-	o.chara.set_facing(get_facing_int())
+	o.set_facing(get_facing_int())
 #	var vel = get_vel()
 #	o.set_vel(vel.x, vel.y)
 #	o.update_data()
@@ -611,6 +613,13 @@ func update_grounded():
 
 func hit_by(hitbox: Hitbox):
 	emit_signal("got_hit")
+
+func emit_hit_by_signal(hitbox):
+	emit_signal("got_hit")
+	if !hitbox.is_projectile():
+		emit_signal("got_hit_by_projectile")
+	else:
+		emit_signal("got_hit_by_fighter")
 
 func get_pos():
 	return {

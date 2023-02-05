@@ -40,7 +40,7 @@ var hard_knockdown = false
 var damage_in_combo = -1
 var wall_slam = false
 var hits_vs_dizzy = true
-
+var is_projectile = false
 
 func get_damage():
 	if combo_count > 0:
@@ -81,6 +81,8 @@ func _init(state):
 		var pos = state.get_absolute_position()
 		pos_x = pos.x
 		pos_y = pos.y
+	if state.has_method("is_projectile"):
+		is_projectile = state.is_projectile()
 	if state.get("knockdown_extends_hitstun") != null:
 		knockdown_extends_hitstun = state.knockdown_extends_hitstun
 	if state.get("hits_otg") != null:
@@ -120,5 +122,9 @@ func _init(state):
 		damage_in_combo = state.damage_in_combo
 	if state.get("hits_vs_dizzy") != null:
 		hits_vs_dizzy = state.hits_vs_dizzy
+
 	if damage_in_combo == -1:
 		damage_in_combo = damage
+
+func is_projectile():
+	return is_projectile()
