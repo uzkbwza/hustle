@@ -2226,6 +2226,8 @@ GroundedSpecial
 AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
+allowed_stances_string = "Normal
+TPStance"
 
 [node name="TPStance" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 293 )
