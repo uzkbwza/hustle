@@ -12,6 +12,7 @@ const IS_COWBOY = true # lol
 var bullets_left = 6
 var cut_projectile = null
 var lasso_projectile = null
+var after_image_object = null
 var used_aerial_h_slash = false
 var used_aerial_l_slice = false
 var has_gun = true
@@ -110,6 +111,11 @@ func on_got_hit():
 		if objs_map.has(cut_projectile):
 			objs_map[cut_projectile].disable()
 			cut_projectile = null
+	if after_image_object:
+		var obj = obj_from_name(after_image_object)
+		if obj != null:
+			obj.disable()
+			after_image_object = null
 
 func _draw():
 	._draw()

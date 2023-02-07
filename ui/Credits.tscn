@@ -6,52 +6,54 @@
 [ext_resource path="res://godot_small_white.png" type="Texture" id=4]
 
 [node name="Control" type="PanelContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 236.0
-margin_top = 18.0
-margin_right = -236.0
-margin_bottom = -18.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -95.0
+margin_top = -169.0
+margin_right = 95.0
+margin_bottom = 169.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 167.0
-margin_bottom = 323.0
+margin_right = 189.0
+margin_bottom = 337.0
 size_flags_horizontal = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2"]
-margin_right = 166.0
-margin_bottom = 309.0
+margin_right = 188.0
+margin_bottom = 323.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 scroll_vertical_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer"]
-margin_right = 166.0
-margin_bottom = 309.0
+margin_right = 188.0
+margin_bottom = 323.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 11.0
 text = "Credits"
 align = 1
 
 [node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 margin_top = 21.0
-margin_right = 166.0
-margin_bottom = 58.0
+margin_right = 188.0
+margin_bottom = 44.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer"]
 modulate = Color( 1, 1, 1, 0.576471 )
-margin_right = 166.0
-margin_bottom = 25.0
+margin_right = 188.0
+margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "design, programming, art, sfx, music:"
 align = 1
@@ -59,20 +61,20 @@ valign = 1
 autowrap = true
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer"]
-margin_top = 26.0
-margin_right = 166.0
-margin_bottom = 37.0
+margin_top = 12.0
+margin_right = 188.0
+margin_bottom = 23.0
 text = "me"
 align = 1
 
 [node name="HBoxContainer6" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 68.0
-margin_right = 166.0
-margin_bottom = 91.0
+margin_top = 54.0
+margin_right = 188.0
+margin_bottom = 77.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer6"]
 modulate = Color( 1, 1, 1, 0.576471 )
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "splash art:"
@@ -82,19 +84,19 @@ autowrap = true
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer6"]
 margin_top = 12.0
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 23.0
 text = "chaoclypse"
 align = 1
 
 [node name="HBoxContainer2" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 101.0
-margin_right = 166.0
-margin_bottom = 124.0
+margin_top = 87.0
+margin_right = 188.0
+margin_bottom = 110.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer2"]
 modulate = Color( 1, 1, 1, 0.576471 )
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "dev help:"
@@ -104,21 +106,21 @@ autowrap = true
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer2"]
 margin_top = 12.0
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 23.0
 size_flags_horizontal = 3
-text = "zt2wo, ted, degritone, dime"
+text = "zt2wo, ted, degritone, wuffie, dime"
 align = 1
 autowrap = true
 
 [node name="HBoxContainer3" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 134.0
-margin_right = 166.0
-margin_bottom = 171.0
+margin_top = 120.0
+margin_right = 188.0
+margin_bottom = 157.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer3"]
 modulate = Color( 1, 1, 1, 0.576471 )
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "design help:"
@@ -128,7 +130,7 @@ autowrap = true
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer3"]
 margin_top = 12.0
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 37.0
 size_flags_horizontal = 3
 text = "kemeten, bowser, zoggere, benji, elucard, vineraio, and many more"
@@ -136,13 +138,13 @@ align = 1
 autowrap = true
 
 [node name="HBoxContainer4" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 181.0
-margin_right = 166.0
-margin_bottom = 232.0
+margin_top = 167.0
+margin_right = 188.0
+margin_bottom = 218.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer4"]
 modulate = Color( 1, 1, 1, 0.576471 )
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "special thanks:"
@@ -152,7 +154,7 @@ autowrap = true
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer4"]
 margin_top = 12.0
-margin_right = 166.0
+margin_right = 188.0
 margin_bottom = 51.0
 size_flags_horizontal = 3
 text = "chibi, grafx, dennis, dic, wi-fi, sewer, tengoku, steven4547466, sire forseti, sage, fleig, and you :)"
@@ -160,24 +162,24 @@ align = 1
 autowrap = true
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 242.0
-margin_right = 166.0
-margin_bottom = 274.0
+margin_top = 228.0
+margin_right = 188.0
+margin_bottom = 260.0
 custom_constants/separation = 5
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5"]
-margin_left = 20.0
+margin_left = 31.0
 margin_top = 3.0
-margin_right = 109.0
+margin_right = 120.0
 margin_bottom = 28.0
 text = "proudly made with
 GODOT ENGINE!!!!"
 align = 1
 
 [node name="TextureButton" type="TextureButton" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5"]
-margin_left = 114.0
-margin_right = 146.0
+margin_left = 125.0
+margin_right = 157.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 32, 32 )
 mouse_default_cursor_shape = 2
@@ -191,9 +193,9 @@ stretch_mode = 3
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0.380392 )
-margin_top = 284.0
-margin_right = 166.0
-margin_bottom = 309.0
+margin_top = 270.0
+margin_right = 188.0
+margin_bottom = 323.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
 text = "if i forgot to mention you please let me know lol im just forgetful"
@@ -203,9 +205,9 @@ autowrap = true
 
 [node name="Button" type="Button" parent="VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 310.0
-margin_right = 166.0
-margin_bottom = 322.0
+margin_top = 324.0
+margin_right = 188.0
+margin_bottom = 336.0
 text = "back"
 
 [connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5/TextureButton" to="." method="_on_TextureButton_pressed"]

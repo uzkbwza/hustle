@@ -32,7 +32,8 @@ func _enter_shared():
 		host.colliding_with_opponent = false
 #	host.chara.set_gravity(HIT_GRAV)
 #	host.chara.set_max_fall_speed(HIT_FALL_SPEED)
-	host.refresh_air_movements()
+	if host.penalty_ticks <= 0:
+		host.refresh_air_movements()
 	host.state_interruptable = true
 	host.busy_interrupt = true
 	._enter_shared()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://ui/8Way/8Way.gd" type="Script" id=1]
 [ext_resource path="res://ui/8Way/point_diagonal1.png" type="Texture" id=2]
@@ -13,6 +13,8 @@
 [ext_resource path="res://ui/8Way/point_neutral3.png" type="Texture" id=11]
 [ext_resource path="res://ui/8Way/point_neutral2.png" type="Texture" id=12]
 [ext_resource path="res://theme.tres" type="Theme" id=17]
+
+[sub_resource type="ButtonGroup" id=4]
 
 [sub_resource type="ImageTexture" id=3]
 
@@ -62,6 +64,7 @@ margin_right = 19.0
 margin_bottom = 18.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 3 )
 texture_hover = ExtResource( 4 )
@@ -75,6 +78,7 @@ margin_right = 31.0
 margin_bottom = 12.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 9 )
 texture_pressed = ExtResource( 8 )
 texture_hover = ExtResource( 10 )
@@ -88,6 +92,7 @@ margin_right = 43.0
 margin_bottom = 18.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 3 )
 texture_hover = ExtResource( 4 )
@@ -110,6 +115,7 @@ rect_rotation = -90.0
 rect_pivot_offset = Vector2( 6, 6 )
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 9 )
 texture_pressed = ExtResource( 8 )
 texture_hover = ExtResource( 10 )
@@ -123,6 +129,7 @@ margin_right = 31.0
 margin_bottom = 12.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 11 )
 texture_hover = ExtResource( 12 )
@@ -137,6 +144,7 @@ rect_rotation = 90.0
 rect_pivot_offset = Vector2( 6, 6 )
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 9 )
 texture_pressed = ExtResource( 8 )
 texture_hover = ExtResource( 10 )
@@ -157,6 +165,7 @@ margin_right = 19.0
 margin_bottom = 12.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 3 )
 texture_hover = ExtResource( 4 )
@@ -172,6 +181,7 @@ margin_right = 31.0
 margin_bottom = 18.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 9 )
 texture_pressed = ExtResource( 8 )
 texture_hover = ExtResource( 10 )
@@ -185,6 +195,7 @@ margin_right = 43.0
 margin_bottom = 12.0
 toggle_mode = true
 action_mode = 0
+group = SubResource( 4 )
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 3 )
 texture_hover = ExtResource( 4 )

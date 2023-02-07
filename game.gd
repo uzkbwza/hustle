@@ -569,12 +569,14 @@ func tick():
 		end_game()
 
 var priorities = [
+	funcref(self,"state_priority"),
 	funcref(self,"comboing"),
 	funcref(self,"attacks"),
 	funcref(self,"lower_sadness"),
 	funcref(self,"forward_movement"),
 	funcref(self,"lower_health")
 ]
+
 func resolve_port_priority():
 	var priority = 0
 	var p1_state = p1.current_state()
@@ -585,6 +587,13 @@ func resolve_port_priority():
 			break
 	priority = max(1,priority)
 	return [p1,p2] if priority==1 else [p2,p1]
+
+func state_priority(p1_state, p2_state):
+	if p1_state.tick_priority < p2_state.tick_priority:
+		return 1
+	if p2_state.tick_priority < p1_state.tick_priority:
+		return 2
+	return 0
 
 func comboing(p1_state,p2_state):
 	if(p1_state.is_hurt_state):
@@ -1035,8 +1044,6 @@ func process_tick():
 			parry_freeze = false
 		return
 
-
-	
 	var can_tick = !Global.frame_advance or (advance_frame_input)
 	if can_tick:
 		advance_frame_input = false
@@ -1071,7 +1078,7 @@ func process_tick():
 			game_paused = true
 			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
-				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting))
+				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting or p2.current_state().started_during_combo))
 				p2.state_interruptable = true
 				p1.show_you_label()
 				p1_turn = true
@@ -1085,7 +1092,7 @@ func process_tick():
 
 			elif p2.state_interruptable and !p2_turn:
 				someones_turn = true
-				p1.busy_interrupt = (!p1.state_interruptable and !(p1.current_state().interruptible_on_opponent_turn or p1.feinting))
+				p1.busy_interrupt = (!p1.state_interruptable and !(p1.current_state().interruptible_on_opponent_turn or p1.feinting or p1.current_state().started_during_combo))
 				p1.state_interruptable = true
 				p2.show_you_label()
 				p2_turn = true
@@ -1250,7 +1257,7 @@ func ghost_tick():
 				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
-			if p2.current_state().interruptible_on_opponent_turn or p2.feinting:
+			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or p2.current_state().started_during_combo:
 				p2.actionable_label.show()
 				ghost_p2_actionable = true
 #			else:
@@ -1270,7 +1277,7 @@ func ghost_tick():
 				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
-			if p1.current_state().interruptible_on_opponent_turn or p1.feinting:
+			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or p1.current_state().started_during_combo:
 				ghost_p1_actionable = true
 				p1.actionable_label.show()
 #			else:

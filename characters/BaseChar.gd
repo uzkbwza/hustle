@@ -1197,6 +1197,8 @@ func tick():
 	last_pos = pos
 	if penalty_ticks > 0:
 		penalty_ticks -= 1
+		if current_tick % 5 == 0:
+			take_damage(1, 1)
 	
 	touching_wall = false
 	var col_box = get_collision_box()
@@ -1248,7 +1250,7 @@ func set_ghost_colors():
 		ghost_ready_set = true
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
 			set_color(first_color)
-			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting:
+			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting or opponent.current_state().started_during_combo:
 				opponent.ghost_ready_set = true
 				opponent.set_color(first_color)
 		elif ghost_ready_tick != null and opponent.ghost_ready_tick < ghost_ready_tick:

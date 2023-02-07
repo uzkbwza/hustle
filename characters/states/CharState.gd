@@ -52,6 +52,8 @@ export var dynamic_iasa = true
 export var backdash_iasa = false
 export var allow_framecheat = false
 export var next_state_on_hold = true
+export var combo_only = false
+export var neutral_only = false
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -88,6 +90,7 @@ export var beats_backdash = false
 export var no_collision_start_frame = -1
 export var no_collision_end_frame = -1
 export var can_be_counterhit = true
+export var tick_priority = 0
 
 var initiative_effect_spawned = false
 
@@ -95,6 +98,7 @@ var dash_iasa = false
 var started_in_air = false
 var hit_yet = false
 var hit_cancelled = false
+var started_during_combo = false
 
 var feinting = false
 
@@ -162,6 +166,10 @@ func is_usable():
 			return false
 	if type == ActionType.Defense and host.penalty_ticks > 0:
 		return false
+	if combo_only and host.combo_count < 1:
+		return false
+	if neutral_only and host.combo_count >= 1:
+		return false
 	return true
 
 func get_categories(string: String):
@@ -169,6 +177,7 @@ func get_categories(string: String):
 
 func _enter_shared():
 	._enter_shared()
+	started_during_combo = false
 	if dynamic_iasa:
 		interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
 #	host.update_advantage()
@@ -275,6 +284,9 @@ func _tick_shared():
 	if !host.is_grounded() or air_type == AirType.Aerial:
 		started_in_air = true
 	var next_state = ._tick_shared()
+	if host.combo_count > 0 and hit_yet:
+		started_during_combo = true
+#	started_during_combo = host.combo_count > 0
 	if next_state:
 		return next_state
 #	if land_cancel:

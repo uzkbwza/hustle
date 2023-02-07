@@ -1,4 +1,4 @@
-[gd_scene load_steps=408 format=2]
+[gd_scene load_steps=409 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -398,6 +398,7 @@
 [ext_resource path="res://characters/robo/MagnetEffect.tscn" type="PackedScene" id=396]
 [ext_resource path="res://characters/robo/states/Magnetize.gd" type="Script" id=397]
 [ext_resource path="res://characters/robo/sprites/actionicons/magnet.png" type="Texture" id=398]
+[ext_resource path="res://characters/robo/states/Fall.gd" type="Script" id=400]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -759,7 +760,7 @@ animations = [ {
 "name": "SideKick",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ) ],
+"frames": [ ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 323 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 326 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 325 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ), ExtResource( 324 ) ],
 "loop": true,
 "name": "Slap",
 "speed": 5.0
@@ -893,7 +894,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -2377,7 +2377,7 @@ hit_sound = ExtResource( 238 )
 hit_sound_volume = -1.0
 dir_x = "-1.0"
 dir_y = "-0.35"
-knockback = "4.5"
+knockback = "7.5"
 pushback_x = "-1.0"
 start_tick = 13
 active_ticks = 3
@@ -2410,7 +2410,7 @@ script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 20
+anim_length = 27
 force_dir_x = "1.0"
 force_speed = "4.0"
 force_tick = 6
@@ -2446,7 +2446,7 @@ dir_y = "-0.1"
 knockback = "12.0"
 knockdown = true
 wall_slam = true
-start_tick = 8
+start_tick = 6
 active_ticks = 3
 
 [node name="GroundPound" type="Node2D" parent="StateMachine" index="37"]
@@ -3054,7 +3054,10 @@ is_super = true
 super_level = 2
 
 [node name="Fall" parent="StateMachine" index="51"]
-sprite_animation = "Fall"
+script = ExtResource( 400 )
+interrupt_from_string = "Aerial
+AerialMovement"
+interrupt_into_string = ""
 
 [node name="Landing" parent="StateMachine" index="52"]
 script = ExtResource( 82 )

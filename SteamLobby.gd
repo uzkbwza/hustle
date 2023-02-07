@@ -466,6 +466,12 @@ func _read_P2P_Packet() -> void:
 			Network.player_forfeit(readable.spectator_player_forfeit)
 		if readable.has("validate_auth_session"):
 			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
+		
+		_read_P2P_Packet_custom(readable)
+
+func _read_P2P_Packet_custom(readable):
+	pass
+
 
 func set_status(status):
 	Steam.setLobbyMemberData(LOBBY_ID, "status", status)

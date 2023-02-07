@@ -1,125 +1,36 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://ui/XYPlot/PlotPanel.gd" type="Script" id=1]
-[ext_resource path="res://ui/XYPlot/XYPlot.gd" type="Script" id=2]
-[ext_resource path="res://theme.tres" type="Theme" id=3]
+[ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=1]
 
-[sub_resource type="Shader" id=1]
-code = "shader_type canvas_item;
-
-void fragment() {
-	if (UV.y > 0.1) {
-		COLOR.a = 0.;
-	}
-}"
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-
-[node name="XYPlot" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -590.0
-margin_bottom = -298.0
-rect_min_size = Vector2( 80, 62 )
-mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme = ExtResource( 3 )
-script = ExtResource( 2 )
+[node name="XYPlot" instance=ExtResource( 1 )]
+margin_right = 90.0
+rect_min_size = Vector2( 90, 66 )
+panel_type = 1
+bottom_half = false
 min_length = 0.5
 limit_angle = true
+limit_range_degrees = 90.0
 limit_center_degrees = -90.0
+limit_symmetrical = false
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="."]
-margin_right = 50.0
-margin_bottom = 75.0
-mouse_filter = 2
-size_flags_horizontal = 0
-alignment = 1
-
-[node name="Label" type="Label" parent="VBoxContainer2"]
-unique_name_in_owner = true
-margin_right = 50.0
-margin_bottom = 11.0
-mouse_filter = 1
-size_flags_vertical = 0
-text = "XYPlot"
-align = 1
-valign = 1
-
-[node name="Control" type="Control" parent="VBoxContainer2"]
-margin_top = 12.0
-margin_right = 50.0
-margin_bottom = 75.0
-mouse_filter = 1
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/Control"]
-margin_right = 50.0
-margin_bottom = 68.0
-mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="Panel" type="Control" parent="VBoxContainer2/Control/VBoxContainer"]
-material = SubResource( 2 )
+[node name="PlotPanel" parent="." index="0"]
+margin_top = 13.0
 margin_right = 80.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 80, 40 )
-mouse_filter = 2
+margin_bottom = 53.0
 
-[node name="XLabel" type="Label" parent="VBoxContainer2/Control/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 41.0
+[node name="PlotPanelNub" parent="." index="1"]
+margin_top = 13.0
 margin_right = 80.0
-margin_bottom = 52.0
-text = "100"
-align = 1
+margin_bottom = 53.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/Control"]
+[node name="Label" parent="." index="2"]
 margin_right = 80.0
-margin_bottom = 50.0
-mouse_filter = 2
-size_flags_vertical = 0
 
-[node name="Control" type="Control" parent="VBoxContainer2/Control/HBoxContainer"]
+[node name="XLabel" parent="." index="3"]
+margin_left = 80.0
+margin_right = 100.0
+text = "0.35"
+
+[node name="YLabel" parent="." index="4"]
 margin_right = 80.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 80, 40 )
-
-[node name="YLabel" type="Label" parent="VBoxContainer2/Control/HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_left = 81.0
-margin_right = 111.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 30, 14 )
-size_flags_vertical = 5
-text = "100"
-valign = 1
-
-[node name="Control" type="Control" parent="."]
-margin_top = 12.0
-margin_right = 80.0
-margin_bottom = 52.0
-rect_clip_content = true
-
-[node name="PlotPanel" type="Control" parent="Control"]
-unique_name_in_owner = true
-material = SubResource( 2 )
-margin_right = 80.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 80, 80 )
-mouse_filter = 1
-size_flags_horizontal = 0
-size_flags_vertical = 0
-script = ExtResource( 1 )
-semicircle = true
-
-[node name="UpdateTimer" type="Timer" parent="Control/PlotPanel"]
-unique_name_in_owner = true
-wait_time = 0.3
-autostart = true
+text = "-0.35"

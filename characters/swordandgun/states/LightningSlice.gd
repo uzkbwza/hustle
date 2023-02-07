@@ -66,7 +66,7 @@ func _tick():
 	else:
 		var hitbox_pos
 		if neutral:
-			hitbox_pos = xy_to_dir(0, 0)
+			hitbox_pos = xy_to_dir(50, 0, TRACKING_DISTANCE)
 		else:
 			hitbox_pos = xy_to_dir(data.x, data.y, TRACKING_DISTANCE)
 			

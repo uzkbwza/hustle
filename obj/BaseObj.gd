@@ -190,7 +190,13 @@ func set_rumble(amount):
 
 func change_state(state_name, state_data=null, enter=true, exit=true):
 	state_machine._change_state(state_name, state_data, enter, exit)
-	
+
+func obj_from_name(name):
+	if name in objs_map:
+		var obj = objs_map[name]
+		if obj != null:
+			if !obj.disabled:
+				return obj
 	
 func copy_to(o: BaseObj):
 	var current_state = current_state()

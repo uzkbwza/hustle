@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.0.4-steam-unstable"
+var VERSION = "1.0.5-steam-unstable"
 
 var audio_player
 var music_enabled = true
@@ -39,10 +39,17 @@ var songs = {
 	"bg1": preload("res://sound/music/bg1.mp3")
 }
 
+var characters_cache = {}
+
+func get_cached_character(name):
+	return characters_cache[name]
+
 func full_version():
 	return (!steam_demo_version) and SteamHustle.STARTED
 
 func _enter_tree():
+	for char_name in name_paths:
+		characters_cache[char_name] = load(name_paths[char_name])
 #	get_tree().set_auto_accept_quit(false)
 	steam_demo_version = "steam" in VERSION and "beta" in VERSION
 	audio_player = AudioStreamPlayer.new()
@@ -59,12 +66,6 @@ func _enter_tree():
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
 #	load_supporter_pack()
-#
-#func load_supporter_pack():
-#	var success = ProjectSettings.load_resource_pack(OS.get_executable_path().get_base_dir() + "/Supporter.pck")
-#	if success:
-#		has_supporter_pack_file = true
-#		print(has_supporter_pack_file)
 
 func _ready():
 	yield(get_tree(), "idle_frame")

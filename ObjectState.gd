@@ -369,6 +369,7 @@ func spawn_particle_relative(scene: PackedScene, pos=Vector2(), dir=Vector2.RIGH
 	return host.spawn_particle_effect(scene, p + pos, dir)
 
 func _enter_shared():
+
 	if reset_momentum:
 		host.reset_momentum()
 	current_tick = -1
