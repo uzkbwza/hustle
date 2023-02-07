@@ -269,7 +269,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/wizard/states/WizardState.gd"
 }, {
-"base": "Control",
+"base": "Container",
 "class": "XYPlot",
 "language": "GDScript",
 "path": "res://ui/XYPlot/XYPlot.gd"

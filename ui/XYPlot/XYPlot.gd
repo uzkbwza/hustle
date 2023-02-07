@@ -122,10 +122,10 @@ func _get_property_list():
 	properties.append({
 		name = "snap",
 		type = TYPE_BOOL,
-		usage = PROPERTY_USAGE_DEFAULT if not always_max else PROPERTY_USAGE_NO_INSTANCE_STATE,
+		usage = PROPERTY_USAGE_DEFAULT,
 	})
 
-	var usage_of_snap_cat = PROPERTY_USAGE_DEFAULT if (not always_max) and snap else PROPERTY_USAGE_NO_INSTANCE_STATE
+	var usage_of_snap_cat = PROPERTY_USAGE_DEFAULT if snap else PROPERTY_USAGE_NO_INSTANCE_STATE
 
 	properties.append({
 		name = "snap_angles",

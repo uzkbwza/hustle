@@ -22,6 +22,11 @@ var in_place = false
 var forward = false
 var x_dist = "0"
 
+func _enter():
+	if from_stance:
+		host.start_projectile_invulnerability()
+#		host.start_invulnerability()
+
 func _frame_0():
 	if data == null:
 		data = {
@@ -78,7 +83,7 @@ func _frame_0():
 
 func _frame_4():
 	host.end_throw_invulnerability()
-	if in_place and !foresight and !from_stance:
+	if in_place and !foresight:
 		host.start_invulnerability()
 	host.start_projectile_invulnerability()
 	host.colliding_with_opponent = false

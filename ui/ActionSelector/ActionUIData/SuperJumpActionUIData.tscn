@@ -12,9 +12,12 @@ size_flags_vertical = 0
 [node name="JumpArc" parent="." index="0" instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 80.0
-margin_bottom = 62.0
-min_length = 0.0
+margin_right = 60.0
+rect_min_size = Vector2( 60, 66 )
+panel_type = 2
+left_quarter = false
 always_max = true
 limit_range_degrees = 60.0
 limit_center_degrees = -60.0
+default_value = Vector2( 0.5, -0.866025 )
+snap_angles = 1

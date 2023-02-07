@@ -14,12 +14,11 @@ script = ExtResource( 2 )
 [node name="Start" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 50.0
-margin_bottom = 62.0
+default_value = Vector2( 1, 0 )
 
 [node name="End" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 63.0
-margin_right = 50.0
-margin_bottom = 125.0
+margin_top = 67.0
+margin_bottom = 133.0
+default_value = Vector2( 1, 0 )

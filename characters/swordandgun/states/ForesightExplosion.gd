@@ -5,7 +5,7 @@ const PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageE
 func is_usable():
 	return .is_usable() and host.after_image_object != null
 
-func _frame_6():
+func _frame_3():
 	if host.after_image_object:
 		var obj = host.obj_from_name(host.after_image_object)
 		var pos = obj.get_pos()

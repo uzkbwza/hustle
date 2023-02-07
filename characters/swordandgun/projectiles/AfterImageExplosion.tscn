@@ -41,8 +41,11 @@ lifetime = 10
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
 script = ExtResource( 4 )
+width = 25
+height = 25
 damage = 80
-hitstun_ticks = 20
+hitstun_ticks = 8
+hitlag_ticks = 6
 whiff_particle = ExtResource( 3 )
 whiff_sound = ExtResource( 5 )
 hit_sound = ExtResource( 6 )
