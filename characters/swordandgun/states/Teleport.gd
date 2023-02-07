@@ -22,9 +22,9 @@ var in_place = false
 var forward = false
 var x_dist = "0"
 
-func _enter():
-	if from_stance:
-		host.start_projectile_invulnerability()
+#func _enter():
+#	if from_stance:
+#		host.start_projectile_invulnerability()
 #		host.start_invulnerability()
 
 func _frame_0():
