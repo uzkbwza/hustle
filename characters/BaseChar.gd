@@ -571,6 +571,19 @@ func get_global_throw_pos():
 	pos.y += throw_pos_y
 	return pos
 
+func emit_hit_by_signal(hitbox):
+	emit_signal("got_hit")
+	if hitbox == null:
+		return
+	if hitbox.get("host") == null:
+		return
+	if hitbox.host is String:
+		var host = objs_map[hitbox.host]
+		if host.is_in_group("Fighter"):
+			emit_signal("got_hit_by_fighter")
+		else:
+			emit_signal("got_hit_by_projectile")
+
 func reset_combo():
 	if combo_damage >= 500:
 		unlock_achievement("ACH_5000_DAMAGE")
@@ -724,7 +737,7 @@ func launched_by(hitbox):
 	if has_hyper_armor:
 		hit_during_armor = true
 
-	emit_signal("got_hit")
+	emit_hit_by_signal(hitbox)
 	take_damage(hitbox.get_damage(), hitbox.minimum_damage)
 
 	if will_launch:

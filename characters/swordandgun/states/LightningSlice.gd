@@ -11,10 +11,14 @@ const DEFAULT_HITBOX_Y = -16
 # var b = "text"
 export var cancel = false
 export var followup = false
+export var neutral = false
 
 var stall = false
 
 onready var hitbox = $Hitbox
+
+func is_usable():
+	return .is_usable() and (neutral and host.combo_count == 0) or (!neutral and host.combo_count > 0)
 
 func _frame_0():
 	stall = false
@@ -60,7 +64,12 @@ func _tick():
 #			hitbox.x = DEFAULT_HITBOX_X
 #			hitbox.y = DEFAULT_HITBOX_Y
 	else:
-		var hitbox_pos = xy_to_dir(data.x, data.y, TRACKING_DISTANCE)
+		var hitbox_pos
+		if neutral:
+			hitbox_pos = xy_to_dir(0, 0)
+		else:
+			hitbox_pos = xy_to_dir(data.x, data.y, TRACKING_DISTANCE)
+			
 		hitbox.x = DEFAULT_HITBOX_X + (fixed.round(hitbox_pos.x) * host.get_facing_int())
 		hitbox.y = DEFAULT_HITBOX_Y + fixed.round(hitbox_pos.y)
 		host.lightning_slice_x = hitbox.x

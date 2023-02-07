@@ -214,7 +214,8 @@ func copy_to(o: BaseObj):
 	
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
-
+	for state in state_machine.states_stack:
+		o.state_machine.states_stack.append(o.state_machine.states_map[state.name])
 #	while o.current_state().current_tick < current_state.current_tick:
 #		o.normal_tick()
 #		o.set_pos(get_pos().x, get_pos().y)
@@ -614,19 +615,12 @@ func update_grounded():
 func hit_by(hitbox: Hitbox):
 	emit_signal("got_hit")
 
-func emit_hit_by_signal(hitbox):
-	emit_signal("got_hit")
-	if !hitbox.is_projectile():
-		emit_signal("got_hit_by_projectile")
-	else:
-		emit_signal("got_hit_by_fighter")
-
 func get_pos():
 	return {
 		"x": data.object_data.position_x,
 		"y": data.object_data.position_y
 	}
-	
+
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	var unscaled_force = fixed.vec_div(str(x), str(y), div)
 	var force = fixed.vec_mul(unscaled_force["x"], unscaled_force["y"], mul)
