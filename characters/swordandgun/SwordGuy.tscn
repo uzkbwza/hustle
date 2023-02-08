@@ -2243,7 +2243,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 fallback_state = "StanceTeleport"
-anim_length = 4
+anim_length = 3
 title = "Warp Stance"
 data_ui_scene = ExtResource( 102 )
 button_texture = ExtResource( 295 )
@@ -2256,7 +2256,6 @@ AerialMovement
 AerialSpecial
 Teleport"
 interrupt_into_string = "Teleport
-GroundedDefense
 TimeRift"
 change_stance_to = "TPStance"
 

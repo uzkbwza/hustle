@@ -46,6 +46,7 @@ animations = [ {
 [node name="SparkBomb" instance=ExtResource( 1 )]
 material = SubResource( 1 )
 script = ExtResource( 10 )
+immunity_susceptible = false
 deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
@@ -72,7 +73,7 @@ particle_scene = ExtResource( 20 )
 spawn_particle_on_enter = true
 move_x = 0
 clash = false
-lifetime = 400
+lifetime = 600
 fizzle_on_ground = false
 fizzle_on_walls = false
 

@@ -81,6 +81,11 @@ func _frame_0():
 #	print(current_tick)
 #	starting_iasa_at = iasa_at
 
+func _frame_3():
+	if from_stance:
+		host.start_invulnerability()
+		host.start_projectile_invulnerability()
+
 func _frame_4():
 	host.end_throw_invulnerability()
 	if in_place and !foresight:
@@ -103,7 +108,11 @@ func _frame_5():
 	host.set_vel(vel.x, "0")
 	var tele_force = xy_to_dir(data.x, data.y, MOMENTUM_FORCE)
 	if fixed.lt(tele_force.y, "0"):
-		tele_force.y = fixed.mul(tele_force.y, "0.4")
+		if host.combo_count <= 0:
+			tele_force.y = fixed.mul(tele_force.y, "0.4")
+		else:
+			tele_force.y = fixed.mul(tele_force.y, "0.666667")
+			
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
 
