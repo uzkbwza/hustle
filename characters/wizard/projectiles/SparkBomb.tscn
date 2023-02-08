@@ -47,7 +47,6 @@ animations = [ {
 material = SubResource( 1 )
 script = ExtResource( 10 )
 deletes_other_projectiles = false
-fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
@@ -73,7 +72,7 @@ particle_scene = ExtResource( 20 )
 spawn_particle_on_enter = true
 move_x = 0
 clash = false
-lifetime = 600
+lifetime = 400
 fizzle_on_ground = false
 fizzle_on_walls = false
 

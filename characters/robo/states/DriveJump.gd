@@ -21,7 +21,8 @@ func _tick():
 	host.apply_forces_no_limit()
 	if current_tick > 1 and host.is_grounded():
 		return "Landing"
-	
+	if current_tick == 20:
+		enable_interrupt()
 	host.drive_jump_sprite.rotation += SPIN_RATE
 
 func _exit():

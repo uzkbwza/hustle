@@ -2227,11 +2227,13 @@ air_type = 2
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+TimeRift"
 interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
 TPStance"
+change_stance_to = "Normal"
 
 [node name="TPStance" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 293 )
@@ -2251,7 +2253,8 @@ AerialMovement
 AerialSpecial
 Teleport"
 interrupt_into_string = "Teleport
-GroundedDefense"
+GroundedDefense
+TimeRift"
 change_stance_to = "TPStance"
 
 [node name="Foresight" type="Node2D" parent="StateMachine" index="34"]

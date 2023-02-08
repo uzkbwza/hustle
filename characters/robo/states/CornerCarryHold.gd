@@ -18,7 +18,7 @@ func _tick():
 		return "CornerCarryRelease"
 
 	if Utils.int_abs(host.get_pos().x - host.stage_width * host.get_facing_int()) < RELEASE_DIST_FROM_WALL:
-		host.set_pos(host.stage_width * host.get_facing_int() - RELEASE_DIST_FROM_WALL * host.get_facing_int(), 0)
+		host.set_pos(host.stage_width * host.get_facing_int() - RELEASE_DIST_FROM_WALL * host.get_facing_int(), host.get_pos().y)
 		return "CornerCarryRelease"
 
 #	if current_tick % 15 == 0:
