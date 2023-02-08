@@ -25,6 +25,8 @@ var lightning_slice_y = 0
 var up_swipe_momentum = true
 var buffer_bullet_cancelling = false
 var bullet_cancelling = false
+var stance_teleport_x = 0
+var stance_teleport_y = 0
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())

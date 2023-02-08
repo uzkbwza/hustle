@@ -14,7 +14,9 @@ anchor_bottom = 1.0
 theme = ExtResource( 3 )
 script = ExtResource( 1 )
 __meta__ = {
-"_edit_lock_": true
+"_edit_horizontal_guides_": [ 185.0, 133.0 ],
+"_edit_lock_": true,
+"_edit_vertical_guides_": [ 340.0, 445.0 ]
 }
 
 [node name="Bg" type="ColorRect" parent="."]
@@ -54,18 +56,16 @@ text = "save"
 unique_name_in_owner = true
 margin_left = 220.0
 margin_top = 1.0
-margin_right = 566.0
+margin_right = 467.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 align = 1
 
 [node name="WorkshopButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 468.0
 margin_right = 566.0
 margin_bottom = 13.0
-disabled = true
 text = "upload to workshop"
 
 [node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
@@ -114,7 +114,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer2"]
 margin_right = 201.0
-margin_bottom = 1524.0
+margin_bottom = 1528.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 5
@@ -273,7 +273,7 @@ text = "show aura"
 unique_name_in_owner = true
 margin_top = 333.0
 margin_right = 201.0
-margin_bottom = 1524.0
+margin_bottom = 1528.0
 
 [node name="MovingSprite" type="Sprite" parent="."]
 unique_name_in_owner = true

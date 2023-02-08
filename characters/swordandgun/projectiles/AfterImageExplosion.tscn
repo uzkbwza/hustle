@@ -20,17 +20,19 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 animations = [ {
 "frames": [  ],
 "loop": true,
-"name": "default",
+"name": "Default",
 "speed": 5.0
 } ]
 
 [node name="BaseProjectile" instance=ExtResource( 2 )]
 material = SubResource( 1 )
+always_parriable = true
 deletes_other_projectiles = false
 movable = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
+animation = "Default"
 
 [node name="Default" parent="StateMachine" index="0"]
 particle_scene = ExtResource( 3 )

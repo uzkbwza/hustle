@@ -22,12 +22,9 @@ var in_place = false
 var forward = false
 var x_dist = "0"
 
-#func _enter():
-#	if from_stance:
-#		host.start_projectile_invulnerability()
-#		host.start_invulnerability()
-
 func _frame_0():
+#	if from_stance:
+#		host.start_invulnerability()
 	if data == null:
 		data = {
 			"x": 0,
@@ -46,7 +43,10 @@ func _frame_0():
 #		current_tick += 1
 		warp_stall_frames = 1
 		iasa_at = 6
-	
+		data = {
+			"x": host.stance_teleport_x,
+			"y": host.stance_teleport_y
+		}
 	if foresight:
 		iasa_at = 7
 		warp_stall_frames = 0
@@ -61,15 +61,15 @@ func _frame_0():
 		if host.opponent.current_state().busy_interrupt_type == BusyInterrupt.Hurt:
 			comboing = true
 
-
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
 	var backward = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
 	if fixed.gt(x_dist, "0.5"):
 		if backward:
 			host.add_penalty(10)
-			backwards_stall_frames = BACKWARDS_STALL_FRAMES
-			if !comboing:
-				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
+			if !from_stance:
+				backwards_stall_frames = BACKWARDS_STALL_FRAMES
+				if !comboing:
+					backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
 		else:
 			host.add_penalty(-5)
 	forward = !(backward or in_place)
@@ -103,7 +103,7 @@ func _frame_5():
 	host.set_vel(vel.x, "0")
 	var tele_force = xy_to_dir(data.x, data.y, MOMENTUM_FORCE)
 	if fixed.lt(tele_force.y, "0"):
-		tele_force.y = fixed.mul(tele_force.y, "0.666667")
+		tele_force.y = fixed.mul(tele_force.y, "0.4")
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
 
@@ -121,6 +121,9 @@ func _frame_7():
 	host.colliding_with_opponent = true
 
 func _tick():
+	if from_stance:
+		if current_tick == 0:
+			current_tick = 4
 	if backwards_stall_frames > 0:
 		current_tick = 0
 		backwards_stall_frames -= 1

@@ -425,7 +425,7 @@ animations = [ {
 "name": "AirFireball",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 162 ), ExtResource( 162 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 164 ), ExtResource( 164 ), ExtResource( 164 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ) ],
+"frames": [ ExtResource( 162 ), ExtResource( 162 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 163 ), ExtResource( 164 ), ExtResource( 164 ), ExtResource( 164 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 165 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 166 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ), ExtResource( 161 ) ],
 "loop": true,
 "name": "AirKick",
 "speed": 5.0
@@ -894,6 +894,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -902,6 +903,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1504,7 +1506,7 @@ hit_sound = ExtResource( 159 )
 dir_y = "1.0"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 9
+start_tick = 8
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/AirKick" index="1"]
@@ -1520,7 +1522,7 @@ hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 9
+start_tick = 8
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/AirKick" index="2"]
@@ -1536,7 +1538,7 @@ hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 9
+start_tick = 8
 active_ticks = 3
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/AirKick" index="3"]
@@ -1552,7 +1554,7 @@ hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 9
+start_tick = 8
 active_ticks = 3
 
 [node name="KillProcess" type="Node2D" parent="StateMachine" index="17"]
@@ -2059,7 +2061,7 @@ hard_knockdown = true
 [node name="NoComboHitbox" type="Node2D" parent="StateMachine/GroundSlam" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-damage = 160
+damage = 140
 minimum_damage = 85
 hitbox_type = 2
 damage_proration = -8

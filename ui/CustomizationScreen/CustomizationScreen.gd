@@ -11,6 +11,8 @@ var custom_particles = []
 
 var selected_hitspark = "bash"
 
+var workshop_preview_image: Image = null
+
 var hitspark_scene = null
 
 func get_style_data():
@@ -197,31 +199,39 @@ func _on_StyleName_text_entered(new_text):
 	save_style()
 	pass # Replace with function body.
 
-
 func _on_OpenFolderButton_pressed():
 	OS.shell_open(ProjectSettings.globalize_path("user://custom"))
 	pass # Replace with function body.
-
 
 func _on_DLCWarning_meta_clicked(meta):
 	Steam.activateGameOverlayToStore(SteamHustle.APP_ID)
 	pass # Replace with function body.
 
-
 func _on_WorkshopButton_pressed():
 	var item = UGCItem.new()
 	item.connect("item_created", self, "_on_item_created")
 	$"%WorkshopButton".disabled = true
+	var image: Image = get_viewport().get_texture().get_data()
+	image.flip_y()
+	var rect = Rect2(Vector2(347, 110), Vector2(90, 90))
+	image = image.get_rect(rect)
+	image.resize(image.get_width() * 6, image.get_height() * 6, 0)
+	workshop_preview_image = image
 
 func _on_item_created(p_file_id):
 	var data = get_style_data()
 	data["workshop_id"] = p_file_id
+	
 	var folder_path = Custom.save_style_workshop(data)
 	
 	var item = UGCItem.new(p_file_id)
 	item.set_tags(["style"])
 	item.set_title($"%StyleName".text)
 	item.set_content(ProjectSettings.globalize_path(folder_path))
+#	print(ProjectSettings.globalize_path(folder_path) + "/preview.png")
+	workshop_preview_image.save_png(ProjectSettings.globalize_path(folder_path) + "/preview.png")
+#	item.set_preview()
+	item.set_preview(ProjectSettings.globalize_path(folder_path) + "/preview.png")
 	item.update("new style")
 
 func _on_StyleName_text_changed(new_text: String):
