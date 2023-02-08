@@ -33,8 +33,8 @@ scroll_horizontal_enabled = false
 scroll_vertical_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer"]
-margin_right = 188.0
-margin_bottom = 323.0
+margin_right = 182.0
+margin_bottom = 311.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10

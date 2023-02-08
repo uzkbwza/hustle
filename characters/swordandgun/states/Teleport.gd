@@ -44,12 +44,12 @@ func _frame_0():
 	x_dist = fixed.abs(scaled.x)
 	if from_stance:
 #		current_tick += 1
-		warp_stall_frames = 3
+		warp_stall_frames = 1
 		iasa_at = 6
 	
 	if foresight:
 		iasa_at = 7
-		warp_stall_frames = 3
+		warp_stall_frames = 0
 		return
 	
 	if super_level > 0:

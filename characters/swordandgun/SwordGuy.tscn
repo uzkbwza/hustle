@@ -2223,7 +2223,7 @@ anim_length = 9
 title = "Time Rift"
 type = 2
 button_texture = ExtResource( 302 )
-air_type = 1
+air_type = 2
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
