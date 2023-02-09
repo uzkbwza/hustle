@@ -16,7 +16,7 @@ var mouse_clicked = false
 var selected = false
 
 func set_data(lobby_data):
-	lobby_name.text = lobby_data.name
+	lobby_name.text = ProfanityFilter.filter(lobby_data.name)
 	game_version.text = lobby_data.version
 	player_count.text = str(lobby_data.player_count) + "/" + str(lobby_data.max_players)
 	lobby_id = lobby_data.id
