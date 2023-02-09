@@ -8,8 +8,9 @@ const EXTRA_FRAME_PER = "1000"
 const EXTRA_FRAME_IN_COMBOS = 4
 const EXTRA_FRAME_PER_BACKWARDS = "0.2"
 const MOMENTUM_FORCE = "16.0"
-const CROSS_THROUGH_RECOVERY = 8
+const CROSS_THROUGH_RECOVERY = 2
 const FORWARD_SUPER = 55
+const MAX_CROSS_THROUGH_DIST = 32
 
 export var from_stance = false
 export var foresight = false
@@ -48,7 +49,7 @@ func _frame_0():
 			"y": host.stance_teleport_y
 		}
 	if foresight:
-		iasa_at = 7
+		iasa_at = 9
 		warp_stall_frames = 0
 		return
 	
@@ -66,10 +67,10 @@ func _frame_0():
 	if fixed.gt(x_dist, "0.5"):
 		if backward:
 			host.add_penalty(10)
-			if !from_stance:
-				backwards_stall_frames = BACKWARDS_STALL_FRAMES
-				if !comboing:
-					backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
+#			if !from_stance:
+			backwards_stall_frames = BACKWARDS_STALL_FRAMES
+			if !comboing:
+				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
 		else:
 			host.add_penalty(-5)
 	forward = !(backward or in_place)
@@ -119,6 +120,13 @@ func _frame_5():
 func _frame_6():
 	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0 and !foresight:
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
+		var my_pos = host.get_pos()
+		var opponent_pos = host.opponent.get_pos()
+		var dist = Utils.int_abs(my_pos.x - opponent_pos.x)
+		if dist > MAX_CROSS_THROUGH_DIST:
+			host.set_pos(opponent_pos.x + MAX_CROSS_THROUGH_DIST * -host.get_opponent_dir(), my_pos.y)
+			var vel = host.get_vel()
+			host.set_vel(fixed.mul(vel.x, "0.25"), vel.y)
 	if forward:
 		if host.combo_count <= 0:
 			host.gain_super_meter(fixed.round(fixed.mul(str(FORWARD_SUPER), x_dist)))

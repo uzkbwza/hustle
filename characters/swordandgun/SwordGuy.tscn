@@ -2211,6 +2211,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
 TPStance"
+change_stance_to = "Normal"
 super_level = 0
 super_effect = false
 foresight = true
@@ -2264,7 +2265,7 @@ script = ExtResource( 294 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 7
+anim_length = 12
 sfx = ExtResource( 138 )
 sfx_tick = 2
 projectile_scene = ExtResource( 299 )
@@ -2283,6 +2284,7 @@ AerialSpecial
 Teleport"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "TimeRift"
 allowed_stances_string = "TPStance"
 change_stance_to = "Normal"
 
@@ -2309,6 +2311,7 @@ AerialSpecial
 Teleport"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "Teleport"
 allowed_stances_string = "TPStance"
 change_stance_to = "Normal"
 super_level = 0
