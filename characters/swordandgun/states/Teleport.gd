@@ -31,6 +31,14 @@ func _frame_0():
 			"x": 0,
 			"y": 0
 		}
+	if from_stance:
+#		current_tick += 1
+		warp_stall_frames = 1
+		iasa_at = 6
+		data = {
+			"x": host.stance_teleport_x,
+			"y": host.stance_teleport_y
+		}
 	starting_dir = host.get_opponent_dir()
 	iasa_at = 9
 	backwards_stall_frames = 0
@@ -40,14 +48,7 @@ func _frame_0():
 	var scaled = xy_to_dir(data.x, data.y)
 	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
 	x_dist = fixed.abs(scaled.x)
-	if from_stance:
-#		current_tick += 1
-		warp_stall_frames = 1
-		iasa_at = 6
-		data = {
-			"x": host.stance_teleport_x,
-			"y": host.stance_teleport_y
-		}
+
 	if foresight:
 		iasa_at = 9
 		warp_stall_frames = 0
