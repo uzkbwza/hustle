@@ -29,6 +29,8 @@ material = SubResource( 1 )
 always_parriable = true
 deletes_other_projectiles = false
 movable = false
+can_be_hit_by_melee = false
+can_be_hit_by_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

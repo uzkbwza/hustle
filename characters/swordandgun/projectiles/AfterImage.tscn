@@ -28,18 +28,26 @@ animations = [ {
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 script = ExtResource( 7 )
+deletes_other_projectiles = false
+can_be_hit_by_melee = true
+can_be_hit_by_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]
 modulate = Color( 1, 1, 1, 0.501961 )
 frames = SubResource( 1 )
 animation = "Default"
+frame = 1
 offset = Vector2( 0, -18 )
 
 [node name="CollisionBox" parent="." index="2"]
-y = 4733
+y = -18
+width = 12
+height = 12
 
 [node name="Hurtbox" parent="." index="3"]
-y = 4414
+y = -18
+width = 12
+height = 12
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 5 )

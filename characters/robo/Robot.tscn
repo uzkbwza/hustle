@@ -894,7 +894,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1308,7 +1307,7 @@ y = -19
 width = 45
 height = 6
 damage = 105
-hitstun_ticks = 20
+hitstun_ticks = 60
 damage_proration = -1
 whiff_sound = ExtResource( 153 )
 hit_sound = ExtResource( 88 )
@@ -1316,6 +1315,7 @@ dir_y = "-0.1"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+knockdown_extends_hitstun = false
 hard_knockdown = true
 start_tick = 11
 
@@ -1352,7 +1352,7 @@ y = -19
 width = 45
 height = 6
 damage = 105
-hitstun_ticks = 20
+hitstun_ticks = 60
 damage_proration = -1
 whiff_sound = ExtResource( 153 )
 hit_sound = ExtResource( 88 )
@@ -1360,6 +1360,7 @@ dir_y = "-0.1"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+knockdown_extends_hitstun = false
 start_tick = 11
 
 [node name="Step" type="Node2D" parent="StateMachine" index="14"]

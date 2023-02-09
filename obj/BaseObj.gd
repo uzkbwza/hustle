@@ -330,6 +330,9 @@ func get_global_center():
 func get_facing():
 	return chara.get_facing().keys()[0]
 
+func get_opponent():
+	return null
+
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = projectile.instance()
 	obj.creator_name = obj_name
@@ -652,6 +655,11 @@ func get_pos_visual():
 	if !data:
 		update_data()
 	return Vector2(data.object_data.position_x, data.object_data.position_y)
+
+func distance_to(object: BaseObj):
+	var p1 = get_pos()
+	var p2 = object.get_pos()
+	return fixed.vec_dist(str(p1.x), str(p1.y), str(p2.x), str(p2.y))
 
 func tick():
 	if current_tick <= 0:

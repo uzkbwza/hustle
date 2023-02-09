@@ -8,6 +8,8 @@ const BARREL_LOCATION_X = "26"
 const BARREL_LOCATION_Y = "-5"
 const GUN_PICKUP_DISTANCE = "26"
 const IS_COWBOY = true # lol
+const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageExplosion.tscn")
+const AFTER_IMAGE_MAX_DIST = "300"
 
 var bullets_left = 6
 var cut_projectile = null
@@ -45,6 +47,15 @@ func get_barrel_location(angle):
 	return barrel_location
 
 func tick():
+	if after_image_object:
+		var obj = obj_from_name(after_image_object)
+		if obj:
+			var pos = obj.get_pos()
+			if fixed.gt(distance_to(obj), AFTER_IMAGE_MAX_DIST):
+				var explosion = spawn_object(RIFT_PROJECTILE, 0, 0)
+				explosion.set_pos(pos.x, pos.y - 18)
+				obj.disable()
+				after_image_object = null
 	.tick()
 	if objs_map.has(cut_projectile):
 		var proj = objs_map[cut_projectile]

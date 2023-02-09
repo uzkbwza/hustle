@@ -32,7 +32,9 @@ func set_facing(val):
 		set(reverse_dir(dir), old_buttons[dir])
 
 	if not pressed_button: return
-
+	
+	pressed_button.set_pressed_no_signal(false)
+	
 	var new_pressed_button = get_node("%" + reverse_dir(pressed_button.name))
 	new_pressed_button.set_pressed_no_signal(true)
 	pressed_button = new_pressed_button
@@ -72,48 +74,56 @@ func set_S(val):
 func set_SE(val):
 	SE = val
 	$"%SE".disabled = not val
+ 
+func set_dir(dir, force_absolute = false):
+	var updated_dir = dir_to_facing(dir) if (not force_absolute) and consider_facing else dir
 
+	assert(updated_dir in DIRS, "attempt to set 8Way dir to unknown value '" + str(dir) + "'")
 
+	var button = get_node("%" + updated_dir)
+	if button == pressed_button:
+		return 
 
+	if button.disabled:
+		set_sensible_default(updated_dir)
+		return
 
+	if pressed_button:
+		pressed_button.pressed = false
 
+	button.emit_signal("pressed")
 
+func set_sensible_default(attempted_dir):
+	var dirs_list = DIRS_LEFT if ('W' in attempted_dir) or (consider_facing and facing == -1 and not 'E' in attempted_dir) else DIRS
+	for dir in dirs_list:
+		var button = get_node("%" + dir)
+		if button.disabled:
+			continue
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func set_dir(dir):
-	if dir in DIRS:
-		var button = get_node("%" + dir_to_facing(dir)) if consider_facing else get_node("%" + dir)
-		if button == pressed_button:
-			return
 		if pressed_button:
 			pressed_button.pressed = false
+
 		button.emit_signal("pressed")
+ 
+		return
+
+	assert(false, "trying to update a completely disabled 8Way")
+
+func set_dir_from_data(data):
+	if data.x > 0:
+		if   data.y > 0: set_dir("SE", true)
+		elif data.y < 0: set_dir("NE", true)
+		else:            set_dir("E",  true)
+	elif data.x < 0:
+		if   data.y > 0: set_dir("SW", true)
+		elif data.y < 0: set_dir("NW", true)
+		else:            set_dir("W",  true)
+	else:
+		set_dir("Neutral", true)
 
 func get_dir():
 	if pressed_button:
-		return pressed_button.name
+		return dir_to_facing(pressed_button.name) if consider_facing else pressed_button.name
 
 func get_buttons():
 	var buttons = []
@@ -179,6 +189,7 @@ func _on_button_pressed(button):
 
 # order of precedence for selection
 const DIRS = ["Neutral", "E", "NE", "SE", "N", "S", "W", "NW", "SW"]
+const DIRS_LEFT = ["Neutral", "W", "NW", "SW", "N", "S", "E", "NE", "SE"]
 
 func _ready():
 	if not Engine.editor_hint:

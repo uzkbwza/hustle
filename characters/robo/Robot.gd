@@ -50,6 +50,9 @@ func _ready():
 func init(pos=null):
 	.init(pos)
 	armor_pips = 1
+	if infinite_resources:
+		can_loic = true
+		loic_meter = LOIC_METER
 
 func on_got_hit_by_fighter():
 	if armor_active:
@@ -151,6 +154,9 @@ func tick():
 			loic_meter += LOIC_GAIN
 		else:
 			loic_meter += LOIC_GAIN_NO_ARMOR
+		if infinite_resources:
+			loic_meter = LOIC_METER
+			can_loic = true
 	if loic_meter >= LOIC_METER and supers_available > 0:
 		if !can_loic:
 			play_sound("LOICBeep")

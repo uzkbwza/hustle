@@ -65,7 +65,7 @@ func _frame_0():
 
 	var dir = xy_to_dir(data.x, data.y, MOVE_DIST)
 	var backward = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
-	if fixed.gt(x_dist, "0.5"):
+	if fixed.gt(x_dist, "0.51"):
 		if backward:
 			host.add_penalty(10)
 #			if !from_stance:
@@ -114,12 +114,14 @@ func _frame_5():
 			tele_force.y = fixed.mul(tele_force.y, "0.4")
 		else:
 			tele_force.y = fixed.mul(tele_force.y, "0.666667")
-			
+	if forward:
+		if host.combo_count <= 0:
+			host.gain_super_meter(fixed.round(fixed.mul(str(FORWARD_SUPER), x_dist)))
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
 
 func _frame_6():
-	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0 and !foresight:
+	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0 and !foresight and !in_place:
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
 		var my_pos = host.get_pos()
 		var opponent_pos = host.opponent.get_pos()
@@ -128,9 +130,6 @@ func _frame_6():
 			host.set_pos(opponent_pos.x + MAX_CROSS_THROUGH_DIST * -host.get_opponent_dir(), my_pos.y)
 			var vel = host.get_vel()
 			host.set_vel(fixed.mul(vel.x, "0.25"), vel.y)
-	if forward:
-		if host.combo_count <= 0:
-			host.gain_super_meter(fixed.round(fixed.mul(str(FORWARD_SUPER), x_dist)))
 	host.update_facing()
 
 func _frame_7():

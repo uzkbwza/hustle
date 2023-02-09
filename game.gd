@@ -928,7 +928,10 @@ func apply_hitboxes(players):
 			if p == p2:
 				if object.id == 2 and not object.damages_own_team:
 					continue
-
+				
+			var can_be_hit_by_melee = object.get("can_be_hit_by_melee")
+			var can_be_hit_by_projectiles = bool(object.get("can_be_hit_by_projectiles"))
+		
 			if p:
 				if p.projectile_invulnerable and object.get("immunity_susceptible"):
 					continue
@@ -936,6 +939,22 @@ func apply_hitboxes(players):
 				p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
 				if p_hit_by:
 					p_hit_by.hit(p)
+				
+				var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
+				if obj_hit_by and can_be_hit_by_melee:
+					obj_hit_by.hit(object)
+			
+			if can_be_hit_by_melee or can_be_hit_by_projectiles:
+				for opp_object in objects:
+					if opp_object.disabled:
+						continue
+					if opp_object.id == object.id and !opp_object.damages_own_team:
+						continue
+					if !can_be_hit_by_projectiles and bool(opp_object.get("immunity_susceptible")):
+						continue
+					var obj_hit_by = get_colliding_hitbox(opp_object.get_active_hitboxes(), object.hurtbox)
+					if obj_hit_by:
+						obj_hit_by.hit(object)
 
 			var opp_objects = []
 			var opp_id = (object.id % 2) + 1

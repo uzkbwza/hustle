@@ -104,8 +104,8 @@ func apply_enter_force():
 #		force.y = host.fixed.mul(force.y, "2.0")
 		host.apply_force_relative(force.x, force.y)
 
-func _on_hit_something(_obj, hitbox):
-	if hitbox.followup_state != "":
+func _on_hit_something(obj, hitbox):
+	if hitbox.followup_state != "" and obj.is_in_group("Fighter"):
 		queue_state_change(hitbox.followup_state)
 
 func get_projectile_pos():

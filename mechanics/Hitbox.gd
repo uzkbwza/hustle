@@ -292,11 +292,11 @@ func hit(obj):
 			if !hits_vs_dizzy:
 				if obj.current_state().state_name == "HurtDizzy":
 					can_hit = false
-			if can_hit and spawn_particle_effect:
-				if hit_particle:
-					spawn_particle(hit_particle, obj, dir)
-				if !replace_hit_particle:
-					spawn_particle(HIT_PARTICLE if Global.enable_custom_hit_sparks else DEFAULT_HIT_PARTICLE, obj, dir)
+		if can_hit and spawn_particle_effect:
+			if hit_particle:
+				spawn_particle(hit_particle, obj, dir)
+			if !replace_hit_particle:
+				spawn_particle(HIT_PARTICLE if Global.enable_custom_hit_sparks else DEFAULT_HIT_PARTICLE, obj, dir)
 
 		if can_hit:
 			var pushback_modifier = host.fixed.mul(str(host.hitstun_decay_combo_count) if host.is_in_group("Fighter") else "0", COMBO_PUSHBACK_COEFFICIENT)

@@ -985,6 +985,9 @@ func clean_parried_hitboxes():
 func get_opponent_dir():
 	return Utils.int_sign(opponent.get_pos().x - get_pos().x)
 
+func get_opponent():
+	return opponent
+
 func get_advantage():
 	if opponent == null:
 		return true

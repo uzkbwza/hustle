@@ -1,16 +1,17 @@
 extends ObjectState
 
 const FIRE_TIME = 120
-const WIDTH = 100
 const DAMAGE = 2
+export var width = 100
 
 func _tick():
-	if Utils.int_abs(host.obj_local_pos(host.creator.opponent).x) < WIDTH:
-		if !host.creator.opponent.invulnerable and host.creator.opponent.is_grounded():
-			host.creator.opponent.take_damage(DAMAGE)
+	var opponent = host.get_opponent()
+	if opponent != null and Utils.int_abs(host.obj_local_pos(opponent).x) < width:
+		if !opponent.invulnerable and opponent.is_grounded():
+			opponent.take_damage(DAMAGE)
 	if current_tick > FIRE_TIME:
 		host.disable()
-		if host.creator:
+		if !host.from_loic and host.creator:
 			host.creator.can_flamethrower = true
 	if current_tick % 20 == 0:
 		host.play_sound("Fire")

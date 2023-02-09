@@ -1,4 +1,4 @@
-[gd_scene load_steps=306 format=2]
+[gd_scene load_steps=308 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -302,6 +302,8 @@
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/foresight_tp.png" type="Texture" id=300]
 [ext_resource path="res://characters/swordandgun/states/ForesightExplosion.gd" type="Script" id=301]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/foresight_explode.png" type="Texture" id=302]
+[ext_resource path="res://characters/swordandgun/sounds/teleport2.wav" type="AudioStream" id=303]
+[ext_resource path="res://characters/swordandgun/sounds/teleport3.wav" type="AudioStream" id=304]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -2163,7 +2165,7 @@ active_ticks = 4
 [node name="Teleport" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 99 )
 anim_length = 30
-enter_sfx_volume = -9.0
+enter_sfx_volume = -7.0
 sfx = ExtResource( 138 )
 sfx_tick = 2
 data_ui_scene = ExtResource( 102 )
@@ -2190,9 +2192,10 @@ super_effect = false
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
-enter_sfx_volume = -9.0
-sfx = ExtResource( 138 )
+enter_sfx_volume = -7.0
+sfx = ExtResource( 303 )
 sfx_tick = 2
+sfx_volume = -12.0
 title = "Time Shift"
 button_texture = ExtResource( 300 )
 air_type = 2
@@ -2249,6 +2252,7 @@ title = "Warp Stance"
 data_ui_scene = ExtResource( 102 )
 button_texture = ExtResource( 295 )
 air_type = 2
+uses_air_movement = true
 interrupt_from_string = "Grounded
 GroundedMovement
 GroundedSpecial
@@ -2266,8 +2270,9 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 anim_length = 12
-sfx = ExtResource( 138 )
+sfx = ExtResource( 304 )
 sfx_tick = 2
+sfx_volume = -12.0
 projectile_scene = ExtResource( 299 )
 projectile_tick = 3
 type = 2
@@ -2292,13 +2297,12 @@ change_stance_to = "Normal"
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
-enter_sfx_volume = -9.0
+enter_sfx_volume = -7.0
 sfx = ExtResource( 138 )
 sfx_tick = 2
 title = "Teleport"
 button_texture = ExtResource( 296 )
 air_type = 2
-uses_air_movement = true
 iasa_at = 9
 self_interruptable = false
 reversible = false
@@ -2355,7 +2359,7 @@ script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 20
 enter_sfx = ExtResource( 138 )
-enter_sfx_volume = -9.0
+enter_sfx_volume = -7.0
 title = "Inst. Teleport"
 type = 3
 data_ui_scene = ExtResource( 102 )

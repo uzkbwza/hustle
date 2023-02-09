@@ -15,19 +15,21 @@ export var lifetime = 99999
 export var relative_data_dir = false
 export var clash = true
 export var num_hits = 1
+export var fizzle_on_ground = true
+export var bounce_on_ground = false
 
 var hit_something = false
 var hit_something_tick = 0
+var last_y_vel = "0"
 
-func _frame_1():
-	
+func _frame_0():
 	hit_something = false
 	hit_something_tick = 0
 	host.set_grounded(false)
 	if homing:
 		if start_homing:
 			var dir = data["dir"]
-			var move_vec = fixed.normalized_vec_times(str(dir.x), str(dir.y), move_speed)
+			var move_vec = fixed.vec_mul(str(dir.x), str(dir.y), move_speed)
 			host.apply_force(move_vec.x, move_vec.y)
 		else:
 			host.apply_force_relative(move_speed, "0.01")
@@ -35,16 +37,25 @@ func _frame_1():
 func _tick():
 	var pos = host.get_pos()
 	host.update_grounded()
-	if current_tick > 1 and !hit_something and host.is_grounded() or pos.x < -host.stage_width or pos.x > host.stage_width:
+	if fizzle_on_ground and current_tick > 1 and !hit_something and host.is_grounded() or pos.x < -host.stage_width or pos.x > host.stage_width:
 		fizzle()
 		host.hurtbox.width = 0
 		host.hurtbox.height = 0
 		pass
+	
+	var vel = host.get_vel()
+	if !fixed.eq(vel.y, "0"):
+		last_y_vel = vel.y
+	
+	if host.is_grounded() and bounce_on_ground:
+		if vel:
+			host.set_vel(vel.x, fixed.mul(fixed.abs(last_y_vel), "-0.75"))
+	
 	if current_tick > lifetime:
 		fizzle()
 		host.hurtbox.width = 0
 		host.hurtbox.height = 0
-		
+	
 	elif !hit_something:
 		var dir
 		if !homing:
@@ -57,7 +68,6 @@ func _tick():
 			host.set_facing(fixed.sign(dir_x))
 		else:
 			var target = host.obj_local_center(host.creator.opponent)
-			var vel = host.get_vel()
 			var current = fixed.normalized_vec(vel.x, vel.y)
 			var desired = fixed.normalized_vec(str(target.x), str(target.y))
 			var steering_x = fixed.sub(desired.x, current.x)

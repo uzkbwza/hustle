@@ -8,6 +8,8 @@ export var immunity_susceptible = true
 export var deletes_other_projectiles = true
 export var fizzle_on_ceiling = false
 export var movable = true
+export var can_be_hit_by_melee = false
+export var can_be_hit_by_projectiles = false
 
 var got_parried = false
 
@@ -17,6 +19,10 @@ func _ready():
 	state_variables.append_array(
 		["got_parried", ]
 	)
+
+func get_opponent():
+	if creator:
+		return creator.get_opponent()
 
 func disable():
 	sprite.hide()

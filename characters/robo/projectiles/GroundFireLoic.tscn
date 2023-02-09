@@ -2,7 +2,7 @@
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
-[ext_resource path="res://characters/robo/projectiles/GroundFireEffect.tscn" type="PackedScene" id=3]
+[ext_resource path="res://characters/robo/projectiles/GroundFireEffectLoic.tscn" type="PackedScene" id=3]
 [ext_resource path="res://characters/robo/projectiles/states/GroundFire.gd" type="Script" id=4]
 [ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=5]
 [ext_resource path="res://characters/robo/sound/fire.wav" type="AudioStream" id=6]
@@ -25,7 +25,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=4]
 resource_local_to_scene = true
 shader = ExtResource( 2 )
 shader_param/color = Color( 1, 1, 1, 1 )
@@ -39,14 +39,13 @@ material = SubResource( 1 )
 script = ExtResource( 7 )
 can_be_hit_by_melee = false
 can_be_hit_by_projectiles = false
-from_loic = false
+from_loic = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 3 )
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 3 )]
-material = SubResource( 2 )
-z_index = 100
+material = SubResource( 4 )
 free = false
 one_shot = false
 
@@ -68,4 +67,4 @@ height = 1
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 4 )
-width = 100
+width = 50

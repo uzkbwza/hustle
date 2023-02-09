@@ -1,4 +1,4 @@
-[gd_scene load_steps=289 format=2]
+[gd_scene load_steps=290 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -282,6 +282,7 @@
 [ext_resource path="res://characters/wizard/GustParticle.tscn" type="PackedScene" id=280]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/gust.png" type="Texture" id=281]
 [ext_resource path="res://characters/wizard/ActionUiData/GustActionUIData.tscn" type="PackedScene" id=282]
+[ext_resource path="res://characters/wizard/ActionUiData/MagicDartActionUIData.tscn" type="PackedScene" id=283]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -1181,7 +1182,6 @@ start_tick = 8
 active_ticks = 15
 
 [node name="MagicMissile" type="Node2D" parent="StateMachine" index="18"]
-visible = false
 script = ExtResource( 122 )
 apply_forces = true
 apply_fric = true
@@ -1191,6 +1191,7 @@ sfx = ExtResource( 152 )
 sfx_tick = 6
 title = "Magic Dart"
 type = 2
+data_ui_scene = ExtResource( 283 )
 button_texture = ExtResource( 176 )
 air_type = 2
 self_interruptable = false

@@ -12,3 +12,6 @@ func _frame_0():
 
 func _frame_50():
 	host.disable()
+#
+#func process_projectile(obj):
+#	obj.from_loic = true

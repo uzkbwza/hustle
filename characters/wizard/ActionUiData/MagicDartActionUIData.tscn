@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.gd" type="Script" id=1]
-[ext_resource path="res://ui/CountOption/CountOption.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 
@@ -12,17 +11,8 @@ size_flags_vertical = 4
 theme = ExtResource( 4 )
 script = ExtResource( 1 )
 
-[node name="Shots" parent="." instance=ExtResource( 2 )]
-visible = false
+[node name="Aim" parent="." instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 60.0
-margin_bottom = 36.0
-min_value = 1
-max_value = 6
-
-[node name="Direction" parent="." instance=ExtResource( 3 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-always_max = true
+min_length = 0.2
 default_value = Vector2( 0, -1 )
