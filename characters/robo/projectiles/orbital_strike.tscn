@@ -52,7 +52,7 @@ immunity_susceptible = false
 deletes_other_projectiles = false
 movable = false
 can_be_hit_by_melee = false
-can_be_hit_by_projectiles = false
+projectile_immune = false
 body_target_texture = ExtResource( 10 )
 
 [node name="Sprite" parent="Flip" index="0"]

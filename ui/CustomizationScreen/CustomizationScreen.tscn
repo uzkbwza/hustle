@@ -56,13 +56,14 @@ text = "save"
 unique_name_in_owner = true
 margin_left = 220.0
 margin_top = 1.0
-margin_right = 467.0
+margin_right = 566.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 align = 1
 
 [node name="WorkshopButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 468.0
 margin_right = 566.0
 margin_bottom = 13.0

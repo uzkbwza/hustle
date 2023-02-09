@@ -9,7 +9,8 @@ export var deletes_other_projectiles = true
 export var fizzle_on_ceiling = false
 export var movable = true
 export var can_be_hit_by_melee = false
-export var can_be_hit_by_projectiles = false
+#export var can_be_hit_by_projectiles = false
+export var projectile_immune = false
 
 var got_parried = false
 

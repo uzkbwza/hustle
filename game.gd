@@ -930,7 +930,7 @@ func apply_hitboxes(players):
 					continue
 				
 			var can_be_hit_by_melee = object.get("can_be_hit_by_melee")
-			var can_be_hit_by_projectiles = bool(object.get("can_be_hit_by_projectiles"))
+#			var can_be_hit_by_projectiles = bool(object.get("can_be_hit_by_projectiles"))
 		
 			if p:
 				if p.projectile_invulnerable and object.get("immunity_susceptible"):
@@ -944,17 +944,17 @@ func apply_hitboxes(players):
 				if obj_hit_by and can_be_hit_by_melee:
 					obj_hit_by.hit(object)
 			
-			if can_be_hit_by_melee or can_be_hit_by_projectiles:
-				for opp_object in objects:
-					if opp_object.disabled:
-						continue
-					if opp_object.id == object.id and !opp_object.damages_own_team:
-						continue
-					if !can_be_hit_by_projectiles and bool(opp_object.get("immunity_susceptible")):
-						continue
-					var obj_hit_by = get_colliding_hitbox(opp_object.get_active_hitboxes(), object.hurtbox)
-					if obj_hit_by:
-						obj_hit_by.hit(object)
+#			if can_be_hit_by_melee or can_be_hit_by_projectiles:
+#				for opp_object in objects:
+#					if opp_object.disabled:
+#						continue
+#					if opp_object.id == object.id and !opp_object.damages_own_team:
+#						continue
+#					if !can_be_hit_by_projectiles and bool(opp_object.get("immunity_susceptible")):
+#						continue
+#					var obj_hit_by = get_colliding_hitbox(opp_object.get_active_hitboxes(), object.hurtbox)
+#					if obj_hit_by:
+#						obj_hit_by.hit(object)
 
 			var opp_objects = []
 			var opp_id = (object.id % 2) + 1
@@ -963,13 +963,14 @@ func apply_hitboxes(players):
 				if opp_object.id == opp_id:
 					opp_objects.append(opp_object)
 
-			for opp_object in opp_objects:
-				var obj_hit_by
-				var obj_hitboxes = opp_object.get_active_hitboxes()
-				obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
-				if obj_hit_by:
-					objects_hit_each_other = true
-					objects_to_hit.append([obj_hit_by, object])
+			if !object.projectile_immune:
+				for opp_object in opp_objects:
+					var obj_hit_by
+					var obj_hitboxes = opp_object.get_active_hitboxes()
+					obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
+					if obj_hit_by:
+						objects_hit_each_other = true
+						objects_to_hit.append([obj_hit_by, object])
 		
 	if objects_hit_each_other:
 		for pair in objects_to_hit:
@@ -1006,14 +1007,6 @@ func resimulate():
 	while ReplayManager.resimulating:
 		tick()
 		show_state()
-		super_active = super_freeze_ticks > 0
-		if super_freeze_ticks > 0:
-			super_freeze_ticks -= 1
-			if super_freeze_ticks == 0:
-				super_active = false
-				p1_super = false
-				p2_super = false
-				parry_freeze = false
 	show_state()
 	if Network.multiplayer_active:
 		Network.undo_finished()
@@ -1061,14 +1054,14 @@ func end_game():
 
 func process_tick():
 	
-	super_active = super_freeze_ticks > 0
+#	super_active = super_freeze_ticks > 0
 	if super_freeze_ticks > 0:
-		super_freeze_ticks -= 1
-		if super_freeze_ticks == 0:
-			super_active = false
-			p1_super = false
-			p2_super = false
-			parry_freeze = false
+#		super_freeze_ticks -= 1
+#		if super_freeze_ticks == 0:
+#			super_active = false
+#			p1_super = false
+#			p2_super = false
+#			parry_freeze = false
 		return
 
 	var can_tick = !Global.frame_advance or (advance_frame_input)
@@ -1215,6 +1208,15 @@ func _physics_process(_delta):
 				emit_signal("make_afterimage")
 		else:
 			call_deferred("ghost_tick")
+	
+	super_active = super_freeze_ticks > 0
+	if super_freeze_ticks > 0:
+		super_freeze_ticks -= 1
+		if super_freeze_ticks == 0:
+			super_active = false
+			p1_super = false
+			p2_super = false
+			parry_freeze = false
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")

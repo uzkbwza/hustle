@@ -50,7 +50,7 @@ func _frame_0():
 	x_dist = fixed.abs(scaled.x)
 
 	if foresight:
-		iasa_at = 9
+		iasa_at = 7
 		warp_stall_frames = 0
 		return
 	
