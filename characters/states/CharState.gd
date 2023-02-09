@@ -235,7 +235,8 @@ func _on_hit_something(obj, hitbox):
 			return
 		if hitbox is ThrowBox:
 			return
-		enable_hit_cancel()
+		if obj.is_in_group("Fighter"):
+			enable_hit_cancel()
 
 func process_hitboxes():
 #	if hitbox_start_frames.has(current_tick + 1) and host.feinting:

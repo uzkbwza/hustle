@@ -1006,6 +1006,14 @@ func resimulate():
 	while ReplayManager.resimulating:
 		tick()
 		show_state()
+		super_active = super_freeze_ticks > 0
+		if super_freeze_ticks > 0:
+			super_freeze_ticks -= 1
+			if super_freeze_ticks == 0:
+				super_active = false
+				p1_super = false
+				p2_super = false
+				parry_freeze = false
 	show_state()
 	if Network.multiplayer_active:
 		Network.undo_finished()
