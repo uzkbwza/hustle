@@ -1052,8 +1052,10 @@ func end_game():
 
 	emit_signal("game_won", winner)
 
+func negative_on_hit(player):
+	return player.current_state().started_during_combo and !player.opponent.current_state().started_during_combo
+
 func process_tick():
-	
 #	super_active = super_freeze_ticks > 0
 	if super_freeze_ticks > 0:
 #		super_freeze_ticks -= 1
@@ -1098,7 +1100,7 @@ func process_tick():
 			game_paused = true
 			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
-				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting or p2.current_state().started_during_combo))
+				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2)))
 				p2.state_interruptable = true
 				p1.show_you_label()
 				p1_turn = true
@@ -1112,7 +1114,7 @@ func process_tick():
 
 			elif p2.state_interruptable and !p2_turn:
 				someones_turn = true
-				p1.busy_interrupt = (!p1.state_interruptable and !(p1.current_state().interruptible_on_opponent_turn or p1.feinting or p1.current_state().started_during_combo))
+				p1.busy_interrupt = (!p1.state_interruptable and !(p1.current_state().interruptible_on_opponent_turn or p1.feinting or negative_on_hit(p1)))
 				p1.state_interruptable = true
 				p2.show_you_label()
 				p2_turn = true
@@ -1286,7 +1288,7 @@ func ghost_tick():
 				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
-			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or p2.current_state().started_during_combo:
+			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2):
 				p2.actionable_label.show()
 				ghost_p2_actionable = true
 #			else:
@@ -1306,7 +1308,7 @@ func ghost_tick():
 				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
-			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or p1.current_state().started_during_combo:
+			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or negative_on_hit(p1):
 				ghost_p1_actionable = true
 				p1.actionable_label.show()
 #			else:
