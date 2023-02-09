@@ -1,6 +1,6 @@
 extends DefaultFireball
 
-const LIFETIME = 60
+const LIFETIME = 100
 
 func _tick():
 	if current_tick > LIFETIME:
