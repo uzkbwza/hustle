@@ -76,7 +76,7 @@ func show():
 	.show()
 	_on_reset_color_pressed()
 	
-func save_style():
+func save_style(clear_text = true):
 	var data = get_style_data()
 	Custom.save_style(data)
 	SteamHustle.unlock_achievement("ACH_STYLISH")
@@ -84,7 +84,8 @@ func save_style():
 		if !data.use_outline or data.outline_color == Color("0b0c0f"):
 			SteamHustle.unlock_achievement("ACH_SNEAKY")
 	$"%LoadStyleButton".update_styles()
-	$"%StyleName".clear()
+	if clear_text:
+		$"%StyleName".clear()
 	$"%SavedLabel".text = "saved as " + data.style_name + ".style"
 	$"%SavedLabel".show()
 
@@ -208,15 +209,22 @@ func _on_DLCWarning_meta_clicked(meta):
 	pass # Replace with function body.
 
 func _on_WorkshopButton_pressed():
+	save_style(false)
 	var item = UGCItem.new()
 	item.connect("item_created", self, "_on_item_created")
+	item.connect("item_updated", self, "_on_item_updated")
 	$"%WorkshopButton".disabled = true
 	var image: Image = get_viewport().get_texture().get_data()
 	image.flip_y()
-	var rect = Rect2(Vector2(347, 110), Vector2(90, 90))
+	var rect = Rect2(Vector2(357, 119), Vector2(70, 70))
 	image = image.get_rect(rect)
 	image.resize(image.get_width() * 6, image.get_height() * 6, 0)
 	workshop_preview_image = image
+
+func _on_item_updated(url):
+	$"%WorkshopUpdatedLabel".clear()
+	$"%WorkshopUpdatedLabel".append_bbcode("[u][url=%s]style uploaded to workshop[/url]" % url)
+	$"%WorkshopUpdatedLabel".show()
 
 func _on_item_created(p_file_id):
 	var data = get_style_data()
@@ -228,11 +236,19 @@ func _on_item_created(p_file_id):
 	item.set_tags(["style"])
 	item.set_title($"%StyleName".text)
 	item.set_content(ProjectSettings.globalize_path(folder_path))
+	item.set_visibility(0)
 #	print(ProjectSettings.globalize_path(folder_path) + "/preview.png")
 	workshop_preview_image.save_png(ProjectSettings.globalize_path(folder_path) + "/preview.png")
 #	item.set_preview()
 	item.set_preview(ProjectSettings.globalize_path(folder_path) + "/preview.png")
+	
 	item.update("new style")
 
 func _on_StyleName_text_changed(new_text: String):
 	$"%WorkshopButton".disabled = new_text.strip_edges() == ""
+	$"%WorkshopUpdatedLabel".hide()
+
+
+func _on_WorkshopUpdatedLabel_meta_clicked(meta):
+	OS.shell_open(meta)
+	pass # Replace with function body.

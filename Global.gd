@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.1.0-steam"
+var VERSION = "1.1.1-steam"
 
 var audio_player
 var music_enabled = true
@@ -110,7 +110,7 @@ func play_song(song_name):
 	audio_player.stream = songs[song_name]
 	audio_player.play()
 
-func add_dir_contents(dir: Directory, files: Array, directories: Array, recursive=true):
+func add_dir_contents(dir: Directory, files: Array, directories: Array, recursive: bool =true, extension: String =""):
 	var file_name = dir.get_next()
 
 	while (file_name != ""):
@@ -126,7 +126,8 @@ func add_dir_contents(dir: Directory, files: Array, directories: Array, recursiv
 				add_dir_contents(subDir, files, directories)
 		else:
 #			print("Found file: %s" % path)
-			files.append(path)
+			if extension == "" or path.ends_with(extension):
+				files.append(path)
 
 		file_name = dir.get_next()
 

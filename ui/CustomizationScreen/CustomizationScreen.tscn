@@ -56,17 +56,17 @@ text = "save"
 unique_name_in_owner = true
 margin_left = 220.0
 margin_top = 1.0
-margin_right = 566.0
+margin_right = 467.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 align = 1
 
 [node name="WorkshopButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 468.0
 margin_right = 566.0
 margin_bottom = 13.0
+disabled = true
 text = "upload to workshop"
 
 [node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
@@ -305,7 +305,19 @@ text = "go back"
 margin_right = 40.0
 margin_bottom = 40.0
 
+[node name="WorkshopUpdatedLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
+margin_left = 475.0
+margin_top = 21.0
+margin_right = 618.0
+margin_bottom = 37.0
+text = "style uploaded to workshop"
+scroll_active = false
+
 [connection signal="text_changed" from="HBoxContainer/StyleName" to="." method="_on_StyleName_text_changed"]
 [connection signal="text_entered" from="HBoxContainer/StyleName" to="." method="_on_StyleName_text_entered"]
 [connection signal="pressed" from="HBoxContainer/WorkshopButton" to="." method="_on_WorkshopButton_pressed"]
 [connection signal="pressed" from="HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]
+[connection signal="meta_clicked" from="WorkshopUpdatedLabel" to="." method="_on_WorkshopUpdatedLabel_meta_clicked"]

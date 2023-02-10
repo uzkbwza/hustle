@@ -25,3 +25,6 @@ func _on_LoadStyleButton_item_selected(index):
 		emit_signal("style_selected", loaded_styles[index - 1])
 	else:
 		emit_signal("style_selected", null)
+
+func _on_LoadStyleButton_pressed():
+	update_styles()

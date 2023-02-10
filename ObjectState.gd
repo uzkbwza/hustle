@@ -268,8 +268,7 @@ func copy_to(state: ObjectState):
 	for variable in properties:
 		var value = get(variable.name)
 		if not (value is Object or value is Array or value is Dictionary):
-			if value:
-				state.set(variable.name, value)
+			state.set(variable.name, value)
 	state.data = copy_data()
 	state.current_real_tick = current_real_tick
 	state.current_tick = current_real_tick

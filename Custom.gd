@@ -137,7 +137,22 @@ func load_all_styles():
 	dir.open("user://custom")
 	dir.list_dir_begin(false, true)
 #	print(dir.get_current_dir())
-	Global.add_dir_contents(dir, files, _directories, false)
+	Global.add_dir_contents(dir, files, _directories, false, ".style")
+
+	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
+		var workshop = SteamWorkshop.new()
+		for item in Steam.getSubscribedItems():
+			var info : Dictionary
+			info = workshop.get_item_install_info(item)
+			if info.ret:
+				dir.open(info.folder)
+				dir.list_dir_begin(false, true)
+				Global.add_dir_contents(dir, files, _directories, false, ".style")
+	
+	files.sort_custom(self, "sort_styles")
+#	for file in files:
+#		print(get_style_name(file))
+
 	for path in files:
 		var file = File.new()
 		file.open(path, File.READ)
@@ -145,3 +160,9 @@ func load_all_styles():
 		styles.append(data)
 		file.close()
 	return styles
+
+func get_style_name(path):
+	return path.split("/")[-1].split(".")[0].strip_edges()
+
+func sort_styles(a: String, b: String):
+	return get_style_name(a) < get_style_name(b)

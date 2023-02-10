@@ -354,6 +354,8 @@ func _exit_shared():
 	._exit_shared()
 	if update_facing_on_exit:
 		host.update_facing()
+	else:
+		host.set_facing(host.get_facing_int())
 	terminate_hitboxes()
 	host.end_invulnerability()
 	host.end_projectile_invulnerability()

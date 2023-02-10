@@ -95,8 +95,8 @@ func _on_item_updated(p_result : int, p_accept_tos : bool) -> void:
 		var item_url = "Steam://url/CommunityFilePage/" + String(_item_id)
 		# Here your code to log/display success
 		Steam.activateGameOverlayToWebPage(item_url)
-		print(item_url)
-		emit_signal("item_updated")
+#		print(item_url)
+		emit_signal("item_updated", item_url)
 	else:
 		var error = "Failed updated workshop item. Error: " + String(p_result)
 		# Here your code to log/display errors

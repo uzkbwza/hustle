@@ -14,3 +14,4 @@ clip_text = true
 script = ExtResource( 2 )
 
 [connection signal="item_selected" from="." to="." method="_on_LoadStyleButton_item_selected"]
+[connection signal="pressed" from="." to="." method="_on_LoadStyleButton_pressed"]

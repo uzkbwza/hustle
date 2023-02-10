@@ -140,8 +140,7 @@ func copy_to(hitbox: CollisionBox):
 	for variable in properties:
 		var value = get(variable.name)
 		if not (value is Object or value is Array or value is Dictionary):
-			if value:
-				hitbox.set(variable.name, value)
+			hitbox.set(variable.name, value)
 	
 func is_projectile():
 	return !host.is_in_group("Fighter")
