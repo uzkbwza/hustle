@@ -73,6 +73,8 @@ var state_hit_cancellable = false
 
 var invulnerable = false
 
+var use_platforms = false
+
 var default_hurtbox = {
 	"x": 0,
 	"y": 0,
@@ -83,7 +85,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "use_platforms", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -192,7 +194,7 @@ func change_state(state_name, state_data=null, enter=true, exit=true):
 	state_machine._change_state(state_name, state_data, enter, exit)
 
 func obj_from_name(name):
-	if name in objs_map:
+	if name is String and name in objs_map:
 		var obj = objs_map[name]
 		if obj != null:
 			if !obj.disabled:
@@ -285,7 +287,7 @@ func get_current_sprite_frame_path() -> String:
 	return get_current_sprite_frame().resource_path
 
 func get_current_sprite_frame_number():
-	return Utils.number_from_string(get_current_sprite_frame_path().split("/")[-1].split(".")[0])
+	return Utils.number_from_string(get_current_sprite_frame_path().get_file().split(".")[0])
 
 func update_data():
 	data = get_data()
@@ -607,7 +609,17 @@ func reset_momentum():
 	chara.reset_momentum()
 
 func is_grounded():
-	return chara.is_grounded()
+	if !use_platforms:
+		return chara.is_grounded()
+	var grounded = chara.is_grounded() or current_state().name=="_LedgeGrab"
+	if(!grounded and !(current_state().name=="HurtAerial" and float(get_vel().y)<=0)):
+		var platforms = get_tree().get_nodes_in_group("Platform")
+		for p in platforms:
+			if(grounded):
+				continue
+			if(p.is_ghost==is_ghost):
+				grounded = grounded or p.update_colliding(name)
+	return grounded
 
 func set_grounded(on):
 	chara.set_grounded(on)

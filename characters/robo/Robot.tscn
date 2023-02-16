@@ -894,6 +894,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -902,6 +903,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1366,7 +1368,7 @@ start_tick = 11
 script = ExtResource( 87 )
 apply_fric = true
 apply_grav = true
-anim_length = 13
+anim_length = 15
 force_dir_x = "1.0"
 force_speed = "15.0"
 force_tick = 3
@@ -1394,7 +1396,7 @@ damage = 60
 hitstun_ticks = 14
 hitlag_ticks = 6
 victim_hitlag = 8
-damage_proration = 1
+damage_proration = 2
 hits_otg = true
 hit_height = 2
 screenshake_amount = 5
@@ -1415,7 +1417,7 @@ damage = 60
 hitstun_ticks = 14
 hitlag_ticks = 6
 victim_hitlag = 8
-damage_proration = 1
+damage_proration = 2
 hits_otg = true
 hit_height = 2
 screenshake_amount = 5
@@ -1620,18 +1622,6 @@ ExtResource( 203 ): {
 "x": -37,
 "y": -11
 },
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
-},
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
-},
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
-},
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
@@ -1639,6 +1629,18 @@ ExtResource( 205 ): {
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
+},
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
+},
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
+},
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
 }
 }
 update_facing_on_exit = false
@@ -1791,6 +1793,10 @@ ExtResource( 253 ): {
 "x": 116,
 "y": -66
 },
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
 ExtResource( 262 ): {
 "x": 40,
 "y": -33
@@ -1799,17 +1805,13 @@ ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 260 ): {
-"x": 40,
-"y": -34
-},
 ExtResource( 263 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
 }
 }
 interrupt_into_string = "Grounded
@@ -1961,13 +1963,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -2000,6 +2002,26 @@ sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
@@ -2016,33 +2038,13 @@ ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
 ExtResource( 117 ): {
 "x": 69,
 "y": 14
 },
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -2925,21 +2927,21 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 374 ): {
-"x": 14,
-"y": -7
-},
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
 },
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
-},
 ExtResource( 375 ): {
 "x": 31,
 "y": -8
+},
+ExtResource( 374 ): {
+"x": 14,
+"y": -7
+},
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 }
 }
 interrupt_into_string = "Grounded"
@@ -3169,10 +3171,6 @@ ExtResource( 62 ): {
 "x": 26,
 "y": -16
 },
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
 ExtResource( 304 ): {
 "x": 29,
 "y": 11
@@ -3180,6 +3178,10 @@ ExtResource( 304 ): {
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
+},
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
 },
 ExtResource( 309 ): {
 "x": -21,
@@ -3254,10 +3256,6 @@ ExtResource( 62 ): {
 "x": 27,
 "y": -19
 },
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
 ExtResource( 304 ): {
 "x": 34,
 "y": 7
@@ -3265,6 +3263,10 @@ ExtResource( 304 ): {
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
+},
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
 },
 ExtResource( 309 ): {
 "x": -21,

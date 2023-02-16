@@ -412,3 +412,40 @@ anchor_bottom = 1.0
 text = "Spectating..."
 align = 1
 valign = 1
+
+[node name="WrongVersionScreen" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.780392 )
+
+[node name="WrongVersionLabel" type="Label" parent="WrongVersionScreen"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 196.0
+margin_top = 63.0
+margin_right = -195.0
+margin_bottom = -133.0
+text = "Mismatched versions. Make sure your game is fully updated, or you both have the same mods enabled.
+
+Your game: %s
+This lobby: %s"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="IncompatibleQuitButton" type="Button" parent="WrongVersionScreen"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = 23.0
+margin_right = 20.0
+margin_bottom = 35.0
+text = "go back"
+
+[connection signal="pressed" from="WrongVersionScreen/IncompatibleQuitButton" to="." method="_on_IncompatibleQuitButton_pressed"]

@@ -1,0 +1,450 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://modloader/workshop_uploader/ModUploader.gd" type="Script" id=2]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -262.0
+margin_top = -157.0
+margin_right = 262.0
+margin_bottom = 141.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 523.0
+margin_bottom = 297.0
+
+[node name="Panel" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+margin_right = 522.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Panel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 521.0
+margin_bottom = 12.0
+text = "Workshop Mod Uploader"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Panel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 521.0
+margin_bottom = 13.0
+size_flags_vertical = 3
+alignment = 2
+
+[node name="BackButton" type="Button" parent="PanelContainer/VBoxContainer/Panel/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 480.0
+margin_right = 520.0
+margin_bottom = 12.0
+size_flags_horizontal = 0
+text = "go back"
+
+[node name="Panel2" type="Panel" parent="PanelContainer/VBoxContainer"]
+margin_top = 15.0
+margin_right = 522.0
+margin_bottom = 296.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Panel2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 1.0
+
+[node name="InfoBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 220.0
+margin_bottom = 280.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+margin_right = 220.0
+margin_bottom = 13.0
+
+[node name="InfoLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox/PanelContainer"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 219.0
+margin_bottom = 12.0
+text = "Info"
+align = 1
+
+[node name="ModName" type="LineEdit" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+unique_name_in_owner = true
+margin_top = 15.0
+margin_right = 220.0
+margin_bottom = 26.0
+placeholder_text = "Mod Name"
+
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+margin_top = 28.0
+margin_right = 220.0
+margin_bottom = 39.0
+text = "Mod Description"
+
+[node name="ModDesc" type="TextEdit" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+unique_name_in_owner = true
+margin_top = 41.0
+margin_right = 220.0
+margin_bottom = 141.0
+rect_min_size = Vector2( 0, 100 )
+
+[node name="Control" type="Control" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+visible = false
+margin_top = 115.0
+margin_right = 218.0
+margin_bottom = 149.0
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+margin_top = 143.0
+margin_right = 220.0
+margin_bottom = 182.0
+text = "Enter your mod's workshop ID below if you are updating an existing mod. Otherwise, leave empty to create a new workshop item."
+autowrap = true
+
+[node name="ModID" type="LineEdit" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+unique_name_in_owner = true
+margin_top = 184.0
+margin_right = 220.0
+margin_bottom = 195.0
+placeholder_text = "Workshop ID"
+
+[node name="ModUpdateNotes" type="TextEdit" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+unique_name_in_owner = true
+margin_top = 197.0
+margin_right = 220.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 0, 32 )
+size_flags_vertical = 3
+text = "no change notes"
+
+[node name="Control2" type="Control" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+visible = false
+margin_top = 231.0
+margin_right = 218.0
+margin_bottom = 241.0
+size_flags_vertical = 3
+
+[node name="WorkshopItemLink" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
+margin_top = 268.0
+margin_right = 220.0
+margin_bottom = 280.0
+bbcode_enabled = true
+bbcode_text = "[center][u]Workshop item uploaded."
+text = "Workshop item uploaded."
+fit_content_height = true
+
+[node name="LocalBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 221.0
+margin_right = 371.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 150, 0 )
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+margin_right = 150.0
+margin_bottom = 13.0
+
+[node name="LocalLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/PanelContainer2"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 149.0
+margin_bottom = 12.0
+text = "Local Files"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+margin_top = 14.0
+margin_right = 150.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 0, 16 )
+
+[node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 49.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+theme_type_variation = "ChallengeButton"
+text = "refresh"
+
+[node name="OpenFolderButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 50.0
+margin_right = 99.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+text = " folder"
+
+[node name="SaveButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 100.0
+margin_right = 150.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+theme_type_variation = "SelectButton"
+text = "save"
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+margin_top = 31.0
+margin_right = 150.0
+margin_bottom = 181.0
+
+[node name="PreviewImage" type="TextureRect" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/PanelContainer"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 149.0
+margin_bottom = 149.0
+rect_min_size = Vector2( 100, 148 )
+expand = true
+stretch_mode = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+margin_top = 182.0
+margin_right = 150.0
+margin_bottom = 244.0
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/ScrollContainer"]
+margin_right = 144.0
+margin_bottom = 61.0
+rect_clip_content = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ModNameMissingLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.2, 0.239216, 1 )
+margin_right = 150.0
+margin_bottom = 11.0
+text = "mod must have a name..."
+align = 1
+autowrap = true
+
+[node name="TagsMissingLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.2, 0.239216, 1 )
+margin_top = 12.0
+margin_right = 150.0
+margin_bottom = 23.0
+text = "no tags selected..."
+align = 1
+autowrap = true
+
+[node name="PreviewFoundLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 150.0
+margin_bottom = 49.0
+text = "preview.png missing or invalid..."
+align = 1
+autowrap = true
+
+[node name="ZipFoundLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 50.0
+margin_right = 150.0
+margin_bottom = 62.0
+size_flags_vertical = 7
+text = ".zip file not found...."
+align = 1
+autowrap = true
+
+[node name="Control" type="Control" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+visible = false
+margin_top = 175.0
+margin_right = 162.0
+margin_bottom = 175.0
+size_flags_vertical = 2
+
+[node name="HBoxContainer2" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox"]
+margin_top = 245.0
+margin_right = 150.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 0, 35 )
+alignment = 1
+
+[node name="VisitWorkshopButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2"]
+unique_name_in_owner = true
+margin_right = 150.0
+margin_bottom = 17.0
+rect_pivot_offset = Vector2( -277, 38 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "visit workshop"
+
+[node name="UploadButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 150.0
+margin_bottom = 35.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = "SelectButton"
+disabled = true
+text = "upload to workshop"
+
+[node name="TagsBox" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 372.0
+margin_right = 522.0
+margin_bottom = 280.0
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+margin_right = 150.0
+margin_bottom = 13.0
+
+[node name="TagsLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/PanelContainer"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 149.0
+margin_bottom = 12.0
+text = "Tags"
+align = 1
+
+[node name="TagsScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+margin_top = 14.0
+margin_right = 150.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 150, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="TagsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer"]
+unique_name_in_owner = true
+margin_right = 144.0
+margin_bottom = 161.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Character" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_right = 150.0
+margin_bottom = 17.0
+action_mode = 0
+text = "Character"
+flat = true
+
+[node name="TextureReplacement" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 150.0
+margin_bottom = 35.0
+action_mode = 0
+text = "Texture Replacement"
+flat = true
+
+[node name="SoundReplacement" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 36.0
+margin_right = 150.0
+margin_bottom = 53.0
+action_mode = 0
+text = "Sound Replacement"
+flat = true
+
+[node name="Gamemode" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 54.0
+margin_right = 150.0
+margin_bottom = 71.0
+action_mode = 0
+text = "Gamemode"
+flat = true
+
+[node name="Stage" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 72.0
+margin_right = 150.0
+margin_bottom = 89.0
+action_mode = 0
+text = "Stage"
+flat = true
+
+[node name="Tweaks" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 90.0
+margin_right = 150.0
+margin_bottom = 107.0
+action_mode = 0
+text = "Tweaks"
+flat = true
+
+[node name="Tool" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 108.0
+margin_right = 150.0
+margin_bottom = 125.0
+action_mode = 0
+text = "Tool"
+flat = true
+
+[node name="Overhaul" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 126.0
+margin_right = 150.0
+margin_bottom = 143.0
+action_mode = 0
+text = "Overhaul"
+flat = true
+
+[node name="ClientSide" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer/TagsContainer"]
+unique_name_in_owner = true
+margin_top = 144.0
+margin_right = 150.0
+margin_bottom = 161.0
+action_mode = 0
+text = "Clientside"
+flat = true
+
+[node name="ModTagMissingLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 1, 0.2, 0.239216, 1 )
+margin_top = 242.0
+margin_right = 150.0
+margin_bottom = 253.0
+text = "must have one or more tags..."
+align = 1
+autowrap = true
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel/HBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
+[connection signal="text_changed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox/ModName" to="." method="_on_ModName_text_changed"]
+[connection signal="meta_clicked" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox/WorkshopItemLink" to="." method="_on_WorkshopItemLink_meta_clicked"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer/RefreshButton" to="." method="_on_RefreshButton_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2/VisitWorkshopButton" to="." method="_on_VisitWorkshopButton_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2/UploadButton" to="." method="_on_UploadButton_pressed"]

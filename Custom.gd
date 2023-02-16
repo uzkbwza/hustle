@@ -162,7 +162,7 @@ func load_all_styles():
 	return styles
 
 func get_style_name(path):
-	return path.split("/")[-1].split(".")[0].strip_edges()
+	return path.get_file().split(".")[0].strip_edges()
 
 func sort_styles(a: String, b: String):
 	return get_style_name(a) < get_style_name(b)

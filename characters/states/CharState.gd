@@ -195,6 +195,9 @@ func _enter_shared():
 			host.air_movements_left -= 1
 	call_deferred("update_sprite_frame")
 	if has_hitboxes:
+		var dir = host.get_move_dir()
+		if dir == 0 or dir == host.get_opponent_dir():
+			host.add_penalty(-8)
 		host.gain_super_meter(WHIFF_SUPER_GAIN)
 
 func allowed_in_stance():
@@ -235,8 +238,13 @@ func _on_hit_something(obj, hitbox):
 			return
 		if hitbox is ThrowBox:
 			return
+		if !can_hit_cancel():
+			return
 		if obj.is_in_group("Fighter"):
 			enable_hit_cancel()
+
+func can_hit_cancel():
+	return true
 
 func process_hitboxes():
 #	if hitbox_start_frames.has(current_tick + 1) and host.feinting:
@@ -244,6 +252,9 @@ func process_hitboxes():
 #		feinting = true
 #		return true
 	.process_hitboxes()
+
+func spawn_exported_projectile():
+	.spawn_exported_projectile()
 
 func _tick_shared():
 	if current_tick == 0:

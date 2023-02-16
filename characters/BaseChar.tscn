@@ -527,6 +527,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="2"]
@@ -549,6 +550,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 1
@@ -574,6 +576,7 @@ interrupt_into_string = "Grounded
 Aerial"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 2
@@ -823,6 +826,7 @@ active_ticks = 5
 endless = true
 
 [node name="Getup" type="Node2D" parent="StateMachine" index="15"]
+rotation = -0.000486477
 script = ExtResource( 58 )
 anim_length = 8
 title = "Getup"
@@ -831,7 +835,8 @@ button_texture = ExtResource( 121 )
 busy_interrupt_type = 1
 interrupt_from_string = "OTG
 Getup"
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 allowed_stances_string = "All"
 
 [node name="TechRoll" type="Node2D" parent="StateMachine" index="16"]
@@ -847,7 +852,8 @@ data_ui_scene = ExtResource( 51 )
 button_texture = ExtResource( 100 )
 reversible = false
 interrupt_from_string = "OTG"
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 allowed_stances_string = "All"
 tech = true
 
@@ -1224,6 +1230,7 @@ GroundedAttack
 GroundedGrab"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
+change_stance_to = "Normal"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/Grab" index="0"]
 z_index = 1000
@@ -1255,6 +1262,7 @@ AerialAttack
 AerialGrab"
 interrupt_into_string = "Aerial"
 allowed_stances_string = "All"
+change_stance_to = "Normal"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/AirGrab" index="0"]
 z_index = 1000

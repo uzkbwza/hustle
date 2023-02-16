@@ -33,7 +33,7 @@ scroll_horizontal_enabled = false
 [node name="GameSettingsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 margin_right = 152.0
-margin_bottom = 319.0
+margin_bottom = 331.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -68,10 +68,32 @@ min_value = 1.0
 max_value = 999999.0
 value = 30.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+[node name="TurnMinLengthContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+unique_name_in_owner = true
 margin_top = 25.0
 margin_right = 152.0
 margin_bottom = 36.0
+
+[node name="TurnLengthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/TurnMinLengthContainer"]
+margin_right = 99.0
+margin_bottom = 11.0
+text = "Min Turn Clock (sec)"
+
+[node name="TurnMinLength" type="SpinBox" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/TurnMinLengthContainer"]
+unique_name_in_owner = true
+margin_left = 100.0
+margin_right = 152.0
+margin_bottom = 11.0
+hint_tooltip = "Set a timer for each player (in minutes). It counts down during each turn."
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 999999.0
+value = 10.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
+margin_top = 37.0
+margin_right = 152.0
+margin_bottom = 48.0
 
 [node name="GameLengthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer2"]
 margin_right = 70.0
@@ -90,9 +112,9 @@ max_value = 999999.0
 value = 3600.0
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 37.0
+margin_top = 49.0
 margin_right = 152.0
-margin_bottom = 48.0
+margin_bottom = 60.0
 
 [node name="CharDistLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer3"]
 margin_right = 70.0
@@ -110,9 +132,9 @@ max_value = 300.0
 value = 55.0
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 49.0
+margin_top = 61.0
 margin_right = 152.0
-margin_bottom = 60.0
+margin_bottom = 72.0
 
 [node name="CharHeightLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer4"]
 margin_right = 58.0
@@ -128,9 +150,9 @@ size_flags_horizontal = 3
 max_value = 100000.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 61.0
+margin_top = 73.0
 margin_right = 152.0
-margin_bottom = 72.0
+margin_bottom = 84.0
 
 [node name="StageWidthLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer"]
 margin_right = 57.0
@@ -148,9 +170,9 @@ max_value = 100000.0
 value = 800.0
 
 [node name="HBoxContainer6" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 73.0
+margin_top = 85.0
 margin_right = 152.0
-margin_bottom = 84.0
+margin_bottom = 96.0
 
 [node name="CeilingHeightLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HBoxContainer6"]
 margin_right = 63.0
@@ -168,15 +190,15 @@ max_value = 50000.0
 value = 800.0
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
-margin_top = 85.0
+margin_top = 97.0
 margin_right = 152.0
-margin_bottom = 85.0
+margin_bottom = 97.0
 
 [node name="DamageModifierContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 86.0
+margin_top = 98.0
 margin_right = 152.0
-margin_bottom = 98.0
+margin_bottom = 110.0
 
 [node name="DamageModifierLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/DamageModifierContainer"]
 margin_right = 80.0
@@ -207,9 +229,9 @@ align = 1
 
 [node name="HitstunModifierContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 99.0
+margin_top = 111.0
 margin_right = 152.0
-margin_bottom = 111.0
+margin_bottom = 123.0
 
 [node name="HitstunModifierLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HitstunModifierContainer"]
 margin_right = 76.0
@@ -240,9 +262,9 @@ align = 1
 
 [node name="HitstopModifierContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 112.0
+margin_top = 124.0
 margin_right = 152.0
-margin_bottom = 124.0
+margin_bottom = 136.0
 
 [node name="HitstopModifierLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/HitstopModifierContainer"]
 margin_right = 76.0
@@ -272,9 +294,9 @@ align = 1
 
 [node name="GravityModifierContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 125.0
+margin_top = 137.0
 margin_right = 152.0
-margin_bottom = 137.0
+margin_bottom = 149.0
 
 [node name="GravityModifierLabel" type="Label" parent="VBoxContainer/ScrollContainer/GameSettingsContainer/GravityModifierContainer"]
 unique_name_in_owner = true
@@ -306,9 +328,9 @@ align = 1
 
 [node name="P2Dummy" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 138.0
+margin_top = 150.0
 margin_right = 152.0
-margin_bottom = 150.0
+margin_bottom = 162.0
 hint_tooltip = "Player 2 will not be prompted for input."
 size_flags_horizontal = 15
 text = "No P2 Input"
@@ -316,9 +338,9 @@ expand_icon = true
 
 [node name="PredictionEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 151.0
+margin_top = 163.0
 margin_right = 152.0
-margin_bottom = 163.0
+margin_bottom = 175.0
 hint_tooltip = "Enables the prediction ghost."
 size_flags_horizontal = 15
 pressed = true
@@ -327,9 +349,9 @@ expand_icon = true
 
 [node name="BurstEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 164.0
+margin_top = 176.0
 margin_right = 152.0
-margin_bottom = 176.0
+margin_bottom = 188.0
 hint_tooltip = "Allow the use of burst moves."
 size_flags_horizontal = 15
 pressed = true
@@ -338,9 +360,9 @@ expand_icon = true
 
 [node name="DIEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 177.0
+margin_top = 189.0
 margin_right = 152.0
-margin_bottom = 189.0
+margin_bottom = 201.0
 hint_tooltip = "Enable directional influence, affecting the characters' knockback trajectory when they are hit."
 size_flags_horizontal = 15
 pressed = true
@@ -349,9 +371,9 @@ expand_icon = true
 
 [node name="SadnessEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 190.0
+margin_top = 202.0
 margin_right = 152.0
-margin_bottom = 202.0
+margin_bottom = 214.0
 hint_tooltip = "Fighters playing passively can get sad, increasing damage taken and reducing meter gai
 n."
 size_flags_horizontal = 15
@@ -361,9 +383,9 @@ expand_icon = true
 
 [node name="ClashingEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 203.0
+margin_top = 215.0
 margin_right = 152.0
-margin_bottom = 215.0
+margin_bottom = 227.0
 hint_tooltip = "Enables melee attack clashing."
 size_flags_horizontal = 15
 pressed = true
@@ -372,9 +394,9 @@ expand_icon = true
 
 [node name="CeilingEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 216.0
+margin_top = 228.0
 margin_right = 152.0
-margin_bottom = 228.0
+margin_bottom = 240.0
 hint_tooltip = "Enable upper bounds limit."
 size_flags_horizontal = 15
 pressed = true
@@ -383,9 +405,9 @@ expand_icon = true
 
 [node name="GravityEnabled" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 229.0
+margin_top = 241.0
 margin_right = 152.0
-margin_bottom = 241.0
+margin_bottom = 253.0
 size_flags_horizontal = 15
 pressed = true
 text = "Gravity Enabled"
@@ -393,9 +415,9 @@ expand_icon = true
 
 [node name="AsymmetricalClashing" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 242.0
+margin_top = 254.0
 margin_right = 152.0
-margin_bottom = 254.0
+margin_bottom = 266.0
 hint_tooltip = "Clashes will occur even if one hitbox would hit the opponent while the other wouldn't. Enable for \"cinematic\" gameplay, might break balance."
 size_flags_horizontal = 15
 text = "Asymmetrical Clashing"
@@ -403,9 +425,9 @@ expand_icon = true
 
 [node name="TurboMode" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 255.0
+margin_top = 267.0
 margin_right = 152.0
-margin_bottom = 267.0
+margin_bottom = 279.0
 hint_tooltip = "Freely cancel moves into other moves."
 size_flags_horizontal = 15
 text = "Turbo Mode"
@@ -413,9 +435,9 @@ expand_icon = true
 
 [node name="ExtremelyTurboMode" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 268.0
+margin_top = 280.0
 margin_right = 152.0
-margin_bottom = 280.0
+margin_bottom = 292.0
 hint_tooltip = "Enable at your own risk. Don't say I didn't warn you."
 size_flags_horizontal = 15
 text = "Extremely Turbo Mode"
@@ -423,9 +445,9 @@ expand_icon = true
 
 [node name="InfiniteResources" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 281.0
+margin_top = 293.0
 margin_right = 152.0
-margin_bottom = 293.0
+margin_bottom = 305.0
 hint_tooltip = "Never run out of super-meter or other character-specific resources."
 size_flags_horizontal = 15
 text = "Infinite Resources"
@@ -433,9 +455,9 @@ expand_icon = true
 
 [node name="OneHitKO" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 294.0
+margin_top = 306.0
 margin_right = 152.0
-margin_bottom = 306.0
+margin_bottom = 318.0
 hint_tooltip = "Both players have 1 HP."
 size_flags_horizontal = 15
 text = "One-Hit KO"
@@ -443,9 +465,9 @@ expand_icon = true
 
 [node name="AlwaysPerfectParry" type="CheckButton" parent="VBoxContainer/ScrollContainer/GameSettingsContainer"]
 unique_name_in_owner = true
-margin_top = 307.0
+margin_top = 319.0
 margin_right = 152.0
-margin_bottom = 319.0
+margin_bottom = 331.0
 hint_tooltip = "Every block is a parry and lets you act immediately."
 size_flags_horizontal = 15
 text = "Always Perfect Parry"

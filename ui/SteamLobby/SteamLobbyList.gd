@@ -30,8 +30,11 @@ func show():
 	_on_LobbySize_value_changed($"%LobbySize".value)
 	$"%ConnectingLabel".show()
 	clear_lobby_list()
-	SteamLobby.request_lobby_list()
+	request_lobby_list()
 #	_on_refresh_timer_timeout()
+
+func request_lobby_list(code=""):
+	SteamLobby.request_lobby_list(code, Global.VERSION if $"%FilterIncompatibleButton".pressed else "")
 
 func get_lobby_name():
 	var lobby_text = lobby_name.text.strip_edges()
@@ -63,10 +66,6 @@ func _on_lobby_match_list_received(lobbies):
 		var lobby_version: String = Steam.getLobbyData(lobby, "version")
 		
 		var lobby_max_members: int = Steam.getLobbyMemberLimit(lobby)
-		
-		if lobby_version != Global.VERSION:
-			if $"%FilterIncompatibleButton".pressed:
-				continue
 		
 		# Get the current number of members
 		var lobby_num_members: int = Steam.getNumLobbyMembers(lobby)
@@ -119,26 +118,28 @@ func _on_SteamLobbyList_visibility_changed():
 	pass # Replace with function body.
 
 func _on_FilterIncompatibleButton_toggled(button_pressed):
-	_on_lobby_match_list_received(lobbies)
+	request_lobby_list($"%CodeSearch".text)
+#	_on_lobby_match_list_received(lobbies)
 
 
 func _on_RefreshButton_pressed():
-	SteamLobby.request_lobby_list()
+	request_lobby_list()
 	pass # Replace with function body.
 
 
 func _on_SortButton_item_selected(index):
-	_on_lobby_match_list_received(lobbies)
+	request_lobby_list()
+#	_on_lobby_match_list_received(lobbies)
 	pass # Replace with function body.
 
 
 func _on_SearchButton_pressed():
-	SteamLobby.request_lobby_list($"%CodeSearch".text)
+	request_lobby_list($"%CodeSearch".text)
 	pass # Replace with function body.
 
 
 func _on_CodeSearch_text_entered(new_text):
-	SteamLobby.request_lobby_list(new_text)
+	request_lobby_list(new_text)
 	pass # Replace with function body.
 
 func _on_LobbySize_value_changed(value):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=2]
+[gd_scene load_steps=81 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -67,6 +67,7 @@
 [ext_resource path="res://ui/help_button.png" type="Texture" id=65]
 [ext_resource path="res://ui/ghostsettingsdown.png" type="Texture" id=66]
 [ext_resource path="res://ui/Credits.tscn" type="PackedScene" id=67]
+[ext_resource path="res://modloader/workshop_uploader/ModUploader.tscn" type="PackedScene" id=68]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -956,7 +957,6 @@ align = 1
 valign = 1
 
 [node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -1731,6 +1731,18 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Quit"
 flat = true
 
+[node name="WorkshopUploader" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 180.0
+margin_right = 96.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Workshop Uploader"
+flat = true
+
 [node name="Title" type="Control" parent="UILayer/MainMenu"]
 unique_name_in_owner = true
 anchor_left = 0.5
@@ -1877,7 +1889,8 @@ margin_top = 82.0
 margin_right = 155.0
 margin_bottom = 107.0
 text = "Complete:
-- Base game"
+- Base game
+- Steam workshop"
 autowrap = true
 
 [node name="Incomplete" type="Label" parent="UILayer/MainMenu/RoadmapContainer/RoadmapListContainer"]
@@ -1887,9 +1900,8 @@ margin_right = 155.0
 margin_bottom = 189.0
 text = "Incomplete:
 - Fix all teh bugs
-- Steam workshop
 - probly 1 or 2 new characters
-- Idk other stuff (steam-itch crossplay?)
+- Idk other stuff
 "
 autowrap = true
 
@@ -2093,6 +2105,10 @@ unique_name_in_owner = true
 visible = false
 
 [node name="DirectConnectLobby" parent="UILayer" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+visible = false
+
+[node name="WorkshopMenu" parent="UILayer" instance=ExtResource( 68 )]
 unique_name_in_owner = true
 visible = false
 
@@ -2428,6 +2444,7 @@ script = ExtResource( 56 )
 
 [connection signal="pressed" from="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
+[connection signal="pressed" from="UILayer/MainMenu/ButtonContainer/WorkshopUploader" to="UILayer" method="_on_WorkshopUploader_pressed"]
 [connection signal="toggled" from="UILayer/MainMenu/RoadmapContainer/RoadmapButton" to="UILayer" method="_on_RoadmapButton_toggled"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]

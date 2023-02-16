@@ -33,7 +33,7 @@ const TWITTER_URL = "https://twitter.com/YourMoveHUSTLE"
 const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
 const STEAM_URL = "https://store.steampowered.com/app/2212330"
 const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
-const MIN_TURN_TIME = 5.0
+var MIN_TURN_TIME = 5.0
 
 onready var lobby = $Lobby
 onready var direct_connect_lobby = $DirectConnectLobby
@@ -148,7 +148,7 @@ func _ready():
 		_on_join_lobby_success()
 	$"%CharacterSelect".connect("opened", self, "reset_ui")
 	yield(get_tree(), "idle_frame")
-	$"%VersionLabel".text = "version " + Global.VERSION
+
 
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)
@@ -159,6 +159,12 @@ func _on_global_option_toggled(toggled, param):
 #		$"%BGColor".color = light_mode_color
 #	else:
 #		$"%BGColor".color = dark_mode_color
+
+func on_workshop_uploader_clicked():
+	hide_main_menu()
+	$"%WorkshopMenu".init()
+	$"%WorkshopMenu".show()
+
 	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
@@ -511,12 +517,13 @@ func on_player_actionable():
 			if !chess_timer:
 				p1_turn_timer.start(turn_time)
 				p2_turn_timer.start(turn_time)
-				
 			else:
 				if p1_turn_timer.time_left < MIN_TURN_TIME:
 					p1_turn_timer.start(MIN_TURN_TIME)
 				if p2_turn_timer.time_left < MIN_TURN_TIME:
 					p2_turn_timer.start(MIN_TURN_TIME)
+				if is_instance_valid(game):
+					MIN_TURN_TIME = game.match_data.turn_min_length
 
 		p1_turn_timer.paused = false
 		p2_turn_timer.paused = false
@@ -614,6 +621,8 @@ func _process(delta):
 				bar.visible = Utils.wave(-1, 1, 0.064) > 0
 	$"%P1TurnTimerLabel".text = time_convert(int(floor(p1_turn_timer.time_left)))
 	$"%P2TurnTimerLabel".text = time_convert(int(floor(p2_turn_timer.time_left)))
+	if $"%VersionLabel".visible:
+		$"%VersionLabel".text = "version " + Global.VERSION
 #	if !is_instance_valid(game):
 #		reset_ui()
 #	else:
@@ -700,4 +709,9 @@ func _on_ClearParticlesButton_pressed():
 
 func _on_RoadmapButton_toggled(button_pressed):
 	$"%RoadmapListContainer".visible = button_pressed
+	pass # Replace with function body.
+
+
+func _on_WorkshopUploader_pressed():
+	on_workshop_uploader_clicked()
 	pass # Replace with function body.

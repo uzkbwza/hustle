@@ -6,14 +6,14 @@ signal query_request_success
 
 var published_items  : Array
 
-var _app_id        : int =  SteamHustle.APP_ID
+var _app_id        : int
 var _query_handler : int
 var _page_number   : int = 1
 var _subscribed_items : Dictionary
 
 func _init() -> void:
 	Steam.connect("ugc_query_completed", self, "_on_query_completed")
-
+	_app_id = Steam.getAppID()
 	for item in Steam.getSubscribedItems():
 		var info : Dictionary
 		info = get_item_install_info(item)

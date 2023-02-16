@@ -97,6 +97,8 @@ var p1_username = null
 var p2_username = null
 var my_id = 1
 
+var draw_stage = true
+
 var snapping_camera = false 
 var waiting_for_player_prev = false
 var spectate_tick = -1
@@ -866,6 +868,8 @@ func apply_hitboxes(players):
 	if clashed:
 		px1.clash()
 		px2.clash()
+		px1.add_penalty(-25)
+		px2.add_penalty(-25)
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else :
 		if p1_hit:
@@ -1383,20 +1387,25 @@ func _draw():
 		return
 	if !snapping_camera and mouse_pressed:
 		draw_circle(camera.position, 3, Color.white * 0.5)
-	var line_color = Color.white
-	var ceiling_draw_height = -100000 if !has_ceiling else -ceiling_height 
-	draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
-#	if stage_width < 320 or camera_zoom != 1.0:
-	draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, ceiling_draw_height), line_color, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
-	if has_ceiling:
-		draw_line(Vector2(-stage_width, ceiling_draw_height), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
-	var line_dist = 50
-	var num_lines = stage_width * 2 / line_dist
-	for i in range(num_lines):
-		var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
-		draw_line(Vector2(x, 0), Vector2(x, 10), line_color, 2.0)
-	draw_line(Vector2(stage_width, 0), Vector2(stage_width, 10), line_color, 2.0)
+	if draw_stage:
+		var line_color = Color.white
+		var ceiling_draw_height = -100000 if !has_ceiling else -ceiling_height 
+		draw_line(Vector2(-stage_width, 0), Vector2(stage_width, 0), line_color, 2.0)
+	#	if stage_width < 320 or camera_zoom != 1.0:
+		draw_line(Vector2(-stage_width, 0), Vector2(-stage_width, ceiling_draw_height), line_color, 2.0)
+		draw_line(Vector2(stage_width, 0), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
+		if has_ceiling:
+			draw_line(Vector2(-stage_width, ceiling_draw_height), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
+		var line_dist = 50
+		var num_lines = stage_width * 2 / line_dist
+		for i in range(num_lines):
+			var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
+			draw_line(Vector2(x, 0), Vector2(x, 10), line_color, 2.0)
+		draw_line(Vector2(stage_width, 0), Vector2(stage_width, 10), line_color, 2.0)
+	custom_draw_func()
+
+func custom_draw_func():
+	pass
 
 func show_state():
 	p1.position = p1.get_pos_visual()

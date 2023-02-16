@@ -76,7 +76,7 @@ func show():
 	.show()
 	_on_reset_color_pressed()
 	
-func save_style(clear_text = true):
+func save_style(clear_text = false):
 	var data = get_style_data()
 	Custom.save_style(data)
 	SteamHustle.unlock_achievement("ACH_STYLISH")
@@ -110,7 +110,8 @@ func load_style(style):
 			if child.text == style.hitspark.strip_edges():
 				child.pressed = true
 				select_hitspark(style.hitspark)
-
+	$"%WorkshopButton".disabled = false
+	
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
 	spawn_hitspark()
@@ -197,7 +198,7 @@ func _process(delta):
 
 
 func _on_StyleName_text_entered(new_text):
-	save_style()
+	save_style(false)
 	pass # Replace with function body.
 
 func _on_OpenFolderButton_pressed():
@@ -217,14 +218,10 @@ func _on_WorkshopButton_pressed():
 	var image: Image = get_viewport().get_texture().get_data()
 	image.flip_y()
 	var rect = Rect2(Vector2(357, 119), Vector2(70, 70))
+#	var rect = Rect2(Vector2(328, 117), Vector2(124, 70))
 	image = image.get_rect(rect)
 	image.resize(image.get_width() * 6, image.get_height() * 6, 0)
 	workshop_preview_image = image
-
-func _on_item_updated(url):
-	$"%WorkshopUpdatedLabel".clear()
-	$"%WorkshopUpdatedLabel".append_bbcode("[u][url=%s]style uploaded to workshop[/url]" % url)
-	$"%WorkshopUpdatedLabel".show()
 
 func _on_item_created(p_file_id):
 	var data = get_style_data()
@@ -233,7 +230,7 @@ func _on_item_created(p_file_id):
 	var folder_path = Custom.save_style_workshop(data)
 	
 	var item = UGCItem.new(p_file_id)
-	item.set_tags(["style"])
+	item.set_tags(["Style"])
 	item.set_title($"%StyleName".text)
 	item.set_content(ProjectSettings.globalize_path(folder_path))
 	item.set_visibility(0)
@@ -241,8 +238,12 @@ func _on_item_created(p_file_id):
 	workshop_preview_image.save_png(ProjectSettings.globalize_path(folder_path) + "/preview.png")
 #	item.set_preview()
 	item.set_preview(ProjectSettings.globalize_path(folder_path) + "/preview.png")
-	
 	item.update("new style")
+
+func _on_item_updated(url):
+	$"%WorkshopUpdatedLabel".clear()
+	$"%WorkshopUpdatedLabel".append_bbcode("[u][url=%s]style uploaded to workshop[/url]" % url)
+	$"%WorkshopUpdatedLabel".show()
 
 func _on_StyleName_text_changed(new_text: String):
 	$"%WorkshopButton".disabled = new_text.strip_edges() == ""
@@ -251,4 +252,10 @@ func _on_StyleName_text_changed(new_text: String):
 
 func _on_WorkshopUpdatedLabel_meta_clicked(meta):
 	OS.shell_open(meta)
+	pass # Replace with function body.
+
+
+func _on_WorkshopButton2_pressed():
+#	OS.shell_open("https://steamcommunity.com/app/2212330/workshop/")
+	Steam.activateGameOverlayToWebPage("https://steamcommunity.com/app/2212330/workshop/")
 	pass # Replace with function body.

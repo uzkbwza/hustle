@@ -1,5 +1,7 @@
 extends Window
 
+signal uploader_clicked()
+
 var ModOptions
 var current_mod = null
 var mod_tabs:Dictionary = {}
@@ -18,14 +20,33 @@ func _ready():
 	#ModOptions.menu = self
 	#get_tree().get_current_scene().call_deferred("add_child", ModOptions, true)
 	$"%Close".connect("pressed", self, "_close_clicked")
+	$"%ModsLocation".connect("pressed", self, "_open_mods_folder")
 	$"%ModCredits".connect("pressed", self, "_credits_clicked")
+	$"%WorkshopUploader".connect("pressed", self, "_uploader_clicked")
+	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	hide()
 
 
+func _open_mods_folder():
+	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
+	if OS.get_name() == "OSX":
+		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
+	var modPathPrefix = gameInstallDirectory.plus_file("mods")
+	OS.shell_open(modPathPrefix)
+
+func _uploader_clicked():
+	hide()
+	emit_signal("uploader_clicked")
+
+func _workshop_clicked():
+#	hide()
+	Steam.activateGameOverlayToWebPage("https://steamcommunity.com/app/2212330/workshop/")
+#	emit_signal("uploader_clicked")
 
 func _credits_clicked():
 	get_node("/root/Main/UILayer/ModLoaderCredits").show()
-
+	get_node("/root/Main/UILayer/ModLoaderCredits").raise()
+	
 func _close_clicked():
 	hide()
 	if current_mod:
@@ -124,7 +145,11 @@ func generateRichLabel(text_gen):
 	_richLabel.bbcode_enabled= true
 	_richLabel.bbcode_text = text_gen
 	var pulseFX = RichTextPulse.new()
+	var rainFX = RichTextRain.new()
+	var ghostFX = RichTextGhost.new()
 	_richLabel.install_effect(pulseFX)
+	_richLabel.install_effect(rainFX)
+	_richLabel.install_effect(ghostFX)
 	return _richLabel
 
 func add_menu_from_node(menuNode):

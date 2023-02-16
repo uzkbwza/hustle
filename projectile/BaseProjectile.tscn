@@ -21,6 +21,8 @@ immunity_susceptible = true
 deletes_other_projectiles = true
 fizzle_on_ceiling = false
 movable = true
+can_be_hit_by_melee = false
+projectile_immune = false
 
 [node name="Default" type="Node2D" parent="StateMachine" index="0"]
 script = ExtResource( 3 )

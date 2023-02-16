@@ -17,6 +17,7 @@ export var clash = true
 export var num_hits = 1
 export var fizzle_on_ground = true
 export var bounce_on_ground = false
+export var num_bounces = 2
 
 var hit_something = false
 var hit_something_tick = 0
@@ -48,8 +49,13 @@ func _tick():
 		last_y_vel = vel.y
 	
 	if host.is_grounded() and bounce_on_ground:
+		host.set_grounded(false)
+		host.move_directly(0, -1)
 		if vel:
 			host.set_vel(vel.x, fixed.mul(fixed.abs(last_y_vel), "-0.75"))
+		num_bounces -= 1
+		if num_bounces < 0:
+			fizzle()
 	
 	if current_tick > lifetime:
 		fizzle()

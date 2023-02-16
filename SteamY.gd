@@ -2,6 +2,8 @@ extends Node
 
 const IVY_ID = 76561198255503675
 
+signal started
+
 var IS_ONLINE: bool
 var IS_OWNED: bool
 
@@ -13,9 +15,6 @@ var APP_ID
 var STARTED = false
 
 var WORKSHOP_ENABLED = true
-
-var workshop
-
 
 func _enter_tree():
 	if "steam" in Global.VERSION:
@@ -36,9 +35,8 @@ func _initialize_steam():
 	STEAM_ID = Steam.getSteamID()
 	STEAM_NAME = Steam.getPersonaName()
 	IS_OWNED = Steam.isSubscribed()
-	workshop = SteamWorkshop.new()
-	
 	Steam.requestCurrentStats()
+	emit_signal("started")
 	
 func _process(_delta):
 	if STARTED:

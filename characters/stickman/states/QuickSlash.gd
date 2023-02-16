@@ -1,10 +1,15 @@
 extends SuperMove
 
 const MOVE_DISTANCE = 120
+const NEUTRAL_STARTUP_LAG = 2
 
 var hitboxes = []
 
 var dist = MOVE_DISTANCE
+
+var startup_lag = 0
+
+var started_in_neutral = false
 
 func _enter():
 	dist = MOVE_DISTANCE
@@ -25,6 +30,7 @@ func _enter():
 	host.apply_force(move_vec.x,  fixed.div(move_vec.y, "2"))
 	host.quick_slash_move_dir_x = move_dir.x
 	host.quick_slash_move_dir_y = move_dir.y
+#	startup_lag = NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
 
 #	move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, str(MOVE_DISTANCE))
 #	var pos = host.get_pos()
@@ -55,7 +61,10 @@ func _enter():
 ##		vec = fixed.vec_mul(vec.x, vec.y, str(-MOVE_DISTANCE))
 #		hitboxes[i].x = fixed.round(fixed.mul(vec.x, str(host.get_facing_int())))
 #		hitboxes[i].y = fixed.round(fixed.sub(vec.y, "16"))
-#
+
+func _frame_0():
+	started_in_neutral = host.combo_count <= 0
+
 func _frame_1():
 	var start_pos = host.get_pos().duplicate()
 	host.quick_slash_start_pos_x = start_pos.x
@@ -111,11 +120,17 @@ func _frame_6():
 
 	host.end_invulnerability()
 
+func can_hit_cancel():
+	return host.combo_count > 1
 
 func _tick():
+	if startup_lag > 0:
+		startup_lag -= 1
+		current_tick = 0
+
 	if current_tick > 6:
 		if host.is_grounded():
 			queue_state_change("Landing", 2)
 	host.apply_grav()
-	host.apply_fric()
+#	host.apply_fric()
 	host.apply_forces_no_limit()

@@ -18,7 +18,7 @@ var stopped = false
 
 func _ready():
 	state_variables.append_array(
-		["got_parried", ]
+		["got_parried"]
 	)
 
 func get_opponent():

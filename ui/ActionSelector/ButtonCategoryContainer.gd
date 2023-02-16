@@ -4,6 +4,9 @@ class_name ButtonCategoryContainer
 
 signal prediction_selected()
 
+const BOX_SIZE = 52
+const DEFAULT_HEIGHT = 60
+
 onready var action_data_container = $"%ActionDataContainer"
 onready var action_data_panel_container = $"%ActionDataPanelContainer"
 onready var button_container = $"%ButtonContainer"
@@ -13,6 +16,7 @@ var selected_button_text = ""
 var active_button = null
 
 var mouse_over = false
+var can_update = true
 
 var game = null
 var player_id = null
@@ -37,14 +41,35 @@ func any_buttons_visible():
 			return true
 	return false
 
-#func _process(_delta):
+func _process(_delta):
 #	if visible:
 #		snap_to_boundaries()
 #	if action_data_panel_container.visible and game:
 #		snap_action_data_to_player()
 #		action_data_panel_container.rect_global_position
 #		pass
-#
+	if !mouse_over and can_update and Utils.is_mouse_in_control(self):
+		$"%ScrollContainer".rect_clip_content = false
+		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
+		rect_size.y = 1000
+		mouse_over = true
+		can_update = false
+		$UpdateTimer.start()
+#		rect_position.y = -$"%ScrollContainer".rect_min_size.y + BOX_SIZE
+		call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
+	
+	elif mouse_over  and can_update and !Utils.is_mouse_in_control(self):
+		$"%ScrollContainer".rect_clip_content = true
+		$"%ScrollContainer".rect_min_size.y = BOX_SIZE
+		rect_size.y = DEFAULT_HEIGHT
+		call_deferred("set_pos_y", 0)
+		mouse_over = false
+		can_update = false
+		$UpdateTimer.start()
+
+func set_pos_y(y):
+	rect_position.y = y
+
 #func snap_action_data_to_player():
 #	var screen_pos = game.get_screen_position(player_id)
 #	var center_pos = get_viewport_rect().size/2 - action_data_panel_container.rect_size/2
@@ -150,4 +175,9 @@ func _on_PredictButton_mouse_exited():
 func _on_PredictButton_pressed():
 	refresh()
 	emit_signal("prediction_selected")
+	pass # Replace with function body.
+
+
+func _on_UpdateTimer_timeout():
+	can_update = true
 	pass # Replace with function body.

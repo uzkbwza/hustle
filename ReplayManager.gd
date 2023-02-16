@@ -134,7 +134,7 @@ func load_replays(autosave=true):
 #			"version": match_data.version if match_data.has("version") else null
 		}
 		if ".replay" in path:
-			replay_paths[path.split("/")[-1].split(".")[0]] = data
+			replay_paths[path.get_file().get_basename()] = data
 		replay_file.close()
 	return replay_paths
 

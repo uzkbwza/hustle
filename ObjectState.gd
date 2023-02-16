@@ -134,6 +134,12 @@ func _tick_before():
 func process_feint():
 	return fallback_state
 
+func spawn_exported_projectile():
+	if projectile_scene:
+		var pos = get_projectile_pos()
+		var obj = host.spawn_object(projectile_scene, pos.x, pos.y, true, get_projectile_data(), projectile_local_pos)
+		process_projectile(obj)
+
 func _tick_shared():
 #	if current_tick == -1:
 #		if has_method("_frame_0"):
@@ -163,10 +169,7 @@ func _tick_shared():
 				host.apply_force_relative(force.x, force.y)
 
 		if current_tick == projectile_tick:
-			if projectile_scene:
-				var pos = get_projectile_pos()
-				var obj = host.spawn_object(projectile_scene, pos.x, pos.y, true, get_projectile_data(), projectile_local_pos)
-				process_projectile(obj)
+			spawn_exported_projectile()
 
 		if current_tick == timed_spawn_particle_tick:
 			if timed_particle_scene:

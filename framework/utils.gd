@@ -381,9 +381,32 @@ static func fixed_vec2_string(x: String, y: String):
 		"y": y,
 	}
 
+static func is_mouse_in_control(control: Control):
+	var rect = control.get_global_rect()
+	var mouse_position = control.get_global_mouse_position()
+	return rect.has_point(mouse_position)
+
 static func number_from_string(string):
 	var chars = ""
 	for char_ in string:
 		if char_.is_valid_integer():
 			chars += char_
 	return int(chars)
+
+static func get_files_in_folder(folder: String, extension=""):
+	var dir = Directory.new()
+	if !folder.ends_with("/"):
+		folder += "/"
+	dir.open(folder)
+	dir.list_dir_begin()
+	var files = []
+	while true:
+		var file = folder + dir.get_next()
+		if file == folder:
+			break
+		if extension == "":
+			files.append(file)
+		else:
+			if file.ends_with(extension):
+				files.append(file)
+	return files

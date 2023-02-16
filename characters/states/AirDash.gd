@@ -42,7 +42,7 @@ func _frame_0():
 		beats_backdash = false
 #		interruptible_on_opponent_turn = false
 		host.hitlag_ticks += BACKDASH_LAG_FRAMES
-		host.add_penalty(8)
+		host.add_penalty(5)
 	else:
 		backdash_iasa = false
 		beats_backdash = true

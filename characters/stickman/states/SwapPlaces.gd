@@ -20,12 +20,15 @@ func _frame_6():
 		obj_name = obj.obj_name
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
+		host.detach()
 
 func _frame_7():
 	if host.objs_map.has(obj_name):
-		if host.objs_map[obj_name] != null:
-			host.objs_map[obj_name].refresh_hitboxes()
-			
+		var obj = host.objs_map[obj_name]
+		if obj != null:
+			obj.refresh_hitboxes()
+			if obj is GrapplingHook:
+				obj.unlock()
 
 func get_usable_projectiles():
 	var usable = []
@@ -34,6 +37,9 @@ func get_usable_projectiles():
 		if obj is BaseObj and !(obj is Fighter) and obj.id == host.id and !obj.disabled:
 			if obj is StickyBomb:
 				if obj.attached:
+					continue
+			if obj is GrapplingHook:
+				if obj.attached_to != null:
 					continue
 			var obj_pos = obj.get_pos()
 			var my_pos = host.get_hurtbox_center()

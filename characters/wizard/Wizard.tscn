@@ -718,7 +718,6 @@ script = ExtResource( 216 )
 title = "Orb"
 
 [node name="Roll" parent="StateMachine" index="4"]
-anim_length = 14
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false

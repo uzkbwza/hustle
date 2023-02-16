@@ -33,10 +33,7 @@ func _tick():
 	if current_tick >= lifetime:
 		fizzle()
 	elif !hit_something:
-		if data and data.has("speed_modifier"):
-			host.move_directly_relative((move_x + data["speed_modifier"]) if move_x != 0 else 0, (move_y + data["speed_modifier"]) if move_y != 0 else 0)
-		else:
-			host.move_directly_relative(move_x, move_y)
+		move()
 	if follow_creator:
 		if host.creator:
 			var creator_pos = host.creator.get_pos()
@@ -50,6 +47,12 @@ func _on_hit_something(obj, _hitbox):
 		num_hits -= 1
 		if num_hits == 0:
 			fizzle()
+
+func move():
+	if data and data.has("speed_modifier"):
+		host.move_directly_relative((move_x + data["speed_modifier"]) if move_x != 0 else 0, (move_y + data["speed_modifier"]) if move_y != 0 else 0)
+	else:
+		host.move_directly_relative(move_x, move_y)
 
 func fizzle():
 	hit_something = true

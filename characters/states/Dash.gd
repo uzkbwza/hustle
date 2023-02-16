@@ -49,6 +49,8 @@ func _frame_1():
 	host.apply_force_relative(fixed.mul(dash_force, fixed.add(fixed.mul(dist_ratio, fixed.sub(MAX_SPEED_RATIO, MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
 	if spawn_particle:
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
+	if !host.is_grounded():
+		return "Fall"
 
 func _tick():
 	host.apply_x_fric(fric)

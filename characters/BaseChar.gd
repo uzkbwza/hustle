@@ -48,6 +48,9 @@ const INCORRECT_PREDICTION_LAG = 7
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
+const DISTANCE_EXTRA_SADNESS = "180"
+const MIN_DIST_SADNESS = "128"
+
 const HOLD_RESTARTS = [
 	"Wait",
 	"DashForward",
@@ -215,6 +218,7 @@ var wall_slams = 0
 
 var last_pos = null
 var penalty = 0
+var penalty_buffer = 0
 var penalty_ticks = 0
 
 
@@ -416,7 +420,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "was_my_turn", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "penalty_buffer", "was_my_turn", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -529,6 +533,13 @@ func gain_super_meter(amount):
 			super_meter = MAX_SUPER_METER
 			if !infinite_resources:
 				unlock_achievement("ACH_ULTIMATE_POWER", true)
+
+
+func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
+	var obj = .spawn_object(projectile, pos_x, pos_y, relative, data, local)
+	if obj is BaseProjectile:
+		add_penalty(-2)
+	return obj
 
 func combo_stale_meter(meter: int):
 	var staling = get_combo_stale(combo_count)
@@ -811,6 +822,8 @@ func hit_by(hitbox):
 		
 		current_state().parry(perfect_parry)
 		if !perfect_parry:
+			if !projectile:
+				opponent.add_penalty(-25)
 			take_damage(hitbox.damage / PARRY_CHIP_DIVISOR)
 			apply_force_relative(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), "0")
 			gain_super_meter(parry_meter / 3)
@@ -827,7 +840,10 @@ func hit_by(hitbox):
 			play_sound("Block")
 			play_sound("Parry")
 		else:
-			if projectile:
+			if !projectile:
+				opponent.add_penalty(-25)
+				add_penalty(-25)
+			else:
 				if host.has_method("on_got_parried"):
 					host.on_got_parried()
 			gain_super_meter(parry_meter)
@@ -1120,6 +1136,17 @@ func toggle_quit_graphic(on=null):
 		if on:
 			play_sound("QuitterSound")
 
+func get_sadness_distance_penalty():
+	if combo_count > 0 or opponent.is_in_hurt_state(false):
+		return 1
+	var pos = obj_local_center(opponent)
+	var amount = 0
+	if pos.y > 0:
+		var dist = str(pos.y)
+		amount = fixed.round(fixed.div(dist, DISTANCE_EXTRA_SADNESS))
+#	print(amount)
+	return 1 + amount
+
 func tick():
 	if hitlag_ticks > 0:
 		if can_nudge:
@@ -1186,22 +1213,34 @@ func tick():
 #	if opponent.combo_count > 0:
 #		current_prediction = -1
 
-	if !is_in_hurt_state() and combo_count <= 0 and penalty_ticks <= 0:
+
+	if !is_in_hurt_state() and !opponent.is_in_hurt_state() and combo_count <= 0 and penalty_ticks <= 0:
 #		var dir = Utils.int_sign(last_pos.x - pos.x)
 		var dir = fixed.sign(last_vel.x)
 		var opp_dir = get_opponent_dir()
 		if dir != 0 and dir != opp_dir and current_tick % 3 == 0:
 			add_penalty(1)
 		if dir != 0 and dir == opp_dir and current_tick % 4 == 0:
-			add_penalty(-1)
+			if fixed.gt(fixed.abs(last_vel.x), "0.01"):
+				add_penalty(-1)
 		if current_tick % 7 == 0:
-			add_penalty(1)
+			add_penalty(get_sadness_distance_penalty())
+	
+#	var penalty_add_amount = 0
+#	if penalty_buffer > 0:
+#		penalty_add_amount = (penalty_buffer / 10) + 1
+#		if penalty_add_amount > penalty_buffer:
+#			penalty_add_amount = penalty_buffer
+#		add_penalty_directly(penalty_add_amount)
+#		penalty_buffer -= penalty_add_amount
+#		if penalty_buffer < 0:
+#			penalty_buffer = 0
 	
 	last_pos = pos
 	if penalty_ticks > 0:
 		penalty_ticks -= 1
-		if current_tick % 5 == 0:
-			take_damage(1, 1)
+		if current_tick % 3 == 0:
+			take_damage(2, 1)
 	
 	touching_wall = false
 	var col_box = get_collision_box()
@@ -1225,14 +1264,49 @@ func tick():
 			if current_tick in ReplayManager.frames.emotes[id]:
 				emote(ReplayManager.frames.emotes[id][current_tick])
 
+func get_move_dir():
+	return fixed.sign(last_vel.x)
+
+#func add_penalty(amount):
+#	if !sadness_enabled:
+#		return
+##	print("adding penalty: " + str(amount))
+#	if amount > 0:
+#		penalty_buffer += amount
+#	else:
+#		add_penalty_directly(amount)
+#
+#func add_penalty_directly(amount):
+#	if !sadness_enabled:
+#		return
+##	print("adding penalty: " + str(amount))
+#	penalty += amount
+#	if penalty > MAX_PENALTY:
+#		supers_available = 0
+#		super_meter = 0
+#		penalty = 0
+#		penalty_buffer = 0
+#		penalty_ticks = PENALTY_TICKS
+#		had_sadness = true
+#	if penalty < MIN_PENALTY:
+#		penalty = MIN_PENALTY
+
 func add_penalty(amount):
 	if !sadness_enabled:
 		return
+	if amount > 0:
+		var opp_pos = obj_local_center(opponent)
+		var opp_dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
+		if fixed.lt(opp_dist, MIN_DIST_SADNESS):
+			return
+		
+#	print("adding penalty: " + str(amount))
 	penalty += amount
 	if penalty > MAX_PENALTY:
 		supers_available = 0
 		super_meter = 0
 		penalty = 0
+		penalty_buffer = 0
 		penalty_ticks = PENALTY_TICKS
 		had_sadness = true
 	if penalty < MIN_PENALTY:
@@ -1241,9 +1315,12 @@ func add_penalty(amount):
 func reset_penalty():
 	penalty = 0
 
-func is_in_hurt_state():
+func is_in_hurt_state(count_all=true):
 	var state = current_state()
-	return state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt or state.is_hurt_state
+	if count_all:
+		return state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt or state.is_hurt_state
+	else:
+		return state.is_hurt_state
 
 func set_ghost_colors():
 	if not ghost_ready_set and (state_interruptable or dummy_interruptable or ghost_ready_tick!=null):

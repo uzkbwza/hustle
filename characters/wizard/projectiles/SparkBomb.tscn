@@ -48,8 +48,6 @@ material = SubResource( 1 )
 script = ExtResource( 10 )
 immunity_susceptible = false
 deletes_other_projectiles = false
-can_be_hit_by_melee = false
-projectile_immune = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

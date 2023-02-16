@@ -84,6 +84,10 @@ func init():
 		$"%GameSettingsPanelContainer".init(false)
 		$"%GameSettingsPanelContainer"._on_received_match_settings(SteamLobby.MATCH_SETTINGS, true)
 	$"%RoomCode".text = SteamLobby.get_lobby_code()
+	if Steam.getLobbyData(SteamLobby.LOBBY_ID, "version") != Global.VERSION:
+		$"%WrongVersionScreen".show()
+		var mismatched_version_text = "Mismatched versions. Make sure your game is fully updated, or you both have the same mods enabled.\n\nYour game: %s \nThis lobby: %s" % [Global.VERSION, Steam.getLobbyData(SteamLobby.LOBBY_ID, "version")]
+		$"%WrongVersionLabel".text = mismatched_version_text
 #func _on_user_selected(index):
 #	if users[index].steam_id == SteamHustle.STEAM_ID:
 #		return
@@ -165,5 +169,10 @@ func _on_spectate_requested(player):
 	_on_spectate_declined()
 
 func _on_back_button_pressed():
+	Network.stop_multiplayer(true)
+	get_tree().reload_current_scene()
+
+
+func _on_IncompatibleQuitButton_pressed():
 	Network.stop_multiplayer(true)
 	get_tree().reload_current_scene()

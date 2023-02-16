@@ -29,6 +29,15 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Close"
 flat = true
 
+[node name="ModsLocation" type="Button" parent="VBoxContainer/TitleBar" index="2"]
+unique_name_in_owner = true
+margin_left = 305.0
+margin_right = 394.0
+margin_bottom = 12.0
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Open Mods Folder"
+flat = true
+
 [node name="Contents" parent="VBoxContainer" index="1"]
 margin_right = 398.0
 margin_bottom = 205.0
@@ -51,7 +60,7 @@ scroll_horizontal_enabled = false
 
 [node name="Mods" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/ScrollContainer" index="0"]
 unique_name_in_owner = true
-margin_right = 120.0
+margin_right = 114.0
 rect_clip_content = true
 size_flags_horizontal = 3
 
@@ -90,10 +99,29 @@ margin_bottom = 218.0
 rect_min_size = Vector2( 0, 12 )
 size_flags_horizontal = 3
 
-[node name="ModCredits" type="Button" parent="VBoxContainer/Panel" index="0"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Panel" index="0"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="0"]
 unique_name_in_owner = true
-margin_left = -1.0
-margin_right = 397.0
+margin_right = 132.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 text = "ModLoader Credits"
+
+[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
+unique_name_in_owner = true
+margin_left = 133.0
+margin_right = 265.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "Visit Steam Workshop"
+
+[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
+unique_name_in_owner = true
+margin_left = 266.0
+margin_right = 398.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "Upload to Steam Workshop"

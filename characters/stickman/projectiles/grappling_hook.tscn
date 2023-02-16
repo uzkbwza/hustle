@@ -1,0 +1,89 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/stickman/projectiles/hook.png" type="Texture" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://characters/stickman/projectiles/GrapplingHook/GrapplingHookDefault.gd" type="Script" id=4]
+[ext_resource path="res://characters/stickman/sounds/grapplinghook2.wav" type="AudioStream" id=5]
+[ext_resource path="res://characters/stickman/projectiles/grappling_hook.gd" type="Script" id=6]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=7]
+[ext_resource path="res://characters/stickman/projectiles/GrapplingHook/Locked.gd" type="Script" id=8]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=9]
+[ext_resource path="res://sound/common/catch.wav" type="AudioStream" id=10]
+[ext_resource path="res://sound/common/clash1.wav" type="AudioStream" id=11]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+z_index = 100
+script = ExtResource( 6 )
+gravity = "0.25"
+extra_state_variables = "is_locked
+attached_to
+start_y"
+deletes_other_projectiles = false
+projectile_immune = true
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Default"
+
+[node name="HookSound" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 5 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 7 )
+
+[node name="DetachSound" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
+stream = ExtResource( 11 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 7 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 5
+height = 5
+
+[node name="Hurtbox" parent="." index="3"]
+width = 5
+height = 5
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 4 )
+apply_fric = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 9 )
+width = 4
+height = 4
+damage = 20
+hitstun_ticks = 8
+hitlag_ticks = 7
+always_on = true
+
+[node name="Locked" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 8 )
+fallback_state = "Default"
+sprite_animation = "Default"
+loop_animation = true
+endless = true
+reset_momentum = true
+enter_sfx = ExtResource( 10 )
+enter_sfx_volume = -10.0

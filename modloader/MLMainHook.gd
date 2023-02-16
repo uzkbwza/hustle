@@ -18,7 +18,7 @@ func _add_modlist():
 	var uilayer = $"%OptionsContainer/.."
 	uilayer.add_child_below_node($"%OptionsContainer", credits, true)
 	uilayer.add_child_below_node($"%OptionsContainer", menu, true)
-		
+	menu.connect("uploader_clicked", uilayer, "on_workshop_uploader_clicked")
 	var btn:Node = addMainMenuButton("Mod List")
 	btn.connect("pressed", menu, "_mainmenu_button_pressed")
 	return menu
@@ -40,7 +40,6 @@ func _addModList():
 	
 	# add close button to title bar
 	list.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
-	
 	# add list into contents
 	var xbox = VBoxContainer.new()
 	xbox.name = "XBoxContainer"
@@ -107,9 +106,8 @@ func addMainMenuButton(_text):
 	# generating the button
 	var button_mainmenu = generateButton(_text)
 	# adding it to the scene
-	button_mainmenu.rect_min_size.y = 20
-	$"%MainMenu".get_node("ButtonContainer").add_child(button_mainmenu, true)
-	$"%MainMenu".get_node("ButtonContainer").move_child(button_mainmenu, 4)
+	button_mainmenu.flat = false
+	$"%MainMenu".get_node("ModListButtonContainer").add_child(button_mainmenu, true)
 	
 	return button_mainmenu
 	

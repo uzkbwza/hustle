@@ -65,7 +65,7 @@ func _frame_0():
 	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
 
 	if back and host.combo_count <= 0:
-		host.add_penalty(10)
+		host.add_penalty(10 if full_hop else 5)
 		backdash_iasa = true
 		beats_backdash = false
 	else:

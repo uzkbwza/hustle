@@ -10,6 +10,7 @@ var mods_w_missing_depend = {}
 var active = false
 
 func _init():
+#	Steam.steamInit()
 	var file = File.new()
 	if !file.file_exists("user://modded.json"):
 		file.open("user://modded.json", File.WRITE)
@@ -22,18 +23,28 @@ func _init():
 	file.close()
 	if !mod_options.modsEnabled:
 		return
+
+	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
+	if OS.get_name() == "OSX":
+		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
+#
+#	var dir = Directory.new()
+#	if !dir.dir_exists(gameInstallDirectory.plus_file("mods")):
+#		dir.make_dir_recursive(gameInstallDirectory.plus_file("mods").plus_file("workshop_upload"))
+#
+	Steam.steamInit() # needed to get workshop mods.
 	active = true
 	Global.VERSION += " Modded" 
 	
 	#This script has to be installed before the mods or else it doesn't get extended
 	installScriptExtension("res://modloader/MLStateSounds.gd") 
-	
+
 	_loadMods()
 	print("----------------mods------loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
+	
 	installScriptExtension("res://modloader/ModHashCheck.gd")
-
 	call_deferred("append_hash")
 
 func append_hash():
@@ -46,28 +57,46 @@ func append_hash():
 			Global.VERSION += "-" + ("%10x" % hash(h)).strip_edges()
 		else:
 			Global.VERSION = Global.VERSION.split(" Modded")[0]
-	
+
 func _loadMods():
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
 		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
 	var modPathPrefix = gameInstallDirectory.plus_file("mods")
+	_load_mods_in_folder(modPathPrefix)
+
+	var dir2 = Directory.new()
+	var _directories = []
+	var workshop = SteamWorkshop.new()
+	for item in Steam.getSubscribedItems():
+		var info : Dictionary
+		info = workshop.get_item_install_info(item)
+		if info.ret:
+			_load_mods_in_folder(info.folder, true)
+
+func _load_mods_in_folder(modPathPrefix, zip_only=false):
+	print("loading mods in folder: " + modPathPrefix)
 	var dir = Directory.new()
 	if dir.open(modPathPrefix) != OK:
 		return
 	if dir.list_dir_begin() != OK:
 		return
+
 	while true:
 		var fileName = dir.get_next()
 		if fileName == '':
 			break
 		if dir.current_is_dir():
 			continue
-		var modFSPath = modPathPrefix.plus_file(fileName)
+		var modFSPath: String = modPathPrefix.plus_file(fileName)
+		if zip_only and modFSPath.get_extension() != "zip":
+			continue
 		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
 		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
 			continue
+
 		_modZipFiles.append(modFSPath)
+
 	dir.list_dir_end()
 
 # Load and run any ModMain.gd scripts which were present in mod ZIP files.

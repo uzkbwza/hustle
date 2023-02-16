@@ -23,6 +23,8 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="StickmanFireball" instance=ExtResource( 1 )]
 material = SubResource( 1 )
+extra_state_variables = "dir_x
+dir_y"
 
 [node name="Sprite" parent="Flip" index="0"]
 rotation = 0.785398
@@ -33,8 +35,7 @@ material = SubResource( 2 )
 rotation = 0.785398
 
 [node name="Default" parent="StateMachine" index="0"]
-move_x = 5
-move_y = 5
+move_y = 7
 
 [node name="Hitbox" parent="StateMachine/Default" index="0"]
 x = -2

@@ -35,6 +35,7 @@ onready var settings_nodes = {
 	"global_gravity_modifier": $"%GravityModifier",
 	"ceiling_height": $"%CeilingHeight",
 	"sadness_enabled": $"%SadnessEnabled",
+	"turn_min_length": $"%TurnMinLength",
 }
 
 var float_to_string = [
@@ -118,10 +119,12 @@ func update_menu():
 #		if $"%TurnLengthLabel".text != "Turn Clock (min)":
 #			$"%TurnLength".value = 30
 		$"%TurnLengthLabel".text = "Turn Clock (min)"
+		$"%TurnMinLengthContainer".show()
 	else:
 #		if $"%TurnLengthLabel".text != "Turn Clock (sec)":
 #			$"%TurnLength".value = 30
 		$"%TurnLengthLabel".text = "Turn Clock (sec)"
+		$"%TurnMinLengthContainer".hide()
 	pass
 
 func update_lobby_data():
