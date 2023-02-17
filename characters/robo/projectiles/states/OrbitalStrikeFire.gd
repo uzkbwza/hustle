@@ -8,7 +8,7 @@ func _frame_0():
 		host.creator.loic_meter = 0
 		host.creator.can_loic = false
 		host.creator.loic_draining = false
-		print(Utils.int_abs(host.obj_local_center(host.creator).x) <= 20)
+#		print(Utils.int_abs(host.obj_local_center(host.creator).x) <= 20)
 		if Utils.int_abs(host.obj_local_center(host.creator).x) <= 20:
 			host.creator.add_armor_pip()
 			
