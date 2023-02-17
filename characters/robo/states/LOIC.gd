@@ -1,6 +1,6 @@
 extends RobotState
 
-const MIN_AIM_TICKS_GALVANIZE = 5
+const MIN_AIM_TICKS_GALVANIZE = 20
 const MIN_AIM_TICKS = 20
 const MAX_AIM_TICKS = 85
 

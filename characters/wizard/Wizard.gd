@@ -38,7 +38,7 @@ func init(pos=null):
 	hover_left = HOVER_AMOUNT / 4
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT
-	geyser_charge = 1
+	geyser_charge = 0
 
 func apply_grav():
 	if fast_falling:
