@@ -106,6 +106,13 @@ func magnetize():
 		var force = fixed.normalized_vec_times(str(my_pos_relative.x), str(my_pos_relative.y), MAGNET_STRENGTH if combo_count <= 0 else COMBO_MAGNET_STRENGTH)
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
 
+func add_armor_pip():
+	armor_pips += 1
+	if armor_pips > MAX_ARMOR_PIPS:
+		armor_pips = MAX_ARMOR_PIPS
+	spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect.tscn"), Vector2(0, -16))
+	play_sound("ArmorBeep")
+
 func tick():
 	.tick()
 	if got_hit:
@@ -123,9 +130,7 @@ func tick():
 		stop_magnet_fx()
 	if landed_move:
 		if not (current_state() is CharacterHurtState):
-			armor_pips += 1
-			if armor_pips > MAX_ARMOR_PIPS:
-				armor_pips = MAX_ARMOR_PIPS
+			add_armor_pip()
 		landed_move = false
 	if is_grounded():
 		flying_dir = null
@@ -180,7 +185,7 @@ func start_magnetizing():
 	pass
 
 func ground_pound_active_effect():
-	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -18))
+	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -16))
 	play_sound("GroundPoundBeep")
 	pass
 	
@@ -227,6 +232,8 @@ func _on_state_exited(state):
 	._on_state_exited(state)
 	if buffer_armor:
 		armor_active = true
+		spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect2.tscn"), Vector2(0, -16))
+		play_sound("ArmorBeep2")
 		buffer_armor = false
 		armor_pips = 0
 	else:

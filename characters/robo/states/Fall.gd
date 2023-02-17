@@ -1,7 +1,7 @@
 extends "res://characters/states/Fall.gd"
 
 func _enter():
-	iasa_at = 15
+	iasa_at = 11
 
 func _tick():
 	._tick()

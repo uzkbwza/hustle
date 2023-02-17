@@ -1,5 +1,7 @@
 extends ObjectState
 
+const MAX_LOCK_TIME = 300
+
 var was_attached = false
 
 func _frame_0():
@@ -20,6 +22,9 @@ func _tick():
 	else:
 		if was_attached:
 			host.unlock()
+	if current_tick > MAX_LOCK_TIME:
+#		host.unlock()
+		host.disable()
 
 func _exit():
 	was_attached = false

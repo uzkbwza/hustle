@@ -13,9 +13,9 @@ func _tick():
 		var obj = host.creator.opponent
 		var center = obj.get_hurtbox_center()
 		if fixed.lt(fixed.vec_dist(str(pos.x), str(pos.y), str(center.x), str(center.y)), ACTIVATE_DISTANCE):
-			if host.get_opponent().combo_count <= 0:
-				host.explode()
-				return
+#			if host.get_opponent().combo_count <= 0:
+			host.explode()
+			return
 
 	for obj_name in host.objs_map:
 		var obj = host.objs_map[obj_name]

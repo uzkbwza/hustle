@@ -53,6 +53,7 @@ const MIN_DIST_SADNESS = "128"
 
 const HOLD_RESTARTS = [
 	"Wait",
+	"Fall",
 	"DashForward",
 #	"DashBackward",
 	"ParryHigh",

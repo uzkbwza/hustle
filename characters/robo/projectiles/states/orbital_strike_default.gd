@@ -19,8 +19,9 @@ func _tick():
 	else:
 		host.sprite.modulate.a = 1.0
 	if host.creator and host.creator.opponent:
-		var dir = host.get_object_dir(host.creator.opponent)
-		var pos = host.obj_local_center(host.creator.opponent)
+		var target = host.creator if host.self_ else host.creator.opponent
+		var dir = host.get_object_dir(target)
+		var pos = host.obj_local_center(target)
 #		if fixed.gt(fixed.vec_len(str(pos.x), str(pos.y)), "10.0"):
 #			host.apply_force(fixed.mul(MOVE_SPEED, str(dir)), "0")
 		var t = fixed.add(MOVE_T, fixed.mul(AIM_INCREASE, str(current_tick)))

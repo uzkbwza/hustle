@@ -760,11 +760,13 @@ active_ticks = 1
 script = ExtResource( 10 )
 fallback_state = "Fall"
 sprite_animation = "Jump"
-anim_length = 15
+anim_length = 11
 button_texture = ExtResource( 55 )
 air_type = 1
 interruptible_on_opponent_turn = true
-interrupt_from_string = "Fall"
+interrupt_from_string = "Fall
+Aerial
+AerialMovement"
 interrupt_into_string = "Aerial
 Grounded"
 

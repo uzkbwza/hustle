@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/robo/sprites/shield_effect.png" type="Texture" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://fx/elec.png" type="Texture" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0.236364 ), 0.0, 1.24528, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0, 0.814706, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0.462745, 1, 1, 1, 0 )
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.487603, 0.471591 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.417045 ), 0.0, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 1 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+modulate = Color( 1, 1, 1, 0.607843 )
+amount = 1
+lifetime = 0.15
+texture = ExtResource( 2 )
+gravity = Vector2( 0, 0 )
+scale_amount = 2.0
+scale_amount_curve = SubResource( 2 )
+color_ramp = SubResource( 3 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
+amount = 12
+lifetime = 0.25
+preprocess = 0.02
+explosiveness = 1.0
+texture = ExtResource( 4 )
+spread = 180.0
+initial_velocity = 474.49
+initial_velocity_random = 0.32
+angle = 529.8
+angle_random = 1.0
+scale_amount = 1.31
+scale_amount_curve = SubResource( 4 )
+color = Color( 0.580392, 0.894118, 1, 1 )

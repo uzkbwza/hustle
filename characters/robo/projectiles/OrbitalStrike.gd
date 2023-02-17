@@ -1,6 +1,7 @@
 extends BaseProjectile
 
 var aim_ticks = 60
+var self_ = false
 
 const MAX_WIDTH = 32
 

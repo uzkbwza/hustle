@@ -1,4 +1,4 @@
-[gd_scene load_steps=242 format=2]
+[gd_scene load_steps=243 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -238,6 +238,7 @@
 [ext_resource path="res://characters/stickman/projectiles/grappling_hook.tscn" type="PackedScene" id=236]
 [ext_resource path="res://characters/stickman/states/GrapplingHook.gd" type="Script" id=237]
 [ext_resource path="res://characters/stickman/sounds/grapplinghook1.wav" type="AudioStream" id=238]
+[ext_resource path="res://characters/stickman/sprites/actionicons/hook.png" type="Texture" id=239]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -679,6 +680,7 @@ projectile_pos_y = -16
 title = "Grappling Hook"
 type = 2
 data_ui_scene = ExtResource( 235 )
+button_texture = ExtResource( 239 )
 air_type = 2
 interrupt_from_string = "Grounded
 Aerial
@@ -1625,7 +1627,6 @@ interrupt_into_string = "Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirUpwardPunch" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 17
@@ -2324,21 +2325,21 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -2462,6 +2463,10 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
@@ -2469,10 +2474,6 @@ ExtResource( 207 ): {
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 },
 ExtResource( 208 ): {
 "x": 14,
@@ -2513,6 +2514,14 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="80"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
@@ -2520,14 +2529,6 @@ ExtResource( 207 ): {
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
 },
 ExtResource( 208 ): {
 "x": 13,
