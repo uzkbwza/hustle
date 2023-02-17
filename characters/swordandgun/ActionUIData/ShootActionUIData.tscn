@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.gd" type="Script" id=1]
+[ext_resource path="res://characters/swordandgun/ActionUIData/ShootActionUIData.gd" type="Script" id=1]
 [ext_resource path="res://ui/CountOption/CountOption.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
@@ -24,6 +24,6 @@ max_value = 6
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 37.0
-margin_right = 50.0
-margin_bottom = 99.0
+margin_bottom = 103.0
 always_max = true
+default_value = Vector2( 0, -1 )

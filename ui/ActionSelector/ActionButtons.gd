@@ -238,6 +238,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	button.set_player_id(player_id)
 	if data_scene:
 		data_node = data_scene.instance()
+		data_node.fighter = fighter
 		$"%DataContainer".add_child(data_node)
 	button.set_data_node(data_node)
 	button.reversible = reversible
@@ -461,6 +462,7 @@ func activate():
 			button.set_disabled(true)
 			if button.data_node:
 				button.data_node.hide()
+				button.data_node.fighter_update()
 	#	if fighter.state_interruptable:
 #		$"%SelectButton".show()
 #		$"%SelectButton".disabled = false

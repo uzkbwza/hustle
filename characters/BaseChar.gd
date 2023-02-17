@@ -328,6 +328,7 @@ func init(pos=null):
 		super_meter = MAX_SUPER_METER
 	last_pos = get_pos()
 
+
 func is_ivy():
 	if !Network.multiplayer_active and !SteamLobby.SPECTATING:
 		var username = Network.pid_to_username(id)

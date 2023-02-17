@@ -1262,7 +1262,8 @@ can_feint_if_possible = false
 interrupt_from_string = "Aerial
 AerialAttack
 AerialGrab"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 

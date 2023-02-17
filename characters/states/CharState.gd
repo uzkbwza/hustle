@@ -143,6 +143,7 @@ func init():
 		iasa_at = anim_length + iasa_at
 	if starting_iasa_at == -1:
 		starting_iasa_at = iasa_at
+	interrupt_frames = interrupt_frames.duplicate(true)
 	.init()
 #
 #func copy_to(state: ObjectState):

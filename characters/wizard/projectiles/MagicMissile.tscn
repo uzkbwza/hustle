@@ -36,8 +36,6 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="MagicMissile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 z_index = 2
-can_be_hit_by_melee = false
-projectile_immune = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
@@ -64,6 +62,7 @@ start_homing = true
 relative_data_dir = false
 fizzle_on_ground = false
 bounce_on_ground = true
+num_bounces = 2
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000

@@ -24,6 +24,7 @@ var ghost_started_hovering = false
 var fast_falling = false
 var gusts_in_combo = 0
 var tether_ticks = 0
+var geyser_charge = 0
 
 var orb_projectile
 var can_flame_wave = true
@@ -37,7 +38,8 @@ func init(pos=null):
 	hover_left = HOVER_AMOUNT / 4
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT
-	
+	geyser_charge = 1
+
 func apply_grav():
 	if fast_falling:
 		apply_grav_custom(FAST_FALL_SPEED, FAST_FALL_SPEED)
@@ -50,6 +52,12 @@ func apply_grav_fast_fall():
 func apply_grav_custom(grav: String, fall_speed: String):
 	if !hovering:
 		.apply_grav_custom(grav, fall_speed)
+
+func add_geyser_charge():
+	geyser_charge += 1
+	if geyser_charge > 3:
+		geyser_charge = 3
+	play_sound("Droplet")
 
 func apply_fric():
 	if !is_grounded():
@@ -136,6 +144,12 @@ func tick():
 
 	if combo_count <= 0 and !opponent.current_state().endless:
 		gusts_in_combo = 0
+
+func start_moisture_effect():
+	$"%DrawMoistureParticle".start_emitting()
+
+func stop_moisture_effect():
+	$"%DrawMoistureParticle".stop_emitting()
 
 func process_extra(extra):
 	.process_extra(extra)

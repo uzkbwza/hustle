@@ -113,15 +113,21 @@ func _frame_6():
 	var move_dir_x = host.quick_slash_move_dir_x
 	var move_dir_y = host.quick_slash_move_dir_y
 
-	host.reset_momentum()
+
 	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
+	if fixed.le(move_dir_y, "0"):
+		host.reset_momentum()
+		host.apply_force("0", "-1")
+	elif host.is_grounded():
+		queue_state_change("Landing", 2)
+		var vel = host.get_vel()
+		host.set_vel(fixed.mul(vel.x, "0.5"), vel.y)
 	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
-	host.apply_force("0", "-1")
 
 	host.end_invulnerability()
 
-func can_hit_cancel():
-	return host.combo_count > 1
+#func can_hit_cancel():
+#	return host.combo_count > 1
 
 func _tick():
 	if startup_lag > 0:

@@ -16,6 +16,7 @@ var reversible = false
 var flip_icon = true
 var state = null
 
+
 func setup(name, title, texture=null):
 	action_name = name
 	action_title = title

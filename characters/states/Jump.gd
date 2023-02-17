@@ -19,7 +19,7 @@ const SUPER_JUMP_SPEED = "17.0"
 const BASE_JUMP_SPEED = "0.5"
 const SUPER_JUMP_FORCES_END_TICK = 25
 
-
+var queue_backdash_check = false
 
 var jump_tick = 1
 var squat
@@ -57,11 +57,11 @@ func _frame_7():
 		jump()
 
 func _frame_0():
+	queue_backdash_check = false
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
 	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
-#	squat = super_jump or (air_type == AirType.Grounded and (back or host.combo_count <= 0) and full_hop)
 	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
 
 	if back and host.combo_count <= 0:
@@ -70,8 +70,9 @@ func _frame_0():
 		beats_backdash = false
 	else:
 		backdash_iasa = false
-		beats_backdash = true
-
+		beats_backdash = !(host.opponent.current_state().beats_backdash)
+		if(host.opponent.current_state().name == "Jump" or host.opponent.current_state().name == "DoubleJump" or host.opponent.current_state().name == "SuperJump"):
+			queue_backdash_check = true
 	if !squat:
 		jump_tick = 1
 		jump()
@@ -90,7 +91,20 @@ func _frame_0():
 			interrupt_frames[0] = 7
 			interrupt_frames[1] = 18
 	sfx_tick = jump_tick
-#	host.move_directly_relative(0, -)
+
+func _frame_1():
+	if(queue_backdash_check):
+		queue_backdash_check = false
+		var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
+		if(back):
+			return
+		var opponent_state = host.opponent.current_state()
+		var opponent_back = fixed.sign(str(opponent_state.data["x"])) == host.get_facing_int() or opponent_state.data["x"]==0
+		beats_backdash = opponent_back
+		if(!beats_backdash):
+			var full_hop = fixed.gt(fixed.div(fixed.vec_len(str(data["x"]),str(data["y"])), "100"), str(FULL_HOP_LENGTH))
+			var opponent_full_hop = fixed.gt(fixed.div(fixed.vec_len(str(opponent_state.data["x"]),str(opponent_state.data["x"])), "100"), str(FULL_HOP_LENGTH))
+			beats_backdash = full_hop == (opponent_full_hop or !opponent_state.super_jump)
 
 func _tick():
 	if interrupt_frames.size() > 0:

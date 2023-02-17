@@ -9,11 +9,14 @@ var buffer_value_changed = false
 
 func _ready():
 	$Label.text = name
-	$HSlider.min_value = min_value
-	$HSlider.max_value = max_value
+	update_values()
 	$HSlider.connect("value_changed", self, "on_value_changed")
 	on_value_changed($HSlider.value)
-	
+
+func update_values():
+	$HSlider.min_value = min_value
+	$HSlider.max_value = max_value
+
 func on_value_changed(value):
 	buffer_value_changed = true
 	$ValueLabel.text = str(value)

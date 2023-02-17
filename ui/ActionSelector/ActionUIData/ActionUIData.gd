@@ -1,10 +1,14 @@
 extends Control
 
+class_name ActionUIData
+
 signal data_changed()
 
 export var display_offset = Vector2()
 
 var facing = -1
+
+var fighter = null
 
 func _ready():
 	for child in get_children():
@@ -40,3 +44,6 @@ func init():
 	for child in get_children():
 		if child.has_method("init"):
 			child.init()
+
+func fighter_update():
+	pass
