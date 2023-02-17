@@ -304,7 +304,7 @@ func set_snap_align_to_limit_center(val):
 		
 func set_snap_radius(val):
 	if Engine.editor_hint:
-		snap_radius = round(val * 20) / 20
+		snap_radius = round(val * 100) / 100
 		update_value(get_default_value())
 		update()
 	else:

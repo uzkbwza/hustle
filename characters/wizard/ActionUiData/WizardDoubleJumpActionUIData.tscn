@@ -15,4 +15,4 @@ anchor_bottom = 0.0
 min_length = 0.25
 limit_range_degrees = 160.0
 default_value = Vector2( -4.37114e-08, -1 )
-snap_radius = 0.7
+snap_radius = 0.69

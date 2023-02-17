@@ -46,7 +46,8 @@ animations = [ {
 material = SubResource( 1 )
 z_index = 100
 script = ExtResource( 8 )
-extra_state_variables = "aim_ticks"
+extra_state_variables = "aim_ticks
+self_"
 has_projectile_parry_window = false
 immunity_susceptible = false
 deletes_other_projectiles = false
