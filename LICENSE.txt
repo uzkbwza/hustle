@@ -1,0 +1,6 @@
+Copyright (C) 2022 Ian Sly <ivysly@protonmail.com>
+
+All files contained in this repository are part of the Your Only Move Is HUSTLE code base.
+
+The Your Only Move Is HUSTLE project can not be copied and/or distributed without the express
+permission of Ian Sly <ivysly@protonmail.com>
