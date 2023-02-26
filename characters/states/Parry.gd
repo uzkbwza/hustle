@@ -28,6 +28,7 @@ var parry_active = false
 var perfect = true
 
 func _frame_0():
+	host.end_throw_invulnerability()
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -57,11 +58,12 @@ func parry(perfect=true):
 		enable_interrupt()
 	else:
 		parry_type = ParryHeight.Both
+		host.start_throw_invulnerability()
 	interruptible_on_opponent_turn = true
 	host.parried = true
 	parried = true
 	self.perfect = perfect
-
+	
 func can_parry_hitbox(hitbox):
 	if !perfect:
 		return true

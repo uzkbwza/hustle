@@ -1783,11 +1783,12 @@ enter_sfx_volume = -13.0
 title = "Draw Moisture"
 type = 2
 button_texture = ExtResource( 290 )
-air_type = 2
+interruptible_on_opponent_turn = true
 interrupt_from_string = "Grounded
 GroundedSpecial
 Aerial
-AerialSpecial"
+AerialSpecial
+DrawMoisture"
 interrupt_into_string = "Grounded
 Aerial"
 trigger_orb_attack = false
@@ -1818,6 +1819,7 @@ GroundedSpecial
 AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "DrawMoisture"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 30
 

@@ -30,6 +30,7 @@ var screenshake_amount = 0
 var minimum_damage = 0
 var sdi_modifier = "1.0"
 var di_modifier = "1.0"
+var meter_gain_modifier = "1.0"
 var increment_combo = false
 var ignore_armor = false
 var damage_proration = 0
@@ -122,6 +123,8 @@ func _init(state):
 		damage_in_combo = state.damage_in_combo
 	if state.get("hits_vs_dizzy") != null:
 		hits_vs_dizzy = state.hits_vs_dizzy
+	if state.get("meter_gain_modifier") != null:
+		meter_gain_modifier = state.meter_gain_modifier
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

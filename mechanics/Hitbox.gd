@@ -53,6 +53,7 @@ export var hits_vs_aerial = true
 export var can_counter_hit = true
 export var di_modifier = "1.0"
 export var sdi_modifier = "1.0"
+export var meter_gain_modifier = "1.0"
 export var parry_meter_gain = -1
 export var ignore_armor = false
 export var followup_state = ""
@@ -330,9 +331,7 @@ func can_draw_box():
 		return (active and enabled and Global.show_hitboxes)
 	else:
 		return .can_draw_box()
-#	return .can_draw_box()
-	
-#
+
 func tick():
 	if looping:
 		var loop_tick = tick % (loop_active_ticks + loop_inactive_ticks)

@@ -12,6 +12,7 @@ func is_usable():
 
 func _enter_shared():
 	._enter_shared()
+	host.combo_supers += 1
 	if super_effect:
 		host.start_super()
 		host.play_sound("Super")

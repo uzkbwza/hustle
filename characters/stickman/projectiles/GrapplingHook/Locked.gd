@@ -1,6 +1,7 @@
 extends ObjectState
 
 const MAX_LOCK_TIME = 300
+const MAX_LOCK_TIME_TERRAIN = 50
 
 var was_attached = false
 
@@ -22,7 +23,7 @@ func _tick():
 	else:
 		if was_attached:
 			host.unlock()
-	if current_tick > MAX_LOCK_TIME:
+	if current_tick > (MAX_LOCK_TIME if attached_to != null else MAX_LOCK_TIME_TERRAIN):
 #		host.unlock()
 		host.disable()
 

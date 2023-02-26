@@ -107,11 +107,12 @@ func magnetize():
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
 
 func add_armor_pip():
+	if armor_pips < MAX_ARMOR_PIPS:
+		spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect.tscn"), Vector2(0, -16))
+		play_sound("ArmorBeep")
 	armor_pips += 1
 	if armor_pips > MAX_ARMOR_PIPS:
 		armor_pips = MAX_ARMOR_PIPS
-	spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect.tscn"), Vector2(0, -16))
-	play_sound("ArmorBeep")
 
 func tick():
 	.tick()

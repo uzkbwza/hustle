@@ -22,6 +22,7 @@ func _enter_shared():
 	if !is_super:
 		return
 	if super_effect:
+		host.combo_supers += 1
 		host.start_super()
 		host.play_sound("Super")
 		host.play_sound("Super2")

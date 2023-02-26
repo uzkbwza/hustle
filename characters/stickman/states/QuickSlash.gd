@@ -1,13 +1,18 @@
 extends SuperMove
 
 const MOVE_DISTANCE = 120
-const NEUTRAL_STARTUP_LAG = 2
+const NEUTRAL_STARTUP_LAG = 3
+const LANDING_LAG = 2
+const IASA = 20
+const WHIFF_LANDING_LAG = 8
+const WHIFF_IASA = 40
 
 var hitboxes = []
 
 var dist = MOVE_DISTANCE
 
 var startup_lag = 0
+var landing_lag = LANDING_LAG
 
 var started_in_neutral = false
 
@@ -30,7 +35,6 @@ func _enter():
 	host.apply_force(move_vec.x,  fixed.div(move_vec.y, "2"))
 	host.quick_slash_move_dir_x = move_dir.x
 	host.quick_slash_move_dir_y = move_dir.y
-#	startup_lag = NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
 
 #	move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, str(MOVE_DISTANCE))
 #	var pos = host.get_pos()
@@ -64,6 +68,9 @@ func _enter():
 
 func _frame_0():
 	started_in_neutral = host.combo_count <= 0
+	iasa_at = WHIFF_IASA
+	landing_lag = WHIFF_LANDING_LAG
+#	host.hitlag_ticks += NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
 
 func _frame_1():
 	var start_pos = host.get_pos().duplicate()
@@ -123,7 +130,7 @@ func _frame_6():
 #		host.reset_momentum()
 #		host.apply_force("0", "-1")
 #	if host.is_grounded():
-###		queue_state_change("Landing", 2)
+##		queue_state_change("Landing", 2)
 #		var vel = host.get_vel()
 #		host.set_vel(fixed.mul(vel.x, "0.5"), vel.y)
 #	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
@@ -133,14 +140,26 @@ func _frame_6():
 func can_hit_cancel():
 	return host.combo_count > 1 or !host.opponent.is_grounded()
 
+func _got_parried():
+	host.hitlag_ticks += 10
+	host.reset_momentum()
+	pass
+
+func _on_hit_something(obj, hitbox):
+	iasa_at = IASA
+	landing_lag = LANDING_LAG
+	._on_hit_something(obj, hitbox)
+
 func _tick():
-	if startup_lag > 0:
-		startup_lag -= 1
-		current_tick = 0
+#	if startup_lag > 0:
+##		if startup_lag == 0:
+##			host.reset_momentum()
+#		startup_lag -= 1
+#		current_tick = 0
 
 	if current_tick > 6:
 		if host.is_grounded():
-			queue_state_change("Landing", 2)
+			queue_state_change("Landing", landing_lag)
 	host.apply_grav()
 #	host.apply_fric()
 	host.apply_forces_no_limit()

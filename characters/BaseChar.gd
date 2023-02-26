@@ -5,6 +5,7 @@ class_name Fighter
 signal action_selected(action, data)
 signal super_started()
 signal parried()
+signal got_parried()
 signal undo()
 signal forfeit()
 signal clashed()
@@ -279,6 +280,7 @@ var grounded_hits_taken = 0
 var throw_pos_x = 16
 var throw_pos_y = -5
 
+var combo_supers = 0
 var combo_damage = 0
 var hitlag_applied = 0
 var forfeit_ticks = 0
@@ -422,7 +424,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "penalty_buffer", "was_my_turn", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "penalty_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -473,14 +475,14 @@ func gain_burst():
 		burst_meter = 0
 
 func use_burst():
-	if infinite_resources:
-		return
+#	if infinite_resources:
+#		return
 	bursts_available -= 1
 	refresh_air_movements()
 
 func use_burst_meter(amount):
-	if infinite_resources:
-		return
+#	if infinite_resources:
+#		return
 	if bursts_available > 0:
 		bursts_available = 0
 		burst_meter = MAX_BURST_METER
@@ -526,6 +528,7 @@ func gain_super_meter(amount):
 		return
 	amount = combo_stale_meter(amount)
 	amount = meter_gain_modified(amount)
+	amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
 	super_meter += amount
 	if super_meter >= MAX_SUPER_METER:
 		if supers_available < MAX_SUPERS:
@@ -612,6 +615,7 @@ func reset_combo():
 	hitstun_decay_combo_count = 0
 	combo_proration = 0
 	combo_moves_used = {}
+	combo_supers = 0
 	opponent.grounded_hits_taken = 0
 	opponent.trail_hp = opponent.hp
 	opponent.wall_slams = 0
@@ -751,7 +755,7 @@ func launched_by(hitbox):
 		hit_during_armor = true
 
 	emit_hit_by_signal(hitbox)
-	take_damage(hitbox.get_damage(), hitbox.minimum_damage)
+	take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 
 	if will_launch:
 		state_tick()
@@ -782,10 +786,10 @@ func hit_by(hitbox):
 					hitbox.facing = get_facing()
 					pass
 				emit_signal("got_hit")
-				take_damage(hitbox.get_damage(), hitbox.minimum_damage)
+				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 			Hitbox.HitboxType.ThrowHit:
 				emit_signal("got_hit")
-				take_damage(hitbox.get_damage(), hitbox.minimum_damage)
+				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 				opponent.incr_combo()
 			Hitbox.HitboxType.OffensiveBurst:
 				opponent.hitstun_decay_combo_count = 0
@@ -874,7 +878,7 @@ func get_penalty_damage_modifier():
 		return "1.0"
 	return fixed.add("1.0", fixed.mul(fixed.div(str(penalty - min_penalty_for_damage), str(MAX_PENALTY - min_penalty_for_damage)), "0.5"))
 
-func take_damage(damage: int, minimum=0):
+func take_damage(damage: int, minimum=0, meter_gain_modifier="1.0"):
 	if opponent.combo_count == 0:
 		trail_hp = hp
 	if damage == 0:
