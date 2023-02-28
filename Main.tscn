@@ -997,14 +997,10 @@ align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 4 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="TopInfo" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1436,9 +1432,67 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="HelpButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 2.0
+margin_right = 20.0
+margin_bottom = 21.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 65 )
+flat = true
+icon_align = 1
+
+[node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 602.0
+margin_top = 9.0
+margin_right = 631.0
+margin_bottom = 28.0
+action_mode = 0
+
+[node name="Label" type="Label" parent="UILayer/GameUI/ResetZoomButton"]
+margin_left = 1.0
+margin_top = -1.0
+margin_right = 28.0
+margin_bottom = 19.0
+custom_constants/line_spacing = -3
+text = "reset
+zoom"
+align = 1
+clip_text = true
+
+[node name="AdvantageLabel" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 71.0
+margin_bottom = 85.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="PredictionSettingsOpenButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -9.5
+margin_top = -14.0
+margin_right = 9.5
+margin_bottom = -2.0
+mouse_default_cursor_shape = 2
+icon = ExtResource( 64 )
+icon_align = 1
+
 [node name="HelpScreen" type="ColorRect" parent="UILayer/GameUI"]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.694118 )
@@ -1474,14 +1528,37 @@ mouse_filter = 1
 text = "This number represents the remaining amount of time (in frames) left in the battle."
 autowrap = true
 
+[node name="HelpText14" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -101.0
+margin_top = -125.0
+margin_right = -27.0
+margin_bottom = -44.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "This indicator shows what action this player last selected."
+autowrap = true
+__meta__ = {
+"_edit_lock_": true
+}
+
 [node name="HelpText6" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
-margin_left = 163.0
-margin_top = -149.0
-margin_right = 275.0
-margin_bottom = -124.0
+margin_left = 188.0
+margin_top = -150.0
+margin_right = 306.0
+margin_bottom = 1.0
 rect_pivot_offset = Vector2( 65, 38 )
 mouse_filter = 1
 text = "This represents how many air options this player has left. jumping, air-dashing, teleporting, and other moves that allow you to gain altitude generally consume one air option. When you run out, you cannot use those moves."
+autowrap = true
+
+[node name="HelpText13" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
+margin_left = -192.0
+margin_top = -139.0
+margin_right = -96.0
+margin_bottom = -16.0
+rect_pivot_offset = Vector2( 65, 38 )
+mouse_filter = 1
+text = "Free Cancel charges are used to make any move unpunishable by the opponent. click the Free button while doing a melee attack to use one free cancel. These replenish after a melee attack is landed by either player."
 autowrap = true
 
 [node name="HelpText7" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
@@ -1543,65 +1620,6 @@ rect_pivot_offset = Vector2( 65, 38 )
 mouse_filter = 1
 text = "Action parameters may appear here: jump arcs, projectile direction, etc."
 autowrap = true
-
-[node name="HelpButton" type="Button" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-margin_left = 1.0
-margin_top = 2.0
-margin_right = 20.0
-margin_bottom = 21.0
-mouse_default_cursor_shape = 2
-action_mode = 0
-icon = ExtResource( 65 )
-flat = true
-icon_align = 1
-
-[node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-margin_left = 602.0
-margin_top = 9.0
-margin_right = 631.0
-margin_bottom = 28.0
-action_mode = 0
-
-[node name="Label" type="Label" parent="UILayer/GameUI/ResetZoomButton"]
-margin_left = 1.0
-margin_top = -1.0
-margin_right = 28.0
-margin_bottom = 19.0
-custom_constants/line_spacing = -3
-text = "reset
-zoom"
-align = 1
-clip_text = true
-
-[node name="AdvantageLabel" type="Label" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_top = 71.0
-margin_bottom = 85.0
-theme = ExtResource( 4 )
-custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
-align = 1
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="PredictionSettingsOpenButton" type="Button" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -9.5
-margin_top = -14.0
-margin_right = 9.5
-margin_bottom = -2.0
-mouse_default_cursor_shape = 2
-icon = ExtResource( 64 )
-icon_align = 1
 
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true

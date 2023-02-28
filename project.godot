@@ -361,10 +361,10 @@ config/icon="res://icon2.png"
 
 [autoload]
 
-ReplayManager="*res://ReplayManager.gd"
 Global="*res://Global.gd"
 SteamHustle="*res://SteamY.gd"
 ModLoader="*res://modloader/ModLoader.gd"
+ReplayManager="*res://ReplayManager.gd"
 Network="*res://Network.gd"
 SteamLobby="*res://SteamLobby.gd"
 Custom="*res://Custom.gd"

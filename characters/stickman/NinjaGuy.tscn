@@ -682,6 +682,7 @@ type = 2
 data_ui_scene = ExtResource( 235 )
 button_texture = ExtResource( 239 )
 air_type = 2
+reversible = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -993,7 +994,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1013,7 +1013,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1033,7 +1032,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1053,7 +1051,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1073,7 +1070,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1093,7 +1089,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1141,7 +1136,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1161,7 +1155,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1181,7 +1174,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1201,7 +1193,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1221,7 +1212,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -1241,7 +1231,6 @@ damage = 100
 damage_in_combo = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 20
-hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 meter_gain_modifier = "0.25"
@@ -2613,13 +2602,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 reset_momentum = true
 throw_positions = {
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
+},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
-},
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
 },
 ExtResource( 222 ): {
 "x": 23,
@@ -2629,9 +2618,9 @@ ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 }
 }
 button_texture = ExtResource( 223 )
@@ -2751,12 +2740,12 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
-},
 ExtResource( 207 ): {
 "x": 15,
+"y": -10
+},
+ExtResource( 206 ): {
+"x": 13,
 "y": -10
 },
 ExtResource( 208 ): {
@@ -2802,25 +2791,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="82"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
-},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
+},
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false

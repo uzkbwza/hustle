@@ -54,5 +54,6 @@ hitstun_ticks = 18
 damage_proration = 1
 cancellable = false
 grounded_hit_state = "HurtAerial"
+wall_slam = true
 start_tick = 1
 active_ticks = 2

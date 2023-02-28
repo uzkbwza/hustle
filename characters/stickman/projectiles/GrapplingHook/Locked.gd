@@ -1,7 +1,7 @@
 extends ObjectState
 
 const MAX_LOCK_TIME = 300
-const MAX_LOCK_TIME_TERRAIN = 50
+const MAX_LOCK_TIME_TERRAIN = 90
 
 var was_attached = false
 

@@ -1919,13 +1919,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2193,6 +2193,7 @@ anim_length = 30
 enter_sfx_volume = -7.0
 sfx = ExtResource( 138 )
 sfx_tick = 2
+title = "Spot Dodge"
 type = 4
 button_texture = ExtResource( 305 )
 air_type = 2

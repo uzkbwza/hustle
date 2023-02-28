@@ -3,7 +3,7 @@ extends CharacterState
 const MOMENTUM_REDUCTION_X = "0.75"
 const MOMENTUM_REDUCTION_Y = "0.75"
 
-const GROUNDED_SPEED = "9"
+const GROUNDED_SPEED = "7.5"
 const AERIAL_SPEED = "7"
 
 export(PackedScene) var projectile
@@ -28,7 +28,7 @@ func _frame_0():
 		speed_modifier = fixed.vec_len(vec.x, vec.y)
 	projectile_spawned = false
 
-func _frame_4():
+func _frame_5():
 #	host.update_facing()
 	projectile_spawned = true
 	var object = host.spawn_object(projectile, projectile_x, projectile_y, true, {"speed_modifier": speed_modifier})

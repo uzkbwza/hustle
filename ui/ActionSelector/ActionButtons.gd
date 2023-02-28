@@ -74,6 +74,9 @@ func _ready():
 		top_row_items.invert()
 		for i in range(top_row_items.size()):
 			$"%TopRow".move_child(top_row_items[i], i)
+		$"%LastMoveTexture".rect_position.x += 45
+	else:
+		$"%LastMoveTexture".rect_position.x -= 45
 #		$"%DIPlotContainer".alignment = BoxContainer.ALIGN_BEGIN
 
 func _get_opposite_buttons():
@@ -420,6 +423,18 @@ func activate():
 #	_get_opposite_buttons().reset_prediction()
 	if is_instance_valid(fighter):
 		$"%DI".set_label("DI" + " x%.1f" % float(fighter.get_di_scaling()))
+		var last_action_name = ReplayManager.get_last_action(fighter.id)
+
+		if last_action_name and fighter.state_machine.states_map.has(last_action_name.action):
+			last_action_name = last_action_name.action
+		else:
+			last_action_name = fighter.current_state().name
+
+		var last_action: CharacterState = fighter.state_machine.states_map[last_action_name]
+		$"%LastMoveTexture".texture = last_action.button_texture
+		$"%LastMoveLabel".text = last_action.title if last_action.title else last_action.name
+		$"%LastMoveTexture".visible = !last_action.is_hurt_state
+
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:
 		if user_facing:

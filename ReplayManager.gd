@@ -48,7 +48,9 @@ func get_last_action_tick(id):
 func get_last_action(id):
 	var frame_numbers: Array = frames[id].keys()
 	frame_numbers.sort()
-	return frames[id][frame_numbers[-1]]
+	if frame_numbers:
+		return frames[id][frame_numbers[-1]]
+	return null
 
 func emote(message, player_id, tick):
 	if !playback:
@@ -71,7 +73,7 @@ func undo(cut=true):
 	resimulating = true
 	playback = true
 	resim_tick = (last_frame - 2) if cut else -1
-	
+
 func generate_mp_replay_name(p1: String, p2: String):
 	return p1 + "_v_" + p2 + "_" + generate_replay_name()
 

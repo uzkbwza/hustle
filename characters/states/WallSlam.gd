@@ -26,6 +26,9 @@ func _frame_0():
 	var di = fixed.mul(host.get_scaled_di(host.current_di).y, DI_EFFECT)
 	var y_pos = Utils.int_min(host.get_pos().y, MIN_HEIGHT) + fixed.round(di)
 	
+	if host.wall_slams == 0:
+		host.combo_proration += 1
+		pass
 	host.wall_slams += 1
 
 	host.set_pos(host.stage_width * -dir, y_pos) 
@@ -34,8 +37,12 @@ func _exit():
 	host.sprite.rotation = 0
 
 func _tick():
-	if current_tick > (MIN_DURATION - (host.wall_slams - 1) * 8) and host.is_grounded():
-		return "Knockdown"
+	if current_tick > (MIN_DURATION - (host.wall_slams - 1) * 8) + (5 if !host.is_grounded() else 0):
+		if host.is_grounded():
+			return "Knockdown"
+		else:
+			enable_interrupt()
+			queue_state_change("Fall")
 #	dir = 1 if data == CharacterHurtState.BOUNCE.LEFT_WALL else -1
 	if dir != null:
 		host.set_x(host.stage_width * -dir)

@@ -1397,10 +1397,17 @@ func _draw():
 		if has_ceiling:
 			draw_line(Vector2(-stage_width, ceiling_draw_height), Vector2(stage_width, ceiling_draw_height), line_color, 2.0)
 		var line_dist = 50
+		var small_line_dist = 10
 		var num_lines = stage_width * 2 / line_dist
 		for i in range(num_lines):
 			var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
 			draw_line(Vector2(x, 0), Vector2(x, 10), line_color, 2.0)
+		num_lines = stage_width * 2 / small_line_dist
+#		for i in range(num_lines):
+#			var c = line_color
+#			c.a = 0.25
+#			var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
+#			draw_line(Vector2(x, 0), Vector2(x, 5), c, 2.0)
 		draw_line(Vector2(stage_width, 0), Vector2(stage_width, 10), line_color, 2.0)
 	custom_draw_func()
 

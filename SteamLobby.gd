@@ -124,9 +124,9 @@ class LobbyMember:
 		var game_started = Steam.getLobbyMemberData(SteamLobby.LOBBY_ID, steam_id, "game_started")
 		self.game_started = true if game_started and game_started == "true" else false
 
-func generate_lobby_code(size: int = 4):
+func generate_lobby_code(size: int = 6):
 	var code = ""
-	var chars = "1234567890A"
+	var chars = "ABCDEF01234567890"
 	randomize()
 	for i in range(size):
 		code += chars[randi() % len(chars)]
@@ -470,9 +470,9 @@ func _read_P2P_Packet() -> void:
 		if readable.has("validate_auth_session"):
 			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
 		
-		_read_P2P_Packet_custom(readable)
+		_read_P2P_Packet_custom(readable, PACKET_SENDER)
 
-func _read_P2P_Packet_custom(readable):
+func _read_P2P_Packet_custom(readable, packet_sender):
 	pass
 
 
