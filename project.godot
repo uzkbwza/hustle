@@ -391,7 +391,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/Trail/plugin.cfg", "res://addons/collision_box/plugin.cfg", "res://addons/export_categories/plugin.cfg", "res://addons/helpers/plugin.cfg", "res://addons/multirun/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/export_categories/plugin.cfg", "res://addons/multirun/plugin.cfg" )
 
 [gui]
 

@@ -2,4 +2,6 @@
 
 [resource]
 entry/Windows.64 = "res://lib/tbfg.dll"
+entry/X11.64 = "res://lib/tbfg.so"
 dependency/Windows.64 = [ "res://lib/vcruntime140.dll" ]
+dependency/X11.64 = [  ]
