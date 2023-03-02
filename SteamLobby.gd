@@ -60,8 +60,9 @@ var SPECTATING_ID = 0
 var LOBBY_NAME = ""
 
 var REMATCHING_ID = 0
-var spectator_update_timer
 
+var spectator_update_timer
+var p2p_packet_sender
 
 func _ready() -> void:
 	Steam.connect("lobby_created", self, "_on_Lobby_Created")
@@ -470,11 +471,11 @@ func _read_P2P_Packet() -> void:
 		if readable.has("validate_auth_session"):
 			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
 		
-		_read_P2P_Packet_custom(readable, PACKET_SENDER)
+		p2p_packet_sender = PACKET_SENDER
+		_read_P2P_Packet_custom(readable)
 
-func _read_P2P_Packet_custom(readable, packet_sender):
-	pass
-
+func _read_P2P_Packet_custom(readable):
+	var sender = p2p_packet_sender
 
 func set_status(status):
 	Steam.setLobbyMemberData(LOBBY_ID, "status", status)

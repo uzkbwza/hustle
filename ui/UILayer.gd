@@ -60,6 +60,7 @@ onready var global_option_check_buttons = {
 	$"%EnableAurasButton": "enable_custom_particles",
 	$"%EnableHitsparksButton": "enable_custom_hit_sparks",
 	$"%EnableEmotes": "enable_emotes",
+	$"%LastMoveIndicatorButton": "show_last_move_indicators",
 }
 
 func _ready():

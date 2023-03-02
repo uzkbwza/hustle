@@ -146,9 +146,9 @@ func init():
 	interrupt_frames = interrupt_frames.duplicate(true)
 	.init()
 #
-func copy_to(state: ObjectState):
-	.copy_to(state)
-	state.interrupt_frames = interrupt_frames.duplicate()
+#func copy_to(state: ObjectState):
+#	.copy_to(state)
+#	state.interrupt_frames = interrupt_frames.duplicate()
 
 func get_ui_category():
 	return ActionType.keys()[type]

@@ -464,6 +464,7 @@ func copy_to(f):
 	f.got_parried = got_parried
 	f.colliding_with_opponent = colliding_with_opponent
 	f.has_hyper_armor = has_hyper_armor
+	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
 #	f.set_grounded(is_grounded())

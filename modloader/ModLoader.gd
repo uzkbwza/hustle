@@ -14,7 +14,7 @@ func _init():
 	var file = File.new()
 	if !file.file_exists("user://modded.json"):
 		file.open("user://modded.json", File.WRITE)
-		file.store_string(JSON.print({"modsEnabled":false}, "  "))
+		file.store_string(JSON.print({"modsEnabled":true}, "  "))
 		file.close()
 		
 	file.open("user://modded.json", File.READ)

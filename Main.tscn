@@ -997,6 +997,7 @@ align = 1
 
 [node name="GameUI" type="Control" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -1432,18 +1433,6 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="HelpButton" type="Button" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-margin_left = 1.0
-margin_top = 2.0
-margin_right = 20.0
-margin_bottom = 21.0
-mouse_default_cursor_shape = 2
-action_mode = 0
-icon = ExtResource( 65 )
-flat = true
-icon_align = 1
-
 [node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
 margin_left = 602.0
@@ -1493,6 +1482,7 @@ icon_align = 1
 
 [node name="HelpScreen" type="ColorRect" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.694118 )
@@ -1620,6 +1610,18 @@ rect_pivot_offset = Vector2( 65, 38 )
 mouse_filter = 1
 text = "Action parameters may appear here: jump arcs, projectile direction, etc."
 autowrap = true
+
+[node name="HelpButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_top = 2.0
+margin_right = 23.0
+margin_bottom = 23.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 65 )
+flat = true
+icon_align = 1
 
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true
@@ -1980,7 +1982,7 @@ script = ExtResource( 53 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 160.0
-margin_bottom = 154.0
+margin_bottom = 167.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_right = 159.0
@@ -2001,7 +2003,7 @@ align = 1
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
 margin_right = 159.0
-margin_bottom = 153.0
+margin_bottom = 166.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2010,11 +2012,11 @@ size_flags_vertical = 3
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 158.0
-margin_bottom = 142.0
+margin_bottom = 155.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 margin_right = 157.0
-margin_bottom = 141.0
+margin_bottom = 154.0
 size_flags_vertical = 3
 alignment = 1
 
@@ -2043,71 +2045,79 @@ margin_right = 157.0
 margin_bottom = 39.0
 text = "show hitboxes"
 
-[node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="LastMoveIndicatorButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
 margin_right = 157.0
 margin_bottom = 52.0
+pressed = true
+text = "show last moves played"
+
+[node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 53.0
+margin_right = 157.0
+margin_bottom = 65.0
 text = "show playback controls"
 
 [node name="HSeparator" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 53.0
+margin_top = 66.0
 margin_right = 157.0
-margin_bottom = 57.0
+margin_bottom = 70.0
 
 [node name="EnableEmotes" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 58.0
+margin_top = 71.0
 margin_right = 157.0
-margin_bottom = 70.0
+margin_bottom = 83.0
 pressed = true
 text = "show emotes"
 
 [node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 71.0
+margin_top = 84.0
 margin_right = 157.0
-margin_bottom = 83.0
+margin_bottom = 96.0
 text = "enable style colors"
 
 [node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
+margin_top = 97.0
 margin_right = 157.0
-margin_bottom = 96.0
+margin_bottom = 109.0
 text = "enable particle auras"
 
 [node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 97.0
+margin_top = 110.0
 margin_right = 157.0
-margin_bottom = 109.0
+margin_bottom = 122.0
 text = "enable custom hitsparks"
 
 [node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 110.0
+margin_top = 123.0
 margin_right = 157.0
-margin_bottom = 114.0
+margin_bottom = 127.0
 
 [node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 115.0
+margin_top = 128.0
 margin_right = 157.0
-margin_bottom = 127.0
+margin_bottom = 140.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 128.0
+margin_top = 141.0
 margin_right = 157.0
-margin_bottom = 128.0
+margin_bottom = 141.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 129.0
+margin_top = 142.0
 margin_right = 157.0
-margin_bottom = 141.0
+margin_bottom = 154.0
 text = "done"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]

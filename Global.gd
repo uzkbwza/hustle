@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.3.5-steam-unstable"
+var VERSION = "1.3.9-steam"
 
 var audio_player
 var music_enabled = true
@@ -23,6 +23,7 @@ var enable_custom_particles = true
 var enable_custom_hit_sparks = true
 var enable_emotes = true
 var steam_demo_version = false
+var show_last_move_indicators = true
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
@@ -152,6 +153,7 @@ func save_options():
 			"ghost_afterimages": ghost_afterimages,
 			"fullscreen": fullscreen,
 			"show_hitboxes": show_hitboxes,
+			"show_last_move_indicators": show_last_move_indicators,
 			"show_playback_controls": show_playback_controls,
 			"default_dojo": 0,
 #			"light_mode": light_mode,
@@ -171,6 +173,7 @@ func get_default_player_data():
 			"ghost_afterimages": true,
 			"fullscreen": false,
 			"show_hitboxes": false,
+			"show_last_move_indicators": true,
 			"show_playback_controls": false,
 			"default_dojo": 0,
 			"enable_emotes": true,

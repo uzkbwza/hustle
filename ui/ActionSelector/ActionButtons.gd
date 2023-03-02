@@ -116,6 +116,8 @@ func _process(delta):
 			on_action_submitted("Forfeit", null, null)
 		if fighter.is_in_hurt_state() and fighter.busy_interrupt:
 			$"%DI".set_flash(Utils.pulse(0.55, 0.10))
+	$"%LastMoveTexture".visible = Global.show_last_move_indicators
+
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -434,6 +436,7 @@ func activate():
 		$"%LastMoveTexture".texture = last_action.button_texture
 		$"%LastMoveLabel".text = last_action.title if last_action.title else last_action.name
 		$"%LastMoveTexture".visible = !last_action.is_hurt_state
+		$"%LastMoveLabel".visible = !last_action.is_hurt_state
 
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:

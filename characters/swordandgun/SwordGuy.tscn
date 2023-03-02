@@ -1919,13 +1919,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded
