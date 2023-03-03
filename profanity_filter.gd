@@ -21,6 +21,7 @@ const arr_bad = [
 'slanteye',
 'towelhead',
 'tranny',
+'white pride',
 ]
 
 static func filter(text: String):

@@ -642,7 +642,7 @@ func _on_Lobby_Created(connect: int, lobby_id: int):
 		print("Created a lobby: " + str(LOBBY_ID))
 
 		Steam.setLobbyJoinable(LOBBY_ID, true)
-		Steam.setLobbyData(LOBBY_ID, "name", LOBBY_NAME)
+		Steam.setLobbyData(LOBBY_ID, "name", ProfanityFilter.filter(LOBBY_NAME))
 		Steam.setLobbyData(LOBBY_ID, "code", lobby_code)
 		print("lobby code: " + lobby_code)
 #		Steam.setLobbyData(LOBBY_ID, "status", "Waiting")
