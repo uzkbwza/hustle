@@ -37,7 +37,18 @@ func _frame_0():
 	hitbox.hitstun_ticks = hitstun
 	hitbox.combo_hitstun_ticks = hitstun - 5
 	
-	
+#	if hitbox.hits_vs_grounded:
+#		var nade = host.obj_from_name(host.grenade_object)
+#		if nade and nade.is_grounded():
+#			nade.set_vel(nade.get_vel().x, "0")
+#			nade.apply_force(0, -3)
+#
+#		if host.opponent.get("grenade_object") != null:
+#			var nade2 = host.opponent.obj_from_name(host.grenade_object)
+#			if nade2 and nade2.is_grounded():
+#				nade2.set_vel(nade2.get_vel().x, "0")
+#				nade2.apply_force(0, -3)
+
 #	hitbox.hitstun_ticks = hitstun
 	var camera = host.get_camera()
 	if camera:

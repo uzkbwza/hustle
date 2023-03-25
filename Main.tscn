@@ -2053,6 +2053,14 @@ margin_bottom = 52.0
 pressed = true
 text = "show last moves played"
 
+[node name="ProjectileOwnersButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 53.0
+margin_right = 157.0
+margin_bottom = 65.0
+pressed = true
+text = "show projectile owners"
+
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 53.0

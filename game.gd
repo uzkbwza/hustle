@@ -125,6 +125,7 @@ var player_actionable = true
 var network_sync_tick = -100
 var ceiling_height = 400
 var has_ceiling = true
+var mouse_position = Vector2()
 
 var is_in_replay = false
 
@@ -196,10 +197,10 @@ func copy_to(game: Game):
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
 
-func _on_super_started(player, ticks=null):
+func _on_super_started(ticks, player):
 	if is_ghost:
 		return
-	if ticks == null:
+	if ticks == 0:
 		ticks = 0
 		var state = player.current_state()
 		if state.get("super_freeze_ticks") != null:
@@ -322,6 +323,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		ceiling_height = match_data["ceiling_height"]
 	if match_data.has("prediction_enabled"):
 		prediction_enabled = match_data["prediction_enabled"]
+
 	p1.name = "P1"
 	p2.name = "P2"
 	p2.id = 2
@@ -433,9 +435,13 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			SteamLobby.on_match_started()
 #	if is_afterimage:
 #		show_state()
+	if match_data.has("starting_meter"):
+		var meter_amount = p1.fixed.round(p1.fixed.mul(str(Fighter.MAX_SUPER_METER), match_data.starting_meter))
+		p1.gain_super_meter(meter_amount)
+		p2.gain_super_meter(meter_amount)
 
 func on_prediction(player):
-	_on_super_started(player, 10)
+	_on_super_started(10, player)
 	prediction_effect = true
 	pass
 
@@ -799,7 +805,6 @@ func apply_hitboxes(players):
 	var p1_throwing = false
 	var p2_throwing = false
 
-
 	if p1_hit_by:
 		if not (p1_hit_by is ThrowBox):
 			p1_hit = true
@@ -1157,6 +1162,7 @@ func process_tick():
 func _process(delta):
 	update()
 	super_dim()
+	
 	if camera.global_position.y > camera.limit_bottom - get_viewport_rect().size.y/2:
 		camera.global_position.y = camera.limit_bottom - get_viewport_rect().size.y/2
 	if camera.global_position.x > camera.limit_right - get_viewport_rect().size.x/2:
@@ -1181,6 +1187,8 @@ func _process(delta):
 		ghost_game.camera.position = camera.position
 
 	camera_snap_position = camera.position
+
+	
 
 func _physics_process(_delta):
 	if forfeit:
@@ -1321,6 +1329,10 @@ func ghost_tick():
 func super_dim():
 	pass
 
+func update_mouse_world_position():
+	Global.mouse_world_position = get_local_mouse_position() - Global.RESOLUTION / 2 + camera.global_position
+	pass
+
 func _unhandled_input(event: InputEvent):
 	if is_afterimage:
 		return
@@ -1332,9 +1344,11 @@ func _unhandled_input(event: InputEvent):
 		else:
 			mouse_pressed = false
 			drag_position = null
-	if event is InputEventMouseMotion and drag_position and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
-		camera.global_position -= event.relative
-		snapping_camera = false
+	if event is InputEventMouseMotion:
+		if drag_position and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
+			camera.global_position -= event.relative
+			snapping_camera = false
+		
 	if !is_ghost and singleplayer:
 			if event.is_action_pressed("playback"):
 				if !game_finished and !ReplayManager.playback:
@@ -1350,7 +1364,7 @@ func _unhandled_input(event: InputEvent):
 					zoom_in()
 				if event.button_index == BUTTON_WHEEL_DOWN:
 					zoom_out()
-
+	update_mouse_world_position()
 func update_camera_limits():
 	if camera_zoom == 1.0 and stage_width > 320:
 		camera.limit_left = -stage_width - CAMERA_PADDING
@@ -1409,6 +1423,9 @@ func _draw():
 #			var x = i * (((stage_width * 2)) / float(num_lines)) - stage_width
 #			draw_line(Vector2(x, 0), Vector2(x, 5), c, 2.0)
 		draw_line(Vector2(stage_width, 0), Vector2(stage_width, 10), line_color, 2.0)
+	
+#	draw_circle(to_local(Global.mouse_world_position), 5, Color.white)
+#	draw_circle(get_local_mouse_position(), 5, Color.blue)
 	custom_draw_func()
 
 func custom_draw_func():

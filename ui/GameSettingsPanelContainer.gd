@@ -36,6 +36,7 @@ onready var settings_nodes = {
 	"ceiling_height": $"%CeilingHeight",
 	"sadness_enabled": $"%SadnessEnabled",
 	"turn_min_length": $"%TurnMinLength",
+	"starting_meter": $"%StartingMeter",
 }
 
 var float_to_string = [
@@ -43,6 +44,7 @@ var float_to_string = [
 	"global_hitstop_modifier",
 	"global_hitstun_modifier",
 	"global_gravity_modifier",
+	"starting_meter",
 ]
 
 func _ready():
@@ -258,4 +260,9 @@ func _on_HitstopModifier_value_changed(value):
 
 func _on_GravityModifier_value_changed(value):
 	$"%GravityModifierValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_StartingMeter_value_changed(value):
+	$"%StartingMeterValueLabel".text = str(value)
 	pass # Replace with function body.

@@ -16,23 +16,31 @@ alignment = 2
 
 [node name="FlyDir" parent="VBoxContainer" index="0" instance=ExtResource( 3 )]
 unique_name_in_owner = true
-margin_top = 272.0
-margin_bottom = 334.0
+margin_top = 259.0
+margin_bottom = 321.0
 alignment = 1
 NW = false
 W = false
 
 [node name="FlyEnabled" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
-margin_top = 335.0
+margin_top = 322.0
 margin_right = 52.0
-margin_bottom = 347.0
+margin_bottom = 334.0
 text = "Fly"
 
 [node name="ArmorEnabled" type="CheckButton" parent="VBoxContainer" index="2"]
+unique_name_in_owner = true
+margin_top = 335.0
+margin_right = 52.0
+margin_bottom = 347.0
+size_flags_vertical = 0
+text = "Armor"
+
+[node name="NadeActive" type="CheckButton" parent="VBoxContainer" index="3"]
 unique_name_in_owner = true
 margin_top = 348.0
 margin_right = 52.0
 margin_bottom = 360.0
 size_flags_vertical = 0
-text = "Armor"
+text = "Nade"

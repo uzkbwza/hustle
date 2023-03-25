@@ -79,6 +79,7 @@ export(PackedScene) var hit_particle
 export var replace_hit_particle = false
 export var camera_bump_dir = Vector2()
 export(PackedScene) var whiff_particle = null
+export var bump_on_whiff = false
 export var rumble = true
 
 export var _c_Sfx = 0
@@ -196,6 +197,9 @@ func activate():
 		cancellable = cancellable or (bool(host.get("turbo_mode")) and !throw)
 	if victim_hitlag == -1:
 		victim_hitlag = hitlag_ticks
+	if bump_on_whiff and !host.is_ghost:
+		var camera = get_tree().get_nodes_in_group("Camera")[0]
+		camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames))
 
 func deactivate():
 	played_whiff_sound = false
@@ -282,7 +286,8 @@ func hit(obj):
 				host.feinting = false
 				host.current_state().feinting = false
 			if !host.is_ghost:
-				camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier))
+				if !bump_on_whiff:
+					camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier))
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")
@@ -314,7 +319,7 @@ func hit(obj):
 				if !bass_on_whiff:
 					hit_bass_sound_player.play()
 			emit_signal("hit_something", obj, self)
-		
+
 func get_facing_int():
 	return -1 if facing == "Left" else 1
 

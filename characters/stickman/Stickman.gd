@@ -20,7 +20,7 @@ const MAX_PULL_SPEED = "15"
 const MAX_PULL_UPWARD_SPEED = "-10"
 
 func explode_sticky_bomb():
-	if bomb_thrown and bomb_projectile:
+	if bomb_thrown and obj_from_name(bomb_projectile):
 		objs_map[bomb_projectile].explode()
 
 func process_extra(extra):

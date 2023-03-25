@@ -18,3 +18,11 @@ func _frame_0():
 
 func _frame_4():
 	host.end_invulnerability()
+
+func _tick():
+	if host.is_grounded():
+		if host.combo_count > 0:
+			queue_state_change("Landing", 4)
+		else:
+			queue_state_change("Landing", 8)
+			var vel = host.get_vel()

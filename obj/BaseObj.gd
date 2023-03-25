@@ -280,6 +280,18 @@ func stop_particles():
 		particle.stop_emitting()
 	pass
 
+func get_hitbox_x_dir(hitbox):
+	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
+	if hitbox.reversible:
+		var dir = Utils.int_sign(hitbox.pos_x - get_pos().x)
+		var modifier = "1"
+		if dir == -1 and hitbox.facing == "Left":
+			modifier = "-1"
+		if dir == 1 and hitbox.facing == "Right":
+			modifier = "-1"
+		x = fixed.mul(x, modifier)
+	return x
+
 func get_current_sprite_frame() -> Texture:
 	return sprite.frames.get_frame(sprite.animation, sprite.frame)
 
@@ -508,10 +520,11 @@ func get_data():
 
 func get_active_hitboxes():
 	var hitboxes = []
-	for hitbox in state_machine.state.get_active_hitboxes():
-		if hitbox.enabled:
-			hitboxes.append(hitbox)
-	hitboxes.sort_custom(self, "sort_hitboxes")
+	if state_machine.state:
+		for hitbox in state_machine.state.get_active_hitboxes():
+			if hitbox.enabled:
+				hitboxes.append(hitbox)
+		hitboxes.sort_custom(self, "sort_hitboxes")
 	return hitboxes
 	
 func sort_hitboxes(a, b):
@@ -584,8 +597,9 @@ func move_directly_relative(x, y):
 	chara.move_directly_relative_str(x, y)
 
 func _process(delta):
-	debug_text()
-
+	if !disabled:
+		debug_text()
+	
 func debug_text():
 	if debug_label:
 		debug_label.text = ""

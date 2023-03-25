@@ -2,12 +2,11 @@ extends BaseProjectile
 
 class_name StickyBomb
 
+var detonating = false
 var attached = false
 
 func explode():
-	change_state("Explode")
-	creator.bomb_thrown = false
-	creator.bomb_projectile = null
+	detonating = true
 
 func big_explode():
 	change_state("BigExplode")

@@ -69,7 +69,7 @@ export var instant_cancellable = true
 export var force_feintable = false
 export var can_feint_if_possible = true
 
-
+export var selectable = true
 export(String, MULTILINE) var interrupt_from_string
 export(String, MULTILINE) var interrupt_into_string
 export(String, MULTILINE) var hit_cancel_into_string
@@ -118,8 +118,9 @@ func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
 	connect("state_hit_cancellable", host, "on_state_hit_cancellable", [self])
 	host.connect("got_hit", self, "on_got_hit")
+	if selectable:
+		interrupt_from.append_array(get_categories(interrupt_from_string))
 	interrupt_into.append_array(get_categories(interrupt_into_string))
-	interrupt_from.append_array(get_categories(interrupt_from_string))
 	hit_cancel_into.append_array(get_categories(hit_cancel_into_string))
 	hit_cancel_exceptions.append_array(get_categories(hit_cancel_exceptions_string))
 	allowed_stances.append_array(get_categories(allowed_stances_string))
@@ -153,15 +154,24 @@ func init():
 func get_ui_category():
 	return ActionType.keys()[type]
 
+func is_usable_with_grounded_check(force_aerial = false, force_grounded = false):
+	if !is_usable():
+		return false
+	if air_type == AirType.Aerial:
+		if force_grounded:
+			return false
+		if host.is_grounded() and !force_aerial:
+			return false
+	if air_type == AirType.Grounded:
+		if force_aerial:
+			return false
+		if !host.is_grounded() and !force_grounded:
+			return false
+	return true
+
 func is_usable():
 	if host.current_state().state_name == "WhiffInstantCancel" and !has_hitboxes:
 		return false
-	if air_type == AirType.Aerial:
-		if host.is_grounded():
-			return false
-	if air_type == AirType.Grounded:
-		if !host.is_grounded():
-			return false
 	if uses_air_movement:
 		if host.air_movements_left <= 0:
 			return false
@@ -221,14 +231,15 @@ func enable_interrupt(check_opponent=true):
 #	host.update_advantage()
 	emit_signal("state_interruptable")
 
-func enable_hit_cancel():
-	emit_signal("state_hit_cancellable")
+func enable_hit_cancel(projectile=false):
+	emit_signal("state_hit_cancellable", projectile)
 
 func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
-	host.add_penalty(-25)
+	if obj.is_in_group("Fighter"):
+		host.add_penalty(-25)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
 		if obj == host.opponent and obj.has_armor():
@@ -241,8 +252,8 @@ func _on_hit_something(obj, hitbox):
 			return
 		if !can_hit_cancel():
 			return
-		if obj.is_in_group("Fighter"):
-			enable_hit_cancel()
+		if obj.is_in_group("Fighter") or obj.get("hit_cancel_on_hit"):
+			enable_hit_cancel(!obj.is_in_group("Fighter"))
 
 func can_hit_cancel():
 	return true
@@ -347,7 +358,7 @@ func update_parameters():
 	pass
 
 func can_feint():
-	return (has_hitboxes or force_feintable) and host.feints > 0 and can_feint_if_possible
+	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
 func can_interrupt():
 	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
@@ -377,6 +388,7 @@ func _exit_shared():
 	host.got_parried = false
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
+	host.projectile_hit_cancelling = false
 	host.has_hyper_armor = false
 	host.state_hit_cancellable = false
 	host.clipping_wall = false

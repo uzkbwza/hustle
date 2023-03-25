@@ -5,6 +5,7 @@ const ATTACH_DISTANCE = "16"
 #	host.attached = false
 
 var attach_frames = 0
+var explode_ticks = 8
 
 func _frame_0():
 	attach_frames = 0
@@ -28,3 +29,9 @@ func _tick():
 				host.attached = true
 	if current_tick > 120:
 		host.big_explode()
+	elif host.detonating:
+		explode_ticks -= 1
+		if explode_ticks == 0:
+			return "Explode"
+			host.creator.bomb_thrown = false
+			host.creator.bomb_projectile = null

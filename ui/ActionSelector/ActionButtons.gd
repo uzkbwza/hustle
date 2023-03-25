@@ -117,7 +117,10 @@ func _process(delta):
 		if fighter.is_in_hurt_state() and fighter.busy_interrupt:
 			$"%DI".set_flash(Utils.pulse(0.55, 0.10))
 	$"%LastMoveTexture".visible = Global.show_last_move_indicators
-
+	if (current_button and !current_button.visible):
+		continue_button.set_pressed(true)
+		continue_button.on_pressed()
+	
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -148,7 +151,7 @@ func init(game, id):
 	fighter = game.get_player(id)
 	$"%DI".visible = fighter.di_enabled
 	fighter_extra = fighter.player_extra_params_scene.instance()
-	fighter_extra.connect("data_changed", self, "send_ui_action")
+	fighter_extra.connect("data_changed", self, "extra_updated")
 	game.connect("forfeit_started", self, "_on_forfeit_started")
 	fighter_extra.set_fighter(fighter)
 	turbo_mode = fighter.turbo_mode
@@ -289,6 +292,8 @@ func send_ui_action(action=null):
 		action = current_action
 	if !button_pressed:
 		action = "Continue"
+		current_action = action
+
 	if current_button:
 		if current_button.data_node:
 #			button.data_node.show()
@@ -299,11 +304,28 @@ func send_ui_action(action=null):
 			if data_facing:
 				if dir != data_facing:
 					current_button.data_node.set_facing(dir)
+#	hide()
+#	if current_extra.has("input_aerial") or current_extra.has("input_grounded"):
 	if action:
 		yield(get_tree(), "idle_frame")
 		emit_signal("action_clicked", action, current_button.get_data() if current_button else null, get_extra())
 #			button.data_node.init()
 #			button.container.show_data_container()
+	yield(get_tree(), "idle_frame")
+	update_buttons(false)
+
+	if current_button:
+		$"%ReverseButton".set_disabled(!current_button.reversible)
+		if current_button.state:
+			$"%FeintButton".set_disabled(!current_button.state.can_feint())
+		else:
+			$"%FeintButton".set_disabled(true)
+
+func extra_updated():
+	if fighter_extra:
+		fighter_extra.update_selected_move(current_button.state)
+#	on_action_selected(current_action, current_button)
+	send_ui_action()
 
 func on_action_selected(action, button):
 	button_pressed = true
@@ -336,6 +358,8 @@ func on_action_selected(action, button):
 		$"%FeintButton".set_disabled(true)
 	send_ui_action()
 
+
+
 func show_button_data_node(button):
 	yield(get_tree(), "idle_frame")
 	button.data_node.show()
@@ -346,7 +370,7 @@ func show_button_data_node(button):
 #	button.data_node.init()
 	button.container.show_data_container()
 
-func get_extra():
+func get_extra() -> Dictionary:
 #	print(current_prediction)
 	var extra = {
 		"DI": $"%DI".get_data(),
@@ -417,9 +441,114 @@ func reset_prediction():
 			container.disable_predict_button()
 		container.reset_prediction()
 
-func activate():
-	if visible:
+func update_cancel_category_air_type(category, force_grounded, force_aerial):
+	for i in range(category.size()):
+		if force_grounded:
+			category[i] = category[i].replace("Aerial", "Grounded")
+		if force_aerial:
+			category[i] = category[i].replace("Grounded", "Aerial")
+
+func update_buttons(refresh = true):
+#	print("updating buttons")
+	for button in buttons:
+		if button != continue_button:
+			button.hide()
+#			button.set_disabled(true)
+			if button != current_button:
+				if button.data_node:
+					button.data_node.hide()
+					button.data_node.fighter_update()
+
+	var state = fighter.state_machine.state
+	var cancel_into
+	if !fighter.busy_interrupt:
+		cancel_into = (state.interrupt_into if !fighter.state_hit_cancellable else state.hit_cancel_into).duplicate(true)
+		if turbo_mode and fighter.opponent.current_state().state_name != "Grabbed":
+			if fighter.is_grounded():
+				cancel_into.append("Grounded")
+			else:
+				cancel_into.append("Aerial")
+		if fighter.feinting and fighter.opponent.current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
+			cancel_into.append("Grounded")
+			cancel_into.append("Aerial")
+	else:
+		cancel_into = state.busy_interrupt_into.duplicate(true)
+	any_available_actions = false
+
+	var extra = get_extra()
+	var force_aerial = false
+	var force_grounded = false
+	
+	if extra.has("input_grounded"):
+		force_grounded = extra.input_grounded
+	if extra.has("input_aerial"):
+		force_aerial = extra.input_aerial
+	update_cancel_category_air_type(cancel_into, force_grounded, force_aerial)
+
+	for button in buttons:
+		var found = false
+		if fighter.extremely_turbo_mode and !fighter.busy_interrupt:
+			found = true
+			$"%ReverseButton".set_disabled(false)
+			any_available_actions = true
+			button.set_disabled(false)
+			button.show()
+		else:
+			for category in cancel_into:
+				if !fighter.action_cancels.has(category):
+					continue
+				
+				for cancel_state in fighter.action_cancels[category]:
+					if !(cancel_state.state_name == button.action_name and \
+					cancel_state.is_usable_with_grounded_check(force_aerial, force_grounded) and (cancel_state.allowed_in_stance())):
+						continue
+					
+					if cancel_state.state_name == state.state_name:
+						if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
+							continue
+						elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
+							continue
+					if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
+						continue
+					elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
+						continue
+					var excepted = false
+					if fighter.state_hit_cancellable:
+						for c in state.hit_cancel_exceptions:
+							if c in cancel_state.interrupt_from:
+								excepted = true
+					if !excepted and fighter.state_interruptable:
+						for c in state.interrupt_exceptions:
+							if c in cancel_state.interrupt_from:
+								excepted = true
+					if excepted:
+						continue
+					found = true
+					$"%ReverseButton".set_disabled(false)
+	#							$"%SelectButton".disabled = false
+					any_available_actions = true
+					
+					button.set_disabled(false)
+					button.show()
+					break
+	continue_button.show()
+	if refresh or (current_button and !current_button.visible):
+		continue_button.set_pressed(true)
+		continue_button.on_pressed()
+#	if fighter.can_nudge and "Nudge" in cancel_into:
+#		nudge_button.show()
+#		nudge_button.set_disabled(false)
+		
+	show_categories()
+	yield(get_tree(), "idle_frame")
+	if is_instance_valid(continue_button):
+		continue_button.set_disabled(false)
+
+func activate(refresh=true):
+
+	if visible and refresh:
 		return
+#	print("activating")
 	active = true
 #	reset_prediction()
 #	_get_opposite_buttons().reset_prediction()
@@ -450,7 +579,6 @@ func activate():
 	else:
 		$"%YouLabel".hide()
 
-	var showing = true
 	if game.current_tick == 0:
 		$"%UndoButton".set_disabled(true)
 	else:
@@ -464,23 +592,22 @@ func activate():
 #	tween_spread()
 	current_action = null
 	current_button = null
-	var state = fighter.state_machine.state
 	
-	if showing:
-		Network.turns_ready = {
-			1: false,
-			2: false
-		}
-		show()
+	
+	Network.turns_ready = {
+		1: false,
+		2: false
+	}
+	show()
 #		Network.turn_started()
-		
+	
 
-		for button in buttons:
-			button.hide()
-			button.set_disabled(true)
-			if button.data_node:
-				button.data_node.hide()
-				button.data_node.fighter_update()
+#	for button in buttons:
+#		button.hide()
+#		button.set_disabled(true)
+#		if button.data_node:
+#			button.data_node.hide()
+#			button.data_node.fighter_update()
 	#	if fighter.state_interruptable:
 #		$"%SelectButton".show()
 #		$"%SelectButton".disabled = false
@@ -488,97 +615,16 @@ func activate():
 		$"%SelectButton".disabled = true
 	else:
 		$"%SelectButton".disabled = game.spectating
-
-	var cancel_into
-	if !fighter.busy_interrupt:
-		cancel_into = (state.interrupt_into if !fighter.state_hit_cancellable else state.hit_cancel_into)
-		if turbo_mode and fighter.opponent.current_state().state_name != "Grabbed":
-			if fighter.is_grounded():
-				cancel_into.append("Grounded")
-			else:
-				cancel_into.append("Aerial")
-		if fighter.feinting and fighter.opponent.current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
-			cancel_into.append("Grounded")
-			cancel_into.append("Aerial")
-	else:
-		cancel_into = state.busy_interrupt_into
-	any_available_actions = false
-
+		
 	fighter_extra.hide()
-	for button in buttons:
-		var found = false
-		if fighter.extremely_turbo_mode and !fighter.busy_interrupt:
-			found = true
-			$"%ReverseButton".set_disabled(false)
-		#							$"%SelectButton".disabled = false
-			any_available_actions = true
-			
-			if showing:
-				button.set_disabled(false)
-				button.show()
-		else:
-			for category in cancel_into:
-				if !fighter.action_cancels.has(category):
-					continue
-				
-				for cancel_state in fighter.action_cancels[category]:
-					if !(cancel_state.state_name == button.action_name and \
-					cancel_state.is_usable() and (cancel_state.allowed_in_stance())):
-						continue
-					
-					if cancel_state.state_name == state.state_name:
-						if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
-							continue
-						elif !fighter.state_hit_cancellable and !state.self_interruptable and !turbo_mode:
-							continue
-					if fighter.state_hit_cancellable and cancel_state.state_name in state.hit_cancel_exceptions:
-						continue
-					elif fighter.state_interruptable and cancel_state.state_name in state.interrupt_exceptions:
-						continue
-					var excepted = false
-					if fighter.state_hit_cancellable:
-						for c in state.hit_cancel_exceptions:
-							if c in cancel_state.interrupt_from:
-								excepted = true
-					if !excepted and fighter.state_interruptable:
-						for c in state.interrupt_exceptions:
-							if c in cancel_state.interrupt_from:
-								excepted = true
-					if excepted:
-						continue
-					found = true
-					$"%ReverseButton".set_disabled(false)
-	#							$"%SelectButton".disabled = false
-					any_available_actions = true
-					
-					if showing:
-						button.set_disabled(false)
-						button.show()
-					break
+	update_buttons(refresh)
 
-#	if fighter.can_nudge and "Nudge" in cancel_into:
-#		nudge_button.show()
-#		nudge_button.set_disabled(false)
-
-	if showing:
-#		if last_button and !last_button.get_disabled():
-##			last_button.set_pressed(true)
-##			last_button.on_pressed()
-#		else:
-#			for button in buttons:
-#				if !button.get_disabled():
-#					button.set_pressed(true)
-#					button.on_pressed()
-#					break
-		continue_button.set_pressed(true)
-		continue_button.on_pressed()
-
-	show_categories()
 	
 	if !fighter.busy_interrupt:
 		fighter_extra.show()
 		fighter_extra.show_behind_parent = true
 		fighter_extra.show_options()
+		
 	fighter_extra.reset()
 	
 	if fighter.dummy:
@@ -595,15 +641,14 @@ func activate():
 			print("no available actions!")
 			on_action_submitted("Continue", null)
 			current_action = "Continue"
+
 	$"%ReverseButton".hide()
 	yield(get_tree(), "idle_frame")
 #	if !$"%ReverseButton".disabled:
 	$"%ReverseButton".show()
 
-	if is_instance_valid(continue_button):
-		continue_button.show()
-		continue_button.set_disabled(false)
-
+	if !refresh:
+		return
 	button_pressed = false
 	send_ui_action("Continue")
 	if user_facing:

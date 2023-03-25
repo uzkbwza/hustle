@@ -150,7 +150,7 @@ func _physics_process(_delta):
 		p2_num_supers.texture.current_frame = clamp(p2.supers_available, 0, 9)
 		p1_combo_counter.set_combo(str(p1.combo_count))
 		p2_combo_counter.set_combo(str(p2.combo_count))
-		
+
 		if is_instance_valid(game.ghost_game):
 			p1_ghost_health_bar.visible = true
 			p2_ghost_health_bar.visible = true

@@ -2,7 +2,8 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.3.9-steam"
+var VERSION = "1.3.10-steam-unstable"
+const RESOLUTION = Vector2(640, 360)
 
 var audio_player
 var music_enabled = true
@@ -13,6 +14,7 @@ var show_hitboxes = false
 var light_mode = false
 var frame_advance = false
 var show_playback_controls = false
+var show_projectile_owners = true
 var playback_speed_mod = 1
 var default_dojo = 0
 var current_game = null
@@ -24,6 +26,8 @@ var enable_custom_hit_sparks = true
 var enable_emotes = true
 var steam_demo_version = false
 var show_last_move_indicators = true
+
+var mouse_world_position = Vector2()
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
@@ -155,6 +159,7 @@ func save_options():
 			"show_hitboxes": show_hitboxes,
 			"show_last_move_indicators": show_last_move_indicators,
 			"show_playback_controls": show_playback_controls,
+			"show_projectile_owners": show_projectile_owners,
 			"default_dojo": 0,
 #			"light_mode": light_mode,
 			"enable_emotes": enable_emotes,
@@ -180,6 +185,7 @@ func get_default_player_data():
 			"enable_custom_colors": true,
 			"enable_custom_particles": true,
 			"enable_custom_hit_sparks": true,
+			"show_projectile_owners": true,
 #			"light_mode": false,
 		}
 	}

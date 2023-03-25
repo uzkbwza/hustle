@@ -56,7 +56,8 @@ air_friction = "0.12"
 max_ground_speed = "4"
 max_air_speed = "15"
 max_fall_speed = "5"
-extra_state_variables = "attached"
+extra_state_variables = "attached
+detonating"
 deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]

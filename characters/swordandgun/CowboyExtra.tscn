@@ -15,8 +15,27 @@ alignment = 1
 
 [node name="ShootButton" type="CheckButton" parent="VBoxContainer" index="0"]
 unique_name_in_owner = true
+margin_top = 161.0
+margin_right = 47.0
+margin_bottom = 173.0
+size_flags_vertical = 0
+text = "Draw"
+
+[node name="TpButton" type="CheckButton" parent="VBoxContainer" index="1"]
+unique_name_in_owner = true
 margin_top = 174.0
 margin_right = 47.0
 margin_bottom = 186.0
 size_flags_vertical = 0
-text = "Draw"
+text = "Shift"
+
+[node name="DetonateButton" type="CheckButton" parent="VBoxContainer" index="2"]
+unique_name_in_owner = true
+margin_top = 187.0
+margin_right = 47.0
+margin_bottom = 199.0
+size_flags_vertical = 0
+text = "Rift"
+
+[connection signal="toggled" from="VBoxContainer/TpButton" to="." method="_on_TpButton_toggled"]
+[connection signal="toggled" from="VBoxContainer/DetonateButton" to="." method="_on_DetonateButton_toggled"]

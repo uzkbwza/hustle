@@ -1,5 +1,7 @@
 extends BaseProjectile
 
+var detonating = false
+
 func disable():
 	.disable()
 	creator.after_image_object = null

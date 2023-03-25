@@ -55,16 +55,7 @@ func global_hitstun_modifier(ticks):
 	return fixed.round(fixed.mul(str(ticks), host.global_hitstun_modifier))
 
 func get_x_dir(hitbox):
-	var x = fixed.mul(hitbox.dir_x, "-1" if hitbox.facing == "Left" else "1")
-	if hitbox.reversible:
-		var dir = Utils.int_sign(hitbox.pos_x - host.get_pos().x)
-		var modifier = "1"
-		if dir == -1 and hitbox.facing == "Left":
-			modifier = "-1"
-		if dir == 1 and hitbox.facing == "Right":
-			modifier = "-1"
-		x = fixed.mul(x, modifier)
-	return x
+	return host.get_hitbox_x_dir(hitbox)
 
 func _on_hit_something(_obj, _hitbox):
 	pass

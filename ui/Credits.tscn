@@ -140,7 +140,7 @@ autowrap = true
 [node name="HBoxContainer4" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 margin_top = 167.0
 margin_right = 188.0
-margin_bottom = 218.0
+margin_bottom = 232.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer4"]
 modulate = Color( 1, 1, 1, 0.576471 )
@@ -155,16 +155,16 @@ autowrap = true
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer4"]
 margin_top = 12.0
 margin_right = 188.0
-margin_bottom = 51.0
+margin_bottom = 65.0
 size_flags_horizontal = 3
-text = "chibi, grafx, dennis, dic, wi-fi, sewer, tengoku, steven4547466, sire forseti, sage, fleig, and you :)"
+text = "chibi, grafx, dennis, dic, wi-fi, sewer, tengoku, captain technicality, steven4547466, sire forseti, sage, fleig, and you :)"
 align = 1
 autowrap = true
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 228.0
+margin_top = 242.0
 margin_right = 188.0
-margin_bottom = 260.0
+margin_bottom = 274.0
 custom_constants/separation = 5
 alignment = 1
 
@@ -193,7 +193,7 @@ stretch_mode = 3
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0.380392 )
-margin_top = 270.0
+margin_top = 284.0
 margin_right = 188.0
 margin_bottom = 323.0
 size_flags_horizontal = 3

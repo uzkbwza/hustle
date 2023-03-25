@@ -9,6 +9,7 @@ export var deletes_other_projectiles = true
 export var fizzle_on_ceiling = false
 export var movable = true
 export var can_be_hit_by_melee = false
+export var hit_cancel_on_hit = false
 #export var can_be_hit_by_projectiles = false
 export var projectile_immune = false
 
@@ -35,6 +36,22 @@ func disable():
 func on_got_parried():
 	emit_signal("got_parried")
 
+func _process(delta):
+	if !disabled:
+		update()
+
 func on_hit_ceiling():
 	if fizzle_on_ceiling:
 		disable()
+
+func hit_by(hitbox):
+	if hitbox:
+		if hitbox.throw:
+			return
+		hitlag_ticks = hitbox.hitlag_ticks
+		if objs_map.has(hitbox.host):
+			var host = objs_map[hitbox.host]
+			var host_hitlag_ticks = hitbox.hitlag_ticks
+			if host.hitlag_ticks < host_hitlag_ticks:
+				host.hitlag_ticks = host_hitlag_ticks
+	.hit_by(hitbox)

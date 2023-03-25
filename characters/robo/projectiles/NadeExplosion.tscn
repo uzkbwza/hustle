@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/robo/projectiles/NadeExplosionEffect.tscn" type="PackedScene" id=3]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
+[ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=5]
+[ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=6]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[node name="BaseProjectile" instance=ExtResource( 2 )]
+material = SubResource( 1 )
+damages_own_team = true
+has_projectile_parry_window = false
+deletes_other_projectiles = false
+movable = false
+projectile_immune = true
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+animation = "Default"
+
+[node name="Default" parent="StateMachine" index="0"]
+particle_scene = ExtResource( 3 )
+spawn_particle_on_enter = true
+move_x = 0
+lifetime = 10
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 4 )
+width = 35
+height = 35
+damage = 120
+minimum_damage = 70
+hitstun_ticks = 8
+hitlag_ticks = 6
+screenshake_amount = 15
+screenshake_frames = 12
+bump_on_whiff = true
+whiff_sound = ExtResource( 5 )
+hit_sound = ExtResource( 6 )
+whiff_sound_volume = -5.0
+bass_on_whiff = true
+dir_y = "-0.50"
+launch_reversible = true
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 1
+active_ticks = 1

@@ -33,6 +33,7 @@ var buffer_armor = false
 var can_unlock_gratuitous = true
 var can_flamethrower = true
 var magnet_ticks_left = 0
+var grenade_object = null
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -228,6 +229,12 @@ func process_extra(extra):
 			flying_dir = extra.fly_dir
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled
+	if extra.has("nade_activated") and grenade_object != null:
+		if extra.nade_activated:
+			var nade = obj_from_name(grenade_object)
+			if nade:
+				if !nade.active:
+					nade.activate()
 
 func _on_state_exited(state):
 	._on_state_exited(state)
@@ -240,7 +247,7 @@ func _on_state_exited(state):
 	else:
 		armor_active = false
 
-func on_state_interruptable(state):
+func on_state_interruptable(state=null):
 	.on_state_interruptable(state)
 	armor_active = false
 #

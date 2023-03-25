@@ -4,7 +4,7 @@
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=2]
 [ext_resource path="res://characters/swordandgun/projectiles/AfterImageExplosionEffect.tscn" type="PackedScene" id=3]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
-[ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=5]
+[ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=5]
 [ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=6]
 
 [sub_resource type="ShaderMaterial" id=1]
@@ -48,7 +48,6 @@ height = 25
 damage = 80
 hitstun_ticks = 8
 hitlag_ticks = 6
-whiff_particle = ExtResource( 3 )
 whiff_sound = ExtResource( 5 )
 hit_sound = ExtResource( 6 )
 whiff_sound_volume = -5.0

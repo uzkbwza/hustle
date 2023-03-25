@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/nade2.wav-afa15a225318bdf0d4e70c081afded28.sample"
+
+[deps]
+
+source_file="res://characters/robo/sound/nade2.wav"
+dest_files=[ "res://.import/nade2.wav-afa15a225318bdf0d4e70c081afded28.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

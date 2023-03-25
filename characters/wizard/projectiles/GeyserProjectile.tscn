@@ -24,6 +24,7 @@ animations = [ {
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 1 )
 immunity_susceptible = false
+hit_cancel_on_hit = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

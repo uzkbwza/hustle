@@ -16,3 +16,6 @@ func _tick():
 			host.play_sound("DriveIdle")
 	host.apply_forces_no_limit()
 	host.limit_speed(SPEED_LIMIT)
+
+func _frame_0():
+	host.start_projectile_invulnerability()

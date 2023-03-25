@@ -28,7 +28,11 @@ var up_swipe_momentum = true
 var buffer_bullet_cancelling = false
 var bullet_cancelling = false
 var stance_teleport_x = 0
+var detonating = false
+var shifting = false
+var shifted_this_frame = false
 var stance_teleport_y = 0
+var ticks_until_time_shift = 0
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -50,13 +54,42 @@ func tick():
 	if after_image_object:
 		var obj = obj_from_name(after_image_object)
 		if obj:
-			var pos = obj.get_pos()
-			if fixed.gt(distance_to(obj), AFTER_IMAGE_MAX_DIST):
-				var explosion = spawn_object(RIFT_PROJECTILE, 0, 0)
-				explosion.set_pos(pos.x, pos.y - 18)
-				obj.disable()
-				after_image_object = null
+			if detonating:
+				detonating = false
+				obj.detonating = true
+			else:
+				if fixed.gt(distance_to(obj), AFTER_IMAGE_MAX_DIST):
+					obj.detonating = true
+			if shifting:
+				if !is_grounded():
+					if air_movements_left > 0:
+						air_movements_left -= 1
+				set_grounded(obj.is_grounded())
+				if !obj.is_grounded():
+					move_directly(0, -1)
+				ticks_until_time_shift = 2
+				hitlag_ticks += 5
+
+	if hitlag_ticks <= 0:
+		if ticks_until_time_shift > 0:
+			var obj = obj_from_name(after_image_object)
+			ticks_until_time_shift -= 1
+			if ticks_until_time_shift == 0:
+				if obj:
+					play_sound("TimeShift")
+					set_pos(obj.get_pos().x, obj.get_pos().y)
+					hitlag_ticks += 3
+					obj.disable()
+					after_image_object = null
+					shifted_this_frame = true
+
 	.tick()
+
+	if shifted_this_frame:
+		update_facing()
+	if ticks_until_time_shift > 0:
+		sprite.animation = "TimeShift"
+
 	if objs_map.has(cut_projectile):
 		var proj = objs_map[cut_projectile]
 		if proj == null or proj.disabled:
@@ -84,11 +117,19 @@ func tick():
 		buffer_bullet_cancelling = false
 #	if bullet_cancelling and !("try_shoot" in current_state().host_commands.values()):
 #		bullet_cancelling = false
+	if shifting:
+		shifting = false
+		update_facing()
 
 func process_extra(extra):
 	.process_extra(extra)
 	if extra.has("gun_cancel"):
 		buffer_bullet_cancelling = extra.gun_cancel
+	if extra.has("detonate"):
+		detonating = extra.detonate
+	if extra.has("shift"):
+		shifting = extra.shift
+			
 
 func can_bullet_cancel():
 	return bullets_left > 0 and has_gun

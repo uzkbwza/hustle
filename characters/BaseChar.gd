@@ -3,7 +3,7 @@ extends BaseObj
 class_name Fighter
 
 signal action_selected(action, data)
-signal super_started()
+signal super_started(freeze_ticks)
 signal parried()
 signal got_parried()
 signal undo()
@@ -217,6 +217,8 @@ var used_air_dodge = false
 var has_hyper_armor = false
 var hit_during_armor = false
 
+var projectile_hit_cancelling = false
+
 var wall_slams = 0
 
 var last_pos = null
@@ -301,7 +303,7 @@ func clash():
 #	reset_momentum()
 	var vel = get_vel()
 	set_vel("0", vel.y)
-	
+	projectile_hit_cancelling = false
 #	apply_force_relative(-CLASH_MOVE_BACK, 0)
 	add_pushback(str(-CLASH_MOVE_BACK))
 	emit_signal("clashed")
@@ -392,8 +394,8 @@ func reset_style():
 func reapply_style():
 	apply_style(applied_style)
 
-func start_super():
-	emit_signal("super_started")
+func start_super(freeze_ticks=0):
+	emit_signal("super_started", freeze_ticks)
 
 func change_stance_to(stance):
 	self.stance = stance
@@ -425,7 +427,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "penalty_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "projectile_hit_cancelling", "penalty_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -490,6 +492,9 @@ func use_burst_meter(amount):
 		burst_meter = MAX_BURST_METER
 	burst_meter -= amount
 
+func get_total_super_meter():
+	return MAX_SUPER_METER * supers_available + super_meter
+
 func use_super_bar():
 	if infinite_resources:
 		return
@@ -516,7 +521,6 @@ func stack_move_in_combo(move_name):
 		combo_moves_used[move_name] = 1
 
 func meter_gain_modified(amount):
-#	if penalty > 0:
 	if penalty_ticks > 0:
 		return 0
 	var pen = fixed.div(str(penalty), str(MAX_PENALTY))
@@ -532,7 +536,7 @@ func gain_super_meter(amount):
 	amount = meter_gain_modified(amount)
 	amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
 	super_meter += amount
-	if super_meter >= MAX_SUPER_METER:
+	while super_meter >= MAX_SUPER_METER:
 		if supers_available < MAX_SUPERS:
 			super_meter -= MAX_SUPER_METER
 			supers_available += 1
@@ -540,7 +544,7 @@ func gain_super_meter(amount):
 			super_meter = MAX_SUPER_METER
 			if !infinite_resources:
 				unlock_achievement("ACH_ULTIMATE_POWER", true)
-
+			break
 
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = .spawn_object(projectile, pos_x, pos_y, relative, data, local)
@@ -707,8 +711,6 @@ func launched_by(hitbox):
 		var host_hitlag_ticks = fixed.round(fixed.mul(str(hitbox.hitlag_ticks), global_hitstop_modifier))
 		if host.hitlag_ticks < host_hitlag_ticks:
 			host.hitlag_ticks = host_hitlag_ticks
-	
-	
 	
 	if hitbox.rumble:
 		rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
@@ -963,12 +965,22 @@ func process_extra(extra):
 	if "feint" in extra:
 		feinting = extra.feint
 		if feinting and !infinite_resources:
-			feints -= 1
+			if feints > 0:
+				feints -= 1
+			else:
+				use_super_meter(MAX_SUPER_METER)
+				super_effect(2)
 #	if "prediction" in extra:
 #		current_prediction = extra["prediction"]
 #		prediction_processed = false
 	else:
 		feinting = false
+
+func super_effect(freeze_ticks=0):
+	start_super(freeze_ticks)
+	play_sound("Super")
+	play_sound("Super2")
+	play_sound("Super3")
 
 func refresh_air_movements():
 	air_movements_left = num_air_movements
@@ -1173,7 +1185,11 @@ func tick():
 			if state_hit_cancellable:
 				state_interruptable = true
 				can_nudge = false
+			elif projectile_hit_cancelling:
+				state_interruptable = true
+				can_nudge = false
 	else:
+		projectile_hit_cancelling = false
 		if parried:
 #			state_interruptable = true
 			parried = false
@@ -1188,6 +1204,11 @@ func tick():
 		if state_hit_cancellable:
 			state_interruptable = true
 			can_nudge = false
+		
+		if projectile_hit_cancelling:
+			state_interruptable = true
+			can_nudge = false
+		
 		if !current_state() is ThrowState and current_state().apply_pushback:
 			chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
@@ -1357,7 +1378,7 @@ func update_facing():
 	if initialized:
 		update_data()
 
-func on_state_interruptable(state):
+func on_state_interruptable(state=null):
 	if !dummy:
 		state_interruptable = true
 		was_my_turn = true
@@ -1366,10 +1387,12 @@ func on_state_interruptable(state):
 		refresh_prediction = true
 
 
-func on_state_hit_cancellable(state):
+func on_state_hit_cancellable(projectile=false, state=null):
 	if !dummy:
 		state_hit_cancellable = true
 		refresh_prediction = true
+		if projectile:
+			projectile_hit_cancelling = true
 
 func on_action_selected(action, data, extra):
 #	if !state_interruptable:

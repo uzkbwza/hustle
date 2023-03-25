@@ -19,3 +19,4 @@ func _ready():
 
 func is_usable():
 	return .is_usable() and host.after_image_object == null
+ 

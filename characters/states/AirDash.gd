@@ -55,7 +55,13 @@ func _tick():
 	host.apply_x_fric(fric)
 	host.apply_forces_no_limit()
 	if host.is_grounded():
-		return "Landing"
-#
+		if host.combo_count > 0:
+			queue_state_change("Landing")
+		else:
+			queue_state_change("Landing", 8)
+			var vel = host.get_vel()
+			if host.get_opponent_dir() != fixed.sign(vel.x):
+				host.set_vel(fixed.mul(vel.x, "0.6"), vel.y)
+
 #func is_usable():
 #	return .is_usable() and host.get_pos().y <= -MIN_AIRDASH_HEIGHT
