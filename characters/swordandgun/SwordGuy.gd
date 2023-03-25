@@ -68,25 +68,26 @@ func tick():
 				if !obj.is_grounded():
 					move_directly(0, -1)
 				ticks_until_time_shift = 2
-				hitlag_ticks += 5
+				hitlag_ticks += 6
 
 	if hitlag_ticks <= 0:
 		if ticks_until_time_shift > 0:
 			var obj = obj_from_name(after_image_object)
 			ticks_until_time_shift -= 1
-			if ticks_until_time_shift == 0:
+			if ticks_until_time_shift == 1:
 				if obj:
 					play_sound("TimeShift")
 					set_pos(obj.get_pos().x, obj.get_pos().y)
-					hitlag_ticks += 3
+					hitlag_ticks += 2
 					obj.disable()
 					after_image_object = null
 					shifted_this_frame = true
-
 	.tick()
 
 	if shifted_this_frame:
 		update_facing()
+		shifted_this_frame = false
+
 	if ticks_until_time_shift > 0:
 		sprite.animation = "TimeShift"
 

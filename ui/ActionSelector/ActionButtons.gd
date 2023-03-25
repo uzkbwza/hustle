@@ -304,6 +304,7 @@ func send_ui_action(action=null):
 			if data_facing:
 				if dir != data_facing:
 					current_button.data_node.set_facing(dir)
+
 #	hide()
 #	if current_extra.has("input_aerial") or current_extra.has("input_grounded"):
 	if action:
@@ -646,7 +647,6 @@ func activate(refresh=true):
 	yield(get_tree(), "idle_frame")
 #	if !$"%ReverseButton".disabled:
 	$"%ReverseButton".show()
-
 	if !refresh:
 		return
 	button_pressed = false
