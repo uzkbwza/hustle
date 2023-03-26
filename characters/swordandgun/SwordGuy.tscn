@@ -2372,7 +2372,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Foresight"
-anim_length = 10
+anim_length = 11
 sfx = ExtResource( 304 )
 sfx_tick = 2
 sfx_volume = -12.0
@@ -2490,7 +2490,7 @@ super_freeze_ticks = 5
 script = ExtResource( 116 )
 fallback_state = "Shoot"
 sprite_animation = "GunTwirl"
-anim_length = 9
+anim_length = 8
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"
@@ -2506,7 +2506,8 @@ SlowHolster
 AerialSuper
 GroundedSuper
 Teleport"
-interrupt_exceptions_string = "FastTeleport"
+interrupt_exceptions_string = "FastTeleport
+Hustle"
 super_level = 0
 super_effect = false
 
@@ -2554,7 +2555,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Holster"
-anim_length = 8
+anim_length = 10
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2

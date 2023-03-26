@@ -1,4 +1,4 @@
-[gd_scene load_steps=298 format=2]
+[gd_scene load_steps=299 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -290,6 +290,7 @@
 [ext_resource path="res://characters/wizard/sounds/droplet.wav" type="AudioStream" id=288]
 [ext_resource path="res://characters/wizard/sounds/moisture.wav" type="AudioStream" id=289]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/draw_moisture.png" type="Texture" id=290]
+[ext_resource path="res://characters/wizard/Landing.gd" type="Script" id=294]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -696,7 +697,8 @@ can_vile_clutch
 current_orb_push
 gusts_in_combo
 tether_ticks
-geyser_charge"
+geyser_charge
+fast_fall_landing"
 damages_own_team = true
 character_portrait = ExtResource( 63 )
 player_info_scene = ExtResource( 4 )
@@ -1163,7 +1165,7 @@ data_ui_scene = ExtResource( 133 )
 button_texture = ExtResource( 175 )
 air_type = 2
 uses_air_movement = true
-land_cancel = true
+landing_recovery = 4
 self_hit_cancellable = false
 reversible = false
 interrupt_from_string = "GroundedSpecial
@@ -1692,7 +1694,7 @@ title = "Vile Clutch"
 type = 2
 button_texture = ExtResource( 199 )
 air_type = 2
-iasa_at = 12
+iasa_at = 11
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -1960,6 +1962,9 @@ hit_sound = ExtResource( 224 )
 knockback = "4.0"
 start_tick = 6
 active_ticks = 2
+
+[node name="Landing" parent="StateMachine" index="40"]
+script = ExtResource( 294 )
 
 [node name="TechRoll" parent="StateMachine" index="44"]
 sprite_anim_length = -1

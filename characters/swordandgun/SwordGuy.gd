@@ -40,6 +40,7 @@ func _ready():
 func init(pos=null):
 	.init(pos)
 	bullets_left = 6
+	HOLD_FORCE_STATES["QuickerDraw"] = "SlowHolster"
 
 func copy_to(f):
 	.copy_to(f)
@@ -82,6 +83,8 @@ func tick():
 					obj.disable()
 					after_image_object = null
 					shifted_this_frame = true
+					if obj.get_pos().y >= 0:
+						set_vel(get_vel().x, "0")
 	.tick()
 
 	if shifted_this_frame:

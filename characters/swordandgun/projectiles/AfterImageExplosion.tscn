@@ -29,6 +29,7 @@ material = SubResource( 1 )
 always_parriable = true
 deletes_other_projectiles = false
 movable = false
+hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

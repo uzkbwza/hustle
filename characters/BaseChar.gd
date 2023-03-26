@@ -53,7 +53,7 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
-const HOLD_RESTARTS = [
+var HOLD_RESTARTS = [
 	"Wait",
 	"Fall",
 	"DashForward",
@@ -466,6 +466,7 @@ func copy_to(f):
 	f.got_parried = got_parried
 	f.colliding_with_opponent = colliding_with_opponent
 	f.has_hyper_armor = has_hyper_armor
+	f.projectile_hit_cancelling = projectile_hit_cancelling
 	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
@@ -1189,7 +1190,11 @@ func tick():
 				state_interruptable = true
 				can_nudge = false
 	else:
+		if projectile_hit_cancelling:
+			state_interruptable = true
+			can_nudge = false
 		projectile_hit_cancelling = false
+		
 		if parried:
 #			state_interruptable = true
 			parried = false
@@ -1204,10 +1209,7 @@ func tick():
 		if state_hit_cancellable:
 			state_interruptable = true
 			can_nudge = false
-		
-		if projectile_hit_cancelling:
-			state_interruptable = true
-			can_nudge = false
+
 		
 		if !current_state() is ThrowState and current_state().apply_pushback:
 			chara.apply_pushback(get_opponent_dir())

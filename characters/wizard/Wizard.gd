@@ -22,6 +22,7 @@ var hover_gain_amount_air = 2
 var hovering = false
 var ghost_started_hovering = false
 var fast_falling = false
+var fast_fall_landing = false
 var gusts_in_combo = 0
 var tether_ticks = 0
 var geyser_charge = 0
@@ -97,7 +98,11 @@ func tick():
 	if hitlag_ticks <= 0:
 		if is_grounded():
 #			hovering = false
+			if fast_falling:
+				fast_fall_landing = true
 			fast_falling = false
+		else:
+			fast_fall_landing = false
 		if hovering:
 			fast_falling = false
 			if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:

@@ -913,6 +913,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -2927,7 +2928,7 @@ sfx_volume = -8.0
 projectile_scene = ExtResource( 403 )
 projectile_tick = 7
 projectile_pos_y = -32
-title = "GRENADE"
+title = "REMOTE BOMB"
 type = 2
 data_ui_scene = ExtResource( 410 )
 air_type = 2

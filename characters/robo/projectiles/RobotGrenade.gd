@@ -45,15 +45,19 @@ func explode():
 func hit_by(hitbox):
 	.hit_by(hitbox)
 	if hitbox:
-		reset_momentum()
-		var dir = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "1.6"))
-		if is_grounded() and fixed.gt(dir.y, "0"):
-			dir.y = fixed.mul(dir.y, "-1")
-		change_state("Active")
-		apply_force(dir.x, dir.y)
-		var host = hitbox.host
-		if host:
-			my_hitbox.hit_objects.append(host)
+		if hitbox.hitbox_type == Hitbox.HitboxType.Flip:
+			var vel = get_vel()
+			set_vel(fixed.mul(vel.x, "-1"), vel.y)
+		else:
+			reset_momentum()
+			var dir = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "1.6"))
+			if is_grounded() and fixed.gt(dir.y, "0"):
+				dir.y = fixed.mul(dir.y, "-1")
+			change_state("Active")
+			apply_force(dir.x, dir.y)
+			var host = hitbox.host
+			if host:
+				my_hitbox.hit_objects.append(host)
 	emit_signal("got_hit")
 
 func disable():

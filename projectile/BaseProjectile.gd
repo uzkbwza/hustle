@@ -12,6 +12,7 @@ export var can_be_hit_by_melee = false
 export var hit_cancel_on_hit = false
 #export var can_be_hit_by_projectiles = false
 export var projectile_immune = false
+export var hitlag_modifier = "1.0"
 
 var got_parried = false
 
@@ -48,10 +49,10 @@ func hit_by(hitbox):
 	if hitbox:
 		if hitbox.throw:
 			return
-		hitlag_ticks = hitbox.hitlag_ticks
+		hitlag_ticks = fixed.round(fixed.mul(hitlag_modifier, str(hitbox.victim_hitlag)))
 		if objs_map.has(hitbox.host):
 			var host = objs_map[hitbox.host]
-			var host_hitlag_ticks = hitbox.hitlag_ticks
+			var host_hitlag_ticks = fixed.round(fixed.mul(hitlag_modifier, str(hitbox.hitlag_ticks)))
 			if host.hitlag_ticks < host_hitlag_ticks:
 				host.hitlag_ticks = host_hitlag_ticks
 	.hit_by(hitbox)

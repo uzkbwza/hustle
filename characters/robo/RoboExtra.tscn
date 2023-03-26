@@ -19,8 +19,6 @@ unique_name_in_owner = true
 margin_top = 259.0
 margin_bottom = 321.0
 alignment = 1
-NW = false
-W = false
 
 [node name="FlyEnabled" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
@@ -43,4 +41,4 @@ margin_top = 348.0
 margin_right = 52.0
 margin_bottom = 360.0
 size_flags_vertical = 0
-text = "Nade"
+text = "Bomb"
