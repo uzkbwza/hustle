@@ -46,8 +46,10 @@ animations = [ {
 [node name="SparkBomb" instance=ExtResource( 1 )]
 material = SubResource( 1 )
 script = ExtResource( 10 )
+extra_state_variables = "exploded"
 immunity_susceptible = false
 deletes_other_projectiles = false
+hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
@@ -95,7 +97,9 @@ hitstun_ticks = 40
 hitlag_ticks = 6
 victim_hitlag = 14
 screenshake_amount = 10
+bump_on_whiff = true
 hit_sound = ExtResource( 19 )
+bass_on_whiff = true
 dir_x = "0.80"
 dir_y = "-0.30"
 launch_reversible = true

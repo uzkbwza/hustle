@@ -2,8 +2,15 @@ extends CharacterState
 
 const MAX_X_DIST = 600
 const MAX_Y_DIST = 300
+const NEUTRAL_LAG = 2
 
 var obj_name
+var neutral_lag = 0
+
+func _frame_0():
+	neutral_lag = 0
+	if host.combo_count <= 0:
+		neutral_lag = NEUTRAL_LAG
 
 func _frame_6():
 	var projectiles = get_usable_projectiles()
@@ -21,6 +28,8 @@ func _frame_6():
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 		host.detach()
+	if host.combo_count == 0:
+		host.hitlag_ticks += 2
 
 func _frame_7():
 	if host.objs_map.has(obj_name):
@@ -29,6 +38,12 @@ func _frame_7():
 			obj.refresh_hitboxes()
 			if obj is GrapplingHook:
 				obj.unlock()
+
+func _tick():
+	if current_tick > 6:
+		if neutral_lag > 0:
+			neutral_lag -= 1
+			current_tick = 6
 
 func get_usable_projectiles():
 	var usable = []

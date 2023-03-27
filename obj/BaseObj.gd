@@ -85,7 +85,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "use_platforms", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -127,6 +127,12 @@ func play_sound(sound_name):
 	if sound_name in sounds:
 		sounds[sound_name].play()
 
+func stop_sound(sound_name):
+	if is_ghost or ReplayManager.resimulating:
+		return
+	if sound_name in sounds:
+		sounds[sound_name].stop()
+
 func refresh_hitboxes():
 	for hitbox in hitboxes:
 		hitbox.hit_objects = []
@@ -142,6 +148,11 @@ func setup_hitbox_names():
 func _on_state_exited(state):
 	for hitbox in hitboxes:
 		hitbox.deactivate()
+
+func get_owner():
+	if creator:
+		return creator.get_owner()
+	return self
 
 func current_state():
 	return state_machine.state

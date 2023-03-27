@@ -7,6 +7,9 @@ func set_fighter(fighter):
 	if player_id == 2:
 		$"%HoverBar".fill_mode = TextureProgress.FILL_RIGHT_TO_LEFT
 		$HBoxContainer.alignment = BoxContainer.ALIGN_END
+		$"%HBoxContainer".alignment = BoxContainer.ALIGN_BEGIN
+	
+
 
 func _process(delta):
 	if is_instance_valid(fighter):
@@ -18,3 +21,6 @@ func _process(delta):
 		for i in range(3):
 			var droplet = get_node("%" + str(i + 1))
 			droplet.visible = i < fighter.geyser_charge
+		$"%SparkSpeed".visible = fighter.spark_speed_frames > 0
+		$"%SparkSpeed".modulate.a = 1.0 if Utils.pulse(0.2, 0.75) else 0.6
+

@@ -9,8 +9,10 @@ func process_projectile(projectile):
 	var pos = host.get_pos()
 	pos.x += fixed.round(dir.x)
 	pos.y += fixed.round(dir.y)
+#	print(dir)
 	if pos.y > 0:
 		pos.y = 0
+#	print(pos)
 	projectile.set_pos(pos.x, pos.y)
 	host.after_image_object = projectile.obj_name
 

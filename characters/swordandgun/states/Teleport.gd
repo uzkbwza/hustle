@@ -12,6 +12,7 @@ const CROSS_THROUGH_RECOVERY = 2
 const FORWARD_SUPER = 55
 const MAX_CROSS_THROUGH_DIST = 32
 
+export var shift = false
 export var from_stance = false
 export var foresight = false
 
@@ -42,7 +43,8 @@ func _frame_0():
 	starting_dir = host.get_opponent_dir()
 	iasa_at = 9
 	backwards_stall_frames = 0
-	host.start_throw_invulnerability()
+	if !shift:
+		host.start_throw_invulnerability()
 	var comboing = false
 	forward = false
 	var scaled = xy_to_dir(data.x, data.y)
@@ -90,7 +92,7 @@ func _frame_3():
 
 func _frame_4():
 	host.end_throw_invulnerability()
-	if in_place and !foresight:
+	if in_place and !foresight and !shift:
 		host.start_invulnerability()
 	host.start_projectile_invulnerability()
 	host.colliding_with_opponent = false
@@ -119,7 +121,12 @@ func _frame_5():
 			host.gain_super_meter(fixed.round(fixed.mul(str(FORWARD_SUPER), x_dist)))
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
-
+	if shift:
+		host.load_last_input_into_buffer()
+		if host.buffered_input["action"] == "Continue":
+			host.buffered_input["action"] = "Wait"
+		host.use_buffer()
+	
 func _frame_6():
 	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0 and !foresight and !in_place:
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
@@ -152,6 +159,10 @@ func _tick():
 	host.apply_grav()
 	host.apply_forces()
 	host.set_grounded(host.get_pos().y == 0)
+
+func _exit():
+	if shift:
+		host.shift()
 
 func is_usable():
 	if foresight and host.after_image_object == null:

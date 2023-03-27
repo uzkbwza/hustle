@@ -2,9 +2,16 @@ extends VBoxContainer
 
 signal data_changed()
 
+onready var default = $Direction.value
+
 export var centered = true
 
 var buffer_value_changed = false
+
+func _input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == BUTTON_RIGHT and $Direction.get_rect().has_point(get_local_mouse_position()):
+			$Direction.value = default
 
 func _ready():
 	if !centered:

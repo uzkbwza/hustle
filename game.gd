@@ -1335,7 +1335,7 @@ func super_dim():
 	pass
 
 func update_mouse_world_position():
-	Global.mouse_world_position = get_local_mouse_position() - Global.RESOLUTION / 2 + camera.global_position
+	Global.mouse_world_position = Global.screen_to_world(get_local_mouse_position())
 	pass
 
 func _unhandled_input(event: InputEvent):

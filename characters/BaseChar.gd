@@ -144,6 +144,9 @@ var actions = 0
 var queued_action = null
 var queued_data = null
 var queued_extra = null
+var buffered_input = {}
+var last_input = {}
+var use_buffer = false
 
 var dummy_interruptable = false
 
@@ -427,7 +430,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "projectile_hit_cancelling", "penalty_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "projectile_hit_cancelling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -478,6 +481,12 @@ func gain_burst():
 	if bursts_available < MAX_BURSTS:
 		bursts_available += 1
 		burst_meter = 0
+
+func load_last_input_into_buffer():
+	buffered_input = last_input.duplicate(true)
+
+func use_buffer():
+	use_buffer = true
 
 func use_burst():
 #	if infinite_resources:
@@ -1065,6 +1074,9 @@ func update_advantage():
 		initiative_effect = true
 	initiative = new_adv
 
+func clear_buffer():
+	buffered_input = {}
+
 func tick_before():
 	if queued_action == "Forfeit":
 		if forfeit:
@@ -1115,10 +1127,23 @@ func tick_before():
 #		current_prediction = -1
 #	if !prediction_processed and !is_in_hurt_state():
 #		process_prediction()
+
+	if use_buffer:
+		if buffered_input.has("action"):
+			queued_action = buffered_input.action
+		if buffered_input.has("data"):
+			queued_data = buffered_input.data
+		if buffered_input.has("extra"):
+			queued_extra = buffered_input.extra
+		use_buffer = false
+
 	if queued_extra:
+		last_input["extra"] = queued_extra
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
+		last_input["action"] = queued_action
+		last_input["data"] = queued_data
 		if queued_action == "Continue":
 			var current_state_name = current_state().name
 			if current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:

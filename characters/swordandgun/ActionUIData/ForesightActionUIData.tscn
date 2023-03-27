@@ -12,4 +12,6 @@ limit_angle = true
 limit_range_degrees = 150.0
 limit_center_degrees = 30.0
 limit_symmetrical = false
-snap = false
+snap_angles = 2
+snap_align_to_limit_center = false
+snap_radius = 0.03

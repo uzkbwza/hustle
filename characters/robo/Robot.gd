@@ -212,7 +212,6 @@ func start_magnet_fx():
 func stop_magnet_fx():
 	$"%MagnetEffect".stop_emitting()
 
-
 func process_extra(extra):
 	.process_extra(extra)
 	var can_fly = true

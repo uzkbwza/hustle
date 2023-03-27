@@ -5,6 +5,7 @@ const GLOBAL_JUMP_MODIFIER = "0.85"
 
 export var speed = "25.0"
 export var y_modifier = "1.5"
+export var x_modifier = "1.0"
 export var x_speed_preserved = "0.25"
 export var super_jump = false
 export var super_jump_speed_override = ""
@@ -42,6 +43,7 @@ func jump():
 		if camera:
 			camera.bump(Vector2.UP, 10, 20 / 60.0)
 	force.y = fixed.mul(force.y, y_modifier)
+	force.x = fixed.mul(force.x, x_modifier)
 	if (host.combo_count <= 0 or host.opponent.on_the_ground) and !super_jump:
 		force.y = fixed.mul(force.y, GLOBAL_JUMP_MODIFIER)
 	host.apply_force(force.x, force.y)

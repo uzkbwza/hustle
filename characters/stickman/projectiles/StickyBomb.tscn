@@ -59,6 +59,7 @@ max_fall_speed = "5"
 extra_state_variables = "attached
 detonating"
 deletes_other_projectiles = false
+hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 position = Vector2( 0, -3 )
@@ -102,7 +103,7 @@ damage = 80
 hitstun_ticks = 24
 hitlag_ticks = 1
 victim_hitlag = 10
-damage_proration = 3
+damage_proration = 1
 whiff_sound = ExtResource( 13 )
 hit_sound = ExtResource( 14 )
 dir_x = "-1.0"

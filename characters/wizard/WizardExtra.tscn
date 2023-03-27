@@ -10,31 +10,32 @@ alignment = 1
 script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
-margin_left = 290.0
-margin_right = 350.0
+margin_left = 294.0
+margin_right = 346.0
 margin_bottom = 360.0
+custom_constants/separation = 1
 alignment = 1
 
 [node name="Control" type="Control" parent="VBoxContainer" index="0"]
-margin_top = 156.0
-margin_right = 60.0
-margin_bottom = 156.0
-rect_min_size = Vector2( 60, 0 )
+margin_top = 160.0
+margin_right = 52.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 52, 0 )
 
 [node name="OrbPush" parent="VBoxContainer/Control" index="0" instance=ExtResource( 4 )]
 unique_name_in_owner = true
-margin_left = 5.0
-margin_top = -61.0
-margin_right = 55.0
-margin_bottom = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -62.0
+margin_bottom = 0.0
 alignment = 1
 
 [node name="HoverButton" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
-margin_top = 160.0
-margin_right = 60.0
-margin_bottom = 180.0
-rect_min_size = Vector2( 34, 20 )
+margin_top = 161.0
+margin_right = 52.0
+margin_bottom = 173.0
+rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
@@ -43,12 +44,24 @@ clip_text = true
 
 [node name="FastFallButton" type="CheckButton" parent="VBoxContainer" index="2"]
 unique_name_in_owner = true
-margin_top = 184.0
-margin_right = 60.0
-margin_bottom = 204.0
-rect_min_size = Vector2( 34, 20 )
+margin_top = 174.0
+margin_right = 52.0
+margin_bottom = 186.0
+rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
-text = "FastFall"
+text = "Fall"
+clip_text = true
+
+[node name="ExplodeButton" type="CheckButton" parent="VBoxContainer" index="3"]
+unique_name_in_owner = true
+margin_top = 187.0
+margin_right = 52.0
+margin_bottom = 199.0
+rect_min_size = Vector2( 30, 0 )
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Spark"
 clip_text = true

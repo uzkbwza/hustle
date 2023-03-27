@@ -14,6 +14,8 @@ var grappling_hook_projectile = null
 var pulling = false
 var used_grappling_hook = false
 
+#var hook_dir = Vector2()
+
 const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
@@ -47,11 +49,12 @@ func tick():
 	if hook:
 		if is_in_hurt_state(false):
 			hook.disable()
-		var hook_pos = obj_local_center(hook)
+		var hook_pos = obj_local_center(hook) if hook.attached_to == null else obj_local_center(obj_from_name(hook.attached_to))
 		if hook.is_locked and hook.current_state().current_tick > 5 and fixed.lt(fixed.vec_len(str(hook_pos.x), str(hook_pos.y)), HOOK_DISABLE_DIST):
 			hook.disable()
 		if pulling:
 			var dir = fixed.normalized_vec_times(str(hook_pos.x), str(hook_pos.y), HOOK_PULL_SPEED)
+#			hook_dir = Vector2(float(dir.x), float(dir.y))
 			apply_force(dir.x, dir.y)
 			limit_speed(MAX_PULL_SPEED)
 			var vel = get_vel()
@@ -80,3 +83,5 @@ func _draw():
 	var hook = obj_from_name(grappling_hook_projectile)
 	if hook:
 		draw_line(to_local(get_center_position_float()), to_local(hook.get_center_position_float()), Color("#ffffff"), 2.0)
+#	if hook_dir:
+#		draw_line(to_local(get_center_position_float()), hook_dir * 32, Color.purple)

@@ -6,11 +6,14 @@ const Y_MODIFIER = "0.60"
 const MIN_IASA = 0
 const MAX_IASA = 14
 const COMBO_IASA = 7
+const MAX_EXTRA_LAG_FRAMES = 3
 
 export var dir_x = "3.0"
 export var dir_y = "-5.0"
 export var speed = "2.0"
 export var fric = "0.05"
+
+var starting_y = 0
 var startup_lag_frames = 0
 
 func _frame_1():
@@ -19,6 +22,7 @@ func _frame_1():
 func _frame_0():
 	var force = xy_to_dir(data.x, data.y, speed)
 	var dir = xy_to_dir(data.x, data.y)
+	starting_y = host.get_pos().y
 	var back = false
 	if host.combo_count > 0:
 		starting_iasa_at = COMBO_IASA
@@ -58,7 +62,9 @@ func _tick():
 		if host.combo_count > 0:
 			queue_state_change("Landing")
 		else:
-			queue_state_change("Landing", 8)
+			var lag = 4 + Utils.int_max(MAX_EXTRA_LAG_FRAMES - current_tick, 0)
+#			var lag = 4
+			queue_state_change("Landing", lag)
 			var vel = host.get_vel()
 			if host.get_opponent_dir() != fixed.sign(vel.x):
 				host.set_vel(fixed.mul(vel.x, "0.6"), vel.y)

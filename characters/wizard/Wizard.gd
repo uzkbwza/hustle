@@ -14,6 +14,11 @@ const ORB_PUSH_SPEED = "8.5"
 const TETHER_FALLOFF = "0.95"
 const TETHER_SPEED = "1.0"
 const TETHER_TICKS = 90
+const SPARK_BOMB_PUSH_DISTANCE = "60"
+const SPARK_EXPLOSION_AIR_SPEED = 12
+const SPARK_EXPLOSION_GROUND_SPEED = 12
+const SPARK_EXPLOSION_DASH_SPEED = 12
+const SPARK_SPEED_FRAMES = 30
 
 var hover_left = 0
 var hover_drain_amount = 12
@@ -31,8 +36,15 @@ var orb_projectile
 var can_flame_wave = true
 var can_vile_clutch = true
 var current_orb_push = null
+var detonating_bombs = false
+
+var spark_bombs = []
+var nearby_spark_bombs = []
+var default_dash_speed = 0
+var spark_speed_frames = 0
 
 onready var liftoff_sprite = $"%LiftoffSprite"
+onready var spark_speed_particle = $"%SparkSpeedParticle"
 
 func init(pos=null):
 	.init(pos)
@@ -40,6 +52,7 @@ func init(pos=null):
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT
 	geyser_charge = 0
+	default_dash_speed = $StateMachine/DashForward.dash_speed
 
 func apply_grav():
 	if fast_falling:
@@ -70,6 +83,9 @@ func apply_fric():
 			.apply_fric()
 	pass
 
+func add_spark_bomb(projectile_name):
+	spark_bombs.append(projectile_name)
+
 func spawn_orb():
 		var orb = spawn_object(ORB_SCENE, -10, -56)
 		spawn_particle_effect_relative(ORB_PARTICLE_SCENE, Vector2(-10, -56))
@@ -94,6 +110,26 @@ func on_got_hit():
 	pass
 
 func tick():
+	if spark_speed_frames > 0:
+		chara.set_max_ground_speed(str(SPARK_EXPLOSION_GROUND_SPEED))
+		chara.set_max_air_speed(str(SPARK_EXPLOSION_AIR_SPEED))
+		$StateMachine/DashForward.dash_speed = SPARK_EXPLOSION_DASH_SPEED
+		$StateMachine/Jump.x_modifier = "1.5"
+		$StateMachine/DoubleJump.x_modifier = "1.5"
+		if spark_speed_frames % 7 == 0:
+			play_sound("SparkSpeed")
+		spark_speed_particle.start_emitting()
+		spark_speed_frames -= 1
+		if spark_speed_frames <= 0:
+			$StateMachine/DashForward.dash_speed = default_dash_speed
+			chara.set_max_ground_speed(max_air_speed)
+			chara.set_max_air_speed(max_ground_speed)
+			$StateMachine/Jump.x_modifier = "1.0"
+			$StateMachine/DoubleJump.x_modifier = "1.0"
+			stop_sound("SparkSpeed")
+	else:
+		spark_speed_particle.stop_emitting()
+		
 	.tick()
 	if hitlag_ticks <= 0:
 		if is_grounded():
@@ -134,6 +170,30 @@ func tick():
 				var force = fixed.normalized_vec_times(str(current_orb_push.x), str(current_orb_push.y), ORB_PUSH_SPEED)
 				objs_map[orb_projectile].push(force.x, force.y)
 		current_orb_push = null
+		
+	if detonating_bombs:
+		detonating_bombs = false
+		for obj_name in nearby_spark_bombs:
+			var bomb = obj_from_name(obj_name)
+			if bomb:
+				bomb.explode()
+				spark_speed_frames += SPARK_SPEED_FRAMES
+
+	if nearby_spark_bombs:
+		nearby_spark_bombs = []
+	if spark_bombs:
+		var disabled_bombs = []
+		for obj_name in spark_bombs:
+			var bomb = obj_from_name(obj_name)
+			if bomb:
+				var dir = obj_local_center(bomb)
+				if !bomb.exploded and fixed.lt(fixed.vec_len(str(dir.x), str(dir.y)), SPARK_BOMB_PUSH_DISTANCE):
+					nearby_spark_bombs.append(obj_name)
+			else:
+				disabled_bombs.append(obj_name)
+				continue
+		for disabled_obj_name in disabled_bombs:
+			spark_bombs.erase(disabled_obj_name)
 
 	if tether_ticks > 0:
 		if orb_projectile and !is_grounded():
@@ -185,6 +245,8 @@ func process_extra(extra):
 		fast_falling = false
 	if extra.has("orb_push") and orb_projectile:
 		current_orb_push = extra.orb_push
+	if extra.has("detonate"):
+		detonating_bombs = extra.detonate
 
 func can_fast_fall():
 	return !is_grounded()

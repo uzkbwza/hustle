@@ -41,6 +41,7 @@ func init(pos=null):
 	.init(pos)
 	bullets_left = 6
 	HOLD_FORCE_STATES["QuickerDraw"] = "SlowHolster"
+	HOLD_FORCE_STATES["Shift"] = "Wait"
 
 func copy_to(f):
 	.copy_to(f)
@@ -50,6 +51,17 @@ func get_barrel_location(angle):
 	var barrel_location = fixed.rotate_vec(BARREL_LOCATION_X, BARREL_LOCATION_Y, angle)
 	barrel_location.y = fixed.sub(barrel_location.y, "24")
 	return barrel_location
+
+func shift():
+	var obj = obj_from_name(after_image_object)
+	if obj:
+		set_pos(obj.get_pos().x, obj.get_pos().y)
+#					hitlag_ticks += 2
+		obj.disable()
+		after_image_object = null
+		shifted_this_frame = true
+		if obj.get_pos().y >= 0:
+			set_vel(get_vel().x, "0")
 
 func tick():
 	if after_image_object:
@@ -61,30 +73,16 @@ func tick():
 			else:
 				if fixed.gt(distance_to(obj), AFTER_IMAGE_MAX_DIST):
 					obj.detonating = true
-			if shifting:
+			if shifting and current_state().state_name != "Shift":
 				if !is_grounded():
 					if air_movements_left > 0:
 						air_movements_left -= 1
 				set_grounded(obj.is_grounded())
 				if !obj.is_grounded():
 					move_directly(0, -1)
-				ticks_until_time_shift = 2
-				hitlag_ticks += 6
-
-	if hitlag_ticks <= 0:
-		if ticks_until_time_shift > 0:
-			var obj = obj_from_name(after_image_object)
-			ticks_until_time_shift -= 1
-			if ticks_until_time_shift == 1:
-				if obj:
-					play_sound("TimeShift")
-					set_pos(obj.get_pos().x, obj.get_pos().y)
-					hitlag_ticks += 2
-					obj.disable()
-					after_image_object = null
-					shifted_this_frame = true
-					if obj.get_pos().y >= 0:
-						set_vel(get_vel().x, "0")
+				change_state("Shift")
+			elif current_state().state_name == "Shift":
+				shifting = false
 	.tick()
 
 	if shifted_this_frame:
@@ -121,9 +119,6 @@ func tick():
 		buffer_bullet_cancelling = false
 #	if bullet_cancelling and !("try_shoot" in current_state().host_commands.values()):
 #		bullet_cancelling = false
-	if shifting:
-		shifting = false
-		update_facing()
 
 func process_extra(extra):
 	.process_extra(extra)

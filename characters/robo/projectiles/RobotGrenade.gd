@@ -58,6 +58,12 @@ func hit_by(hitbox):
 			var host = hitbox.host
 			if host:
 				my_hitbox.hit_objects.append(host)
+			var host_object = obj_from_name(host)
+			if host_object:
+				var player = host_object.get_owner().obj_name
+				if host != player:
+					my_hitbox.hit_objects.append(player)
+
 	emit_signal("got_hit")
 
 func disable():

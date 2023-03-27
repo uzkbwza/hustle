@@ -1,4 +1,4 @@
-[gd_scene load_steps=299 format=2]
+[gd_scene load_steps=303 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -290,6 +290,9 @@
 [ext_resource path="res://characters/wizard/sounds/droplet.wav" type="AudioStream" id=288]
 [ext_resource path="res://characters/wizard/sounds/moisture.wav" type="AudioStream" id=289]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/draw_moisture.png" type="Texture" id=290]
+[ext_resource path="res://characters/wizard/ActionUiData/VileClutchActionUIData.tscn" type="PackedScene" id=291]
+[ext_resource path="res://characters/wizard/SparkSpeedParticle.tscn" type="PackedScene" id=292]
+[ext_resource path="res://characters/wizard/sounds/sparkspeed.wav" type="AudioStream" id=293]
 [ext_resource path="res://characters/wizard/Landing.gd" type="Script" id=294]
 
 [sub_resource type="ShaderMaterial" id=5]
@@ -661,6 +664,15 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="ShaderMaterial" id=12]
+resource_local_to_scene = true
+shader = ExtResource( 180 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
 [sub_resource type="ShaderMaterial" id=11]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
@@ -685,7 +697,7 @@ gravity = "0.43"
 ground_friction = "0.75"
 air_friction = "0.1"
 max_ground_speed = "9"
-max_air_speed = "8"
+max_air_speed = "10"
 max_fall_speed = "6.5"
 extra_state_variables = "hover_ticks_left
 hovering
@@ -698,7 +710,12 @@ current_orb_push
 gusts_in_combo
 tether_ticks
 geyser_charge
-fast_fall_landing"
+fast_fall_landing
+spark_bombs
+nearby_spark_bombs
+detonating_bombs
+spark_speed_frames
+default_dash_speed"
 damages_own_team = true
 character_portrait = ExtResource( 63 )
 player_info_scene = ExtResource( 4 )
@@ -724,7 +741,16 @@ z_index = 1000
 unique_name_in_owner = true
 material = SubResource( 9 )
 
-[node name="DrawMoistureParticle" parent="Flip/Particles" index="3" instance=ExtResource( 284 )]
+[node name="SparkSpeedParticle" parent="Flip/Particles" index="3" instance=ExtResource( 292 )]
+unique_name_in_owner = true
+material = SubResource( 12 )
+position = Vector2( 0, -16 )
+z_index = -1
+free = false
+one_shot = false
+start_enabled = false
+
+[node name="DrawMoistureParticle" parent="Flip/Particles" index="4" instance=ExtResource( 284 )]
 unique_name_in_owner = true
 material = SubResource( 11 )
 free = false
@@ -744,7 +770,14 @@ volume_db = -8.0
 bus = "Fx"
 script = ExtResource( 216 )
 
-[node name="Droplet" type="AudioStreamPlayer2D" parent="Sounds" index="12"]
+[node name="SparkSpeed" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+stream = ExtResource( 293 )
+volume_db = -20.0
+pitch_scale = 1.5
+bus = "Fx"
+script = ExtResource( 216 )
+
+[node name="Droplet" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
 stream = ExtResource( 288 )
 volume_db = -8.0
 bus = "Fx"
@@ -793,6 +826,7 @@ type = 1
 button_texture = ExtResource( 169 )
 air_type = 1
 land_cancel = true
+landing_recovery = 6
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
@@ -856,6 +890,7 @@ type = 1
 button_texture = ExtResource( 170 )
 air_type = 1
 land_cancel = true
+landing_recovery = 6
 iasa_at = 14
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
@@ -1692,6 +1727,7 @@ projectile_tick = 8
 projectile_local_pos = false
 title = "Vile Clutch"
 type = 2
+data_ui_scene = ExtResource( 291 )
 button_texture = ExtResource( 199 )
 air_type = 2
 iasa_at = 11

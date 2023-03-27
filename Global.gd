@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.3.14-steam-unstable"
+var VERSION = "1.3.15-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -51,6 +51,22 @@ func get_cached_character(name):
 
 func full_version():
 	return (!steam_demo_version) and SteamHustle.STARTED
+
+func world_to_screen(x, y) -> Vector2:
+	if !is_instance_valid(current_game):
+		return Vector2()
+	return Vector2()
+
+func screen_to_world(xy: Vector2):
+	if !is_instance_valid(current_game):
+		return xy
+	return xy - RESOLUTION / 2 + current_game.camera.global_position
+
+func screen_to_world_int(xy: Vector2):
+	return {
+		"x": int(xy.x),
+		"y": int(xy.y)
+	}
 
 func _enter_tree():
 	for char_name in name_paths:

@@ -36,6 +36,7 @@ func _enter_shared():
 		host.refresh_air_movements()
 	host.state_interruptable = true
 	host.busy_interrupt = true
+	host.clear_buffer()
 	._enter_shared()
 
 func _tick_shared():
