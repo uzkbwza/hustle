@@ -697,7 +697,7 @@ gravity = "0.43"
 ground_friction = "0.75"
 air_friction = "0.1"
 max_ground_speed = "9"
-max_air_speed = "10"
+max_air_speed = "8"
 max_fall_speed = "6.5"
 extra_state_variables = "hover_ticks_left
 hovering

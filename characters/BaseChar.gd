@@ -1129,6 +1129,7 @@ func tick_before():
 #		process_prediction()
 
 	if use_buffer:
+#		print(buffered_input)
 		if buffered_input.has("action"):
 			queued_action = buffered_input.action
 		if buffered_input.has("data"):
@@ -1136,6 +1137,7 @@ func tick_before():
 		if buffered_input.has("extra"):
 			queued_extra = buffered_input.extra
 		use_buffer = false
+		clear_buffer()
 
 	if queued_extra:
 		last_input["extra"] = queued_extra

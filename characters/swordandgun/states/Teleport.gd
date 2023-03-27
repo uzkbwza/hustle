@@ -24,6 +24,10 @@ var in_place = false
 var forward = false
 var x_dist = "0"
 
+func _enter():
+	if shift:
+		host.load_last_input_into_buffer()
+
 func _frame_0():
 #	if from_stance:
 #		host.start_invulnerability()
@@ -122,9 +126,8 @@ func _frame_5():
 	host.apply_force(tele_force.x, tele_force.y)
 	host.update_data()
 	if shift:
-		host.load_last_input_into_buffer()
 		if host.buffered_input["action"] == "Continue":
-			host.buffered_input["action"] = "Wait"
+			host.buffered_input["action"] = _previous_state().state_name
 		host.use_buffer()
 	
 func _frame_6():
