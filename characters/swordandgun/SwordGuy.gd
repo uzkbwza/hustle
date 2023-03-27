@@ -41,7 +41,6 @@ func init(pos=null):
 	.init(pos)
 	bullets_left = 6
 	HOLD_FORCE_STATES["QuickerDraw"] = "SlowHolster"
-	HOLD_FORCE_STATES["Shift"] = "Wait"
 
 func copy_to(f):
 	.copy_to(f)
