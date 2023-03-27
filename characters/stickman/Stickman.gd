@@ -70,9 +70,10 @@ func tick():
 func on_got_hit():
 	if bomb_projectile or bomb_thrown:
 		bomb_thrown = false
-		if objs_map.has(bomb_projectile):
-			objs_map[bomb_projectile].disable()
-			bomb_projectile = null
+		var bomb_object = obj_from_name(bomb_projectile)
+		if bomb_object:
+			bomb_object.disable()
+		bomb_projectile = null
 
 func stack_move_in_combo(move_name):
 	.stack_move_in_combo(move_name)

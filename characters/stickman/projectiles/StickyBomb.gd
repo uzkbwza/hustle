@@ -7,6 +7,8 @@ var attached = false
 
 func explode():
 	detonating = true
+	creator.bomb_thrown = false
+	creator.bomb_projectile = null
 
 func big_explode():
 	change_state("BigExplode")
