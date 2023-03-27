@@ -49,7 +49,8 @@ func tick():
 	if hook:
 		if is_in_hurt_state(false):
 			hook.disable()
-		var hook_pos = obj_local_center(hook) if hook.attached_to == null else obj_local_center(obj_from_name(hook.attached_to))
+		var attached_to = obj_from_name(hook.attached_to)
+		var hook_pos = obj_local_center(hook) if attached_to == null else obj_local_center(attached_to)
 		if hook.is_locked and hook.current_state().current_tick > 5 and fixed.lt(fixed.vec_len(str(hook_pos.x), str(hook_pos.y)), HOOK_DISABLE_DIST):
 			hook.disable()
 		if pulling:

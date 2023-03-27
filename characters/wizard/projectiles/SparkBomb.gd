@@ -1,6 +1,7 @@
 extends BaseProjectile
 
 var exploded = false
+var armed = false
 
 func init(pos=null):
 	.init(pos)

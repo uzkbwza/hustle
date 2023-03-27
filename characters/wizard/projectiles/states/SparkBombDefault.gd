@@ -7,8 +7,16 @@ const MOVE_SPEED = "1.5"
 const AVOID_SPEED = "0.50"
 const AVOID_DISTANCE = "24.0"
 
+export var armed = false
+export var arming_time = 15
+
+func _enter():
+	host.armed = armed
+
 func _tick():
-	if current_tick > MIN_LIFETIME:
+	if current_tick > arming_time and !armed:
+		return "Armed"
+	if armed:
 		var pos = host.get_pos()
 		var obj = host.creator.opponent
 		var center = obj.get_hurtbox_center()

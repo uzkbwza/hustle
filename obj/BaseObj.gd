@@ -161,6 +161,8 @@ func is_otg():
 	return current_state().state_name == "Knockdown" or current_state().state_name == "HardKnockdown"
 
 func init(pos=null):
+	if initialized:
+		return
 	chara.id = id
 	chara.set_gravity(gravity)
 	chara.set_ground_friction(ground_friction)
@@ -212,6 +214,8 @@ func obj_from_name(name):
 				return obj
 	
 func copy_to(o: BaseObj):
+	if !initialized:
+		init()
 	var current_state = current_state()
 	o.state_machine.starting_state = current_state.name
 	o.spawn_data = current_state.copy_data()

@@ -1138,6 +1138,8 @@ func tick_before():
 			queued_extra = buffered_input.extra
 		use_buffer = false
 		clear_buffer()
+#	if was_my_turn:
+#		projectile_hit_cancelling = false
 
 	if queued_extra:
 		last_input["extra"] = queued_extra

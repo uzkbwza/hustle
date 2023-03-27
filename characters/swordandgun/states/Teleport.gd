@@ -27,6 +27,10 @@ var x_dist = "0"
 func _enter():
 	if shift:
 		host.load_last_input_into_buffer()
+		var prev = _previous_state_name()
+		print(prev)
+		if prev == "LassoPull" or prev == "LassoReel":
+			host.opponent.change_state("Grabbed")
 
 func _frame_0():
 #	if from_stance:

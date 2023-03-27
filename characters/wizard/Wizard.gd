@@ -15,7 +15,7 @@ const TETHER_FALLOFF = "0.95"
 const TETHER_SPEED = "1.0"
 const TETHER_TICKS = 90
 const SPARK_BOMB_PUSH_DISTANCE = "60"
-const SPARK_EXPLOSION_AIR_SPEED = 12
+const SPARK_EXPLOSION_AIR_SPEED = 20
 const SPARK_EXPLOSION_GROUND_SPEED = 12
 const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 30
@@ -187,7 +187,7 @@ func tick():
 			var bomb = obj_from_name(obj_name)
 			if bomb:
 				var dir = obj_local_center(bomb)
-				if !bomb.exploded and fixed.lt(fixed.vec_len(str(dir.x), str(dir.y)), SPARK_BOMB_PUSH_DISTANCE):
+				if !bomb.exploded and bomb.armed and fixed.lt(fixed.vec_len(str(dir.x), str(dir.y)), SPARK_BOMB_PUSH_DISTANCE):
 					nearby_spark_bombs.append(obj_name)
 			else:
 				disabled_bombs.append(obj_name)

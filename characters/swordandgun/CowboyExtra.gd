@@ -37,10 +37,16 @@ func reset():
 	$"%TpButton".pressed = false
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
+		update_tp_button()
+
+
+func update_tp_button():
 		$"%TpButton".show()
 		if fighter.is_grounded() or fighter.air_movements_left > 0:
 			$"%TpButton".show()
 		else:
+			$"%TpButton".hide()
+		if fighter.current_state().state_name in ["Brandish", "QuickerDraw"]:
 			$"%TpButton".hide()
 
 func update_selected_move(move_state):
@@ -49,10 +55,8 @@ func update_selected_move(move_state):
 		$"%ShootButton".visible = ("try_shoot" in move_state.host_commands.values()) and fighter.can_bullet_cancel()
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
-		if fighter.is_grounded() or fighter.air_movements_left > 0:
-			$"%TpButton".show()
-		else:
-			$"%TpButton".hide()
+		update_tp_button()
+
 	var obj = fighter.obj_from_name(fighter.after_image_object)
 	aerial = false
 	grounded = false

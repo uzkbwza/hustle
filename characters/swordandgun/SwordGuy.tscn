@@ -2581,6 +2581,7 @@ apply_fric = true
 apply_grav = true
 sprite_animation = "Holster"
 anim_length = 10
+title = "Holster"
 type = 2
 button_texture = ExtResource( 160 )
 air_type = 2
