@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.gd" type="Script" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=3]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0.851136 ), 0.0, 0.0, 0, 0, Vector2( 0.118557, 0.778409 ), 0.0, 0.0, 0, 0, Vector2( 0.561856, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="FireballTrail" type="Node2D"]
+material = SubResource( 3 )
+script = ExtResource( 1 )
+free = false
+one_shot = false
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+amount = 64
+lifetime = 2.0
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 3 )
+emission_shape = 1
+emission_sphere_radius = 8.0
+spread = 19.56
+gravity = Vector2( 0, 0 )
+initial_velocity = 37.43
+scale_amount = 0.65
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.064
+one_shot = true

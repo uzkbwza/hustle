@@ -4,7 +4,7 @@ const PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageE
 
 const LIFETIME = 100
 
-var rift_frames = 4
+var rift_frames = 5
 
 func _tick():
 	if current_tick > LIFETIME:

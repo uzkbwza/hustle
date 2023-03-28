@@ -546,7 +546,6 @@ func update_buttons(refresh = true):
 		continue_button.set_disabled(false)
 
 func activate(refresh=true):
-
 	if visible and refresh:
 		return
 #	print("activating")

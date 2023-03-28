@@ -13,6 +13,7 @@ var quick_slash_move_dir_y = "0"
 var grappling_hook_projectile = null
 var pulling = false
 var used_grappling_hook = false
+var whip_beam_charged = false
 
 #var hook_dir = Vector2()
 

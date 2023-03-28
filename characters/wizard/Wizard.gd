@@ -18,7 +18,7 @@ const SPARK_BOMB_PUSH_DISTANCE = "60"
 const SPARK_EXPLOSION_AIR_SPEED = 20
 const SPARK_EXPLOSION_GROUND_SPEED = 12
 const SPARK_EXPLOSION_DASH_SPEED = 12
-const SPARK_SPEED_FRAMES = 30
+const SPARK_SPEED_FRAMES = 40
 
 var hover_left = 0
 var hover_drain_amount = 12
@@ -101,8 +101,10 @@ func on_state_started(state):
 	.on_state_started(state)
 	if state.busy_interrupt_type == CharacterState.BusyInterrupt.Hurt:
 		fast_falling = false
+		detonating_bombs = false
 	if state is CharacterHurtState:
 		hovering = false
+		detonating_bombs = false
 
 func on_got_hit():
 	hovering = false
@@ -119,7 +121,8 @@ func tick():
 		if spark_speed_frames % 7 == 0:
 			play_sound("SparkSpeed")
 		spark_speed_particle.start_emitting()
-		spark_speed_frames -= 1
+		if hitlag_ticks <= 0:
+			spark_speed_frames -= 1
 		if spark_speed_frames <= 0:
 			$StateMachine/DashForward.dash_speed = default_dash_speed
 			chara.set_max_ground_speed(max_air_speed)
@@ -172,7 +175,6 @@ func tick():
 		current_orb_push = null
 		
 	if detonating_bombs:
-		detonating_bombs = false
 		for obj_name in nearby_spark_bombs:
 			var bomb = obj_from_name(obj_name)
 			if bomb:

@@ -30,7 +30,6 @@ var MAX_HEALTH = 1000
 const MAX_STALES = 15
 const MIN_STALE_MODIFIER = "0.2"
 
-const COMBO_DI_SCALING_DIVISOR = "3"
 const WALL_SLAM_DAMAGE = "0.75"
 
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
@@ -89,8 +88,6 @@ const GUTS_REDUCTIONS = {
 
 const MAX_GUTS = 10
 
-const MAX_DI_COMBO_ENHANCMENT = 15
-
 const MAX_BURSTS = 1
 const BURST_BUILD_SPEED = 4
 const MAX_BURST_METER = 1500
@@ -133,6 +130,9 @@ export var damage_taken_modifier = "1.0"
 var global_damage_modifier = "1.0"
 var global_hitstun_modifier = "1.0"
 var global_hitstop_modifier = "1.0"
+var min_di_scaling = "1.0"
+var max_di_scaling = "6.0"
+var di_combo_limit = 15
 
 export var num_feints = 2
 
@@ -320,6 +320,8 @@ func init(pos=null):
 		MAX_HEALTH = 1
 	hp = MAX_HEALTH
 	game_over = false
+	if fixed.lt(max_di_scaling, min_di_scaling):
+		max_di_scaling = min_di_scaling
 	show_you_label()
 	if burst_enabled:
 		for i in range(START_BURSTS):
@@ -430,7 +432,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "projectile_hit_cancelling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "projectile_hit_cancelling", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -743,7 +745,10 @@ func launched_by(hitbox):
 				if !hitbox.force_grounded:
 					state = "HurtAerial"
 					grounded_hits_taken = 0
-
+		
+		if hitbox.increment_combo:
+			opponent.incr_combo()
+			
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
@@ -763,8 +768,7 @@ func launched_by(hitbox):
 #			reset_penalty()
 #			opponent.reset_penalty()
 
-		if hitbox.increment_combo:
-			opponent.incr_combo()
+
 	if has_hyper_armor:
 		hit_during_armor = true
 
@@ -952,7 +956,11 @@ func release_opponent():
 		opponent.change_state("Fall")
 
 func get_di_scaling():
-	return fixed.add("1.0", fixed.mul("1.0", fixed.div(str(Utils.int_min(MAX_DI_COMBO_ENHANCMENT, opponent.combo_count)), COMBO_DI_SCALING_DIVISOR)))
+	var max_extra_di = fixed.sub(max_di_scaling, min_di_scaling)
+	var scaling_amount = str(Utils.int_min(di_combo_limit, opponent.combo_count))
+	var scaling_ratio = fixed.div(scaling_amount, str(di_combo_limit))
+	var total_extra_scaling = fixed.mul(max_extra_di, scaling_ratio)
+	return fixed.add(min_di_scaling, total_extra_scaling)
 
 func get_scaled_di(di):
 	return xy_to_dir(di.x, di.y, get_di_scaling())
@@ -1077,6 +1085,9 @@ func update_advantage():
 func clear_buffer():
 	buffered_input = {}
 
+func process_continue():
+	return false
+
 func tick_before():
 	if queued_action == "Forfeit":
 		if forfeit:
@@ -1150,14 +1161,17 @@ func tick_before():
 		last_input["data"] = queued_data
 		if queued_action == "Continue":
 			var current_state_name = current_state().name
-			if current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
+			if process_continue():
+				pass
+			elif current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state_name
 				queued_data = current_state().data
 			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
 				queued_action = HOLD_FORCE_STATES[current_state_name]
 			elif was_my_turn and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
-
+			elif projectile_hit_cancelling:
+				queued_action = current_state().fallback_state
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:

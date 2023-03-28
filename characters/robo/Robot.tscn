@@ -913,6 +913,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -921,7 +922,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1650,7 +1650,24 @@ enter_force_speed = "15.0"
 reset_momentum = true
 enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
+force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
+},
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
+},
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
+},
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
@@ -1658,22 +1675,6 @@ ExtResource( 205 ): {
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
-},
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
-},
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
-},
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
-},
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
 }
 }
 update_facing_on_exit = false
@@ -1688,6 +1689,7 @@ anim_length = 24
 particle_scene = ExtResource( 120 )
 particle_position = Vector2( 43, 0 )
 spawn_particle_on_enter = true
+force_same_direction_as_previous_state = true
 interrupt_into_string = "Grounded
 Aerial"
 release_opponent_on_startup = true
@@ -1817,20 +1819,21 @@ script = ExtResource( 265 )
 anim_length = 52
 enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
+force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 264 ): {
+"x": 124,
+"y": -72
+},
 ExtResource( 262 ): {
 "x": 40,
 "y": -33
 },
-ExtResource( 254 ): {
-"x": 124,
-"y": -72
-},
 ExtResource( 263 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
@@ -1838,13 +1841,13 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
-},
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
+},
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -1998,13 +2001,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -2036,50 +2039,51 @@ enter_sfx_volume = -10.0
 sfx = ExtResource( 157 )
 sfx_tick = 7
 sfx_volume = -8.0
+force_same_direction_as_previous_state = true
 throw_positions = {
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
 },
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 118 ): {
-"x": 67,
+ExtResource( 109 ): {
+"x": 70,
 "y": 15
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
 ExtResource( 112 ): {
 "x": -40,
 "y": -44
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
 }
 }
 iasa_at = 49
@@ -2139,7 +2143,6 @@ sfx_volume = -10.0
 title = "COMMAND: GRAB"
 type = 2
 button_texture = ExtResource( 218 )
-update_facing_on_exit = false
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded"
@@ -3018,17 +3021,17 @@ ExtResource( 372 ): {
 "x": -24,
 "y": -6
 },
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 },
 ExtResource( 374 ): {
 "x": 14,
 "y": -7
 },
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
 }
 }
 interrupt_into_string = "Grounded"
@@ -3250,25 +3253,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
-},
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
 },
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
+},
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
+},
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 }
 }
 release_frame = 18
@@ -3335,25 +3338,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
-},
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
 },
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
+},
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
+},
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 }
 }
 release_frame = 18

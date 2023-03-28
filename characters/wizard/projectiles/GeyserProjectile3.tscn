@@ -25,6 +25,7 @@ animations = [ {
 material = SubResource( 1 )
 has_projectile_parry_window = false
 immunity_susceptible = false
+hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
@@ -50,6 +51,7 @@ script = ExtResource( 2 )
 width = 18
 height = 18
 damage = 170
+minimum_damage = 80
 hitstun_ticks = 18
 damage_proration = 1
 cancellable = false

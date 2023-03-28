@@ -605,7 +605,7 @@ animations = [ {
 "name": "ShieldLow",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 205 ), ExtResource( 205 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 204 ) ],
+"frames": [ ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 201 ), ExtResource( 205 ), ExtResource( 205 ), ExtResource( 202 ), ExtResource( 202 ), ExtResource( 204 ), ExtResource( 204 ) ],
 "loop": true,
 "name": "SparkBomb",
 "speed": 5.0
@@ -1695,7 +1695,7 @@ script = ExtResource( 196 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 14
+anim_length = 12
 sfx = ExtResource( 206 )
 sfx_tick = 5
 sfx_volume = -10.0

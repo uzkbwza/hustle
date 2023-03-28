@@ -12,7 +12,6 @@ export var start_throw_pos_y = 0
 export var release_throw_pos_x = 0
 export var release_throw_pos_y = 0
 
-
 export var _c_Release_Data = 0
 export var hitstun_ticks: int = 0
 export var knockback: String = "1.0"
@@ -70,7 +69,7 @@ func _tick_shared():
 #		host.throw_pos_y = start_throw_pos_y
 #		var throw_pos = host.get_global_throw_pos()
 #		host.opponent.set_pos(throw_pos.x, throw_pos.y)
-		if reverse:
+		if reverse and !force_same_direction_as_previous_state:
 			host.set_facing(-host.get_facing_int())
 		host.start_invulnerability()
 		released = false

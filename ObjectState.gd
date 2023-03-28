@@ -17,6 +17,7 @@ export var anim_length = 1
 export var sprite_anim_length = -1
 export var ticks_per_frame = 1
 export var loop_animation = false
+export var animation_loop_start = 0
 export var absolute_loop = false
 export var endless = false
 
@@ -61,9 +62,11 @@ export var projectile_tick = 1
 export var projectile_pos_x = 0
 export var projectile_pos_y = 0
 export var projectile_local_pos = true
+export var projectile_match_facing = false
 
 export var _c_Flip = 0
 export var flip_frame = -1
+export var force_same_direction_as_previous_state = false
 
 export var _c_Meta = 0
 export var host_commands = {
@@ -78,6 +81,7 @@ var sfx_player
 var current_tick = -1
 var current_real_tick = -1
 var start_tick = -1
+var last_facing = 1
 var fixed
 
 var anim_name
@@ -138,6 +142,8 @@ func spawn_exported_projectile():
 	if projectile_scene:
 		var pos = get_projectile_pos()
 		var obj = host.spawn_object(projectile_scene, pos.x, pos.y, true, get_projectile_data(), projectile_local_pos)
+		if projectile_match_facing:
+			obj.set_facing(host.get_facing_int())
 		process_projectile(obj)
 
 func _tick_shared():
@@ -371,7 +377,10 @@ func spawn_particle_relative(scene: PackedScene, pos=Vector2(), dir=Vector2.RIGH
 	return host.spawn_particle_effect(scene, p + pos, dir)
 
 func _enter_shared():
-
+	if force_same_direction_as_previous_state:
+		var prev = _previous_state()
+		if prev:
+			host.set_facing(prev.last_facing)
 	if reset_momentum:
 		host.reset_momentum()
 	current_tick = -1
@@ -384,6 +393,7 @@ func _enter_shared():
 func _exit_shared():
 	if current_hurtbox:
 		current_hurtbox.end(host)
+	last_facing = host.get_facing_int()
 	host.reset_hurtbox()
 
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
@@ -401,5 +411,5 @@ func update_sprite_frame():
 #	var frame = host.fixed.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
 	if loop_animation and absolute_loop:
 		sprite_tick = host.current_tick / ticks_per_frame
-	var frame = (sprite_tick % sprite_anim_length) if loop_animation else Utils.int_min(sprite_tick, sprite_anim_length)
+	var frame = (sprite_tick % (sprite_anim_length - animation_loop_start) + animation_loop_start) if (loop_animation and sprite_tick > animation_loop_start) else Utils.int_min(sprite_tick, sprite_anim_length)
 	host.sprite.frame = frame

@@ -48,7 +48,7 @@ func _physics_process(delta):
 
 func _draw():
 #	draw_line(center, center + dir * 100, Color.purple, 10)
-	if on and intensity > 0.25:
+	if on and intensity > 0.25 and Global.speed_lines_enabled:
 		dir = dir.normalized()
 		
 		for i in range(NUM_LINES):

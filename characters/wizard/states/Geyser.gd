@@ -33,6 +33,8 @@ func is_usable():
 func _tick():
 	if started_in_air and (current_tick > 10 or current_tick < 6) and host.is_grounded():
 		return "Landing"
+	if charges == 3 and current_tick == 1:
+		current_tick = 2
 
 func _exit():
 	if particle:

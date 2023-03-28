@@ -37,6 +37,9 @@ onready var settings_nodes = {
 	"sadness_enabled": $"%SadnessEnabled",
 	"turn_min_length": $"%TurnMinLength",
 	"starting_meter": $"%StartingMeter",
+	"min_di_scaling": $"%MinDIScalingMeter",
+	"max_di_scaling": $"%MaxDIScalingMeter",
+	"di_combo_limit": $"%DIComboLimit",
 }
 
 var float_to_string = [
@@ -45,6 +48,8 @@ var float_to_string = [
 	"global_hitstun_modifier",
 	"global_gravity_modifier",
 	"starting_meter",
+	"min_di_scaling",
+	"max_di_scaling",
 ]
 
 func _ready():
@@ -265,4 +270,14 @@ func _on_GravityModifier_value_changed(value):
 
 func _on_StartingMeter_value_changed(value):
 	$"%StartingMeterValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_MinDIScalingMeter_value_changed(value):
+	$"%MinDIScalingMeterValueLabel".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_MaxDIScalingMeter_value_changed(value):
+	$"%MaxDIScalingMeterValueLabel".text = str(value)
 	pass # Replace with function body.

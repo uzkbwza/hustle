@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.3.18-steam-unstable"
+var VERSION = "1.3.20-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -26,6 +26,7 @@ var enable_custom_hit_sparks = true
 var enable_emotes = true
 var steam_demo_version = false
 var show_last_move_indicators = true
+var speed_lines_enabled = true
 
 var mouse_world_position = Vector2()
 
@@ -182,6 +183,7 @@ func save_options():
 			"enable_custom_colors": enable_custom_colors,
 			"enable_custom_particles": enable_custom_particles,
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
+			"speed_lines_enabled": speed_lines_enabled,
 		}
 	})
 
@@ -202,6 +204,7 @@ func get_default_player_data():
 			"enable_custom_particles": true,
 			"enable_custom_hit_sparks": true,
 			"show_projectile_owners": true,
+			"speed_lines_enabled": true,
 #			"light_mode": false,
 		}
 	}

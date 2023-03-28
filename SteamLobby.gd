@@ -803,8 +803,8 @@ func _send_P2P_Packet(target: int, packet_data: Dictionary) -> void:
 	else:
 		Steam.sendP2PPacket(target, DATA, SEND_TYPE, CHANNEL)
 
-func _on_Lobby_Data_Update(steam_id, member_id, success):
-	emit_signal("lobby_data_update", steam_id, member_id, success)
+func _on_Lobby_Data_Update(success, lobby_id, member_id):
+	emit_signal("lobby_data_update", success, lobby_id, member_id)
 
 func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	# If no error was given

@@ -28,7 +28,6 @@ func _enter():
 	if shift:
 		host.load_last_input_into_buffer()
 		var prev = _previous_state_name()
-		print(prev)
 		if prev == "LassoPull" or prev == "LassoReel":
 			host.opponent.change_state("Grabbed")
 
@@ -131,7 +130,7 @@ func _frame_5():
 	host.update_data()
 	if shift:
 		if host.buffered_input["action"] == "Continue":
-			host.buffered_input["action"] = _previous_state().state_name
+			host.buffered_input["action"] = _previous_state().fallback_state
 		host.use_buffer()
 	
 func _frame_6():
@@ -170,6 +169,8 @@ func _tick():
 func _exit():
 	if shift:
 		host.shift()
+		host.update_data()
+		host.update_facing()
 
 func is_usable():
 	if foresight and host.after_image_object == null:

@@ -19,6 +19,8 @@ func _enter_shared():
 	._enter_shared()
 	if throw_invuln_frames > 0:
 		host.start_throw_invulnerability()
+
+func _frame_0_shared():
 	if !is_super:
 		return
 	if super_effect:

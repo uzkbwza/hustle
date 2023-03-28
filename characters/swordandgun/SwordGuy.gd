@@ -52,6 +52,8 @@ func get_barrel_location(angle):
 	return barrel_location
 
 func shift():
+	if opponent.combo_count > 0:
+		return
 	var obj = obj_from_name(after_image_object)
 	if obj:
 		set_pos(obj.get_pos().x, obj.get_pos().y)
@@ -61,6 +63,13 @@ func shift():
 		shifted_this_frame = true
 		if obj.get_pos().y >= 0:
 			set_vel(get_vel().x, "0")
+
+func process_continue():
+#	if previous_state() and previous_state().state_name == "Shift":
+#		queued_action = current_state().fallback_state
+#		queued_data = {}
+#		return true
+	return false
 
 func tick():
 	if after_image_object:
@@ -82,6 +91,7 @@ func tick():
 				change_state("Shift")
 			elif current_state().state_name == "Shift":
 				shifting = false
+
 	.tick()
 
 	if shifted_this_frame:

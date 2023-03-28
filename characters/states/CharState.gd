@@ -188,6 +188,8 @@ func get_categories(string: String):
 	return Utils.split_lines(string)
 
 func _enter_shared():
+	if force_same_direction_as_previous_state:
+		host.reverse_state = false
 	._enter_shared()
 	started_during_combo = false
 	if dynamic_iasa:
@@ -288,7 +290,7 @@ func _tick_shared():
 		host.moved_forward = false
 		if release_opponent_on_startup:
 			host.release_opponent()
-		if !is_hurt_state and reversible:
+		if !is_hurt_state and reversible and !force_same_direction_as_previous_state:
 			if host.reverse_state:
 				var facing = host.get_facing_int()
 				var opponent_x = host.opponent.get_pos().x
@@ -379,6 +381,7 @@ func _exit_shared():
 	if update_facing_on_exit:
 		host.update_facing()
 	else:
+		host.reverse_state = false
 		host.set_facing(host.get_facing_int())
 	terminate_hitboxes()
 	host.end_invulnerability()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=243 format=2]
+[gd_scene load_steps=246 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -239,6 +239,9 @@
 [ext_resource path="res://characters/stickman/states/GrapplingHook.gd" type="Script" id=237]
 [ext_resource path="res://characters/stickman/sounds/grapplinghook1.wav" type="AudioStream" id=238]
 [ext_resource path="res://characters/stickman/sprites/actionicons/hook.png" type="Texture" id=239]
+[ext_resource path="res://characters/stickman/projectiles/HeavyWhipWave.tscn" type="PackedScene" id=240]
+[ext_resource path="res://characters/stickman/HeavyChukEffect.tscn" type="PackedScene" id=241]
+[ext_resource path="res://characters/stickman/projectiles/HeavyWhipWaveHigh.tscn" type="PackedScene" id=242]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -425,7 +428,7 @@ animations = [ {
 "name": "Landing",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 86 ) ],
+"frames": [ ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 86 ) ],
 "loop": true,
 "name": "NunChukHeavy",
 "speed": 60.0
@@ -590,7 +593,8 @@ player_extra_params_scene = ExtResource( 63 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 4 )
-animation = "Pull"
+animation = "NunChukLightHigh"
+frame = 5
 
 [node name="Super2" parent="Sounds" index="4"]
 pitch_variation = 0.1
@@ -1949,6 +1953,11 @@ apply_grav = true
 anim_length = 19
 force_dir_x = "1.0"
 force_speed = "8.0"
+projectile_scene = ExtResource( 240 )
+projectile_tick = -1
+projectile_pos_x = 16
+projectile_pos_y = -22
+projectile_match_facing = true
 title = "NunChuk"
 type = 1
 data_ui_scene = ExtResource( 67 )
@@ -1991,6 +2000,10 @@ apply_grav = true
 anim_length = 19
 force_dir_x = "1.0"
 force_speed = "6.0"
+projectile_scene = ExtResource( 242 )
+projectile_tick = -1
+projectile_pos_x = 16
+projectile_pos_y = -22
 type = 1
 button_texture = ExtResource( 27 )
 interrupt_into_string = "Grounded
@@ -2066,9 +2079,14 @@ script = ExtResource( 13 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 22
+anim_length = 16
 enter_force_dir_x = "1.0"
-enter_force_speed = "10.0"
+enter_force_speed = "7.0"
+particle_scene = ExtResource( 241 )
+particle_position = Vector2( 32, -16 )
+timed_particle_scene = ExtResource( 241 )
+timed_particle_position = Vector2( 32, -16 )
+timed_spawn_particle_tick = 6
 title = "Chuk Heavy"
 type = 1
 button_texture = ExtResource( 29 )
@@ -2096,13 +2114,34 @@ height = 18
 damage = 60
 hitstun_ticks = 23
 victim_hitlag = 4
+damage_proration = -1
+cancellable = false
+di_modifier = "0.3"
+sdi_modifier = "0.2"
+hit_sound = ExtResource( 42 )
+knockback = "2.5"
+pushback_x = "0.0"
+start_tick = 7
+active_ticks = 6
+looping = true
+loop_inactive_ticks = 1
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukHeavy" index="1"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 27
+y = -27
+width = 21
+damage = 80
+hitstun_ticks = 23
+victim_hitlag = 4
+damage_proration = -1
+group = 1
 hit_sound = ExtResource( 42 )
 knockback = "4.0"
 pushback_x = "0.0"
-start_tick = 9
-active_ticks = 9
-looping = true
-loop_inactive_ticks = 1
+start_tick = 13
+active_ticks = 2
 
 [node name="NunChukJump" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 11 )
@@ -2308,6 +2347,7 @@ projectile_scene = ExtResource( 59 )
 projectile_tick = 12
 projectile_pos_x = 24
 projectile_pos_y = -4
+projectile_match_facing = true
 title = "Whip Wave"
 type = 2
 button_texture = ExtResource( 60 )

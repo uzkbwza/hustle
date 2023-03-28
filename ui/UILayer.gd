@@ -62,6 +62,7 @@ onready var global_option_check_buttons = {
 	$"%EnableEmotes": "enable_emotes",
 	$"%LastMoveIndicatorButton": "show_last_move_indicators",
 	$"%ProjectileOwnersButton": "show_projectile_owners",
+	$"%SpeedLinesButton": "speed_lines_enabled",
 }
 
 func _ready():

@@ -31,6 +31,6 @@ func _tick():
 		else:
 #			var lag = 7 if starting_y > -10 else 4
 			var lag = 4 + Utils.int_max(MAX_EXTRA_LAG_FRAMES - current_tick, 0)
-			print(lag)
+#			print(lag)
 			queue_state_change("Landing", lag)
 			var vel = host.get_vel()

@@ -31,7 +31,7 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	handshake_made = false
 
-func _on_lobby_data_update(steam_id, member_id, success):
+func _on_lobby_data_update(success, lobby_id, member_id):
 	if Steam.getLobbyOwner(SteamLobby.LOBBY_ID) == SteamHustle.STEAM_ID:
 		$"%GameSettingsPanelContainer".enable()
 		$"%GameSettingsPanelContainer".update_lobby_data()

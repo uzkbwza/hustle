@@ -25,9 +25,10 @@ func _on_fast_fall_button_toggled(on):
 
 func reset():
 	orb_push.set_dir("Neutral")
-	explode_button.set_pressed_no_signal(false)
-	fast_fall_button.set_pressed_no_signal(fighter.fast_falling and fighter.current_state() != CharacterHurtState)
-	hover_button.set_pressed_no_signal(fighter.hovering and fighter.current_state() != CharacterHurtState)
+	var is_hurt = fighter.current_state() != CharacterHurtState
+	explode_button.set_pressed_no_signal(fighter.detonating_bombs and is_hurt)
+	fast_fall_button.set_pressed_no_signal(fighter.fast_falling and is_hurt)
+	hover_button.set_pressed_no_signal(fighter.hovering and is_hurt)
 
 func show_options():
 	orb_push.hide()
@@ -46,7 +47,7 @@ func show_options():
 		hover_button.show()
 	if !fighter.is_grounded():
 		fast_fall_button.show()
-	if fighter.nearby_spark_bombs:
+	if fighter.spark_bombs:
 		explode_button.show()
 
 func get_extra():
