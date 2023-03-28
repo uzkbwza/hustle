@@ -131,6 +131,7 @@ func _frame_5():
 	if shift:
 		if host.buffered_input["action"] == "Continue":
 			host.buffered_input["action"] = _previous_state().fallback_state
+			host.release_opponent()
 		host.use_buffer()
 	
 func _frame_6():

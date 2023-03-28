@@ -7,6 +7,7 @@ const FLY_SPEED = "8"
 const FLY_TICKS = 20
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
+const START_LOIC_METER: int = 500
 const LOIC_GAIN = 6
 const LOIC_GAIN_NO_ARMOR = 6
 const MAGNET_TICKS = 110
@@ -51,6 +52,7 @@ func _ready():
 func init(pos=null):
 	.init(pos)
 	armor_pips = 1
+	loic_meter = START_LOIC_METER
 	if infinite_resources:
 		can_loic = true
 		loic_meter = LOIC_METER

@@ -3,7 +3,7 @@ extends ObjectState
 const PUSH_DISTANCE = "60"
 const PUSH_SPEED = "10"
 const SELF_DAMAGE = 31
-const SUPER_METER_GAIN = 50
+const SUPER_METER_GAIN = 35
 
 func _frame_1():
 	var dir = host.obj_local_center(host.creator)

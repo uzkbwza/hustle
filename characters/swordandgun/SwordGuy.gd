@@ -9,7 +9,7 @@ const BARREL_LOCATION_Y = "-5"
 const GUN_PICKUP_DISTANCE = "26"
 const IS_COWBOY = true # lol
 const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageExplosion.tscn")
-const AFTER_IMAGE_MAX_DIST = "300"
+const AFTER_IMAGE_MAX_DIST = "410"
 
 var bullets_left = 6
 var cut_projectile = null

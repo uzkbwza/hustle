@@ -54,12 +54,12 @@ script = ExtResource( 4 )
 unique_name_in_owner = true
 margin_right = 50.0
 margin_bottom = 11.0
+grow_horizontal = 2
 mouse_filter = 1
 size_flags_vertical = 0
 text = "XYPlot"
 align = 1
 valign = 1
-clip_text = true
 
 [node name="XLabel" type="Label" parent="."]
 unique_name_in_owner = true

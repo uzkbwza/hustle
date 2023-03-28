@@ -1170,8 +1170,8 @@ func tick_before():
 				queued_action = HOLD_FORCE_STATES[current_state_name]
 			elif was_my_turn and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
-			elif projectile_hit_cancelling:
-				queued_action = current_state().fallback_state
+#			elif projectile_hit_cancelling:
+#				queued_action = current_state().fallback_state
 		if queued_action in state_machine.states_map:
 #			last_action = current_tick
 			if feinted_last:

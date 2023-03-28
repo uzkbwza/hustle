@@ -16,6 +16,7 @@ var disable_collision
 var aerial_hit_state
 var grounded_hit_state
 var ground_bounce
+var air_ground_bounce
 var hits_otg
 var damage
 var reversible
@@ -125,6 +126,8 @@ func _init(state):
 		hits_vs_dizzy = state.hits_vs_dizzy
 	if state.get("meter_gain_modifier") != null:
 		meter_gain_modifier = state.meter_gain_modifier
+	if state.get("air_ground_bounce") != null:
+		air_ground_bounce = state.air_ground_bounce
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

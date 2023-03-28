@@ -20,6 +20,11 @@ var ground_bounced = false
 const BOUNCE_FACTOR = "-0.85"
 const BOUNCE_PARTICLE = preload("res://fx/LandingParticle.tscn")
 
+func begin_ground_bounce():
+	hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
+	bounce_frames = BOUNCE_FRAMES
+	ground_bounced = true
+
 func _enter():
 	ground_bounced = false
 	can_act = false
@@ -30,10 +35,9 @@ func _enter():
 #	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit
-	if hitbox.ground_bounce and host.is_grounded() and fixed.gt(hitbox.dir_y, "0"):
-		hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
-		bounce_frames = BOUNCE_FRAMES
-		ground_bounced = true
+	if (hitbox.ground_bounce and host.is_grounded()) and fixed.gt(hitbox.dir_y, "0"):
+		begin_ground_bounce()
+
 	var x = get_x_dir(hitbox)
 	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
 	
@@ -95,16 +99,21 @@ func _tick():
 			host.set_pos(host.get_pos().x, -1)
 	else:
 		if host.is_grounded() and fixed.ge(host.get_vel().y, "0"):
-			if knockdown or host.hp == 0:
-				if hard_knockdown:
-					return "HardKnockdown"
-				else:
-#				host.start_invulnerability()
-					return "Knockdown"
+			if hitbox.air_ground_bounce and !ground_bounced:
+#				hitstun = hitstun + global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox)) / 2
+				begin_ground_bounce()
+				host.set_vel(vel.x, fixed.mul(vel.y, "-1"))
 			else:
-				if host.hp > 0:
-					return "Landing"
-				return "Knockdown"
+				if knockdown or host.hp == 0:
+					if hard_knockdown:
+						return "HardKnockdown"
+					else:
+	#				host.start_invulnerability()
+						return "Knockdown"
+				else:
+					if host.hp > 0:
+						return "Landing"
+					return "Knockdown"
 				
 	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown and !ground_bounced
 	

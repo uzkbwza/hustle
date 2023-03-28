@@ -27,6 +27,7 @@ func _frame_6():
 #	pass
 func _frame_8():
 	host.play_sound("Step")
+	
 
 func _frame_9():
 	self_interruptable = true

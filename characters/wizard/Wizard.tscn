@@ -772,7 +772,7 @@ script = ExtResource( 216 )
 
 [node name="SparkSpeed" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
 stream = ExtResource( 293 )
-volume_db = -20.0
+volume_db = -27.0
 pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 216 )
@@ -1558,6 +1558,7 @@ hit_cancel_into_string = "GroundedSpecial
 GroundedSuper
 AerialSpecial
 AerialSuper"
+hit_cancel_exceptions_string = "VileClutch"
 trigger_orb_type = "Sword"
 trigger_orb_delay = 18
 
@@ -1734,7 +1735,8 @@ iasa_at = 11
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
-AerialSpecial"
+AerialSpecial
+VileClutch"
 interrupt_into_string = "Grounded
 Aerial"
 trigger_orb_type = "OrbDart"

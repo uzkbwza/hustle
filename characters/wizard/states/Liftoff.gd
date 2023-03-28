@@ -16,7 +16,7 @@ func _frame_6():
 #	host.move_directly(0, -1)
 	var dir = xy_to_dir(data.x, data.y, SPEED)
 	if host.spark_speed_frames > 0:
-		dir.x = fixed.mul(dir.x, "2.0")
+		dir.x = fixed.mul(dir.x, "1.75")
 	var hitbox_offs = fixed.normalized_vec_times(dir.x, dir.y, HITBOX_OFFSET)
 	var center = host.get_hurtbox_center()
 	hitbox.dir_x = fixed.mul(hitbox_offs.x, str(host.get_facing_int()))

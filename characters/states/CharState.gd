@@ -256,7 +256,9 @@ func _on_hit_something(obj, hitbox):
 		if !can_hit_cancel():
 			return
 		if obj.is_in_group("Fighter") or obj.get("hit_cancel_on_hit"):
-			enable_hit_cancel(!obj.is_in_group("Fighter"))
+			var projectile = !obj.is_in_group("Fighter")
+			if projectile or hitbox.followup_state == "":
+				enable_hit_cancel(projectile)
 
 func can_hit_cancel():
 	return true

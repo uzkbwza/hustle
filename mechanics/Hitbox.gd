@@ -105,6 +105,7 @@ export var knockdown = false
 export var knockdown_extends_hitstun = true # if true, aerial victim will stay in hitstun until hitting the ground
 export var hard_knockdown = false
 export var disable_collision = true
+export var air_ground_bounce = false
 export var ground_bounce = true
 export var wall_slam = false
 

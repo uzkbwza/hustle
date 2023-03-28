@@ -845,6 +845,8 @@ interruptible_on_opponent_turn = true
 self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedMovement
+Aerial
+AerialMovement
 Jump"
 interrupt_into_string = "Grounded
 Aerial"
@@ -2219,7 +2221,6 @@ title = "Spot Dodge"
 type = 4
 button_texture = ExtResource( 305 )
 air_type = 2
-uses_air_movement = true
 iasa_at = 9
 self_interruptable = false
 reversible = false

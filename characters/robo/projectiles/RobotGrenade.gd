@@ -50,7 +50,7 @@ func hit_by(hitbox):
 			set_vel(fixed.mul(vel.x, "-1"), vel.y)
 		else:
 			reset_momentum()
-			var dir = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "1.6"))
+			var dir = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "1.3"))
 			if is_grounded() and fixed.gt(dir.y, "0"):
 				dir.y = fixed.mul(dir.y, "-1")
 			change_state("Active")
