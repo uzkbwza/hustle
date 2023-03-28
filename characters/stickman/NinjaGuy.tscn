@@ -2004,6 +2004,7 @@ projectile_scene = ExtResource( 242 )
 projectile_tick = -1
 projectile_pos_x = 16
 projectile_pos_y = -22
+projectile_match_facing = true
 type = 1
 button_texture = ExtResource( 27 )
 interrupt_into_string = "Grounded

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://characters/stickman/projectiles/HeavyWhipWave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=4]
 [ext_resource path="res://characters/stickman/sounds/kunai.wav" type="AudioStream" id=5]
 [ext_resource path="res://characters/stickman/HeavyWhipWaveHitEffect.tscn" type="PackedScene" id=6]
+[ext_resource path="res://characters/stickman/projectiles/heavy_whip_wave2.png" type="Texture" id=7]
+[ext_resource path="res://characters/stickman/projectiles/heavy_whip_wave1.png" type="Texture" id=8]
+[ext_resource path="res://characters/stickman/projectiles/heavy_whip_wave3.png" type="Texture" id=9]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -15,6 +18,14 @@ shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 8 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -30,6 +41,7 @@ material = SubResource( 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 rotation = -0.523599
+frames = SubResource( 3 )
 frame = 1
 
 [node name="FireballTrail" parent="Flip/Particles" index="0"]
@@ -102,8 +114,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox2" parent="StateMachine/Default" index="3"]
 x = 44
@@ -134,8 +147,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox6" type="Node2D" parent="StateMachine/Default" index="5"]
 z_index = 1000
@@ -159,8 +173,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox7" type="Node2D" parent="StateMachine/Default" index="6"]
 z_index = 1000
@@ -185,8 +200,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox8" type="Node2D" parent="StateMachine/Default" index="7"]
 z_index = 1000
@@ -211,8 +227,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox10" type="Node2D" parent="StateMachine/Default" index="8"]
 z_index = 1000
@@ -237,8 +254,9 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [node name="Hitbox9" type="Node2D" parent="StateMachine/Default" index="9"]
 z_index = 1000
@@ -263,7 +281,8 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
+start_tick = 3
 active_ticks = 2
+always_on = true
 
 [editable path="Flip/Particles/FireballTrail"]
