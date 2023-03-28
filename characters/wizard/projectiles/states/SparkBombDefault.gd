@@ -22,8 +22,14 @@ func _tick():
 		var center = obj.get_hurtbox_center()
 		if fixed.lt(fixed.vec_dist(str(pos.x), str(pos.y), str(center.x), str(center.y)), ACTIVATE_DISTANCE):
 #			if host.get_opponent().combo_count <= 0:
-			host.explode()
+			if host.delay_ticks <= 0:
+				host.explode()
 			return
+		if host.delay_ticks > 0:
+			host.delay_ticks -= 1
+			if host.delay_ticks == 0:
+				if host.exploded:
+					host.explode()
 
 	for obj_name in host.objs_map:
 		var obj = host.objs_map[obj_name]
@@ -43,5 +49,6 @@ func _tick():
 	host.apply_y_fric(Y_FRIC)
 	host.apply_forces_no_limit()
 	if current_tick >= lifetime:
-		host.explode()
+		if host.delay_ticks <= 0:
+			host.explode()
 		return

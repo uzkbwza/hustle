@@ -1432,6 +1432,7 @@ interrupt_into_string = "Grounded
 Return"
 hit_cancel_into_string = "Grounded
 Aerial"
+can_be_counterhit = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Step" index="0"]
 z_index = 1000

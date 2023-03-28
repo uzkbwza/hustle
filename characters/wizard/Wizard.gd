@@ -19,6 +19,7 @@ const SPARK_EXPLOSION_AIR_SPEED = 25
 const SPARK_EXPLOSION_GROUND_SPEED = 20
 const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 35
+const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
 var hover_drain_amount = 12
@@ -173,12 +174,14 @@ func tick():
 				var force = fixed.normalized_vec_times(str(current_orb_push.x), str(current_orb_push.y), ORB_PUSH_SPEED)
 				objs_map[orb_projectile].push(force.x, force.y)
 		current_orb_push = null
-		
+
 	if detonating_bombs:
 		for obj_name in nearby_spark_bombs:
 			var bomb = obj_from_name(obj_name)
 			if bomb:
-				bomb.explode()
+				bomb.explode(true)
+				take_damage(SPARK_BOMB_SELF_DAMAGE)
+				spark_speed_frames += SPARK_SPEED_FRAMES
 
 	if nearby_spark_bombs:
 		nearby_spark_bombs = []

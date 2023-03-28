@@ -1,7 +1,7 @@
 extends CharacterState
 
 const MAX_DIST = "200"
-const X_MULTIPLIER = "2.0"
+const X_MULTIPLIER = "1.5"
 const Y_MULTIPLIER = "1.25"
 
 

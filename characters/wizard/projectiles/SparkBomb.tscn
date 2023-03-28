@@ -60,7 +60,8 @@ animations = [ {
 material = SubResource( 1 )
 script = ExtResource( 10 )
 extra_state_variables = "exploded
-armed"
+armed
+delay_ticks"
 immunity_susceptible = false
 deletes_other_projectiles = false
 hitlag_modifier = "1.0"
