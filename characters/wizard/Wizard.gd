@@ -179,7 +179,6 @@ func tick():
 			var bomb = obj_from_name(obj_name)
 			if bomb:
 				bomb.explode()
-				spark_speed_frames += SPARK_SPEED_FRAMES
 
 	if nearby_spark_bombs:
 		nearby_spark_bombs = []

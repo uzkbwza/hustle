@@ -14,6 +14,7 @@ func _frame_1():
 		host.creator.take_damage(SELF_DAMAGE)
 		host.creator.gain_super_meter(SUPER_METER_GAIN)
 		host.creator.unlock_achievement("ACH_SPARK_JUMP") 
+		host.creator.spark_speed_frames += host.creator.SPARK_SPEED_FRAMES
 
 func _frame_16():
 	host.disable()
