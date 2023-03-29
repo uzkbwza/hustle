@@ -38,7 +38,6 @@ var grenade_object = null
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
-
 onready var chainsaw_arm_ghosts = [
 
 ]

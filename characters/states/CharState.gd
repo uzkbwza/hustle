@@ -92,6 +92,7 @@ export var no_collision_start_frame = -1
 export var no_collision_end_frame = -1
 export var can_be_counterhit = true
 export var tick_priority = 0
+export var velocity_forward_meter_gain_multiplier = "1.0"
 
 var initiative_effect_spawned = false
 

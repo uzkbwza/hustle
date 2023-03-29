@@ -68,7 +68,6 @@ func tick():
 	if is_grounded():
 		used_grappling_hook = false
 
-
 func on_got_hit():
 	if bomb_projectile or bomb_thrown:
 		bomb_thrown = false

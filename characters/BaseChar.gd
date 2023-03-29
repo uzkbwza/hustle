@@ -705,6 +705,7 @@ func debug_text():
 			"lowest_tick": lowest_tick,
 			"initiative": initiative,
 			"penalty": penalty,
+			"combo_proration": combo_proration,
 		}
 	)
 
@@ -745,19 +746,20 @@ func launched_by(hitbox):
 				if !hitbox.force_grounded:
 					state = "HurtAerial"
 					grounded_hits_taken = 0
-		
+
 		if hitbox.increment_combo:
 			opponent.incr_combo()
-			
+
+		if opponent.combo_count <= 1:
+			opponent.combo_proration = hitbox.damage_proration
+
+
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
 
 		busy_interrupt = true
 		can_nudge = true
-				
-		if opponent.combo_count == 0:
-			opponent.combo_proration = hitbox.damage_proration
 
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
@@ -1253,7 +1255,6 @@ func tick():
 			state_interruptable = true
 			can_nudge = false
 
-		
 		if !current_state() is ThrowState and current_state().apply_pushback:
 			chara.apply_pushback(get_opponent_dir())
 		if is_grounded():
@@ -1263,7 +1264,11 @@ func tick():
 		if not (current_state().is_hurt_state) and !(opponent.current_state().is_hurt_state):
 			var x_vel_int = chara.get_x_vel_int()
 			if Utils.int_sign(x_vel_int) == Utils.int_sign(opponent.get_pos().x - get_pos().x):
-				gain_super_meter(Utils.int_max(Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR, 1))
+				var super_gain = Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR
+				super_gain = fixed.round(fixed.mul(str(super_gain), current_state().velocity_forward_meter_gain_multiplier))
+				var vel_gain_amount = Utils.int_min(super_gain, 1)
+#				print("vel meter: " + str(vel_gain_amount))
+				gain_super_meter(vel_gain_amount)
 	#	if current_state().current_tick == -1:
 	#		state_tick()
 	if state_interruptable:

@@ -749,7 +749,8 @@ stance_teleport_x
 stance_teleport_y
 shifting
 ticks_until_time_shift
-shifted_this_frame"
+shifted_this_frame
+shifted_last_frame"
 character_portrait = ExtResource( 58 )
 player_info_scene = ExtResource( 115 )
 player_extra_params_scene = ExtResource( 284 )
@@ -1520,7 +1521,7 @@ y = -22
 width = 39
 height = 4
 damage = 100
-hitstun_ticks = 11
+hitstun_ticks = 10
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -1537,7 +1538,7 @@ y = -22
 width = 28
 height = 4
 damage = 100
-hitstun_ticks = 11
+hitstun_ticks = 10
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -2835,6 +2836,7 @@ spawn_particle_on_enter = false
 enter_sfx = ExtResource( 282 )
 enter_sfx_volume = -16.0
 title = "Walk Forward"
+velocity_forward_meter_gain_multiplier = "2.0"
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false

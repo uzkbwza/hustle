@@ -933,7 +933,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1781,6 +1780,7 @@ AerialSpecial
 GroundedSuper
 AerialSuper
 Jump"
+release_opponent_on_exit = true
 initiative_effect = true
 initiative_startup_reduction_amount = 2
 

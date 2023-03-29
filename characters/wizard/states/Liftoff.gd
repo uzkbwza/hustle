@@ -17,6 +17,9 @@ func _frame_6():
 	var dir = xy_to_dir(data.x, data.y, SPEED)
 	if host.spark_speed_frames > 0:
 		dir.x = fixed.mul(dir.x, "1.75")
+
+	if host.combo_count <= 0 and fixed.sign(dir.x) != host.get_facing_int():
+		host.add_penalty(20)
 	var hitbox_offs = fixed.normalized_vec_times(dir.x, dir.y, HITBOX_OFFSET)
 	var center = host.get_hurtbox_center()
 	hitbox.dir_x = fixed.mul(hitbox_offs.x, str(host.get_facing_int()))
@@ -36,9 +39,10 @@ func _frame_6():
 	
 func _tick():
 	host.apply_forces_no_limit()
+	var vel = host.get_vel()
 	if current_tick > 7:
 		if host.is_grounded():
-			var vel = host.get_vel()
+			
 			var landing_lag = 4
 			if !fixed.eq(vel.x, "0"):
 				if fixed.sign(vel.x) != host.get_facing_int():

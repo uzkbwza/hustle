@@ -60,16 +60,14 @@ func global_hitstun_modifier(ticks):
 	return fixed.round(fixed.mul(str(ticks), host.global_hitstun_modifier))
 
 func di_shave_hitstun(hitstun, hitbox_dir_x, hitbox_dir_y):
-	var dir = xy_to_dir(host.current_di.x, host.current_di.y)
-	var hitbox_dir = fixed.normalized_vec(hitbox_dir_x, hitbox_dir_y)
-	var di_shave_amount = host.fixed_dot(dir.x, dir.y, hitbox_dir.x, hitbox_dir.y)
-	if fixed.ge(di_shave_amount, "0"):
-		di_shave_amount = "0"
-	else:
-#		print("brace")
-		brace = true
-	hitstun -= fixed.round(fixed.mul(str(hitstun), fixed.mul(DI_BRACE_RATIO, di_shave_amount)))
-#	print(hitstun)
+#	var dir = xy_to_dir(host.current_di.x, host.current_di.y)
+#	var hitbox_dir = fixed.normalized_vec(hitbox_dir_x, hitbox_dir_y)
+#	var di_shave_amount = host.fixed_dot(dir.x, dir.y, hitbox_dir.x, hitbox_dir.y)
+#	if fixed.ge(di_shave_amount, "0"):
+#		di_shave_amount = "0"
+#	else:
+#		brace = true
+#	hitstun -= fixed.round(fixed.mul(str(hitstun), fixed.mul(DI_BRACE_RATIO, di_shave_amount)))
 	return hitstun
 
 func get_x_dir(hitbox):

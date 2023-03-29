@@ -31,6 +31,7 @@ var stance_teleport_x = 0
 var detonating = false
 var shifting = false
 var shifted_this_frame = false
+var shifted_last_frame = false
 var stance_teleport_y = 0
 var ticks_until_time_shift = 0
 
@@ -94,12 +95,16 @@ func tick():
 
 	.tick()
 
+	if shifted_last_frame:
+		if current_state().current_tick == 1 and current_state().has_hitboxes and not "Grab" in current_state().state_name:
+			current_state().current_tick = 2
+		
+		shifted_last_frame = false
+
 	if shifted_this_frame:
 		update_facing()
 		shifted_this_frame = false
-
-	if ticks_until_time_shift > 0:
-		sprite.animation = "TimeShift"
+		shifted_last_frame = true
 
 	if objs_map.has(cut_projectile):
 		var proj = objs_map[cut_projectile]
@@ -112,6 +117,7 @@ func tick():
 			used_aerial_l_slice = false
 		if !up_swipe_momentum:
 			up_swipe_momentum = true
+
 	if combo_count > 0:
 		up_swipe_momentum = true
 	if !has_gun and gun_projectile != null:
