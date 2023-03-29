@@ -488,6 +488,9 @@ func set_facing(facing: int):
 	if initialized:
 		update_data()
 
+func fixed_dot(x1: String, y1: String, x2: String, y2: String) -> String:
+	return fixed.add(fixed.mul(x1, x2), fixed.mul(y1, y2))
+
 func set_vel(x, y):
 	check_params(x, y)
 	chara.set_vel(str(x), str(y))

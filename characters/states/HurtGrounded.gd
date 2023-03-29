@@ -30,6 +30,8 @@ func _enter():
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"
+	else:
+		hitstun = di_shave_hitstun(hitstun, x, "0")
 	if host.touching_wall and !wall_slam:
 		knockback_force.x = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)

@@ -16,7 +16,6 @@ var can_act
 var bounce_frames = 0
 var ground_bounced = false
 
-
 const BOUNCE_FACTOR = "-0.85"
 const BOUNCE_PARTICLE = preload("res://fx/LandingParticle.tscn")
 
@@ -47,6 +46,9 @@ func _enter():
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"
+	else:
+		hitstun = di_shave_hitstun(hitstun, x, hitbox.dir_y)
+
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)

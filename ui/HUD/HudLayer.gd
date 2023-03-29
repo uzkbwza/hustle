@@ -35,6 +35,10 @@ onready var p2_ghost_health_bar_trail = $"%P2GhostHealthBarTrail"
 onready var p1_sadness_label = $"%P1SadnessLabel"
 onready var p2_sadness_label = $"%P2SadnessLabel"
 
+onready var p1_brace_label = $"%P1BraceLabel"
+onready var p2_brace_label = $"%P2BraceLabel"
+
+
 
 const TRAIL_DRAIN_RATE = 25
 
@@ -190,6 +194,7 @@ func _physics_process(_delta):
 
 		$"%P1HitLabel".visible = p1.combo_count >= 2
 		$"%P2HitLabel".visible = p2.combo_count >= 2
+	
 		$"%Timer".text = str(game.get_ticks_left())
 		$"%SuperDim".visible = game.super_active and !game.parry_freeze
 		$"%P1SuperTexture".visible = game.p1_super
@@ -198,6 +203,8 @@ func _physics_process(_delta):
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
 		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		p1_brace_label.visible = p1.current_state() is CharacterHurtState and p1.current_state().brace and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
+		p2_brace_label.visible = p2.current_state() is CharacterHurtState and p2.current_state().brace and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		$"%P1AdvantageLabel".visible = p1.initiative and p1.current_state().initiative_effect
 		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1

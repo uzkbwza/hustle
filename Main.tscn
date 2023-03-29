@@ -866,6 +866,20 @@ margin_bottom = -83.0
 theme = ExtResource( 4 )
 text = "SAD!"
 
+[node name="P1BraceLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -247.0
+margin_top = -85.0
+margin_right = -194.0
+margin_bottom = -74.0
+theme = ExtResource( 4 )
+text = "BRACE!"
+
 [node name="P2CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
 modulate = Color( 0.94902, 1, 0.192157, 1 )
@@ -911,6 +925,22 @@ margin_bottom = -83.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
 text = "SAD!"
+align = 2
+
+[node name="P2BraceLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 191.0
+margin_top = -85.0
+margin_right = 246.0
+margin_bottom = -74.0
+grow_horizontal = 0
+theme = ExtResource( 4 )
+text = "BRACE!"
 align = 2
 
 [node name="WinLabel" type="Label" parent="HudLayer"]
@@ -1594,11 +1624,11 @@ autowrap = true
 [node name="HelpText11" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]
 margin_left = 96.0
 margin_top = 38.0
-margin_right = 193.0
-margin_bottom = 105.0
+margin_right = 205.0
+margin_bottom = 161.0
 rect_pivot_offset = Vector2( 65, 38 )
 mouse_filter = 1
-text = "Use DI to alter this player's trajectory and throw off opponents when they're getting hit."
+text = "Use DI to alter this player's trajectory and throw off opponents when they're getting hit. Angle DI *against* an attack's knockback direction to brace for impact, reducing hitstun."
 autowrap = true
 
 [node name="HelpText12" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]

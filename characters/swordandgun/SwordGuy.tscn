@@ -1460,7 +1460,7 @@ y = -22
 width = 39
 height = 4
 damage = 100
-hitstun_ticks = 10
+hitstun_ticks = 11
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -1477,7 +1477,7 @@ y = -22
 width = 28
 height = 4
 damage = 100
-hitstun_ticks = 10
+hitstun_ticks = 11
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -1520,7 +1520,7 @@ y = -22
 width = 39
 height = 4
 damage = 100
-hitstun_ticks = 10
+hitstun_ticks = 11
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -1537,7 +1537,7 @@ y = -22
 width = 28
 height = 4
 damage = 100
-hitstun_ticks = 13
+hitstun_ticks = 11
 victim_hitlag = 4
 damage_proration = 1
 hit_height = 0
@@ -1943,13 +1943,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded

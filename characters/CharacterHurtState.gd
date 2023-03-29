@@ -6,6 +6,9 @@ const SMOKE_SPEED = "6.5"
 const SMOKE_FREQUENCY = 1
 const COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES = 5
 const HITSTUN_DECAY_PER_HIT = 1
+const DI_BRACE_RATIO = "-0.25"
+
+var brace = false
 
 enum BOUNCE {
 	LEFT_WALL,
@@ -25,6 +28,7 @@ func init():
 	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
+	brace = false
 	host.release_opponent()
 	hitbox = data["hitbox"]
 	host.z_index = -1
@@ -55,6 +59,19 @@ func hitstun_modifier(hitbox):
 func global_hitstun_modifier(ticks):
 	return fixed.round(fixed.mul(str(ticks), host.global_hitstun_modifier))
 
+func di_shave_hitstun(hitstun, hitbox_dir_x, hitbox_dir_y):
+	var dir = xy_to_dir(host.current_di.x, host.current_di.y)
+	var hitbox_dir = fixed.normalized_vec(hitbox_dir_x, hitbox_dir_y)
+	var di_shave_amount = host.fixed_dot(dir.x, dir.y, hitbox_dir.x, hitbox_dir.y)
+	if fixed.ge(di_shave_amount, "0"):
+		di_shave_amount = "0"
+	else:
+#		print("brace")
+		brace = true
+	hitstun -= fixed.round(fixed.mul(str(hitstun), fixed.mul(DI_BRACE_RATIO, di_shave_amount)))
+#	print(hitstun)
+	return hitstun
+
 func get_x_dir(hitbox):
 	return host.get_hitbox_x_dir(hitbox)
 
@@ -63,6 +80,7 @@ func _on_hit_something(_obj, _hitbox):
 
 func _exit_shared():
 	host.z_index = 0
+	brace = false
 	._exit_shared()
 
 func can_interrupt():
