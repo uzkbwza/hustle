@@ -1211,7 +1211,7 @@ interrupt_into_string = "Aerial
 Grounded"
 hit_cancel_into_string = "Grounded
 Aerial"
-velocity_forward_meter_gain_multiplier = "2.0"
+velocity_forward_meter_gain_multiplier = "0.5"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 15
 
