@@ -20,6 +20,3 @@ func _tick():
 func _frame_3():
 	if dir == 1:
 		host.start_projectile_invulnerability()
-
-func _frame_8():
-	host.end_projectile_invulnerability()

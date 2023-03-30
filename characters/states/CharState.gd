@@ -53,6 +53,7 @@ export var dynamic_iasa = true
 export var backdash_iasa = false
 export var allow_framecheat = false
 export var next_state_on_hold = true
+export var next_state_on_hold_on_opponent_turn = false
 export var combo_only = false
 export var neutral_only = false
 
@@ -184,6 +185,9 @@ func is_usable():
 	if neutral_only and host.combo_count >= 1:
 		return false
 	return true
+
+func get_velocity_forward_meter_gain_multiplier():
+	return velocity_forward_meter_gain_multiplier
 
 func get_categories(string: String):
 	return Utils.split_lines(string)

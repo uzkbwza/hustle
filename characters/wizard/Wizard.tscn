@@ -1709,6 +1709,7 @@ title = "Spark Bomb"
 type = 3
 button_texture = ExtResource( 208 )
 air_type = 2
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "Grounded
 GroundedSuper
 Aerial

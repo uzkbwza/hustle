@@ -23,6 +23,9 @@ func _enter():
 	updated = false
 	charged = false
 
+func get_velocity_forward_meter_gain_multiplier():
+	return fixed.mul(velocity_forward_meter_gain_multiplier, dist_ratio)
+
 func _frame_1():
 	if dir_x < 0:
 		MAX_SPEED_RATIO = "1.0"

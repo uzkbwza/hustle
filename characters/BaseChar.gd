@@ -1170,7 +1170,7 @@ func tick_before():
 				queued_data = current_state().data
 			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
 				queued_action = HOLD_FORCE_STATES[current_state_name]
-			elif was_my_turn and !feinting and current_state().next_state_on_hold:
+			elif (was_my_turn or (current_state().interruptible_on_opponent_turn and current_state().next_state_on_hold_on_opponent_turn)) and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
 #			elif projectile_hit_cancelling:
 #				queued_action = current_state().fallback_state
@@ -1264,9 +1264,12 @@ func tick():
 		if not (current_state().is_hurt_state) and !(opponent.current_state().is_hurt_state):
 			var x_vel_int = chara.get_x_vel_int()
 			if Utils.int_sign(x_vel_int) == Utils.int_sign(opponent.get_pos().x - get_pos().x):
-				var super_gain = Utils.int_abs(x_vel_int) / VEL_SUPER_GAIN_DIVISOR
-				super_gain = fixed.round(fixed.mul(str(super_gain), current_state().velocity_forward_meter_gain_multiplier))
-				var vel_gain_amount = Utils.int_min(super_gain, 1)
+				var multiplier = current_state().get_velocity_forward_meter_gain_multiplier()
+#				print(multiplier)
+				var super_gain = fixed.abs(fixed.mul(str(x_vel_int), multiplier))
+				super_gain = fixed.round(fixed.div(super_gain, str(VEL_SUPER_GAIN_DIVISOR)))
+#				print(super_gain)
+				var vel_gain_amount = Utils.int_max(super_gain, 0)
 #				print("vel meter: " + str(vel_gain_amount))
 				gain_super_meter(vel_gain_amount)
 	#	if current_state().current_tick == -1:
