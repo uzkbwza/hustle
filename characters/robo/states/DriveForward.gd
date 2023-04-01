@@ -17,6 +17,6 @@ func _tick():
 	host.apply_forces_no_limit()
 	host.limit_speed(SPEED_LIMIT)
 
-func _frame_3():
+func _frame_1():
 	if dir == 1:
 		host.start_projectile_invulnerability()

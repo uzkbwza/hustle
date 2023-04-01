@@ -321,6 +321,7 @@ func send_ui_action(action=null):
 			$"%FeintButton".set_disabled(!current_button.state.can_feint())
 		else:
 			$"%FeintButton".set_disabled(true)
+		$"%FeintButton".modulate = Color.white if fighter.feints > 0 else Color("d440b6")
 
 func extra_updated():
 	if fighter_extra:

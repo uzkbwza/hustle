@@ -52,6 +52,7 @@ has_projectile_parry_window = false
 immunity_susceptible = false
 deletes_other_projectiles = false
 movable = false
+hitlag_modifier = "1.0"
 body_target_texture = ExtResource( 10 )
 
 [node name="Sprite" parent="Flip" index="0"]

@@ -25,6 +25,7 @@ func _frame_6():
 			var vel = obj.get_vel()
 			obj.set_vel(fixed.mul(vel.x, "-1"), vel.y)
 		obj_name = obj.obj_name
+		host.substituted_objects[obj_name] = true
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 		host.detach()
@@ -56,6 +57,8 @@ func get_usable_projectiles():
 			if obj is GrapplingHook:
 				if obj.attached_to != null:
 					continue
+			if host.substituted_objects.has(obj_name):
+				continue
 			var obj_pos = obj.get_pos()
 			var my_pos = host.get_hurtbox_center()
 			if Utils.int_abs(obj_pos.x - my_pos.x) > MAX_X_DIST or Utils.int_abs(obj_pos.y - my_pos.y) > MAX_Y_DIST:

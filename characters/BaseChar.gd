@@ -1058,8 +1058,8 @@ func get_advantage():
 		advantage = true
 #	if prediction_correct():
 #		advantage = true
-	if was_moving_backward():
-		advantage = false
+#	if was_moving_backward():
+#		advantage = false
 
 	if current_state().state_name == "WhiffInstantCancel" or (previous_state() and previous_state().state_name == "WhiffInstantCancel" and current_state().has_hitboxes):
 		advantage = false

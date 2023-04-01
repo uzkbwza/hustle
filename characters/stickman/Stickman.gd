@@ -14,6 +14,7 @@ var grappling_hook_projectile = null
 var pulling = false
 var used_grappling_hook = false
 var whip_beam_charged = false
+var substituted_objects = {}
 
 #var hook_dir = Vector2()
 
@@ -21,6 +22,7 @@ const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
 const MAX_PULL_UPWARD_SPEED = "-10"
+const BACKWARD_PULL_PENALTY = 2
 
 func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
@@ -62,6 +64,8 @@ func tick():
 			var vel = get_vel()
 			if fixed.lt(vel.y, MAX_PULL_UPWARD_SPEED):
 				set_vel(vel.x, MAX_PULL_UPWARD_SPEED)
+			if fixed.sign(dir.x) != get_opponent_dir() and combo_count <= 0:
+				add_penalty(BACKWARD_PULL_PENALTY)
 	else:
 		pulling = false
 	

@@ -83,9 +83,6 @@ func tick():
 				if fixed.gt(distance_to(obj), AFTER_IMAGE_MAX_DIST):
 					obj.detonating = true
 			if shifting and current_state().state_name != "Shift":
-				if !is_grounded():
-					if air_movements_left > 0:
-						air_movements_left -= 1
 				set_grounded(obj.is_grounded())
 				if !obj.is_grounded():
 					move_directly(0, -1)

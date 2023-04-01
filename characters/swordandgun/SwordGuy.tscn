@@ -813,6 +813,7 @@ button_texture = ExtResource( 264 )
 flip_with_facing = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
+next_state_on_hold_on_opponent_turn = true
 reversible = false
 interrupt_from_string = "Grounded
 GroundedMovement
@@ -843,6 +844,7 @@ flip_with_facing = true
 air_type = 1
 iasa_at = 7
 interruptible_on_opponent_turn = true
+next_state_on_hold_on_opponent_turn = true
 self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedMovement
@@ -1944,13 +1946,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 reset_momentum = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded
