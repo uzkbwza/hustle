@@ -27,6 +27,7 @@ movable = true
 can_be_hit_by_melee = false
 hit_cancel_on_hit = false
 projectile_immune = false
+hitlag_modifier = "1.0"
 
 [node name="Default" type="Node2D" parent="StateMachine" index="0"]
 script = ExtResource( 3 )

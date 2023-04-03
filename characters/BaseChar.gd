@@ -216,6 +216,7 @@ var state_changed = false
 var on_the_ground = false
 var nudge_amount = "1.0"
 var used_air_dodge = false
+var used_buffer = false
 
 var has_hyper_armor = false
 var hit_during_armor = false
@@ -432,7 +433,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "projectile_hit_cancelling", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -753,7 +754,6 @@ func launched_by(hitbox):
 		if opponent.combo_count <= 1:
 			opponent.combo_proration = hitbox.damage_proration
 
-
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
@@ -967,6 +967,15 @@ func get_di_scaling():
 func get_scaled_di(di):
 	return xy_to_dir(di.x, di.y, get_di_scaling())
 
+func consume_feint():
+	if used_buffer:
+		return
+	if feints > 0:
+		feints -= 1
+	else:
+		use_super_meter(MAX_SUPER_METER)
+		super_effect(2)
+
 func process_extra(extra):
 	if "DI" in extra:
 		if di_enabled:
@@ -985,11 +994,7 @@ func process_extra(extra):
 	if "feint" in extra:
 		feinting = extra.feint
 		if feinting and !infinite_resources:
-			if feints > 0:
-				feints -= 1
-			else:
-				use_super_meter(MAX_SUPER_METER)
-				super_effect(2)
+			consume_feint()
 #	if "prediction" in extra:
 #		current_prediction = extra["prediction"]
 #		prediction_processed = false
@@ -1150,6 +1155,7 @@ func tick_before():
 		if buffered_input.has("extra"):
 			queued_extra = buffered_input.extra
 		use_buffer = false
+		used_buffer = true
 		clear_buffer()
 #	if was_my_turn:
 #		projectile_hit_cancelling = false
@@ -1185,7 +1191,6 @@ func tick_before():
 			if pressed_feint:
 				feinting = true
 				current_state().feinting = true
-
 	queued_action = null
 	queued_data = null
 	queued_extra = null
@@ -1335,6 +1340,8 @@ func tick():
 		last_aerial_vel = last_vel
 	if !(previous_state() is ParryState) or !(current_state() is ParryState):
 		parried_last_state = false
+	used_buffer = false
+
 #	lowest_tick = null
 	if forfeit:
 		forfeit_ticks += 1
@@ -1348,30 +1355,6 @@ func tick():
 
 func get_move_dir():
 	return fixed.sign(last_vel.x)
-
-#func add_penalty(amount):
-#	if !sadness_enabled:
-#		return
-##	print("adding penalty: " + str(amount))
-#	if amount > 0:
-#		penalty_buffer += amount
-#	else:
-#		add_penalty_directly(amount)
-#
-#func add_penalty_directly(amount):
-#	if !sadness_enabled:
-#		return
-##	print("adding penalty: " + str(amount))
-#	penalty += amount
-#	if penalty > MAX_PENALTY:
-#		supers_available = 0
-#		super_meter = 0
-#		penalty = 0
-#		penalty_buffer = 0
-#		penalty_ticks = PENALTY_TICKS
-#		had_sadness = true
-#	if penalty < MIN_PENALTY:
-#		penalty = MIN_PENALTY
 
 func add_penalty(amount):
 	if !sadness_enabled:

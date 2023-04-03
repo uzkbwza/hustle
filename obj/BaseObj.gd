@@ -9,6 +9,7 @@ signal got_hit()
 signal got_hit_by_fighter()
 signal got_hit_by_projectile()
 signal hitbox_refreshed(hitbox)
+signal global_hitlag(amount)
 
 const RUMBLE_MODIFIER = 4.0
 const MAX_RUMBLE = 10
@@ -85,7 +86,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -120,6 +121,9 @@ func _ready():
 	for sound in $Sounds.get_children():
 		sounds[sound.name] = sound
 		sound.bus = "Fx"
+
+func global_hitlag(amount):
+	emit_signal("global_hitlag", amount)
 
 func play_sound(sound_name):
 	if is_ghost or ReplayManager.resimulating:

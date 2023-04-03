@@ -243,6 +243,7 @@ func on_object_spawned(obj: BaseObj):
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
 	obj.connect("hitbox_refreshed", self, "on_hitbox_refreshed")
+	obj.connect("global_hitlag", self, "on_global_hitlag")
 	obj.gravity_enabled = gravity_enabled
 	obj.set_gravity_modifier(global_gravity_modifier)
 	obj.fighter_owner = get_player(obj.id)
@@ -269,6 +270,10 @@ func on_clash():
 
 func on_parry():
 	super_freeze_ticks = 10 
+	parry_freeze = true
+
+func on_global_hitlag(amount):
+	super_freeze_ticks = amount
 	parry_freeze = true
 
 func forfeit(id):
@@ -367,6 +372,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.connect("undo", self, "set", ["undoing", true])
 	p1.connect("super_started", self, "_on_super_started", [p1])
 	p2.connect("super_started", self, "_on_super_started", [p2])
+	p1.connect("global_hitlag", self, "on_global_hitlag")
+	p2.connect("global_hitlag", self, "on_global_hitlag")
 	connect_signals(p1)
 	connect_signals(p2)
 	objs_map = {

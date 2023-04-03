@@ -20,6 +20,8 @@ func _enter():
 
 func _frame_6():
 	self_interruptable = false
+	next_state_on_hold = false
+	next_state_on_hold_on_opponent_turn = false
 	host.move_directly_relative(MOVE_AMOUNT, 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,6 +33,8 @@ func _frame_8():
 
 func _frame_9():
 	self_interruptable = true
+	next_state_on_hold = true
+	next_state_on_hold_on_opponent_turn = true
 	var camera = host.get_camera()
 	if camera:
 		camera.bump(Vector2.UP, 10, 6 / 60.0)

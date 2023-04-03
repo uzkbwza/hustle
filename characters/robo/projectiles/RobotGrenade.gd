@@ -3,6 +3,7 @@ extends BaseProjectile
 const LIFETIME = 900
 const ACTIVATE_TIME = 30
 const EXPLOSION = preload("res://characters/robo/projectiles/NadeExplosion.tscn")
+const DI_INFLUENCE = "5"
 
 onready var my_hitbox = $StateMachine/Active/Hitbox
 onready var active_indicator = $Flip/ActiveIndicator
@@ -33,6 +34,7 @@ func activate():
 	play_sound("Beep")
 	active = true
 	my_hitbox.increment_combo = false
+	has_projectile_parry_window = false
 
 func _process(delta):
 	if active and !disabled:
@@ -63,6 +65,12 @@ func hit_by(hitbox):
 				var player = host_object.get_owner().obj_name
 				if host != player:
 					my_hitbox.hit_objects.append(player)
+				else:
+					var di_force = xy_to_dir(host_object.current_di.x, host_object.current_di.y, DI_INFLUENCE)
+					apply_force(di_force.x, di_force.y)
+
+				if active and host_object.id != id:
+					explode()
 
 	emit_signal("got_hit")
 

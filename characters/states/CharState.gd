@@ -264,6 +264,9 @@ func _on_hit_something(obj, hitbox):
 			var projectile = !obj.is_in_group("Fighter")
 			if projectile or hitbox.followup_state == "":
 				enable_hit_cancel(projectile)
+				if projectile:
+					host.global_hitlag(host.hitlag_ticks)
+					host.hitlag_ticks = 0
 
 func can_hit_cancel():
 	return true

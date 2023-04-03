@@ -31,7 +31,6 @@ has_projectile_parry_window = false
 deletes_other_projectiles = false
 movable = false
 projectile_immune = true
-hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

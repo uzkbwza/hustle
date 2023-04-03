@@ -20,7 +20,7 @@ var stopped = false
 
 func _ready():
 	state_variables.append_array(
-		["got_parried"]
+		["got_parried", "immunity_susceptible", "deletes_other_projectiles", "fizzle_on_ceiling", "movable", "can_be_hit_by_melee", "hit_cancel_on_hit", "projectile_immune", "hitlag_modifier", "stopped"]
 	)
 
 func get_opponent():
