@@ -43,7 +43,9 @@ max_air_speed = "12"
 extra_state_variables = "last_vel_x
 last_vel_y
 active
-ticks_left"
+ticks_left
+hits_chained
+last_hit_by"
 damages_own_team = true
 deletes_other_projectiles = false
 can_be_hit_by_melee = true

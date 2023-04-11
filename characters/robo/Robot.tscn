@@ -3064,32 +3064,7 @@ start_tick = 10
 active_ticks = 4
 endless = true
 
-[node name="Grenade" type="Node2D" parent="StateMachine" index="48"]
-script = ExtResource( 411 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-anim_length = 12
-enter_sfx = ExtResource( 154 )
-sfx = ExtResource( 412 )
-sfx_tick = 6
-sfx_volume = -8.0
-projectile_scene = ExtResource( 403 )
-projectile_tick = 7
-projectile_pos_y = -32
-title = "REMOTE BOMB"
-type = 2
-data_ui_scene = ExtResource( 410 )
-button_texture = ExtResource( 413 )
-air_type = 2
-interrupt_from_string = "Grounded
-Aerial
-GroundedSpecial
-AerialSpecial"
-interrupt_into_string = "Grounded
-Aerial"
-
-[node name="DriveWheelieGrab" type="Node2D" parent="StateMachine" index="49"]
+[node name="DriveWheelieGrab" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 356 )
 apply_grav = true
 fallback_state = "DriveIdle"
@@ -3150,7 +3125,7 @@ start_tick = 10
 active_ticks = 4
 endless = true
 
-[node name="DriveWheelieThrow" type="Node2D" parent="StateMachine" index="50"]
+[node name="DriveWheelieThrow" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 265 )
 apply_forces = true
 apply_fric = true
@@ -3194,7 +3169,7 @@ dir_y = "-0.10"
 damage = 120
 wall_slam = true
 
-[node name="DriveIdle" type="Node2D" parent="StateMachine" index="51"]
+[node name="DriveIdle" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3223,7 +3198,7 @@ height = 10
 start_tick = 0
 endless = true
 
-[node name="DriveForward" type="Node2D" parent="StateMachine" index="52"]
+[node name="DriveForward" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3278,7 +3253,7 @@ ground_bounce = false
 start_tick = 4
 always_on = true
 
-[node name="DriveBackward" type="Node2D" parent="StateMachine" index="53"]
+[node name="DriveBackward" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3313,6 +3288,31 @@ y = -10
 height = 10
 start_tick = 0
 endless = true
+
+[node name="Grenade" type="Node2D" parent="StateMachine" index="53"]
+script = ExtResource( 411 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 13
+enter_sfx = ExtResource( 154 )
+sfx = ExtResource( 412 )
+sfx_tick = 6
+sfx_volume = -8.0
+projectile_scene = ExtResource( 403 )
+projectile_tick = 7
+projectile_pos_y = -32
+title = "REMOTE BOMB"
+type = 2
+data_ui_scene = ExtResource( 410 )
+button_texture = ExtResource( 413 )
+air_type = 2
+interrupt_from_string = "Grounded
+Aerial
+GroundedSpecial
+AerialSpecial"
+interrupt_into_string = "Grounded
+Aerial"
 
 [node name="Magnetize" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 397 )
