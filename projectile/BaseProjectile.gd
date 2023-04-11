@@ -55,4 +55,6 @@ func hit_by(hitbox):
 			var host_hitlag_ticks = fixed.round(fixed.mul(hitlag_modifier, str(hitbox.hitlag_ticks)))
 			if host.hitlag_ticks < host_hitlag_ticks:
 				host.hitlag_ticks = host_hitlag_ticks
+		if hitbox.rumble:
+			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
 	.hit_by(hitbox)

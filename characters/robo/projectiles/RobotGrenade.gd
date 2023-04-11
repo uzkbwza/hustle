@@ -4,6 +4,9 @@ const LIFETIME = 900
 const ACTIVATE_TIME = 30
 const EXPLOSION = preload("res://characters/robo/projectiles/NadeExplosion.tscn")
 const DI_INFLUENCE = "5"
+const DI_HORIZONTAL_MODIFIER = "0.85"
+const NUDGE_DISTANCE = 10
+const ARM_TIME_REDUCTION_ON_HIT = 10
 
 onready var my_hitbox = $StateMachine/Active/Hitbox
 onready var active_indicator = $Flip/ActiveIndicator
@@ -57,6 +60,8 @@ func hit_by(hitbox):
 				dir.y = fixed.mul(dir.y, "-1")
 			change_state("Active")
 			apply_force(dir.x, dir.y)
+			var nudge = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, str(NUDGE_DISTANCE))
+			move_directly(nudge.x, nudge.y)
 			var host = hitbox.host
 			if host:
 				my_hitbox.hit_objects.append(host)
@@ -67,10 +72,13 @@ func hit_by(hitbox):
 					my_hitbox.hit_objects.append(player)
 				else:
 					var di_force = xy_to_dir(host_object.current_di.x, host_object.current_di.y, DI_INFLUENCE)
-					apply_force(di_force.x, di_force.y)
-
-				if active and host_object.id != id:
-					explode()
+					apply_force(fixed.mul(di_force.x, DI_HORIZONTAL_MODIFIER), di_force.y)
+				
+				if active:
+					ticks_left -= ARM_TIME_REDUCTION_ON_HIT
+					if ticks_left < 0:
+						ticks_left = 0
+#					explode()
 
 	emit_signal("got_hit")
 
