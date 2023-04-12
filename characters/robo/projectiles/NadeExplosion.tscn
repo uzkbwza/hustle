@@ -40,6 +40,7 @@ animation = "Default"
 particle_scene = ExtResource( 3 )
 spawn_particle_on_enter = true
 move_x = 0
+clash = false
 lifetime = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
