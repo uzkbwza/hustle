@@ -19,3 +19,4 @@ func _enter():
 	var camera = host.get_camera()
 	if camera:
 		camera.bump(Vector2.UP, 50, 30 / 60.0)
+	host.start_invulnerability()
