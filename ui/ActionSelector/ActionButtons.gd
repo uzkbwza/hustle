@@ -312,8 +312,10 @@ func send_ui_action(action=null):
 		emit_signal("action_clicked", action, current_button.get_data() if current_button else null, get_extra())
 #			button.data_node.init()
 #			button.container.show_data_container()
+	$"%SelectButton".disabled = true
 	yield(get_tree(), "idle_frame")
 	update_buttons(false)
+	$"%SelectButton".disabled = false
 
 	if current_button:
 		$"%ReverseButton".set_disabled(!current_button.reversible)

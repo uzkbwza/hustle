@@ -43,6 +43,7 @@ var damage_in_combo = -1
 var wall_slam = false
 var hits_vs_dizzy = true
 var is_projectile = false
+var scale_combo = true
 
 func get_damage():
 	if combo_count > 0:
@@ -128,6 +129,8 @@ func _init(state):
 		meter_gain_modifier = state.meter_gain_modifier
 	if state.get("air_ground_bounce") != null:
 		air_ground_bounce = state.air_ground_bounce
+	if state.get("scale_combo") != null:
+		scale_combo = state.scale_combo
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

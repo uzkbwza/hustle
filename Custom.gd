@@ -34,12 +34,20 @@ func make_custom_folder():
 	if !dir.dir_exists("user://custom"):
 		dir.make_dir("user://custom")
 
-func apply_style_to_material(style, material: ShaderMaterial):
+func apply_style_to_material(style, material: ShaderMaterial, force_extras = false):
 	if style.character_color != null:
 		material.set_shader_param("color", style.character_color)
 	material.set_shader_param("use_outline", style.use_outline)
 	if style.outline_color != null:
 		material.set_shader_param("outline_color", style.outline_color)
+	if style.get("extra_color_1") != null:
+		material.set_shader_param("extra_color_1", style.extra_color_1)
+		if force_extras:
+			material.set_shader_param("use_extra_color_1", true)
+	if style.get("extra_color_2") != null:
+		material.set_shader_param("extra_color_2", style.extra_color_2)
+		if force_extras:
+			material.set_shader_param("use_extra_color_2", true)
 	pass
 
 
@@ -159,7 +167,7 @@ func load_all_styles():
 		var data: Dictionary = file.get_var()
 		styles.append(data)
 		file.close()
-	return styles
+	return [styles, files]
 
 func get_style_name(path):
 	return path.get_file().split(".")[0].strip_edges()

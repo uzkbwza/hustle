@@ -45,6 +45,7 @@ export var combo_hitstun_ticks: int = -1
 export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
 export var damage_proration: int = 0
+export var scale_combo = true
 export var cancellable = true
 export var increment_combo = true
 export var hits_otg = false

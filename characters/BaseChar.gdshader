@@ -3,7 +3,14 @@ shader_type canvas_item;
 const vec4 replacement_color = vec4(1.0, 1.0, 1.0, 1.0);
 const float super_dim_amount = 0.35;
 
+uniform bool use_extra_color_1 = false;
+uniform bool use_extra_color_2 = false;
+uniform vec4 extra_replace_color_1 : hint_color  = vec4(1.0, 0.0, 1.0, 1.0);
+uniform vec4 extra_replace_color_2 : hint_color  = vec4(1.0, 0.0, 1.0, 1.0);
+
 uniform vec4 color: hint_color = vec4(1.0);
+uniform vec4 extra_color_1: hint_color = vec4(1.0);
+uniform vec4 extra_color_2: hint_color = vec4(1.0);
 
 uniform float max_color_distance = 0.01;
 
@@ -23,9 +30,6 @@ void fragment() {
 		COLOR.rgb = color.rgb;
 		COLOR.a = texture(TEXTURE, UV).a;
 	}
-	if (super_dim) {
-		COLOR.rgb *= super_dim_amount;
-	}
 	if (use_outline && COLOR.a == 0.0) {
 		float size_x = 1.0/float(textureSize(TEXTURE, 0).x);
 		float size_y = 1.0/float(textureSize(TEXTURE, 0).y);
@@ -44,5 +48,12 @@ void fragment() {
 		vec4 final_color = mix(sprite_color, outline_color, clamp(alpha, 0.0, 1.0));
 		COLOR = vec4(final_color.rgb, clamp(abs(alpha) + sprite_color.a, 0.0, 1.0));
 	}
-
+	if (use_extra_color_1 && same_color(col.rgb, extra_replace_color_1.rgb)) {
+		COLOR.rgb = extra_color_1.rgb;
+		COLOR.a = texture(TEXTURE, UV).a;
+	}
+	if (use_extra_color_2 && same_color(col.rgb, extra_replace_color_2.rgb)) {
+		COLOR.rgb = extra_color_2.rgb;
+		COLOR.a = texture(TEXTURE, UV).a;
+	}
 }

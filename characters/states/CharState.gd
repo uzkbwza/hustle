@@ -247,6 +247,7 @@ func _on_hit_something(obj, hitbox):
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
 	if obj.is_in_group("Fighter"):
+		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
 	._on_hit_something(obj, hitbox)
 	if hitbox.cancellable:
@@ -385,6 +386,7 @@ func _exit_shared():
 		host.update_facing()
 		host.feinting = false
 	feinting = false
+	host.melee_attack_combo_scaling_applied = false
 #	host.update_advantage()
 #	host.opponent.update_advantage()
 	._exit_shared()

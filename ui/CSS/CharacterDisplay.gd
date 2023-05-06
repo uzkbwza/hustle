@@ -6,6 +6,7 @@ signal style_selected(style)
 
 var selected_style = null
 var aura_particle = null
+onready var load_style_button = $"%LoadStyleButton"
 
 func _ready():
 	$"%PlayerLabel".text = "P1" if player_id == 1 else "P2"
@@ -22,7 +23,7 @@ func _on_style_selected(style):
 	material.set_shader_param("color", Color.white)
 	material.set_shader_param("use_outline", false)
 	if style:
-		Custom.apply_style_to_material(style, $"%CharacterPortrait".get_material())
+		Custom.apply_style_to_material(style, $"%CharacterPortrait".get_material(), true)
 		if style.show_aura:
 			var particle = preload("res://fx/CustomTrailParticle.tscn").instance()
 			$"%CharacterPortrait".add_child(particle)
@@ -32,12 +33,19 @@ func _on_style_selected(style):
 			particle.facing = -1 if player_id == 2 else 1
 			aura_particle = particle
 			pass
+	else:
+		$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", false)
+		$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", false)
+
+func load_last_style():
+	$"%LoadStyleButton".load_last_style()
 
 func init():
 	$"%LoadStyleButton".player_id = player_id
 	$"%CharacterLabel".text = ""
 #	$"%CharacterPortrait".texture = null
 	set_enabled(true)
+	$"%LoadStyleButton".save_style = true
 	$"%LoadStyleButton".update_styles()
 	$"%LoadStyleButton".hide()
 	if SteamHustle.STARTED and (!Network.multiplayer_active or player_id == Network.player_id):
@@ -46,8 +54,11 @@ func init():
 func load_character_data(data):
 	$"%CharacterPortrait".texture = data["portrait"]
 	$"%CharacterLabel".text = data["name"]
+	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", data.get("extra_color_1"))
+	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", data.get("extra_color_2"))
 
 func set_enabled(on):
 	for child in get_children():
 		child.visible = on
+		$"%LoadStyleButton".save_style = on
 

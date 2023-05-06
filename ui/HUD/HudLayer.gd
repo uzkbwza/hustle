@@ -152,8 +152,8 @@ func _physics_process(_delta):
 		p2_prev_super = p2.supers_available
 		p1_num_supers.texture.current_frame = clamp(p1.supers_available, 0, 9)
 		p2_num_supers.texture.current_frame = clamp(p2.supers_available, 0, 9)
-		p1_combo_counter.set_combo(str(p1.combo_count))
-		p2_combo_counter.set_combo(str(p2.combo_count))
+		p1_combo_counter.set_combo(str(p1.visible_combo_count))
+		p2_combo_counter.set_combo(str(p2.visible_combo_count))
 
 		if is_instance_valid(game.ghost_game):
 			p1_ghost_health_bar.visible = true
@@ -181,19 +181,19 @@ func _physics_process(_delta):
 		$"%P1ShowStyle".visible = game.game_paused and p1.applied_style != null
 		$"%P2ShowStyle".visible = game.game_paused and p2.applied_style != null
 #
-		if !ReplayManager.playback or p1.combo_count > 1:
+		if !ReplayManager.playback or p1.visible_combo_count > 1:
 			$"%P1DmgLabel".text = str(p1.combo_damage * 10) + " DMG"
 		else:
 			$"%P1DmgLabel".text = ""
 		$"%P1DmgLabel".visible = p1.combo_damage > 0
-		if !ReplayManager.playback or p2.combo_count > 1:
+		if !ReplayManager.playback or p2.visible_combo_count > 1:
 			$"%P2DmgLabel".text = str(p2.combo_damage * 10) + " DMG"
 		else:
 			$"%P2DmgLabel".text = ""
 		$"%P2DmgLabel".visible = p2.combo_damage > 0
 
-		$"%P1HitLabel".visible = p1.combo_count >= 2
-		$"%P2HitLabel".visible = p2.combo_count >= 2
+		$"%P1HitLabel".visible = p1.visible_combo_count >= 2
+		$"%P2HitLabel".visible = p2.visible_combo_count >= 2
 	
 		$"%Timer".text = str(game.get_ticks_left())
 		$"%SuperDim".visible = game.super_active and !game.parry_freeze

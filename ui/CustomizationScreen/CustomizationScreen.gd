@@ -5,6 +5,8 @@ var moving_sprite_start
 
 var character_color = Color.white
 var outline_color = Color.black
+var extra_color_1 = null
+var extra_color_2 = null
 
 var free_colors = []
 var custom_particles = []
@@ -18,7 +20,9 @@ var hitspark_scene = null
 func get_style_data():
 	return {
 		"style_name": Utils.filter_filename($"%StyleName".text.strip_edges()) if $"%StyleName".text.strip_edges() else "untitled" + str(int(Time.get_unix_time_from_system())),
-		"character_color": character_color if character_color != null else null,
+		"character_color": character_color,
+		"extra_color_1": extra_color_1,
+		"extra_color_2": extra_color_2,
 		"use_outline": $"%ShowOutline".pressed,
 		"outline_color": outline_color if $"%ShowOutline".pressed else null,
 		"hitspark": "bash" if selected_hitspark == null else selected_hitspark,
@@ -29,8 +33,6 @@ func get_style_data():
 
 func init():
 	for name in Global.name_paths:
-		if (name in Global.paid_characters) and !Global.full_version():
-			continue
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = load(Global.name_paths[name])
 		$"%CharacterButtonContainer".add_child(button)
@@ -42,6 +44,8 @@ func init():
 	buttons[0].pressed = true
 	moving_sprite_start = $"%MovingSprite".position
 	$"%Character".connect("color_changed", self, "_on_character_color_changed")
+	$"%Extra1".connect("color_changed", self, "_on_extra_color_1_changed")
+	$"%Extra2".connect("color_changed", self, "_on_extra_color_2_changed")
 	$"%Outline".connect("color_changed", self, "_on_outline_color_changed")
 	$"%ShowOutline".connect("toggled", self, "_on_show_outline_toggled")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
@@ -68,6 +72,7 @@ func init():
 	$"%LoadStyleButton".connect("style_selected", self, "load_style")
 	if !SteamHustle.WORKSHOP_ENABLED:
 		$"%WorkshopButton".disabled = true
+	_on_character_button_pressed(buttons[0])
 	update_warning()
 
 func show():
@@ -102,6 +107,11 @@ func load_style(style):
 		$"%ShowOutline".pressed = style.use_outline
 		if style.use_outline:
 			$"%Outline".set_color(style.outline_color)
+		if style.get("extra_color_1"):
+			$"%Extra1".set_color(style.extra_color_1)
+		if style.get("extra_color_2"):
+			$"%Extra2".set_color(style.extra_color_2)
+	
 		$"%ShowAura".pressed = style.show_aura
 		call_deferred("create_aura", style.aura_settings)
 		if style.character_color != null:
@@ -111,7 +121,7 @@ func load_style(style):
 				child.pressed = true
 				select_hitspark(style.hitspark)
 	$"%WorkshopButton".disabled = false
-	
+
 func select_hitspark(hitspark_name):
 	selected_hitspark = hitspark_name
 	spawn_hitspark()
@@ -158,7 +168,11 @@ func _on_back_button_pressed():
 
 func _on_reset_color_pressed():
 	character_color = null
+	extra_color_1 = null
+	extra_color_2 = null
 	$"%StaticSprite".get_material().set_shader_param("color", Color.white)
+	$"%StaticSprite".get_material().set_shader_param("extra_color_1", Color.white)
+	$"%StaticSprite".get_material().set_shader_param("extra_color_2", Color.white)
 	_on_show_outline_toggled(false)
 	update_warning()
 
@@ -166,6 +180,16 @@ func _on_character_color_changed(color):
 	$"%StaticSprite".get_material().set_shader_param("color", color)
 #	$"%MovingSprite".get_material().set_shader_param("color", color)
 	character_color = color
+	update_warning()
+
+func _on_extra_color_1_changed(color):
+	$"%StaticSprite".get_material().set_shader_param("extra_color_1", color)
+	extra_color_1 = color
+	update_warning()
+
+func _on_extra_color_2_changed(color):
+	$"%StaticSprite".get_material().set_shader_param("extra_color_2", color)
+	extra_color_2 = color
 	update_warning()
 
 func _on_outline_color_changed(color):
@@ -185,11 +209,16 @@ func _on_character_button_pressed(button):
 	for button in buttons:
 		button.set_pressed_no_signal(false)
 	button.set_pressed_no_signal(true)
-	var character = button.character_scene.instance()
+	var character: Fighter = button.character_scene.instance()
 	add_child(character)
 	var character_texture = character.sprite.frames.get_frame("Wait", 0)
+	var character_texture2 = character.character_portrait2
+	$"%StaticSprite".get_material().set_shader_param("use_extra_color_1", character.use_extra_color_1)
+	$"%StaticSprite".get_material().set_shader_param("use_extra_color_2", character.use_extra_color_2)
+	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_1", character.extra_color_1)
+	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_2", character.extra_color_2)
 	$"%StaticSprite".texture = character_texture
-	$"%MovingSprite".texture = character_texture
+	$"%MovingSprite".texture = character_texture2 if character_texture2 != null else character_texture
 	character.free()
 
 func _process(delta):

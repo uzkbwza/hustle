@@ -33,6 +33,7 @@ var MATCH_SETTINGS = {}
 var CHALLENGING_STEAM_ID = 0
 var CHALLENGER_STEAM_ID = 0
 var CHALLENGER_MATCH_SETTINGS = {}
+var REQUESTING_TO_SPECTATE = 0
 
 var LOBBY_ID: int = 0
 var LOBBY_MEMBERS: Array = []
@@ -301,9 +302,6 @@ func request_lobby_list(code: String="", version: String=""):
 #		print("Requesting a lobby list")
 		Steam.requestLobbyList()
 
-func request_spectate(steam_id):
-	_send_P2P_Packet(steam_id, {"request_spectate": SteamHustle.STEAM_ID})
-
 func spectator_sync_timers(id, time):
 	for spectator in SPECTATORS:
 		_send_P2P_Packet(spectator, {"spectator_sync_timers": {"id": id, "time": time}})
@@ -390,89 +388,102 @@ func _on_opponent_challenge_accepted(steam_id):
 	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", "1")
 	_setup_game_vs(steam_id)
 
-func _read_P2P_Packet() -> void:
-	var PACKET_SIZE: int = Steam.getAvailableP2PPacketSize(0)
 
-	# There is a packet
+func _read_P2P_Packet():
+	var PACKET_SIZE:int = Steam.getAvailableP2PPacketSize(0)
+
+	
 	if PACKET_SIZE > 0:
-		var PACKET: Dictionary = Steam.readP2PPacket(PACKET_SIZE, 0)
+		var PACKET:Dictionary = Steam.readP2PPacket(PACKET_SIZE, 0)
 
 		if PACKET.empty() or PACKET == null:
 			print("WARNING: read an empty packet with non-zero size!")
 
-		# Get the remote user's ID
-		var PACKET_SENDER: int = PACKET['steam_id_remote']
+		
+		var PACKET_SENDER:int = PACKET["steam_id_remote"]
+		p2p_packet_sender = PACKET_SENDER
 
-		# Make the packet data readable
-		var PACKET_CODE: PoolByteArray = PACKET['data']
-		var readable: Dictionary = bytes2var(PACKET_CODE)
+		
+		var PACKET_CODE:PoolByteArray = PACKET["data"]
+		var readable:Dictionary = bytes2var(PACKET_CODE)
 
-		# Print the packet to output
-#		print("Packet: "+str(readable))
-#		print("received packet")
-#		print(readable)
+		
+
+
+
 		if readable.has("rpc_data"):
 			print("received rpc")
 			_receive_rpc(readable)
 		if readable.has("challenge_from"):
 			_receive_challenge(readable.challenge_from, readable.match_settings)
 		if readable.has("challenge_accepted"):
-			_on_opponent_challenge_accepted(readable.challenge_accepted)
-
-
+			if PACKET_SENDER == CHALLENGING_STEAM_ID:
+				_on_opponent_challenge_accepted(readable.challenge_accepted)
 		if readable.has("match_quit"):
-			if Network.rematch_menu:
-				emit_signal("quit_on_rematch")
-				Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
-			if !is_instance_valid(Global.current_game):
-				if PACKET_SENDER == OPPONENT_ID:
+			if PACKET_SENDER == OPPONENT_ID:
+				if Network.rematch_menu:
+					emit_signal("quit_on_rematch")
+					Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
+				if not is_instance_valid(Global.current_game):
 					get_tree().reload_current_scene()
-			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
-			Steam.setLobbyMemberData(LOBBY_ID, "character", "")
-			Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
+				Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
+				Steam.setLobbyMemberData(LOBBY_ID, "character", "")
+				Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
 		if readable.has("match_settings_updated"):
-			if SETTINGS_LOCKED:
-				NEW_MATCH_SETTINGS = readable.match_settings_updated
-			else:
-				MATCH_SETTINGS = readable.match_settings_updated
-			emit_signal("received_match_settings", readable.match_settings_updated)
+			if PACKET_SENDER == LOBBY_OWNER:
+				if SETTINGS_LOCKED:
+					NEW_MATCH_SETTINGS = readable.match_settings_updated
+				else :
+					MATCH_SETTINGS = readable.match_settings_updated
+				emit_signal("received_match_settings", readable.match_settings_updated)
 		if readable.has("player_busy"):
-			# TODO: show "player is busy" message
+			
 			pass
 		if readable.has("request_match_settings"):
-			_send_P2P_Packet(readable.request_match_settings, {"match_settings_updated": MATCH_SETTINGS})
+			_send_P2P_Packet(readable.request_match_settings, {"match_settings_updated":MATCH_SETTINGS})
 		if readable.has("message"):
 			if readable.message == "handshake":
 				emit_signal("handshake_made")
-		# Append logic here to deal with packet data
+		
 		if readable.has("challenge_cancelled"):
-			emit_signal("challenger_cancelled")
-			CHALLENGER_STEAM_ID = 0
+			if PACKET_SENDER == CHALLENGER_STEAM_ID:
+				emit_signal("challenger_cancelled")
+				CHALLENGER_STEAM_ID = 0
 		if readable.has("challenge_declined"):
 			_on_challenge_declined(readable.challenge_declined)
 		if readable.has("spectate_accept"):
-			_on_spectate_request_accepted(readable)
+			if PACKET_SENDER == REQUESTING_TO_SPECTATE:
+				REQUESTING_TO_SPECTATE = 0
+				_on_spectate_request_accepted(readable)
 		if readable.has("spectator_replay_update"):
-			_on_received_spectator_replay(readable.spectator_replay_update)
+			if PACKET_SENDER == SPECTATING_ID:
+				_on_received_spectator_replay(readable.spectator_replay_update)
 		if readable.has("request_spectate"):
 			_on_received_spectate_request(readable.request_spectate)
 		if readable.has("spectate_ended"):
 			_remove_spectator(readable.spectate_ended)
 		if readable.has("spectate_declined"):
-			_on_spectate_declined()
+			if PACKET_SENDER == REQUESTING_TO_SPECTATE:
+				REQUESTING_TO_SPECTATE = 0
+				_on_spectate_declined()
 		if readable.has("spectator_sync_timers"):
-			_on_spectate_sync_timers(readable.spectator_sync_timers)
+			if PACKET_SENDER == SPECTATING_ID:
+				_on_spectate_sync_timers(readable.spectator_sync_timers)
 		if readable.has("spectator_turn_ready"):
-			_on_spectate_turn_ready(readable.spectator_turn_ready)
+			if PACKET_SENDER == SPECTATING_ID:
+				_on_spectate_turn_ready(readable.spectator_turn_ready)
 		if readable.has("spectator_tick_update"):
-			_on_spectate_tick_update(readable.spectator_tick_update)
+			if PACKET_SENDER == SPECTATING_ID:
+				_on_spectate_tick_update(readable.spectator_tick_update)
 		if readable.has("spectator_player_forfeit"):
-			Network.player_forfeit(readable.spectator_player_forfeit)
+			if PACKET_SENDER == SPECTATING_ID:
+				Network.player_forfeit(readable.spectator_player_forfeit)
 		if readable.has("validate_auth_session"):
 			_validate_Auth_Session(readable.validate_auth_session, PACKET_SENDER)
-		
-		p2p_packet_sender = PACKET_SENDER
 		_read_P2P_Packet_custom(readable)
+
+
+
 
 func _read_P2P_Packet_custom(readable):
 	var sender = p2p_packet_sender
@@ -771,16 +782,6 @@ func rpc_(function_name, arg):
 		print("sending rpc through steam...")
 		_send_P2P_Packet(OPPONENT_ID, data)
 
-func _receive_rpc(data):
-	print("received steam rpc")
-	if OPPONENT_ID == 0:
-		return
-	var args = data.rpc_data.arg
-	if args == null:
-		args = []
-	elif !args is Array:
-		args = [args]
-	Network.callv(data.rpc_data.func, args)
 
 func _send_P2P_Packet(target: int, packet_data: Dictionary) -> void:
 	# Set the send_type and channel
@@ -916,3 +917,18 @@ func update_match_settings(match_settings, id=0):
 	print("updating settings")
 	_send_P2P_Packet(id, {"match_settings_updated": match_settings})
 	pass
+
+func _receive_rpc(data):
+	print("received steam rpc")
+	if OPPONENT_ID != p2p_packet_sender:
+		return 
+	var args = data.rpc_data.arg
+	if args == null:
+		args = []
+	elif not args is Array:
+		args = [args]
+	Network.callv(data.rpc_data.func , args)
+
+func request_spectate(steam_id):
+	REQUESTING_TO_SPECTATE = steam_id
+	_send_P2P_Packet(steam_id, {"request_spectate":SteamHustle.STEAM_ID})

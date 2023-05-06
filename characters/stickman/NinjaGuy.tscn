@@ -246,7 +246,13 @@
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
 shader = ExtResource( 57 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -255,7 +261,13 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 57 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -589,7 +601,10 @@ quick_slash_move_dir_y
 grappling_hook_projectile
 used_grappling_hook
 substituted_objects"
+character_portrait2 = ExtResource( 170 )
 player_extra_params_scene = ExtResource( 63 )
+use_extra_color_1 = true
+extra_color_1 = Color( 0.258824, 0.321569, 0.360784, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
@@ -3098,13 +3113,13 @@ ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3228,20 +3243,20 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
 },
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 },
 ExtResource( 206 ): {
 "x": 13,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 15,
 "y": -10
 }
 }
@@ -3279,17 +3294,13 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="82"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 210 ): {
 "x": 37,
@@ -3298,6 +3309,10 @@ ExtResource( 210 ): {
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 }
 }
 burst_cancellable = false

@@ -81,10 +81,10 @@ func copy_to(f: BaseObj):
 func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 
-func incr_combo():
+func incr_combo(scale=true):
 	if combo_count == 0:
 		landed_move = true
-	.incr_combo()
+	.incr_combo(scale)
 	if can_unlock_gratuitous and combo_moves_used.has("GroundSlam") and current_state().name != "GroundSlam":
 		unlock_achievement("ACH_GRATUITOUS")
 		can_unlock_gratuitous = false

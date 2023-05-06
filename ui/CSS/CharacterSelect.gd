@@ -12,6 +12,7 @@ var selected_styles = {
 			1: null,
 			2: null
 		}
+	
 var singleplayer = true
 var current_player = 1
 var network_match_data = {}
@@ -22,6 +23,7 @@ func _ready():
 	$"%QuitButton".connect("pressed", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
+	
 #	init()
 
 func _on_network_character_selected(player_id, character, style=null):
@@ -58,6 +60,7 @@ func init(singleplayer=true):
 #	$"%GameSettingsPanelContainer".singleplayer = singleplayer
 #	$"%P2Display".set_enabled(singleplayer)
 	$"%SelectingLabel".text = "P1 SELECT YOUR CHARACTER" if singleplayer else "SELECT YOUR CHARACTER"
+	$"%SelectingLabel".modulate = Color.dodgerblue if singleplayer else Color.white
 	$"%P1Display".init()
 	$"%P2Display".init()
 	if Network.steam:
@@ -84,27 +87,35 @@ func init(singleplayer=true):
 	if !singleplayer:
 		if current_player == 1:
 			$"%P2Display".set_enabled(false)
+			$"%P1Display".load_last_style()
 		else:
 			$"%P1Display".set_enabled(false)
+			$"%P2Display".load_last_style()
 		$"%GoButton".hide()
+	else:
+		$"%P2Display".load_style_button.save_style = false
+	$"%P1Display".load_last_style()
 	pressed_button = null
 	buttons = []
 	for child in $"%CharacterButtonContainer".get_children():
 		child.queue_free()
 	for name in Global.name_paths:
-		if (name in Global.paid_characters) and !Global.full_version():
-			continue
+#		if (name in Global.paid_characters) and !Global.full_version():
+#			continue
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = Global.get_cached_character(name)
 		$"%CharacterButtonContainer".add_child(button)
-		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+#		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 #		var character = button.character_scene.instance()
 		button.text = name
 		buttons.append(button)
 		if !button.is_connected("pressed", self, "_on_button_pressed"):
 			button.connect("pressed", self, "_on_button_pressed", [button])
 			button.connect("mouse_entered", self, "_on_button_mouse_entered", [button])
-
+		$ButtonSoundPlayer.add_container($"%CharacterButtonContainer")
+		$ButtonSoundPlayer.setup()
+	_on_button_mouse_entered(buttons[0])
+	
 func get_character_data(button):
 	var data = {}
 	var scene = button.character_scene.instance()
@@ -117,6 +128,8 @@ func get_display_data(button):
 	var scene = button.character_scene.instance()
 	data["name"] = scene.name
 	data["portrait"] = scene.character_portrait
+	data["extra_color_1"] = scene.extra_color_1
+	data["extra_color_2"] = scene.extra_color_2
 	scene.free()
 	return data
 
@@ -140,6 +153,7 @@ func _on_button_pressed(button):
 	if singleplayer and current_player == 1:
 		current_player = 2
 		$"%SelectingLabel".text = "P2 SELECT YOUR CHARACTER"
+		$"%SelectingLabel".modulate = Color.red
 	else:
 		for button in buttons:
 			button.disabled = true

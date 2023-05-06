@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.4.8-steam"
+var VERSION = "1.4.9-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -28,7 +28,6 @@ var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
 
-
 var mouse_world_position = Vector2()
 
 var name_paths = {
@@ -36,11 +35,8 @@ var name_paths = {
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 	"Robot": "res://characters/robo/Robot.tscn",
+	"Creature": "res://characters/beast/Creature.tscn",
 }
-
-var paid_characters = [
-	"Robot"
-]
 
 var songs = {
 	"bg1": preload("res://sound/music/bg1.mp3")
@@ -71,8 +67,15 @@ func screen_to_world_int(xy: Vector2):
 	}
 
 func _enter_tree():
+	var invalid_characters = []
 	for char_name in name_paths:
-		characters_cache[char_name] = load(name_paths[char_name])
+		var character = load(name_paths[char_name])
+		if !character:
+			invalid_characters.append(char_name)
+			continue
+		characters_cache[char_name] = character
+	for character in invalid_characters:
+		name_paths.erase(character)
 #	get_tree().set_auto_accept_quit(false)
 	steam_demo_version = "steam" in VERSION and "beta" in VERSION
 	audio_player = AudioStreamPlayer.new()
@@ -191,6 +194,7 @@ func save_options():
 func get_default_player_data():
 	return {
 		"username": "",
+		"last_style": "",
 		"options" : {
 			"music_enabled": true,
 			"freeze_ghost_prediction": true,

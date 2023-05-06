@@ -298,7 +298,13 @@
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -307,7 +313,13 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -649,7 +661,13 @@ animations = [ {
 [sub_resource type="ShaderMaterial" id=7]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -658,7 +676,13 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [sub_resource type="ShaderMaterial" id=9]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -667,7 +691,13 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [sub_resource type="ShaderMaterial" id=12]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -676,7 +706,13 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [sub_resource type="ShaderMaterial" id=11]
 resource_local_to_scene = true
 shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -718,13 +754,18 @@ spark_speed_frames
 default_dash_speed"
 damages_own_team = true
 character_portrait = ExtResource( 63 )
+character_portrait2 = ExtResource( 112 )
 player_info_scene = ExtResource( 4 )
 player_extra_params_scene = ExtResource( 3 )
+use_extra_color_1 = true
+extra_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
+use_extra_color_2 = true
+extra_color_2 = Color( 0.831373, 0.25098, 0.713726, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 10 )
-animation = "DrawMoisture"
+animation = "Combust"
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true

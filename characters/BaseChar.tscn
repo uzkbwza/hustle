@@ -177,7 +177,13 @@
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 135 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -399,10 +405,15 @@ max_air_speed = "13"
 max_fall_speed = "8"
 num_air_movements = 2
 character_portrait = ExtResource( 2 )
+character_portrait2 = null
 player_info_scene = ExtResource( 39 )
 player_extra_params_scene = ExtResource( 122 )
 damage_taken_modifier = "1.0"
 num_feints = 2
+use_extra_color_1 = false
+extra_color_1 = Color( 1, 0, 1, 1 )
+use_extra_color_2 = false
+extra_color_2 = Color( 1, 0, 1, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
