@@ -10,6 +10,12 @@ enum CounterType {
 
 export(CounterType) var counter_type = CounterType.High
 
+var bracing = false
+
+func _enter():
+	bracing = true
+	host.use_burst_meter(fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.33")))
+
 func init():
 	.init()
 	is_brace = true
@@ -25,6 +31,8 @@ func _tick():
 	host.apply_forces_no_limit()
 
 func is_usable():
+	if !(host.bursts_available > 0 or host.burst_meter >= fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.33"))):
+		return false
 	if !.is_usable():
 		return false
 	if host.current_state() is CharacterHurtState:

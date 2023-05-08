@@ -815,6 +815,9 @@ func launched_by(hitbox):
 		state_tick()
 
 func can_counter_hitbox(hitbox):
+	var host = obj_from_name(hitbox.host)
+	if host and !host.is_in_group("Fighter"):
+		return false
 	var state: CharacterState = current_state()
 	if !is_bracing():
 		return false
@@ -830,7 +833,7 @@ func can_counter_hitbox(hitbox):
 	return false
 
 func is_bracing():
-	return current_state() is CounterAttack
+	return current_state() is CounterAttack and current_state().bracing
 
 func counter_hitbox(hitbox):
 	var pos = get_pos_visual()
@@ -1249,6 +1252,9 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
+
+		if current_state() is CounterAttack:
+			current_state().bracing = false
 		last_input["action"] = queued_action
 		last_input["data"] = queued_data
 		if queued_action == "Continue":

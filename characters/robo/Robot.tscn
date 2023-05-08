@@ -948,6 +948,7 @@ magnet_ticks_left
 grenade_object"
 num_air_movements = 3
 character_portrait = ExtResource( 76 )
+character_portrait2 = ExtResource( 206 )
 player_info_scene = ExtResource( 129 )
 player_extra_params_scene = ExtResource( 167 )
 damage_taken_modifier = "0.85"
@@ -963,6 +964,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -2518,7 +2520,7 @@ x = 31
 y = -21
 width = 8
 height = 8
-damage = 300
+damage = 30
 minimum_damage = 12
 hitstun_ticks = 12
 victim_hitlag = 10
@@ -2540,7 +2542,7 @@ x = 31
 y = -21
 width = 8
 height = 8
-damage = 300
+damage = 30
 minimum_damage = 12
 hitstun_ticks = 12
 victim_hitlag = 10
