@@ -46,6 +46,7 @@ var is_projectile = false
 var scale_combo = true
 var vacuum = false
 var send_away_from_center = false
+var minimum_grounded_frames = -1
 var plus_frames = 0
 
 func get_damage():
@@ -140,6 +141,8 @@ func _init(state):
 		vacuum = state.vacuum
 	if state.get("send_away_from_center") != null:
 		send_away_from_center = state.send_away_from_center
+	if state.get("minimum_grounded_frames") != null:
+		minimum_grounded_frames = state.minimum_grounded_frames
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

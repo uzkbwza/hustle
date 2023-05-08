@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/XYPlot/SemicirclePlot.tscn" type="PackedScene" id=3]
+
+[node name="ActionUIData" instance=ExtResource( 1 )]
+margin_right = 50.0
+margin_bottom = 62.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="JumpArc" parent="." index="0" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+limit_range_degrees = 120.0
+default_value = Vector2( -4.37114e-08, -1 )
+snap_radius = 0.69

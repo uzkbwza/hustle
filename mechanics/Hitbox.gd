@@ -106,6 +106,7 @@ export var pushback_x: String = "1.0"
 export var _c_Knockback_Type = 0
 export var grounded_hit_state = "HurtGrounded"
 export var aerial_hit_state = "HurtAerial"
+export var minimum_grounded_frames = -1
 export var knockdown = false
 export var knockdown_extends_hitstun = true # if true, aerial victim will stay in hitstun until hitting the ground
 export var hard_knockdown = false

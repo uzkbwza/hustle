@@ -124,16 +124,27 @@ func _tick():
 				begin_ground_bounce()
 				host.set_vel(vel.x, fixed.mul(vel.y, "-1"))
 			else:
-				if knockdown or host.hp == 0:
-					if hard_knockdown:
-						return "HardKnockdown"
+				if current_tick > hitbox.minimum_grounded_frames:
+					if knockdown or host.hp == 0:
+						if hard_knockdown:
+							return "HardKnockdown"
+						else:
+		#				host.start_invulnerability()
+							return "Knockdown"
 					else:
-	#				host.start_invulnerability()
+						if host.hp > 0:
+							return "Landing"
 						return "Knockdown"
 				else:
-					if host.hp > 0:
-						return "Landing"
-					return "Knockdown"
+					match hitbox.hit_height:
+						Hitbox.HitHeight.High:
+							anim_name = "HurtGroundedHigh"
+						Hitbox.HitHeight.Mid:
+							anim_name = "HurtGroundedMid"
+						Hitbox.HitHeight.Low:
+							anim_name = "HurtGroundedLow"
+		else:
+			anim_name = "HurtAerial"
 				
 	var extended_hitstun = hitbox.knockdown_extends_hitstun and hitbox.knockdown and !ground_bounced
 	

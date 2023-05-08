@@ -1,10 +1,5 @@
 extends Window
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 var showing = false
 
 # Called when the node enters the scene tree for the first time.
@@ -24,7 +19,6 @@ func _on_user_joined(user):
 
 func _on_user_left(user):
 	god_message(user + " left.")
-
 
 func line_edit_focus():
 	$"%LineEdit".grab_focus()

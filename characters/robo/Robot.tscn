@@ -976,6 +976,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1759,13 +1760,9 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
-},
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
 },
 ExtResource( 201 ): {
 "x": -15,
@@ -1775,13 +1772,17 @@ ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
 },
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
 }
 }
 update_facing_on_exit = false
@@ -1945,22 +1946,6 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 264 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 260 ): {
-"x": 40,
-"y": -34
-},
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
-},
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
@@ -1969,7 +1954,23 @@ ExtResource( 254 ): {
 "x": 124,
 "y": -72
 },
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
 ExtResource( 263 ): {
+"x": 124,
+"y": -72
+},
+ExtResource( 264 ): {
 "x": 124,
 "y": -72
 }
@@ -2172,49 +2173,49 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
 ExtResource( 112 ): {
 "x": -40,
 "y": -44
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 }
 }
 iasa_at = 49
@@ -2503,6 +2504,8 @@ type = 2
 data_ui_scene = ExtResource( 191 )
 button_texture = ExtResource( 223 )
 air_type = 2
+self_hit_cancellable = false
+self_interruptable = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedAttack
@@ -2798,6 +2801,7 @@ active_ticks = 2
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
+minimum_airborne_frames = -1
 
 [node name="Lariat" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 94 )
@@ -3443,6 +3447,7 @@ super_level = 2
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
+minimum_airborne_frames = -1
 
 [node name="Fall" parent="StateMachine" index="59"]
 script = ExtResource( 400 )
@@ -3521,21 +3526,21 @@ ExtResource( 62 ): {
 "x": 26,
 "y": -16
 },
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
 ExtResource( 304 ): {
 "x": 29,
 "y": 11
 },
-ExtResource( 309 ): {
+ExtResource( 310 ): {
 "x": -21,
-"y": -9
+"y": -15
 },
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 }
 }
 release_frame = 18
@@ -3606,21 +3611,21 @@ ExtResource( 62 ): {
 "x": 27,
 "y": -19
 },
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
 ExtResource( 304 ): {
 "x": 34,
 "y": 7
 },
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
 },
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 }
 }
 release_frame = 18

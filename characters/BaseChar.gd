@@ -366,11 +366,10 @@ func init(pos=null):
 func is_ivy():
 	if !Network.multiplayer_active and !SteamLobby.SPECTATING:
 		var username = Network.pid_to_username(id)
-		if username == "ivy sly":
-			return true
+		return username in SteamHustle.FX_NAMES
 	else:
 		if id in Network.network_ids:
-			return Network.network_ids[id] == SteamHustle.IVY_ID
+			return Network.network_ids[id] in SteamHustle.FX_IDS
 	return false
 
 #func prediction_correct():

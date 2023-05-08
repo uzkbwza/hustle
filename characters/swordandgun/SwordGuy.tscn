@@ -1710,6 +1710,7 @@ y = -26
 width = 31
 height = 23
 damage = 115
+hitstun_ticks = 31
 victim_hitlag = 4
 plus_frames = 1
 hit_height = 0
@@ -1809,7 +1810,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="Poke" type="Node2D" parent="StateMachine" index="20"]
+[node name="Stinger" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 79 )
 sprite_animation = "Poke"
 anim_length = 30
@@ -1834,7 +1835,7 @@ interrupt_exceptions_string = "Teleport"
 hit_cancel_exceptions_string = "Teleport"
 auto_fall = false
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/Poke" index="0"]
+[node name="Hitbox" type="Node2D" parent="StateMachine/Stinger" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 53
@@ -1847,11 +1848,11 @@ victim_hitlag = 7
 damage_proration = -1
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 141 )
-dir_y = "-0.45"
+dir_y = "-0.25"
 knockback = "11.0"
 grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 7
 knockdown = true
-knockdown_extends_hitstun = false
 hard_knockdown = true
 wall_slam = true
 start_tick = 11
@@ -2862,6 +2863,12 @@ knockdown_extends_hitstun = false
 wall_slam = true
 start_tick = 9
 active_ticks = 1
+
+[node name="Hitbox" parent="StateMachine/Burst" index="0"]
+minimum_airborne_frames = 0
+
+[node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
+minimum_airborne_frames = 0
 
 [node name="DashForward" parent="StateMachine" index="71"]
 loop_animation = true
