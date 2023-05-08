@@ -251,6 +251,8 @@ func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
+		if host.combo_count > 0 and hit_yet:
+			started_during_combo = true
 	hit_anything = true
 	if obj.is_in_group("Fighter"):
 		host.melee_attack_combo_scaling_applied = true

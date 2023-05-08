@@ -952,11 +952,14 @@ character_portrait2 = ExtResource( 206 )
 player_info_scene = ExtResource( 129 )
 player_extra_params_scene = ExtResource( 167 )
 damage_taken_modifier = "0.85"
+use_extra_color_1 = true
+extra_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 12 )
-animation = "Return"
+animation = "CommandGrab"
+frame = 6
 offset = Vector2( 0, -16 )
 
 [node name="ChainsawArm" type="AnimatedSprite" parent="Flip" index="1"]
@@ -964,6 +967,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -972,7 +976,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1144,7 +1147,7 @@ x = 57
 y = -47
 width = 12
 height = 12
-damage = 69
+damage = 35
 hitstun_ticks = 20
 victim_hitlag = 9
 cancellable = false
@@ -2601,7 +2604,7 @@ hit_sound = ExtResource( 238 )
 hit_sound_volume = -1.0
 dir_x = "-1.0"
 dir_y = "-0.35"
-knockback = "7.5"
+knockback = "12.0"
 pushback_x = "-1.0"
 start_tick = 11
 active_ticks = 3
@@ -2732,7 +2735,6 @@ victim_hitlag = 5
 cancellable = false
 hits_otg = true
 beats_grab = false
-priority = 1
 whiff_particle = ExtResource( 321 )
 whiff_sound = ExtResource( 88 )
 hit_sound = ExtResource( 75 )
@@ -2774,9 +2776,8 @@ active_ticks = 3
 [node name="Hitbox2" type="Node2D" parent="StateMachine/GroundPound" index="2"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 60
+x = 69
 y = -8
-width = 16
 height = 8
 damage = 40
 hitstun_ticks = 22
@@ -2785,11 +2786,12 @@ cancellable = false
 hits_vs_aerial = false
 beats_grab = false
 hit_height = 2
+priority = 1
 hit_sound = ExtResource( 75 )
 whiff_sound_volume = -2.0
 bass_on_whiff = true
-dir_x = "0.0"
-knockback = "5.0"
+dir_x = "-1.0"
+knockback = "7.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 2

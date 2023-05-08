@@ -6,6 +6,8 @@ const DIRECT_MOVE_SPEED = "3.0"
 const PUSH_SPEED_LIMIT = "8"
 const LIGHTNING_Y = 132
 const LIGHTNING_PUSH_FORCE = "-5"
+const ATTACK_SUPER_DRAIN = 60
+const LIGHTNING_DRAIN = 20
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LIGHTNING_SCENE = preload("res://characters/wizard/projectiles/orb/OrbLightning.tscn")
@@ -89,12 +91,18 @@ func attempt_triggered_attack():
 func trigger_attack(attack_type, attack_delay):
 	triggered_attacks[current_tick + attack_delay] = attack_type
 
+func drain_super():
+	if creator:
+		creator.use_super_meter(ATTACK_SUPER_DRAIN)
+
 func attack(attack_type):
 	match attack_type:
 		"OrbDart":
 			spawn_orb_dart()
+			drain_super()
 		"Sword":
 			state_machine.queue_state("Sword")
+			drain_super()
 		"Lightning":
 			strikes_left += 2
 			spawn_lightning()
@@ -138,6 +146,8 @@ func spawn_lightning():
 	if strikes_left > 0:
 		strikes_left -= 1
 		strike_ticks_left = 15
+	if creator:
+		creator.use_super_meter(LIGHTNING_DRAIN)
 
 func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)

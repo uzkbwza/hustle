@@ -782,6 +782,7 @@ type = 4
 button_texture = ExtResource( 174 )
 air_type = 2
 busy_interrupt_type = 1
+selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -798,6 +799,7 @@ type = 4
 button_texture = ExtResource( 176 )
 air_type = 2
 busy_interrupt_type = 1
+selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -815,6 +817,7 @@ type = 4
 button_texture = ExtResource( 177 )
 air_type = 2
 busy_interrupt_type = 1
+selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -847,6 +850,7 @@ type = 5
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "CounterAttack"
 change_stance_to = "Normal"
 
 [node name="Knockdown" type="Node2D" parent="StateMachine" index="16"]
@@ -861,6 +865,7 @@ iasa_at = 20
 interruptible_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "OTG"
+interrupt_exceptions_string = "CounterAttack"
 change_stance_to = "Normal"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/Knockdown" index="0"]
@@ -883,6 +888,7 @@ enter_sfx = ExtResource( 175 )
 enter_sfx_volume = -5.0
 iasa_at = 21
 busy_interrupt_type = 1
+interrupt_exceptions_string = "CounterAttack"
 change_stance_to = "Normal"
 hard = true
 
@@ -1237,6 +1243,7 @@ sfx_volume = -8.0
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "CounterAttack"
 
 [node name="HurtAerial" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 27 )

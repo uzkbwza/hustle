@@ -37,6 +37,7 @@ var ticks_until_time_shift = 0
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
+	material = null
 
 func init(pos=null):
 	.init(pos)
