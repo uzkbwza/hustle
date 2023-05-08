@@ -646,14 +646,18 @@ func _process(delta):
 				opponent_id = (you_id % 2) + 1
 			var you = ghost_game.get_player(you_id)
 			var opponent = ghost_game.get_player(opponent_id)
+			var advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
 			if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
-				var advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
-				if advantage >= 0:
-					advantage_label.set("custom_colors/font_color", Color("1d8df5"))
-					advantage_label.text = "frame advantage: +" + str(advantage)
-				else:
-					advantage_label.set("custom_colors/font_color", Color("ff333d"))
-					advantage_label.text = "frame advantage: " + str(advantage)
+				advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
+
+			if advantage >= 0:
+				advantage_label.set("custom_colors/font_color", Color("1d8df5"))
+				advantage_label.text = "frame advantage: +" + str(advantage)
+			else:
+				advantage_label.set("custom_colors/font_color", Color("ff333d"))
+				advantage_label.text = "frame advantage: " + str(advantage)
+			if advantage == 0:
+				advantage_label.text = ""
 		else:
 			advantage_label.text = ""
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0

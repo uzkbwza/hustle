@@ -232,14 +232,15 @@ func _physics_process(_delta):
 	
 		if game.super_active and !game.parry_freeze:
 			if !super_started:
+				var fx_scene = preload("res://fx/superparticle.tscn") if !game.prediction_effect else preload("res://fx/predictparticle.tscn")
 				if game.p1_super:
-					var fx = preload("res://fx/superparticle.tscn").instance()
+					var fx = fx_scene.instance()
 					fx.set_speed_scale(super_speed_scale(game.super_freeze_ticks))
 					p1_super_effects_node.call_deferred("add_child", fx)
 					p1_effects.append(fx)
 					
 				if game.p2_super:
-					var fx = preload("res://fx/superparticle.tscn").instance()
+					var fx = fx_scene.instance()
 					fx.set_speed_scale(super_speed_scale(game.super_freeze_ticks))
 					p2_super_effects_node.call_deferred("add_child", fx)
 					p1_effects.append(fx)

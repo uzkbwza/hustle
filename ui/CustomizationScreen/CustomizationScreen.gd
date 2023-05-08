@@ -73,6 +73,7 @@ func init():
 	if !SteamHustle.WORKSHOP_ENABLED:
 		$"%WorkshopButton".disabled = true
 	_on_character_button_pressed(buttons[0])
+	_on_reset_color_pressed()
 	update_warning()
 
 func show():

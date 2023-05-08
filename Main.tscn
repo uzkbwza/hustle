@@ -868,6 +868,7 @@ text = "SAD!"
 
 [node name="P1BraceLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
+visible = false
 modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
 anchor_left = 0.5
 anchor_top = 0.5
@@ -929,6 +930,7 @@ align = 2
 
 [node name="P2BraceLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
+visible = false
 modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
 anchor_left = 0.5
 anchor_top = 0.5

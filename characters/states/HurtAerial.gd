@@ -1,5 +1,7 @@
 extends CharacterHurtState
 
+class_name HurtAerial
+
 const AIR_FRIC = "0.015"
 const HIT_GRAV = "0.25"
 const HIT_FALL_SPEED = "15.0"
@@ -38,7 +40,18 @@ func _enter():
 		begin_ground_bounce()
 
 	var x = get_x_dir(hitbox)
-	var knockback_force = fixed.normalized_vec_times(x, hitbox.dir_y, hitbox.knockback)
+	var y = hitbox.dir_y
+
+	if hitbox.vacuum:
+		var vacuum_dir = get_vacuum_dir(hitbox)
+		x = vacuum_dir.x
+		y = vacuum_dir.y
+	elif hitbox.send_away_from_center:
+		var vacuum_dir = get_vacuum_dir(hitbox)
+		x = fixed.mul(vacuum_dir.x, "-1")
+		y = fixed.mul(vacuum_dir.y, "-1")
+
+	var knockback_force = fixed.normalized_vec_times(x, y, hitbox.knockback)
 	
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var di = host.get_scaled_di(host.current_di)

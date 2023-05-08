@@ -45,7 +45,7 @@ func _enter_shared():
 
 func _tick_shared():
 	._tick_shared()
-	if current_tick < 10:
+	if current_tick < 5:
 		host.release_opponent()
 	if current_tick % SMOKE_FREQUENCY == 0:
 		var vel = host.get_vel()
@@ -69,6 +69,18 @@ func di_shave_hitstun(hitstun, hitbox_dir_x, hitbox_dir_y):
 #		brace = true
 #	hitstun -= fixed.round(fixed.mul(str(hitstun), fixed.mul(DI_BRACE_RATIO, di_shave_amount)))
 	return hitstun
+
+func get_vacuum_dir(hitbox):
+	var pos_x = "0"
+	var pos_y = "0"
+	var hitbox_host = host.obj_from_name(hitbox.host)
+	if hitbox_host:
+		var my_pos = host.get_pos()
+		var diff = {x = hitbox.pos_x - my_pos.x, y = hitbox.pos_x - my_pos.y}
+		var dir = fixed.normalized_vec(str(diff.x), str(diff.y))
+		pos_x = dir.x
+		pos_y = dir.y
+	return {x = pos_x, y = pos_y}
 
 func get_x_dir(hitbox):
 	return host.get_hitbox_x_dir(hitbox)

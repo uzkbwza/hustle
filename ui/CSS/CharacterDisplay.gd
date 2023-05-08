@@ -22,8 +22,11 @@ func _on_style_selected(style):
 	var material = $"%CharacterPortrait".get_material()
 	material.set_shader_param("color", Color.white)
 	material.set_shader_param("use_outline", false)
+	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", false)
+	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", false)
 	if style:
 		Custom.apply_style_to_material(style, $"%CharacterPortrait".get_material(), true)
+
 		if style.show_aura:
 			var particle = preload("res://fx/CustomTrailParticle.tscn").instance()
 			$"%CharacterPortrait".add_child(particle)
@@ -33,9 +36,6 @@ func _on_style_selected(style):
 			particle.facing = -1 if player_id == 2 else 1
 			aura_particle = particle
 			pass
-	else:
-		$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", false)
-		$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", false)
 
 func load_last_style():
 	$"%LoadStyleButton".load_last_style()

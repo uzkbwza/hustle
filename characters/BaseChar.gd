@@ -222,6 +222,7 @@ var buffer_moved_forward = false
 
 var moved_backward = false
 var buffer_moved_backward = false
+var blocked_hitbox_plus_frames = 0
 
 var had_sadness = false
 
@@ -288,9 +289,6 @@ var aura_particle = null
 var feinting = false
 var clashing = false
 
-#var prediction_processed = true
-
-
 var last_action = 0
 
 var stance = "Normal"
@@ -306,6 +304,8 @@ var combo_supers = 0
 var combo_damage = 0
 var hitlag_applied = 0
 var forfeit_ticks = 0
+
+var minus_frames = 0
 
 var hitstun_decay_combo_count = 0
 
@@ -364,7 +364,7 @@ func is_ivy():
 		if id in Network.network_ids:
 			return Network.network_ids[id] == SteamHustle.IVY_ID
 	return false
-#
+
 #func prediction_correct():
 #	return !is_in_hurt_state() and opponent and current_prediction == opponent.current_state().type
 
@@ -378,7 +378,14 @@ func apply_style(style):
 		is_style_active = true
 		applied_style = style
 		if Global.enable_custom_colors:
-			set_color(style.get("character_color"), style.get("extra_color_1"), style.get("extra_color_2"))
+			var e1 = style.get("extra_color_1")
+			var e2 = style.get("extra_color_2")
+			if e1 == null:
+				use_extra_color_1 = false
+			if e2 == null:
+				use_extra_color_2 = false
+			
+			set_color(style.get("character_color"), e1, e2)
 			Custom.apply_style_to_material(style, sprite.get_material())
 			sprite.get_material().set_shader_param("extra_replace_color_1", extra_color_1)
 			sprite.get_material().set_shader_param("extra_replace_color_2", extra_color_2)
@@ -457,7 +464,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -649,7 +656,7 @@ func reset_combo():
 	if touch_of_death and combo_damage >= 1000:
 		if !one_hit_ko and !turbo_mode and !extremely_turbo_mode and !infinite_resources and fixed.eq(global_damage_modifier, "1") and fixed.eq(global_hitstop_modifier, "1") and fixed.eq(global_hitstun_modifier, "1"):
 			unlock_achievement("ACH_TOUCH_OF_DEATH")
-	if combo_count >= 20:
+	if visible_combo_count >= 20:
 		unlock_achievement("ACH_RELENTLESS", true)
 	if combo_count > 0 and !is_ghost:
 		touch_of_death = false
@@ -807,6 +814,39 @@ func launched_by(hitbox):
 	if will_launch:
 		state_tick()
 
+func can_counter_hitbox(hitbox):
+	var state: CharacterState = current_state()
+	if !is_bracing():
+		return false
+	if (state is CounterAttack):
+		match state.counter_type:
+			CounterAttack.CounterType.Grab:
+				return hitbox.throw
+			CounterAttack.CounterType.High:
+				return !hitbox.throw and (hitbox.hit_height == Hitbox.HitHeight.High or hitbox.hit_height == Hitbox.HitHeight.Mid)
+			CounterAttack.CounterType.Low:
+				return !hitbox.throw and (hitbox.hit_height == Hitbox.HitHeight.Low)
+		return false
+	return false
+
+func is_bracing():
+	return current_state() is CounterAttack
+
+func counter_hitbox(hitbox):
+	var pos = get_pos_visual()
+	var hitbox_pos = Vector2(hitbox.pos_x, hitbox.pos_y)
+	spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), (pos + hitbox_pos) / 2.0)
+	current_state().enable_interrupt()
+	if !opponent.is_in_hurt_state() and hitbox.host == opponent.obj_name:
+		opponent.current_state().enable_interrupt()
+	parried_hitboxes.append(hitbox.name)
+#	emit_signal("clashed")
+	play_sound("Predict")
+	play_sound("Predict2")
+	play_sound("Predict3")
+	emit_signal("predicted")
+
+
 func hit_by(hitbox):
 	if parried:
 		return
@@ -815,6 +855,9 @@ func hit_by(hitbox):
 	if !hitbox.hits_otg and is_otg():
 		return
 	if !hitbox.hits_vs_dizzy and current_state().state_name == "HurtDizzy":
+		return
+	if can_counter_hitbox(hitbox):
+		counter_hitbox(hitbox)
 		return
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)
@@ -846,7 +889,6 @@ func hit_by(hitbox):
 				opponent.reset_pushback()
 	else:
 		opponent.got_parried = true
-		
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
 		var perfect_parry
@@ -885,6 +927,8 @@ func hit_by(hitbox):
 				current_state().anim_length = opponent.current_state().anim_length
 				current_state().endless = opponent.current_state().endless
 				current_state().iasa_at = opponent.current_state().iasa_at
+			current_state().interruptible_on_opponent_turn = true
+			blocked_hitbox_plus_frames = hitbox.plus_frames
 #			for i in range(opponent.current_state().anim_length):
 #				if i > current_state().current_tick and i in opponent.current_state().hitbox_start_frames:
 #					current_state().anim_length = i
@@ -1228,6 +1272,10 @@ func tick_before():
 			state_machine._change_state(queued_action, queued_data)
 			if !current_state().is_hurt_state:
 				hitlag_ticks = 0
+			if !(current_state() is ParryState):
+				if blocked_hitbox_plus_frames > 0:
+					hitlag_ticks += blocked_hitbox_plus_frames
+					blocked_hitbox_plus_frames = 0
 			if pressed_feint:
 				feinting = true
 				current_state().feinting = true
@@ -1435,7 +1483,7 @@ func set_ghost_colors():
 		ghost_ready_set = true
 		if opponent.ghost_ready_tick == null or opponent.ghost_ready_tick == ghost_ready_tick:
 			set_color(first_color)
-			if opponent.current_state().interruptible_on_opponent_turn or opponent.feinting or opponent.current_state().started_during_combo:
+			if (opponent.current_state().interruptible_on_opponent_turn or opponent.feinting or opponent.current_state().started_during_combo):
 				opponent.ghost_ready_set = true
 				opponent.set_color(first_color)
 		elif ghost_ready_tick != null and opponent.ghost_ready_tick < ghost_ready_tick:

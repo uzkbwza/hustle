@@ -1548,8 +1548,8 @@ active_ticks = 23
 script = ExtResource( 135 )
 apply_forces = true
 apply_fric = true
-anim_length = 7
 reset_momentum = true
+anim_length = 7
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
@@ -2089,7 +2089,6 @@ release_throw_pos_y = -5
 
 [node name="ForwardThrow" parent="StateMachine" index="67"]
 anim_length = 24
-sfx = ExtResource( 141 )
 sfx_tick = 8
 sfx_volume = -8.0
 release_frame = 8
@@ -2100,11 +2099,10 @@ release_throw_pos_y = -5
 knockback = "20.0"
 dir_y = "-0.10"
 screenshake_amount = 4
-screenshake_frames = 5
+release_sfx = ExtResource( 141 )
 
 [node name="BackThrow" parent="StateMachine" index="68"]
 anim_length = 24
-sfx = ExtResource( 141 )
 sfx_tick = 8
 sfx_volume = -8.0
 release_frame = 8
@@ -2115,11 +2113,10 @@ release_throw_pos_y = -5
 knockback = "20.0"
 dir_y = "-0.10"
 screenshake_amount = 4
-screenshake_frames = 5
+release_sfx = ExtResource( 141 )
 
 [node name="AirForwardThrow" parent="StateMachine" index="69"]
 anim_length = 28
-sfx = ExtResource( 141 )
 sfx_tick = 8
 sfx_volume = -8.0
 start_throw_pos_x = 21
@@ -2128,11 +2125,10 @@ release_throw_pos_x = 21
 release_throw_pos_y = -5
 knockback = "20.0"
 screenshake_amount = 4
-screenshake_frames = 5
+release_sfx = ExtResource( 141 )
 
 [node name="AirBackThrow" parent="StateMachine" index="70"]
 anim_length = 28
-sfx = ExtResource( 141 )
 sfx_tick = 8
 sfx_volume = -8.0
 start_throw_pos_x = 21
@@ -2141,11 +2137,10 @@ release_throw_pos_x = 21
 release_throw_pos_y = -5
 knockback = "20.0"
 screenshake_amount = 4
-screenshake_frames = 5
+release_sfx = ExtResource( 141 )
 
 [node name="AirDownThrow" parent="StateMachine" index="71"]
 anim_length = 24
-sfx = ExtResource( 141 )
 sfx_tick = 8
 sfx_volume = -8.0
 start_throw_pos_x = 21
@@ -2153,7 +2148,7 @@ start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 screenshake_amount = 4
-screenshake_frames = 5
+release_sfx = ExtResource( 141 )
 
 [node name="ThrowTech" parent="StateMachine" index="72"]
 particle_scene = ExtResource( 136 )

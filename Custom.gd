@@ -44,10 +44,14 @@ func apply_style_to_material(style, material: ShaderMaterial, force_extras = fal
 		material.set_shader_param("extra_color_1", style.extra_color_1)
 		if force_extras:
 			material.set_shader_param("use_extra_color_1", true)
+	else:
+		material.set_shader_param("use_extra_color_1", false)
 	if style.get("extra_color_2") != null:
 		material.set_shader_param("extra_color_2", style.extra_color_2)
 		if force_extras:
 			material.set_shader_param("use_extra_color_2", true)
+	else:
+		material.set_shader_param("use_extra_color_2", false)
 	pass
 
 

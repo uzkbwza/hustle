@@ -34,14 +34,32 @@ export var hard_knockdown = false
 export var force_grounded = false
 export var wall_slam = false
 export var di_modifier = "1.0"
+
 export(Hitbox.HitHeight) var hit_height = Hitbox.HitHeight.Mid
 #export var incr_combo = false
+export var _c_Release_Sound = 0
+export(AudioStream) var release_sfx = null
+export var release_sfx_volume = -10.0
+export var play_release_sfx_bass = true
+
+
 
 var hitlag_ticks = 0
 var victim_hitlag = 0
 var throw = true
 
+var release_sfx_player = null
+
 #	released = false
+
+func setup_audio():
+	.setup_audio()
+	if release_sfx:
+		release_sfx_player = VariableSound2D.new()
+		add_child(release_sfx_player)
+		release_sfx_player.bus = "Fx"
+		release_sfx_player.stream = release_sfx
+		release_sfx_player.volume_db = release_sfx_volume
 
 func update_throw_position():
 	var frame = host.get_current_sprite_frame()
@@ -106,3 +124,7 @@ func _release():
 	if screenshake_amount > 0 and screenshake_frames > 0 and !host.is_ghost:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		camera.bump(Vector2(), screenshake_amount, screenshake_frames / 60.0)
+	if release_sfx and !ReplayManager.resimulating:
+		release_sfx_player.play()
+	if play_release_sfx_bass:
+		host.play_sound("HitBass")

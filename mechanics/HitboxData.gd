@@ -44,6 +44,9 @@ var wall_slam = false
 var hits_vs_dizzy = true
 var is_projectile = false
 var scale_combo = true
+var vacuum = false
+var send_away_from_center = false
+var plus_frames = 0
 
 func get_damage():
 	if combo_count > 0:
@@ -131,6 +134,12 @@ func _init(state):
 		air_ground_bounce = state.air_ground_bounce
 	if state.get("scale_combo") != null:
 		scale_combo = state.scale_combo
+	if state.get("plus_frames") != null:
+		plus_frames = state.plus_frames
+	if state.get("vacuum") != null:
+		vacuum = state.vacuum
+	if state.get("send_away_from_center") != null:
+		send_away_from_center = state.send_away_from_center
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

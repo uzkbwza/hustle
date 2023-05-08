@@ -448,7 +448,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		p2.gain_super_meter(meter_amount)
 
 func on_prediction(player):
-	_on_super_started(10, player)
+	_on_super_started(7, player)
 	prediction_effect = true
 	pass
 
@@ -823,15 +823,13 @@ func apply_hitboxes(players):
 				p2_throwing = false
 	if p2_hit_by:
 		if not (p2_hit_by is ThrowBox):
-
 			p2_hit = true
-		else :
+		else:
 			p1_throwing = true
 			if not p2_hit_by.hits_otg and px2.is_otg():
 				p1_throwing = false
 			if px2.throw_invulnerable:
 				p1_throwing = false
-
 
 	var clash_position = Vector2()
 	var clashed = false
@@ -885,10 +883,15 @@ func apply_hitboxes(players):
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
 	else :
 		if p1_hit:
-				p1_hit_by.hit(px1)
+				if !(p1_throwing and !p1_hit_by.beats_grab):
+					p1_hit_by.hit(px1)
+				else:
+					p1_hit = false
 		if p2_hit:
-
-				p2_hit_by.hit(px2)
+				if !(p2_throwing and !p2_hit_by.beats_grab):
+					p2_hit_by.hit(px2)
+				else:
+					p2_hit = false
 
 	if not p2_hit and not p1_hit:
 		if p2_throwing and p1_throwing and px1.current_state().throw_techable and px2.current_state().throw_techable:
@@ -908,6 +911,11 @@ func apply_hitboxes(players):
 				can_hit = false
 			if not px2.is_grounded() and not p2_hit_by.hits_vs_aerial:
 				can_hit = false
+			if px2.is_bracing() and px2.current_state().counter_type == CounterAttack.CounterType.Grab:
+				can_hit = false
+				px1.state_machine.queue_state("ThrowTech")
+				px2.state_machine.queue_state("ThrowTech")
+				return
 			if can_hit:
 				p2_hit_by.hit(px2)
 				if p2_hit_by.throw_state:
@@ -924,6 +932,11 @@ func apply_hitboxes(players):
 				can_hit = false
 			if not px1.is_grounded() and not p1_hit_by.hits_vs_aerial:
 				can_hit = false
+			if px1.is_bracing() and px1.current_state().counter_type == CounterAttack.CounterType.Grab:
+				can_hit = false
+				px1.state_machine.queue_state("ThrowTech")
+				px2.state_machine.queue_state("ThrowTech")
+				return
 			if can_hit:
 				p1_hit_by.hit(px1)
 				if p1_hit_by.throw_state:
@@ -1291,6 +1304,7 @@ func ghost_tick():
 	if ghost_speed == 1:
 		ghost_multiplier = 4
 	ghost_advantage_tick /= ghost_multiplier
+
 	for i in range(simulate_frames):
 		if ghost_actionable_freeze_ticks == 0:
 			simulate_one_tick()
@@ -1315,6 +1329,7 @@ func ghost_tick():
 			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2):
 				p2.actionable_label.show()
 				ghost_p2_actionable = true
+				
 #			else:
 #				ghost_actionable_freeze_ticks = 1
 		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
@@ -1335,6 +1350,7 @@ func ghost_tick():
 			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or negative_on_hit(p1):
 				ghost_p1_actionable = true
 				p1.actionable_label.show()
+				
 #			else:
 #				ghost_actionable_freeze_ticks = 1
 

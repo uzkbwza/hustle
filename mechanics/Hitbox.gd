@@ -61,6 +61,8 @@ export var followup_state = ""
 export var force_grounded = false
 export var can_clash = true
 export var hits_vs_dizzy = true
+export var beats_grab = true
+export(int, 0, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -96,6 +98,8 @@ export var dir_x: String = "1.0"
 export var dir_y: String = "-1.0"
 export var knockback: String = "10.0"
 export var launch_reversible = false
+export var vacuum = false
+export var send_away_from_center = false
 
 export var pushback_x: String = "1.0"
 
@@ -213,7 +217,7 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
-	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit)
+	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit) or (host.is_in_group("Fighter") and host.opponent.current_state().is_brace)
 
 func spawn_whiff_particle():
 	if whiff_particle:
@@ -293,6 +297,8 @@ func hit(obj):
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")
+			if obj.can_counter_hitbox(self):
+				can_hit = false
 			if obj.on_the_ground:
 				if !hits_otg:
 					can_hit = false

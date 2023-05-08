@@ -1,10 +1,33 @@
 extends CharacterState
 
-export var counter_state_ground: String = "Wait"
-export var counter_state_air: String = "Fall"
+class_name CounterAttack
 
-func _enter():
+enum CounterType {
+	High,
+	Low,
+	Grab,
+}
+
+export(CounterType) var counter_type = CounterType.High
+
+func init():
+	.init()
+	is_brace = true
 	pass
 
+func _tick():
+	anim_name = "ParryHigh" if host.is_grounded() and counter_type != CounterType.Low else "ParryLow"
+	if host.is_grounded():
+		host.apply_x_fric(HurtGrounded.GROUND_FRIC)
+	else:
+		host.apply_x_fric(HurtAerial.AIR_FRIC)
+		host.apply_grav_custom(HurtAerial.HIT_GRAV, HurtAerial.HIT_FALL_SPEED)
+	host.apply_forces_no_limit()
+
 func is_usable():
-	return .is_usable() and host.can_counter_attack
+	if !.is_usable():
+		return false
+	if host.current_state() is CharacterHurtState:
+		if host.current_state().hitbox.counter_hit:
+			return false
+	return true

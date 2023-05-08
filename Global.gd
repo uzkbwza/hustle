@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.4.9-steam-unstable"
+var VERSION = "1.4.10-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -35,7 +35,7 @@ var name_paths = {
 	"Cowboy": "res://characters/swordandgun/SwordGuy.tscn",
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 	"Robot": "res://characters/robo/Robot.tscn",
-	"Creature": "res://characters/beast/Creature.tscn",
+	"Mutant": "res://characters/beast/Mutant.tscn",
 }
 
 var songs = {

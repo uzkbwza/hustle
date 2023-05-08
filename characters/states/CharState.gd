@@ -45,6 +45,7 @@ export var landing_recovery = -1
 
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
+export var iasa_on_hit = -1
 export var interrupt_frames = []
 export var throw_techable = false
 export var interruptible_on_opponent_turn = false
@@ -100,8 +101,11 @@ var initiative_effect_spawned = false
 var dash_iasa = false
 var started_in_air = false
 var hit_yet = false
+var hit_anything = false
 var hit_cancelled = false
 var started_during_combo = false
+
+var is_brace = false
 
 var feinting = false
 
@@ -203,6 +207,7 @@ func _enter_shared():
 #	if host.opponent:
 #		host.opponent.update_advantage()
 	hit_yet = false
+	hit_anything = false
 	started_in_air = false
 	host.update_grounded()
 	if change_stance_to:
@@ -246,6 +251,7 @@ func _on_hit_something(obj, hitbox):
 	if !hit_yet and obj == host.opponent:
 		hit_yet = true
 		host.stack_move_in_combo(state_name)
+	hit_anything = true
 	if obj.is_in_group("Fighter"):
 		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
@@ -375,7 +381,7 @@ func can_feint():
 	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
 func can_interrupt():
-	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1
+	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit)
 
 func on_got_hit():
 	pass

@@ -9,6 +9,18 @@ export var _c_Physics = 0
 export var apply_forces = false
 export var apply_fric = false
 export var apply_grav = false
+export var reset_momentum = false
+export var reset_x_momentum = false
+export var reset_y_momentum = false
+
+export var _c_Custom_Physics = 0
+export var apply_custom_x_fric = false
+export var apply_custom_grav = false
+
+export var custom_x_fric = "0.0"
+export var custom_grav = "0.0"
+export var custom_grav_max_fall_speed = "0.0"
+
 
 export var _c_Animation_and_Length = 0
 export var fallback_state = "Wait"
@@ -31,7 +43,7 @@ export var _c_Enter_Static_Force = 0
 export var enter_force_dir_x = "0.0"
 export var enter_force_dir_y = "0.0"
 export var enter_force_speed = "0.0"
-export var reset_momentum = false
+
 
 export var _c_Particles = 0
 export(PackedScene) var particle_scene = null
@@ -89,6 +101,10 @@ var anim_name
 var has_hitboxes = false
 
 var current_hurtbox = null
+
+var host_command_nodes = {
+	
+}
 
 var hitbox_start_frames = {
 }
@@ -196,6 +212,11 @@ func _tick_shared():
 					host.callv(command[0], command.slice(1, command.size() - 1))
 			elif command is String:
 				host.call(command)
+		
+		if current_tick in host_command_nodes:
+			var commands = host_command_nodes[current_tick]
+			for command in commands:
+				host.callv(command.command, command.args)
 
 		var new_max = false
 		var new_max_shared = false
@@ -235,6 +256,10 @@ func _tick_shared():
 		host.apply_fric()
 	if apply_grav:
 		host.apply_grav()
+	if apply_custom_x_fric:
+		host.apply_x_fric(custom_x_fric)
+	if apply_custom_grav:
+		host.apply_grav_custom(custom_grav, custom_grav_max_fall_speed)
 	if apply_forces:
 		host.apply_forces()
 
@@ -318,6 +343,11 @@ func init():
 	setup_hitboxes()
 	setup_hurtboxes()
 	call_deferred("setup_audio")
+	for child in get_children():
+		if child is HostCommand:
+			if not (child.tick in host_command_nodes):
+				host_command_nodes[child.tick] = []
+			host_command_nodes[child.tick].append(child)
 
 func setup_audio():
 	if enter_sfx:
@@ -383,6 +413,13 @@ func _enter_shared():
 			host.set_facing(prev.last_facing)
 	if reset_momentum:
 		host.reset_momentum()
+	if reset_x_momentum:
+		var vel = host.get_vel()
+		host.set_vel("0", vel.y)
+	if reset_y_momentum:
+		var vel = host.get_vel()
+		host.set_vel(vel.x, "0")
+
 	current_tick = -1
 	current_real_tick = -1
 	start_tick = host.current_tick
