@@ -45,7 +45,7 @@ func show_options():
 #	end_hover_button.set_pressed_no_signal(false)
 	if fighter.can_hover() or fighter.hovering:
 		hover_button.show()
-	if !fighter.is_grounded():
+	if fighter.can_fast_fall():
 		fast_fall_button.show()
 	if fighter.spark_bombs:
 		explode_button.show()

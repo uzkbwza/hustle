@@ -44,6 +44,8 @@ func _enter():
 		di_force.y = "0"
 	else:
 		hitstun = di_shave_hitstun(hitstun, x, "0")
+	if host.braced_attack:
+		hitstun = brace_shave_hitstun(hitstun)
 	if host.touching_wall and !wall_slam:
 		knockback_force.x = "0"
 	var force_x = fixed.add(knockback_force.x, di_force.x)
@@ -76,3 +78,4 @@ func _tick():
 		else:
 			enable_interrupt()
 			can_act = true
+

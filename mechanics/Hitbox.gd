@@ -217,7 +217,7 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
-	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit) or (host.is_in_group("Fighter") and host.opponent.current_state().is_brace)
+	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit) or (host.is_in_group("Fighter") and host.opponent.current_state().is_brace and !host.opponent.can_counter_hitbox(self))
 
 func spawn_whiff_particle():
 	if whiff_particle:

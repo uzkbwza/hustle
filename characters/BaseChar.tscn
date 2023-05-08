@@ -1212,17 +1212,7 @@ release_opponent_on_exit = true
 super_level = 0
 super_freeze_ticks = 3
 
-[node name="HurtGrounded" type="Node2D" parent="StateMachine" index="33"]
-script = ExtResource( 28 )
-reset_momentum = true
-endless = true
-type = 5
-busy_interrupt_type = 1
-interrupt_into_string = "Grounded
-Aerial"
-change_stance_to = "Normal"
-
-[node name="HurtDizzy" type="Node2D" parent="StateMachine" index="34"]
+[node name="HurtDizzy" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 28 )
 reset_momentum = true
 endless = true
@@ -1233,7 +1223,7 @@ Aerial"
 change_stance_to = "Normal"
 dizzy = true
 
-[node name="WallSlam" type="Node2D" parent="StateMachine" index="35"]
+[node name="WallSlam" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 162 )
 reset_momentum = true
 endless = true
@@ -1248,11 +1238,21 @@ busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="HurtAerial" type="Node2D" parent="StateMachine" index="36"]
+[node name="HurtAerial" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 27 )
 reset_momentum = true
 endless = true
 air_type = 1
+busy_interrupt_type = 1
+interrupt_into_string = "Grounded
+Aerial"
+change_stance_to = "Normal"
+
+[node name="HurtGrounded" type="Node2D" parent="StateMachine" index="36"]
+script = ExtResource( 28 )
+reset_momentum = true
+endless = true
+type = 5
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"

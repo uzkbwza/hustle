@@ -55,7 +55,7 @@ nine_patch_stretch = true
 margin_top = -7.0
 margin_right = 100.0
 margin_bottom = 4.0
-text = "hover"
+text = "swag"
 align = 1
 
 [node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HoverBar" index="1"]

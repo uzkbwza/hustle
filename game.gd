@@ -911,11 +911,11 @@ func apply_hitboxes(players):
 				can_hit = false
 			if not px2.is_grounded() and not p2_hit_by.hits_vs_aerial:
 				can_hit = false
-			if px2.is_bracing() and px2.current_state().counter_type == CounterAttack.CounterType.Grab:
-				can_hit = false
-				px1.state_machine.queue_state("ThrowTech")
-				px2.state_machine.queue_state("ThrowTech")
-				return
+#			if px2.is_bracing() and px2.current_state().counter_type == CounterAttack.CounterType.Grab:
+#				can_hit = false
+#				px1.state_machine.queue_state("ThrowTech")
+#				px2.state_machine.queue_state("ThrowTech")
+#				return
 			if can_hit:
 				p2_hit_by.hit(px2)
 				if p2_hit_by.throw_state:
@@ -932,11 +932,11 @@ func apply_hitboxes(players):
 				can_hit = false
 			if not px1.is_grounded() and not p1_hit_by.hits_vs_aerial:
 				can_hit = false
-			if px1.is_bracing() and px1.current_state().counter_type == CounterAttack.CounterType.Grab:
-				can_hit = false
-				px1.state_machine.queue_state("ThrowTech")
-				px2.state_machine.queue_state("ThrowTech")
-				return
+#			if px1.is_bracing() and px1.current_state().counter_type == CounterAttack.CounterType.Grab:
+#				can_hit = false
+#				px1.state_machine.queue_state("ThrowTech")
+#				px2.state_machine.queue_state("ThrowTech")
+#				return
 			if can_hit:
 				p1_hit_by.hit(px1)
 				if p1_hit_by.throw_state:
@@ -1256,6 +1256,7 @@ func _physics_process(_delta):
 			p1_super = false
 			p2_super = false
 			parry_freeze = false
+			prediction_effect = false
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")

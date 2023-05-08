@@ -38,7 +38,7 @@ func _enter():
 	counter = hitbox.counter_hit
 	if (hitbox.ground_bounce and host.is_grounded()) and fixed.gt(hitbox.dir_y, "0"):
 		begin_ground_bounce()
-
+	
 	var x = get_x_dir(hitbox)
 	var y = hitbox.dir_y
 
@@ -61,11 +61,16 @@ func _enter():
 		di_force.y = "0"
 	else:
 		hitstun = di_shave_hitstun(hitstun, x, hitbox.dir_y)
+	
 
 	var force_x = fixed.add(knockback_force.x, di_force.x)
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)
 	host.move_directly(0, -1)
+
+func _frame_1():
+	if host.braced_attack:
+		hitstun = brace_shave_hitstun(hitstun)
 
 func _tick():
 	if host.is_grounded() and bounce_frames > 0:

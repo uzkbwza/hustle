@@ -53,6 +53,10 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
+const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.1"
+const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
+const SUCCESSFUL_BRACE_DI_MODIFIER = "1.5"
+
 var HOLD_RESTARTS = [
 	"Wait",
 	"Fall",
@@ -160,6 +164,10 @@ var queued_extra = null
 var buffered_input = {}
 var last_input = {}
 var use_buffer = false
+
+var hit_out_of_brace = false
+var braced_attack = false
+var brace_effect_applied_yet = false
 
 var dummy_interruptable = false
 
@@ -464,7 +472,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -670,6 +678,9 @@ func reset_combo():
 	opponent.grounded_hits_taken = 0
 	opponent.trail_hp = opponent.hp
 	opponent.wall_slams = 0
+	opponent.hit_out_of_brace = false
+	opponent.braced_attack = false
+	opponent.brace_effect_applied_yet = false
 
 func incr_combo(scale=true):
 	if scale and !melee_attack_combo_scaling_applied:
@@ -732,7 +743,6 @@ func _process(delta):
 #	else:
 #		$PredictionLabel.text = ""
 
-
 func debug_text():
 	.debug_text()
 	debug_info(
@@ -741,6 +751,8 @@ func debug_text():
 			"initiative": initiative,
 			"penalty": penalty,
 			"combo_proration": combo_proration,
+			"hit_out_of_brace": hit_out_of_brace,
+			"braced_attack": braced_attack,
 		}
 	)
 
@@ -751,6 +763,8 @@ func launched_by(hitbox):
 
 #		if hitlag_ticks < hitbox.victim_hitlag:
 	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
+	if braced_attack:
+		hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), SUCCESSFUL_BRACE_HITSTUN_MODIFIER))
 	hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), global_hitstop_modifier))
 	hitlag_applied = hitlag_ticks
 	
@@ -838,11 +852,12 @@ func is_bracing():
 func counter_hitbox(hitbox):
 	var pos = get_pos_visual()
 	var hitbox_pos = Vector2(hitbox.pos_x, hitbox.pos_y)
-	spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), (pos + hitbox_pos) / 2.0)
-	current_state().enable_interrupt()
-	if !opponent.is_in_hurt_state() and hitbox.host == opponent.obj_name:
-		opponent.current_state().enable_interrupt()
-	parried_hitboxes.append(hitbox.name)
+	braced_attack = true
+#	spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), (pos + hitbox_pos) / 2.0)
+#	current_state().enable_interrupt()
+#	if !opponent.is_in_hurt_state() and hitbox.host == opponent.obj_name:
+#		opponent.current_state().enable_interrupt()
+#	parried_hitboxes.append(hitbox.name)
 #	emit_signal("clashed")
 	play_sound("Predict")
 	play_sound("Predict2")
@@ -861,7 +876,10 @@ func hit_by(hitbox):
 		return
 	if can_counter_hitbox(hitbox):
 		counter_hitbox(hitbox)
-		return
+	elif current_state() is CounterAttack:
+		if !hit_out_of_brace:
+			opponent.combo_count -= 1
+		hit_out_of_brace = true
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)
 	if !can_parry_hitbox(hitbox):
@@ -972,7 +990,7 @@ func get_penalty_damage_modifier():
 		return "1.0"
 	return fixed.add("1.0", fixed.mul(fixed.div(str(penalty - min_penalty_for_damage), str(MAX_PENALTY - min_penalty_for_damage)), "0.5"))
 
-func take_damage(damage: int, minimum=0, meter_gain_modifier="1.0"):
+func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0"):
 	if opponent.combo_count == 0:
 		trail_hp = hp
 	if damage == 0:
@@ -983,6 +1001,7 @@ func take_damage(damage: int, minimum=0, meter_gain_modifier="1.0"):
 	damage = Utils.int_max(damage, minimum)
 	damage = Utils.int_max(guts_stale_damage(damage), 1)
 	damage = fixed.round(fixed.mul(str(damage), get_penalty_damage_modifier()))
+	damage = fixed.round(fixed.mul(str(damage), MISSED_BRACE_DAMAGE_MULTIPLIER if hit_out_of_brace else "1.0"))
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
@@ -1039,12 +1058,17 @@ func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":
 		opponent.change_state("Fall")
 
-func get_di_scaling():
+func get_di_scaling(brace=true):
+	if brace and hit_out_of_brace:
+		return "0"
 	var max_extra_di = fixed.sub(max_di_scaling, min_di_scaling)
 	var scaling_amount = str(Utils.int_min(di_combo_limit, opponent.combo_count))
 	var scaling_ratio = fixed.div(scaling_amount, str(di_combo_limit))
 	var total_extra_scaling = fixed.mul(max_extra_di, scaling_ratio)
-	return fixed.add(min_di_scaling, total_extra_scaling)
+	var total = fixed.add(min_di_scaling, total_extra_scaling)
+	if brace and braced_attack:
+		total = fixed.mul(total, SUCCESSFUL_BRACE_DI_MODIFIER)
+	return total
 
 func get_scaled_di(di):
 	var scaling = get_di_scaling()
@@ -1244,17 +1268,17 @@ func tick_before():
 		use_buffer = false
 		used_buffer = true
 		clear_buffer()
-#	if was_my_turn:
-#		projectile_hit_cancelling = false
 
 	if queued_extra:
 		last_input["extra"] = queued_extra
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
-
 		if current_state() is CounterAttack:
 			current_state().bracing = false
+		if brace_effect_applied_yet:
+			brace_effect_applied_yet = false
+			braced_attack = false
 		last_input["action"] = queued_action
 		last_input["data"] = queued_data
 		if queued_action == "Continue":

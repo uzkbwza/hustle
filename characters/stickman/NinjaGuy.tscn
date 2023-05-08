@@ -643,14 +643,14 @@ beats_grab = false
 hitstun_ticks = 24
 beats_grab = false
 
-[node name="DashForward" parent="StateMachine" index="18"]
+[node name="DashForward" parent="StateMachine" index="21"]
 dash_speed = 14
 
-[node name="ChargeDashForward" parent="StateMachine" index="19"]
+[node name="ChargeDashForward" parent="StateMachine" index="22"]
 interrupt_from_string = ""
 dash_speed = 10
 
-[node name="Jump" parent="StateMachine" index="23"]
+[node name="Jump" parent="StateMachine" index="26"]
 y_modifier = "1.33"
 
 [node name="Fireball" type="Node2D" parent="StateMachine" index="28"]
@@ -658,8 +658,8 @@ script = ExtResource( 5 )
 __meta__ = {
 "_editor_description_": ""
 }
-anim_length = 13
 reset_momentum = true
+anim_length = 13
 sfx = ExtResource( 43 )
 sfx_tick = 4
 title = "Shuriken"
@@ -971,10 +971,10 @@ script = ExtResource( 6 )
 __meta__ = {
 "_editor_description_": ""
 }
+reset_momentum = true
 fallback_state = "Fall"
 sprite_animation = "QuickSlash"
 anim_length = 60
-reset_momentum = true
 title = "Quick Slash"
 type = 3
 data_ui_scene = ExtResource( 19 )
@@ -1493,10 +1493,10 @@ script = ExtResource( 6 )
 __meta__ = {
 "_editor_description_": ""
 }
+reset_momentum = true
 fallback_state = "Fall"
 sprite_animation = "QuickSlash"
 anim_length = 60
-reset_momentum = true
 title = "Quick Slash"
 type = 3
 data_ui_scene = ExtResource( 19 )
@@ -2004,7 +2004,7 @@ x = 9
 y = -28
 width = 22
 height = 16
-damage = 120
+damage = 100
 hitstun_ticks = 34
 hitlag_ticks = 8
 victim_hitlag = 8
@@ -2265,12 +2265,12 @@ active_ticks = 4
 
 [node name="NunChukJumpFollowup" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 11 )
+reset_momentum = true
 sprite_animation = "NunChukJump"
 endless = true
 enter_force_dir_x = "2.0"
 enter_force_dir_y = "-1.0"
 enter_force_speed = "4.0"
-reset_momentum = true
 title = "Chuk Jump"
 type = 1
 data_ui_scene = ExtResource( 16 )
@@ -2636,11 +2636,11 @@ active_ticks = 13
 
 [node name="DropKick" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 3 )
+reset_momentum = true
 endless = true
 enter_force_dir_x = "0.75"
 enter_force_dir_y = "-0.60"
 enter_force_speed = "7.0"
-reset_momentum = true
 title = "Drop Kick"
 type = 1
 button_texture = ExtResource( 28 )
@@ -2657,8 +2657,8 @@ x = 13
 y = -20
 width = 23
 height = 10
-damage = 105
-hitstun_ticks = 20
+damage = 110
+hitstun_ticks = 21
 hitlag_ticks = 7
 victim_hitlag = 7
 beats_grab = false
@@ -2680,8 +2680,8 @@ endless = true
 
 [node name="IzunaDrop" type="Node2D" parent="StateMachine" index="55"]
 script = ExtResource( 232 )
-endless = true
 reset_momentum = true
+endless = true
 particle_scene = ExtResource( 234 )
 enter_sfx = ExtResource( 231 )
 enter_sfx_volume = -8.0
@@ -2827,13 +2827,13 @@ script = ExtResource( 72 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
+reset_momentum = true
 anim_length = 12
 force_dir_x = "1.0"
 force_speed = "2.0"
 force_tick = 6
 enter_force_dir_x = "1.0"
 enter_force_speed = "-12.0"
-reset_momentum = true
 particle_scene = ExtResource( 75 )
 spawn_particle_on_enter = true
 enter_sfx = ExtResource( 73 )
@@ -3082,9 +3082,9 @@ script = ExtResource( 229 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
+reset_momentum = true
 sprite_animation = "HitGrab"
 anim_length = 26
-reset_momentum = true
 particle_scene = ExtResource( 225 )
 spawn_particle_on_enter = true
 enter_sfx = ExtResource( 73 )
@@ -3137,8 +3137,8 @@ script = ExtResource( 58 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 26
 reset_momentum = true
+anim_length = 26
 title = "Skull Shaker"
 type = 2
 data_ui_scene = ExtResource( 230 )
@@ -3183,26 +3183,26 @@ script = ExtResource( 228 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
+reset_momentum = true
 anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
-reset_momentum = true
 throw_positions = {
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
+},
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
-},
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
 },
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3300,9 +3300,9 @@ script = ExtResource( 71 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
+reset_momentum = true
 sprite_animation = "Summon"
 anim_length = 8
-reset_momentum = true
 sfx = ExtResource( 46 )
 sfx_tick = 2
 title = "Substitution"
@@ -3317,7 +3317,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="71"]
+[node name="WhiffInstantCancel" parent="StateMachine" index="74"]
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -3328,7 +3328,7 @@ plus_frames = null
 beats_grab = false
 plus_frames = null
 
-[node name="ForwardThrow" parent="StateMachine" index="81"]
+[node name="ForwardThrow" parent="StateMachine" index="84"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -3340,17 +3340,17 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 },
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
 },
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 }
 }
 burst_cancellable = false
@@ -3385,28 +3385,28 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="82"]
+[node name="BackThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false
@@ -3441,10 +3441,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="87"]
+[node name="Taunt" parent="StateMachine" index="90"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="88"]
+[node name="ForfeitExplosion" parent="StateMachine" index="91"]
 endless = true

@@ -14,7 +14,7 @@ var bracing = false
 
 func _enter():
 	bracing = true
-	host.use_burst_meter(fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.33")))
+	host.use_burst_meter(fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.25")))
 
 func init():
 	.init()
@@ -24,6 +24,9 @@ func init():
 func _tick():
 	anim_name = "ParryHigh" if host.is_grounded() and counter_type != CounterType.Low else "ParryLow"
 	if host.is_grounded():
+		var vel = host.get_vel()
+#		host.set_vel(vel.x, vel.y)
+		host.set_pos(host.get_pos().x, 0)
 		host.apply_x_fric(HurtGrounded.GROUND_FRIC)
 	else:
 		host.apply_x_fric(HurtAerial.AIR_FRIC)
@@ -31,7 +34,7 @@ func _tick():
 	host.apply_forces_no_limit()
 
 func is_usable():
-	if !(host.bursts_available > 0 or host.burst_meter >= fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.33"))):
+	if !(host.bursts_available > 0 or host.burst_meter >= fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.25"))):
 		return false
 	if !.is_usable():
 		return false

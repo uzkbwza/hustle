@@ -4,7 +4,7 @@ const ORB_SCENE = preload("res://characters/wizard/projectiles/orb/Orb.tscn")
 const ORB_PARTICLE_SCENE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 
 const HOVER_AMOUNT = 1200
-const HOVER_MIN_AMOUNT = 50
+const HOVER_MIN_AMOUNT = 300
 const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
 const HOVER_GROUND_FRIC = "0.025"
@@ -22,8 +22,9 @@ const SPARK_SPEED_FRAMES = 35
 const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
-var hover_drain_amount = 12
-var hover_gain_amount = 9
+var hover_drain_amount = 32
+var fast_fall_drain_amount = 80
+var hover_gain_amount = 14
 var hover_gain_amount_air = 2
 var hovering = false
 var ghost_started_hovering = false
@@ -159,8 +160,13 @@ func tick():
 							hover_left = 0
 		if fast_falling:
 			hovering = false
+			if !infinite_resources:
+				hover_left -= fast_fall_drain_amount
+				if hover_left <= 0:
+					fast_falling = false
+					hover_left = 0
 			apply_grav_fast_fall()
-		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
+		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt and !hovering:
 			hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
 			if hover_left > HOVER_AMOUNT:
 				hover_left = HOVER_AMOUNT
@@ -253,7 +259,7 @@ func process_extra(extra):
 		detonating_bombs = extra.detonate
 
 func can_fast_fall():
-	return !is_grounded()
+	return !is_grounded() and  can_hover()
 
 func can_hover():
 #	return !is_grounded() and hover_left > HOVER_MIN_AMOUNT

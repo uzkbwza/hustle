@@ -42,6 +42,7 @@ func _enter_shared():
 	host.busy_interrupt = true
 	host.clear_buffer()
 	._enter_shared()
+	host.brace_effect_applied_yet = true
 
 func _tick_shared():
 	._tick_shared()
@@ -58,6 +59,9 @@ func hitstun_modifier(hitbox):
 
 func global_hitstun_modifier(ticks):
 	return fixed.round(fixed.mul(str(ticks), host.global_hitstun_modifier))
+
+func brace_shave_hitstun(hitstun):
+	return fixed.round(fixed.mul(str(hitstun), host.SUCCESSFUL_BRACE_HITSTUN_MODIFIER))
 
 func di_shave_hitstun(hitstun, hitbox_dir_x, hitbox_dir_y):
 #	var dir = xy_to_dir(host.current_di.x, host.current_di.y)
@@ -91,6 +95,7 @@ func _on_hit_something(_obj, _hitbox):
 func _exit_shared():
 	host.z_index = 0
 	brace = false
+	host.hit_out_of_brace = false
 	._exit_shared()
 
 func can_interrupt():

@@ -555,7 +555,7 @@ func activate(refresh=true):
 #	reset_prediction()
 #	_get_opposite_buttons().reset_prediction()
 	if is_instance_valid(fighter):
-		$"%DI".set_label("DI" + " x%.1f" % float(fighter.get_di_scaling()))
+		$"%DI".set_label("DI" + " x%.1f" % float(fighter.get_di_scaling(false)))
 		var last_action_name = ReplayManager.get_last_action(fighter.id)
 
 		if last_action_name and fighter.state_machine.states_map.has(last_action_name.action):
