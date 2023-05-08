@@ -32,7 +32,13 @@
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
 shader = ExtResource( 2 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -64,7 +70,6 @@ armed
 delay_ticks"
 immunity_susceptible = false
 deletes_other_projectiles = false
-hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
@@ -128,9 +133,9 @@ script = ExtResource( 16 )
 width = 26
 height = 26
 damage = 140
-hitstun_ticks = 40
+hitstun_ticks = 25
 hitlag_ticks = 6
-victim_hitlag = 14
+victim_hitlag = 10
 screenshake_amount = 10
 bump_on_whiff = true
 hit_sound = ExtResource( 19 )

@@ -53,7 +53,7 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
-const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.1"
+const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.0"
 const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
 const SUCCESSFUL_BRACE_DI_MODIFIER = "1.5"
 
@@ -830,8 +830,8 @@ func launched_by(hitbox):
 
 func can_counter_hitbox(hitbox):
 	var host = obj_from_name(hitbox.host)
-	if host and !host.is_in_group("Fighter"):
-		return false
+#	if host and !host.is_in_group("Fighter"):
+#		return false
 	var state: CharacterState = current_state()
 	if !is_bracing():
 		return false
@@ -877,8 +877,8 @@ func hit_by(hitbox):
 	if can_counter_hitbox(hitbox):
 		counter_hitbox(hitbox)
 	elif current_state() is CounterAttack:
-		if !hit_out_of_brace:
-			opponent.combo_count -= 1
+#		if !hit_out_of_brace:
+#			opponent.combo_count -= 1
 		hit_out_of_brace = true
 	if hitbox.throw and !is_otg():
 		return thrown_by(hitbox)

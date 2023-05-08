@@ -4,7 +4,7 @@ const ORB_SCENE = preload("res://characters/wizard/projectiles/orb/Orb.tscn")
 const ORB_PARTICLE_SCENE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 
 const HOVER_AMOUNT = 1200
-const HOVER_MIN_AMOUNT = 300
+const HOVER_MIN_AMOUNT = 250
 const HOVER_VEL_Y_POS_MODIFIER = "0.70"
 const HOVER_VEL_Y_NEG_MODIFIER = "0.94"
 const HOVER_GROUND_FRIC = "0.025"
@@ -22,10 +22,10 @@ const SPARK_SPEED_FRAMES = 35
 const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
-var hover_drain_amount = 32
-var fast_fall_drain_amount = 80
-var hover_gain_amount = 14
-var hover_gain_amount_air = 2
+var hover_drain_amount = 22
+var fast_fall_drain_amount = 43
+var hover_gain_amount = 19
+var hover_gain_amount_air = 1
 var hovering = false
 var ghost_started_hovering = false
 var fast_falling = false
