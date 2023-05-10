@@ -516,7 +516,6 @@ func copy_to(f):
 	f.set_facing(get_facing_int(), true)
 #	f.set_grounded(is_grounded())
 	f.update_data()
-	
 
 func gain_burst():
 	if bursts_available < MAX_BURSTS:

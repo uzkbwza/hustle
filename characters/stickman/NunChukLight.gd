@@ -19,7 +19,7 @@ func determine_charge():
 	else:
 		charged = false
 
-func _frame_6():
+func _frame_4():
 	if charged:
 		spawn_exported_projectile()
 	pass

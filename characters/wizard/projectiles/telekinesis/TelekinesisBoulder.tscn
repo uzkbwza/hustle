@@ -1,0 +1,100 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/Default.gd" type="Script" id=2]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/boulder1.png" type="Texture" id=3]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=4]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/BoulderFling.gd" type="Script" id=5]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=6]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.gd" type="Script" id=7]
+[ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=8]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/BoulderCrash.tscn" type="PackedScene" id=9]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+script = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": ""
+}
+air_friction = "0.0"
+max_ground_speed = "30"
+max_air_speed = "30"
+max_fall_speed = "30"
+movable = false
+disable_obj = null
+disable_particle = ExtResource( 9 )
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 10
+height = 10
+
+[node name="Hurtbox" parent="." index="3"]
+width = 10
+height = 10
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 2 )
+apply_forces = true
+apply_fric = true
+apply_custom_y_fric = true
+custom_y_fric = "0.27"
+sprite_animation = "default"
+
+[node name="Launch" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 5 )
+endless = true
+speed = "13"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Launch" index="0"]
+z_index = 1000
+script = ExtResource( 6 )
+width = 9
+height = 9
+damage = 65
+hitstun_ticks = 12
+hitlag_ticks = 3
+hit_sound = ExtResource( 8 )
+dir_y = "-0.70"
+knockback = "7.0"
+grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 4
+knockdown = true
+knockdown_extends_hitstun = false
+hard_knockdown = true
+start_tick = 4
+always_on = true
+
+[node name="Drop" type="Node2D" parent="StateMachine" index="2"]
+script = ExtResource( 5 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+reset_momentum = true
+endless = true
+launch = false

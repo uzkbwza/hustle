@@ -19,6 +19,8 @@ func init(pos=null):
 
 
 func scale_damage(damage: int):
+	if frozen:
+		return damage
 	if fixed.lt(distance, MIN_DISTANCE_START_SCALING):
 		return damage
 	var falloff = fixed.mul(DAMAGE_FALLOFF_PER_PIXEL, fixed.sub(distance, MIN_DISTANCE_START_SCALING))

@@ -18,12 +18,12 @@ const SPARK_BOMB_PUSH_DISTANCE = "60"
 const SPARK_EXPLOSION_AIR_SPEED = 25
 const SPARK_EXPLOSION_GROUND_SPEED = 20
 const SPARK_EXPLOSION_DASH_SPEED = 12
-const SPARK_SPEED_FRAMES = 35
+const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
-var hover_drain_amount = 22
-var fast_fall_drain_amount = 43
+var hover_drain_amount = 18
+var fast_fall_drain_amount = 30
 var hover_gain_amount = 19
 var hover_gain_amount_air = 1
 var hovering = false
@@ -34,11 +34,12 @@ var gusts_in_combo = 0
 var tether_ticks = 0
 var geyser_charge = 0
 
-var orb_projectile
+var orb_projectile = null
 var can_flame_wave = true
 var can_vile_clutch = true
 var current_orb_push = null
 var detonating_bombs = false
+var boulder_projectile = null
 
 var spark_bombs = []
 var nearby_spark_bombs = []
@@ -111,7 +112,11 @@ func on_state_started(state):
 func on_got_hit():
 	hovering = false
 	fast_falling = false
-	pass
+	if boulder_projectile != null:
+		var obj = obj_from_name(boulder_projectile)
+		if obj:
+			obj.drop()
+		boulder_projectile = null
 
 func tick():
 	if spark_speed_frames > 0:
@@ -213,6 +218,7 @@ func tick():
 				var falloff_power = fixed.round(fixed.div(str(TETHER_TICKS - tether_ticks), "3"))
 				var force = fixed.normalized_vec_times(str(dir.x), str(dir.y), fixed.mul(TETHER_SPEED, fixed.powu(TETHER_FALLOFF, falloff_power)))
 				apply_force(force.x, force.y)
+
 		tether_ticks -= 1
 		if is_grounded():
 			tether_ticks = 0
@@ -225,6 +231,7 @@ func start_moisture_effect():
 
 func stop_moisture_effect():
 	$"%DrawMoistureParticle".stop_emitting()
+
 
 func process_extra(extra):
 	.process_extra(extra)
@@ -257,6 +264,13 @@ func process_extra(extra):
 		current_orb_push = extra.orb_push
 	if extra.has("detonate"):
 		detonating_bombs = extra.detonate
+	if boulder_projectile != null and extra.has("launch_dir") and extra.has("launch"):
+		if extra.launch:
+			var obj: TelekinesisProjectile = obj_from_name(boulder_projectile)
+			if obj:
+				var dir = xy_to_dir(extra.launch_dir.x, extra.launch_dir.y)
+				obj.launch(dir)
+				play_sound("Telekinesis")
 
 func can_fast_fall():
 	return !is_grounded() and  can_hover()

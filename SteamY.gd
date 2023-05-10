@@ -1,8 +1,7 @@
 extends Node
 
 const FX_IDS = [76561198255503675, 76561198166940679]
-const FX_NAMES = ["ivy sly", "grafx"]
-
+const FX_NAMES = ["ivy sly", "graf"]
 
 signal started
 

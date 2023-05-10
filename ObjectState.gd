@@ -15,9 +15,11 @@ export var reset_y_momentum = false
 
 export var _c_Custom_Physics = 0
 export var apply_custom_x_fric = false
+export var apply_custom_y_fric = false
 export var apply_custom_grav = false
 
 export var custom_x_fric = "0.0"
+export var custom_y_fric = "0.0"
 export var custom_grav = "0.0"
 export var custom_grav_max_fall_speed = "0.0"
 
@@ -258,6 +260,8 @@ func _tick_shared():
 		host.apply_grav()
 	if apply_custom_x_fric:
 		host.apply_x_fric(custom_x_fric)
+	if apply_custom_y_fric:
+		host.apply_y_fric(custom_y_fric)
 	if apply_custom_grav:
 		host.apply_grav_custom(custom_grav, custom_grav_max_fall_speed)
 	if apply_forces:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=310 format=2]
+[gd_scene load_steps=311 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -305,6 +305,7 @@
 [ext_resource path="res://characters/swordandgun/sounds/teleport2.wav" type="AudioStream" id=303]
 [ext_resource path="res://characters/swordandgun/sounds/teleport3.wav" type="AudioStream" id=304]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/spot_dodge.png" type="Texture" id=305]
+[ext_resource path="res://characters/swordandgun/ActionUIData/TemporalRoundActionUIData.tscn" type="PackedScene" id=306]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -1025,7 +1026,7 @@ x = 3
 y = -39
 width = 21
 height = 14
-damage = 140
+damage = 160
 minimum_damage = 50
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -1046,7 +1047,7 @@ x = 22
 y = -26
 width = 21
 height = 14
-damage = 140
+damage = 160
 minimum_damage = 50
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -1191,7 +1192,7 @@ x = 3
 y = 7
 width = 21
 height = 14
-damage = 140
+damage = 160
 minimum_damage = 50
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -1212,7 +1213,7 @@ x = 22
 y = -6
 width = 21
 height = 14
-damage = 140
+damage = 160
 minimum_damage = 50
 hitlag_ticks = 7
 victim_hitlag = 10
@@ -1949,7 +1950,7 @@ x = 31
 y = -17
 width = 22
 height = 4
-damage = 50
+damage = 30
 hitlag_ticks = 3
 victim_hitlag = 3
 cancellable = false
@@ -2011,7 +2012,7 @@ x = 31
 y = -12
 width = 32
 height = 18
-damage = 150
+damage = 145
 minimum_damage = 60
 victim_hitlag = 4
 group = 1
@@ -2686,6 +2687,7 @@ sfx_tick = 4
 sfx_volume = -6.0
 title = "Temporal Round"
 type = 3
+data_ui_scene = ExtResource( 306 )
 button_texture = ExtResource( 60 )
 air_type = 2
 interrupt_from_string = "Gun
@@ -2722,7 +2724,7 @@ z_index = 1000
 script = ExtResource( 83 )
 width = 40
 height = 40
-damage = 190
+damage = 195
 minimum_damage = 90
 hitlag_ticks = 1
 victim_hitlag = 10
@@ -2766,7 +2768,7 @@ x = 54
 y = -8
 width = 38
 height = 2
-damage = 70
+damage = 105
 hitstun_ticks = 14
 hitlag_ticks = 6
 hit_height = 2
@@ -2778,7 +2780,7 @@ knockback = "8.5"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 7
+start_tick = 8
 active_ticks = 2
 
 [node name="BackSlash" type="Node2D" parent="StateMachine" index="50"]
@@ -2847,9 +2849,10 @@ x = -37
 y = -58
 width = 11
 height = 11
-damage = 160
+damage = 130
 hitstun_ticks = 33
 hitlag_ticks = 13
+victim_hitlag = 18
 hits_vs_grounded = false
 priority = 2
 screenshake_amount = 7
@@ -2861,7 +2864,7 @@ knockback = "12.0"
 knockdown = true
 knockdown_extends_hitstun = false
 wall_slam = true
-start_tick = 9
+start_tick = 7
 active_ticks = 1
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]

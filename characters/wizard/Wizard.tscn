@@ -1,4 +1,4 @@
-[gd_scene load_steps=303 format=2]
+[gd_scene load_steps=314 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -94,7 +94,7 @@
 [ext_resource path="res://characters/wizard/sprites/cast3.png" type="Texture" id=92]
 [ext_resource path="res://characters/wizard/sprites/cast2.png" type="Texture" id=93]
 [ext_resource path="res://characters/wizard/sprites/cast1.png" type="Texture" id=94]
-[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=95]
+[ext_resource path="res://characters/wizard/TelekinesisParticle.tscn" type="PackedScene" id=95]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ManaStrikeActionUIData.tscn" type="PackedScene" id=96]
 [ext_resource path="res://characters/wizard/ManaStrikeParticle.tscn" type="PackedScene" id=97]
 [ext_resource path="res://characters/wizard/sprites/cast4.png" type="Texture" id=98]
@@ -294,6 +294,17 @@
 [ext_resource path="res://characters/wizard/SparkSpeedParticle.tscn" type="PackedScene" id=292]
 [ext_resource path="res://characters/wizard/sounds/sparkspeed.wav" type="AudioStream" id=293]
 [ext_resource path="res://characters/wizard/Landing.gd" type="Script" id=294]
+[ext_resource path="res://characters/wizard/states/ConjurePebble.gd" type="Script" id=295]
+[ext_resource path="res://characters/wizard/sprites/telekinesis6.png" type="Texture" id=296]
+[ext_resource path="res://characters/wizard/sprites/telekinesis2.png" type="Texture" id=297]
+[ext_resource path="res://characters/wizard/sprites/telekinesis1.png" type="Texture" id=298]
+[ext_resource path="res://characters/wizard/sprites/telekinesis3.png" type="Texture" id=299]
+[ext_resource path="res://characters/wizard/sprites/telekinesis4.png" type="Texture" id=300]
+[ext_resource path="res://characters/wizard/sprites/telekinesis5.png" type="Texture" id=301]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.tscn" type="PackedScene" id=302]
+[ext_resource path="res://characters/wizard/sounds/telekinesis.wav" type="AudioStream" id=303]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=304]
+[ext_resource path="res://characters/wizard/sounds/magic12.wav" type="AudioStream" id=305]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -325,7 +336,7 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="SpriteFrames" id=10]
+[sub_resource type="SpriteFrames" id=13]
 animations = [ {
 "frames": [ ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 19 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 38 ), ExtResource( 30 ) ],
 "loop": true,
@@ -627,6 +638,11 @@ animations = [ {
 "name": "Taunt",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 298 ), ExtResource( 298 ), ExtResource( 298 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 299 ), ExtResource( 299 ), ExtResource( 300 ), ExtResource( 300 ), ExtResource( 301 ), ExtResource( 301 ), ExtResource( 296 ), ExtResource( 296 ) ],
+"loop": true,
+"name": "Telekinesis",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 23 ) ],
 "loop": true,
 "name": "ThrowTech",
@@ -751,7 +767,8 @@ spark_bombs
 nearby_spark_bombs
 detonating_bombs
 spark_speed_frames
-default_dash_speed"
+default_dash_speed
+boulder_projectile"
 damages_own_team = true
 character_portrait = ExtResource( 63 )
 character_portrait2 = ExtResource( 99 )
@@ -764,9 +781,8 @@ extra_color_2 = Color( 0.580392, 0.894118, 1, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
-frames = SubResource( 10 )
-animation = "IceSpikeAir"
-frame = 5
+frames = SubResource( 13 )
+animation = "Telekinesis"
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -812,14 +828,20 @@ volume_db = -8.0
 bus = "Fx"
 script = ExtResource( 216 )
 
-[node name="SparkSpeed" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+[node name="Telekinesis" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+stream = ExtResource( 305 )
+volume_db = -8.0
+bus = "Fx"
+script = ExtResource( 216 )
+
+[node name="SparkSpeed" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
 stream = ExtResource( 293 )
 volume_db = -27.0
 pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 216 )
 
-[node name="Droplet" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
+[node name="Droplet" type="AudioStreamPlayer2D" parent="Sounds" index="14"]
 stream = ExtResource( 288 )
 volume_db = -8.0
 bus = "Fx"
@@ -883,7 +905,7 @@ trigger_orb_delay = 15
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/AirKick" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = -3
 y = -10
 width = 10
@@ -898,7 +920,7 @@ start_tick = 8
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 7
 y = 13
 width = 11
@@ -948,13 +970,13 @@ trigger_orb_delay = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IceSpikeAir" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 35
 y = -36
 width = 19
 height = 17
 damage = 90
-hitstun_ticks = 20
+hitstun_ticks = 23
 hitlag_ticks = 6
 victim_hitlag = 6
 hit_height = 0
@@ -993,7 +1015,7 @@ trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Combust" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 40
 y = 5
 width = 18
@@ -1044,13 +1066,13 @@ trigger_orb_delay = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/IceSpikeGround" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 42
 y = -25
 width = 13
 height = 18
 damage = 90
-hitstun_ticks = 17
+hitstun_ticks = 23
 hitlag_ticks = 11
 victim_hitlag = 11
 hit_height = 2
@@ -1090,7 +1112,7 @@ trigger_orb_delay = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/TomeSlap" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 17
 y = -23
 width = 15
@@ -1134,7 +1156,7 @@ trigger_orb_delay = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Kick" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 12
 y = -5
 width = 23
@@ -1200,7 +1222,7 @@ trigger_orb_delay = 10
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ManaStrike" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 y = -20
 width = 12
 height = 12
@@ -1267,7 +1289,7 @@ trigger_orb_delay = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Liftoff" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 width = 15
 height = 15
 damage = 120
@@ -1289,7 +1311,7 @@ active_ticks = 1
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Liftoff" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 y = -16
 width = 12
 height = 12
@@ -1434,7 +1456,7 @@ can_draw = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Sandstorm" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 35
 y = -21
 width = 30
@@ -1536,7 +1558,7 @@ throw_state = "Hold"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WindForce" index="3"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 48
 y = -68
 width = 24
@@ -1584,7 +1606,35 @@ hit_cancel_into_string = "Grounded
 Aerial"
 super_level = 0
 
-[node name="ConjureWeapon" type="Node2D" parent="StateMachine" index="27"]
+[node name="Telekinesis" type="Node2D" parent="StateMachine" index="27"]
+script = ExtResource( 295 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 14
+state_screenshake_tick = 6
+state_screenshake_dir = Vector2( 0, -1 )
+timed_particle_scene = ExtResource( 95 )
+timed_spawn_particle_tick = 6
+enter_sfx_volume = -12.0
+sfx = ExtResource( 303 )
+sfx_tick = 6
+sfx_volume = -5.0
+projectile_scene = ExtResource( 302 )
+projectile_tick = 6
+projectile_pos_x = 32
+projectile_pos_y = -12
+title = "Telekinesis"
+type = 3
+interrupt_from_string = "Grounded
+GroundedSuper
+Aerial
+AerialSuper"
+interrupt_into_string = "Aerial
+Grounded"
+super_freeze_ticks = 5
+
+[node name="ConjureWeapon" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 260 )
 apply_forces = true
 apply_fric = true
@@ -1619,7 +1669,7 @@ trigger_orb_delay = 18
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ConjureWeapon" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 50
 y = -10
 width = 35
@@ -1655,7 +1705,7 @@ height = 14
 start_tick = 10
 active_ticks = 3
 
-[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="28"]
+[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 181 )
 apply_forces = true
 apply_fric = true
@@ -1677,7 +1727,7 @@ trigger_orb_delay = 30
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ConjureStorm" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 36
 y = -20
 width = 14
@@ -1697,7 +1747,7 @@ active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/ConjureStorm" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = -36
 y = -20
 width = 14
@@ -1718,7 +1768,7 @@ active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConjureStorm" index="2"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 87
 y = -20
 width = 17
@@ -1738,7 +1788,7 @@ active_ticks = 3
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/ConjureStorm" index="3"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = -87
 y = -20
 width = 17
@@ -1757,7 +1807,7 @@ minimum_airborne_frames = 0
 start_tick = 19
 active_ticks = 3
 
-[node name="SparkBomb" type="Node2D" parent="StateMachine" index="29"]
+[node name="SparkBomb" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 196 )
 apply_forces = true
 apply_fric = true
@@ -1781,8 +1831,9 @@ Aerial
 AerialSuper"
 interrupt_into_string = "Grounded
 Aerial"
+super_level = 2
 
-[node name="VileClutch" type="Node2D" parent="StateMachine" index="30"]
+[node name="VileClutch" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 197 )
 apply_forces = true
 apply_fric = true
@@ -1809,7 +1860,7 @@ Aerial"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 60
 
-[node name="ConfusingTouch" type="Node2D" parent="StateMachine" index="31"]
+[node name="ConfusingTouch" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 248 )
 apply_forces = true
 apply_fric = true
@@ -1835,7 +1886,7 @@ trigger_orb_type = "OrbDart"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 59
 y = -19
 width = 10
@@ -1856,7 +1907,7 @@ active_ticks = 4
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 19
 y = -19
 width = 17
@@ -1877,7 +1928,7 @@ minimum_airborne_frames = 0
 start_tick = 3
 active_ticks = 3
 
-[node name="DrawMoisture" type="Node2D" parent="StateMachine" index="32"]
+[node name="DrawMoisture" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 285 )
 apply_forces = true
 apply_fric = true
@@ -1900,7 +1951,7 @@ interrupt_into_string = "Grounded
 Aerial"
 trigger_orb_attack = false
 
-[node name="Geyser" type="Node2D" parent="StateMachine" index="33"]
+[node name="Geyser" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 270 )
 apply_forces = true
 apply_fric = true
@@ -1930,7 +1981,7 @@ interrupt_exceptions_string = "DrawMoisture"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 30
 
-[node name="ConfusingTouch2" type="Node2D" parent="StateMachine" index="34"]
+[node name="ConfusingTouch2" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 91 )
 sprite_animation = "Grab2"
 anim_length = 24
@@ -1942,7 +1993,7 @@ trigger_orb_type = "OrbDart"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ConfusingTouch2" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 59
 y = -19
 width = 10
@@ -1964,7 +2015,7 @@ active_ticks = 4
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch2" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 17
 y = -19
 width = 14
@@ -1985,7 +2036,7 @@ minimum_airborne_frames = 0
 start_tick = 3
 active_ticks = 2
 
-[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="35"]
+[node name="BoltOfMagma" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 218 )
 apply_forces = true
 apply_fric = true
@@ -2009,7 +2060,7 @@ trigger_orb_delay = 25
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BoltOfMagma" index="0"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 20
 y = -40
 width = 17
@@ -2027,7 +2078,7 @@ active_ticks = 2
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/BoltOfMagma" index="1"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 69
 y = -58
 width = 6
@@ -2044,7 +2095,7 @@ active_ticks = 2
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/BoltOfMagma" index="2"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 45
 y = -49
 width = 6
@@ -2061,7 +2112,7 @@ active_ticks = 2
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/BoltOfMagma" index="3"]
 z_index = 1000
-script = ExtResource( 95 )
+script = ExtResource( 304 )
 x = 45
 y = -25
 width = 6
@@ -2082,44 +2133,44 @@ minimum_airborne_frames = 0
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 minimum_airborne_frames = 0
 
-[node name="Landing" parent="StateMachine" index="43"]
+[node name="Landing" parent="StateMachine" index="44"]
 script = ExtResource( 294 )
 
-[node name="TechRoll" parent="StateMachine" index="47"]
+[node name="TechRoll" parent="StateMachine" index="48"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="DashForward" parent="StateMachine" index="49"]
+[node name="DashForward" parent="StateMachine" index="50"]
 dash_speed = 8
 
-[node name="ChargeDashForward" parent="StateMachine" index="50"]
+[node name="ChargeDashForward" parent="StateMachine" index="51"]
 dash_speed = 8
 
-[node name="DashBackward" parent="StateMachine" index="51"]
+[node name="DashBackward" parent="StateMachine" index="52"]
 dash_speed = 8
 stop_frame = 9
 
-[node name="Jump" parent="StateMachine" index="54"]
+[node name="Jump" parent="StateMachine" index="55"]
 speed = "8"
 y_modifier = "1.2"
 
-[node name="DoubleJump" parent="StateMachine" index="57"]
+[node name="DoubleJump" parent="StateMachine" index="58"]
 data_ui_scene = ExtResource( 126 )
 speed = "8"
 y_modifier = "1.1"
 
-[node name="AirDash" parent="StateMachine" index="58"]
+[node name="AirDash" parent="StateMachine" index="59"]
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="66"]
+[node name="Hold" parent="StateMachine" index="67"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="67"]
+[node name="AirHold" parent="StateMachine" index="68"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
@@ -2131,7 +2182,7 @@ minimum_airborne_frames = null
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 minimum_airborne_frames = null
 
-[node name="ForwardThrow" parent="StateMachine" index="70"]
+[node name="ForwardThrow" parent="StateMachine" index="71"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2145,7 +2196,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="BackThrow" parent="StateMachine" index="71"]
+[node name="BackThrow" parent="StateMachine" index="72"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2159,7 +2210,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirForwardThrow" parent="StateMachine" index="72"]
+[node name="AirForwardThrow" parent="StateMachine" index="73"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2171,7 +2222,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirBackThrow" parent="StateMachine" index="73"]
+[node name="AirBackThrow" parent="StateMachine" index="74"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2183,7 +2234,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirDownThrow" parent="StateMachine" index="74"]
+[node name="AirDownThrow" parent="StateMachine" index="75"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2194,11 +2245,11 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="ThrowTech" parent="StateMachine" index="75"]
+[node name="ThrowTech" parent="StateMachine" index="76"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
 
-[node name="Taunt" parent="StateMachine" index="76"]
+[node name="Taunt" parent="StateMachine" index="77"]
 script = ExtResource( 257 )
 apply_fric = false

@@ -181,6 +181,10 @@ func get_match_data():
 		"selected_styles": selected_styles,
 #		"selected_customs": selected_customs,
 	}
+	if singleplayer or Network.is_host():
+		randomize()
+		data.merge({"seed": randi()})
+	
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
 		data.merge(SteamLobby.MATCH_SETTINGS)
 	else:

@@ -668,7 +668,6 @@ func get_data():
 func set_value_float(value):
 	update_value(value)
 
-
 func as_percentage_int_vec(vec2: Vector2):
 	return {
 		"x":int(round((vec2.x / panel_radius) * PERCENT_MAX)), 

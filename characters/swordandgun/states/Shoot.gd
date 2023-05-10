@@ -3,6 +3,7 @@ extends SuperMove
 const BULLET_SCENE = preload("res://characters/swordandgun/projectiles/bullet.tscn")
 const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash.tscn")
 const TEMPORAL_BULLET_SCENE = preload("res://characters/swordandgun/projectiles/frozen_bullet.tscn")
+const FAST_TEMPORAL_BULLET_SCENE = preload("res://characters/swordandgun/projectiles/frozen_bullet_fast.tscn")
 #const BULLET_LENGTH = "1024"
 const KICKBACK_FORCE = "-1.0"
 const AUTO_AIM_DIST = "0.2"
@@ -15,6 +16,7 @@ var bullet_location
 var dir
 var angle
 var parried = false
+var fast = false
 
 func _frame_0():
 	parried = false
@@ -32,6 +34,8 @@ func _frame_0():
 		if host.consecutive_shots > 0:
 			iasa_at = -1
 			host.consecutive_shots -= 1
+	else:
+		fast = data
 
 func on_got_parried():
 	parried = true
@@ -66,7 +70,7 @@ func _frame_4():
 #		bullet_location.x = fixed.round(fixed.add(str(bullet_location.x), opp_vel.x))
 #		bullet_location.y = fixed.round(fixed.add(str(bullet_location.y), opp_vel.y))
 		
-		var bullet = host.spawn_object(TEMPORAL_BULLET_SCENE, fixed.round(bullet_location.x), fixed.round(bullet_location.y), true, bullet_location, false)
+		var bullet = host.spawn_object(TEMPORAL_BULLET_SCENE if !fast else FAST_TEMPORAL_BULLET_SCENE, fixed.round(bullet_location.x), fixed.round(bullet_location.y), true, bullet_location, false)
 		
 		bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
 		var barrel_location = host.get_barrel_location(angle)

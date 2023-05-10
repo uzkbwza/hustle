@@ -20,10 +20,10 @@ func random_dir(diagonals=false, zero=false) -> Vector2:
 	return choose(dirs)
 	
 func i() -> int:
-	return randi()
+	return self.randi()
 
 func f() -> float:
-	return randf()
+	return self.randf()
 
 func spread_vec(vec: Vector2, spread_degrees: float) -> Vector2:
 	return vec.rotated(spread_angle(spread_degrees))
@@ -56,13 +56,13 @@ func random_point_in_rect(rect: Rect2) -> Vector2:
 	return Vector2(randf_range(rect.position.x, rect.end.x), randf_range(rect.position.y, rect.end.y))
 
 func weighted_randi_range(start: int, end: int, weight_function: FuncRef) -> int:
-	var weight_sum = 0.0
+	var weight_sum = 0
 	var weights = []
 	for i in range(start, end):
 		var weight: int = weight_function.call_func(i)
 		weights.append(weight)
 		weight_sum += weight
-	var rnd = randf_range(0, weight_sum)
+	var rnd = randi_range(0, weight_sum)
 	for i in range(start, end):
 		var weight = weights[start + i]
 		if rnd <= weight:
@@ -78,13 +78,13 @@ func weighted_choice(array: Array, weight_array: Array = []):
 			weight_array.append(len(array) - i)
 	var start = 0
 	var end = len(array)
-	var weight_sum = 0.0
+	var weight_sum: int = 0
 	var weights = []
 	for i in range(start, end):
 		var weight: int = weight_array[i]
 		weights.append(weight)
 		weight_sum += weight
-	var rnd = randf_range(0, weight_sum)
+	var rnd = randi_range(0, weight_sum)
 	for i in range(start, end):
 		var weight = weights[start + i]
 		if rnd <= weight:

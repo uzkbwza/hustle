@@ -15,4 +15,4 @@ script = ExtResource( 1 )
 anchor_right = 0.0
 anchor_bottom = 0.0
 min_length = 0.2
-default_value = Vector2( 0, -1 )
+default_value = Vector2( 1, 0 )

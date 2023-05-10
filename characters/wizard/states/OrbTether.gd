@@ -1,7 +1,5 @@
 extends WizardState
 
-
-
 func is_usable():
 	return .is_usable() and host.orb_projectile and (host.is_grounded() or host.air_movements_left > 0)
 

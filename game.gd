@@ -140,6 +140,7 @@ var p2_ghost_ready_tick
 var spectating = false
 
 var camera_zoom = 1.0
+
 #var has_ghost_frozen_yet = false
 
 func get_ticks_left():
@@ -238,7 +239,13 @@ func on_particle_effect_spawned(fx: ParticleEffect):
 func on_object_spawned(obj: BaseObj):
 	objects.append(obj)
 	objects_node.add_child(obj)
+	obj.has_ceiling = has_ceiling
+	obj.ceiling_height = ceiling_height
 	obj.obj_name = str(objs_map.size() + 1)
+	obj.logic_rng = BetterRng.new()
+	var seed_ = hash(match_data.seed + (objs_map.size() + 1))
+	obj.logic_rng.seed = seed_
+	obj.logic_rng_seed = seed_
 	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
@@ -328,9 +335,22 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		ceiling_height = match_data["ceiling_height"]
 	if match_data.has("prediction_enabled"):
 		prediction_enabled = match_data["prediction_enabled"]
+	p1.has_ceiling = has_ceiling
+	p2.has_ceiling = has_ceiling
+	p1.ceiling_height = ceiling_height
+	p2.ceiling_height = ceiling_height
+
+#	if !is_ghost:
+#		print("seed: ", match_data.seed)
 
 	p1.name = "P1"
 	p2.name = "P2"
+	p1.logic_rng = BetterRng.new()
+	p2.logic_rng = BetterRng.new()
+	p1.logic_rng.seed = hash(match_data.seed)
+	p1.logic_rng_seed = hash(match_data.seed)
+	p2.logic_rng.seed = hash(match_data.seed + 1)
+	p2.logic_rng_seed = hash(match_data.seed + 1)
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
@@ -545,7 +565,7 @@ func tick():
 	initialize_objects()
 	p1_data = p1.data
 	p2_data = p2.data
-	resolve_collisions()
+	resolve_collisions(players[0], players[1])
 	apply_hitboxes(players)
 	p1_data = p1.data
 	p2_data = p2.data
@@ -710,7 +730,7 @@ func resolve_same_x_coordinate():
 		player_to_move.set_x(player_to_move.get_pos().x + direction_to_move)
 		player_to_move.update_data()
 
-func resolve_collisions(step=0):
+func resolve_collisions(p1, p2, step=0):
 	p1.update_collision_boxes()
 	p2.update_collision_boxes()
 	var x_pos = p1.data.object_data.position_x
@@ -775,30 +795,30 @@ func resolve_collisions(step=0):
 			p1.set_x(-stage_width + p1.collision_box.width)
 			p1.update_data()
 			p2.update_data()
-			return resolve_collisions(step+1)
+			return resolve_collisions(p1, p2, step+1)
 			
 		elif !p1.clipping_wall and x_pos + p1.collision_box.width > stage_width:
 			p1.set_x(stage_width - p1.collision_box.width)
 			p1.update_data()
 			p2.update_data()
-			return resolve_collisions(step+1)
+			return resolve_collisions(p1, p2, step+1)
 			
 		if !p2.clipping_wall and opp_x_pos - p2.collision_box.width < -stage_width:
 			p2.set_x(-stage_width + p2.collision_box.width)
 			p1.update_data()
 			p2.update_data()
-			return resolve_collisions(step+1)
+			return resolve_collisions(p1, p2, step+1)
 			
 		elif !p2.clipping_wall and opp_x_pos + p2.collision_box.width > stage_width:
 			p2.set_x(stage_width - p2.collision_box.width)
 			p1.update_data()
 			p2.update_data()
-			return resolve_collisions(step+1)
+			return resolve_collisions(p1, p2, step+1)
 		
 		if p1.is_colliding_with_opponent() and p2.is_colliding_with_opponent() and p1.collision_box.overlaps(p2.collision_box):
 			p1.update_data()
 			p2.update_data()
-			return resolve_collisions(step+1)
+			return resolve_collisions(p1, p2, step+1)
 
 func apply_hitboxes(players):
 	var px1 = players[0]

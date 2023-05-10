@@ -67,6 +67,7 @@ func _enter():
 	var force_y = fixed.add(knockback_force.y, di_force.y)
 	host.apply_force(force_x, force_y)
 	host.move_directly(0, -1)
+	anim_name = "HurtAerial"
 
 func _frame_1():
 	if host.braced_attack:
@@ -135,7 +136,7 @@ func _tick():
 						if host.hp > 0:
 							return "Landing"
 						return "Knockdown"
-				else:
+				elif current_tick > 0:
 					match hitbox.hit_height:
 						Hitbox.HitHeight.High:
 							anim_name = "HurtGroundedHigh"

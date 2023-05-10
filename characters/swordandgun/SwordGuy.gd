@@ -163,9 +163,6 @@ func on_state_ended(state):
 	bullet_cancelling = false
 	pass
 
-func on_hit_something():
-	pass
-
 func use_bullet():
 	if infinite_resources:
 		return

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/WizardExtra.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/8Way/8Way.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=5]
 
 [node name="WizardExtra" instance=ExtResource( 1 )]
 alignment = 1
@@ -17,9 +18,9 @@ custom_constants/separation = 1
 alignment = 1
 
 [node name="Control" type="Control" parent="VBoxContainer" index="0"]
-margin_top = 160.0
+margin_top = 159.0
 margin_right = 52.0
-margin_bottom = 160.0
+margin_bottom = 159.0
 rect_min_size = Vector2( 52, 0 )
 
 [node name="OrbPush" parent="VBoxContainer/Control" index="0" instance=ExtResource( 4 )]
@@ -30,11 +31,51 @@ margin_top = -62.0
 margin_bottom = 0.0
 alignment = 1
 
-[node name="HoverButton" type="CheckButton" parent="VBoxContainer" index="1"]
+[node name="Control3" type="Control" parent="VBoxContainer" index="1"]
+margin_top = 160.0
+margin_right = 52.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 52, 0 )
+
+[node name="LaunchContainer" type="VBoxContainer" parent="VBoxContainer/Control3" index="0"]
 unique_name_in_owner = true
+margin_top = -81.0
+margin_right = 60.0
+margin_bottom = 1.0
+alignment = 2
+
+[node name="LaunchDir" parent="VBoxContainer/Control3/LaunchContainer" index="0" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+always_max = true
+default_value = Vector2( 1, 0 )
+
+[node name="ShootButton" type="CheckButton" parent="VBoxContainer/Control3/LaunchContainer" index="1"]
+unique_name_in_owner = true
+margin_top = 70.0
+margin_right = 52.0
+margin_bottom = 82.0
+rect_min_size = Vector2( 52, 0 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Shoot"
+clip_text = true
+
+[node name="Control2" type="Control" parent="VBoxContainer" index="2"]
 margin_top = 161.0
 margin_right = 52.0
-margin_bottom = 173.0
+margin_bottom = 161.0
+rect_min_size = Vector2( 52, 0 )
+
+[node name="HoverButton" type="CheckButton" parent="VBoxContainer" index="3"]
+unique_name_in_owner = true
+margin_top = 162.0
+margin_right = 52.0
+margin_bottom = 174.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
@@ -42,11 +83,11 @@ custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Hover"
 clip_text = true
 
-[node name="FastFallButton" type="CheckButton" parent="VBoxContainer" index="2"]
+[node name="FastFallButton" type="CheckButton" parent="VBoxContainer" index="4"]
 unique_name_in_owner = true
-margin_top = 174.0
+margin_top = 175.0
 margin_right = 52.0
-margin_bottom = 186.0
+margin_bottom = 187.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
@@ -54,11 +95,11 @@ custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Fall"
 clip_text = true
 
-[node name="ExplodeButton" type="CheckButton" parent="VBoxContainer" index="3"]
+[node name="ExplodeButton" type="CheckButton" parent="VBoxContainer" index="5"]
 unique_name_in_owner = true
-margin_top = 187.0
+margin_top = 188.0
 margin_right = 52.0
-margin_bottom = 199.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
