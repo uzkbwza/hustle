@@ -6,12 +6,13 @@ var launched = false
 
 export(PackedScene) var disable_obj
 export(PackedScene) var disable_particle
+export var rumble = true
 
 func disable():
 	disable_action()
 
 	if disable_obj:
-		var obj = disable_obj.instance()
+		var obj = disable_obj
 		var pos = get_pos()
 		spawn_object(obj, 0, 0)
 	
@@ -24,9 +25,13 @@ func disable():
 			creator.boulder_projectile = null
 
 func disable_action():
-	var camera: GoodCamera = get_camera()
-	if camera:
-		camera.bump(Vector2(), 10, 0.25)
+	if rumble:
+		var camera: GoodCamera = get_camera()
+		if camera:
+			camera.bump(Vector2(), 10, 0.25)
+
+func hit_action(obj):
+	pass
 
 func drop():
 	if current_state().name == "Default":

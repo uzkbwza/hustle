@@ -57,6 +57,7 @@ export var next_state_on_hold = true
 export var next_state_on_hold_on_opponent_turn = false
 export var combo_only = false
 export var neutral_only = false
+export var end_feint = true
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -116,6 +117,7 @@ var hit_cancel_into = []
 var hit_cancel_exceptions = []
 var busy_interrupt_into = []
 var allowed_stances = []
+var usable_requirement_nodes = []
 
 var is_hurt_state = false
 var start_interruptible_on_opponent_turn = false
@@ -133,6 +135,9 @@ func init():
 	allowed_stances.append_array(get_categories(allowed_stances_string))
 	interrupt_exceptions.append_array(get_categories(interrupt_exceptions_string))
 	start_interruptible_on_opponent_turn = interruptible_on_opponent_turn
+	for node in get_children():
+		if node is UsableRequirement:
+			usable_requirement_nodes.append(node)
 	if burst_cancellable:
 		hit_cancel_into.append("OffensiveBurst")
 	if instant_cancellable:
@@ -188,6 +193,9 @@ func is_usable():
 		return false
 	if neutral_only and host.combo_count >= 1:
 		return false
+	for node in usable_requirement_nodes:
+		if !node.check(host):
+			return false
 	return true
 
 func get_velocity_forward_meter_gain_multiplier():
@@ -390,7 +398,7 @@ func on_got_hit():
 
 func _exit_shared():
 	beats_backdash = false
-	if feinting:
+	if feinting and end_feint:
 		host.update_facing()
 		host.feinting = false
 	feinting = false

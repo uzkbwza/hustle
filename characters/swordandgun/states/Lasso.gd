@@ -1,8 +1,8 @@
 extends CharacterState
 
 const LASSO_SCENE = preload("res://characters/swordandgun/projectiles/Lasso.tscn")
-const LASSO_LIFT = 6
-const THROW_SPEED = 14
+#const LASSO_LIFT = 6
+const THROW_SPEED = "14"
 
 var lasso_hit = false
 var lasso_hit_frame = 0
@@ -19,7 +19,9 @@ func _enter():
 func _frame_7():
 	var obj = host.spawn_object(LASSO_SCENE, 16, -16)
 	host.lasso_projectile = obj.obj_name
-	obj.apply_force_relative(THROW_SPEED, -LASSO_LIFT)
+	var dir = xy_to_dir(data.x, data.y)
+	var force = fixed.vec_mul(fixed.mul(dir.x, str(host.get_facing_int())), dir.y, THROW_SPEED)
+	obj.apply_force_relative(force.x, force.y)
 	var vel = host.get_vel()
 	obj.apply_force(vel.x, vel.y)
 	obj.connect("lasso_hit", self, "on_lasso_hit")

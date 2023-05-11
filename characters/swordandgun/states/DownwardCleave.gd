@@ -11,7 +11,7 @@ func _enter():
 
 func _frame_0():
 	if grounded:
-		grounded_frames = 3
+		grounded_frames = 2
 		return
 	moving_down = false
 	var vel = host.get_vel()

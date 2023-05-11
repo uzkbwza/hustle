@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/pebble.png" type="Texture" id=3]
+[ext_resource path="res://sound/common/dink2.wav" type="AudioStream" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[node name="BaseProjectile" instance=ExtResource( 2 )]
+material = SubResource( 1 )
+disable_particle = null
+rumble = false
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0"]
+material = SubResource( 3 )
+
+[node name="CPUParticles2D" parent="Flip/Particles/ParticleEffect" index="1"]
+amount = 5
+emission_sphere_radius = 2.76
+
+[node name="Hurtbox" parent="." index="3"]
+width = 2
+height = -2
+
+[node name="Default" parent="StateMachine" index="0"]
+custom_y_fric = "0.17"
+
+[node name="Launch" parent="StateMachine" index="1"]
+speed = "20"
+
+[node name="Hitbox" parent="StateMachine/Launch" index="0"]
+damage = 35
+hitstun_ticks = 5
+screenshake_amount = 0
+hit_sound = ExtResource( 4 )
+
+[editable path="Flip/Particles/ParticleEffect"]

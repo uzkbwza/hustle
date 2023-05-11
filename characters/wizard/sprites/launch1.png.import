@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/horse.png-247613e783e5e1327612310ec019b774.stex"
+path="res://.import/launch1.png-09d4473251378bf79e5f2658cccd10bb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/swordandgun/horse.png"
-dest_files=[ "res://.import/horse.png-247613e783e5e1327612310ec019b774.stex" ]
+source_file="res://characters/wizard/sprites/launch1.png"
+dest_files=[ "res://.import/launch1.png-09d4473251378bf79e5f2658cccd10bb.stex" ]
 
 [params]
 

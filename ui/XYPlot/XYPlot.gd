@@ -654,7 +654,7 @@ func get_default_value():
 	if (always_max or min_length > 0) and d == Vector2():
 		if limit_angle:
 			d = Utils.ang2vec(get_limit_center()) * Vector2(facing, 1)
-		else :
+		else:
 			d = Vector2.UP
 	else:
 		d.x *= facing

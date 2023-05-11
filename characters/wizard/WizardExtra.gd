@@ -5,18 +5,18 @@ onready var hover_button = $"%HoverButton"
 onready var fast_fall_button = $"%FastFallButton"
 onready var orb_push = $"%OrbPush"
 onready var explode_button = $"%ExplodeButton"
-onready var launch_direction = $"%LaunchDir"
-onready var shoot_button = $"%ShootButton"
-onready var launch_container = $"%LaunchContainer"
+#onready var launch_direction = $"%LaunchDir"
+#onready var shoot_button = $"%ShootButton"
+#onready var launch_container = $"%LaunchContainer"
 
 func _ready():
 	hover_button.connect("toggled", self, "_on_hover_button_toggled")
 	fast_fall_button.connect("toggled", self, "_on_fast_fall_button_toggled")
 	orb_push.connect("data_changed", self, "emit_signal", ["data_changed"])
-	launch_direction.connect("data_changed", self, "emit_signal", ["data_changed"])
+#	launch_direction.connect("data_changed", self, "emit_signal", ["data_changed"])
 	explode_button.connect("pressed", self, "emit_signal", ["data_changed"])
-	shoot_button.connect("pressed", self, "emit_signal", ["data_changed"])
-	shoot_button.connect("toggled", self, "_on_shoot_button_toggled")
+#	shoot_button.connect("pressed", self, "emit_signal", ["data_changed"])
+#	shoot_button.connect("toggled", self, "_on_shoot_button_toggled")
 #	end_hover_button.connect("toggled", self, "_on_hover_button_toggled")
 
 func _on_hover_button_toggled(on):
@@ -38,14 +38,14 @@ func reset():
 	explode_button.set_pressed_no_signal(fighter.detonating_bombs and is_hurt)
 	fast_fall_button.set_pressed_no_signal(fighter.fast_falling and is_hurt)
 	hover_button.set_pressed_no_signal(fighter.hovering and is_hurt)
-	shoot_button.set_pressed_no_signal(false)
+#	shoot_button.set_pressed_no_signal(false)
 
 func show_options():
 	orb_push.hide()
 	orb_push.init()
 	explode_button.hide()
 	orb_push.visible = fighter.orb_projectile != null
-	launch_container.visible = fighter.boulder_projectile != null
+#	launch_container.visible = fighter.boulder_projectile != null
 	hover_button.hide()
 	fast_fall_button.hide()
 	fast_fall_button.set_pressed_no_signal(fighter.fast_falling)
@@ -67,7 +67,7 @@ func get_extra():
 		"fast_fall": fast_fall_button.pressed,
 		"detonate": explode_button.pressed,
 		"orb_push": orb_push.get_data(),
-		"launch_dir": launch_direction.get_data(),
-		"launch": shoot_button.pressed,
+#		"launch_dir": launch_direction.get_data(),
+#		"launch": shoot_button.pressed,
 	}
 	return extra

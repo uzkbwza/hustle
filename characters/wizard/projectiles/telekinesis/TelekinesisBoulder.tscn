@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/telekinesis/Default.gd" type="Script" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.gd" type="Script" id=7]
 [ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=8]
 [ext_resource path="res://characters/wizard/projectiles/telekinesis/BoulderCrash.tscn" type="PackedScene" id=9]
+[ext_resource path="res://characters/wizard/projectiles/DartParticle.tscn" type="PackedScene" id=10]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=11]
+[ext_resource path="res://characters/wizard/sounds/bounce.wav" type="AudioStream" id=12]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -25,7 +28,7 @@ shader_param/super_dim = false
 shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="SpriteFrames" id=4]
 animations = [ {
 "frames": [ ExtResource( 3 ) ],
 "loop": true,
@@ -33,22 +36,51 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 script = ExtResource( 7 )
 __meta__ = {
 "_editor_description_": ""
 }
+gravity = "0.45"
 air_friction = "0.0"
 max_ground_speed = "30"
 max_air_speed = "30"
 max_fall_speed = "30"
-movable = false
 disable_obj = null
 disable_particle = ExtResource( 9 )
+rumble = true
 
 [node name="Sprite" parent="Flip" index="0"]
-frames = SubResource( 1 )
+frames = SubResource( 4 )
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 10 )]
+material = SubResource( 3 )
+z_index = -1
+
+[node name="CPUParticles2D" parent="Flip/Particles/ParticleEffect" index="1"]
+emission_sphere_radius = 14.34
+
+[node name="Bounce" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 12 )
+volume_db = -10.0
+bus = "Fx"
+script = ExtResource( 11 )
 
 [node name="CollisionBox" parent="." index="2"]
 width = 10
@@ -68,15 +100,17 @@ sprite_animation = "default"
 
 [node name="Launch" type="Node2D" parent="StateMachine" index="1"]
 script = ExtResource( 5 )
+apply_grav = true
+sprite_animation = "default"
 endless = true
-speed = "13"
+speed = "15"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Launch" index="0"]
 z_index = 1000
 script = ExtResource( 6 )
 width = 9
 height = 9
-damage = 65
+damage = 75
 hitstun_ticks = 12
 hitlag_ticks = 3
 hit_sound = ExtResource( 8 )
@@ -96,5 +130,8 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 reset_momentum = true
+sprite_animation = "default"
 endless = true
 launch = false
+
+[editable path="Flip/Particles/ParticleEffect"]

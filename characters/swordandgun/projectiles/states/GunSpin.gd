@@ -42,10 +42,13 @@ func _exit():
 	host.sprite.rotation = 0
 	host.can_be_picked_up = true
 
+func pop_up():
+	host.set_facing(host.get_facing_int() * -1)
+	host.reset_momentum()
+	host.apply_force(0, -8)
+	hit_someone = true
+	host.can_be_picked_up = false
+
 func _on_hit_something(obj, _hitbox):
 	if obj.is_in_group("Fighter"):
-		host.set_facing(host.get_facing_int() * -1)
-		host.reset_momentum()
-		host.apply_force(0, -8)
-		hit_someone = true
-	host.can_be_picked_up = false
+		pop_up()

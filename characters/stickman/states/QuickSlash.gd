@@ -4,12 +4,15 @@ const MOVE_DISTANCE = 120
 const NEUTRAL_STARTUP_LAG = 3
 const LANDING_LAG = 2
 const IASA = 20
-const WHIFF_LANDING_LAG = 8
-const WHIFF_IASA = 40
+const WHIFF_LANDING_LAG = 4
+const WHIFF_IASA = 20
+const BUFFER_ATTACK_GROUND_SNAP_DISTANCE = 4
 
 var hitboxes = []
 
 var dist = MOVE_DISTANCE
+
+var attack = 0
 
 var startup_lag = 0
 var landing_lag = LANDING_LAG
@@ -25,12 +28,13 @@ func _enter():
 			child.x = 0
 			child.y = 0
 	var move_dir
+	attack = data.Attack.id
 	if data:
-		move_dir = xy_to_dir(data.x, data.y)
+		move_dir = xy_to_dir(data.Direction.x, data.Direction.y)
 #		move_dir = fixed.normalized_vec_times(move_dir.x, move_dir.y, "1.0")
 	else:
 		move_dir = { "x": str(host.get_facing_int()), "y": "0" }
-	var move_vec = fixed.normalized_vec_times(move_dir.x, move_dir.y, "20")
+	var move_vec = fixed.vec_mul(move_dir.x, move_dir.y, "20")
 
 	host.apply_force(move_vec.x,  fixed.div(move_vec.y, "2"))
 	host.quick_slash_move_dir_x = move_dir.x
@@ -68,8 +72,8 @@ func _enter():
 
 func _frame_0():
 	started_in_neutral = host.combo_count <= 0
-	iasa_at = WHIFF_IASA
-	landing_lag = WHIFF_LANDING_LAG
+#	iasa_at = WHIFF_IASA
+#	landing_lag = WHIFF_LANDING_LAG
 #	host.hitlag_ticks += NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
 
 func _frame_1():
@@ -81,14 +85,13 @@ func _frame_4():
 	if host.initiative:
 		host.start_invulnerability()
 
-
 func _frame_5():
 	host.move_directly(0, - 2)
 
 	var move_dir_x = host.quick_slash_move_dir_x
 	var move_dir_y = host.quick_slash_move_dir_y
 
-	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
+	var move_vec = fixed.vec_mul(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
 
 
 	host.move_directly(move_vec.x, move_vec.y)
@@ -105,6 +108,15 @@ func _frame_5():
 	var particle_dir = Vector2(float(move_vec.x), float(move_vec.y)).normalized()
 	host.spawn_particle_effect(preload("res://characters/stickman/QuickSlashEffect.tscn"), Vector2(start_pos_x, start_pos_y - 13), particle_dir)
 	host.update_data()
+	var next_attack = get_next_attack()
+	if next_attack != null:
+		var vel = host.get_vel()
+		host.set_vel(fixed.mul(vel.x, "0.25"), fixed.mul(vel.y, "0.5"))
+		queue_state_change(get_next_attack())
+		if host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE:
+			host.set_vel(vel.x, "0")
+			host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
+			host.set_grounded(true)
 
 func _frame_6():
 	var start_pos_x = host.quick_slash_start_pos_x
@@ -122,9 +134,10 @@ func _frame_6():
 
 
 	host.reset_momentum()
-	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
-	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
-	host.apply_force("0", "-1")
+	if get_next_attack() == null:
+		var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
+		host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
+		host.apply_force("0", "-1")
 #	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
 #	if fixed.le(move_dir_y, "0"):
 #		host.reset_momentum()
@@ -137,17 +150,24 @@ func _frame_6():
 
 	host.end_invulnerability()
 
+func get_next_attack():
+	match attack:
+		0: return null
+		1: return "GroundedPunch" if host.is_grounded() else "AirUpwardPunch"
+		2: return "GroundedSweep" if host.is_grounded() else "JumpKick"
+		3: return "NunChukHeavy" if host.is_grounded() else "NunChukSpin"
+
 func can_hit_cancel():
-	return host.combo_count > 1 or !host.opponent.is_grounded()
+	return (host.combo_count > 1 or !host.opponent.is_grounded()) and attack == 0
 
 func _got_parried():
-	host.hitlag_ticks += 10
+	host.hitlag_ticks += 15
 	host.reset_momentum()
 	pass
 
 func _on_hit_something(obj, hitbox):
-	iasa_at = IASA
-	landing_lag = LANDING_LAG
+#	iasa_at = IASA
+#	landing_lag = LANDING_LAG
 	._on_hit_something(obj, hitbox)
 
 func _tick():
@@ -156,10 +176,13 @@ func _tick():
 ##			host.reset_momentum()
 #		startup_lag -= 1
 #		current_tick = 0
-
+	if get_next_attack() != null:
+		if current_tick == 2:
+			current_tick = 3
 	if current_tick > 6:
 		if host.is_grounded():
-			queue_state_change("Landing", landing_lag)
+			if get_next_attack() == null:
+				queue_state_change("Landing", landing_lag)
 	host.apply_grav()
 #	host.apply_fric()
 	host.apply_forces_no_limit()

@@ -579,12 +579,15 @@ func meter_gain_modified(amount):
 	amount = fixed.round(fixed.mul(fixed.sub("1", pen), str(amount)))
 	return amount
 
-func gain_super_meter(amount):
+func gain_super_meter(amount,stale_amount = "1.0"):
 	if amount == null:
 		return
-	amount = combo_stale_meter(amount)
+
+	var full_staled_amount = combo_stale_meter(amount)
+	amount = fixed.round(fixed.lerp_string(str(amount), str(full_staled_amount), stale_amount))
 	amount = meter_gain_modified(amount)
-	amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
+	var super_modified_amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
+	amount = fixed.round(fixed.lerp_string(str(amount), str(super_modified_amount), stale_amount))
 	super_meter += amount
 	while super_meter >= MAX_SUPER_METER:
 		if supers_available < MAX_SUPERS:
@@ -885,6 +888,8 @@ func hit_by(hitbox):
 		match hitbox.hitbox_type:
 			Hitbox.HitboxType.Normal:
 				launched_by(hitbox)
+			Hitbox.HitboxType.NoHitstun:
+				take_damage(hitbox.damage if opponent.combo_count <= 0 else hitbox.damage_in_combo)
 			Hitbox.HitboxType.Burst:
 				launched_by(hitbox)
 			Hitbox.HitboxType.Flip:
@@ -955,6 +960,8 @@ func hit_by(hitbox):
 			parried = false
 			play_sound("Block")
 			play_sound("Parry")
+			if host.has_method("on_got_blocked"):
+				host.on_got_blocked()
 		else:
 			if !projectile:
 				opponent.add_penalty(-25)

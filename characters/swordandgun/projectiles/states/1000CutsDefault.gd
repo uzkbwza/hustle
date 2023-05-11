@@ -1,6 +1,6 @@
 extends ObjectState
 
-const LIFETIME = 150
+const LIFETIME = 120
 
 func _tick():
 	var creator_pos = host.creator.get_hurtbox_center()

@@ -45,6 +45,9 @@ func on_hit_ceiling():
 	if fizzle_on_ceiling:
 		disable()
 
+func on_got_blocked():
+	pass
+
 func hit_by(hitbox):
 	if hitbox:
 		if hitbox.throw:

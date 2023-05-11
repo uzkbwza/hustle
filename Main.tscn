@@ -2010,7 +2010,7 @@ script = ExtResource( 53 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 160.0
-margin_bottom = 167.0
+margin_bottom = 193.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_right = 159.0
@@ -2031,7 +2031,7 @@ align = 1
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
 margin_right = 159.0
-margin_bottom = 166.0
+margin_bottom = 192.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2040,11 +2040,11 @@ size_flags_vertical = 3
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 158.0
-margin_bottom = 155.0
+margin_bottom = 181.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 margin_right = 157.0
-margin_bottom = 154.0
+margin_bottom = 180.0
 size_flags_vertical = 3
 alignment = 1
 
@@ -2091,77 +2091,77 @@ text = "show projectile owners"
 
 [node name="SpeedLinesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 53.0
+margin_top = 66.0
 margin_right = 157.0
-margin_bottom = 65.0
+margin_bottom = 78.0
 pressed = true
 text = "show speed lines"
 
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 53.0
+margin_top = 79.0
 margin_right = 157.0
-margin_bottom = 65.0
+margin_bottom = 91.0
 text = "show playback controls"
 
 [node name="HSeparator" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 66.0
+margin_top = 92.0
 margin_right = 157.0
-margin_bottom = 70.0
+margin_bottom = 96.0
 
 [node name="EnableEmotes" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 71.0
+margin_top = 97.0
 margin_right = 157.0
-margin_bottom = 83.0
+margin_bottom = 109.0
 pressed = true
 text = "show emotes"
 
 [node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
+margin_top = 110.0
 margin_right = 157.0
-margin_bottom = 96.0
+margin_bottom = 122.0
 text = "enable style colors"
 
 [node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 97.0
+margin_top = 123.0
 margin_right = 157.0
-margin_bottom = 109.0
+margin_bottom = 135.0
 text = "enable particle auras"
 
 [node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 110.0
+margin_top = 136.0
 margin_right = 157.0
-margin_bottom = 122.0
+margin_bottom = 148.0
 text = "enable custom hitsparks"
 
 [node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 123.0
+margin_top = 149.0
 margin_right = 157.0
-margin_bottom = 127.0
+margin_bottom = 153.0
 
 [node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 128.0
+margin_top = 154.0
 margin_right = 157.0
-margin_bottom = 140.0
+margin_bottom = 166.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 141.0
+margin_top = 167.0
 margin_right = 157.0
-margin_bottom = 141.0
+margin_bottom = 167.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 142.0
+margin_top = 168.0
 margin_right = 157.0
-margin_bottom = 154.0
+margin_bottom = 180.0
 text = "done"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]

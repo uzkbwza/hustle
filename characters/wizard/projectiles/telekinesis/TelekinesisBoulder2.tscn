@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
 [ext_resource path="res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.tscn" type="PackedScene" id=2]
 [ext_resource path="res://characters/wizard/projectiles/telekinesis/boulder2.png" type="Texture" id=3]
+[ext_resource path="res://characters/wizard/projectiles/telekinesis/BoulderCrash2.tscn" type="PackedScene" id=4]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -27,12 +28,32 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
 [node name="BaseProjectile" instance=ExtResource( 2 )]
 material = SubResource( 1 )
-has_projectile_parry_window = true
+disable_particle = ExtResource( 4 )
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 
+[node name="ParticleEffect" parent="Flip/Particles" index="0"]
+material = SubResource( 3 )
+
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]
 hitstun_ticks = 13
+
+[editable path="Flip/Particles/ParticleEffect"]

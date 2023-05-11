@@ -744,7 +744,7 @@ func state_tick():
 		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
 			state_machine.queue_state(state_machine.state.fallback_state)
 			state_machine.tick()
-
+	
 func randi_():
 	return logic_rng.randi()
 
@@ -752,7 +752,7 @@ func randi_range(a: int, b: int):
 	return logic_rng.randi_range(a, b)
 
 func randi_percent(n: int) -> bool:
-	return logic_rng.randi_range(0, 100) <= n
+	return logic_rng.randi_range(0, 99) < n
 
 func randi_choice(choices: Array):
 	return logic_rng.choose(choices)

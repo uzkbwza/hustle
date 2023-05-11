@@ -4,6 +4,7 @@ const LIFT_SPEED = -20
 const BACKWARDS_SPEED = 3
 const GRAV = "0.9"
 const FALL_SPEED = "30"
+const SUPER_GAIN = 125
 
 onready var hitbox = $Hitbox
 
@@ -40,6 +41,11 @@ func _tick():
 	host.apply_grav_custom(GRAV, FALL_SPEED)
 	host.apply_forces_no_limit()
 
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	host.gain_super_meter(SUPER_GAIN, "0.35")
+
 func _exit():
+	
 	host.sprite.flip_v = false
 	host.opponent.sprite.flip_v = false

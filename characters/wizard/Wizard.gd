@@ -22,9 +22,9 @@ const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
-var hover_drain_amount = 18
+var hover_drain_amount = 20
 var fast_fall_drain_amount = 30
-var hover_gain_amount = 19
+var hover_gain_amount = 15
 var hover_gain_amount_air = 1
 var hovering = false
 var ghost_started_hovering = false
@@ -226,6 +226,7 @@ func tick():
 	if combo_count <= 0 and !opponent.current_state().endless:
 		gusts_in_combo = 0
 
+
 func start_moisture_effect():
 	$"%DrawMoistureParticle".start_emitting()
 
@@ -264,13 +265,13 @@ func process_extra(extra):
 		current_orb_push = extra.orb_push
 	if extra.has("detonate"):
 		detonating_bombs = extra.detonate
-	if boulder_projectile != null and extra.has("launch_dir") and extra.has("launch"):
-		if extra.launch:
-			var obj: TelekinesisProjectile = obj_from_name(boulder_projectile)
-			if obj:
-				var dir = xy_to_dir(extra.launch_dir.x, extra.launch_dir.y)
-				obj.launch(dir)
-				play_sound("Telekinesis")
+#	if boulder_projectile != null and extra.has("launch_dir") and extra.has("launch"):
+#		if extra.launch:
+#			var obj: TelekinesisProjectile = obj_from_name(boulder_projectile)
+#			if obj:
+#				var dir = xy_to_dir(extra.launch_dir.x, extra.launch_dir.y)
+#				obj.launch(dir)
+#				play_sound("Telekinesis")
 
 func can_fast_fall():
 	return !is_grounded() and  can_hover()

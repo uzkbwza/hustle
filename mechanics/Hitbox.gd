@@ -20,6 +20,7 @@ enum HitboxType {
 	ThrowHit,
 	OffensiveBurst,
 	Burst,
+	NoHitstun,
 }
 
 #const DAMAGE_SUPER_GAIN_DIVISOR = 1

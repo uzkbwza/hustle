@@ -27,3 +27,7 @@ func shoot(fighter: Fighter):
 	if camera:
 		camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
 	shot = true
+
+func on_got_blocked():
+	if current_state().name == "Spin":
+		current_state().pop_up()

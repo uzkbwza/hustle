@@ -313,7 +313,9 @@ func send_ui_action(action=null):
 #			button.data_node.init()
 #			button.container.show_data_container()
 
+	$"%SelectButton".disabled = true
 	yield(get_tree(), "idle_frame")
+	update_select_button()
 	update_buttons(false)
 
 	if current_button:
@@ -546,6 +548,13 @@ func update_buttons(refresh = true):
 	yield(get_tree(), "idle_frame")
 	if is_instance_valid(continue_button):
 		continue_button.set_disabled(false)
+
+func update_select_button():
+	var user_facing = game.singleplayer or Network.player_id == player_id
+	if !user_facing:
+		$"%SelectButton".disabled = true
+	else:
+		$"%SelectButton".disabled = game.spectating
 
 func activate(refresh=true):
 	if visible and refresh:

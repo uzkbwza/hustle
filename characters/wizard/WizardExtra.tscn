@@ -39,6 +39,7 @@ rect_min_size = Vector2( 52, 0 )
 
 [node name="LaunchContainer" type="VBoxContainer" parent="VBoxContainer/Control3" index="0"]
 unique_name_in_owner = true
+visible = false
 margin_top = -81.0
 margin_right = 60.0
 margin_bottom = 1.0

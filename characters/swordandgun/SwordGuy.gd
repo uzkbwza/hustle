@@ -2,6 +2,8 @@ extends Fighter
 
 signal bullet_used()
 
+export(Texture) var epic_horse_moment
+
 onready var shooting_arm = $"%ShootingArm"
 
 const BARREL_LOCATION_X = "26"
@@ -168,6 +170,9 @@ func use_bullet():
 		return
 	bullets_left -= 1
 	emit_signal("bullet_used")
+
+func has_1k_cuts():
+	return cut_projectile != null
 
 func on_got_hit():
 	if cut_projectile:
