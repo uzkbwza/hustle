@@ -3,6 +3,7 @@ extends WizardState
 const SPEED = "15.0"
 const SPARK_SPEED = "20.0"
 const HITBOX_OFFSET = "-28.0"
+const FAST_FALL_REDUCTION = 200
 
 onready var hitbox = $Hitbox
 var particle_x
@@ -10,6 +11,8 @@ var particle_y
 
 func _frame_0():
 	land_cancel = false
+	if host.fast_falling:
+		host.hover_left -= FAST_FALL_REDUCTION
 
 func _frame_6():
 	host.reset_momentum()

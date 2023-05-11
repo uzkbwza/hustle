@@ -23,7 +23,7 @@ const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
 var hover_drain_amount = 20
-var fast_fall_drain_amount = 30
+var fast_fall_drain_amount = 20
 var hover_gain_amount = 15
 var hover_gain_amount_air = 1
 var hovering = false
@@ -226,6 +226,8 @@ func tick():
 	if combo_count <= 0 and !opponent.current_state().endless:
 		gusts_in_combo = 0
 
+	if hover_left <= 0:
+		hover_left = 0
 
 func start_moisture_effect():
 	$"%DrawMoistureParticle".start_emitting()

@@ -45,11 +45,9 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 1 )
-has_projectile_parry_window = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 3 )
-frame = 1
 playing = true
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0"]
@@ -76,7 +74,7 @@ damage = 85
 hitstun_ticks = 15
 hitlag_ticks = 4
 knockback = "6.0"
-aerial_hit_state = "HurtGrounded"
+grounded_hit_state = "HurtGrounded"
 
 [node name="Drop" parent="StateMachine" index="2"]
 anim_length = 10

@@ -31,6 +31,7 @@ var turbo_mode = false
 var game
 var forfeit = false
 var opposite_buttons = null
+var locked_in = false
 
 var continue_button
 
@@ -88,6 +89,7 @@ func _on_submit_pressed():
 		data = current_button.get_data()
 	if current_action:
 		on_action_submitted(current_action, data)
+	locked_in = true
 
 func timeout():
 	if active:
@@ -554,13 +556,14 @@ func update_select_button():
 	if !user_facing:
 		$"%SelectButton".disabled = true
 	else:
-		$"%SelectButton".disabled = game.spectating
+		$"%SelectButton".disabled = game.spectating or locked_in
 
 func activate(refresh=true):
 	if visible and refresh:
 		return
 #	print("activating")
 	active = true
+	locked_in = false
 #	reset_prediction()
 #	_get_opposite_buttons().reset_prediction()
 	if is_instance_valid(fighter):

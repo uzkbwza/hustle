@@ -58,6 +58,7 @@ export var next_state_on_hold_on_opponent_turn = false
 export var combo_only = false
 export var neutral_only = false
 export var end_feint = true
+export var usable_from_whiff_cancel_if_possible = true
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -182,8 +183,11 @@ func is_usable_with_grounded_check(force_aerial = false, force_grounded = false)
 	return true
 
 func is_usable():
-	if host.current_state().state_name == "WhiffInstantCancel" and !has_hitboxes:
-		return false
+	if host.current_state().state_name == "WhiffInstantCancel":
+		if !has_hitboxes:
+			return false
+		if !usable_from_whiff_cancel_if_possible:
+			return false
 	if uses_air_movement:
 		if host.air_movements_left <= 0:
 			return false

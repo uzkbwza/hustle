@@ -72,6 +72,7 @@ func _enter():
 
 func _frame_0():
 	started_in_neutral = host.combo_count <= 0
+	host.set_grounded(false)
 #	iasa_at = WHIFF_IASA
 #	landing_lag = WHIFF_LANDING_LAG
 #	host.hitlag_ticks += NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
@@ -117,6 +118,7 @@ func _frame_5():
 			host.set_vel(vel.x, "0")
 			host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
 			host.set_grounded(true)
+			host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
 
 func _frame_6():
 	var start_pos_x = host.quick_slash_start_pos_x
@@ -151,10 +153,11 @@ func _frame_6():
 	host.end_invulnerability()
 
 func get_next_attack():
+	host.update_grounded()
 	match attack:
 		0: return null
 		1: return "GroundedPunch" if host.is_grounded() else "AirUpwardPunch"
-		2: return "GroundedSweep" if host.is_grounded() else "JumpKick"
+		2: return "GroundedSweep" if host.is_grounded() else "DiveKick"
 		3: return "NunChukHeavy" if host.is_grounded() else "NunChukSpin"
 
 func can_hit_cancel():

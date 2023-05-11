@@ -45,6 +45,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="BaseProjectile" instance=ExtResource( 2 )]
 material = SubResource( 1 )
+has_projectile_parry_window = true
 disable_particle = null
 rumble = false
 
@@ -73,5 +74,6 @@ damage = 35
 hitstun_ticks = 5
 screenshake_amount = 0
 hit_sound = ExtResource( 4 )
+grounded_hit_state = "HurtGrounded"
 
 [editable path="Flip/Particles/ParticleEffect"]

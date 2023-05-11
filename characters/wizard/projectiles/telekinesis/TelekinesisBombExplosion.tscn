@@ -70,6 +70,7 @@ dir_y = "-0.50"
 launch_reversible = true
 knockdown = true
 knockdown_extends_hitstun = false
+hard_knockdown = true
 start_tick = 1
 active_ticks = 1
 
@@ -94,5 +95,6 @@ dir_y = "-0.50"
 launch_reversible = true
 knockdown = true
 knockdown_extends_hitstun = false
+hard_knockdown = true
 start_tick = 1
 active_ticks = 1

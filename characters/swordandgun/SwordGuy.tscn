@@ -910,7 +910,7 @@ AerialSuper
 Aerial"
 interrupt_into_string = "Grounded
 Aerial"
-super_level = 3
+super_level = 2
 
 [node name="3Combo" type="Node2D" parent="StateMachine" index="4"]
 script = ExtResource( 204 )
@@ -1398,9 +1398,9 @@ data_ui_scene = ExtResource( 307 )
 button_texture = ExtResource( 180 )
 air_type = 2
 iasa_at = 20
-next_state_on_hold = false
 burst_cancellable = false
 instant_cancellable = false
+force_feintable = true
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -1993,13 +1993,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded

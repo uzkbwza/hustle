@@ -16,6 +16,12 @@ var moving = false
 func _frame_0():
 	var vel = host.get_vel()
 	var new_vel = fixed.mul(vel.x, MOMENTUM_REDUCTION)
+	if !(data is Dictionary):
+		data = {
+			x = 1,
+			y = 1,
+			fast = true,
+		}
 	host.set_vel(new_vel, "0")
 	moving = false
 	move_x_modifier = abs(data.x) * x_modifier_amount
@@ -32,7 +38,7 @@ func _frame_12():
 
 func _tick():
 	if current_tick == 3:
-		if host.initiative:
+		if host.initiative or data.get("fast"):
 			current_tick = 9
 	if moving:
 		host.move_directly_relative(move_x + move_x_modifier, move_y + move_y_modifier)

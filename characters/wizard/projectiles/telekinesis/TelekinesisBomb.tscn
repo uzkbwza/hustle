@@ -82,6 +82,8 @@ increment_combo = false
 whiff_sound = null
 hit_sound = null
 hit_bass_sound = null
+grounded_hit_state = "HurtGrounded"
+knockdown = false
 
 [node name="Drop" parent="StateMachine" index="2"]
 anim_length = 8

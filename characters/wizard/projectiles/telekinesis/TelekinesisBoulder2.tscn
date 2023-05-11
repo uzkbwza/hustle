@@ -54,6 +54,6 @@ frames = SubResource( 2 )
 material = SubResource( 3 )
 
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]
-hitstun_ticks = 13
+hard_knockdown = false
 
 [editable path="Flip/Particles/ParticleEffect"]
