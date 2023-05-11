@@ -1,7 +1,7 @@
 extends ObjectState
 
 const OFFSET_X = 20
-const OFFSET_Y = -35
+const OFFSET_Y = -55
 const LERP_VALUE = "0.08"
 const Y_FORCE = "-12.0"
 

@@ -1398,6 +1398,7 @@ data_ui_scene = ExtResource( 307 )
 button_texture = ExtResource( 180 )
 air_type = 2
 iasa_at = 20
+next_state_on_hold = false
 burst_cancellable = false
 instant_cancellable = false
 force_feintable = true

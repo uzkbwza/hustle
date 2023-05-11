@@ -153,12 +153,12 @@ func _frame_6():
 	host.end_invulnerability()
 
 func get_next_attack():
-	host.update_grounded()
+	var grounded = host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE
 	match attack:
 		0: return null
-		1: return "GroundedPunch" if host.is_grounded() else "AirUpwardPunch"
-		2: return "GroundedSweep" if host.is_grounded() else "DiveKick"
-		3: return "NunChukHeavy" if host.is_grounded() else "NunChukSpin"
+		1: return "GroundedPunch" if grounded else "AirUpwardPunch"
+		2: return "GroundedSweep" if grounded else "DiveKick"
+		3: return "NunChukHeavy" if grounded else "NunChukSpin"
 
 func can_hit_cancel():
 	return (host.combo_count > 1 or !host.opponent.is_grounded()) and attack == 0
