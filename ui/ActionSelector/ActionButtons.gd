@@ -130,9 +130,9 @@ func _process(delta):
 	if (current_button and !current_button.visible):
 		continue_button.set_pressed(true)
 		continue_button.on_pressed()
-#	unlock_if_extra_pressed()
+	unpress_extra_on_lock_in()
 	
-func unlock_if_extra_pressed():
+func unpress_extra_on_lock_in():
 	var select_button: Button = $"%SelectButton"
 	select_button.shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
 	if select_button.pressed:

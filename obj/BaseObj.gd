@@ -783,7 +783,7 @@ func randi_weighted_choice(choices: Array, weights: Array):
 	return choices[logic_rng.weighted_choice(choices, weights)]
 
 func should_hide_rng() -> bool:
-	return is_ghost and Global.current_game.singleplayer or Global.current_game.spectating
+	return is_ghost and (!Global.current_game.singleplayer or Global.current_game.spectating)
 
 func tick_after():
 	pass
