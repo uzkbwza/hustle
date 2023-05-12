@@ -53,7 +53,4 @@ frames = SubResource( 2 )
 [node name="ParticleEffect" parent="Flip/Particles" index="0"]
 material = SubResource( 3 )
 
-[node name="Hitbox" parent="StateMachine/Launch" index="0"]
-hard_knockdown = false
-
 [editable path="Flip/Particles/ParticleEffect"]

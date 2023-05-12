@@ -22,7 +22,7 @@ const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31
 
 var hover_left = 0
-var hover_drain_amount = 20
+var hover_drain_amount = 19
 var fast_fall_drain_amount = 20
 var hover_gain_amount = 15
 var hover_gain_amount_air = 1
@@ -51,7 +51,7 @@ onready var spark_speed_particle = $"%SparkSpeedParticle"
 
 func init(pos=null):
 	.init(pos)
-	hover_left = HOVER_AMOUNT / 4
+	hover_left = (HOVER_AMOUNT / 4) * 3
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT
 	geyser_charge = 0

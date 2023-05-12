@@ -65,7 +65,6 @@ speed = "11"
 width = 12
 height = 11
 damage = 90
-hitstun_ticks = 14
 hitlag_ticks = 9
 knockback = "9.0"
 

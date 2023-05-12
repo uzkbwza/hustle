@@ -92,7 +92,7 @@ func _frame_5():
 	var move_dir_x = host.quick_slash_move_dir_x
 	var move_dir_y = host.quick_slash_move_dir_y
 
-	var move_vec = fixed.vec_mul(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
+	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
 
 
 	host.move_directly(move_vec.x, move_vec.y)
@@ -109,16 +109,7 @@ func _frame_5():
 	var particle_dir = Vector2(float(move_vec.x), float(move_vec.y)).normalized()
 	host.spawn_particle_effect(preload("res://characters/stickman/QuickSlashEffect.tscn"), Vector2(start_pos_x, start_pos_y - 13), particle_dir)
 	host.update_data()
-	var next_attack = get_next_attack()
-	if next_attack != null:
-		var vel = host.get_vel()
-		host.set_vel(fixed.mul(vel.x, "0.25"), fixed.mul(vel.y, "0.5"))
-		queue_state_change(get_next_attack())
-		if host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE:
-			host.set_vel(vel.x, "0")
-			host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
-			host.set_grounded(true)
-			host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
+
 
 func _frame_6():
 	var start_pos_x = host.quick_slash_start_pos_x
@@ -135,8 +126,10 @@ func _frame_6():
 	var move_dir_y = host.quick_slash_move_dir_y
 
 
-	host.reset_momentum()
-	if get_next_attack() == null:
+	var next_attack = get_next_attack()
+
+	if next_attack == null:
+		host.reset_momentum()
 		var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, "10")
 		host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
 		host.apply_force("0", "-1")
@@ -149,6 +142,15 @@ func _frame_6():
 #		var vel = host.get_vel()
 #		host.set_vel(fixed.mul(vel.x, "0.5"), vel.y)
 #	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
+	else:
+		var vel = host.get_vel()
+		host.set_vel(fixed.mul(vel.x, "0.25"), fixed.mul(vel.y, "0.5"))
+		queue_state_change(get_next_attack())
+		if host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE:
+			host.set_vel(vel.x, "0")
+			host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
+			host.set_grounded(true)
+			host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
 
 	host.end_invulnerability()
 
@@ -157,7 +159,7 @@ func get_next_attack():
 	match attack:
 		0: return null
 		1: return "GroundedPunch" if grounded else "AirUpwardPunch"
-		2: return "GroundedSweep" if grounded else "DiveKick"
+		2: return "SlideKick" if grounded else "AirAttack"
 		3: return "NunChukHeavy" if grounded else "NunChukSpin"
 
 func can_hit_cancel():

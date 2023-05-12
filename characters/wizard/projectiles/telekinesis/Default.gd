@@ -26,6 +26,7 @@ func _tick():
 		var new_p_x = fixed.round(fixed.lerp_string(str(pos.x), str(target_pos.x), LERP_VALUE))
 		var new_p_y = fixed.round(fixed.lerp_string(str(pos.y), str(target_pos.y), LERP_VALUE))
 		host.set_pos(new_p_x, new_p_y)
+		host.set_facing(host.creator.get_facing_int())
 	pass
 
 func drop():

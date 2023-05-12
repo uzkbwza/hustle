@@ -6,7 +6,7 @@ var charged = false
 
 func _enter():
 	determine_charge()
-	if data:
+	if data is Dictionary:
 		if data.y != 0:
 			return "NunChukLightHigh"
 	determine_charge()

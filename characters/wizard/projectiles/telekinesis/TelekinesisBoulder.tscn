@@ -104,7 +104,7 @@ script = ExtResource( 5 )
 apply_grav = true
 sprite_animation = "default"
 endless = true
-speed = "15"
+speed = "17"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Launch" index="0"]
 z_index = 1000
@@ -112,12 +112,11 @@ script = ExtResource( 6 )
 width = 9
 height = 9
 damage = 75
-hitstun_ticks = 12
+hitstun_ticks = 18
 hitlag_ticks = 3
 hit_sound = ExtResource( 8 )
 dir_y = "-0.70"
 knockback = "7.0"
-launch_reversible = true
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 4
 knockdown = true

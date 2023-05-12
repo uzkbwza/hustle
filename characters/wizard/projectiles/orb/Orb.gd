@@ -6,8 +6,8 @@ const DIRECT_MOVE_SPEED = "3.0"
 const PUSH_SPEED_LIMIT = "8"
 const LIGHTNING_Y = 132
 const LIGHTNING_PUSH_FORCE = "-5"
-const ATTACK_SUPER_DRAIN = 30
-const LIGHTNING_DRAIN = 10
+const ATTACK_SUPER_DRAIN = 0
+const LIGHTNING_DRAIN = 0
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LIGHTNING_SCENE = preload("res://characters/wizard/projectiles/orb/OrbLightning.tscn")

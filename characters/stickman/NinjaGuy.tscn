@@ -1238,7 +1238,7 @@ title = "Quick Slash"
 type = 3
 data_ui_scene = ExtResource( 23 )
 button_texture = ExtResource( 38 )
-iasa_at = 13
+iasa_at = 18
 neutral_only = true
 end_feint = false
 usable_from_whiff_cancel_if_possible = false
@@ -1508,7 +1508,7 @@ type = 3
 data_ui_scene = ExtResource( 19 )
 button_texture = ExtResource( 38 )
 air_type = 1
-iasa_at = 20
+iasa_at = 18
 neutral_only = true
 end_feint = false
 usable_from_whiff_cancel_if_possible = false
@@ -1953,11 +1953,21 @@ type = 1
 data_ui_scene = ExtResource( 18 )
 button_texture = ExtResource( 32 )
 air_type = 1
+next_state_on_hold = false
+self_hit_cancellable = false
+self_interruptable = false
 interrupt_from_string = "AerialAttack
 Aerial"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
 hit_cancel_into_string = "AerialSuper
-AerialSpecial"
+AerialSpecial
+GroundedSuper
+GroundedSpecial
+GroundedAttack
+AerialAttack
+DoubleJump
+Jump"
 initiative_effect = true
 move_y = 5
 x_modifier_amount = 10
@@ -1971,7 +1981,7 @@ y = -9
 width = 10
 height = 9
 damage = 60
-hitstun_ticks = 16
+hitstun_ticks = 18
 hitlag_ticks = 5
 victim_hitlag = 5
 beats_grab = false
@@ -1979,7 +1989,6 @@ hit_height = 0
 screenshake_amount = 2
 hit_sound = ExtResource( 41 )
 dir_y = "1.0"
-knockback = "5.0"
 start_tick = 12
 always_on = true
 
@@ -2189,6 +2198,7 @@ AerialSpecial
 AerialSuper
 Jump"
 allowed_stances_string = "NunChuk"
+change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukHeavy" index="0"]
 z_index = 1000
@@ -2197,7 +2207,7 @@ x = 27
 y = -27
 width = 19
 height = 18
-damage = 40
+damage = 35
 hitstun_ticks = 23
 victim_hitlag = 4
 damage_proration = -1
@@ -2219,7 +2229,7 @@ script = ExtResource( 1 )
 x = 27
 y = -27
 width = 21
-damage = 60
+damage = 50
 hitstun_ticks = 23
 victim_hitlag = 4
 damage_proration = -1
@@ -3196,10 +3206,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
@@ -3207,6 +3213,10 @@ ExtResource( 219 ): {
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 ExtResource( 221 ): {
 "x": 27,
@@ -3344,10 +3354,6 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
@@ -3358,6 +3364,10 @@ ExtResource( 208 ): {
 },
 ExtResource( 206 ): {
 "x": 13,
+"y": -10
+},
+ExtResource( 207 ): {
+"x": 15,
 "y": -10
 }
 }
@@ -3396,17 +3406,9 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
 },
 ExtResource( 208 ): {
 "x": 13,
@@ -3415,6 +3417,14 @@ ExtResource( 208 ): {
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 }
 }
 burst_cancellable = false

@@ -56,7 +56,6 @@ explode_tick = 30
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
-frame = 1
 playing = true
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0"]
