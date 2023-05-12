@@ -638,12 +638,10 @@ interrupt_exceptions_string = "WhiffCancel"
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
-block_pushback_x = "1.0"
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 hitstun_ticks = 24
 beats_grab = false
-block_pushback_x = "1.0"
 
 [node name="DashForward" parent="StateMachine" index="21"]
 dash_speed = 14
@@ -2497,7 +2495,6 @@ height = 8
 increment_combo = false
 beats_grab = false
 plus_frames = null
-block_pushback_x = null
 start_tick = 10
 active_ticks = 4
 throw_state = "StickyBombThrow"
@@ -3424,12 +3421,10 @@ hit_cancel_exceptions_string = ""
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 beats_grab = false
 plus_frames = null
-block_pushback_x = null
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 beats_grab = false
 plus_frames = null
-block_pushback_x = null
 
 [node name="ForwardThrow" parent="StateMachine" index="84"]
 sprite_animation = "GroundedThrow"

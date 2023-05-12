@@ -32,6 +32,8 @@ var game
 var forfeit = false
 var opposite_buttons = null
 var locked_in = false
+var can_lock_in = true
+var attempting_lock_in = false
 
 var continue_button
 
@@ -84,6 +86,12 @@ func _get_opposite_buttons():
 	return opposite_buttons
 
 func _on_submit_pressed():
+	if attempting_lock_in:
+		return
+	attempting_lock_in = true
+	while !can_lock_in:
+		yield(get_tree(), "idle_frame")
+	attempting_lock_in = false
 	var data = null
 	if current_button:
 		data = current_button.get_data()
@@ -122,7 +130,7 @@ func _process(delta):
 	if (current_button and !current_button.visible):
 		continue_button.set_pressed(true)
 		continue_button.on_pressed()
-	unlock_if_extra_pressed()
+#	unlock_if_extra_pressed()
 	
 func unlock_if_extra_pressed():
 	var select_button: Button = $"%SelectButton"
@@ -329,9 +337,13 @@ func send_ui_action(action=null):
 #			button.data_node.init()
 #			button.container.show_data_container()
 
-	$"%SelectButton".disabled = true
+
+	can_lock_in = false
 	yield(get_tree(), "idle_frame")
+	can_lock_in = true
+#	$"%SelectButton".shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
 	update_select_button()
+
 	update_buttons(false)
 
 	if current_button:
