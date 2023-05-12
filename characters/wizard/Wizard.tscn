@@ -1,4 +1,4 @@
-[gd_scene load_steps=320 format=2]
+[gd_scene load_steps=322 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -311,6 +311,8 @@
 [ext_resource path="res://characters/wizard/sprites/launch3.png" type="Texture" id=309]
 [ext_resource path="res://characters/wizard/sprites/launch2.png" type="Texture" id=310]
 [ext_resource path="res://characters/wizard/sprites/launch.png" type="Texture" id=311]
+[ext_resource path="res://characters/wizard/sprites/actionbuttons/tk.png" type="Texture" id=312]
+[ext_resource path="res://characters/wizard/sprites/actionbuttons/launch.png" type="Texture" id=313]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -1636,6 +1638,7 @@ projectile_pos_x = 32
 projectile_pos_y = -12
 title = "Telekinesis"
 type = 3
+button_texture = ExtResource( 312 )
 interrupt_from_string = "Grounded
 GroundedSuper
 Aerial
@@ -1652,6 +1655,7 @@ apply_grav = true
 anim_length = 11
 type = 3
 data_ui_scene = ExtResource( 307 )
+button_texture = ExtResource( 313 )
 air_type = 2
 interrupt_from_string = "Grounded
 GroundedSpecial

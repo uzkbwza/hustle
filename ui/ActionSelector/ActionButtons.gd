@@ -34,6 +34,7 @@ var opposite_buttons = null
 var locked_in = false
 var can_lock_in = true
 var attempting_lock_in = false
+var lock_in_pressed = false
 
 var continue_button
 
@@ -86,6 +87,10 @@ func _get_opposite_buttons():
 	return opposite_buttons
 
 func _on_submit_pressed():
+	lock_in_pressed = true
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+
 	if attempting_lock_in:
 		return
 	attempting_lock_in = true
@@ -97,6 +102,7 @@ func _on_submit_pressed():
 		data = current_button.get_data()
 	if current_action:
 		on_action_submitted(current_action, data)
+	lock_in_pressed = false
 	locked_in = true
 
 func timeout():
@@ -135,7 +141,7 @@ func _process(delta):
 func unpress_extra_on_lock_in():
 	var select_button: Button = $"%SelectButton"
 	select_button.shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
-	if select_button.pressed:
+	if lock_in_pressed:
 		check_extra_button_pressed(fighter_extra)
 #
 func check_extra_button_pressed(node: Node):

@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.4.24-steam-unstable"
+var VERSION = "1.milk.4.26-steam-milkstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
