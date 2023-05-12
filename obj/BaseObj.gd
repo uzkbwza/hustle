@@ -115,6 +115,12 @@ func _enter_tree():
 		name = obj_name
 	add_to_group("BaseObj")
 
+func get_p1():
+	return obj_from_name("P1")
+
+func get_p2():
+	return obj_from_name("P2")
+
 func _ready():
 	state_machine.connect("state_exited", self, "_on_state_exited")
 	state_variables.append_array(Utils.split_lines(extra_state_variables))
@@ -775,6 +781,9 @@ func randi_choice(choices: Array):
 func randi_weighted_choice(choices: Array, weights: Array):
 	assert(weights == [] or choices.size() == weights.size())
 	return choices[logic_rng.weighted_choice(choices, weights)]
+
+func should_hide_rng() -> bool:
+	return is_ghost and Global.current_game.singleplayer or Global.current_game.spectating
 
 func tick_after():
 	pass

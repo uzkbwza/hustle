@@ -329,9 +329,9 @@ func send_ui_action(action=null):
 #			button.data_node.init()
 #			button.container.show_data_container()
 
-#	$"%SelectButton".disabled = true
+	$"%SelectButton".disabled = true
 	yield(get_tree(), "idle_frame")
-#	update_select_button()
+	update_select_button()
 	update_buttons(false)
 
 	if current_button:

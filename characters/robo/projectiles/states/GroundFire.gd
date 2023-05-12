@@ -8,14 +8,17 @@ func _tick():
 	var fighter = host.get_fighter()
 	if fighter:
 		var opponent = fighter.opponent
-		if opponent != null and Utils.int_abs(host.obj_local_pos(opponent).x) < width:
+
+		var local_pos = host.obj_local_pos(opponent).x
+		if opponent != null and Utils.int_abs(local_pos) < width:
 			if fighter.flame_touching_opponent == null:
 				fighter.flame_touching_opponent = host.obj_name
-			elif fighter.flame_touching_opponent == host.obj_name:
+			if fighter.flame_touching_opponent == host.obj_name:
 				if !opponent.invulnerable and opponent.is_grounded():
 					opponent.take_damage(DAMAGE)
-	else:
-		print("hi")
+		else:
+			if fighter and fighter.flame_touching_opponent == host.obj_name:
+				fighter.flame_touching_opponent = null
 
 	if current_tick > FIRE_TIME:
 		host.disable()

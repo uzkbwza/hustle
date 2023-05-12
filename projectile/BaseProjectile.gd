@@ -26,10 +26,20 @@ func _ready():
 func get_opponent():
 	if creator:
 		return creator.get_opponent()
+	else:
+		if id == 1:
+			return get_p2()
+		else:
+			return get_p1()
 
 func get_fighter():
 	if creator:
 		return creator.get_fighter()
+	else:
+		if id == 1:
+			return get_p1()
+		else:
+			return get_p2()
 
 func disable():
 	sprite.hide()

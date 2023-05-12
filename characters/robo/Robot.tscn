@@ -2555,7 +2555,7 @@ x = 31
 y = -21
 width = 8
 height = 8
-damage = 30
+damage = 24
 minimum_damage = 12
 chip_damage_modifier = "1.5"
 hitstun_ticks = 12
@@ -2814,7 +2814,6 @@ active_ticks = 2
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
-block_pushback_x = "1.0"
 
 [node name="Lariat" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 94 )
@@ -3464,7 +3463,6 @@ super_level = 2
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
-block_pushback_x = "1.0"
 
 [node name="Fall" parent="StateMachine" index="59"]
 script = ExtResource( 400 )

@@ -28,7 +28,8 @@ func _enter():
 
 func _frame_0():
 	if tech:
-		host.start_invulnerability()
+		if !data.get("no_invuln"):
+			host.start_invulnerability()
 		host.colliding_with_opponent = false
 	host.start_throw_invulnerability()
 	host.start_projectile_invulnerability()
@@ -37,7 +38,8 @@ func _frame_1():
 	host.colliding_with_opponent = false
 
 func _frame_2():
-	host.start_invulnerability()
+	if !data.get("no_invuln"):
+		host.start_invulnerability()
 
 func _frame_10():
 #	if !tech:

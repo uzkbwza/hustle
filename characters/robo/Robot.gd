@@ -76,6 +76,7 @@ func copy_to(f: BaseObj):
 	f.flying_dir = flying_dir
 	if flying_dir != null:
 		f.flying_dir = flying_dir.duplicate(true)
+	f.flame_touching_opponent = flame_touching_opponent
 	pass
 
 func has_armor():

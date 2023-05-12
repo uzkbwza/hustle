@@ -1562,7 +1562,6 @@ x = 10
 y = -22
 width = 14
 height = 19
-block_pushback_x = null
 start_tick = 7
 active_ticks = 23
 throw_state = "Hold"
@@ -2155,12 +2154,6 @@ block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 2
 
-[node name="Hitbox" parent="StateMachine/Burst" index="0"]
-block_pushback_x = "1.0"
-
-[node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
-block_pushback_x = "1.0"
-
 [node name="Landing" parent="StateMachine" index="45"]
 script = ExtResource( 294 )
 
@@ -2203,12 +2196,6 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
-
-[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-block_pushback_x = null
-
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-block_pushback_x = null
 
 [node name="ForwardThrow" parent="StateMachine" index="72"]
 anim_length = 24
