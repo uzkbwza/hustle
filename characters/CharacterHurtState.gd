@@ -29,6 +29,7 @@ func init():
 
 func _enter_shared():
 	brace = false
+	host.feinting = false
 	host.release_opponent()
 	hitbox = data["hitbox"]
 	host.z_index = -1

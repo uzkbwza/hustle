@@ -868,7 +868,82 @@ sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="Orb" type="Node2D" parent="StateMachine" index="8"]
+[node name="Telekinesis" type="Node2D" parent="StateMachine" index="8"]
+script = ExtResource( 295 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 14
+state_screenshake_tick = 6
+state_screenshake_dir = Vector2( 0, -1 )
+timed_particle_scene = ExtResource( 95 )
+timed_spawn_particle_tick = 6
+enter_sfx_volume = -12.0
+sfx = ExtResource( 303 )
+sfx_tick = 6
+sfx_volume = -5.0
+projectile_scene = ExtResource( 302 )
+projectile_tick = 6
+projectile_pos_x = 32
+projectile_pos_y = -12
+title = "Telekinesis"
+type = 3
+button_texture = ExtResource( 312 )
+interrupt_from_string = "Grounded
+GroundedSuper
+Aerial
+AerialSuper"
+interrupt_into_string = "Aerial
+Grounded"
+super_freeze_ticks = 5
+
+[node name="Launch" type="Node2D" parent="StateMachine" index="9"]
+script = ExtResource( 306 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 11
+type = 3
+data_ui_scene = ExtResource( 307 )
+button_texture = ExtResource( 313 )
+air_type = 2
+interrupt_from_string = "Grounded
+GroundedSpecial
+GroundedSuper
+Aerial
+AerialSpecial
+AerialSuper
+"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="SparkBomb" type="Node2D" parent="StateMachine" index="10"]
+script = ExtResource( 196 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+anim_length = 13
+sfx = ExtResource( 206 )
+sfx_tick = 5
+sfx_volume = -10.0
+projectile_scene = ExtResource( 207 )
+projectile_tick = 7
+projectile_pos_x = 40
+projectile_pos_y = -16
+title = "Spark Bomb"
+type = 3
+button_texture = ExtResource( 208 )
+air_type = 2
+next_state_on_hold_on_opponent_turn = true
+interrupt_from_string = "Grounded
+GroundedSuper
+Aerial
+AerialSuper"
+interrupt_into_string = "Grounded
+Aerial"
+super_level = 2
+
+[node name="Orb" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 89 )
 apply_forces = true
 apply_fric = true
@@ -887,7 +962,7 @@ Aerial"
 super_level = 3
 supers_used = 0
 
-[node name="AirKick" type="Node2D" parent="StateMachine" index="9"]
+[node name="AirKick" type="Node2D" parent="StateMachine" index="12"]
 script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
@@ -952,7 +1027,7 @@ pushback_x = "0.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 8
 
-[node name="IceSpikeAir" type="Node2D" parent="StateMachine" index="10"]
+[node name="IceSpikeAir" type="Node2D" parent="StateMachine" index="13"]
 script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
@@ -1002,7 +1077,7 @@ ground_bounce = false
 start_tick = 5
 active_ticks = 2
 
-[node name="Combust" type="Node2D" parent="StateMachine" index="11"]
+[node name="Combust" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 113 )
 apply_forces = true
 apply_fric = true
@@ -1051,7 +1126,7 @@ wall_slam = true
 start_tick = 9
 active_ticks = 1
 
-[node name="IceSpikeGround" type="Node2D" parent="StateMachine" index="12"]
+[node name="IceSpikeGround" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
@@ -1101,7 +1176,7 @@ ground_bounce = false
 start_tick = 7
 active_ticks = 3
 
-[node name="TomeSlap" type="Node2D" parent="StateMachine" index="13"]
+[node name="TomeSlap" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
@@ -1142,7 +1217,7 @@ block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 3
 
-[node name="Kick" type="Node2D" parent="StateMachine" index="14"]
+[node name="Kick" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 91 )
 apply_forces = true
 apply_fric = true
@@ -1200,7 +1275,7 @@ height = 8
 start_tick = 7
 endless = true
 
-[node name="ManaStrike" type="Node2D" parent="StateMachine" index="15"]
+[node name="ManaStrike" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 104 )
 apply_forces = true
 apply_fric = true
@@ -1253,7 +1328,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 1
 
-[node name="FlameWave" type="Node2D" parent="StateMachine" index="16"]
+[node name="FlameWave" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 115 )
 apply_forces = true
 apply_fric = true
@@ -1274,7 +1349,7 @@ Grounded"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 30
 
-[node name="Liftoff" type="Node2D" parent="StateMachine" index="17"]
+[node name="Liftoff" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 132 )
 apply_fric = true
 apply_grav = true
@@ -1338,7 +1413,7 @@ ground_bounce = false
 start_tick = 8
 active_ticks = 15
 
-[node name="MagicMissile" type="Node2D" parent="StateMachine" index="18"]
+[node name="MagicMissile" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 122 )
 apply_forces = true
 apply_fric = true
@@ -1362,7 +1437,7 @@ Grounded"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 10
 
-[node name="LockOrb" type="Node2D" parent="StateMachine" index="19"]
+[node name="LockOrb" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 123 )
 apply_forces = true
 apply_fric = true
@@ -1383,7 +1458,7 @@ interrupt_into_string = "Aerial
 Grounded"
 locks_orb = true
 
-[node name="UnlockOrb" type="Node2D" parent="StateMachine" index="20"]
+[node name="UnlockOrb" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 123 )
 apply_forces = true
 apply_fric = true
@@ -1403,7 +1478,7 @@ GroundedSuper"
 interrupt_into_string = "Aerial
 Grounded"
 
-[node name="OrbPush" type="Node2D" parent="StateMachine" index="21"]
+[node name="OrbPush" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 138 )
 apply_forces = true
 apply_fric = true
@@ -1420,7 +1495,7 @@ land_cancel = true
 interrupt_into_string = "Aerial
 Grounded"
 
-[node name="OrbTether" type="Node2D" parent="StateMachine" index="22"]
+[node name="OrbTether" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 262 )
 apply_forces = true
 apply_fric = true
@@ -1442,7 +1517,7 @@ Aerial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Sandstorm" type="Node2D" parent="StateMachine" index="23"]
+[node name="Sandstorm" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 249 )
 apply_forces = true
 apply_fric = true
@@ -1484,7 +1559,7 @@ block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 15
 
-[node name="Gust" type="Node2D" parent="StateMachine" index="24"]
+[node name="Gust" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 249 )
 apply_forces = true
 apply_fric = true
@@ -1519,7 +1594,7 @@ width = 250
 height = 250
 can_draw = false
 
-[node name="WindForce" type="Node2D" parent="StateMachine" index="25"]
+[node name="WindForce" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 154 )
 apply_forces = true
 apply_fric = true
@@ -1591,7 +1666,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 23
 
-[node name="OrbTeleport" type="Node2D" parent="StateMachine" index="26"]
+[node name="OrbTeleport" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 135 )
 apply_forces = true
 apply_fric = true
@@ -1618,56 +1693,7 @@ hit_cancel_into_string = "Grounded
 Aerial"
 super_level = 0
 
-[node name="Telekinesis" type="Node2D" parent="StateMachine" index="27"]
-script = ExtResource( 295 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-anim_length = 14
-state_screenshake_tick = 6
-state_screenshake_dir = Vector2( 0, -1 )
-timed_particle_scene = ExtResource( 95 )
-timed_spawn_particle_tick = 6
-enter_sfx_volume = -12.0
-sfx = ExtResource( 303 )
-sfx_tick = 6
-sfx_volume = -5.0
-projectile_scene = ExtResource( 302 )
-projectile_tick = 6
-projectile_pos_x = 32
-projectile_pos_y = -12
-title = "Telekinesis"
-type = 3
-button_texture = ExtResource( 312 )
-interrupt_from_string = "Grounded
-GroundedSuper
-Aerial
-AerialSuper"
-interrupt_into_string = "Aerial
-Grounded"
-super_freeze_ticks = 5
-
-[node name="Launch" type="Node2D" parent="StateMachine" index="28"]
-script = ExtResource( 306 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-anim_length = 11
-type = 3
-data_ui_scene = ExtResource( 307 )
-button_texture = ExtResource( 313 )
-air_type = 2
-interrupt_from_string = "Grounded
-GroundedSpecial
-GroundedSuper
-Aerial
-AerialSpecial
-AerialSuper
-"
-interrupt_into_string = "Grounded
-Aerial"
-
-[node name="ConjureWeapon" type="Node2D" parent="StateMachine" index="29"]
+[node name="ConjureWeapon" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 260 )
 apply_forces = true
 apply_fric = true
@@ -1738,7 +1764,7 @@ height = 14
 start_tick = 10
 active_ticks = 3
 
-[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="30"]
+[node name="ConjureStorm" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 181 )
 apply_forces = true
 apply_fric = true
@@ -1837,32 +1863,6 @@ knockback = "8.0"
 block_pushback_x = "1.0"
 start_tick = 19
 active_ticks = 3
-
-[node name="SparkBomb" type="Node2D" parent="StateMachine" index="31"]
-script = ExtResource( 196 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-anim_length = 13
-sfx = ExtResource( 206 )
-sfx_tick = 5
-sfx_volume = -10.0
-projectile_scene = ExtResource( 207 )
-projectile_tick = 7
-projectile_pos_x = 40
-projectile_pos_y = -16
-title = "Spark Bomb"
-type = 3
-button_texture = ExtResource( 208 )
-air_type = 2
-next_state_on_hold_on_opponent_turn = true
-interrupt_from_string = "Grounded
-GroundedSuper
-Aerial
-AerialSuper"
-interrupt_into_string = "Grounded
-Aerial"
-super_level = 2
 
 [node name="VileClutch" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 197 )
