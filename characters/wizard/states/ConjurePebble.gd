@@ -17,14 +17,14 @@ const SILLY_ITEM_CHANCES = {
 
 const NON_BOULDER_CHANCE = 15
 
-func _enter():
+func _frame_1():
 	projectile_scene = host.randi_choice(BOULDERS)
 	if host.randi_percent(NON_BOULDER_CHANCE):
 #	if host.randi_percent(100):
 		projectile_scene = host.randi_weighted_choice(SILLY_ITEM_CHANCES.keys(), SILLY_ITEM_CHANCES.values())
-	if host.is_ghost:
+	if host.is_ghost and !Global.current_game.singleplayer:
 		projectile_scene = preload("res://characters/wizard/projectiles/telekinesis/TelekinesisBoulderGhost.tscn")
-	
+
 func process_projectile(obj):
 	host.play_sound("HitBass")
 	host.boulder_projectile = obj.obj_name

@@ -122,7 +122,21 @@ func _process(delta):
 	if (current_button and !current_button.visible):
 		continue_button.set_pressed(true)
 		continue_button.on_pressed()
+	unlock_if_extra_pressed()
 	
+func unlock_if_extra_pressed():
+	var select_button: Button = $"%SelectButton"
+	select_button.shortcut = preload("res://ui/ActionSelector/SelectButtonShortcut.tres")
+	if select_button.pressed:
+		check_extra_button_pressed(fighter_extra)
+#
+func check_extra_button_pressed(node: Node):
+	for child in node.get_children():
+		if child is BaseButton:
+			child.release_focus()
+		else:
+			check_extra_button_pressed(child)
+
 
 func reset():
 	for button_category_container in button_category_containers.values():
@@ -315,9 +329,9 @@ func send_ui_action(action=null):
 #			button.data_node.init()
 #			button.container.show_data_container()
 
-	$"%SelectButton".disabled = true
+#	$"%SelectButton".disabled = true
 	yield(get_tree(), "idle_frame")
-	update_select_button()
+#	update_select_button()
 	update_buttons(false)
 
 	if current_button:

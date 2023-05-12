@@ -18,12 +18,7 @@ func random_dir(diagonals=false, zero=false) -> Vector2:
 	if zero:
 		dirs.append_array([Vector2(0, 0)])
 	return choose(dirs)
-	
-func i() -> int:
-	return self.randi()
 
-func f() -> float:
-	return self.randf()
 
 func spread_vec(vec: Vector2, spread_degrees: float) -> Vector2:
 	return vec.rotated(spread_angle(spread_degrees))
@@ -44,13 +39,14 @@ func random_sign() -> int:
 	return 1 if coin_flip() else -1
 
 func choose(array):
-	return array[i() % len(array) - 1]
+	var i = self.randi()
+	return array[i % len(array) - 1]
 
 func percent(percent: float) -> bool:
 	return randf_range(0, 100) < percent
 
 func coin_flip() -> bool:
-	return i() % 2 == 0
+	return self.randi() % 2 == 0
 
 func random_point_in_rect(rect: Rect2) -> Vector2:
 	return Vector2(randf_range(rect.position.x, rect.end.x), randf_range(rect.position.y, rect.end.y))

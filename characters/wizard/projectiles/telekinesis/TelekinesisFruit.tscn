@@ -86,6 +86,7 @@ hitstun_ticks = 7
 hitlag_ticks = 1
 hit_sound = ExtResource( 3 )
 knockback = "3.0"
+block_pushback_x = "1.0"
 grounded_hit_state = "HurtGrounded"
 
 [editable path="Flip/Particles/ParticleEffect"]

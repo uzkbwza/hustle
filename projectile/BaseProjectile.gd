@@ -27,6 +27,10 @@ func get_opponent():
 	if creator:
 		return creator.get_opponent()
 
+func get_fighter():
+	if creator:
+		return creator.get_fighter()
+
 func disable():
 	sprite.hide()
 	disabled = true

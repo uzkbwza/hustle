@@ -5,8 +5,11 @@ export var speed = "16.0"
 export var launch = true
 export var bounces = 0
 export var bounce_multiplier = "-0.9"
+export var launch_in_movement_direction = true
 var can_floor_bounce = true
 var floor_bounce_ticks = 0
+
+onready var hitbox = $Hitbox
 
 func _enter():
 	var can_floor_bounce = true
@@ -49,6 +52,13 @@ func _tick():
 				host.disable()
 		elif host.has_ceiling and Utils.int_abs(-host.ceiling_height - pos.y) < disable_when_this_far_from_terrain:
 			host.disable()
+
+	if launch_in_movement_direction:
+		vel = host.get_vel()
+		var movement_dir = fixed.normalized_vec(vel.x, vel.y)
+		hitbox.dir_x = movement_dir.x
+		hitbox.dir_y = movement_dir.y
+
 	if launch:
 		host.apply_forces_no_limit()
 		host.limit_speed(speed)

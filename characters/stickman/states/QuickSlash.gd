@@ -159,7 +159,7 @@ func get_next_attack():
 	match attack:
 		0: return null
 		1: return "GroundedPunch" if grounded else "AirUpwardPunch"
-		2: return "SlideKick" if grounded else "AirAttack"
+		2: return "GroundedSweep" if grounded else "AirAttack"
 		3: return "NunChukHeavy" if grounded else "NunChukSpin"
 
 func can_hit_cancel():

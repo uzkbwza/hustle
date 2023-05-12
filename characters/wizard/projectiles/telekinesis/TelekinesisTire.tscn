@@ -70,10 +70,11 @@ speed = "9"
 bounces = 6
 
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]
-damage = 85
+damage = 95
 hitstun_ticks = 15
 hitlag_ticks = 4
 knockback = "6.0"
+block_pushback_x = "1.0"
 grounded_hit_state = "HurtGrounded"
 
 [node name="Drop" parent="StateMachine" index="2"]

@@ -5,10 +5,18 @@ const DAMAGE = 2
 export var width = 100
 
 func _tick():
-	var opponent = host.get_opponent()
-	if opponent != null and Utils.int_abs(host.obj_local_pos(opponent).x) < width:
-		if !opponent.invulnerable and opponent.is_grounded():
-			opponent.take_damage(DAMAGE)
+	var fighter = host.get_fighter()
+	if fighter:
+		var opponent = fighter.opponent
+		if opponent != null and Utils.int_abs(host.obj_local_pos(opponent).x) < width:
+			if fighter.flame_touching_opponent == null:
+				fighter.flame_touching_opponent = host.obj_name
+			elif fighter.flame_touching_opponent == host.obj_name:
+				if !opponent.invulnerable and opponent.is_grounded():
+					opponent.take_damage(DAMAGE)
+	else:
+		print("hi")
+
 	if current_tick > FIRE_TIME:
 		host.disable()
 		if !host.from_loic and host.creator:

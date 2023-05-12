@@ -14,3 +14,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+func disable():
+	.disable()
+	var fighter = get_fighter()
+	if fighter and fighter.flame_touching_opponent == obj_name:
+		fighter.flame_touching_opponent = null

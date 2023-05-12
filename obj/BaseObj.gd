@@ -375,6 +375,17 @@ func get_facing():
 func get_opponent():
 	return null
 
+func get_fighter():
+	return null
+
+func hash_rng():
+	var fighter = get_fighter()
+	var opponent = get_opponent()
+	var input_hash = hash(fighter.get_state_hash()) + hash(opponent.get_state_hash())
+	logic_rng.seed = hash(logic_rng.state + input_hash)
+#	print(logic_rng.seed)
+
+
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = projectile.instance()
 	obj.creator_name = obj_name
@@ -746,15 +757,19 @@ func state_tick():
 			state_machine.tick()
 	
 func randi_():
+	hash_rng()
 	return logic_rng.randi()
 
 func randi_range(a: int, b: int):
+	hash_rng()
 	return logic_rng.randi_range(a, b)
 
 func randi_percent(n: int) -> bool:
+	hash_rng()
 	return logic_rng.randi_range(0, 99) < n
 
 func randi_choice(choices: Array):
+	hash_rng()
 	return logic_rng.choose(choices)
 
 func randi_weighted_choice(choices: Array, weights: Array):

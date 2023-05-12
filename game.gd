@@ -532,7 +532,6 @@ func tick():
 			object.init()
 		
 		object.tick()
-		object.randi_()
 		var pos = object.get_pos()
 		if pos.x < - stage_width:
 			object.set_pos( - stage_width, pos.y)
@@ -561,8 +560,7 @@ func tick():
 	players[1].update_advantage()
 	players[0].tick()
 	players[1].tick()
-	players[0].randi_()
-	players[1].randi_()
+
 	resolve_same_x_coordinate()
 	initialize_objects()
 	p1_data = p1.data

@@ -35,11 +35,11 @@ var can_unlock_gratuitous = true
 var can_flamethrower = true
 var magnet_ticks_left = 0
 var grenade_object = null
+var flame_touching_opponent = null
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
 onready var chainsaw_arm_ghosts = [
-
 ]
 
 func _ready():

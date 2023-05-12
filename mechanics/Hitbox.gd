@@ -38,6 +38,7 @@ export var _c_Damage = 0
 export var damage: int = 0
 export var damage_in_combo: int = -1
 export var minimum_damage: int = 0
+export var chip_damage_modifier = "1.0"
 
 export var _c_Hit_Properties = 0
 export(HitboxType) var hitbox_type = HitboxType.Normal
@@ -101,7 +102,7 @@ export var knockback: String = "10.0"
 export var launch_reversible = false
 export var vacuum = false
 export var send_away_from_center = false
-
+export var block_pushback_modifier: String = "1.0"
 export var pushback_x: String = "1.0"
 
 export var _c_Knockback_Type = 0

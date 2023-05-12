@@ -926,6 +926,7 @@ hitstun_ticks = 14
 hit_height = 0
 knockback = "5.0"
 launch_reversible = true
+block_pushback_x = "1.0"
 start_tick = 8
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirKick" index="1"]
@@ -944,6 +945,7 @@ priority = 1
 dir_x = "0.2"
 dir_y = "1.0"
 knockback = "7.2"
+block_pushback_x = "1.0"
 pushback_x = "0.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 8
@@ -993,6 +995,7 @@ screenshake_amount = 5
 hit_sound = ExtResource( 144 )
 dir_y = "1"
 knockback = "7.5"
+block_pushback_x = "1.0"
 ground_bounce = false
 start_tick = 5
 active_ticks = 2
@@ -1039,6 +1042,7 @@ hit_sound = ExtResource( 141 )
 dir_x = "0.5"
 dir_y = "-1.5"
 knockback = "8.0"
+block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
 wall_slam = true
@@ -1088,6 +1092,7 @@ hit_sound = ExtResource( 144 )
 dir_x = "0.5"
 dir_y = "-1.5"
 knockback = "6.0"
+block_pushback_x = "1.0"
 pushback_x = "3.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
@@ -1131,6 +1136,7 @@ hit_sound = ExtResource( 215 )
 dir_x = "1.00"
 dir_y = "-0.40"
 knockback = "5.0"
+block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 3
 
@@ -1177,6 +1183,7 @@ hit_sound = ExtResource( 145 )
 dir_x = "-0.5"
 dir_y = "-0.25"
 knockback = "7.0"
+block_pushback_x = "1.0"
 pushback_x = "3.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
@@ -1238,6 +1245,7 @@ damage_proration = 1
 dir_y = "-0.25"
 knockback = "12.0"
 launch_reversible = true
+block_pushback_x = "1.0"
 pushback_x = "-1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 6
@@ -1304,6 +1312,7 @@ whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_y = "1.0"
 knockback = "11.0"
+block_pushback_x = "1.0"
 pushback_x = "2.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -1322,6 +1331,7 @@ hitstun_ticks = 18
 victim_hitlag = 4
 group = 1
 knockback = "5"
+block_pushback_x = "1.0"
 ground_bounce = false
 start_tick = 8
 active_ticks = 15
@@ -1468,6 +1478,7 @@ victim_hitlag = 9
 damage_proration = 1
 hits_vs_aerial = false
 knockback = "6.0"
+block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 15
 
@@ -1551,6 +1562,7 @@ x = 10
 y = -22
 width = 14
 height = 19
+block_pushback_x = null
 start_tick = 7
 active_ticks = 23
 throw_state = "Hold"
@@ -1572,6 +1584,7 @@ hit_sound = ExtResource( 179 )
 dir_x = "-1.0"
 dir_y = "1.0"
 knockback = "2.0"
+block_pushback_x = "1.0"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -1699,6 +1712,7 @@ screenshake_amount = 8
 hit_sound = ExtResource( 179 )
 dir_y = "-0.20"
 knockback = "16.0"
+block_pushback_x = "1.0"
 wall_slam = true
 start_tick = 11
 active_ticks = 3
@@ -1757,6 +1771,7 @@ whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_y = "1.0"
 knockback = "18.0"
+block_pushback_x = "1.0"
 start_tick = 12
 active_ticks = 3
 
@@ -1777,6 +1792,7 @@ hit_sound = ExtResource( 142 )
 dir_x = "-1.0"
 dir_y = "1.0"
 knockback = "18.0"
+block_pushback_x = "1.0"
 start_tick = 12
 active_ticks = 3
 
@@ -1795,6 +1811,7 @@ whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 knockback = "8.0"
+block_pushback_x = "1.0"
 start_tick = 19
 active_ticks = 3
 
@@ -1814,6 +1831,7 @@ whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_x = "-1.0"
 knockback = "8.0"
+block_pushback_x = "1.0"
 start_tick = 19
 active_ticks = 3
 
@@ -1912,6 +1930,7 @@ whiff_sound = ExtResource( 230 )
 hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
+block_pushback_x = "1.0"
 active_ticks = 4
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
@@ -1933,6 +1952,7 @@ whiff_sound = ExtResource( 230 )
 hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
+block_pushback_x = "1.0"
 start_tick = 3
 active_ticks = 3
 
@@ -2017,6 +2037,7 @@ hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
 dir_y = ""
+block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 4
 
@@ -2039,6 +2060,7 @@ hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
 dir_y = ""
+block_pushback_x = "1.0"
 start_tick = 3
 active_ticks = 2
 
@@ -2078,6 +2100,7 @@ hits_vs_grounded = false
 priority = 1
 whiff_sound = ExtResource( 142 )
 hit_sound = ExtResource( 140 )
+block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 2
 
@@ -2094,6 +2117,7 @@ hitlag_ticks = 6
 hits_vs_grounded = false
 hit_sound = ExtResource( 224 )
 knockback = "4.0"
+block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 2
 
@@ -2110,6 +2134,7 @@ hitlag_ticks = 6
 hits_vs_grounded = false
 hit_sound = ExtResource( 224 )
 knockback = "4.0"
+block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 2
 
@@ -2126,8 +2151,15 @@ hitlag_ticks = 6
 hits_vs_grounded = false
 hit_sound = ExtResource( 224 )
 knockback = "4.0"
+block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 2
+
+[node name="Hitbox" parent="StateMachine/Burst" index="0"]
+block_pushback_x = "1.0"
+
+[node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
+block_pushback_x = "1.0"
 
 [node name="Landing" parent="StateMachine" index="45"]
 script = ExtResource( 294 )
@@ -2171,6 +2203,12 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
+
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+block_pushback_x = null
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+block_pushback_x = null
 
 [node name="ForwardThrow" parent="StateMachine" index="72"]
 anim_length = 24

@@ -254,7 +254,6 @@ var penalty = 0
 var penalty_buffer = 0
 var penalty_ticks = 0
 
-
 var emote_tween: SceneTreeTween
 
 var feints = 2
@@ -943,8 +942,8 @@ func hit_by(hitbox):
 		if !perfect_parry:
 			if !projectile:
 				opponent.add_penalty(-25)
-			take_damage(hitbox.damage / PARRY_CHIP_DIVISOR)
-			apply_force_relative(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), "0")
+			take_damage(fixed.round(fixed.mul(str(hitbox.damage / PARRY_CHIP_DIVISOR), hitbox.chip_damage_modifier)))
+			apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), hitbox.block_pushback_modifier), "0")
 			gain_super_meter(parry_meter / 3)
 			opponent.gain_super_meter(parry_meter / 3)
 			if !projectile:
@@ -1420,6 +1419,7 @@ func tick():
 	last_vel = get_vel()
 	var pos = get_pos()
 
+
 #	if opponent.combo_count > 0:
 #		current_prediction = -1
 
@@ -1553,6 +1553,9 @@ func on_state_hit_cancellable(projectile=false, state=null):
 		if projectile:
 			projectile_hit_cancelling = true
 
+func get_fighter():
+	return self
+
 func on_action_selected(action, data, extra):
 #	if !state_interruptable:
 #		return
@@ -1572,6 +1575,11 @@ func on_action_selected(action, data, extra):
 		if !state.is_usable():
 			action = "Forfeit"
 	emit_signal("action_selected", action, data, extra)
+
+func get_state_hash():
+	var pos = get_pos()
+	var vel = get_vel()
+	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(last_input) + hash(current_state().state_name)
 
 func forfeit():
 	will_forfeit = true

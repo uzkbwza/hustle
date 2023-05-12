@@ -48,6 +48,8 @@ var vacuum = false
 var send_away_from_center = false
 var minimum_grounded_frames = -1
 var plus_frames = 0
+var chip_damage_modifier = "1.0"
+var block_pushback_modifier = "1.0"
 
 func get_damage():
 	if combo_count > 0:
@@ -143,6 +145,10 @@ func _init(state):
 		send_away_from_center = state.send_away_from_center
 	if state.get("minimum_grounded_frames") != null:
 		minimum_grounded_frames = state.minimum_grounded_frames
+	if state.get("chip_damage_modifier") != null:
+		chip_damage_modifier = state.chip_damage_modifier
+	if state.get("block_pushback_modifier") != null:
+		block_pushback_modifier = state.block_pushback_modifier
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

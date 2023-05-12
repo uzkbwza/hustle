@@ -64,7 +64,7 @@ speed = "11"
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]
 width = 12
 height = 11
-damage = 90
+damage = 120
 hitlag_ticks = 9
 knockback = "9.0"
 
