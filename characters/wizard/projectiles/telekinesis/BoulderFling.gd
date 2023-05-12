@@ -17,7 +17,7 @@ func _enter():
 	if launch:
 		var force = fixed.vec_mul(data.x, data.y, speed)
 		host.apply_force(force.x, force.y)
-		host.set_facing(1 if fixed.gt(force.x, "0") else -1)
+		host.set_facing(1)
 #		host.movable = false
 	else:
 		host.stop_particles()
