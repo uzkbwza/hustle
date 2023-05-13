@@ -9,7 +9,7 @@ func _tick():
 		host.set_facing(host.creator.get_facing_int())
 	host.total_ticks += 1
 	if host.total_ticks > LIFETIME:
-		host.disable()
+		disable()
 
 
 func disable():

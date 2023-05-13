@@ -176,7 +176,8 @@ scroll_vertical_enabled = false
 
 [node name="FrameButtonContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_bottom = 88.0
+margin_right = 800.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
