@@ -968,6 +968,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1203,7 +1204,6 @@ height = 12
 damage = 60
 hitstun_ticks = 20
 hitlag_ticks = 7
-beats_grab = false
 screenshake_amount = 5
 whiff_sound = ExtResource( 145 )
 hit_sound = ExtResource( 128 )
@@ -1223,7 +1223,6 @@ height = 13
 damage = 60
 hitstun_ticks = 20
 hitlag_ticks = 7
-beats_grab = false
 screenshake_amount = 5
 whiff_sound = ExtResource( 145 )
 hit_sound = ExtResource( 128 )
@@ -1763,29 +1762,29 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
-},
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
-},
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
 },
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
 },
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
+},
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
 }
 }
 update_facing_on_exit = false
@@ -1957,21 +1956,21 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
-ExtResource( 264 ): {
+ExtResource( 254 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 254 ): {
+ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -2176,6 +2175,10 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
@@ -2184,9 +2187,9 @@ ExtResource( 110 ): {
 "x": 65,
 "y": -12
 },
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
 ExtResource( 112 ): {
 "x": -40,
@@ -2196,13 +2199,13 @@ ExtResource( 113 ): {
 "x": 62,
 "y": -13
 },
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
 },
 ExtResource( 116 ): {
 "x": 33,
@@ -2211,10 +2214,6 @@ ExtResource( 116 ): {
 ExtResource( 117 ): {
 "x": 69,
 "y": 14
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
 },
 ExtResource( 118 ): {
 "x": 67,
@@ -2846,7 +2845,6 @@ hitstun_ticks = 21
 hitlag_ticks = 1
 victim_hitlag = 4
 cancellable = false
-beats_grab = false
 hit_height = 0
 whiff_sound = ExtResource( 238 )
 hit_sound = ExtResource( 159 )
@@ -2868,7 +2866,6 @@ hitstun_ticks = 21
 hitlag_ticks = 1
 victim_hitlag = 4
 cancellable = false
-beats_grab = false
 whiff_sound = ExtResource( 238 )
 hit_sound = ExtResource( 159 )
 knockback = "7.0"
@@ -3537,9 +3534,13 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
+ExtResource( 308 ): {
+"x": -21,
+"y": -8
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 },
 ExtResource( 304 ): {
 "x": 29,
@@ -3549,13 +3550,9 @@ ExtResource( 310 ): {
 "x": -21,
 "y": -15
 },
-ExtResource( 308 ): {
-"x": -21,
-"y": -8
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 }
 }
 release_frame = 18
@@ -3622,9 +3619,13 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
+ExtResource( 308 ): {
+"x": -22,
+"y": -12
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 },
 ExtResource( 304 ): {
 "x": 34,
@@ -3634,13 +3635,9 @@ ExtResource( 310 ): {
 "x": -20,
 "y": -16
 },
-ExtResource( 308 ): {
-"x": -22,
-"y": -12
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 }
 }
 release_frame = 18

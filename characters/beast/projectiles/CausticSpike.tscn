@@ -57,7 +57,6 @@ __meta__ = {
 air_friction = "1.0"
 extra_state_variables = "rotate_dir"
 has_projectile_parry_window = false
-immunity_susceptible = false
 
 [node name="Sprite" parent="Flip" index="0"]
 z_index = 10

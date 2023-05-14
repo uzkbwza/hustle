@@ -42,6 +42,7 @@ export(AirType) var air_type = AirType.Grounded
 export var uses_air_movement = false
 export var land_cancel = false
 export var landing_recovery = -1
+export var min_land_cancel_frame = -1
 
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
@@ -349,7 +350,7 @@ func _tick_shared():
 		return next_state
 #	if land_cancel:
 #		print(started_in_air)
-	if land_cancel and host.is_grounded() and started_in_air and fixed.ge(host.get_vel().y, "0"):
+	if land_cancel and host.is_grounded() and started_in_air and current_tick > min_land_cancel_frame and fixed.ge(host.get_vel().y, "0"):
 		queue_state_change("Landing", landing_recovery if landing_recovery >= 0 else null)
 	if current_tick <= anim_length and !endless:
 		if can_interrupt() and !interrupt_into.empty():

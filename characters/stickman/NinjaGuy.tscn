@@ -755,7 +755,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -775,7 +774,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -795,7 +793,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -815,7 +812,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -835,7 +831,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -855,7 +850,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -875,7 +869,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -895,7 +888,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -915,7 +907,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -935,7 +926,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -955,7 +945,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -975,7 +964,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1025,7 +1013,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1045,7 +1032,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1065,7 +1051,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1085,7 +1070,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1105,7 +1089,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1125,7 +1108,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1145,7 +1127,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1165,7 +1146,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1185,7 +1165,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1205,7 +1184,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1225,7 +1203,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1245,7 +1222,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 1
@@ -1295,7 +1271,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1316,7 +1291,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1337,7 +1311,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1358,7 +1331,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1379,7 +1351,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1400,7 +1371,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1421,7 +1391,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1442,7 +1411,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1463,7 +1431,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1484,7 +1451,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1505,7 +1471,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1526,7 +1491,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1577,7 +1541,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1598,7 +1561,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1619,7 +1581,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1640,7 +1601,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1661,7 +1621,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1682,7 +1641,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1703,7 +1661,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1724,7 +1681,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1745,7 +1701,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1766,7 +1721,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1787,7 +1741,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1808,7 +1761,6 @@ hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = -1
 active_ticks = 1
 
@@ -1875,7 +1827,6 @@ beats_grab = false
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
 dir_y = "-2.0"
-block_pushback_x = "1.0"
 pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -1902,7 +1853,6 @@ hit_sound = ExtResource( 42 )
 dir_x = "2.0"
 dir_y = "-2.5"
 knockback = "9.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -1957,7 +1907,6 @@ beats_grab = false
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
 dir_y = "-2.0"
-block_pushback_x = "1.0"
 pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -1982,7 +1931,6 @@ hit_sound = ExtResource( 42 )
 dir_x = "2.0"
 dir_y = "-2.5"
 knockback = "9.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -2041,7 +1989,6 @@ hit_height = 0
 screenshake_amount = 2
 hit_sound = ExtResource( 41 )
 dir_y = "1.0"
-block_pushback_x = "1.0"
 start_tick = 12
 always_on = true
 
@@ -2083,7 +2030,6 @@ hit_height = 0
 screenshake_amount = 7
 dir_x = "2.0"
 knockback = "11.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 wall_slam = true
 start_tick = 11
@@ -2134,7 +2080,6 @@ victim_hitlag = 4
 beats_grab = false
 hit_sound = ExtResource( 42 )
 knockback = "8.0"
-block_pushback_x = "1.0"
 start_tick = 7
 active_ticks = 3
 
@@ -2180,7 +2125,6 @@ beats_grab = false
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
@@ -2201,7 +2145,6 @@ priority = 1
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
@@ -2222,7 +2165,6 @@ priority = 2
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
@@ -2275,7 +2217,6 @@ sdi_modifier = "0.2"
 beats_grab = false
 hit_sound = ExtResource( 42 )
 knockback = "2.5"
-block_pushback_x = "1.0"
 pushback_x = "0.0"
 start_tick = 7
 active_ticks = 6
@@ -2296,7 +2237,6 @@ beats_grab = false
 group = 1
 hit_sound = ExtResource( 42 )
 knockback = "4.0"
-block_pushback_x = "1.0"
 pushback_x = "0.0"
 start_tick = 13
 active_ticks = 2
@@ -2338,7 +2278,6 @@ hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 16
 active_ticks = 4
 
@@ -2376,7 +2315,6 @@ hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 16
 active_ticks = 4
 
@@ -2411,7 +2349,6 @@ beats_grab = false
 hit_height = 0
 hit_sound = ExtResource( 39 )
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 17
 looping = true
@@ -2432,7 +2369,6 @@ beats_grab = false
 hit_height = 0
 hit_sound = ExtResource( 39 )
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 6
 active_ticks = 17
 looping = true
@@ -2539,7 +2475,6 @@ hitlag_ticks = 6
 beats_grab = false
 hit_height = 2
 screenshake_amount = 6
-block_pushback_x = "1.0"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 11
@@ -2571,7 +2506,6 @@ beats_grab = false
 hit_height = 0
 dir_x = "0.1"
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 2
 
@@ -2610,7 +2544,6 @@ victim_hitlag = 4
 damage_proration = 2
 beats_grab = false
 knockback = "2.0"
-block_pushback_x = "1.0"
 start_tick = 4
 active_ticks = 2
 
@@ -2653,7 +2586,6 @@ beats_grab = false
 hit_height = 2
 hit_sound = ExtResource( 41 )
 knockback = "5.0"
-block_pushback_x = "1.0"
 start_tick = 5
 active_ticks = 3
 
@@ -2706,7 +2638,6 @@ screenshake_amount = 5
 hit_sound = ExtResource( 40 )
 dir_y = "-0.25"
 knockback = "6.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 start_tick = 7
@@ -2753,7 +2684,6 @@ hit_sound = ExtResource( 42 )
 dir_x = "1"
 dir_y = "-0.25"
 knockback = "13.0"
-block_pushback_x = "1.0"
 wall_slam = true
 start_tick = 11
 
@@ -2802,7 +2732,6 @@ screenshake_frames = 20
 camera_bump_dir = Vector2( 0, 1 )
 hit_sound = ExtResource( 70 )
 knockback = "13.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -2836,7 +2765,6 @@ hit_height = 0
 hit_sound = ExtResource( 41 )
 dir_y = "1.0"
 knockback = "8.0"
-block_pushback_x = "1.0"
 knockdown = true
 start_tick = 5
 active_ticks = 7
@@ -2986,7 +2914,6 @@ rumble = false
 hit_sound = ExtResource( 44 )
 dir_y = "-0.1"
 knockback = "20"
-block_pushback_x = "1.0"
 wall_slam = true
 start_tick = 3
 
@@ -3036,7 +2963,6 @@ hit_height = 2
 hit_sound = ExtResource( 41 )
 dir_x = "-1.0"
 knockback = "7.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -3101,7 +3027,6 @@ hit_height = 2
 hit_sound = ExtResource( 41 )
 dir_x = "-1.0"
 knockback = "7.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -3154,7 +3079,6 @@ hit_height = 2
 hit_sound = ExtResource( 41 )
 dir_x = "-1.0"
 knockback = "7.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -3212,7 +3136,6 @@ replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 dir_y = "0.0"
 knockback = "6"
-block_pushback_x = "1.0"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
 start_tick = 8
@@ -3259,7 +3182,6 @@ hits_vs_dizzy = false
 beats_grab = false
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
-block_pushback_x = "1.0"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
 start_tick = 8
@@ -3288,13 +3210,13 @@ ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 ExtResource( 221 ): {
 "x": 27,
@@ -3343,7 +3265,6 @@ beats_grab = false
 hit_height = 0
 hit_sound = ExtResource( 217 )
 knockback = "6.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtDizzy"
 aerial_hit_state = "HurtDizzy"
 wall_slam = true
@@ -3388,7 +3309,6 @@ whiff_sound = ExtResource( 44 )
 hit_sound = ExtResource( 40 )
 dir_x = "0.5"
 dir_y = "-2.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 4
@@ -3434,21 +3354,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
-},
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
 },
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 }
 }
 burst_cancellable = false
@@ -3477,7 +3397,6 @@ hit_sound = ExtResource( 41 )
 dir_x = "1"
 dir_y = "-0.30"
 knockback = "10"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -3487,21 +3406,21 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
 },
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 210 ): {
 "x": 37,
@@ -3534,7 +3453,6 @@ hit_sound = ExtResource( 41 )
 dir_x = "1"
 dir_y = "-0.30"
 knockback = "10"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
