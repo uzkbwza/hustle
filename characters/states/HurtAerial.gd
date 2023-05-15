@@ -25,6 +25,8 @@ func begin_ground_bounce():
 	hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
 	bounce_frames = BOUNCE_FRAMES
 	ground_bounced = true
+	host.play_sound("HitBass")
+#	host.play_sound("GroundBounce")
 
 func _enter():
 	ground_bounced = false

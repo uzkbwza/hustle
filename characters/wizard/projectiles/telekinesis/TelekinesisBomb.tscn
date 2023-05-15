@@ -52,11 +52,11 @@ material = SubResource( 2 )
 script = ExtResource( 8 )
 disable_obj = ExtResource( 4 )
 disable_particle = ExtResource( 5 )
+no_hitlag = false
 explode_tick = 30
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
-frame = 1
 playing = true
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0"]
@@ -82,7 +82,6 @@ increment_combo = false
 whiff_sound = null
 hit_sound = null
 hit_bass_sound = null
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtGrounded"
 knockdown = false
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=181 format=2]
+[gd_scene load_steps=183 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -178,6 +178,8 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/counter_low.png" type="Texture" id=176]
 [ext_resource path="res://ui/ActionSelector/StateIcons/counter_throw.png" type="Texture" id=177]
 [ext_resource path="res://sound/common/swipe1.wav" type="AudioStream" id=178]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/AirGrabActionUIData.tscn" type="PackedScene" id=179]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/GrabActionUIData.tscn" type="PackedScene" id=180]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -497,6 +499,11 @@ bus = "Fx"
 
 [node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
 stream = ExtResource( 161 )
+volume_db = -5.0
+bus = "Fx"
+
+[node name="GroundBounce" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
+stream = ExtResource( 175 )
 volume_db = -5.0
 bus = "Fx"
 
@@ -1297,7 +1304,9 @@ interrupt_into_string = "AerialThrow"
 [node name="Grab" type="Node2D" parent="StateMachine" index="40"]
 script = ExtResource( 86 )
 anim_length = 15
+title = "Throw"
 type = 1
+data_ui_scene = ExtResource( 180 )
 button_texture = ExtResource( 112 )
 throw_techable = true
 instant_cancellable = false
@@ -1321,14 +1330,15 @@ hits_vs_aerial = false
 hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
-throw_state = "Hold"
+throw_state = "ForwardThrow"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="41"]
 script = ExtResource( 86 )
 sprite_animation = "Grab"
 anim_length = 15
-title = "Grab"
+title = "Throw"
 type = 1
+data_ui_scene = ExtResource( 179 )
 button_texture = ExtResource( 112 )
 air_type = 1
 throw_techable = true
@@ -1341,6 +1351,8 @@ interrupt_into_string = "Aerial
 Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+forward_throw_state = "AirForwardThrow"
+back_throw_state = "AirBackThrow"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/AirGrab" index="0"]
 z_index = 1000
@@ -1354,7 +1366,7 @@ hits_vs_grounded = false
 hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
-throw_state = "AirHold"
+throw_state = "AirForwardThrow"
 
 [node name="ForwardThrow" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 90 )

@@ -7,6 +7,7 @@ var launched = false
 export(PackedScene) var disable_obj
 export(PackedScene) var disable_particle
 export var rumble = true
+export var no_hitlag = true
 
 func disable():
 	disable_action()
@@ -32,6 +33,11 @@ func disable_action():
 
 func hit_action(obj):
 	pass
+
+func tick():
+	.tick()
+	if no_hitlag:
+		hitlag_ticks = 0
 
 func drop():
 	if current_state().name == "Default":

@@ -63,9 +63,11 @@ max_ground_speed = "30"
 max_air_speed = "30"
 max_fall_speed = "30"
 has_projectile_parry_window = false
+projectile_immune = true
 disable_obj = null
 disable_particle = ExtResource( 9 )
 rumble = true
+no_hitlag = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 4 )
@@ -117,7 +119,6 @@ hitlag_ticks = 3
 hit_sound = ExtResource( 8 )
 dir_y = "-0.70"
 knockback = "7.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 4
 knockdown = true
@@ -147,7 +148,6 @@ hitlag_ticks = 3
 hit_sound = ExtResource( 8 )
 dir_y = "-0.70"
 knockback = "7.0"
-block_pushback_x = "1.0"
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 4
 knockdown = true

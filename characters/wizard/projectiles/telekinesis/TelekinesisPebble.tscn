@@ -48,6 +48,7 @@ material = SubResource( 1 )
 has_projectile_parry_window = true
 disable_particle = null
 rumble = false
+no_hitlag = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

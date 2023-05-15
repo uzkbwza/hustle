@@ -2218,7 +2218,9 @@ GroundedAttack"
 interrupt_into_string = "Aerial
 Grounded"
 hit_cancel_into_string = "AerialSuper
-GroundedSuper"
+GroundedSuper
+GroundedSpecial
+AerialSpecial"
 jump_speed = "6"
 grounded = true
 
