@@ -748,7 +748,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -766,7 +765,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -784,7 +782,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -802,7 +799,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -820,7 +816,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -838,7 +833,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -856,7 +850,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -874,7 +867,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -892,7 +884,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -910,7 +901,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -928,7 +918,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -946,7 +935,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -994,7 +982,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1012,7 +999,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1030,7 +1016,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1048,7 +1033,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1066,7 +1050,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1084,7 +1067,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1102,7 +1084,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1120,7 +1101,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1138,7 +1118,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1156,7 +1135,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1174,7 +1152,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -1192,7 +1169,6 @@ damage_in_combo = 40
 hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-sdi_modifier = "1.25"
 beats_grab = false
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
@@ -3182,13 +3158,17 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
+},
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 },
 ExtResource( 222 ): {
 "x": 23,
@@ -3197,10 +3177,6 @@ ExtResource( 222 ): {
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
-},
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
 }
 }
 button_texture = ExtResource( 223 )
@@ -3330,21 +3306,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
 },
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 }
 }
 burst_cancellable = false
@@ -3385,25 +3361,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
 }
 }
 burst_cancellable = false

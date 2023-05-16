@@ -292,8 +292,9 @@ func hit(obj):
 		var can_hit = true
 		if obj.is_in_group("Fighter"):
 			if host.is_in_group("Fighter"):
-				host.feinting = false
-				host.current_state().feinting = false
+				if host.current_state().end_feint:
+					host.feinting = false
+					host.current_state().feinting = false
 			if !host.is_ghost:
 				if !bump_on_whiff:
 					camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier))

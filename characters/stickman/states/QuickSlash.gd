@@ -156,9 +156,12 @@ func switch_to_followup():
 		host.set_vel(vel.x, "0")
 		host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
 		host.set_grounded(true)
-		host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
+		host.set_vel(fixed.mul(vel.x, "0.35"), "0")
 
 func get_next_attack():
+	if !started_in_neutral:
+		if !hit_anything:
+			return null
 	var grounded = host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE
 	match attack:
 		0: return null
@@ -177,9 +180,9 @@ func _got_parried():
 func _on_hit_something(obj, hitbox):
 #	iasa_at = IASA
 #	landing_lag = LANDING_LAG
+	._on_hit_something(obj, hitbox)
 	if get_next_attack() != null and !started_in_neutral:
 		switch_to_followup()
-	._on_hit_something(obj, hitbox)
 
 func _tick():
 #	if startup_lag > 0:
