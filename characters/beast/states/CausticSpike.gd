@@ -8,3 +8,14 @@ func process_projectile(obj):
 	obj.apply_force(fixed.mul(PUSH, str(host.get_facing_int())), "0")
 	obj.apply_force(dir.x, dir.y)
 	obj.set_rotation(data)
+
+func _enter():
+	initiative_effect = host.combo_count == 0
+	
+
+func _tick():
+	if host.initiative and host.combo_count == 0:
+		if current_tick == 1:
+			current_tick = 7
+		if current_tick == 20:
+			enable_interrupt()

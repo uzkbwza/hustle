@@ -143,16 +143,20 @@ func _frame_6():
 #		host.set_vel(fixed.mul(vel.x, "0.5"), vel.y)
 #	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
 	else:
-		var vel = host.get_vel()
-		host.set_vel(fixed.mul(vel.x, "0.25"), fixed.mul(vel.y, "0.5"))
-		queue_state_change(get_next_attack())
-		if host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE:
-			host.set_vel(vel.x, "0")
-			host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
-			host.set_grounded(true)
-			host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
+		if started_in_neutral:
+			switch_to_followup()
 
 	host.end_invulnerability()
+
+func switch_to_followup():
+	var vel = host.get_vel()
+	host.set_vel(fixed.mul(vel.x, "0.25"), fixed.mul(vel.y, "0.5"))
+	queue_state_change(get_next_attack())
+	if host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE:
+		host.set_vel(vel.x, "0")
+		host.move_directly(0, BUFFER_ATTACK_GROUND_SNAP_DISTANCE)
+		host.set_grounded(true)
+		host.set_vel(fixed.mul(vel.x, "0.35"), vel.y)
 
 func get_next_attack():
 	var grounded = host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE
@@ -173,6 +177,8 @@ func _got_parried():
 func _on_hit_something(obj, hitbox):
 #	iasa_at = IASA
 #	landing_lag = LANDING_LAG
+	if get_next_attack() != null and !started_in_neutral:
+		switch_to_followup()
 	._on_hit_something(obj, hitbox)
 
 func _tick():

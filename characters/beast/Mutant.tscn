@@ -1,4 +1,4 @@
-[gd_scene load_steps=127 format=2]
+[gd_scene load_steps=128 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
@@ -123,6 +123,7 @@
 [ext_resource path="res://characters/beast/sprites/air_swipe8.png" type="Texture" id=121]
 [ext_resource path="res://characters/beast/states/ForwardDashFollowup.gd" type="Script" id=122]
 [ext_resource path="res://characters/beast/actionuidata/DashAttackActionUIData.tscn" type="PackedScene" id=123]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/GrabActionUIData.tscn" type="PackedScene" id=124]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -608,8 +609,8 @@ x = 4
 y = -16
 width = 10
 height = 28
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 15
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -635,8 +636,8 @@ x = 4
 y = -16
 width = 12
 height = 19
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 15
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -662,8 +663,8 @@ x = 2
 y = -14
 width = 17
 height = 5
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 15
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -710,8 +711,8 @@ x = 4
 y = -16
 width = 10
 height = 28
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 10
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -736,8 +737,8 @@ x = 4
 y = -16
 width = 12
 height = 19
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 10
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -762,8 +763,8 @@ x = 2
 y = -14
 width = 17
 height = 5
-damage = 25
-chip_damage_modifier = "1.5"
+damage = 23
+chip_damage_modifier = "1.75"
 hitstun_ticks = 10
 hitlag_ticks = 2
 victim_hitlag = 7
@@ -1055,6 +1056,7 @@ data_ui_scene = ExtResource( 123 )
 land_cancel = true
 landing_recovery = 6
 iasa_on_hit = 25
+next_state_on_hold = false
 self_hit_cancellable = false
 self_interruptable = false
 reversible = false
@@ -1069,6 +1071,7 @@ AerialAttack
 AerialSpecial
 AerialSuper
 Jump
+DoubleJump
 ForwardDashAttack"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ForwardDashFollowup" index="0"]
@@ -1081,11 +1084,9 @@ height = 9
 damage = 50
 hitstun_ticks = 12
 victim_hitlag = 6
-cancellable = false
 sdi_modifier = "0.5"
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_y = "-2.0"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
@@ -1102,11 +1103,9 @@ height = 9
 damage = 50
 hitstun_ticks = 12
 victim_hitlag = 6
-cancellable = false
 sdi_modifier = "0.5"
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_y = "-2.0"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
@@ -1122,11 +1121,9 @@ height = 9
 damage = 50
 hitstun_ticks = 12
 victim_hitlag = 6
-cancellable = false
 sdi_modifier = "0.5"
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_y = "-2.0"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
@@ -1143,11 +1140,9 @@ height = 9
 damage = 50
 hitstun_ticks = 12
 victim_hitlag = 6
-cancellable = false
 sdi_modifier = "0.5"
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_y = "-2.0"
 knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
@@ -1165,7 +1160,6 @@ damage = 110
 hitstun_ticks = 24
 hitlag_ticks = 10
 victim_hitlag = 12
-cancellable = false
 group = 1
 screenshake_amount = 10
 whiff_sound = ExtResource( 31 )
@@ -1251,7 +1245,6 @@ title = "Overhead Claw"
 type = 1
 iasa_on_hit = 19
 self_hit_cancellable = false
-self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Grounded
@@ -1313,6 +1306,7 @@ interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
 AerialSpecial"
+initiative_effect = true
 
 [node name="Sweep" type="Node2D" parent="StateMachine" index="13"]
 script = ExtResource( 4 )
@@ -1382,7 +1376,6 @@ cancellable = false
 hit_height = 0
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_x = "-1.0"
 dir_y = "-0.70"
 knockback = "8"
 grounded_hit_state = "HurtAerial"
@@ -1457,6 +1450,9 @@ beats_grab = false
 pushback_x = "0.0"
 loop_active_ticks = 0
 
+[node name="AirGrab" parent="StateMachine" index="55"]
+data_ui_scene = ExtResource( 124 )
+
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 visible = false
 scale_combo = null
@@ -1479,6 +1475,10 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
+},
 ExtResource( 82 ): {
 "x": -8,
 "y": -5
@@ -1486,10 +1486,6 @@ ExtResource( 82 ): {
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
-},
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
 }
 }
 land_cancel = true

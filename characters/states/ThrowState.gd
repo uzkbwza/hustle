@@ -88,6 +88,7 @@ func _tick_shared():
 #		var throw_pos = host.get_global_throw_pos()
 #		host.opponent.set_pos(throw_pos.x, throw_pos.y)
 		if reverse and !force_same_direction_as_previous_state:
+			host.reverse_state = false
 			host.set_facing(-host.get_facing_int())
 		host.start_invulnerability()
 		released = false
