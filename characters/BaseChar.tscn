@@ -730,7 +730,7 @@ hit_sound = ExtResource( 126 )
 dir_y = "-0.25"
 knockback = "14.0"
 launch_reversible = true
-start_tick = 4
+start_tick = 3
 active_ticks = 1
 
 [node name="OffensiveBurst" type="Node2D" parent="StateMachine" index="10"]
