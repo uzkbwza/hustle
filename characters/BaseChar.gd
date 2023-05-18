@@ -1579,7 +1579,7 @@ func on_action_selected(action, data, extra):
 func get_state_hash():
 	var pos = get_pos()
 	var vel = get_vel()
-	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(last_input) + hash(current_state().state_name)
+	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(current_state().state_name)
 
 func forfeit():
 	will_forfeit = true

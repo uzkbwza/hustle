@@ -640,7 +640,6 @@ interrupt_exceptions_string = "WhiffCancel"
 beats_grab = false
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
-hitstun_ticks = 24
 beats_grab = false
 
 [node name="DashForward" parent="StateMachine" index="21"]
@@ -946,7 +945,7 @@ type = 3
 data_ui_scene = ExtResource( 19 )
 button_texture = ExtResource( 38 )
 air_type = 1
-iasa_at = 13
+iasa_at = 20
 combo_only = true
 end_feint = false
 usable_from_whiff_cancel_if_possible = false
@@ -3083,21 +3082,21 @@ Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
 "y": -7
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
 },
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 }
 }
 button_texture = ExtResource( 223 )
@@ -3223,20 +3222,20 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
-},
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
 },
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
 },
-ExtResource( 206 ): {
-"x": 13,
+ExtResource( 207 ): {
+"x": 15,
 "y": -10
 }
 }
@@ -3277,25 +3276,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 }
 }
 burst_cancellable = false
