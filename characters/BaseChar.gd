@@ -682,8 +682,8 @@ func reset_combo():
 	opponent.braced_attack = false
 	opponent.brace_effect_applied_yet = false
 
-func incr_combo(scale=true):
-	if scale and !melee_attack_combo_scaling_applied:
+func incr_combo(scale=true, projectile=false, force=false):
+	if (scale and (!melee_attack_combo_scaling_applied or projectile)) or force:
 		combo_count += 1
 		hitstun_decay_combo_count += 1
 	visible_combo_count += 1
@@ -760,7 +760,7 @@ func has_armor():
 	return has_hyper_armor
 
 func launched_by(hitbox):
-
+	
 #		if hitlag_ticks < hitbox.victim_hitlag:
 	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
 	if braced_attack:
@@ -795,9 +795,13 @@ func launched_by(hitbox):
 				if !hitbox.force_grounded:
 					state = "HurtAerial"
 					grounded_hits_taken = 0
-
+		
+		var host = objs_map[hitbox.host]
+		var projectile = !host.is_in_group("Fighter")
+		var will_scale = hitbox.scale_combo or opponent.combo_count == 0
+		
 		if hitbox.increment_combo:
-			opponent.incr_combo(hitbox.scale_combo or combo_count == 0)
+			opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo)
 
 		if opponent.combo_count <= 1:
 			opponent.combo_proration = hitbox.damage_proration
@@ -809,8 +813,8 @@ func launched_by(hitbox):
 		busy_interrupt = true
 		can_nudge = true
 
-		var host = objs_map[hitbox.host]
-		var projectile = !host.is_in_group("Fighter")
+		
+		
 
 		if !projectile:
 			refresh_feints()

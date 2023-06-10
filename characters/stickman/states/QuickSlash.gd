@@ -73,28 +73,28 @@ func _enter():
 func _frame_0():
 	started_in_neutral = host.combo_count <= 0
 	host.set_grounded(false)
+	var start_pos = host.get_pos().duplicate()
+	host.quick_slash_start_pos_x = start_pos.x
+	host.quick_slash_start_pos_y = start_pos.y
+	if get_next_attack() and started_in_neutral:
+		current_tick += 2
 #	iasa_at = WHIFF_IASA
 #	landing_lag = WHIFF_LANDING_LAG
 #	host.hitlag_ticks += NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
 
-func _frame_1():
-	var start_pos = host.get_pos().duplicate()
-	host.quick_slash_start_pos_x = start_pos.x
-	host.quick_slash_start_pos_y = start_pos.y
 
 func _frame_4():
 	if host.initiative:
 		host.start_invulnerability()
 
 func _frame_5():
-	host.move_directly(0, - 2)
+#	host.move_directly(0, - 0)
 
 	var move_dir_x = host.quick_slash_move_dir_x
 	var move_dir_y = host.quick_slash_move_dir_y
 
 	var move_vec = fixed.normalized_vec_times(move_dir_x, move_dir_y, str(MOVE_DISTANCE))
-
-
+	
 	host.move_directly(move_vec.x, move_vec.y)
 	host.update_data()
 	
@@ -144,9 +144,22 @@ func _frame_6():
 #	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
 	else:
 		if started_in_neutral:
-			switch_to_followup()
-
+			host.update_grounded()
+			if host.is_grounded():
+				switch_to_followup()
+				pass
 	host.end_invulnerability()
+
+func _frame_7():
+	if started_in_neutral:
+		if !host.is_grounded():
+			if get_next_attack():
+				switch_to_followup()
+
+#func _frame_8():
+#	if started_in_neutral:
+#		if !host.is_grounded():
+#			switch_to_followup()
 
 func switch_to_followup():
 	var vel = host.get_vel()
@@ -193,6 +206,7 @@ func _tick():
 	if get_next_attack() != null:
 		if current_tick == 2:
 			current_tick = 3
+		
 	if current_tick > 6:
 		if host.is_grounded():
 			if get_next_attack() == null:

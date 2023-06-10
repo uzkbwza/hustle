@@ -520,6 +520,13 @@ func set_facing(facing: int):
 func fixed_dot(x1: String, y1: String, x2: String, y2: String) -> String:
 	return fixed.add(fixed.mul(x1, x2), fixed.mul(y1, y2))
 
+func fixed_inverse_lerp(a: String, b: String, v: String) -> String:
+	return fixed.div(fixed.sub(v, a), fixed.sub(b, a))
+
+func fixed_map(i_min: String, i_max: String, o_min: String, o_max: String, v: String):
+	var t = fixed_inverse_lerp(i_min, i_max, v)
+	return fixed.lerp_string(o_min, o_max, t)
+
 func set_vel(x, y):
 	check_params(x, y)
 	chara.set_vel(str(x), str(y))

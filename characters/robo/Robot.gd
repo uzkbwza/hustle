@@ -13,6 +13,10 @@ const LOIC_GAIN_NO_ARMOR = 6
 const MAGNET_TICKS = 110
 const MAGNET_STRENGTH = "2"
 const COMBO_MAGNET_STRENGTH = "0.5"
+const MAGNET_MAX_STRENGTH = "3.5"
+const MAGNET_MIN_STRENGTH = "0.2"
+const MAGNET_CENTER_DIST = "250"
+const MAGNET_RADIUS_DIST = "200"
 
 var loic_draining = false
 var armor_pips = 1
@@ -82,10 +86,10 @@ func copy_to(f: BaseObj):
 func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 
-func incr_combo(scale=true):
+func incr_combo(scale=true, projectile=false, force=false):
 	if combo_count == 0:
 		landed_move = true
-	.incr_combo(scale)
+	.incr_combo(scale, force, projectile)
 	if can_unlock_gratuitous and combo_moves_used.has("GroundSlam") and current_state().name != "GroundSlam":
 		unlock_achievement("ACH_GRATUITOUS")
 		can_unlock_gratuitous = false
@@ -105,8 +109,24 @@ func big_landing_effect():
 
 func magnetize():
 	var my_pos_relative = opponent.obj_local_center(self)
-	if fixed.gt(fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y)), "32"):
-		var force = fixed.normalized_vec_times(str(my_pos_relative.x), str(my_pos_relative.y), MAGNET_STRENGTH if combo_count <= 0 else COMBO_MAGNET_STRENGTH)
+	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
+	if fixed.gt(dist, "32"):
+				
+		var magnet_strength = COMBO_MAGNET_STRENGTH if combo_count > 0 else MAGNET_STRENGTH
+		if combo_count <= 0 and opponent.combo_count <= 0:
+			var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
+			var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
+			magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
+#			if fixed.lt(magnet_strength, MAGNET_MIN_STRENGTH):
+#				magnet_strength = MAGNET_MIN_STRENGTH
+#			elif fixed.gt(magnet_strength, MAGNET_MAX_STRENGTH):
+#				magnet_strength = MAGNET_MAX_STRENGTH
+		
+		
+		var force = fixed.normalized_vec_times(str(my_pos_relative.x), str(my_pos_relative.y), magnet_strength)
+		if combo_count <= 0:
+			force.x = force.x if !opponent.is_grounded() else fixed.mul(force.x, "0.65")
+
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
 
 func add_armor_pip():
