@@ -1034,8 +1034,12 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
-			var grounded = (hurtbox.get_parent().is_grounded() if !(hurtbox is Hitbox) else true)
+			var host = hurtbox.get_parent()
+			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
+			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
+				continue
+			if !otg and !hitbox.hits_vs_standing:
 				continue
 			if hitbox.overlaps(hurtbox):
 				hit_by = hitbox

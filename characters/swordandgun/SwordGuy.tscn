@@ -1,4 +1,4 @@
-[gd_scene load_steps=317 format=2]
+[gd_scene load_steps=319 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -312,6 +312,8 @@
 [ext_resource path="res://characters/UsableRequirement.gd" type="Script" id=310]
 [ext_resource path="res://characters/states/Dash.gd" type="Script" id=311]
 [ext_resource path="res://ui/ActionSelector/StateIcons/dash.png" type="Texture" id=312]
+[ext_resource path="res://characters/swordandgun/NewShoot.gd" type="Script" id=313]
+[ext_resource path="res://characters/swordandgun/ActionUIData/Shoot2ActionUIData.tscn" type="PackedScene" id=314]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -1353,7 +1355,7 @@ y = -16
 width = 19
 height = 19
 damage = 110
-damage_in_combo = 90
+damage_in_combo = 80
 hitstun_ticks = 6
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
@@ -1383,7 +1385,7 @@ title = "Lightning Slice"
 type = 2
 button_texture = ExtResource( 187 )
 air_type = 2
-iasa_at = 16
+iasa_at = 21
 self_hit_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
@@ -1519,7 +1521,7 @@ Aerial"
 [node name="Hitbox" type="Node2D" parent="StateMachine/LassoPull" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-damage = 40
+damage = 70
 hitlag_ticks = 0
 victim_hitlag = 4
 cancellable = false
@@ -2649,7 +2651,7 @@ super_freeze_ticks = 5
 
 [node name="Brandish" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 116 )
-fallback_state = "Shoot"
+fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
 anim_length = 8
 enter_sfx = ExtResource( 150 )
@@ -2674,7 +2676,7 @@ super_effect = false
 
 [node name="QuickerDraw" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 116 )
-fallback_state = "Shoot"
+fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
 anim_length = 4
 enter_sfx = ExtResource( 150 )
@@ -2736,6 +2738,34 @@ button_texture = ExtResource( 161 )
 air_type = 2
 iasa_at = 10
 dynamic_iasa = false
+selectable = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial
+"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
+super_level = 0
+super_effect = false
+
+[node name="Shoot2" type="Node2D" parent="StateMachine" index="48"]
+script = ExtResource( 313 )
+__meta__ = {
+"_editor_description_": ""
+}
+fallback_state = "Holster"
+sprite_animation = "GunShoot2"
+anim_length = 14
+title = "Shoot"
+type = 2
+data_ui_scene = ExtResource( 314 )
+button_texture = ExtResource( 161 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
 interrupt_from_string = "Gun
 LassoThrow
 Shoot"
@@ -2744,10 +2774,33 @@ Grounded
 Aerial"
 interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
-super_level = 0
-super_effect = false
 
-[node name="ShootDodge" type="Node2D" parent="StateMachine" index="48"]
+[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="49"]
+script = ExtResource( 313 )
+__meta__ = {
+"_editor_description_": ""
+}
+fallback_state = "Holster"
+sprite_animation = "GunShoot2"
+anim_length = 14
+title = "Shoot Dodge"
+type = 2
+data_ui_scene = ExtResource( 314 )
+button_texture = ExtResource( 292 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
+dodge = true
+
+[node name="ShootDodge" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
@@ -2760,6 +2813,7 @@ air_type = 2
 iasa_at = 10
 dynamic_iasa = false
 reversible = false
+selectable = false
 interrupt_from_string = "Gun
 LassoThrow
 Shoot"
@@ -2772,7 +2826,7 @@ super_level = 0
 super_effect = false
 dodge = true
 
-[node name="TimeBullet" type="Node2D" parent="StateMachine" index="49"]
+[node name="TimeBullet" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
@@ -2795,7 +2849,7 @@ release_opponent_on_startup = true
 super_freeze_ticks = 5
 temporal = true
 
-[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="50"]
+[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 169 )
 reset_momentum = true
 endless = true
@@ -2834,7 +2888,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 
-[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="51"]
+[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="53"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -2878,7 +2932,7 @@ knockdown_extends_hitstun = false
 start_tick = 7
 active_ticks = 2
 
-[node name="BackSlash" type="Node2D" parent="StateMachine" index="52"]
+[node name="BackSlash" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 209 )
 apply_forces = true
 apply_fric = true
@@ -2962,7 +3016,7 @@ wall_slam = true
 start_tick = 8
 active_ticks = 1
 
-[node name="DashForward" parent="StateMachine" index="73"]
+[node name="DashForward" parent="StateMachine" index="75"]
 loop_animation = true
 absolute_loop = true
 enter_force_dir_x = "1.0"
@@ -2981,7 +3035,7 @@ script = ExtResource( 310 )
 method = "has_1k_cuts"
 inverse = true
 
-[node name="DashForward1k" type="Node2D" parent="StateMachine" index="74"]
+[node name="DashForward1k" type="Node2D" parent="StateMachine" index="76"]
 script = ExtResource( 311 )
 __meta__ = {
 "_editor_description_": ""
@@ -3019,13 +3073,13 @@ spawn_particle = false
 script = ExtResource( 310 )
 method = "has_1k_cuts"
 
-[node name="ChargeDashForward" parent="StateMachine" index="75"]
+[node name="ChargeDashForward" parent="StateMachine" index="77"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="76"]
+[node name="DashBackward" parent="StateMachine" index="78"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -3037,46 +3091,46 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="78"]
+[node name="DashStartup" parent="StateMachine" index="80"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="79"]
+[node name="Jump" parent="StateMachine" index="81"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="82"]
+[node name="DoubleJump" parent="StateMachine" index="84"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="83"]
+[node name="AirDash" parent="StateMachine" index="85"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="ForwardThrow" parent="StateMachine" index="95"]
+[node name="ForwardThrow" parent="StateMachine" index="97"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="BackThrow" parent="StateMachine" index="96"]
+[node name="BackThrow" parent="StateMachine" index="98"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirForwardThrow" parent="StateMachine" index="97"]
+[node name="AirForwardThrow" parent="StateMachine" index="99"]
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirBackThrow" parent="StateMachine" index="98"]
+[node name="AirBackThrow" parent="StateMachine" index="100"]
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="99"]
+[node name="AirDownThrow" parent="StateMachine" index="101"]
 dir_x = "1.0"
 dir_y = "1.00"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="Taunt" parent="StateMachine" index="101"]
+[node name="Taunt" parent="StateMachine" index="103"]
 script = ExtResource( 255 )
 reset_momentum = true
 anim_length = 61

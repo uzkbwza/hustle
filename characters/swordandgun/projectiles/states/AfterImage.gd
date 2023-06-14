@@ -1,5 +1,7 @@
 extends BaseProjectile
 
+class_name ForesightAfterImage
+
 var detonating = false
 
 func disable():

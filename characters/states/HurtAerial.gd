@@ -23,6 +23,7 @@ const BOUNCE_PARTICLE = preload("res://fx/LandingParticle.tscn")
 
 func begin_ground_bounce():
 	hitbox.dir_y = fixed.mul(hitbox.dir_y, "-1")
+	hitbox.knockback = fixed.mul(hitbox.knockback, hitbox.ground_bounce_knockback_modifier)
 	bounce_frames = BOUNCE_FRAMES
 	ground_bounced = true
 	host.play_sound("HitBass")

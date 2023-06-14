@@ -4,6 +4,9 @@ const GRAV = "0.58"
 const STARTED_IN_AIR_GRAV = "0.80"
 const MAX_FALL_SPEED = "3.0"
 const STARTED_IN_AIR_MAX_FALL_SPEED = "8.0"
+const EXTRA_VICTIM_HITLAG = 25
+
+onready var hitbox = $Hitbox
 
 var jumping = false
 var grav = GRAV
@@ -14,6 +17,14 @@ func _frame_0():
 	max_fall_speed = MAX_FALL_SPEED if host.is_grounded() else STARTED_IN_AIR_MAX_FALL_SPEED
 	host.set_grounded(false)
 	jumping = true
+	if !(state_name in host.combo_moves_used):
+		hitbox.victim_hitlag = hitbox.hitlag_ticks + EXTRA_VICTIM_HITLAG
+		hitbox.ground_bounce = false
+		hitbox.grounded_hit_state = "HurtAerial"
+	else:
+		hitbox.victim_hitlag = hitbox.hitlag_ticks
+		hitbox.ground_bounce = true
+		hitbox.grounded_hit_state = "HurtAerial"
 
 func _frame_1():
 	host.move_directly_relative(-10, 0)

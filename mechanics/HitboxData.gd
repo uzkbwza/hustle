@@ -44,12 +44,15 @@ var wall_slam = false
 var hits_vs_dizzy = true
 var is_projectile = false
 var scale_combo = true
+var combo_scaling_amount = 1
 var vacuum = false
+var hits_vs_standing = true
 var send_away_from_center = false
 var minimum_grounded_frames = -1
 var plus_frames = 0
 var chip_damage_modifier = "1.0"
 var block_pushback_modifier = "1.0"
+var ground_bounce_knockback_modifier = "1.0"
 
 func get_damage():
 	if combo_count > 0:
@@ -149,6 +152,12 @@ func _init(state):
 		chip_damage_modifier = state.chip_damage_modifier
 	if state.get("block_pushback_modifier") != null:
 		block_pushback_modifier = state.block_pushback_modifier
+	if state.get("hits_vs_standing") != null:
+		hits_vs_standing = state.hits_vs_standing
+	if state.get("combo_scaling_amount") != null:
+		combo_scaling_amount = state.combo_scaling_amount
+	if state.get("ground_bounce_knockback_modifier") != null:
+		ground_bounce_knockback_modifier = state.ground_bounce_knockback_modifier
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

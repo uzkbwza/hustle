@@ -48,9 +48,11 @@ export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
 export var damage_proration: int = 0
 export var scale_combo = true
+export var combo_scaling_amount: int = 1
 export var cancellable = true
 export var increment_combo = true
 export var hits_otg = false
+export var hits_vs_standing = true
 export var hits_vs_grounded = true
 export var hits_vs_aerial = true
 export var can_counter_hit = true
@@ -115,6 +117,7 @@ export var hard_knockdown = false
 export var disable_collision = true
 export var air_ground_bounce = false
 export var ground_bounce = true
+export var ground_bounce_knockback_modifier = "1.0"
 export var wall_slam = false
 
 export var _c_Frame_Data = 0
@@ -306,6 +309,8 @@ func hit(obj):
 			if obj.on_the_ground:
 				if !hits_otg:
 					can_hit = false
+
+
 			if !hits_vs_dizzy:
 				if obj.current_state().state_name == "HurtDizzy":
 					can_hit = false

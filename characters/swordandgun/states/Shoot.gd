@@ -49,7 +49,6 @@ func _frame_4():
 	if temporal:
 #		host.play_sound("Shoot")
 #		host.play_sound("ShootBass")
-		var camera = host.get_camera()
 		dir = host.obj_local_center(host.opponent)
 		dir = fixed.normalized_vec(str(dir.x), str(dir.y))
 		angle = fixed.vec_to_angle(fixed.mul(str(dir.x), str(host.get_facing_int())), str(dir.y))
@@ -62,6 +61,7 @@ func _frame_4():
 			force.y = "0"
 		host.apply_force(force.x, force.y)
 #		host.use_bullet()
+		var camera = host.get_camera()
 		if camera:
 			camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
 		var pos = host.get_pos()

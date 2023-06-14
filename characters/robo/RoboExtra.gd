@@ -7,6 +7,7 @@ func _ready():
 	$"%FlyEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%ArmorEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%NadeActive".connect("pressed", self, "emit_signal", ["data_changed"])
+	$"%PullEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
@@ -14,14 +15,17 @@ func get_extra():
 		"fly_dir": $"%FlyDir".get_data() if visible else fighter.flying_dir,
 		"fly_enabled": $"%FlyEnabled".pressed,
 		"armor_enabled": $"%ArmorEnabled".pressed,
-		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible
+		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
+		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
 	}
+
 
 func show_options():
 	$"%FlyDir".hide()
 	$"%FlyEnabled".hide()
 	$"%ArmorEnabled".hide()
 	$"%NadeActive".hide()
+	$"%PullEnabled".hide()
 	$"%FlyDir".set_dir("Neutral")
 	$"%FlyDir".facing = fighter.get_opponent_dir()
 	$"%FlyDir".init()
@@ -32,6 +36,8 @@ func show_options():
 	if nade:
 		if !nade.active:
 			$"%NadeActive".show()
+	if fighter.magnet_installed:
+		$"%PullEnabled".show()
 	if fighter.is_grounded():
 		$"%FlyDir".hide()
 		$"%FlyEnabled".hide()
@@ -52,3 +58,4 @@ func reset():
 		$"%FlyEnabled".set_pressed_no_signal(false)
 	$"%ArmorEnabled".set_pressed_no_signal(false)
 	$"%NadeActive".set_pressed_no_signal(false)
+	$"%PullEnabled".set_pressed_no_signal(false)

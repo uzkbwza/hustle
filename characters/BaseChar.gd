@@ -682,9 +682,9 @@ func reset_combo():
 	opponent.braced_attack = false
 	opponent.brace_effect_applied_yet = false
 
-func incr_combo(scale=true, projectile=false, force=false):
+func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 	if (scale and (!melee_attack_combo_scaling_applied or projectile)) or force:
-		combo_count += 1
+		combo_count += combo_scale_amount
 		hitstun_decay_combo_count += 1
 	visible_combo_count += 1
 	if combo_count == 2 and combo_moves_used.has("Burst"):
@@ -801,7 +801,7 @@ func launched_by(hitbox):
 		var will_scale = hitbox.scale_combo or opponent.combo_count == 0
 		
 		if hitbox.increment_combo:
-			opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo)
+			opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
 
 		if opponent.combo_count <= 1:
 			opponent.combo_proration = hitbox.damage_proration
@@ -907,7 +907,7 @@ func hit_by(hitbox):
 			Hitbox.HitboxType.ThrowHit:
 				emit_signal("got_hit")
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
-				opponent.incr_combo(hitbox.scale_combo)
+				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
 			Hitbox.HitboxType.OffensiveBurst:
 				opponent.hitstun_decay_combo_count = 0
 				opponent.combo_proration = Utils.int_min(opponent.combo_proration, 0)

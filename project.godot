@@ -69,6 +69,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/states/CounterAttack.gd"
 }, {
+"base": "Fighter",
+"class": "Cowboy",
+"language": "GDScript",
+"path": "res://characters/swordandgun/SwordGuy.gd"
+}, {
 "base": "ParticleEffect",
 "class": "CustomTrailParticle",
 "language": "GDScript",
@@ -108,6 +113,11 @@ _global_script_classes=[ {
 "class": "FixedVec2String",
 "language": "GDScript",
 "path": "res://framework/FixedVec2String.gd"
+}, {
+"base": "BaseProjectile",
+"class": "ForesightAfterImage",
+"language": "GDScript",
+"path": "res://characters/swordandgun/projectiles/states/AfterImage.gd"
 }, {
 "base": "Node2D",
 "class": "Game",
@@ -342,6 +352,7 @@ _global_script_class_icons={
 "CharacterState": "",
 "CollisionBox": "",
 "CounterAttack": "",
+"Cowboy": "",
 "CustomTrailParticle": "",
 "DefaultFireball": "",
 "EC_CreateCategory": "",
@@ -350,6 +361,7 @@ _global_script_class_icons={
 "Fighter": "",
 "FixedMath": "",
 "FixedVec2String": "",
+"ForesightAfterImage": "",
 "Game": "",
 "GameSimulation": "",
 "GoodCamera": "",

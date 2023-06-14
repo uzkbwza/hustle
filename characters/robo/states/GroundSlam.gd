@@ -2,7 +2,7 @@ extends ThrowState
 
 const WALK_BACK_SPEED = "-4.0"
 const WALK_FORWARD_SPEED = "6.0"
-const NO_COMBO_DAMAGE = 250
+const NO_COMBO_DAMAGE = 270
 
 onready var no_combo_hitbox = $NoComboHitbox
 onready var hitbox = $Hitbox
@@ -45,6 +45,8 @@ func _frame_0():
 
 func _frame_7():
 	host.move_directly_relative(-16, 0)
+	if _previous_state().get("reversing_command_grab"):
+		host.set_facing(host.get_facing_int() * -1)
 
 func _frame_16():
 	walk_forward()

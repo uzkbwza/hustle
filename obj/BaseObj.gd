@@ -173,6 +173,8 @@ func current_state():
 	return state_machine.state
 
 func is_otg():
+	if current_state() == null:
+		return false
 	return current_state().state_name == "Knockdown" or current_state().state_name == "HardKnockdown"
 
 func init(pos=null):

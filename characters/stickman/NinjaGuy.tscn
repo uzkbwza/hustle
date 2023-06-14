@@ -1,4 +1,4 @@
-[gd_scene load_steps=245 format=2]
+[gd_scene load_steps=244 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -81,7 +81,6 @@
 [ext_resource path="res://characters/stickman/sprites/caltrops1.png" type="Texture" id=79]
 [ext_resource path="res://characters/stickman/sprites/chuk_jump3.png" type="Texture" id=80]
 [ext_resource path="res://characters/stickman/sprites/stickman24.png" type="Texture" id=81]
-[ext_resource path="res://characters/stickman/sprites/chuk_wave6.png" type="Texture" id=82]
 [ext_resource path="res://characters/stickman/sprites/sticky_bomb3.png" type="Texture" id=83]
 [ext_resource path="res://characters/stickman/sprites/sticky_bomb2.png" type="Texture" id=84]
 [ext_resource path="res://characters/stickman/sprites/stickman8.png" type="Texture" id=85]
@@ -574,7 +573,7 @@ animations = [ {
 "name": "WallSlam",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 141 ), ExtResource( 141 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 115 ), ExtResource( 82 ), ExtResource( 82 ) ],
+"frames": [ ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 136 ), ExtResource( 141 ), ExtResource( 141 ), ExtResource( 119 ), ExtResource( 119 ), ExtResource( 120 ), ExtResource( 120 ), ExtResource( 115 ), ExtResource( 115 ) ],
 "loop": true,
 "name": "WhipWave",
 "speed": 5.0
@@ -2151,7 +2150,8 @@ AerialAttack
 AerialMovement"
 interrupt_into_string = "Aerial
 "
-hit_cancel_into_string = "Aerial"
+hit_cancel_into_string = "Aerial
+Jump"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukJump" index="0"]
@@ -2326,15 +2326,15 @@ script = ExtResource( 58 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 15
+anim_length = 12
 force_dir_x = "1.0"
 force_speed = "3.0"
 force_tick = 6
 sfx = ExtResource( 61 )
-sfx_tick = 12
+sfx_tick = 10
 sfx_volume = -8.0
 projectile_scene = ExtResource( 59 )
-projectile_tick = 12
+projectile_tick = 10
 projectile_pos_x = 24
 projectile_pos_y = -4
 projectile_match_facing = true
@@ -2348,21 +2348,20 @@ Aerial"
 allowed_stances_string = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WhipWave" index="0"]
-modulate = Color( 1, 1, 1, 0 )
 z_index = 1000
 script = ExtResource( 1 )
 x = 34
 y = -7
 width = 22
 height = 8
-damage = 80
+damage = 95
 hitstun_ticks = 18
 hitlag_ticks = 6
 hit_height = 2
 screenshake_amount = 6
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 11
+start_tick = 9
 active_ticks = 3
 
 [node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="50"]
@@ -3086,17 +3085,17 @@ ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 }
 }
 button_texture = ExtResource( 223 )
@@ -3168,7 +3167,7 @@ x = 42
 y = -4
 width = 34
 height = 4
-damage = 70
+damage = 100
 hitlag_ticks = 10
 victim_hitlag = 10
 hits_otg = true
@@ -3205,6 +3204,10 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
+[node name="DoubleJump" parent="StateMachine" index="71"]
+allowed_stances_string = "All"
+change_stance_to = "Normal"
+
 [node name="WhiffInstantCancel" parent="StateMachine" index="74"]
 hit_cancel_exceptions_string = ""
 
@@ -3226,6 +3229,10 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
@@ -3233,10 +3240,6 @@ ExtResource( 208 ): {
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -3280,9 +3283,9 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 208 ): {
 "x": 13,
@@ -3292,9 +3295,9 @@ ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 }
 }
 burst_cancellable = false

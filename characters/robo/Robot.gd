@@ -10,13 +10,14 @@ const LOIC_METER: int = 1000
 const START_LOIC_METER: int = 500
 const LOIC_GAIN = 6
 const LOIC_GAIN_NO_ARMOR = 6
-const MAGNET_TICKS = 110
+const MAGNET_TICKS = 8
 const MAGNET_STRENGTH = "2"
 const COMBO_MAGNET_STRENGTH = "0.5"
-const MAGNET_MAX_STRENGTH = "3.5"
-const MAGNET_MIN_STRENGTH = "0.2"
+const MAGNET_MAX_STRENGTH = "1.5"
+const MAGNET_MIN_STRENGTH = "0.5"
 const MAGNET_CENTER_DIST = "250"
 const MAGNET_RADIUS_DIST = "200"
+const MAGNET_MOVEMENT_AMOUNT = "18"
 
 var loic_draining = false
 var armor_pips = 1
@@ -40,6 +41,7 @@ var can_flamethrower = true
 var magnet_ticks_left = 0
 var grenade_object = null
 var flame_touching_opponent = null
+var magnet_installed = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -86,10 +88,10 @@ func copy_to(f: BaseObj):
 func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 
-func incr_combo(scale=true, projectile=false, force=false):
+func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 	if combo_count == 0:
 		landed_move = true
-	.incr_combo(scale, force, projectile)
+	.incr_combo(scale, force, projectile, combo_scale_amount)
 	if can_unlock_gratuitous and combo_moves_used.has("GroundSlam") and current_state().name != "GroundSlam":
 		unlock_achievement("ACH_GRATUITOUS")
 		can_unlock_gratuitous = false
@@ -112,22 +114,26 @@ func magnetize():
 	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
 	if fixed.gt(dist, "32"):
 				
-		var magnet_strength = COMBO_MAGNET_STRENGTH if combo_count > 0 else MAGNET_STRENGTH
-		if combo_count <= 0 and opponent.combo_count <= 0:
-			var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
-			var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
-			magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
+#		var magnet_strength = COMBO_MAGNET_STRENGTH if combo_count > 0 else MAGNET_STRENGTH
+#		if combo_count <= 0 and opponent.combo_count <= 0:
+		var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
+		var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
+		var magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
 #			if fixed.lt(magnet_strength, MAGNET_MIN_STRENGTH):
 #				magnet_strength = MAGNET_MIN_STRENGTH
 #			elif fixed.gt(magnet_strength, MAGNET_MAX_STRENGTH):
 #				magnet_strength = MAGNET_MAX_STRENGTH
 		
-		
-		var force = fixed.normalized_vec_times(str(my_pos_relative.x), str(my_pos_relative.y), magnet_strength)
+		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
+		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
+		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT)
 		if combo_count <= 0:
 			force.x = force.x if !opponent.is_grounded() else fixed.mul(force.x, "0.65")
 
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
+		if fixed.gt(dist, "90"):
+			opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
+
 
 func add_armor_pip():
 	if armor_pips < MAX_ARMOR_PIPS:
@@ -206,6 +212,9 @@ func tick():
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
+	play_sound("MagnetBeep")
+	stop_hustle_fx()
+	magnet_installed = false
 	pass
 
 func ground_pound_active_effect():
@@ -256,6 +265,9 @@ func process_extra(extra):
 			if nade:
 				if !nade.active:
 					nade.activate()
+	if extra.has("pull_enabled") and magnet_installed:
+		if extra.pull_enabled:
+			start_magnetizing()
 
 func _on_state_exited(state):
 	._on_state_exited(state)

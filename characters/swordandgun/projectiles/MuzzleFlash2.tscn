@@ -65,6 +65,7 @@ scale_amount_random = 1.0
 scale_amount_curve = SubResource( 1 )
 
 [node name="Flash2" type="CPUParticles2D" parent="." index="3"]
+visible = false
 emitting = false
 amount = 12
 one_shot = true

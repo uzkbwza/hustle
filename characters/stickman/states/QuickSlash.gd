@@ -77,7 +77,7 @@ func _frame_0():
 	host.quick_slash_start_pos_x = start_pos.x
 	host.quick_slash_start_pos_y = start_pos.y
 	if get_next_attack() and started_in_neutral:
-		current_tick += 2
+		current_tick += 1
 #	iasa_at = WHIFF_IASA
 #	landing_lag = WHIFF_LANDING_LAG
 #	host.hitlag_ticks += NEUTRAL_STARTUP_LAG if host.combo_count <= 0 else 0
@@ -144,17 +144,17 @@ func _frame_6():
 #	host.apply_force(move_dir_x, fixed.mul(move_dir_y, "1.0"))
 	else:
 		if started_in_neutral:
-			host.update_grounded()
-			if host.is_grounded():
+#			host.update_grounded()
+#			if host.is_grounded():
 				switch_to_followup()
 				pass
 	host.end_invulnerability()
 
-func _frame_7():
-	if started_in_neutral:
-		if !host.is_grounded():
-			if get_next_attack():
-				switch_to_followup()
+#func _frame_7():
+#	if started_in_neutral:
+#		if !host.is_grounded():
+#			if get_next_attack():
+#				switch_to_followup()
 
 #func _frame_8():
 #	if started_in_neutral:

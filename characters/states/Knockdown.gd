@@ -1,5 +1,7 @@
 extends CharacterState
 
+const GROUND_FRIC = "0.125"
+
 export var hard = false
 
 func _frame_0():
@@ -23,7 +25,8 @@ func _exit():
 	host.colliding_with_opponent = true
 
 func _tick():
-	host.apply_fric()
+	host.apply_x_fric(GROUND_FRIC)
+#	host.apply_fric()
 	host.apply_forces()
 	if host.hp <= 0:
 		endless = true

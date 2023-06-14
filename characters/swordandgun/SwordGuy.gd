@@ -1,5 +1,7 @@
 extends Fighter
 
+class_name Cowboy
+
 signal bullet_used()
 
 export(Texture) var epic_horse_moment

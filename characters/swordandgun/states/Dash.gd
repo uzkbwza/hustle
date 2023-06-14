@@ -19,10 +19,10 @@ func _frame_0():
 	host.move_directly(0, -1)
 	host.set_grounded(false)
 	if startup_invuln and host.initiative:
-		host.start_invulnerability()
+		host.start_projectile_invulnerability()
 
 func _frame_4():
-	host.end_invulnerability()
+	host.end_projectile_invulnerability()
 
 func _tick():
 	if host.is_grounded():
