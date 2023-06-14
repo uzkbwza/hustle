@@ -5,6 +5,8 @@
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 
 [node name="ActionUIData" type="VBoxContainer"]
+margin_right = 60.0
+margin_bottom = 66.0
 mouse_filter = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

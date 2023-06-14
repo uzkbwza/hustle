@@ -1,4 +1,4 @@
-[gd_scene load_steps=319 format=2]
+[gd_scene load_steps=321 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -314,6 +314,8 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/dash.png" type="Texture" id=312]
 [ext_resource path="res://characters/swordandgun/NewShoot.gd" type="Script" id=313]
 [ext_resource path="res://characters/swordandgun/ActionUIData/Shoot2ActionUIData.tscn" type="PackedScene" id=314]
+[ext_resource path="res://characters/swordandgun/states/AirDash.gd" type="Script" id=315]
+[ext_resource path="res://characters/swordandgun/ActionUIData/AirDashActionUIData.tscn" type="PackedScene" id=316]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -758,6 +760,7 @@ ground_friction = "1.5"
 air_friction = "0.1"
 max_ground_speed = "12"
 max_air_speed = "9"
+max_fall_speed = "10"
 extra_state_variables = "bullets_left
 cut_projectile
 lasso_projectile
@@ -868,20 +871,21 @@ method = "has_1k_cuts"
 inverse = true
 
 [node name="AirDash2" type="Node2D" parent="StateMachine" index="2"]
-script = ExtResource( 71 )
+script = ExtResource( 315 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "AirDash"
 anim_length = 16
-force_dir_x = "1.4"
-force_dir_y = "0.5"
-force_speed = "9.0"
 particle_scene = ExtResource( 240 )
 spawn_particle_on_enter = true
 enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 title = "Air Dash"
+data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
@@ -897,7 +901,6 @@ Jump"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
-startup_invuln = false
 
 [node name="UsableRequirement" type="Node" parent="StateMachine/AirDash2" index="0"]
 script = ExtResource( 310 )
@@ -2076,13 +2079,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2751,56 +2754,7 @@ release_opponent_on_startup = true
 super_level = 0
 super_effect = false
 
-[node name="Shoot2" type="Node2D" parent="StateMachine" index="48"]
-script = ExtResource( 313 )
-__meta__ = {
-"_editor_description_": ""
-}
-fallback_state = "Holster"
-sprite_animation = "GunShoot2"
-anim_length = 14
-title = "Shoot"
-type = 2
-data_ui_scene = ExtResource( 314 )
-button_texture = ExtResource( 161 )
-air_type = 2
-iasa_at = 10
-dynamic_iasa = false
-interrupt_from_string = "Gun
-LassoThrow
-Shoot"
-interrupt_into_string = "TimeBullet
-Grounded
-Aerial"
-interrupt_exceptions_string = "Shoot"
-release_opponent_on_startup = true
-
-[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="49"]
-script = ExtResource( 313 )
-__meta__ = {
-"_editor_description_": ""
-}
-fallback_state = "Holster"
-sprite_animation = "GunShoot2"
-anim_length = 14
-title = "Shoot Dodge"
-type = 2
-data_ui_scene = ExtResource( 314 )
-button_texture = ExtResource( 292 )
-air_type = 2
-iasa_at = 10
-dynamic_iasa = false
-interrupt_from_string = "Gun
-LassoThrow
-Shoot"
-interrupt_into_string = "TimeBullet
-Grounded
-Aerial"
-interrupt_exceptions_string = "Shoot"
-release_opponent_on_startup = true
-dodge = true
-
-[node name="ShootDodge" type="Node2D" parent="StateMachine" index="50"]
+[node name="ShootDodge" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
@@ -2824,6 +2778,61 @@ interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 super_level = 0
 super_effect = false
+dodge = true
+
+[node name="Shoot2" type="Node2D" parent="StateMachine" index="49"]
+script = ExtResource( 313 )
+__meta__ = {
+"_editor_description_": ""
+}
+apply_forces = true
+apply_fric = true
+apply_grav = true
+fallback_state = "SlowHolster"
+sprite_animation = "GunShoot2"
+anim_length = 9
+title = "Shoot"
+type = 2
+data_ui_scene = ExtResource( 314 )
+button_texture = ExtResource( 161 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
+
+[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="50"]
+script = ExtResource( 313 )
+__meta__ = {
+"_editor_description_": ""
+}
+apply_forces = true
+apply_fric = true
+apply_grav = true
+fallback_state = "Holster"
+sprite_animation = "GunShoot2"
+anim_length = 14
+title = "Shoot Dodge"
+type = 2
+data_ui_scene = ExtResource( 314 )
+button_texture = ExtResource( 292 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
 dodge = true
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="51"]

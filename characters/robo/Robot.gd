@@ -214,6 +214,7 @@ func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
+	opponent.reset_momentum()
 	magnet_installed = false
 	pass
 

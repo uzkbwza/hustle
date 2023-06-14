@@ -66,7 +66,7 @@ height = 5
 [node name="Default" parent="StateMachine" index="0"]
 ticks_per_frame = 3
 loop_animation = true
-move_x = 19
+move_x = 22
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
@@ -75,11 +75,16 @@ x = -7
 width = 23
 height = 4
 damage = 60
+hitstun_ticks = 12
+hitlag_ticks = 5
 hits_otg = true
+di_modifier = "1.5"
 hit_height = 2
 dir_x = "0.40"
-knockback = "2.0"
+dir_y = "-0.40"
+knockback = "3.0"
 grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 4
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 1

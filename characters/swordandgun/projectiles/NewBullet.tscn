@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/projectiles/NewBullet.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://characters/swordandgun/sounds/ricochet2.wav" type="AudioStream" id=7]
 [ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=8]
 [ext_resource path="res://characters/swordandgun/sounds/ricochetnoise.wav" type="AudioStream" id=9]
+[ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=10]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -80,6 +81,7 @@ minimum_damage = 30
 hitstun_ticks = 25
 hitlag_ticks = 1
 victim_hitlag = 4
+hit_sound = ExtResource( 10 )
 dir_y = "-0.25"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
@@ -87,7 +89,7 @@ knockdown = true
 knockdown_extends_hitstun = false
 hard_knockdown = true
 wall_slam = true
-start_tick = 2
+start_tick = 1
 always_on = true
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
@@ -100,6 +102,7 @@ damage_in_combo = 90
 hitstun_ticks = 25
 hitlag_ticks = 1
 victim_hitlag = 4
+hit_sound = ExtResource( 10 )
 dir_y = "-0.25"
 knockback = "12.0"
 grounded_hit_state = "HurtAerial"
@@ -107,5 +110,5 @@ knockdown = true
 knockdown_extends_hitstun = false
 hard_knockdown = true
 wall_slam = true
-start_tick = 2
+start_tick = 1
 always_on = true

@@ -1,6 +1,6 @@
 extends BaseProjectile
 
-const SPEED = "40" 
+const SPEED = "50" 
 
 var dir_x = 0
 var dir_y = 0

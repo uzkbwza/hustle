@@ -46,8 +46,8 @@ func update_tp_button():
 			$"%TpButton".show()
 		else:
 			$"%TpButton".hide()
-		if fighter.current_state().state_name in ["Brandish", "QuickerDraw"]:
-			$"%TpButton".hide()
+#		if fighter.current_state().state_name in ["Brandish", "QuickerDraw"]:
+#			$"%TpButton".hide()
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
