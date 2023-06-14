@@ -6,6 +6,13 @@ const SCREENSHAKE_AMOUNT = 12
 
 export var dodge = false
 
+func _enter():
+	if data == null:
+		data = {
+			x = 100 * host.get_facing_int(),
+			y = 0
+		}
+
 func _frame_3():
 	host.play_sound("Shoot")
 	host.play_sound("ShootBass")
