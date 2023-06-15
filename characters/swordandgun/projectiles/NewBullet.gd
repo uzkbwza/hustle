@@ -1,6 +1,9 @@
 extends BaseProjectile
 
+class_name NewBullet
+
 const SPEED = "50" 
+const NEW_BULLET = true
 
 var dir_x = "0"
 var dir_y = "0"
@@ -37,11 +40,18 @@ func hit_by(hitbox):
 #	dir_x = dir.x
 	dir_y = dir.y
 	var hitter = obj_from_name(hitbox.host)
-	if hitter.is_in_group("Fighter"):
-		last_hit_by = hitbox.host
-	current_state().on_bounce(true, false, false, "0.8")
-	speed = fixed.add(speed, hitbox.knockback)
+	
+	if hitter:
+		if hitter.is_in_group("Fighter"):
+			last_hit_by = hitbox.host
+		current_state().on_bounce(true, false, false, "0.8")
+		speed = fixed.add(speed, hitbox.knockback)
 
+		if hitter.get("NEW_BULLET"):
+			var random_angle = randi_range(0, 361)
+			var random_dir = fixed.angle_to_vec(fixed.div(fixed.mul(str(random_angle), "6.28318530"), "360"))
+			dir_x = random_dir.x
+			dir_y = random_dir.y
 
 func get_owned_fighter():
 	if last_hit_by == "":

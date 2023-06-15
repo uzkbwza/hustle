@@ -2362,7 +2362,6 @@ hit_height = 2
 screenshake_amount = 6
 knockdown = true
 knockdown_extends_hitstun = false
-hard_knockdown = true
 start_tick = 9
 active_ticks = 3
 
