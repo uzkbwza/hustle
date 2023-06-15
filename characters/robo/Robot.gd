@@ -199,7 +199,7 @@ func tick():
 		loic_meter = LOIC_METER
 	else:
 		can_loic = false
-	
+
 	if buffer_reset_ground_pound:
 		buffer_reset_ground_pound = false
 		can_ground_pound = false

@@ -398,6 +398,7 @@ func setup_hurtboxes():
 func __on_hit_something(obj, hitbox):
 	if active:
 		_on_hit_something(obj, hitbox)
+		host._on_hit_something(obj, hitbox)
 
 func __on_got_parried():
 	if active:

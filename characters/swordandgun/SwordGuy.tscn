@@ -1,4 +1,4 @@
-[gd_scene load_steps=321 format=2]
+[gd_scene load_steps=320 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -181,7 +181,6 @@
 [ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=179]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/lasso.png" type="Texture" id=180]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/lasso_pull.png" type="Texture" id=181]
-[ext_resource path="res://characters/swordandgun/sprites/action_buttons/lasso_reel.png" type="Texture" id=182]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/1000cuts.png" type="Texture" id=183]
 [ext_resource path="res://characters/swordandgun/sprites/lightning_slice3.png" type="Texture" id=184]
 [ext_resource path="res://characters/swordandgun/sprites/lightning_slice2.png" type="Texture" id=185]
@@ -427,6 +426,11 @@ animations = [ {
 "frames": [ ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 260 ) ],
 "loop": true,
 "name": "DownwardCleave",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 256 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 257 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 258 ), ExtResource( 260 ) ],
+"loop": true,
+"name": "DownwardCleaveGround",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 23 ), ExtResource( 55 ) ],
@@ -798,8 +802,7 @@ epic_horse_moment = ExtResource( 308 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 4 )
-animation = "VAirSlash"
-frame = 4
+animation = "1000Cuts"
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -955,6 +958,7 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 title = "Air Dash"
+data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
@@ -1359,7 +1363,7 @@ width = 19
 height = 19
 damage = 110
 damage_in_combo = 80
-hitstun_ticks = 6
+hitstun_ticks = 8
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
@@ -1412,7 +1416,7 @@ width = 19
 height = 19
 damage = 110
 damage_in_combo = 90
-hitstun_ticks = 10
+hitstun_ticks = 12
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
@@ -1549,12 +1553,11 @@ interrupt_into_string = "Lasso"
 script = ExtResource( 175 )
 reset_momentum = true
 endless = true
-title = "Reel"
+title = "Izuna Drop"
 type = 2
-button_texture = ExtResource( 182 )
+button_texture = ExtResource( 188 )
 air_type = 2
 burst_cancellable = false
-reversible = false
 instant_cancellable = false
 interrupt_from_string = "Lasso"
 
@@ -1593,9 +1596,9 @@ y = -22
 width = 39
 height = 4
 damage = 100
-hitstun_ticks = 11
+hitstun_ticks = 13
 victim_hitlag = 4
-damage_proration = 1
+damage_proration = 2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1610,9 +1613,9 @@ y = -22
 width = 28
 height = 4
 damage = 100
-hitstun_ticks = 11
+hitstun_ticks = 13
 victim_hitlag = 4
-damage_proration = 1
+damage_proration = 2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1963,8 +1966,6 @@ anim_length = 45
 force_dir_x = "-1.0"
 force_speed = "8.0"
 force_tick = 22
-enter_force_dir_x = "1.0"
-enter_force_speed = "4.0"
 title = "Impale"
 type = 2
 button_texture = ExtResource( 157 )
@@ -2024,8 +2025,6 @@ active_ticks = 4
 script = ExtResource( 127 )
 sprite_animation = "ImpaleTeleport"
 anim_length = 41
-enter_force_dir_x = "1.0"
-enter_force_speed = "4.0"
 enter_sfx = ExtResource( 138 )
 enter_sfx_volume = -9.0
 title = "Impale"
@@ -2205,7 +2204,7 @@ always_on = true
 script = ExtResource( 259 )
 apply_forces = true
 apply_fric = true
-sprite_animation = "DownwardCleave"
+sprite_animation = "DownwardCleaveGround"
 anim_length = 20
 endless = true
 force_dir_y = "1.0"
@@ -2244,7 +2243,7 @@ dir_x = "0.25"
 dir_y = "1.0"
 knockback = "12.0"
 knockdown = true
-start_tick = 9
+start_tick = 11
 always_on = true
 
 [node name="VAirSlash" type="Node2D" parent="StateMachine" index="29"]
@@ -2315,6 +2314,7 @@ width = 24
 height = 14
 damage = 90
 hitstun_ticks = 17
+damage_proration = 1
 hit_height = 0
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -2650,7 +2650,7 @@ AerialSuper
 FastTeleport"
 interrupt_into_string = "Grounded
 Aerial"
-super_freeze_ticks = 5
+super_freeze_ticks = 2
 
 [node name="Brandish" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 116 )

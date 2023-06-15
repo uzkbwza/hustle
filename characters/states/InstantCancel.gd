@@ -10,4 +10,5 @@ func _tick():
 	host.apply_forces()
 
 func is_usable():
-	return .is_usable() and host.current_state().state_name != "Burst" and not "InstantCancel" in host.current_state().state_name
+
+	return .is_usable() and (host.hit_fighter_last() or host.combo_count > 0) and (host.current_state().state_name != "Burst" and not "InstantCancel" in host.current_state().state_name)

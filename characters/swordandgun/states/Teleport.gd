@@ -64,7 +64,10 @@ func _frame_0():
 		return
 	
 	if super_level > 0:
-		iasa_at = 7
+		if host.combo_count > 0:
+			iasa_at = 7
+		else:
+			iasa_at = 9
 #		starting_iasa_at = iasa_at
 #		host.start_invulnerability()
 		return

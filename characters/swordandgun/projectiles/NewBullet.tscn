@@ -27,29 +27,32 @@ dir_y
 ricochet
 speed
 last_pos_visual
-last_pos_visual_ricochet"
+last_pos_visual_ricochet
+last_hit_by"
 damages_own_team = true
 has_projectile_parry_window = false
+deletes_other_projectiles = false
+can_be_hit_by_melee = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 
 [node name="Ricochet1" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
 stream = ExtResource( 6 )
-volume_db = -8.0
+volume_db = -13.157
 bus = "Fx"
 script = ExtResource( 8 )
 
 [node name="Ricochet2" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
 stream = ExtResource( 7 )
-volume_db = -8.0
+volume_db = -13.157
 pitch_scale = 0.74
 bus = "Fx"
 script = ExtResource( 8 )
 
 [node name="Ricochet3" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
 stream = ExtResource( 4 )
-volume_db = -8.0
+volume_db = -13.157
 bus = "Fx"
 script = ExtResource( 8 )
 
@@ -64,8 +67,8 @@ width = 1
 height = 1
 
 [node name="Hurtbox" parent="." index="3"]
-width = 5
-height = 5
+width = 10
+height = 10
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 3 )
@@ -75,7 +78,7 @@ z_index = 1000
 script = ExtResource( 5 )
 width = 4
 height = 4
-damage = 150
+damage = 140
 damage_in_combo = 90
 minimum_damage = 30
 hitstun_ticks = 25
@@ -92,12 +95,34 @@ wall_slam = true
 start_tick = 1
 always_on = true
 
-[node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+[node name="Hitbox3" type="Node2D" parent="StateMachine/Default" index="1"]
 z_index = 1000
 script = ExtResource( 5 )
 width = 4
 height = 4
-damage = 150
+damage = 140
+damage_in_combo = 90
+minimum_damage = 30
+hitstun_ticks = 25
+hitlag_ticks = 1
+victim_hitlag = 4
+hit_sound = ExtResource( 10 )
+dir_y = "-0.25"
+knockback = "12.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+hard_knockdown = true
+wall_slam = true
+start_tick = 1
+always_on = true
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="2"]
+z_index = 1000
+script = ExtResource( 5 )
+width = 4
+height = 4
+damage = 140
 damage_in_combo = 90
 hitstun_ticks = 25
 hitlag_ticks = 1

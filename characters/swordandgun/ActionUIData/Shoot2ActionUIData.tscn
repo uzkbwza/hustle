@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.gd" type="Script" id=1]
+[ext_resource path="res://characters/swordandgun/ActionUIData/Shoot2ActionUIData.gd" type="Script" id=1]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 
@@ -18,3 +18,19 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 always_max = true
 default_value = Vector2( 0, -1 )
+
+[node name="Control" type="Control" parent="Direction"]
+
+[node name="Control" type="Control" parent="Direction/Control"]
+margin_left = 30.0
+margin_top = 33.0
+margin_right = 30.0
+margin_bottom = 33.0
+
+[node name="Label2" type="Label" parent="Direction/Control/Control"]
+margin_left = -119.0
+margin_top = 13.0
+margin_right = -29.0
+margin_bottom = 24.0
+text = "ricochet angle"
+align = 2

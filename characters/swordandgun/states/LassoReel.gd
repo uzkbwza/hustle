@@ -23,7 +23,7 @@ func _tick():
 	throw_box.y = opp_pos.y
 	if current_tick > 1 and fixed.lt(fixed.vec_len(str(opp_pos.x), str(opp_pos.y)), GRAB_DISTANCE):
 		grabbed = true
-		return "LassoHold"
+		return "IzunaDrop"
 	else:
 		opp_pos = host.obj_local_pos(host.opponent)
 		var opp_move_vec = fixed.normalized_vec_times(str(opp_pos.x), str(opp_pos.y), PULL_SPEED)

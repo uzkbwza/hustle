@@ -9,7 +9,7 @@ const EXTRA_FRAME_PER_PIXEL = "0.05"
 
 const MIN_LAG_DIST = "200"
 
-const DIST = 16
+const DIST = 28
 
 const max_lag_frames = 8
 
@@ -22,6 +22,8 @@ func _frame_0():
 	host.z_index = -2
 	lag_frames = 0
 	hit = false
+	var move_dir = host.get_opponent_dir()
+	host.apply_force(fixed.mul(str(move_dir), "4"), "0")
 
 func _frame_5():
 	if teleport:

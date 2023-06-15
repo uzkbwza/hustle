@@ -36,7 +36,12 @@ func _frame_1():
 		host.apply_force_relative(force.x, force.y)
 
 func _frame_9():
-	moving_down = true
+	if !grounded:
+		moving_down = true
+
+func _frame_11():
+	if grounded:
+		moving_down = true
 
 func _tick():
 	if grounded_frames > 0:

@@ -12,6 +12,7 @@ func _enter():
 			x = 100 * host.get_facing_int(),
 			y = 0
 		}
+#	print(data)
 
 func _frame_3():
 	host.play_sound("Shoot")

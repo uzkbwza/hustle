@@ -21,5 +21,6 @@ func _tick():
 		host.end_invulnerability()
 	else:
 		host.start_invulnerability()
+
 func is_usable():
-	return host.burst_enabled and .is_usable() and (host.bursts_available > 0)
+	return host.burst_enabled and (host.hit_fighter_last() or host.combo_count > 0) and (host.bursts_available > 0) and .is_usable()

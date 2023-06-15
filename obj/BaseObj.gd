@@ -60,6 +60,7 @@ var hitlag_ticks = 0
 var combo_count = 0
 
 var gravity_enabled = true
+var last_hit_frame = 0
 
 var is_ghost = false
 
@@ -77,6 +78,7 @@ var state_hit_cancellable = false
 var invulnerable = false
 
 var use_platforms = false
+var last_object_hit = ""
 
 var default_hurtbox = {
 	"x": 0,
@@ -88,7 +90,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "last_object_hit", "last_hit_frame", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -229,7 +231,17 @@ func obj_from_name(name):
 		if obj != null:
 			if !obj.disabled:
 				return obj
-	
+
+func _on_hit_something(obj, hitbox):
+	if last_hit_frame == current_tick:
+		if hit_fighter_last():
+			return
+	last_object_hit = obj.obj_name
+	last_hit_frame = current_tick
+
+func hit_fighter_last():
+	return last_object_hit == get_opponent().obj_name or last_object_hit == get_fighter().obj_name
+
 func copy_to(o: BaseObj):
 	if !initialized:
 		init()

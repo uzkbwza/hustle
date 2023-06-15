@@ -1625,7 +1625,7 @@ margin_right = 205.0
 margin_bottom = 161.0
 rect_pivot_offset = Vector2( 65, 38 )
 mouse_filter = 1
-text = "Use DI to alter this player's trajectory and throw off opponents when they're getting hit. Angle DI *against* an attack's knockback direction to brace for impact, reducing hitstun."
+text = "Use DI to alter this player's trajectory and throw off opponents when they're getting hit."
 autowrap = true
 
 [node name="HelpText12" parent="UILayer/GameUI/HelpScreen" instance=ExtResource( 61 )]

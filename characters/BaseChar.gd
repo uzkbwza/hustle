@@ -832,6 +832,7 @@ func launched_by(hitbox):
 	if will_launch:
 		state_tick()
 
+
 func can_counter_hitbox(hitbox):
 	var host = obj_from_name(hitbox.host)
 #	if host and !host.is_in_group("Fighter"):
