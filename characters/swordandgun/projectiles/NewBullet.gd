@@ -44,7 +44,7 @@ func hit_by(hitbox):
 	if hitter:
 		if hitter.is_in_group("Fighter"):
 			last_hit_by = hitbox.host
-		current_state().on_bounce(true, false, false, "0.8")
+		current_state().on_bounce(true,"0.8")
 		speed = fixed.add(speed, hitbox.knockback)
 
 		if hitter.get("NEW_BULLET"):

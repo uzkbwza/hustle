@@ -77,6 +77,11 @@ func _tick():
 
 	if bounce_lag_ticks > 0:
 		bounce_lag_ticks -= 1
+		trail_hitbox.x = 0
+		trail_hitbox.y = 0
+		
+		middle_hitbox.x = 0
+		middle_hitbox.y = 0
 		return
 
 	host.move_directly(move_vec.x, move_vec.y)
@@ -85,14 +90,25 @@ func _tick():
 	if !host.ricochet:
 		if pos.y >= 0:
 			host.dir_y = fixed.mul(host.dir_y, "-1")
-			on_bounce(true, false, true)
+			on_bounce(true)
+			if fixed.gt(host.dir_y, "0"):
+				host.dir_y = "-" + MIN_TERRAIN_RICOCHET_AMOUNT
+
 		if Utils.int_abs(pos.x) >= host.stage_width:
 			host.dir_x = fixed.mul(host.dir_x, "-1")
-			on_bounce(true, true, false)
+			if pos.x > 0:
+				if fixed.gt(host.dir_x, "0"):
+					host.dir_x = "-" + MIN_TERRAIN_RICOCHET_AMOUNT
+			if pos.x < 0:
+				if fixed.lt(host.dir_x, "0"):
+					host.dir_x = MIN_TERRAIN_RICOCHET_AMOUNT
+			on_bounce(true)
 		if host.has_ceiling and pos.y <= -host.ceiling_height:
 			host.set_y(-host.ceiling_height)
 			host.dir_y = fixed.mul(host.dir_y, "-1")
-			on_bounce(true, false, true)
+			on_bounce(true)
+			if fixed.lt(host.dir_y, "0"):
+				host.dir_y = MIN_TERRAIN_RICOCHET_AMOUNT
 	else:
 		if host.ricochet:
 			host.ricochet = false
@@ -107,7 +123,7 @@ func _tick():
 	if fixed.lt(host.speed, MIN_SPEED):
 		host.disable()
 
-func on_bounce(di_influence=true, restrict_horiz=false, restrict_vert=false, lerp_amount=TERRAIN_DI_AMOUNT):
+func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	if bounce_lag_ticks > 0:
 		return
 	bounces_left -= 1
@@ -130,12 +146,7 @@ func on_bounce(di_influence=true, restrict_horiz=false, restrict_vert=false, ler
 				var dir = fixed.normalized_vec(str(di.x), str(di.y))
 				var bounce_dir_x = fixed.lerp_string(host.dir_x, str(dir.x), lerp_amount)
 				var bounce_dir_y = fixed.lerp_string(host.dir_y, str(dir.y), lerp_amount)
-				if restrict_horiz and fixed.sign(bounce_dir_x) == fixed.sign(dir.x):
-					var opposite = fixed.mul(str(fixed.sign(bounce_dir_x)), "-1")
-					bounce_dir_x = fixed.mul(MIN_TERRAIN_RICOCHET_AMOUNT, opposite)
-				if restrict_vert and fixed.sign(bounce_dir_y) == fixed.sign(dir.y):
-					var opposite = fixed.mul(str(fixed.sign(bounce_dir_y)), "-1")
-					bounce_dir_y = fixed.mul(MIN_TERRAIN_RICOCHET_AMOUNT, opposite)
+
 				
 				host.dir_x = bounce_dir_x
 				host.dir_y = bounce_dir_y
