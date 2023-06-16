@@ -1191,7 +1191,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1210,7 +1209,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1229,7 +1227,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1248,7 +1245,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1267,7 +1263,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1286,7 +1281,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1305,7 +1299,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1324,7 +1317,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1343,7 +1335,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1362,7 +1353,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1381,7 +1371,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1400,7 +1389,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1449,7 +1437,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1468,7 +1455,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1487,7 +1473,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1506,7 +1491,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1525,7 +1509,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1544,7 +1527,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1563,7 +1545,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1582,7 +1563,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1601,7 +1581,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1620,7 +1599,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1639,7 +1617,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -1658,7 +1635,6 @@ hitstun_ticks = 10
 combo_hitstun_ticks = 20
 victim_hitlag = 4
 damage_proration = 1
-meter_gain_modifier = "0.25"
 hit_sound = ExtResource( 45 )
 dir_x = "0.90"
 dir_y = "-0.4"
@@ -2311,9 +2287,9 @@ Aerial"
 [node name="ThrowBox" type="Node2D" parent="StateMachine/StickyBomb" index="0"]
 z_index = 1000
 script = ExtResource( 68 )
-x = 6
+x = 4
 y = -17
-width = 8
+width = 9
 height = 8
 increment_combo = false
 plus_frames = null
@@ -2848,6 +2824,72 @@ active_ticks = 8
 [node name="HurtboxState" type="Node2D" parent="StateMachine/SlideKick" index="1"]
 z_index = 1000
 script = ExtResource( 76 )
+__meta__ = {
+"_editor_description_": ""
+}
+x = 3
+y = -9
+width = 19
+height = 8
+start_tick = 3
+active_ticks = 6
+endless = true
+
+[node name="SlideKickOld" type="Node2D" parent="StateMachine" index="63"]
+script = ExtResource( 183 )
+apply_grav = true
+sprite_animation = "SlideKick"
+anim_length = 17
+force_dir_x = "1.0"
+force_speed = "12.0"
+particle_scene = ExtResource( 225 )
+spawn_particle_on_enter = true
+enter_sfx = ExtResource( 73 )
+enter_sfx_volume = -10.0
+title = "Slide Kick"
+type = 1
+button_texture = ExtResource( 192 )
+selectable = false
+interrupt_from_string = "Grounded
+GroundedAttack
+"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+AerialAttack
+AerialSpecial
+AerialSuper"
+allowed_stances_string = "Normal
+BackSway"
+change_stance_to = "Normal"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/SlideKickOld" index="0"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 15
+y = -4
+width = 19
+height = -4
+damage = 70
+minimum_damage = 15
+hitstun_ticks = 17
+hitlag_ticks = 7
+cancellable = false
+hit_height = 2
+hit_sound = ExtResource( 41 )
+dir_x = "-1.0"
+knockback = "7.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 7
+active_ticks = 8
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/SlideKickOld" index="1"]
+z_index = 1000
+script = ExtResource( 76 )
 x = 3
 y = -9
 width = 19
@@ -2856,7 +2898,7 @@ start_tick = 3
 active_ticks = 6
 endless = true
 
-[node name="SlideKickAir" type="Node2D" parent="StateMachine" index="63"]
+[node name="SlideKickAir" type="Node2D" parent="StateMachine" index="64"]
 script = ExtResource( 183 )
 apply_grav = true
 sprite_animation = "SlideKick"
@@ -2919,7 +2961,7 @@ start_tick = 3
 active_ticks = 6
 endless = true
 
-[node name="SlideKick2" type="Node2D" parent="StateMachine" index="64"]
+[node name="SlideKick2" type="Node2D" parent="StateMachine" index="65"]
 script = ExtResource( 58 )
 apply_forces = true
 apply_fric = true
@@ -2969,7 +3011,7 @@ height = 7
 start_tick = 2
 active_ticks = 6
 
-[node name="HitGrab" type="Node2D" parent="StateMachine" index="65"]
+[node name="HitGrab" type="Node2D" parent="StateMachine" index="66"]
 script = ExtResource( 229 )
 apply_forces = true
 apply_fric = true
@@ -3023,7 +3065,7 @@ width = 14
 height = 16
 endless = true
 
-[node name="HitGrab2" type="Node2D" parent="StateMachine" index="66"]
+[node name="HitGrab2" type="Node2D" parent="StateMachine" index="67"]
 script = ExtResource( 58 )
 apply_forces = true
 apply_fric = true
@@ -3068,7 +3110,7 @@ width = 14
 height = 16
 endless = true
 
-[node name="HitGrabFollowup" type="Node2D" parent="StateMachine" index="67"]
+[node name="HitGrabFollowup" type="Node2D" parent="StateMachine" index="68"]
 script = ExtResource( 228 )
 apply_forces = true
 apply_fric = true
@@ -3078,25 +3120,25 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
-},
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
+},
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
-},
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
 }
 }
 button_texture = ExtResource( 223 )
@@ -3142,7 +3184,7 @@ wall_slam = true
 start_tick = 13
 active_ticks = 2
 
-[node name="Stomp" type="Node2D" parent="StateMachine" index="68"]
+[node name="Stomp" type="Node2D" parent="StateMachine" index="69"]
 script = ExtResource( 10 )
 __meta__ = {
 "_editor_description_": ""
@@ -3183,7 +3225,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 4
 
-[node name="Substitution" type="Node2D" parent="StateMachine" index="69"]
+[node name="Substitution" type="Node2D" parent="StateMachine" index="70"]
 script = ExtResource( 71 )
 apply_forces = true
 apply_fric = true
@@ -3205,11 +3247,11 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="DoubleJump" parent="StateMachine" index="71"]
+[node name="DoubleJump" parent="StateMachine" index="72"]
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="74"]
+[node name="WhiffInstantCancel" parent="StateMachine" index="75"]
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -3218,7 +3260,7 @@ plus_frames = null
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 plus_frames = null
 
-[node name="ForwardThrow" parent="StateMachine" index="84"]
+[node name="ForwardThrow" parent="StateMachine" index="85"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -3226,21 +3268,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 },
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
 }
 }
 burst_cancellable = false
@@ -3277,12 +3319,12 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="85"]
+[node name="BackThrow" parent="StateMachine" index="86"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 210 ): {
 "x": 37,
@@ -3292,13 +3334,13 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 }
 }
 burst_cancellable = false
@@ -3335,10 +3377,10 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="Taunt" parent="StateMachine" index="90"]
+[node name="Taunt" parent="StateMachine" index="91"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="91"]
+[node name="ForfeitExplosion" parent="StateMachine" index="92"]
 endless = true
