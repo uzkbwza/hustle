@@ -1,6 +1,6 @@
 extends WizardState
 
-func _frame_13():
+func _frame_12():
 	host.add_geyser_charge()
 
 func _enter():

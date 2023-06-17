@@ -7,6 +7,8 @@ const NO_COMBO_DAMAGE = 270
 onready var no_combo_hitbox = $NoComboHitbox
 onready var hitbox = $Hitbox
 
+export var single_hit = false
+
 var is_in_combo = false
 #
 #var sprite_throw_positions = [
@@ -31,6 +33,7 @@ var is_in_combo = false
 #			host.throw_pos_y = sprite_throw_positions[current_frame][1] - 128
 
 # God help you
+
 func walk_back():
 	host.apply_force_relative(WALK_BACK_SPEED, "0")
 
@@ -42,6 +45,8 @@ func _frame_0():
 	host.opponent.z_index = -1
 	walk_back()
 	is_in_combo = host.combo_count != 0
+	if single_hit:
+		current_tick = 14
 
 func _frame_7():
 	host.move_directly_relative(-16, 0)

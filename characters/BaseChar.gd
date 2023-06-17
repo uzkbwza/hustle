@@ -759,6 +759,18 @@ func debug_text():
 func has_armor():
 	return has_hyper_armor
 
+func increment_opponent_combo(hitbox):
+	var host = objs_map[hitbox.host]
+	var projectile = !host.is_in_group("Fighter")
+	var will_scale = hitbox.scale_combo or opponent.combo_count == 0
+	
+	if hitbox.increment_combo:
+		opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
+
+	if opponent.combo_count <= 1:
+		opponent.combo_proration = hitbox.damage_proration
+
+
 func launched_by(hitbox):
 	
 #		if hitlag_ticks < hitbox.victim_hitlag:
@@ -795,16 +807,11 @@ func launched_by(hitbox):
 				if !hitbox.force_grounded:
 					state = "HurtAerial"
 					grounded_hits_taken = 0
-		
+
 		var host = objs_map[hitbox.host]
 		var projectile = !host.is_in_group("Fighter")
-		var will_scale = hitbox.scale_combo or opponent.combo_count == 0
-		
-		if hitbox.increment_combo:
-			opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
 
-		if opponent.combo_count <= 1:
-			opponent.combo_proration = hitbox.damage_proration
+		increment_opponent_combo(hitbox)
 
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
@@ -904,6 +911,7 @@ func hit_by(hitbox):
 					hitbox.facing = get_facing()
 					pass
 				emit_signal("got_hit")
+				increment_opponent_combo(hitbox)
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 			Hitbox.HitboxType.ThrowHit:
 				emit_signal("got_hit")

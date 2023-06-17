@@ -1613,6 +1613,7 @@ button_texture = ExtResource( 268 )
 air_type = 2
 iasa_at = 8
 interruptible_on_opponent_turn = true
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "GroundedSuper
 AerialSuper
 Grounded
