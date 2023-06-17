@@ -171,10 +171,10 @@ func tick():
 					fast_falling = false
 					hover_left = 0
 			apply_grav_fast_fall()
-		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt and !hovering:
-			hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
-			if hover_left > HOVER_AMOUNT:
-				hover_left = HOVER_AMOUNT
+#		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt and !hovering:
+		hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
+		if hover_left > HOVER_AMOUNT:
+			hover_left = HOVER_AMOUNT
 	if orb_projectile:
 		use_super_meter(ORB_SUPER_DRAIN)
 		if super_meter == 0 and supers_available == 0:
