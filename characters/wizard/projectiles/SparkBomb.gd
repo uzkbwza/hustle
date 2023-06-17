@@ -17,5 +17,6 @@ func explode(manual=false):
 		delay_ticks = DELAY_TICKS
 	exploded = true
 
+
 func tick():
 	.tick()

@@ -10,7 +10,7 @@ const RESET_HITBOX_TICKS = 2
 const NUM_RICOCHET_SOUNDS = 3
 const BOUNCE_HITLAG = 3
 const TERRAIN_DI_AMOUNT = "0.35"
-const DAMAGE_MODIFIER_PER_HIT = "0.7"
+const DAMAGE_MODIFIER_PER_HIT = "0.8"
 const MIN_TERRAIN_RICOCHET_AMOUNT = "0.1"
 
 onready var front_hitbox = $Hitbox

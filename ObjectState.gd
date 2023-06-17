@@ -17,11 +17,18 @@ export var _c_Custom_Physics = 0
 export var apply_custom_x_fric = false
 export var apply_custom_y_fric = false
 export var apply_custom_grav = false
+export var apply_forces_no_limit = false
+
 
 export var custom_x_fric = "0.0"
 export var custom_y_fric = "0.0"
 export var custom_grav = "0.0"
 export var custom_grav_max_fall_speed = "0.0"
+
+export var apply_custom_limits = false
+
+export var custom_max_air_speed = "15.0"
+export var custom_max_ground_speed = "10.0"
 
 
 export var _c_Animation_and_Length = 0
@@ -205,7 +212,7 @@ func _tick_shared():
 			host.screen_bump(state_screenshake_dir, state_screenshake_amount, state_screenshake_length)
 
 		if current_tick == flip_frame:
-			host.set_facing(host.get_facing_int() * -1)
+			host.turn_around()
 
 		if current_tick in host_commands:
 			var command = host_commands[current_tick]
@@ -265,7 +272,17 @@ func _tick_shared():
 	if apply_custom_grav:
 		host.apply_grav_custom(custom_grav, custom_grav_max_fall_speed)
 	if apply_forces:
-		host.apply_forces()
+		if apply_forces_no_limit:
+			host.apply_forces_no_limit()
+		
+		elif apply_custom_limits:
+			if host.is_grounded():
+				host.limit_x_speed(custom_max_ground_speed)
+			else:
+				host.limit_x_speed(custom_max_air_speed)
+			host.apply_forces_no_limit()
+		else:
+			host.apply_forces()
 
 func process_hitboxes():
 	if hitbox_start_frames.has(current_tick + 1):

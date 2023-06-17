@@ -2109,6 +2109,11 @@ active_ticks = 2
 
 [node name="NunChukJump" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 11 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+apply_custom_limits = true
+custom_max_air_speed = "11.0"
 endless = true
 enter_force_dir_x = "2.0"
 enter_force_dir_y = "-1.65"
@@ -2137,19 +2142,28 @@ x = 5
 y = -2
 height = 16
 damage = 120
-hitstun_ticks = 23
+hitstun_ticks = 18
 hitlag_ticks = 7
 victim_hitlag = 7
 hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
-knockback = "5.0"
+knockback = "6.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 6
+air_ground_bounce = true
 start_tick = 16
 active_ticks = 4
 
 [node name="NunChukJumpFollowup" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 11 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
 reset_momentum = true
+apply_custom_limits = true
+custom_max_air_speed = "11.0"
 sprite_animation = "NunChukJump"
 endless = true
 enter_force_dir_x = "2.0"
@@ -2172,14 +2186,18 @@ script = ExtResource( 1 )
 x = 5
 y = -2
 height = 16
-damage = 120
-hitstun_ticks = 23
+damage = 110
+hitstun_ticks = 18
 hitlag_ticks = 7
 victim_hitlag = 7
 hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
-knockback = "5.0"
+knockback = "6.0"
+launch_reversible = true
+grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 6
+air_ground_bounce = true
 start_tick = 16
 active_ticks = 4
 
@@ -2193,8 +2211,10 @@ air_type = 1
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
 hit_cancel_into_string = "Aerial
+Grounded
 ChukJumpFollowup"
 allowed_stances_string = "Normal
 NunChuk"
@@ -2321,7 +2341,10 @@ interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
 Aerial"
-allowed_stances_string = "NunChuk"
+allowed_stances_string = "NunChuk
+BackSway
+"
+change_stance_to = "NunChuk"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/WhipWave" index="0"]
 z_index = 1000
@@ -2723,7 +2746,9 @@ AerialSpecial
 AerialSuper
 AerialMovement"
 allowed_stances_string = "Normal
-BackSway"
+BackSway
+NunChuk
+"
 change_stance_to = "BackSway"
 initiative_effect = true
 

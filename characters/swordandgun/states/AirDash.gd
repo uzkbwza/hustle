@@ -2,13 +2,13 @@ extends CharacterState
 
 const MAX_EXTRA_LAG_FRAMES = 3
 
-const FORWARD_FORCE_X = "1.4"
-const FORWARD_FORCE_Y = "0.5"
-const FORWARD_FORCE_SPEED = "9.0"
+export var FORWARD_FORCE_X = "1.4"
+export var FORWARD_FORCE_Y = "0.5"
+export var FORWARD_FORCE_SPEED = "9.0"
 
-const DOWNWARD_FORCE_X = "0.0"
-const DOWNWARD_FORCE_Y = "1.0"
-const DOWNWARD_FORCE_SPEED = "15.0"
+export var DOWNWARD_FORCE_X = "0.0"
+export var DOWNWARD_FORCE_Y = "1.0"
+export var DOWNWARD_FORCE_SPEED = "15.0"
 
 export var startup_invuln = true
 export var grounded = false

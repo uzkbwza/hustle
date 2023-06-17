@@ -73,7 +73,10 @@ func _tick():
 			host.sprite.rotation = float(fixed.vec_to_angle(dir.x, dir.y))
 			host.set_facing(fixed.sign(dir_x))
 		else:
-			var target = host.obj_local_center(host.creator.opponent)
+			var opponent = host.get_opponent()
+			if opponent == null:
+				return
+			var target = host.obj_local_center(opponent)
 			var current = fixed.normalized_vec(vel.x, vel.y)
 			var desired = fixed.normalized_vec(str(target.x), str(target.y))
 			var steering_x = fixed.sub(desired.x, current.x)

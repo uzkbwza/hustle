@@ -12,7 +12,7 @@ const ORB_SUPER_DRAIN = 2
 const FAST_FALL_SPEED = "7"
 const ORB_PUSH_SPEED = "8.5"
 const TETHER_FALLOFF = "0.95"
-const TETHER_SPEED = "1.0"
+const TETHER_SPEED = "1.5"
 const TETHER_TICKS = 90
 const SPARK_BOMB_PUSH_DISTANCE = "60"
 const SPARK_EXPLOSION_AIR_SPEED = 25
@@ -192,7 +192,6 @@ func tick():
 			if bomb:
 				bomb.explode(true)
 				take_damage(SPARK_BOMB_SELF_DAMAGE)
-				spark_speed_frames += SPARK_SPEED_FRAMES
 
 	if nearby_spark_bombs:
 		nearby_spark_bombs = []
@@ -267,6 +266,14 @@ func process_extra(extra):
 		current_orb_push = extra.orb_push
 	if extra.has("detonate"):
 		detonating_bombs = extra.detonate
+	if extra.has("lock_orb"):
+		if orb_projectile:
+			var orb = obj_from_name(orb_projectile)
+			if orb:
+				if !orb.locked and extra.lock_orb:
+					orb.lock()
+				elif orb.locked and !extra.lock_orb:
+					orb.unlock()
 #	if boulder_projectile != null and extra.has("launch_dir") and extra.has("launch"):
 #		if extra.launch:
 #			var obj: TelekinesisProjectile = obj_from_name(boulder_projectile)

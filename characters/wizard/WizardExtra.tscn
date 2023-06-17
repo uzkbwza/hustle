@@ -18,9 +18,9 @@ custom_constants/separation = 1
 alignment = 1
 
 [node name="Control" type="Control" parent="VBoxContainer" index="0"]
-margin_top = 159.0
+margin_top = 153.0
 margin_right = 52.0
-margin_bottom = 159.0
+margin_bottom = 153.0
 rect_min_size = Vector2( 52, 0 )
 
 [node name="OrbPush" parent="VBoxContainer/Control" index="0" instance=ExtResource( 4 )]
@@ -32,9 +32,9 @@ margin_bottom = 0.0
 alignment = 1
 
 [node name="Control3" type="Control" parent="VBoxContainer" index="1"]
-margin_top = 160.0
+margin_top = 154.0
 margin_right = 52.0
-margin_bottom = 160.0
+margin_bottom = 154.0
 rect_min_size = Vector2( 52, 0 )
 
 [node name="LaunchContainer" type="VBoxContainer" parent="VBoxContainer/Control3" index="0"]
@@ -67,16 +67,16 @@ text = "Shoot"
 clip_text = true
 
 [node name="Control2" type="Control" parent="VBoxContainer" index="2"]
-margin_top = 161.0
+margin_top = 155.0
 margin_right = 52.0
-margin_bottom = 161.0
+margin_bottom = 155.0
 rect_min_size = Vector2( 52, 0 )
 
 [node name="HoverButton" type="CheckButton" parent="VBoxContainer" index="3"]
 unique_name_in_owner = true
-margin_top = 162.0
+margin_top = 156.0
 margin_right = 52.0
-margin_bottom = 174.0
+margin_bottom = 168.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
@@ -86,9 +86,9 @@ clip_text = true
 
 [node name="FastFallButton" type="CheckButton" parent="VBoxContainer" index="4"]
 unique_name_in_owner = true
-margin_top = 175.0
+margin_top = 169.0
 margin_right = 52.0
-margin_bottom = 187.0
+margin_bottom = 181.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
@@ -98,12 +98,24 @@ clip_text = true
 
 [node name="ExplodeButton" type="CheckButton" parent="VBoxContainer" index="5"]
 unique_name_in_owner = true
-margin_top = 188.0
+margin_top = 182.0
 margin_right = 52.0
-margin_bottom = 200.0
+margin_bottom = 194.0
 rect_min_size = Vector2( 30, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Spark"
+clip_text = true
+
+[node name="LockButton" type="CheckButton" parent="VBoxContainer" index="6"]
+unique_name_in_owner = true
+margin_top = 195.0
+margin_right = 52.0
+margin_bottom = 207.0
+rect_min_size = Vector2( 30, 0 )
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Lock"
 clip_text = true

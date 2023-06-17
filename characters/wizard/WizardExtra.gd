@@ -8,6 +8,7 @@ onready var explode_button = $"%ExplodeButton"
 #onready var launch_direction = $"%LaunchDir"
 #onready var shoot_button = $"%ShootButton"
 #onready var launch_container = $"%LaunchContainer"
+onready var lock_button = $"%LockButton"
 
 func _ready():
 	hover_button.connect("toggled", self, "_on_hover_button_toggled")
@@ -15,9 +16,17 @@ func _ready():
 	orb_push.connect("data_changed", self, "emit_signal", ["data_changed"])
 #	launch_direction.connect("data_changed", self, "emit_signal", ["data_changed"])
 	explode_button.connect("pressed", self, "emit_signal", ["data_changed"])
+	lock_button.connect("pressed", self, "emit_signal", ["data_changed"])
 #	shoot_button.connect("pressed", self, "emit_signal", ["data_changed"])
 #	shoot_button.connect("toggled", self, "_on_shoot_button_toggled")
 #	end_hover_button.connect("toggled", self, "_on_hover_button_toggled")
+
+func on_data_changed():
+	if fighter.orb_projectile != null:
+		orb_push.visible = true
+		if lock_button.pressed:
+			orb_push.visible = false
+	
 
 func _on_hover_button_toggled(on):
 	if on:
@@ -38,13 +47,20 @@ func reset():
 	explode_button.set_pressed_no_signal(fighter.detonating_bombs and is_hurt)
 	fast_fall_button.set_pressed_no_signal(fighter.fast_falling and is_hurt)
 	hover_button.set_pressed_no_signal(fighter.hovering and is_hurt)
-#	shoot_button.set_pressed_no_signal(false)
+	lock_button.set_pressed_no_signal(false)
+	if fighter.orb_projectile != null:
+		var orb = fighter.obj_from_name(fighter.orb_projectile)
+		lock_button.set_pressed_no_signal(orb.locked)
 
 func show_options():
 	orb_push.hide()
 	orb_push.init()
+	lock_button.hide()
 	explode_button.hide()
 	orb_push.visible = fighter.orb_projectile != null
+	lock_button.visible = fighter.orb_projectile != null
+	if lock_button.pressed:
+		orb_push.visible = false
 #	launch_container.visible = fighter.boulder_projectile != null
 	hover_button.hide()
 	fast_fall_button.hide()
@@ -61,12 +77,15 @@ func show_options():
 	if fighter.spark_bombs:
 		explode_button.show()
 
+
+
 func get_extra():
 	var extra = {
 		"hover": hover_button.pressed,
 		"fast_fall": fast_fall_button.pressed,
 		"detonate": explode_button.pressed,
 		"orb_push": orb_push.get_data(),
+		"lock_orb": lock_button.pressed,
 #		"launch_dir": launch_direction.get_data(),
 #		"launch": shoot_button.pressed,
 	}

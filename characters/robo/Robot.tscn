@@ -979,7 +979,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1540,6 +1539,7 @@ hit_sound = ExtResource( 75 )
 dir_x = "0.20"
 knockback = "4.0"
 grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 8
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9

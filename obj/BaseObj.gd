@@ -349,6 +349,9 @@ func get_current_sprite_frame_path() -> String:
 func get_current_sprite_frame_number():
 	return Utils.number_from_string(get_current_sprite_frame_path().get_file().split(".")[0])
 
+func turn_around():
+	set_facing(get_facing_int() * -1)
+
 func update_data():
 	data = get_data()
 	obj_data = data["object_data"]
@@ -644,6 +647,19 @@ func limit_speed(limit):
 	if fixed.gt(fixed.vec_len(vel.x, vel.y), limit):
 		var new_vel = fixed.normalized_vec_times(vel.x, vel.y, limit)
 		set_vel(new_vel.x, new_vel.y)
+
+func limit_x_speed(limit):
+	var vel = get_vel()
+	if fixed.gt(fixed.abs(vel.x), limit):
+		var new_vel = fixed.mul(str(fixed.sign(vel.x)), limit)
+		set_vel(new_vel, vel.y)
+
+func limit_y_speed(limit):
+	var vel = get_vel()
+	if fixed.gt(fixed.abs(vel.y), limit):
+		var new_vel = fixed.vec_mul(str(fixed.sign(vel.y)), limit)
+		set_vel(vel.x, new_vel)
+
 
 func get_object_dir(obj):
 	var dir = Utils.int_sign(obj.get_pos().x - get_pos().x)

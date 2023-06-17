@@ -945,7 +945,10 @@ script = ExtResource( 310 )
 method = "has_1k_cuts"
 
 [node name="AirDash1k" type="Node2D" parent="StateMachine" index="4"]
-script = ExtResource( 71 )
+script = ExtResource( 315 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true
@@ -975,6 +978,8 @@ Jump"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
+FORWARD_FORCE_SPEED = "11.0"
+DOWNWARD_FORCE_SPEED = "17.0"
 startup_invuln = false
 
 [node name="UsableRequirement" type="Node" parent="StateMachine/AirDash1k" index="0"]
@@ -1368,7 +1373,6 @@ hitstun_ticks = 8
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
-damage_proration = 1
 screenshake_amount = 2
 whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
@@ -1421,7 +1425,6 @@ hitstun_ticks = 12
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
-damage_proration = 1
 screenshake_amount = 2
 whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
@@ -1584,6 +1587,7 @@ type = 1
 button_texture = ExtResource( 153 )
 iasa_at = 15
 self_hit_cancellable = false
+selectable = false
 interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedAttack
 GroundedSpecial
@@ -1659,7 +1663,6 @@ height = 4
 damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
-damage_proration = 1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1676,7 +1679,6 @@ height = 4
 damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
-damage_proration = 1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1813,7 +1815,7 @@ y = -26
 width = 31
 height = 23
 damage = 115
-hitstun_ticks = 32
+hitstun_ticks = 34
 victim_hitlag = 4
 plus_frames = 1
 hit_height = 0
@@ -2851,7 +2853,6 @@ dodge = true
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 111 )
-fallback_state = "Holster"
 sprite_animation = "GunShoot2"
 anim_length = 10
 sfx = ExtResource( 70 )
@@ -3031,7 +3032,7 @@ screenshake_amount = 7
 whiff_sound = ExtResource( 237 )
 hit_sound = ExtResource( 238 )
 dir_x = "-1.0"
-dir_y = "0.0"
+dir_y = "-.25"
 knockback = "12.0"
 knockdown = true
 knockdown_extends_hitstun = false

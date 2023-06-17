@@ -84,6 +84,7 @@ height = 6
 damage = 50
 hitstun_ticks = 14
 hitlag_ticks = 7
+scale_combo = false
 parry_meter_gain = 20
 hit_sound = ExtResource( 5 )
 knockback = "3.0"

@@ -955,6 +955,7 @@ func hit_by(hitbox):
 				current_state().anim_length = opponent.current_state().anim_length
 				current_state().endless = opponent.current_state().endless
 				current_state().iasa_at = opponent.current_state().iasa_at
+				current_state().current_tick = 0
 			current_state().interruptible_on_opponent_turn = true
 			blocked_hitbox_plus_frames = hitbox.plus_frames
 #			for i in range(opponent.current_state().anim_length):

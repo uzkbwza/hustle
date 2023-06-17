@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/sprites/OrbLightning3.png" type="Texture" id=2]
@@ -8,11 +8,18 @@
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=6]
 [ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=7]
 [ext_resource path="res://characters/wizard/LightningEffect.tscn" type="PackedScene" id=8]
+[ext_resource path="res://characters/wizard/projectiles/orb/states/LightningDefault.gd" type="Script" id=9]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
 shader = ExtResource( 5 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -29,7 +36,13 @@ animations = [ {
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
 shader = ExtResource( 5 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -38,7 +51,6 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 1 )
 deletes_other_projectiles = false
-fizzle_on_ceiling = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
@@ -56,15 +68,13 @@ width = 1
 height = 1
 
 [node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 9 )
+__meta__ = {
+"_editor_description_": ""
+}
 sprite_animation = "default"
-anim_length = 11
+anim_length = 8
 endless = false
-enter_sfx_volume = -5.0
-move_x = 0
-clash = false
-lifetime = 9
-fizzle_on_ground = false
-fizzle_on_walls = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
@@ -72,7 +82,7 @@ script = ExtResource( 6 )
 y = 67
 width = 10
 height = 64
-damage = 90
+damage = 100
 hitstun_ticks = 10
 hitlag_ticks = 2
 victim_hitlag = 10

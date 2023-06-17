@@ -8,6 +8,12 @@ var fighter: Fighter
 var player_id
 var selected_move
 
+func _ready():
+	connect("data_changed", self, "on_data_changed")
+
+func on_data_changed():
+	pass
+
 func set_fighter(fighter: Fighter):
 	self.fighter = fighter
 	player_id = fighter.id

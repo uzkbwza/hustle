@@ -1193,12 +1193,14 @@ type = 1
 button_texture = ExtResource( 178 )
 air_type = 1
 land_cancel = true
+min_land_cancel_frame = 8
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
 interrupt_into_string = "Aerial
 Grounded"
-hit_cancel_into_string = "Aerial"
+hit_cancel_into_string = "Aerial
+Grounded"
 trigger_orb_type = "OrbDart"
 trigger_orb_delay = 25
 
@@ -1549,6 +1551,7 @@ type = 3
 button_texture = ExtResource( 168 )
 air_type = 2
 land_cancel = true
+selectable = false
 interrupt_from_string = "Aerial
 Grounded
 AerialSuper
@@ -1570,6 +1573,7 @@ type = 3
 button_texture = ExtResource( 166 )
 air_type = 2
 land_cancel = true
+selectable = false
 interrupt_from_string = "Aerial
 Grounded
 AerialSuper
@@ -2054,7 +2058,7 @@ script = ExtResource( 285 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 14
+anim_length = 13
 ticks_per_frame = 3
 loop_animation = true
 enter_sfx = ExtResource( 289 )

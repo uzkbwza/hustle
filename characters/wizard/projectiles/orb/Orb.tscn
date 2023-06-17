@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/Orb.gd" type="Script" id=2]
@@ -15,7 +15,7 @@
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/lock.wav" type="AudioStream" id=13]
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/unlock.wav" type="AudioStream" id=14]
 [ext_resource path="res://characters/wizard/projectiles/orb/sound/push.wav" type="AudioStream" id=15]
-[ext_resource path="res://characters/wizard/projectiles/orb/sound/shoot.wav" type="AudioStream" id=16]
+[ext_resource path="res://characters/wizard/sounds/magic14.wav" type="AudioStream" id=16]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=17]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=18]
 [ext_resource path="res://characters/wizard/projectiles/orb/sprites/orb_sword1.png" type="Texture" id=19]
@@ -29,6 +29,7 @@
 [ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=27]
 [ext_resource path="res://sound/common/explosion4.wav" type="AudioStream" id=28]
 [ext_resource path="res://sound/common/slash4.wav" type="AudioStream" id=29]
+[ext_resource path="res://characters/wizard/projectiles/orb/states/Sword.gd" type="Script" id=30]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -114,7 +115,7 @@ script = ExtResource( 12 )
 
 [node name="Shoot" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
 stream = ExtResource( 16 )
-volume_db = -8.0
+volume_db = -10.0
 bus = "Fx"
 script = ExtResource( 12 )
 
@@ -140,7 +141,10 @@ loop_animation = true
 LIFETIME = 30000
 
 [node name="Sword" type="Node2D" parent="StateMachine" index="1"]
-script = ExtResource( 10 )
+script = ExtResource( 30 )
+__meta__ = {
+"_editor_description_": ""
+}
 fallback_state = "Default"
 sprite_animation = "Sword"
 anim_length = 23
@@ -151,15 +155,15 @@ z_index = 1000
 script = ExtResource( 18 )
 width = 30
 height = 30
-damage = 50
+damage = 45
 hitstun_ticks = 18
 hitlag_ticks = 2
 victim_hitlag = 5
+scale_combo = false
 sdi_modifier = "0.35"
 group = 1
 hit_sound = ExtResource( 27 )
 knockback = "4.0"
-block_pushback_x = "1.0"
 start_tick = 3
 active_ticks = 3
 loop_active_ticks = 1
@@ -170,15 +174,15 @@ z_index = 1000
 script = ExtResource( 18 )
 width = 35
 height = 35
-damage = 60
+damage = 55
 hitstun_ticks = 18
 hitlag_ticks = 7
 victim_hitlag = 8
+scale_combo = false
 sdi_modifier = "0.85"
 group = 2
 hit_sound = ExtResource( 29 )
 knockback = "4.0"
-block_pushback_x = "1.0"
 start_tick = 11
 active_ticks = 2
 loop_active_ticks = 1
@@ -195,7 +199,6 @@ hitlag_ticks = 7
 victim_hitlag = 8
 hit_sound = ExtResource( 29 )
 knockback = "4.0"
-block_pushback_x = "1.0"
 start_tick = 13
 active_ticks = 2
 loop_active_ticks = 1
