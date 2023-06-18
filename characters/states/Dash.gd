@@ -70,11 +70,11 @@ func _tick():
 #		interruptible_on_opponent_turn = true
 	if stop_frame > 0 and current_tick == stop_frame and !repeated:
 		host.reset_momentum()
-
-	if auto_correct and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
-		host.update_data()
-		var vel = host.get_vel()
-		if !fixed.eq(vel.x, "0") and fixed.sign(vel.x) != host.get_opponent_dir():
-			host.update_facing()
-			updated = true
-			host.set_vel(fixed.mul(fixed.abs(vel.x), str(host.get_opponent_dir())), vel.y)
+#
+#	if auto_correct and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
+#		host.update_data()
+#		var vel = host.get_vel()
+#		if !fixed.eq(vel.x, "0") and fixed.sign(vel.x) != host.get_opponent_dir():
+#			host.update_facing()
+#			updated = true
+#			host.set_vel(fixed.mul(fixed.abs(vel.x), str(host.get_opponent_dir())), vel.y)

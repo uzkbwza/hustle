@@ -1019,7 +1019,9 @@ func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0"):
 	damage = Utils.int_max(damage, minimum)
 	damage = Utils.int_max(guts_stale_damage(damage), 1)
 	damage = fixed.round(fixed.mul(str(damage), get_penalty_damage_modifier()))
-	damage = fixed.round(fixed.mul(str(damage), MISSED_BRACE_DAMAGE_MULTIPLIER if hit_out_of_brace else "1.0"))
+	damage = fixed.round(fixed.mul(str(damage), meter_gain_modifier))
+#	damage = fixed.round(fixed.mul(str(damage), MISSED_BRACE_DAMAGE_MULTIPLIER if hit_out_of_brace else "1.0"))
+	
 	opponent.gain_super_meter(damage / DAMAGE_SUPER_GAIN_DIVISOR)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))

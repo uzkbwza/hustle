@@ -1,4 +1,4 @@
-[gd_scene load_steps=433 format=2]
+[gd_scene load_steps=436 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -423,6 +423,9 @@
 [ext_resource path="res://characters/robo/projectiles/GroundFireLoic.tscn" type="PackedScene" id=421]
 [ext_resource path="res://sound/common/explosion2.wav" type="AudioStream" id=422]
 [ext_resource path="res://characters/robo/actionuidata/CommandGrabActionUIData.tscn" type="PackedScene" id=423]
+[ext_resource path="res://characters/robo/states/DisembowelGrab.gd" type="Script" id=424]
+[ext_resource path="res://ui/ActionSelector/StateIcons/throw_back.png" type="Texture" id=425]
+[ext_resource path="res://sound/common/swipe1.wav" type="AudioStream" id=426]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -1497,6 +1500,8 @@ Return"
 hit_cancel_into_string = "Grounded
 Aerial"
 can_be_counterhit = false
+velocity_forward_meter_gain_multiplier = "0.5"
+whiff_meter_gain_multiplier = "0.5"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Step" index="0"]
 z_index = 1000
@@ -1839,7 +1844,10 @@ start_tick = 1
 active_ticks = 4
 
 [node name="DisembowelGrab" type="Node2D" parent="StateMachine" index="21"]
-script = ExtResource( 94 )
+script = ExtResource( 424 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true
@@ -1849,6 +1857,7 @@ sfx_tick = 5
 sfx_volume = -10.0
 title = "TRY-CATCH"
 type = 2
+data_ui_scene = ExtResource( 423 )
 button_texture = ExtResource( 267 )
 iasa_at = 26
 interrupt_from_string = "Grounded
@@ -2018,14 +2027,17 @@ iasa_at = 49
 interrupt_into_string = "Grounded"
 release = true
 release_frame = 41
-start_throw_pos_x = 80
+start_throw_pos_x = -10
+start_throw_pos_y = -50
 release_throw_pos_x = 80
-knockback = "20.0"
+knockback = "5.0"
 dir_y = "1.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
 increment_combo = false
 hard_knockdown = true
+di_modifier = "1.5"
+single_hit = true
 
 [node name="NoComboHitbox" type="Node2D" parent="StateMachine/TryCatchGroundSlam" index="0"]
 z_index = 1000
@@ -2036,6 +2048,7 @@ hitbox_type = 2
 damage_proration = -8
 combo_scaling_amount = 2
 cancellable = false
+meter_gain_modifier = "0.5"
 beats_grab = false
 replace_hit_particle = true
 hit_sound = ExtResource( 88 )
@@ -2052,6 +2065,7 @@ minimum_damage = 50
 hitbox_type = 2
 combo_scaling_amount = 2
 cancellable = false
+meter_gain_modifier = "0.5"
 beats_grab = false
 replace_hit_particle = true
 hit_sound = ExtResource( 88 )
@@ -2340,7 +2354,8 @@ ExtResource( 113 ): {
 }
 }
 iasa_at = 49
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Magnetize"
 release = true
 release_frame = 41
 start_throw_pos_x = 80
@@ -2361,6 +2376,7 @@ hitbox_type = 2
 damage_proration = -8
 combo_scaling_amount = 2
 cancellable = false
+meter_gain_modifier = "0.5"
 beats_grab = false
 replace_hit_particle = true
 hit_sound = ExtResource( 88 )
@@ -2377,6 +2393,7 @@ minimum_damage = 50
 hitbox_type = 2
 combo_scaling_amount = 2
 cancellable = false
+meter_gain_modifier = "0.5"
 beats_grab = false
 replace_hit_particle = true
 hit_sound = ExtResource( 88 )
@@ -2876,7 +2893,35 @@ Aerial"
 hit_cancel_into_string = "GroundedSpecial
 GroundedSuper"
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/GroundPound" index="0"]
+[node name="Hitbox4" type="Node2D" parent="StateMachine/GroundPound" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 12
+y = -10
+width = 24
+height = 10
+damage = 80
+hitstun_ticks = 18
+victim_hitlag = 5
+scale_combo = false
+cancellable = false
+hits_otg = true
+followup_state = "EarthquakeThrow"
+beats_grab = false
+priority = 2
+whiff_particle = ExtResource( 321 )
+whiff_sound = ExtResource( 88 )
+hit_sound = ExtResource( 75 )
+whiff_sound_volume = -2.0
+bass_on_whiff = true
+dir_y = "0.20"
+knockback = "7.0"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 6
+active_ticks = 3
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/GroundPound" index="1"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 24
@@ -2887,6 +2932,7 @@ victim_hitlag = 5
 cancellable = false
 hits_otg = true
 beats_grab = false
+priority = 1
 whiff_particle = ExtResource( 321 )
 whiff_sound = ExtResource( 88 )
 hit_sound = ExtResource( 75 )
@@ -2900,7 +2946,7 @@ knockdown_extends_hitstun = false
 start_tick = 6
 active_ticks = 3
 
-[node name="Hitbox3" type="Node2D" parent="StateMachine/GroundPound" index="1"]
+[node name="Hitbox3" type="Node2D" parent="StateMachine/GroundPound" index="2"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 11
@@ -2913,6 +2959,7 @@ victim_hitlag = 5
 cancellable = false
 hits_otg = true
 beats_grab = false
+priority = 1
 whiff_sound = ExtResource( 88 )
 hit_sound = ExtResource( 75 )
 whiff_sound_volume = -2.0
@@ -2925,7 +2972,7 @@ knockdown_extends_hitstun = false
 start_tick = 6
 active_ticks = 3
 
-[node name="Hitbox2" type="Node2D" parent="StateMachine/GroundPound" index="2"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/GroundPound" index="3"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 69
@@ -2938,7 +2985,6 @@ cancellable = false
 hits_vs_aerial = false
 beats_grab = false
 hit_height = 2
-priority = 1
 hit_sound = ExtResource( 75 )
 whiff_sound_volume = -2.0
 bass_on_whiff = true
@@ -2948,10 +2994,49 @@ grounded_hit_state = "HurtAerial"
 start_tick = 7
 active_ticks = 2
 
+[node name="EarthquakeThrow" type="Node2D" parent="StateMachine" index="42"]
+script = ExtResource( 265 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "ForwardThrow"
+anim_length = 29
+force_dir_x = "1.0"
+force_speed = "8.0"
+force_tick = 14
+sfx = ExtResource( 312 )
+sfx_tick = 18
+sfx_volume = -8.0
+title = "Back Throw"
+type = 1
+button_texture = ExtResource( 425 )
+flip_with_facing = true
+air_type = 2
+reversible = false
+interrupt_from_string = "GroundedThrow"
+interrupt_into_string = "Grounded"
+allowed_stances_string = "All"
+release = true
+release_frame = 18
+start_throw_pos_x = -12
+start_throw_pos_y = -22
+release_throw_pos_x = 29
+hitstun_ticks = 20
+knockback = "5.0"
+dir_y = "0.4"
+knockdown_extends_hitstun = false
+grounded_hit_state = "HurtAerial"
+damage = 80
+reverse = true
+screenshake_amount = 8
+screenshake_frames = 6
+release_sfx = ExtResource( 426 )
+release_sfx_volume = -7.0
+
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
 
-[node name="Lariat" type="Node2D" parent="StateMachine" index="43"]
+[node name="Lariat" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
@@ -3012,7 +3097,7 @@ active_ticks = 12
 looping = true
 loop_active_ticks = 4
 
-[node name="Drive" type="Node2D" parent="StateMachine" index="44"]
+[node name="Drive" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 94 )
 apply_forces = true
 apply_fric = true
@@ -3045,7 +3130,7 @@ height = 10
 start_tick = 5
 endless = true
 
-[node name="DriveJump" type="Node2D" parent="StateMachine" index="45"]
+[node name="DriveJump" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 378 )
 fallback_state = "DriveIdle"
 sprite_animation = "DriveForward"
@@ -3095,7 +3180,7 @@ launch_reversible = true
 start_tick = 4
 always_on = true
 
-[node name="DriveDrift" type="Node2D" parent="StateMachine" index="46"]
+[node name="DriveDrift" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 364 )
 apply_grav = true
 reset_momentum = true
@@ -3148,7 +3233,7 @@ ground_bounce = false
 start_tick = 6
 active_ticks = 3
 
-[node name="DriveWheelie" type="Node2D" parent="StateMachine" index="47"]
+[node name="DriveWheelie" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 356 )
 apply_grav = true
 reset_momentum = true
@@ -3229,7 +3314,7 @@ start_tick = 10
 active_ticks = 4
 endless = true
 
-[node name="DriveBoost" type="Node2D" parent="StateMachine" index="48"]
+[node name="DriveBoost" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 356 )
 apply_grav = true
 reset_momentum = true
@@ -3321,7 +3406,7 @@ start_tick = 10
 active_ticks = 4
 endless = true
 
-[node name="DriveWheelieGrab" type="Node2D" parent="StateMachine" index="49"]
+[node name="DriveWheelieGrab" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 356 )
 apply_grav = true
 reset_momentum = true
@@ -3384,7 +3469,7 @@ start_tick = 10
 active_ticks = 4
 endless = true
 
-[node name="DriveWheelieThrow" type="Node2D" parent="StateMachine" index="50"]
+[node name="DriveWheelieThrow" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 265 )
 apply_forces = true
 apply_fric = true
@@ -3428,7 +3513,7 @@ dir_y = "-0.10"
 damage = 120
 wall_slam = true
 
-[node name="DriveIdle" type="Node2D" parent="StateMachine" index="51"]
+[node name="DriveIdle" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3457,7 +3542,7 @@ height = 10
 start_tick = 0
 endless = true
 
-[node name="DriveForward" type="Node2D" parent="StateMachine" index="52"]
+[node name="DriveForward" type="Node2D" parent="StateMachine" index="53"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3481,6 +3566,8 @@ interrupt_exceptions_string = "GroundedGrab"
 allowed_stances_string = "Drive
 "
 beats_backdash = true
+velocity_forward_meter_gain_multiplier = "0.5"
+whiff_meter_gain_multiplier = "0.5"
 SPEED = "3.5"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DriveForward" index="0"]
@@ -3513,7 +3600,7 @@ ground_bounce = false
 start_tick = 4
 always_on = true
 
-[node name="DriveBackward" type="Node2D" parent="StateMachine" index="53"]
+[node name="DriveBackward" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 350 )
 apply_fric = true
 apply_grav = true
@@ -3549,7 +3636,7 @@ height = 10
 start_tick = 0
 endless = true
 
-[node name="Grenade" type="Node2D" parent="StateMachine" index="54"]
+[node name="Grenade" type="Node2D" parent="StateMachine" index="55"]
 script = ExtResource( 411 )
 apply_forces = true
 apply_fric = true
@@ -3574,7 +3661,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Magnetize" type="Node2D" parent="StateMachine" index="55"]
+[node name="Magnetize" type="Node2D" parent="StateMachine" index="56"]
 script = ExtResource( 397 )
 apply_forces = true
 apply_fric = true
@@ -3599,13 +3686,14 @@ super_level = 2
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
 
-[node name="Fall" parent="StateMachine" index="60"]
+[node name="Fall" parent="StateMachine" index="61"]
 script = ExtResource( 400 )
 
-[node name="Landing" parent="StateMachine" index="61"]
+[node name="Landing" parent="StateMachine" index="62"]
 script = ExtResource( 82 )
 dynamic_iasa = false
 can_be_counterhit = false
+whiff_meter_gain_multiplier = "0.0"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Landing" index="0"]
 z_index = 1000
@@ -3627,26 +3715,26 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="DashForward" parent="StateMachine" index="67"]
+[node name="DashForward" parent="StateMachine" index="68"]
 interrupt_from_string = ""
 
-[node name="DashBackward" parent="StateMachine" index="69"]
+[node name="DashBackward" parent="StateMachine" index="70"]
 interrupt_from_string = ""
 
-[node name="ChargeDash" parent="StateMachine" index="73"]
+[node name="ChargeDash" parent="StateMachine" index="74"]
 fallback_state = "ChargedStep"
 
-[node name="SuperJump" parent="StateMachine" index="74"]
+[node name="SuperJump" parent="StateMachine" index="75"]
 speed = "18"
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="75"]
+[node name="DoubleJump" parent="StateMachine" index="76"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="76"]
+[node name="AirDash" parent="StateMachine" index="77"]
 interrupt_from_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -3656,7 +3744,7 @@ height = 14
 beats_grab = false
 plus_frames = null
 
-[node name="AirGrab" parent="StateMachine" index="87"]
+[node name="AirGrab" parent="StateMachine" index="88"]
 data_ui_scene = null
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
@@ -3667,7 +3755,7 @@ beats_grab = false
 plus_frames = null
 throw_state = "AirHold"
 
-[node name="ForwardThrow" parent="StateMachine" index="88"]
+[node name="ForwardThrow" parent="StateMachine" index="89"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -3709,7 +3797,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="BackThrow" parent="StateMachine" index="89"]
+[node name="BackThrow" parent="StateMachine" index="90"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -3729,7 +3817,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirForwardThrow" parent="StateMachine" index="90"]
+[node name="AirForwardThrow" parent="StateMachine" index="91"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -3749,7 +3837,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirBackThrow" parent="StateMachine" index="91"]
+[node name="AirBackThrow" parent="StateMachine" index="92"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -3791,7 +3879,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirDownThrow" parent="StateMachine" index="92"]
+[node name="AirDownThrow" parent="StateMachine" index="93"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -3804,7 +3892,7 @@ release_frame = 18
 start_throw_pos_x = -12
 start_throw_pos_y = -22
 
-[node name="Taunt" parent="StateMachine" index="94"]
+[node name="Taunt" parent="StateMachine" index="95"]
 script = ExtResource( 390 )
 particle_scene = ExtResource( 393 )
 particle_position = Vector2( 0, -16 )

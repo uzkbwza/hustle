@@ -52,6 +52,9 @@ var release_sfx_player = null
 
 #	released = false
 
+func _enter():
+	released = false
+
 func setup_audio():
 	.setup_audio()
 	if release_sfx:
