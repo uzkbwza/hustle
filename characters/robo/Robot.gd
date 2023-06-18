@@ -42,6 +42,7 @@ var magnet_ticks_left = 0
 var grenade_object = null
 var flame_touching_opponent = null
 var magnet_installed = false
+var magnet_scale = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -89,6 +90,12 @@ func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
+	if magnet_scale:
+		if !scale:
+			combo_scale_amount = 0
+		combo_scale_amount += 1
+		scale = true
+		magnet_scale = false
 	if combo_count == 0:
 		landed_move = true
 	.incr_combo(scale, force, projectile, combo_scale_amount)
@@ -212,11 +219,17 @@ func tick():
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
+	if combo_count > 0:
+		magnet_scale = true
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
 	opponent.reset_momentum()
 	magnet_installed = false
 	pass
+
+func reset_combo():
+	.reset_combo()
+	magnet_scale = false
 
 func ground_pound_active_effect():
 	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -16))

@@ -10,7 +10,7 @@ const ATTACK_SUPER_DRAIN = 0
 const LIGHTNING_DRAIN = 0
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
-const MAGIC_DART_SCENE = preload("res://characters/wizard/projectiles/MagicMissile.tscn")
+const LOCKED_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDartLocked.tscn")
 const LIGHTNING_SCENE = preload("res://characters/wizard/projectiles/orb/OrbLightning.tscn")
 const LOCK_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
 const DISABLE_PARTICLE = preload("res://characters/wizard/projectiles/orb/OrbSpawnParticle.tscn")
@@ -153,5 +153,5 @@ func spawn_lightning():
 func spawn_orb_dart():
 	var local_pos = obj_local_center(creator.opponent)
 	var dir = fixed.normalized_vec(str(local_pos.x), str(local_pos.y))
-	spawn_object(ORB_DART_SCENE if !locked else MAGIC_DART_SCENE, 0, 0, true, {"dir": dir})
+	spawn_object(ORB_DART_SCENE if !locked else LOCKED_DART_SCENE, 0, 0, true, {"dir": dir})
 	play_sound("Shoot")

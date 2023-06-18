@@ -2764,6 +2764,7 @@ Shoot"
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial
+Shoot
 "
 interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
@@ -2819,8 +2820,10 @@ LassoThrow
 Shoot"
 interrupt_into_string = "TimeBullet
 Grounded
-Aerial"
-interrupt_exceptions_string = "Shoot"
+Aerial
+Shoot
+"
+interrupt_exceptions_string = "ShootDodge2"
 release_opponent_on_startup = true
 
 [node name="ShootDodge2" type="Node2D" parent="StateMachine" index="50"]

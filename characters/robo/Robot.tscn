@@ -952,7 +952,8 @@ can_flamethrower
 magnet_ticks_left
 grenade_object
 flame_touching_opponent
-magnet_installed"
+magnet_installed
+magnet_scale"
 num_air_movements = 3
 character_portrait = ExtResource( 76 )
 character_portrait2 = ExtResource( 206 )
@@ -2046,7 +2047,6 @@ damage = 140
 minimum_damage = 85
 hitbox_type = 2
 damage_proration = -8
-combo_scaling_amount = 2
 cancellable = false
 meter_gain_modifier = "0.5"
 beats_grab = false
@@ -2063,7 +2063,6 @@ script = ExtResource( 83 )
 damage = 90
 minimum_damage = 50
 hitbox_type = 2
-combo_scaling_amount = 2
 cancellable = false
 meter_gain_modifier = "0.5"
 beats_grab = false
@@ -2575,7 +2574,7 @@ script = ExtResource( 395 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 20
+anim_length = 16
 sfx = ExtResource( 343 )
 sfx_tick = 10
 sfx_volume = -8.0
@@ -3004,6 +3003,8 @@ anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
 force_tick = 14
+enter_sfx = ExtResource( 281 )
+enter_sfx_volume = -8.0
 sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
@@ -3021,15 +3022,16 @@ release_frame = 18
 start_throw_pos_x = -12
 start_throw_pos_y = -22
 release_throw_pos_x = 29
-hitstun_ticks = 20
+hitstun_ticks = 25
 knockback = "5.0"
 dir_y = "0.4"
 knockdown_extends_hitstun = false
 grounded_hit_state = "HurtAerial"
-damage = 80
+damage = 60
 reverse = true
 screenshake_amount = 8
 screenshake_frames = 6
+minimum_grounded_frames = 19
 release_sfx = ExtResource( 426 )
 release_sfx_volume = -7.0
 
@@ -3566,7 +3568,7 @@ interrupt_exceptions_string = "GroundedGrab"
 allowed_stances_string = "Drive
 "
 beats_backdash = true
-velocity_forward_meter_gain_multiplier = "0.5"
+velocity_forward_meter_gain_multiplier = "0.75"
 whiff_meter_gain_multiplier = "0.5"
 SPEED = "3.5"
 

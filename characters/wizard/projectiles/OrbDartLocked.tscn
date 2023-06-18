@@ -1,0 +1,95 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
+[ext_resource path="res://projectile/DirProjectile.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/wizard/projectiles/sprites/orb_projectile.png" type="Texture" id=3]
+[ext_resource path="res://characters/wizard/projectiles/OrbDartParticle.tscn" type="PackedScene" id=4]
+[ext_resource path="res://characters/wizard/projectiles/states/OrbDartDefault.gd" type="Script" id=5]
+[ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=6]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=7]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 7 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 7 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[node name="OrbDart" instance=ExtResource( 2 )]
+material = SubResource( 2 )
+z_index = 3
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 4 )]
+material = SubResource( 3 )
+z_index = -1
+
+[node name="CollisionBox" parent="." index="2"]
+width = 5
+height = 5
+
+[node name="Hurtbox" parent="." index="3"]
+width = 8
+height = 8
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 5 )
+move_speed = "25.0"
+relative_data_dir = false
+bounce_on_ground = false
+num_bounces = 2
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 1 )
+width = 7
+height = 7
+damage = 60
+hitstun_ticks = 15
+hitlag_ticks = 6
+victim_hitlag = 6
+sdi_modifier = "0.2"
+parry_meter_gain = 20
+hit_sound = ExtResource( 6 )
+knockback = "5.0"
+knockdown = true
+knockdown_extends_hitstun = false
+ground_bounce = false
+start_tick = 1
+always_on = true
