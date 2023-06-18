@@ -236,7 +236,7 @@ func _enter_shared():
 		var dir = host.get_move_dir()
 		if dir == 0 or dir == host.get_opponent_dir():
 			host.add_penalty(-8)
-		host.gain_super_meter(fixed.mul(WHIFF_SUPER_GAIN, whiff_meter_gain_multiplier))
+		host.gain_super_meter(fixed.round(fixed.mul(str(WHIFF_SUPER_GAIN), whiff_meter_gain_multiplier)))
 
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances

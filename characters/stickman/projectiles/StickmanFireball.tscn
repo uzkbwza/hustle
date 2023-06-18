@@ -13,7 +13,13 @@
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 9 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -30,7 +36,13 @@ animations = [ {
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
 shader = ExtResource( 9 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -41,8 +53,6 @@ material = SubResource( 2 )
 script = ExtResource( 4 )
 max_air_speed = "20"
 fizzle_on_ceiling = true
-can_be_hit_by_melee = false
-projectile_immune = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
@@ -67,7 +77,7 @@ z_index = 1000
 script = ExtResource( 6 )
 width = 6
 height = 6
-damage = 40
+damage = 60
 hitstun_ticks = 11
 hitlag_ticks = 8
 victim_hitlag = 8
