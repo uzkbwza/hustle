@@ -8,6 +8,8 @@ func _ready():
 	$"%ArmorEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%NadeActive".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%PullEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
+	$"%PullEnabled".connect("pressed", $"%ArmorEnabled", "set_pressed_no_signal", [false])
+	$"%ArmorEnabled".connect("pressed", $"%PullEnabled", "set_pressed_no_signal", [false])
 
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
@@ -59,3 +61,8 @@ func reset():
 	$"%ArmorEnabled".set_pressed_no_signal(false)
 	$"%NadeActive".set_pressed_no_signal(false)
 	$"%PullEnabled".set_pressed_no_signal(false)
+
+func on_data_changed():
+#	if $"%ArmorEnabled".pressed and $"%PullEnabled".pressed:
+#		$"%PullEnabled".set_pressed_no_signal(false)
+	pass

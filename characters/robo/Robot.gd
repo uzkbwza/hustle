@@ -279,7 +279,7 @@ func process_extra(extra):
 			if nade:
 				if !nade.active:
 					nade.activate()
-	if extra.has("pull_enabled") and magnet_installed:
+	if extra.has("pull_enabled") and magnet_installed and !buffer_armor:
 		if extra.pull_enabled:
 			start_magnetizing()
 
