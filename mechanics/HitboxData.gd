@@ -53,6 +53,7 @@ var plus_frames = 0
 var chip_damage_modifier = "1.0"
 var block_pushback_modifier = "1.0"
 var ground_bounce_knockback_modifier = "1.0"
+var hits_projectiles = true
 
 func get_damage():
 	if combo_count > 0:
@@ -158,6 +159,8 @@ func _init(state):
 		combo_scaling_amount = state.combo_scaling_amount
 	if state.get("ground_bounce_knockback_modifier") != null:
 		ground_bounce_knockback_modifier = state.ground_bounce_knockback_modifier
+	if state.get("hits_projectiles") != null:
+		hits_projectiles = state.hits_projectiles
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

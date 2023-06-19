@@ -66,6 +66,7 @@ export var force_grounded = false
 export var can_clash = true
 export var hits_vs_dizzy = true
 export var beats_grab = true
+export var hits_projectiles = true
 export(int, 0, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid

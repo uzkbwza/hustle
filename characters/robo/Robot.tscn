@@ -1781,17 +1781,9 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
-},
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
-},
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
 },
 ExtResource( 205 ): {
 "x": -39,
@@ -1804,6 +1796,14 @@ ExtResource( 203 ): {
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
+},
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
+},
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
 }
 }
 update_facing_on_exit = false
@@ -1979,6 +1979,10 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
@@ -1987,41 +1991,37 @@ ExtResource( 113 ): {
 "x": 62,
 "y": -13
 },
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
 },
 ExtResource( 117 ): {
 "x": 69,
 "y": 14
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
-},
 ExtResource( 116 ): {
 "x": 33,
 "y": -38
 },
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -2080,10 +2080,6 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
 ExtResource( 264 ): {
 "x": 124,
 "y": -72
@@ -2096,13 +2092,17 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 263 ): {
-"x": 124,
-"y": -72
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
 },
 ExtResource( 258 ): {
 "x": 78,
 "y": -50
+},
+ExtResource( 263 ): {
+"x": 124,
+"y": -72
 },
 ExtResource( 254 ): {
 "x": 124,
@@ -2307,6 +2307,10 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
@@ -2315,41 +2319,37 @@ ExtResource( 113 ): {
 "x": 62,
 "y": -13
 },
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
 },
 ExtResource( 117 ): {
 "x": 69,
 "y": 14
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
-},
 ExtResource( 116 ): {
 "x": 33,
 "y": -38
 },
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -3023,7 +3023,7 @@ start_throw_pos_x = -12
 start_throw_pos_y = -22
 release_throw_pos_x = 29
 hitstun_ticks = 25
-knockback = "5.0"
+knockback = "7.0"
 dir_y = "0.4"
 knockdown_extends_hitstun = false
 grounded_hit_state = "HurtAerial"
@@ -3031,7 +3031,7 @@ damage = 60
 reverse = true
 screenshake_amount = 8
 screenshake_frames = 6
-minimum_grounded_frames = 19
+minimum_grounded_frames = 17
 release_sfx = ExtResource( 426 )
 release_sfx_volume = -7.0
 
@@ -3488,10 +3488,6 @@ ExtResource( 374 ): {
 "x": 14,
 "y": -7
 },
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
-},
 ExtResource( 373 ): {
 "x": 34,
 "y": -11
@@ -3499,6 +3495,10 @@ ExtResource( 373 ): {
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
+},
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
 }
 }
 interrupt_into_string = "Grounded"
@@ -3774,6 +3774,10 @@ ExtResource( 309 ): {
 "x": -21,
 "y": -9
 },
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
+},
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
@@ -3781,10 +3785,6 @@ ExtResource( 310 ): {
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
-},
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
 }
 }
 release_frame = 18
@@ -3856,6 +3856,10 @@ ExtResource( 309 ): {
 "x": -21,
 "y": -11
 },
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
+},
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
@@ -3863,10 +3867,6 @@ ExtResource( 310 ): {
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
-},
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
 }
 }
 release_frame = 18

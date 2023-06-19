@@ -1041,6 +1041,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 				continue
 			if !otg and !hitbox.hits_vs_standing:
 				continue
+			if !host.is_in_group("Fighter") and !hitbox.hits_projectiles:
+				continue
 			if hitbox.overlaps(hurtbox):
 				hit_by = hitbox
 	return hit_by

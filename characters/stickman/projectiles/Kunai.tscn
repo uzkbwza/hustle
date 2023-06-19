@@ -32,6 +32,7 @@ animations = [ {
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
+has_projectile_parry_window = false
 fizzle_on_ceiling = true
 
 [node name="Sprite" parent="Flip" index="0"]

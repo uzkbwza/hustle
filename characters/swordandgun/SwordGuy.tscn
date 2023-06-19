@@ -2797,6 +2797,21 @@ super_level = 0
 super_effect = false
 dodge = true
 
+[node name="Hitbox" type="Node2D" parent="StateMachine/ShootDodge" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+width = 5
+height = 5
+damage = 130
+damage_in_combo = 82
+hitstun_ticks = 25
+cancellable = false
+hits_projectiles = false
+hit_sound = ExtResource( 144 )
+knockback = "6.0"
+start_tick = 4
+active_ticks = 1
+
 [node name="Shoot2" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 313 )
 __meta__ = {
@@ -2825,6 +2840,21 @@ Shoot
 "
 interrupt_exceptions_string = "ShootDodge2"
 release_opponent_on_startup = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Shoot2" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+width = 5
+height = 5
+damage = 130
+damage_in_combo = 82
+hitstun_ticks = 25
+cancellable = false
+hits_projectiles = false
+hit_sound = ExtResource( 144 )
+knockback = "6.0"
+start_tick = 4
+active_ticks = 1
 
 [node name="ShootDodge2" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 313 )
