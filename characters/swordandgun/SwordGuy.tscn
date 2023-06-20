@@ -1370,7 +1370,7 @@ height = 19
 damage = 110
 damage_in_combo = 80
 hitstun_ticks = 8
-combo_hitstun_ticks = 16
+combo_hitstun_ticks = 18
 hitlag_ticks = 2
 victim_hitlag = 4
 screenshake_amount = 2
@@ -2797,21 +2797,6 @@ super_level = 0
 super_effect = false
 dodge = true
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/ShootDodge" index="0"]
-z_index = 1000
-script = ExtResource( 83 )
-width = 5
-height = 5
-damage = 130
-damage_in_combo = 82
-hitstun_ticks = 25
-cancellable = false
-hits_projectiles = false
-hit_sound = ExtResource( 144 )
-knockback = "6.0"
-start_tick = 4
-active_ticks = 1
-
 [node name="Shoot2" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 313 )
 __meta__ = {
@@ -2883,6 +2868,21 @@ Aerial"
 interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 dodge = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/ShootDodge2" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+width = 5
+height = 5
+damage = 130
+damage_in_combo = 82
+hitstun_ticks = 25
+cancellable = false
+hits_projectiles = false
+hit_sound = ExtResource( 144 )
+knockback = "6.0"
+start_tick = 4
+active_ticks = 1
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 111 )

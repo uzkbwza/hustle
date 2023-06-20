@@ -43,6 +43,7 @@ var grenade_object = null
 var flame_touching_opponent = null
 var magnet_installed = false
 var magnet_scale = false
+var used_earthquake_grab = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -230,6 +231,7 @@ func start_magnetizing():
 func reset_combo():
 	.reset_combo()
 	magnet_scale = false
+	used_earthquake_grab = false
 
 func ground_pound_active_effect():
 	spawn_particle_effect_relative(preload("res://characters/robo/GroundPoundActiveEffect.tscn"), Vector2(0, -16))
