@@ -18,6 +18,8 @@ const MAGNET_MIN_STRENGTH = "0.5"
 const MAGNET_CENTER_DIST = "250"
 const MAGNET_RADIUS_DIST = "200"
 const MAGNET_MOVEMENT_AMOUNT = "18"
+const NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT = "10"
+const NO_INITIATIVE_MAGNET_MODIFIER = "0.25"
 
 var loic_draining = false
 var armor_pips = 1
@@ -44,6 +46,7 @@ var flame_touching_opponent = null
 var magnet_installed = false
 var magnet_scale = false
 var used_earthquake_grab = false
+var started_magnet_in_initiative = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -131,10 +134,13 @@ func magnetize():
 #				magnet_strength = MAGNET_MIN_STRENGTH
 #			elif fixed.gt(magnet_strength, MAGNET_MAX_STRENGTH):
 #				magnet_strength = MAGNET_MAX_STRENGTH
-		
+		if !started_magnet_in_initiative:
+			magnet_strength = fixed.mul(magnet_strength, NO_INITIATIVE_MAGNET_MODIFIER)
+			
+			
 		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
 		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
-		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT)
+		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT if started_magnet_in_initiative else NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT)
 		if combo_count <= 0:
 			force.x = force.x if !opponent.is_grounded() else fixed.mul(force.x, "0.65")
 
@@ -226,6 +232,13 @@ func start_magnetizing():
 	stop_hustle_fx()
 	opponent.reset_momentum()
 	magnet_installed = false
+	started_magnet_in_initiative = false
+
+
+func on_state_initiative_start():
+	started_magnet_in_initiative = true
+	if magnet_ticks_left > 0:
+		current_state().initiative_effect()
 	pass
 
 func reset_combo():
@@ -284,6 +297,8 @@ func process_extra(extra):
 	if extra.has("pull_enabled") and magnet_installed and !buffer_armor:
 		if extra.pull_enabled:
 			start_magnetizing()
+
+
 
 func _on_state_exited(state):
 	._on_state_exited(state)

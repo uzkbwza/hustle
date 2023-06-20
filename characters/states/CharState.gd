@@ -5,6 +5,7 @@ class_name CharacterState
 signal state_interruptable()
 signal state_hit_cancellable()
 
+
 const WHIFF_SUPER_GAIN = 10
 
 enum ActionType {
@@ -304,6 +305,9 @@ func process_hitboxes():
 func spawn_exported_projectile():
 	.spawn_exported_projectile()
 
+func initiative_effect():
+	host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
+
 func _tick_shared():
 	if current_tick == 0:
 		initiative_startup_reduction = false
@@ -311,12 +315,14 @@ func _tick_shared():
 		hit_cancelled = false
 #		hit_cancelled = false
 		var forward_movement_initiative = host.was_moving_forward()
-		if (initiative_effect and host.initiative):
-			if host.initiative_effect:
-				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())
-			host.initiative_effect = false
-			if initiative_startup_reduction_amount > 0:
-				initiative_startup_reduction = true
+		if host.initiative:
+			if (initiative_effect):
+				if host.initiative_effect:
+					initiative_effect()
+				host.initiative_effect = false
+				if initiative_startup_reduction_amount > 0:
+					initiative_startup_reduction = true
+			host.on_state_initiative_start()
 #		elif forward_movement_initiative:
 #			if initiative_effect:
 #				host.spawn_particle_effect(preload("res://fx/YomiEffect.tscn"), host.get_center_position_float())

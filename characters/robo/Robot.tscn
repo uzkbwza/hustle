@@ -966,7 +966,8 @@ grenade_object
 flame_touching_opponent
 magnet_installed
 magnet_scale
-used_earthquake_grab"
+used_earthquake_grab
+started_magnet_in_initiative"
 num_air_movements = 3
 character_portrait = ExtResource( 76 )
 character_portrait2 = ExtResource( 206 )
@@ -996,6 +997,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]

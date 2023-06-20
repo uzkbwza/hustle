@@ -11,7 +11,6 @@ func process_projectile(obj):
 
 func _enter():
 	initiative_effect = host.combo_count == 0
-	
 
 func _tick():
 	if host.initiative and host.combo_count == 0:

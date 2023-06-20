@@ -1220,6 +1220,9 @@ func update_advantage():
 		initiative_effect = true
 	initiative = new_adv
 
+func on_state_initiative_start():
+	pass
+
 func clear_buffer():
 	buffered_input = {}
 
