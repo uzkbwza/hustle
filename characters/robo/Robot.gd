@@ -20,6 +20,7 @@ const MAGNET_RADIUS_DIST = "200"
 const MAGNET_MOVEMENT_AMOUNT = "18"
 const NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT = "9"
 const NEUTRAL_MAGNET_MODIFIER = "0.25"
+const NEUTRAL_MAGNET_MODIFIER_MAX = "2.75"
 
 var loic_draining = false
 var armor_pips = 1
@@ -128,6 +129,7 @@ func magnetize():
 		var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
+		var magnet_direct_modifier = fixed_map(min_dist, max_dist, NEUTRAL_MAGNET_MODIFIER, NEUTRAL_MAGNET_MODIFIER_MAX, dist)
 
 		if combo_count == 0:
 			magnet_strength = fixed.mul(magnet_strength, NEUTRAL_MAGNET_MODIFIER)
@@ -135,7 +137,12 @@ func magnetize():
 			
 		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
 		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
-		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT if started_magnet_in_initiative else NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT)
+		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT if combo_count > 0 else NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT)
+		
+		if combo_count == 0:
+			direct_movement = fixed.vec_mul(direct_movement.x, direct_movement.y, magnet_direct_modifier)
+			pass
+		
 		if combo_count <= 0:
 			force.x = force.x if !opponent.is_grounded() else fixed.mul(force.x, "0.65")
 
