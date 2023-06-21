@@ -19,7 +19,7 @@ const MAGNET_CENTER_DIST = "250"
 const MAGNET_RADIUS_DIST = "200"
 const MAGNET_MOVEMENT_AMOUNT = "18"
 const NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT = "9"
-const NO_INITIATIVE_MAGNET_MODIFIER = "0.25"
+const NEUTRAL_MAGNET_MODIFIER = "0.25"
 
 var loic_draining = false
 var armor_pips = 1
@@ -44,7 +44,7 @@ var magnet_ticks_left = 0
 var grenade_object = null
 var flame_touching_opponent = null
 var magnet_installed = false
-var magnet_scale = false
+#var magnet_scale = false
 var used_earthquake_grab = false
 var started_magnet_in_initiative = false
 
@@ -94,12 +94,12 @@ func has_armor():
 	return armor_active and !(current_state() is CharacterHurtState)
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
-	if magnet_scale:
-		if !scale:
-			combo_scale_amount = 0
-		combo_scale_amount += 1
-		scale = true
-		magnet_scale = false
+#	if magnet_scale:
+#		if !scale:
+#			combo_scale_amount = 0
+#		combo_scale_amount += 1
+#		scale = true
+#		magnet_scale = false
 	if combo_count == 0:
 		landed_move = true
 	.incr_combo(scale, force, projectile, combo_scale_amount)
@@ -124,18 +124,13 @@ func magnetize():
 	var my_pos_relative = opponent.obj_local_center(self)
 	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
 	if fixed.gt(dist, "32"):
-				
-#		var magnet_strength = COMBO_MAGNET_STRENGTH if combo_count > 0 else MAGNET_STRENGTH
-#		if combo_count <= 0 and opponent.combo_count <= 0:
+
 		var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
-#			if fixed.lt(magnet_strength, MAGNET_MIN_STRENGTH):
-#				magnet_strength = MAGNET_MIN_STRENGTH
-#			elif fixed.gt(magnet_strength, MAGNET_MAX_STRENGTH):
-#				magnet_strength = MAGNET_MAX_STRENGTH
-		if !started_magnet_in_initiative:
-			magnet_strength = fixed.mul(magnet_strength, NO_INITIATIVE_MAGNET_MODIFIER)
+
+		if combo_count == 0:
+			magnet_strength = fixed.mul(magnet_strength, NEUTRAL_MAGNET_MODIFIER)
 			
 			
 		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
@@ -147,7 +142,6 @@ func magnetize():
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
 		if fixed.gt(dist, "90"):
 			opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
-
 
 func add_armor_pip():
 	if armor_pips < MAX_ARMOR_PIPS:
@@ -226,24 +220,24 @@ func tick():
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
-	if combo_count > 0:
-		magnet_scale = true
+#	if combo_count > 0:
+#		magnet_scale = true
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
 	opponent.reset_momentum()
 	magnet_installed = false
-	started_magnet_in_initiative = false
+#	started_magnet_in_initiative = false
 
 
-func on_state_initiative_start():
-	started_magnet_in_initiative = true
-	if magnet_ticks_left > 0:
-		current_state().initiative_effect()
-	pass
+#func on_state_initiative_start():
+#	started_magnet_in_initiative = true
+#	if magnet_ticks_left > 0:
+#		current_state().initiative_effect()
+#	pass
 
 func reset_combo():
 	.reset_combo()
-	magnet_scale = false
+#	magnet_scale = false
 	used_earthquake_grab = false
 
 func ground_pound_active_effect():

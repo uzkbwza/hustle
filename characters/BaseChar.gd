@@ -763,7 +763,7 @@ func increment_opponent_combo(hitbox):
 	var host = objs_map[hitbox.host]
 	var projectile = !host.is_in_group("Fighter")
 	var will_scale = hitbox.scale_combo or opponent.combo_count == 0
-	
+
 	if hitbox.increment_combo:
 		opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
 
@@ -792,7 +792,7 @@ func launched_by(hitbox):
 	nudge_amount = hitbox.sdi_modifier
 	
 	var will_launch =  hitbox.ignore_armor or !has_armor()
-	
+	var scaling_offset = hitbox.combo_scaling_amount - 1
 #	current_prediction = -1
 	if will_launch:
 		var state
@@ -812,7 +812,8 @@ func launched_by(hitbox):
 		var projectile = !host.is_in_group("Fighter")
 
 		increment_opponent_combo(hitbox)
-
+		
+		
 		state_machine._change_state(state, {"hitbox": hitbox})
 		if hitbox.disable_collision:
 			colliding_with_opponent = false
@@ -834,7 +835,7 @@ func launched_by(hitbox):
 		hit_during_armor = true
 
 	emit_hit_by_signal(hitbox)
-	take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
+	take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier, scaling_offset)
 
 	if will_launch:
 		state_tick()
@@ -1008,20 +1009,21 @@ func get_penalty_damage_modifier():
 		return "1.0"
 	return fixed.add("1.0", fixed.mul(fixed.div(str(penalty - min_penalty_for_damage), str(MAX_PENALTY - min_penalty_for_damage)), "0.5"))
 
-func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0"):
+func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0", combo_scaling_offset=0):
 	if opponent.combo_count == 0:
 		trail_hp = hp
+
 	if damage == 0:
 		return
+
 	gain_burst_meter(damage / BURST_ON_DAMAGE_AMOUNT)
 	var damage_score = Utils.int_max(damage, minimum)
-	damage = Utils.int_max(combo_stale_damage(damage), 1)
+	damage = Utils.int_max(combo_stale_damage(damage, combo_scaling_offset), 1)
 	damage = Utils.int_max(damage, minimum)
 	damage = Utils.int_max(guts_stale_damage(damage), 1)
 	damage = fixed.round(fixed.mul(str(damage), get_penalty_damage_modifier()))
 	var meter_gain = fixed.round(fixed.mul(str(damage / DAMAGE_SUPER_GAIN_DIVISOR), meter_gain_modifier))
-#	damage = fixed.round(fixed.mul(str(damage), MISSED_BRACE_DAMAGE_MULTIPLIER if hit_out_of_brace else "1.0"))
-	
+
 	opponent.gain_super_meter(meter_gain)
 	gain_super_meter(damage / DAMAGE_TAKEN_SUPER_GAIN_DIVISOR)
 	damage = fixed.round(fixed.mul(fixed.mul(str(damage), damage_taken_modifier), global_damage_modifier))
@@ -1050,8 +1052,8 @@ func guts_stale_damage(damage: int):
 	damage = fixed.round(fixed.mul(str(damage), guts))
 	return damage
 
-func combo_stale_damage(damage: int):
-	var staling = get_combo_stale(Utils.int_max(opponent.combo_count + (opponent.combo_proration if opponent.combo_count > 1 else 0) - 1, 0))
+func combo_stale_damage(damage: int, combo_scaling_offset=0):
+	var staling = get_combo_stale(Utils.int_max(opponent.combo_count - combo_scaling_offset + (opponent.combo_proration if opponent.combo_count > 1 else 0) - 1, 0))
 	return fixed.round(fixed.mul(str(damage), staling))
 
 func can_parry_hitbox(hitbox):
