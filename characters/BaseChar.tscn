@@ -1,4 +1,4 @@
-[gd_scene load_steps=183 format=2]
+[gd_scene load_steps=181 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -134,7 +134,6 @@
 [ext_resource path="res://sound/common/parry2.wav" type="AudioStream" id=132]
 [ext_resource path="res://sound/common/instant_cancel.wav" type="AudioStream" id=133]
 [ext_resource path="res://characters/CharacterMaterial.tres" type="Material" id=134]
-[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=135]
 [ext_resource path="res://sound/common/super.wav" type="AudioStream" id=136]
 [ext_resource path="res://sound/common/super2.wav" type="AudioStream" id=137]
 [ext_resource path="res://sound/common/super5.wav" type="AudioStream" id=138]
@@ -180,21 +179,6 @@
 [ext_resource path="res://sound/common/swipe1.wav" type="AudioStream" id=178]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/AirGrabActionUIData.tscn" type="PackedScene" id=179]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/GrabActionUIData.tscn" type="PackedScene" id=180]
-
-[sub_resource type="ShaderMaterial" id=2]
-resource_local_to_scene = true
-shader = ExtResource( 135 )
-shader_param/use_extra_color_1 = false
-shader_param/use_extra_color_2 = false
-shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
-shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
-shader_param/color = Color( 1, 1, 1, 1 )
-shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
-shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
-shader_param/max_color_distance = 0.01
-shader_param/super_dim = false
-shader_param/use_outline = false
-shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -405,7 +389,6 @@ animations = [ {
 } ]
 
 [node name="BaseChar" groups=["Fighter"] instance=ExtResource( 3 )]
-material = SubResource( 2 )
 script = ExtResource( 1 )
 gravity = "0.5"
 max_air_speed = "13"
@@ -789,7 +772,6 @@ type = 4
 button_texture = ExtResource( 174 )
 air_type = 2
 busy_interrupt_type = 1
-selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -806,7 +788,6 @@ type = 4
 button_texture = ExtResource( 176 )
 air_type = 2
 busy_interrupt_type = 1
-selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -824,7 +805,6 @@ type = 4
 button_texture = ExtResource( 177 )
 air_type = 2
 busy_interrupt_type = 1
-selectable = false
 interrupt_from_string = "BusyHurt
 CounterAttack"
 interrupt_into_string = "Grounded
@@ -1317,6 +1297,7 @@ GroundedGrab"
 interrupt_into_string = "Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+whiff_meter_gain_multiplier = "0.0"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/Grab" index="0"]
 z_index = 1000
@@ -1351,6 +1332,7 @@ interrupt_into_string = "Aerial
 Grounded"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
+whiff_meter_gain_multiplier = "0.0"
 forward_throw_state = "AirForwardThrow"
 back_throw_state = "AirBackThrow"
 

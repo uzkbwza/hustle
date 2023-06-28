@@ -10,17 +10,22 @@ const LOIC_METER: int = 1000
 const START_LOIC_METER: int = 500
 const LOIC_GAIN = 6
 const LOIC_GAIN_NO_ARMOR = 6
-const MAGNET_TICKS = 8
+const MAGNET_TICKS = 50
 const MAGNET_STRENGTH = "2"
-const COMBO_MAGNET_STRENGTH = "0.5"
-const MAGNET_MAX_STRENGTH = "1.5"
-const MAGNET_MIN_STRENGTH = "0.5"
-const MAGNET_CENTER_DIST = "250"
-const MAGNET_RADIUS_DIST = "200"
-const MAGNET_MOVEMENT_AMOUNT = "18"
-const NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT = "9"
+const COMBO_MAGNET_STRENGTH = "1.0"
+const MAGNET_MAX_STRENGTH = "2.0"
+const MAGNET_MIN_STRENGTH = "0.0"
+const MAGNET_CENTER_DIST = "160"
+const MAGNET_RADIUS_DIST = "20"
+const MAGNET_SAFE_DIST = MAGNET_CENTER_DIST
+const MAGNET_MOVEMENT_AMOUNT = "14"
+const NO_COMBO_MAGNET_MOVEMENT_AMOUNT = "9"
+const NEUTRAL_MAGNET_LONG_DISTANCE_EXTRA_STRENGTH = "1"
+const NEUTRAL_MAGNET_EXTRA_STRENGTH_DISTANCE = "175"
 const NEUTRAL_MAGNET_MODIFIER = "0.25"
 const NEUTRAL_MAGNET_MODIFIER_MAX = "2.75"
+const MAGNET_VISUAL_ARC_SIZE = 20000
+const ARMOR_STARTUP_TICKS = 3
 
 var loic_draining = false
 var armor_pips = 1
@@ -45,12 +50,17 @@ var magnet_ticks_left = 0
 var grenade_object = null
 var flame_touching_opponent = null
 var magnet_installed = false
+var armor_startup_ticks = 0
 #var magnet_scale = false
 var used_earthquake_grab = false
 var started_magnet_in_initiative = false
 
+
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
+onready var magnet_polygon = $"%MagnetPolygon"
+onready var magnet_polygon2 = $"%MagnetPolygon2"
+
 onready var chainsaw_arm_ghosts = [
 ]
 
@@ -59,6 +69,39 @@ func _ready():
 	drive_jump_sprite.set_material(sprite.get_material())
 	for ghost in chainsaw_arm_ghosts:
 		ghost.set_material(sprite.get_material())
+	setup_magnet_circle()
+
+func setup_magnet_circle():
+	if is_ghost:
+		return
+
+	var magnet_poly_size = 2000
+	
+	magnet_polygon.polygon = PoolVector2Array()
+	magnet_polygon2.polygon = PoolVector2Array()
+
+	for mp in [magnet_polygon, magnet_polygon2]:
+		var outer = []
+		var hole = []
+		for i in range(65):
+			var t = ((PI / 64.0) * i)
+			var vec1 = Utils.ang2vec(t) * float(MAGNET_CENTER_DIST)
+			var vec2 = Utils.ang2vec(t) * float(magnet_poly_size)
+			if mp == magnet_polygon2:
+				vec1 *= -1
+				vec2 *= -1
+			outer.append(vec1)
+			hole.append(vec2)
+			
+	#	print(magnet_polygon.polygon)
+	#	print(circle_polygon)
+		var clipped = Geometry.clip_polygons_2d(PoolVector2Array(hole), PoolVector2Array(outer))
+		mp.polygon = clipped[0]
+	#	print(circle_polygon)
+	#	print(Geometry.is_polygon_clockwise(magnet_polygon.polygon))
+#		print(mp.polygon)
+#		side.mp.polygon = clipped
+#	print(magnet_polygon.polygon)
 
 func init(pos=null):
 	.init(pos)
@@ -89,6 +132,9 @@ func copy_to(f: BaseObj):
 	if flying_dir != null:
 		f.flying_dir = flying_dir.duplicate(true)
 	f.flame_touching_opponent = flame_touching_opponent
+	f.magnet_polygon.polygon = magnet_polygon.polygon
+	f.magnet_polygon2.polygon = magnet_polygon2.polygon
+	
 	pass
 
 func has_armor():
@@ -129,26 +175,28 @@ func magnetize():
 		var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
 		var magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
-		var magnet_direct_modifier = fixed_map(min_dist, max_dist, NEUTRAL_MAGNET_MODIFIER, NEUTRAL_MAGNET_MODIFIER_MAX, dist)
+		if fixed.lt(magnet_strength, "0"):
+			magnet_strength = "0"
+#		print(magnet_strength)
+
 
 		if combo_count == 0:
 			magnet_strength = fixed.mul(magnet_strength, NEUTRAL_MAGNET_MODIFIER)
 			
+
 			
 		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
 		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
-		var direct_movement = fixed.vec_mul(dir.x, dir.y, MAGNET_MOVEMENT_AMOUNT if combo_count > 0 else NO_INITIATIVE_MAGNET_MOVEMENT_AMOUNT)
-		
-		if combo_count == 0:
-			direct_movement = fixed.vec_mul(direct_movement.x, direct_movement.y, magnet_direct_modifier)
-			pass
-		
-		if combo_count <= 0:
-			force.x = force.x if !opponent.is_grounded() else fixed.mul(force.x, "0.65")
+		var direct_movement_amount = fixed.mul(MAGNET_MOVEMENT_AMOUNT, magnet_strength)
+
+#		print(direct_movement_amount)
+
+		var direct_movement = fixed.vec_mul(dir.x, dir.y, direct_movement_amount)
+
 
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
-		if fixed.gt(dist, "90"):
-			opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
+		opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
+#		if fixed.gt(dist, "90"):
 
 func add_armor_pip():
 	if armor_pips < MAX_ARMOR_PIPS:
@@ -165,6 +213,16 @@ func tick():
 		got_hit = false
 		buffer_armor = false
 		armor_active = false
+		if armor_startup_ticks > 0:
+			armor_startup_ticks = 0
+
+	elif armor_startup_ticks > 0:
+		armor_startup_ticks -= 1
+		if armor_startup_ticks == 0:
+			armor_active = true
+			spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect2.tscn"), Vector2(0, -16))
+			play_sound("ArmorBeep2")
+			buffer_armor = false
 #	if armor_active:
 #		armor_pips = 0
 	if magnet_ticks_left > 0:
@@ -173,6 +231,7 @@ func tick():
 		magnet_ticks_left -= 1
 	if magnet_ticks_left == 0:
 		stop_magnet_fx()
+		pass
 	if landed_move:
 		if not (current_state() is CharacterHurtState):
 			add_armor_pip()
@@ -268,11 +327,15 @@ func stop_hustle_fx():
 	$"%HustleEffect".stop_emitting()
 	
 func start_magnet_fx():
-	$"%MagnetEffect".start_emitting()
+#	$"%MagnetEffect".start_emitting()
+	magnet_polygon.show()
+	magnet_polygon2.show()
 
 func stop_magnet_fx():
-	$"%MagnetEffect".stop_emitting()
-
+#	$"%MagnetEffect".stop_emitting()
+	magnet_polygon.hide()
+	magnet_polygon2.hide()
+	
 func process_extra(extra):
 	.process_extra(extra)
 	var can_fly = true
@@ -304,10 +367,7 @@ func process_extra(extra):
 func _on_state_exited(state):
 	._on_state_exited(state)
 	if buffer_armor:
-		armor_active = true
-		spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect2.tscn"), Vector2(0, -16))
-		play_sound("ArmorBeep2")
-		buffer_armor = false
+		armor_startup_ticks += ARMOR_STARTUP_TICKS
 		armor_pips = 0
 	else:
 		armor_active = false
@@ -322,7 +382,10 @@ func on_state_interruptable(state=null):
 #	if flying_states_left == 0:
 #		flying_dir = null
 	
-
+	
+func _draw():
+	if magnet_ticks_left > 0:
+		draw_arc(Vector2(), float(MAGNET_SAFE_DIST) + Utils.wave(-2, 2, 0.5), 0, TAU, 128, Color("aad440b6"), 3.0)
 
 #func launched_by(hitbox):
 #	if armor_pips > 0:

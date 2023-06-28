@@ -50,6 +50,8 @@ func show_options():
 			$"%FlyEnabled".set_pressed_no_signal(fighter.fly_ticks_left > 0)
 	if fighter.armor_pips > 0:
 		$"%ArmorEnabled".show()
+	if fighter.current_state().state_name == "WhiffInstantCancel":
+		$"%ArmorEnabled".hide()
 	return
 
 func reset():

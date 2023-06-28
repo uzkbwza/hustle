@@ -1,4 +1,4 @@
-[gd_scene load_steps=443 format=2]
+[gd_scene load_steps=442 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -433,21 +433,6 @@
 [ext_resource path="res://characters/robo/sprites/ground_pound_throw3.png" type="Texture" id=431]
 [ext_resource path="res://characters/robo/sprites/ground_pound_throw5.png" type="Texture" id=432]
 [ext_resource path="res://characters/robo/states/EarthquakeThrow.gd" type="Script" id=433]
-
-[sub_resource type="ShaderMaterial" id=1]
-resource_local_to_scene = true
-shader = ExtResource( 3 )
-shader_param/use_extra_color_1 = false
-shader_param/use_extra_color_2 = false
-shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
-shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
-shader_param/color = Color( 1, 1, 1, 1 )
-shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
-shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
-shader_param/max_color_distance = 0.01
-shader_param/super_dim = false
-shader_param/use_outline = false
-shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -934,7 +919,6 @@ shader_param/use_outline = false
 shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="Robot" instance=ExtResource( 1 )]
-material = SubResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
 "_editor_description_": "flying"
@@ -967,7 +951,8 @@ flame_touching_opponent
 magnet_installed
 magnet_scale
 used_earthquake_grab
-started_magnet_in_initiative"
+started_magnet_in_initiative
+armor_startup_ticks"
 num_air_movements = 3
 character_portrait = ExtResource( 76 )
 character_portrait2 = ExtResource( 206 )
@@ -988,6 +973,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1032,6 +1018,24 @@ z_index = -10
 free = false
 one_shot = false
 start_enabled = false
+
+[node name="MagnetPolygon" type="Polygon2D" parent="Flip" index="4"]
+unique_name_in_owner = true
+visible = false
+z_index = -10
+color = Color( 0.831373, 0.25098, 0.713726, 0.133333 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="MagnetPolygon2" type="Polygon2D" parent="Flip" index="5"]
+unique_name_in_owner = true
+visible = false
+z_index = -10
+color = Color( 0.831373, 0.25098, 0.713726, 0.133333 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="CornerCarryFlySound" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
 stream = ExtResource( 292 )
@@ -1794,29 +1798,29 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
+},
 ExtResource( 200 ): {
 "x": 5,
 "y": -12
-},
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
 },
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
 },
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
-},
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
 }
 }
 update_facing_on_exit = false
@@ -1992,45 +1996,45 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
 },
 ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 118 ): {
 "x": 67,
@@ -2093,17 +2097,9 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 253 ): {
-"x": 116,
-"y": -66
-},
 ExtResource( 258 ): {
 "x": 78,
 "y": -50
-},
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -2113,13 +2109,21 @@ ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 254 ): {
-"x": 124,
-"y": -72
-},
 ExtResource( 260 ): {
 "x": 40,
 "y": -34
+},
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -2279,13 +2283,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 287 ): {
-"x": -20,
-"y": -14
-},
 ExtResource( 286 ): {
 "x": 34,
 "y": -13
+},
+ExtResource( 287 ): {
+"x": -20,
+"y": -14
 }
 }
 interruptible_on_opponent_turn = true
@@ -2320,45 +2324,45 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
 },
 ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 118 ): {
 "x": 67,
@@ -3027,21 +3031,21 @@ sfx_tick = 18
 sfx_volume = -8.0
 flip_frame = 11
 throw_positions = {
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
+ExtResource( 427 ): {
+"x": -19,
+"y": -12
 },
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
 },
-ExtResource( 427 ): {
-"x": -19,
-"y": -12
-},
 ExtResource( 432 ): {
 "x": 44,
 "y": -7
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 }
 }
 title = "Back Throw"
@@ -3520,17 +3524,17 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 },
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
 },
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
 },
 ExtResource( 374 ): {
 "x": 14,
@@ -3604,8 +3608,6 @@ interrupt_exceptions_string = "GroundedGrab"
 allowed_stances_string = "Drive
 "
 beats_backdash = true
-velocity_forward_meter_gain_multiplier = "0.75"
-whiff_meter_gain_multiplier = "0.5"
 SPEED = "3.5"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DriveForward" index="0"]
@@ -3706,7 +3708,7 @@ apply_fric = true
 apply_grav = true
 reset_momentum = true
 anim_length = 9
-title = "MAGNETIZE"
+title = "GRAVITY FIELD"
 type = 3
 button_texture = ExtResource( 398 )
 air_type = 2
@@ -3802,10 +3804,6 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
-},
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
@@ -3814,13 +3812,17 @@ ExtResource( 309 ): {
 "x": -21,
 "y": -9
 },
+ExtResource( 308 ): {
+"x": -21,
+"y": -8
+},
 ExtResource( 304 ): {
 "x": 29,
 "y": 11
 },
-ExtResource( 308 ): {
-"x": -21,
-"y": -8
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 }
 }
 release_frame = 18
@@ -3884,10 +3886,6 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
-},
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
@@ -3896,13 +3894,17 @@ ExtResource( 309 ): {
 "x": -21,
 "y": -11
 },
+ExtResource( 308 ): {
+"x": -22,
+"y": -12
+},
 ExtResource( 304 ): {
 "x": 34,
 "y": 7
 },
-ExtResource( 308 ): {
-"x": -22,
-"y": -12
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 }
 }
 release_frame = 18

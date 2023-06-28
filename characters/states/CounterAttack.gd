@@ -34,6 +34,8 @@ func _tick():
 	host.apply_forces_no_limit()
 
 func is_usable():
+	if !host.brace_enabled:
+		return false
 	if !(host.bursts_available > 0 or host.burst_meter >= fixed.round(fixed.mul(str(host.MAX_BURST_METER), "0.125"))):
 		return false
 	if !.is_usable():

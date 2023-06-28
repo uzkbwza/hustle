@@ -43,7 +43,7 @@ func _frame_3():
 	if camera:
 		camera.bump(Vector2(float(dir.x), float(dir.y)), SCREENSHAKE_AMOUNT, 0.25)
 	var bullet = host.spawn_object(BULLET_SCENE, pos.x + fixed.round(barrel_location.x), pos.y + fixed.round(barrel_location.y), true, barrel_location, false)
-	hitbox.x = fixed.round(barrel_location.x)
+	hitbox.x = fixed.round(barrel_location.x)  * host.get_facing_int()
 	hitbox.y = fixed.round(barrel_location.y)
 	bullet.dir_x = dir.x
 	bullet.dir_y = dir.y

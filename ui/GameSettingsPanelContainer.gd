@@ -40,6 +40,7 @@ onready var settings_nodes = {
 	"min_di_scaling": $"%MinDIScalingMeter",
 	"max_di_scaling": $"%MaxDIScalingMeter",
 	"di_combo_limit": $"%DIComboLimit",
+	"brace_enabled": $"%BraceEnabled",
 }
 
 var float_to_string = [
