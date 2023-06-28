@@ -291,7 +291,11 @@ func start_magnetizing():
 #		magnet_scale = true
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
-	opponent.reset_momentum()
+	var my_pos_relative = opponent.obj_local_center(self)
+	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
+	if fixed.gt(dist, MAGNET_CENTER_DIST):
+		opponent.reset_momentum()
+		pass
 	magnet_installed = false
 #	started_magnet_in_initiative = false
 
