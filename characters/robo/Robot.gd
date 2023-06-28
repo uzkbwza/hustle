@@ -26,6 +26,7 @@ const NEUTRAL_MAGNET_MODIFIER = "0.25"
 const NEUTRAL_MAGNET_MODIFIER_MAX = "2.75"
 const MAGNET_VISUAL_ARC_SIZE = 20000
 const ARMOR_STARTUP_TICKS = 3
+const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
 
 var loic_draining = false
 var armor_pips = 1
@@ -352,6 +353,10 @@ func process_extra(extra):
 			flying_dir = extra.fly_dir
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled
+		if current_state().state_name == "WhiffInstantCancel":
+			armor_startup_ticks += WC_EXTRA_ARMOR_STARTUP_TICKS
+			print("hello")
+			
 	if extra.has("nade_activated") and grenade_object != null:
 		if extra.nade_activated:
 			var nade = obj_from_name(grenade_object)

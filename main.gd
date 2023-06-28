@@ -38,6 +38,8 @@ func _ready():
 	$"%GhostWaitTimer".connect("timeout", self, "_on_ghost_wait_timer_timeout")
 	$"%FreezeOnMyTurn".connect("pressed", self, "start_ghost")
 	$"%FreezeOnMyTurn".connect("toggled", Global, "save_option", ["freeze_ghost_prediction"])
+	$"%FreezeSound".connect("toggled", Global, "save_option", ["freeze_ghost_sound"])
+	$"%FreezeSound".connect("pressed", self, "start_ghost")
 	$"%AfterimageButton".connect("pressed", self, "start_ghost")
 	$"%AfterimageButton".connect("toggled", Global, "save_option", ["ghost_afterimages"])
 	$"%GameUI".hide()
@@ -274,7 +276,8 @@ func _start_ghost():
 	call_deferred("fix_ghost_objects", ghost_game)
 
 func ghost_my_turn():
-	$GhostMyTurnSound.play()
+	if Global.freeze_ghost_sound:
+		$GhostMyTurnSound.play()
 
 func make_afterimage():
 	if !$"%AfterimageButton".pressed:
