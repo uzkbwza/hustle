@@ -9,10 +9,11 @@ export var self_ = false
 func _enter():
 	host.loic_draining = true
 	host.can_loic = false
+	self_ = data.Self
 
 func process_projectile(obj):
 	obj.set_pos(host.opponent.get_pos().x if !self_ else host.get_pos().x, 0)
-	var t = data.x
+	var t = data.Delay.x
 	t = fixed.div(str(t), "100")
 	var min_ = MIN_AIM_TICKS_GALVANIZE if self_ else MIN_AIM_TICKS
 	t = fixed.mul(t, str(MAX_AIM_TICKS - min_))

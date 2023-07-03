@@ -2,7 +2,7 @@ extends DefaultFireball
 
 #const MOVE_SPEED = "0.5"
 const MOVE_T = "0.15"
-const AIM_INCREASE = "0.004"
+const AIM_INCREASE = "0.007"
 const FADE_IN_TIME = 6
 const MAX_T = "0.50"
 

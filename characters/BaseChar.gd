@@ -769,9 +769,8 @@ func increment_opponent_combo(hitbox):
 	if hitbox.increment_combo:
 		opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
 
-	if opponent.combo_count <= 1:
-		opponent.combo_proration = hitbox.damage_proration
-
+		if opponent.combo_count <= 1:
+			opponent.combo_proration = hitbox.damage_proration
 
 func launched_by(hitbox):
 	

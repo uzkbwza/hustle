@@ -115,6 +115,7 @@ projectile_scene = ExtResource( 19 )
 z_index = 1000
 script = ExtResource( 12 )
 y = -200000
+width = 29
 height = 200000
 damage = 190
 damage_in_combo = 110

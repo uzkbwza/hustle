@@ -2094,13 +2094,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded

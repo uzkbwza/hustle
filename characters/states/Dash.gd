@@ -12,16 +12,21 @@ export var spawn_particle = true
 export var startup_lag = 0
 export var stop_frame = 0
 export var back_penalty = 5
-export var auto_correct = true
+
 export var speed_limit = "40"
 var updated = false
 var charged = false
+var auto = false
 
 var dist_ratio = "1.0"
 
 func _enter():
 	updated = false
 	charged = false
+	if data:
+		if data.has("Distance"):
+			auto = data.AutoCorrect
+			data = data.Distance
 
 func get_velocity_forward_meter_gain_multiplier():
 	return fixed.mul(velocity_forward_meter_gain_multiplier, dist_ratio)
@@ -70,11 +75,11 @@ func _tick():
 #		interruptible_on_opponent_turn = true
 	if stop_frame > 0 and current_tick == stop_frame and !repeated:
 		host.reset_momentum()
-#
-#	if auto_correct and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
-#		host.update_data()
-#		var vel = host.get_vel()
-#		if !fixed.eq(vel.x, "0") and fixed.sign(vel.x) != host.get_opponent_dir():
-#			host.update_facing()
-#			updated = true
-#			host.set_vel(fixed.mul(fixed.abs(vel.x), str(host.get_opponent_dir())), vel.y)
+
+	if auto and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
+		host.update_data()
+		var vel = host.get_vel()
+		if !fixed.eq(vel.x, "0") and fixed.sign(vel.x) != host.get_opponent_dir():
+			host.update_facing()
+			updated = true
+			host.set_vel(fixed.mul(fixed.abs(vel.x), str(host.get_opponent_dir())), vel.y)
