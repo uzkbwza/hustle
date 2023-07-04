@@ -1011,6 +1011,7 @@ func get_penalty_damage_modifier():
 	return fixed.add("1.0", fixed.mul(fixed.div(str(penalty - min_penalty_for_damage), str(MAX_PENALTY - min_penalty_for_damage)), "0.5"))
 
 func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0", combo_scaling_offset=0):
+	
 	if opponent.combo_count == 0:
 		trail_hp = hp
 
@@ -1501,10 +1502,11 @@ func tick():
 func get_move_dir():
 	return fixed.sign(last_vel.x)
 
-func add_penalty(amount):
+func add_penalty(amount, ignore_min_distance=false):
 	if !sadness_enabled:
 		return
-	if amount > 0:
+
+	if !ignore_min_distance and amount > 0:
 		var opp_pos = obj_local_center(opponent)
 		var opp_dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
 		if fixed.lt(opp_dist, MIN_DIST_SADNESS):

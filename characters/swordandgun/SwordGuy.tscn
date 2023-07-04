@@ -1347,7 +1347,7 @@ type = 2
 data_ui_scene = ExtResource( 276 )
 button_texture = ExtResource( 187 )
 air_type = 2
-iasa_at = 16
+iasa_at = 21
 self_hit_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
@@ -1369,7 +1369,7 @@ width = 19
 height = 19
 damage = 110
 damage_in_combo = 80
-hitstun_ticks = 8
+hitstun_ticks = 7
 combo_hitstun_ticks = 18
 hitlag_ticks = 2
 victim_hitlag = 4
@@ -1663,6 +1663,7 @@ height = 4
 damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
+damage_proration = 1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1679,6 +1680,7 @@ height = 4
 damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
+damage_proration = 1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1937,7 +1939,8 @@ hit_cancel_into_string = "GroundedSpecial
 GroundedAttack
 GroundedSuper"
 interrupt_exceptions_string = "Teleport"
-hit_cancel_exceptions_string = "Teleport"
+hit_cancel_exceptions_string = "Teleport
+LightningSlice"
 auto_fall = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Stinger" index="0"]
@@ -1956,7 +1959,7 @@ hit_sound = ExtResource( 141 )
 dir_y = "-0.25"
 knockback = "11.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 7
+minimum_grounded_frames = 10
 knockdown = true
 hard_knockdown = true
 wall_slam = true
@@ -2094,13 +2097,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded

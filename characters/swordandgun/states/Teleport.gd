@@ -76,17 +76,18 @@ func _frame_0():
 	var backward = fixed.sign(scaled.x) != host.get_facing_int() and scaled.x != "0"
 	if fixed.gt(x_dist, "0.51"):
 		if backward:
-			host.add_penalty(10)
+#			host.add_penalty(10)
 #			if !from_stance:
 			backwards_stall_frames = BACKWARDS_STALL_FRAMES
 			if !comboing:
 				backwards_stall_frames += BACKWARDS_STALL_FRAMES_NEUTRAL_EXTRA
 		else:
-			host.add_penalty(-5)
+#			host.add_penalty(-5)
+			pass
 	forward = !(backward or in_place)
 	if !comboing and fixed.lt(scaled.y, "-0.2"):
 		backwards_stall_frames += UPWARDS_STALL_FRAMES_NEUTRAL_EXTRA
-		host.add_penalty(10)
+#		host.add_penalty(10)
 	extra_frames = fixed.round(fixed.div(fixed.abs(scaled.x), EXTRA_FRAME_PER if !backward else EXTRA_FRAME_PER_BACKWARDS)) + (EXTRA_FRAME_IN_COMBOS if comboing else 0)
 	iasa_at += extra_frames
 #	print(current_tick)

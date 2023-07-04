@@ -3,6 +3,9 @@ extends CharacterState
 const MAX_X_DIST = 600
 const MAX_Y_DIST = 300
 const NEUTRAL_LAG = 2
+const BACKWARD_PENALTY_AMOUNT_PER_PX = "0.25"
+const BACKWARD_PENALTY_MAX_AMOUNT = 60
+const BACKWARD_PENALTY_MIN_AMOUNT = 10
 
 var obj_name
 var neutral_lag = 0
@@ -18,6 +21,12 @@ func _frame_6():
 		var obj = projectiles[-1]
 		var obj_pos = obj.get_pos()
 		var my_pos = host.get_hurtbox_center()
+		if host.combo_count <= 0:
+			var opponent_pos = host.opponent.get_hurtbox_center()
+			var obj_dist = Utils.int_abs(obj_pos.x - my_pos.x)
+			if Utils.int_sign(obj_pos.x - my_pos.x) != host.get_opponent_dir():
+				var penalty_amount = Utils.int_clamp(fixed.round(fixed.mul(BACKWARD_PENALTY_AMOUNT_PER_PX, str(obj_dist))), BACKWARD_PENALTY_MIN_AMOUNT, BACKWARD_PENALTY_MAX_AMOUNT)
+				host.add_penalty(penalty_amount, true)
 		host.set_pos(obj_pos.x, obj_pos.y)
 		obj.set_pos(my_pos.x, my_pos.y)
 		obj.set_facing(host.get_facing_int())
@@ -29,6 +38,7 @@ func _frame_6():
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 		host.detach()
+		
 	if host.combo_count == 0:
 		host.hitlag_ticks += 2
 

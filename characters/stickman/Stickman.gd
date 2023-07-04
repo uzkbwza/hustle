@@ -15,6 +15,7 @@ var pulling = false
 var used_grappling_hook = false
 var whip_beam_charged = false
 var substituted_objects = {}
+var skull_shaker_bleed_ticks = 0
 
 #var hook_dir = Vector2()
 
@@ -23,6 +24,8 @@ const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
 const MAX_PULL_UPWARD_SPEED = "-10"
 const BACKWARD_PULL_PENALTY = 2
+const SKULL_SHAKER_BLEED_TICKS = 70
+const SKULL_SHAKER_BLEED_DAMAGE = 10
 
 func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
@@ -68,6 +71,11 @@ func tick():
 				add_penalty(BACKWARD_PULL_PENALTY)
 	else:
 		pulling = false
+	
+	if skull_shaker_bleed_ticks > 0:
+		skull_shaker_bleed_ticks -= 1
+		if skull_shaker_bleed_ticks % 10 == 0:
+			opponent.take_damage(SKULL_SHAKER_BLEED_DAMAGE, 0, "0.25")
 	
 	if is_grounded():
 		used_grappling_hook = false

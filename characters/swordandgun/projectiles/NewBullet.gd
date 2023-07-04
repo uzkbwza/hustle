@@ -13,6 +13,7 @@ var last_pos_visual_ricochet = Vector2()
 
 var ricochet = false
 var speed = SPEED
+var no_draw_ticks = 0
 
 var last_hit_by = ""
 
@@ -25,8 +26,17 @@ func tick():
 	.tick()
 	pass
 
+func reset_line():
+	last_pos_visual = global_position
+	pass
+
+func reset_speed():
+	speed = SPEED
+
 func _draw():
 	if !disabled:
+		if no_draw_ticks > 0:
+			return
 		draw_line(to_local(last_pos_visual), Vector2(), Color("f2ff31"), 4.0)
 		if to_local(last_pos_visual) == Vector2():
 			draw_circle(Vector2(), 6.0, Color("f2ff31"))

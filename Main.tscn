@@ -984,7 +984,6 @@ align = 1
 valign = 1
 
 [node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -1793,8 +1792,9 @@ flat = true
 [node name="WorkshopUploader" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 visible = false
-margin_right = 113.0
-margin_bottom = 20.0
+margin_top = 180.0
+margin_right = 96.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )

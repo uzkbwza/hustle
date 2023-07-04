@@ -22,7 +22,7 @@ func _frame_6():
 		dir.x = fixed.mul(dir.x, "1.75")
 
 	if host.combo_count <= 0 and fixed.sign(dir.x) != host.get_facing_int():
-		host.add_penalty(20)
+		host.add_penalty(20, true)
 	var hitbox_offs = fixed.normalized_vec_times(dir.x, dir.y, HITBOX_OFFSET)
 	var center = host.get_hurtbox_center()
 	hitbox.dir_x = fixed.mul(hitbox_offs.x, str(host.get_facing_int()))

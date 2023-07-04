@@ -35,7 +35,7 @@ func _on_hit_something(obj, hitbox):
 func bounce_off_foresight():
 	if bounce_lag_ticks > 0:
 		return
-	var creator = host.creator
+	var creator = host.get_fighter()
 	if creator is Cowboy:
 		var after_image = host.obj_from_name(creator.after_image_object)
 		if after_image:
@@ -43,13 +43,24 @@ func bounce_off_foresight():
 			var dist = fixed.vec_len(str(diff.x), str(diff.y))
 			if fixed.lt(dist, FORESIGHT_DIST):
 #				after_image.disable()
-				var di = creator.current_di
-				if di.x != 0 or di.y != 0:
-					var dir = fixed.normalized_vec(str(di.x), str(di.y))
-					host.dir_x = str(dir.x)
-					host.dir_y = str(dir.y)
-					bounced_off_foresight = true
-					on_bounce(false)
+				bounce_full_control()
+				host.reset_speed()
+
+func bounce_full_control(force=false):
+	var creator = host.get_fighter()
+	if creator is Cowboy:
+		var di = creator.current_di
+		var di_active = di.x != 0 or di.y != 0
+		if di_active or force:
+			var dir = fixed.normalized_vec(str(di.x), str(di.y))
+			if force and !di_active:
+				dir = fixed.normalized_vec(host.dir_x, host.dir_y)
+			elif di_active:
+				dir = xy_to_dir(di.x, di.y)
+			host.dir_x = str(dir.x)
+			host.dir_y = str(dir.y)
+			bounced_off_foresight = true
+			on_bounce(false)
 
 func _enter():
 	host.set_facing(1) 
@@ -122,10 +133,14 @@ func _tick():
 
 	if fixed.lt(host.speed, MIN_SPEED):
 		host.disable()
+	if host.no_draw_ticks > 0:
+		host.no_draw_ticks -= 1
+
 
 func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	if bounce_lag_ticks > 0:
 		return
+	host.damages_own_team = true
 	bounces_left -= 1
 	if bounces_left == 0:
 		host.disable()

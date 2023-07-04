@@ -111,7 +111,8 @@ func tick():
 
 	if shifted_last_frame:
 		if current_state().current_tick == 1 and current_state().has_hitboxes and not "Grab" in current_state().state_name:
-			current_state().current_tick = 2
+			state_tick()
+			state_tick()
 		
 		shifted_last_frame = false
 
@@ -157,7 +158,6 @@ func process_extra(extra):
 		detonating = extra.detonate
 	if extra.has("shift"):
 		shifting = extra.shift
-			
 
 func can_bullet_cancel():
 	return bullets_left > 0 and has_gun

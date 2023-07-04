@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=2]
@@ -6,11 +6,18 @@
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
 [ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=5]
 [ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=6]
+[ext_resource path="res://characters/swordandgun/projectiles/states/AfterImageExplosionDefault.gd" type="Script" id=7]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
 shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -29,13 +36,16 @@ material = SubResource( 1 )
 always_parriable = true
 deletes_other_projectiles = false
 movable = false
-hitlag_modifier = "1.0"
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
 animation = "Default"
 
 [node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": ""
+}
 particle_scene = ExtResource( 3 )
 spawn_particle_on_enter = true
 move_x = 0
