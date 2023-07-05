@@ -28,7 +28,7 @@ func queue_state_change(state, data=null):
 	emit_signal("queue_change_with_data", state, data, self)
 
 func _previous_state_name():
-	return get_parent().states_stack[-2].name
+	return get_parent().states_stack[-2].name if get_parent().states_stack.size() > 1 else ""
 
 func _previous_state():
 	if get_parent().states_stack.size() > 1:

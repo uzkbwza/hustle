@@ -1035,6 +1035,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
 			var host = hurtbox.get_parent()
+			if host is ObjectState:
+				host = host.host
 			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if hitbox is ThrowBox and host.throw_invulnerable:

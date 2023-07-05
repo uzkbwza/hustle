@@ -1,9 +1,9 @@
 extends CharacterState
 
-const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash2.tscn")
+const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash2.tscn")	
 const BULLET_SCENE = preload("res://characters/swordandgun/projectiles/NewBullet.tscn")
 const SCREENSHAKE_AMOUNT = 12
-const REPEAT_STARTUP_LAG = 5
+const REPEAT_STARTUP_LAG = 3
 
 export var dodge = false
 
@@ -22,6 +22,7 @@ func _frame_0():
 	startup_lag = 0
 	if _previous_state_name() == "Shoot2":
 		startup_lag = REPEAT_STARTUP_LAG
+
 
 func _frame_3():
 	host.play_sound("Shoot")
@@ -55,7 +56,7 @@ func _frame_5():
 	if dodge:
 		queue_state_change("TechRoll", {"x": host.get_facing_int()})
 
-func _frame_8():
+func _frame_6():
 	host.shooting_arm.frame = 2
 
 func _tick():

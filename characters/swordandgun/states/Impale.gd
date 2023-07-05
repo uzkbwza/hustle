@@ -9,7 +9,7 @@ const EXTRA_FRAME_PER_PIXEL = "0.05"
 
 const MIN_LAG_DIST = "200"
 
-const DIST = 28
+const DIST = 32
 
 const max_lag_frames = 8
 

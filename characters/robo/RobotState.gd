@@ -9,6 +9,7 @@ export var super_freeze_ticks = 15
 export var super_effect = true
 export var can_fly = true
 export var throw_invuln_frames = 0
+export var super_scale_combo_meter = true
 
 func is_usable():
 	if !is_super:
@@ -24,7 +25,8 @@ func _frame_0_shared():
 	if !is_super:
 		return
 	if super_effect:
-		host.combo_supers += 1
+		if super_scale_combo_meter and (super_level if supers_used == -1 else supers_used) > 0:
+			host.combo_supers += 1
 		host.start_super(super_freeze_ticks)
 		host.play_sound("Super")
 		host.play_sound("Super2")
@@ -36,3 +38,4 @@ func _tick_shared():
 	._tick_shared()
 	if current_tick == throw_invuln_frames and throw_invuln_frames > 0:
 		host.end_throw_invulnerability()
+		

@@ -110,6 +110,7 @@ var hit_anything = false
 var hit_cancelled = false
 var started_during_combo = false
 
+var feinted_last = false
 var is_brace = false
 
 var feinting = false

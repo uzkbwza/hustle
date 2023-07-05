@@ -700,7 +700,7 @@ y = -19
 width = 38
 height = 38
 hitbox_type = 4
-hitstun_ticks = 22
+hitstun_ticks = 23
 victim_hitlag = 4
 cancellable = false
 hits_otg = true
@@ -713,7 +713,7 @@ hit_sound = ExtResource( 126 )
 dir_y = "-0.25"
 knockback = "14.0"
 launch_reversible = true
-start_tick = 3
+start_tick = 2
 active_ticks = 1
 
 [node name="OffensiveBurst" type="Node2D" parent="StateMachine" index="10"]
@@ -970,7 +970,6 @@ allowed_stances_string = "All"
 change_stance_to = "Normal"
 beats_backdash = true
 dash_speed = 12
-auto_correct = false
 
 [node name="DashBackward" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 6 )
