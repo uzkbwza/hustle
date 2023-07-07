@@ -2841,7 +2841,7 @@ cancellable = false
 hits_projectiles = false
 hit_sound = ExtResource( 144 )
 knockback = "6.0"
-start_tick = 7
+start_tick = 4
 active_ticks = 1
 
 [node name="ShootDodge2" type="Node2D" parent="StateMachine" index="50"]
@@ -2884,7 +2884,7 @@ cancellable = false
 hits_projectiles = false
 hit_sound = ExtResource( 144 )
 knockback = "6.0"
-start_tick = 7
+start_tick = 4
 active_ticks = 1
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="51"]
