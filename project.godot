@@ -104,7 +104,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/BaseChar.gd"
 }, {
-"base": "Reference",
+"base": "",
 "class": "FixedMath",
 "language": "NativeScript",
 "path": "res://bin/FixedMath.gdns"
@@ -457,7 +457,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/export_categories/plugin.cfg", "res://addons/helpers/plugin.cfg", "res://addons/multirun/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/export_categories/plugin.cfg", "res://addons/multirun/plugin.cfg" )
 
 [gui]
 

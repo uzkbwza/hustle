@@ -94,4 +94,5 @@ script = ExtResource( 4 )
 [node name="Camera2D" type="Camera2D" parent="Navigation2D"]
 offset = Vector2( 400, 300 )
 current = true
+
 [connection signal="button_down" from="ui/back_btn" to="." method="_on_back_btn_button_down"]

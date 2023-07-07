@@ -1,7 +1,9 @@
 [gd_resource type="GDNativeLibrary" format=2]
 
 [resource]
+entry/OSX.64 = "res://lib/tbfg_universal_mac.dylib"
 entry/Windows.64 = "res://lib/tbfg.dll"
 entry/X11.64 = "res://lib/tbfg.so"
+dependency/OSX.64 = [  ]
 dependency/Windows.64 = [ "res://lib/vcruntime140.dll" ]
 dependency/X11.64 = [  ]
