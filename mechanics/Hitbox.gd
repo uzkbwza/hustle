@@ -147,16 +147,14 @@ var whiff_sound_player
 var hit_sound_player
 var hit_bass_sound_player
 
-
 func copy_to(hitbox: CollisionBox):
-#	for variable in ["x", "y", "pos_x", "hits_otg", "hits_vs_grounded", "hits_vs_grounded", "pos_y", "dir_x", "dir_y", "damage", "knockback", "hitstun_ticks", "hitlag_ticks", "tick", "victim_hitlag", "active", "enabled"]:
-#		hitbox.set(variable, get(variable))
 	var properties = get_script().get_script_property_list()
 	for variable in properties:
 		var value = get(variable.name)
 		if not (value is Object or value is Array or value is Dictionary):
 			hitbox.set(variable.name, value)
-	
+	pass
+
 func is_projectile():
 	return !host.is_in_group("Fighter")
 
