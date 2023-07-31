@@ -1,6 +1,9 @@
 extends CharacterState
 
+export var defensive = false
+
 var started_falling = false
+
 
 func _enter():
 	host.start_invulnerability()
@@ -22,9 +25,14 @@ func _tick():
 	else:
 		host.start_invulnerability()
 	
-
 func _exit():
 	host.end_projectile_invulnerability()
 
 func is_usable():
 	return host.burst_enabled and .is_usable() and (host.bursts_available > 0)
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if defensive:
+		host.opponent.start_invulnerability()
+		host.gain_super_meter((host.MAX_SUPER_METER * 4) / 3)

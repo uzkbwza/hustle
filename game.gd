@@ -7,7 +7,7 @@ const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
-const CLASH_DAMAGE_DIFF = 40
+const CLASH_DAMAGE_DIFF = 25
 const CAMERA_PADDING = 20
 
 export(int) var char_distance = 200

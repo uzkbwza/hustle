@@ -27,13 +27,13 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="Padding" type="Control" parent="TopRow"]
-margin_right = 135.0
+margin_right = 20.0
 margin_bottom = 11.0
-rect_min_size = Vector2( 135, 0 )
+rect_min_size = Vector2( 20, 0 )
 
 [node name="Panel" type="Control" parent="TopRow"]
-margin_left = 136.0
-margin_right = 186.0
+margin_left = 21.0
+margin_right = 71.0
 margin_bottom = 11.0
 rect_min_size = Vector2( 50, 10 )
 
@@ -71,7 +71,7 @@ anchor_bottom = 0.0
 size_flags_horizontal = 1
 
 [node name="Padding2" type="Control" parent="TopRow"]
-margin_left = 187.0
+margin_left = 72.0
 margin_right = 301.0
 margin_bottom = 11.0
 mouse_filter = 2
@@ -145,9 +145,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -8.0
-margin_top = -214.5
+margin_top = -54.5
 margin_right = 8.0
-margin_bottom = -198.5
+margin_bottom = -38.5
 mouse_filter = 2
 expand = true
 stretch_mode = 4

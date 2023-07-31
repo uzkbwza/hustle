@@ -5,7 +5,6 @@ class_name CharacterState
 signal state_interruptable()
 signal state_hit_cancellable()
 
-
 const WHIFF_SUPER_GAIN = 10
 
 enum ActionType {
@@ -101,6 +100,29 @@ export var tick_priority = 0
 export var velocity_forward_meter_gain_multiplier = "1.0"
 export var whiff_meter_gain_multiplier = "1.0"
 
+export var _c_Super = 0
+export var super_level_ = 0
+export var supers_used_ = -1
+export var super_freeze_ticks_ = 15
+export var super_effect_ = false
+export var scale_combo_meter_ = false
+
+func _frame_0_shared():
+	if scale_combo_meter_ and (super_level_ if supers_used_ == -1 else supers_used_) > 0:
+		host.combo_supers += 1
+	if super_effect_:
+		host.super_effect(super_freeze_ticks_)
+	for i in range(super_level_ if supers_used_ == -1 else supers_used_):
+		host.use_super_bar()
+
+#func _enter_shared():
+#	._enter_shared()
+#	host.combo_supers += 1
+#	if super_effect:
+#		host.super_effect(super_freeze_ticks)
+#	for i in range(super_level if supers_used == -1 else supers_used):
+#		host.use_super_bar()
+
 var initiative_effect_spawned = false
 
 var dash_iasa = false
@@ -115,18 +137,40 @@ var is_brace = false
 
 var feinting = false
 
-var interrupt_into = []
-var interrupt_from = []
-var interrupt_exceptions = []
-var hit_cancel_into = []
-var hit_cancel_exceptions = []
-var busy_interrupt_into = []
-var allowed_stances = []
+var interrupt_into = [] setget , get_interrupt_into
+var interrupt_from = [] setget , get_interrupt_from
+var interrupt_exceptions = [] setget , get_interrupt_exceptions
+var hit_cancel_into = [] setget , get_hit_cancel_into
+var hit_cancel_exceptions = [] setget , get_hit_cancel_exceptions
+var busy_interrupt_into = [] setget , get_busy_interrupt_into
+var allowed_stances = [] setget , get_allowed_stances
 var usable_requirement_nodes = []
 
 var is_hurt_state = false
 var start_interruptible_on_opponent_turn = false
 var initiative_startup_reduction = false
+
+func get_interrupt_into():
+	return interrupt_into
+
+func get_interrupt_from():
+	return interrupt_from
+
+func get_interrupt_exceptions():
+	return interrupt_exceptions
+
+func get_hit_cancel_into():
+	return hit_cancel_into
+
+func get_hit_cancel_exceptions():
+	return hit_cancel_exceptions
+
+func get_busy_interrupt_into():
+	return busy_interrupt_into
+
+func get_allowed_stances():
+	return allowed_stances
+
 
 func init():
 	connect("state_interruptable", host, "on_state_interruptable", [self])
@@ -163,8 +207,8 @@ func init():
 		starting_iasa_at = iasa_at
 	interrupt_frames = interrupt_frames.duplicate(true)
 	.init()
-#
-#func copy_to(state: ObjectState):
+
+# func copy_to(state: ObjectState):
 #	.copy_to(state)
 #	state.interrupt_frames = interrupt_frames.duplicate()
 
@@ -204,6 +248,9 @@ func is_usable():
 	for node in usable_requirement_nodes:
 		if !node.check(host):
 			return false
+	
+	if host.supers_available < super_level_:
+		return false
 	return true
 
 func get_velocity_forward_meter_gain_multiplier():
@@ -243,7 +290,7 @@ func _enter_shared():
 func allowed_in_stance():
 	return "All" in allowed_stances or host.stance in allowed_stances
 
-func enable_interrupt(check_opponent=true):
+func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	if backdash_iasa:
 		var opponent_state = host.opponent.current_state()
 		if opponent_state.beats_backdash:
@@ -257,7 +304,7 @@ func enable_interrupt(check_opponent=true):
 			host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
 		if !allow_framecheat:
 			queue_state_change(fallback_state)
-#	host.update_advantage()
+
 	emit_signal("state_interruptable")
 
 func enable_hit_cancel(projectile=false):
@@ -274,27 +321,35 @@ func _on_hit_something(obj, hitbox):
 		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
 	._on_hit_something(obj, hitbox)
+	try_hit_cancel(obj, hitbox)
+
+func _can_hit_cancel(obj, hitbox):
 	if hitbox.cancellable:
 		if obj == host.opponent and obj.has_armor():
-			return
+			return false
 #		if obj == host.opponent and obj.prediction_correct():
 #			return
 		if ((!burst_cancellable) or host.bursts_available == 0) and hit_cancel_into == ["OffensiveBurst"]:
-			return
+			return false
 		if hitbox is ThrowBox:
-			return
+			return false
 		if !can_hit_cancel():
-			return
+			return false
 		if obj.is_in_group("Fighter") or obj.get("hit_cancel_on_hit"):
 			var projectile = !obj.is_in_group("Fighter")
 			if projectile or hitbox.followup_state == "":
-				enable_hit_cancel(projectile)
-				if projectile:
-					host.global_hitlag(host.hitlag_ticks)
-					host.hitlag_ticks = 0
+				return true
 
 func can_hit_cancel():
 	return true
+
+func try_hit_cancel(obj, hitbox):
+	if hitbox.cancellable and _can_hit_cancel(obj, hitbox):
+		var projectile = !obj.is_in_group("Fighter")
+		enable_hit_cancel(projectile)
+		if projectile:
+			host.global_hitlag(host.hitlag_ticks)
+			host.hitlag_ticks = 0
 
 func process_hitboxes():
 #	if hitbox_start_frames.has(current_tick + 1) and host.feinting:

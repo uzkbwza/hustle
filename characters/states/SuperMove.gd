@@ -2,7 +2,7 @@ extends CharacterState
 
 class_name SuperMove
 
-export var _c_Super = 0
+export var _c_Super_OBSOLETE = 0
 export var super_level = 1
 export var supers_used = -1
 export var super_freeze_ticks = 15

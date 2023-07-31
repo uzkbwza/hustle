@@ -1,48 +1,55 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://characters/PlayerInfo.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/RobotInfo.gd" type="Script" id=2]
 [ext_resource path="res://characters/robo/ground_pound_indicator.png" type="Texture" id=3]
 [ext_resource path="res://characters/robo/loic_meter_over.png" type="Texture" id=4]
 [ext_resource path="res://characters/robo/loic_meter_progress1.png" type="Texture" id=5]
 [ext_resource path="res://characters/robo/shield_indicator.png" type="Texture" id=6]
 
-[node name="PlayerInfo" instance=ExtResource( 1 )]
+[node name="PlayerInfo" type="VBoxContainer"]
+margin_right = 319.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 30 )
+mouse_filter = 2
+size_flags_horizontal = 3
 script = ExtResource( 2 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -139.5
-margin_top = -30.0
-margin_right = 139.5
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 319.0
+margin_bottom = 30.0
+mouse_filter = 2
 
-[node name="LandingIndicator" type="TextureRect" parent="HBoxContainer" index="0"]
+[node name="LandingIndicator" type="TextureRect" parent="HBoxContainer"]
 unique_name_in_owner = true
 margin_right = 30.0
 margin_bottom = 30.0
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
 texture = ExtResource( 3 )
 
-[node name="LOICMeterContainer" type="VBoxContainer" parent="HBoxContainer" index="1"]
+[node name="LOICMeterContainer" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 34.0
 margin_right = 85.0
 margin_bottom = 30.0
+mouse_filter = 2
 alignment = 2
 
-[node name="LOICMeter" type="TextureProgress" parent="HBoxContainer/LOICMeterContainer" index="0"]
+[node name="LOICMeter" type="TextureProgress" parent="HBoxContainer/LOICMeterContainer"]
 unique_name_in_owner = true
 margin_top = 10.0
 margin_right = 51.0
 margin_bottom = 30.0
+mouse_filter = 2
 max_value = 10.0
 texture_over = ExtResource( 4 )
 texture_progress = ExtResource( 5 )
 
-[node name="ArmorIndicator" type="TextureRect" parent="HBoxContainer" index="2"]
+[node name="ArmorIndicator" type="TextureRect" parent="HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 89.0
 margin_right = 103.0
 margin_bottom = 30.0
+mouse_filter = 2
+size_flags_vertical = 8
 texture = ExtResource( 6 )

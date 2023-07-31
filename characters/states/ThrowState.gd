@@ -77,6 +77,7 @@ func update_throw_position():
 		host.throw_pos_y = pos.y
 
 func _frame_0_shared():
+	._frame_0_shared()
 	host.opponent.change_state("Grabbed")
 	host.throw_pos_x = start_throw_pos_x
 	host.throw_pos_y = start_throw_pos_y

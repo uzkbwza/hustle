@@ -49,6 +49,10 @@ const INCORRECT_PREDICTION_LAG = 7
 
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
+const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
+const PUSH_BLOCK_FORCE = "-20"
+
+const BASE_PLUS_FRAMES = 2
 
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
@@ -68,7 +72,7 @@ var HOLD_RESTARTS = [
 ]
 
 var HOLD_FORCE_STATES = {
-#	"ParryHigh": "Wait",
+	"ParrySuper": "ParryHigh",
 #	"ParryLow": "Wait",
 #	"ParryAir": "Fall",
 	"DashBackward": "Wait",
@@ -207,6 +211,7 @@ var burst_enabled = true
 var always_perfect_parry = false
 var blocked_last_hit = false
 var sadness_enabled = false
+var last_turn_block = false
 
 var trail_hp: int = MAX_HEALTH
 var hp: int = 0
@@ -224,6 +229,9 @@ var bursts_available: int = 0
 var busy_interrupt = false
 var any_available_actions = true
 var refresh_prediction = false
+
+var parry_chip_divisor = PARRY_CHIP_DIVISOR
+var parry_knockback_divisor = PARRY_KNOCKBACK_DIVISOR
 
 var moved_forward = false
 var buffer_moved_forward = false
@@ -473,7 +481,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "brace_enabled", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "brace_enabled", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -591,10 +599,15 @@ func gain_super_meter(amount,stale_amount = "1.0"):
 	var super_modified_amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
 	amount = fixed.round(fixed.lerp_string(str(amount), str(super_modified_amount), stale_amount))
 	super_meter += amount
+	var played_sound = false
 	while super_meter >= MAX_SUPER_METER:
 		if supers_available < MAX_SUPERS:
 			super_meter -= MAX_SUPER_METER
 			supers_available += 1
+			if !played_sound:
+				played_sound = true
+				play_sound("SuperGain")
+				play_sound("SuperGain2")
 		else:
 			super_meter = MAX_SUPER_METER
 			if !infinite_resources:
@@ -877,26 +890,150 @@ func counter_hitbox(hitbox):
 	play_sound("Predict3")
 	emit_signal("predicted")
 
+#func hit_by(hitbox):
+#	if parried:
+#		return
+#	if hitbox.name in parried_hitboxes:
+#		return
+#	if !hitbox.hits_otg and is_otg():
+#		return
+#	if !hitbox.hits_vs_dizzy and current_state().state_name == "HurtDizzy":
+#		return
+#	if can_counter_hitbox(hitbox):
+#		counter_hitbox(hitbox)
+#	elif current_state() is CounterAttack:
+##		if !hit_out_of_brace:
+##			opponent.combo_count -= 1
+#		hit_out_of_brace = true
+#	if hitbox.throw and !is_otg():
+#		return thrown_by(hitbox)
+#	if !can_parry_hitbox(hitbox):
+#		# probably need to coalesce the "take damage" and "got hit" signals here
+#		match hitbox.hitbox_type:
+#			Hitbox.HitboxType.Normal:
+#				launched_by(hitbox)
+#			Hitbox.HitboxType.NoHitstun:
+#				take_damage(hitbox.damage if opponent.combo_count <= 0 else hitbox.damage_in_combo)
+#			Hitbox.HitboxType.Burst:
+#				launched_by(hitbox)
+#			Hitbox.HitboxType.Flip:
+#				set_facing(get_facing_int() * -1, true)
+#				var vel = get_vel()
+#				set_vel(fixed.mul(vel.x, "-1"), vel.y)
+#				for hitbox in hitboxes:
+#					hitbox.facing = get_facing()
+#					pass
+#				emit_signal("got_hit")
+#				increment_opponent_combo(hitbox)
+#				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
+#			Hitbox.HitboxType.ThrowHit:
+#				emit_signal("got_hit")
+#				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
+#				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
+#			Hitbox.HitboxType.OffensiveBurst:
+#				opponent.hitstun_decay_combo_count = 0
+#				opponent.combo_proration = Utils.int_min(opponent.combo_proration, 0)
+#				launched_by(hitbox)
+#				reset_pushback()
+#				opponent.reset_pushback()
+#	else:
+#		opponent.got_parried = true
+#		var host = objs_map[hitbox.host]
+#		var projectile = !host.is_in_group("Fighter")
+#		var perfect_parry
+#		opponent.feinting = false
+#		if !projectile:
+#			perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
+#			opponent.current_state().feinting = false
+#		else:
+#			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
+#		if perfect_parry:
+#			parried_last_state = true
+#		else:
+#			blocked_last_hit = true
+#
+#		parried = true
+#
+#		hitlag_ticks = 0
+#		parried_hitboxes.append(hitbox.name)
+#		var particle_location = current_state().get("particle_location")
+#		particle_location.x *= get_facing_int()
+#
+#		if !particle_location:
+#			particle_location = hitbox.get_overlap_center_float(hurtbox)
+#		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == -1 else hitbox.parry_meter_gain
+#
+#		current_state().parry(perfect_parry)
+#		if !perfect_parry:
+#			if !projectile:
+#				opponent.add_penalty(-25)
+#			take_damage(fixed.round(fixed.mul(str(hitbox.damage / PARRY_CHIP_DIVISOR), hitbox.chip_damage_modifier)))
+#			apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), hitbox.block_pushback_modifier), "0")
+#			gain_super_meter(parry_meter / 3)
+#			opponent.gain_super_meter(parry_meter / 3)
+#			if !projectile:
+#				current_state().anim_length = opponent.current_state().anim_length
+#				current_state().endless = opponent.current_state().endless
+#				current_state().iasa_at = opponent.current_state().iasa_at
+#				current_state().current_tick = 0
+#			current_state().interruptible_on_opponent_turn = true
+#			blocked_hitbox_plus_frames = hitbox.plus_frames
+##			for i in range(opponent.current_state().anim_length):
+##				if i > current_state().current_tick and i in opponent.current_state().hitbox_start_frames:
+##					current_state().anim_length = i
+#			spawn_particle_effect(preload("res://fx/FlawedParryEffect.tscn"), get_pos_visual() + particle_location)
+#			parried = false
+#			play_sound("Block")
+#			play_sound("Parry")
+#			if host.has_method("on_got_blocked"):
+#				host.on_got_blocked()
+#		else:
+#			if !projectile:
+#				opponent.add_penalty(-25)
+#				add_penalty(-25)
+#			else:
+#				if host.has_method("on_got_parried"):
+#					host.on_got_parried()
+#			gain_super_meter(parry_meter)
+#			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
+#			play_sound("Parry2")
+#			play_sound("Parry")
+#			emit_signal("parried")
+
 
 func hit_by(hitbox):
 	if parried:
-		return
+		return 
 	if hitbox.name in parried_hitboxes:
-		return
-	if !hitbox.hits_otg and is_otg():
-		return
-	if !hitbox.hits_vs_dizzy and current_state().state_name == "HurtDizzy":
-		return
+		return 
+	if not hitbox.hits_otg and is_otg():
+		return 
+	if not hitbox.hits_vs_dizzy and current_state().state_name == "HurtDizzy":
+		return 
 	if can_counter_hitbox(hitbox):
 		counter_hitbox(hitbox)
 	elif current_state() is CounterAttack:
-#		if !hit_out_of_brace:
-#			opponent.combo_count -= 1
 		hit_out_of_brace = true
-	if hitbox.throw and !is_otg():
+
+#	if brace_on and brace_available:
+#		hitlag_ticks = 4
+#		opponent.hitlag_ticks = 4
+#		if opponent.current_state().current_tick == brace_value - 1:
+#			play_sound("Parry")
+#			play_sound("Parry2")
+#			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_position)
+#			opponent.incr_combo(true, false, false, 1)
+#		else:
+#			play_sound("Block")
+#			play_sound("Parry")
+#			spawn_particle_effect(preload("res://characters/stickman/HeavyWhipWaveHitEffect.tscn"), get_pos_visual() + particle_position)
+#			opponent.incr_combo(true, false, false, -1)
+#		brace_available = false
+	
+	if hitbox.throw and not is_otg():
 		return thrown_by(hitbox)
-	if !can_parry_hitbox(hitbox):
-		# probably need to coalesce the "take damage" and "got hit" signals here
+	if not can_parry_hitbox(hitbox):
+		
 		match hitbox.hitbox_type:
 			Hitbox.HitboxType.Normal:
 				launched_by(hitbox)
@@ -905,7 +1042,7 @@ func hit_by(hitbox):
 			Hitbox.HitboxType.Burst:
 				launched_by(hitbox)
 			Hitbox.HitboxType.Flip:
-				set_facing(get_facing_int() * -1, true)
+				set_facing(get_facing_int() * - 1, true)
 				var vel = get_vel()
 				set_vel(fixed.mul(vel.x, "-1"), vel.y)
 				for hitbox in hitboxes:
@@ -927,15 +1064,19 @@ func hit_by(hitbox):
 	else:
 		opponent.got_parried = true
 		var host = objs_map[hitbox.host]
-		var projectile = !host.is_in_group("Fighter")
+		var projectile = not host.is_in_group("Fighter")
 		var perfect_parry
-		if !projectile:
-			perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
-			opponent.feinting = false
+		opponent.feinting = false
+		if not projectile:
+			if current_state() is GroundedParryState:
+#				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
+				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1 or current_state().current_tick + 1 == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
+			else:
+				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 			opponent.current_state().feinting = false
 		else:
-#			opponent.feinting = false
 			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
+#			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or (current_state().current_tick == current_state().data.x - 1 and host.has_projectile_parry_window))
 		if perfect_parry:
 			parried_last_state = true
 		else:
@@ -948,46 +1089,67 @@ func hit_by(hitbox):
 		var particle_location = current_state().get("particle_location")
 		particle_location.x *= get_facing_int()
 		
-		if !particle_location:
+		if current_state() is GroundedParryState:
+			current_state().anim_name = "ParryLow" if hitbox.hit_height == Hitbox.HitHeight.Low else "ParryHigh"
+			current_state().update_sprite_frame()
+
+		if not particle_location:
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
-		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == -1 else hitbox.parry_meter_gain
-		
+		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == - 1 else hitbox.parry_meter_gain
 		current_state().parry(perfect_parry)
-		if !perfect_parry:
-			if !projectile:
-				opponent.add_penalty(-25)
-			take_damage(fixed.round(fixed.mul(str(hitbox.damage / PARRY_CHIP_DIVISOR), hitbox.chip_damage_modifier)))
-			apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), hitbox.block_pushback_modifier), "0")
+		if not perfect_parry:
+			last_turn_block = true
+			if current_state() is GroundedParryState:
+				add_penalty(10, true)
+
+			take_damage(fixed.round(fixed.mul(str(hitbox.damage / parry_chip_divisor), hitbox.chip_damage_modifier)))
+
 			gain_super_meter(parry_meter / 3)
 			opponent.gain_super_meter(parry_meter / 3)
-			if !projectile:
+			if not projectile:
 				current_state().anim_length = opponent.current_state().anim_length
 				current_state().endless = opponent.current_state().endless
 				current_state().iasa_at = opponent.current_state().iasa_at
 				current_state().current_tick = 0
+				opponent.hitlag_ticks = 0
+				if opponent.current_state()._can_hit_cancel(self, hitbox):
+					opponent.current_state().enable_interrupt()
+					opponent.hitlag_ticks += hitbox.hitlag_ticks
+					opponent.last_turn_block = true
+
+				apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-1")), hitbox.block_pushback_modifier), "0")
+				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), hitbox.block_pushback_modifier), "0")
+			if current_state().get("push"):
+				apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier), "0")
+				apply_force_relative(PUSH_BLOCK_FORCE, "0")
+
 			current_state().interruptible_on_opponent_turn = true
-			blocked_hitbox_plus_frames = hitbox.plus_frames
-#			for i in range(opponent.current_state().anim_length):
-#				if i > current_state().current_tick and i in opponent.current_state().hitbox_start_frames:
-#					current_state().anim_length = i
+			hitlag_ticks = 0
+			blocked_hitbox_plus_frames = hitbox.plus_frames + (BASE_PLUS_FRAMES if !projectile else 0)
+			hitlag_ticks += hitbox.hitlag_ticks
+			
 			spawn_particle_effect(preload("res://fx/FlawedParryEffect.tscn"), get_pos_visual() + particle_location)
 			parried = false
+			if projectile:
+				apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-1")), hitbox.block_pushback_modifier), "0")
+
 			play_sound("Block")
 			play_sound("Parry")
 			if host.has_method("on_got_blocked"):
 				host.on_got_blocked()
 		else:
-			if !projectile:
-				opponent.add_penalty(-25)
-				add_penalty(-25)
+			if not projectile:
+				gain_super_meter(parry_meter)
 			else:
 				if host.has_method("on_got_parried"):
 					host.on_got_parried()
-			gain_super_meter(parry_meter)
+					gain_super_meter(parry_meter / 3)
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+
+
 
 func parry_effect(location, absolute=false):
 	if !absolute:
@@ -1328,7 +1490,9 @@ func tick_before():
 				
 			state_machine._change_state(queued_action, queued_data)
 			if !current_state().is_hurt_state:
-				hitlag_ticks = 0
+				if !last_turn_block:
+					hitlag_ticks = 0
+				last_turn_block = false
 			if !(current_state() is ParryState):
 				if blocked_hitbox_plus_frames > 0:
 					hitlag_ticks += blocked_hitbox_plus_frames

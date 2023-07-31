@@ -54,6 +54,8 @@ var chip_damage_modifier = "1.0"
 var block_pushback_modifier = "1.0"
 var ground_bounce_knockback_modifier = "1.0"
 var hits_projectiles = true
+var cancellable = false
+var followup_state = ""
 
 func get_damage():
 	if combo_count > 0:
@@ -161,6 +163,10 @@ func _init(state):
 		ground_bounce_knockback_modifier = state.ground_bounce_knockback_modifier
 	if state.get("hits_projectiles") != null:
 		hits_projectiles = state.hits_projectiles
+	if state.get("cancellable") != null:
+		cancellable = state.cancellable
+	if state.get("followup_state") != null:
+		followup_state = state.followup_state
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

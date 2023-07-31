@@ -55,6 +55,9 @@ var received_synced_time = false
 
 var quit_on_rematch = true
 
+var p1_info_scene
+var p2_info_scene
+
 onready var global_option_check_buttons = {
 	$"%EnableStyleColorsButton": "enable_custom_colors",
 	$"%EnableAurasButton": "enable_custom_particles",

@@ -22,6 +22,7 @@ func _enter_shared():
 		host.start_throw_invulnerability()
 
 func _frame_0_shared():
+	._frame_0_shared()
 	if !is_super:
 		return
 	if super_effect:

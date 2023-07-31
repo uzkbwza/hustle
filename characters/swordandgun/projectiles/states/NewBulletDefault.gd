@@ -29,8 +29,11 @@ func _on_hit_something(obj, hitbox):
 	if obj.is_in_group("Fighter"):
 		reset_hitbox_cooldown = RESET_HITBOX_TICKS
 		for h in [front_hitbox, middle_hitbox, trail_hitbox]:
-			hitbox.damage = fixed.round(fixed.mul(str(hitbox.damage), DAMAGE_MODIFIER_PER_HIT))
-			hitbox.damage_in_combo = fixed.round(fixed.mul(str(hitbox.damage_in_combo), DAMAGE_MODIFIER_PER_HIT))
+			h.damage = fixed.round(fixed.mul(str(h.damage), DAMAGE_MODIFIER_PER_HIT))
+			h.damage_in_combo = fixed.round(fixed.mul(str(h.damage_in_combo), DAMAGE_MODIFIER_PER_HIT))
+			h.hitstun_ticks /= 2
+			if h.hitstun_ticks < 5:
+				h.hitstun_ticks = 5
 
 func bounce_off_foresight():
 	if bounce_lag_ticks > 0:
@@ -67,7 +70,7 @@ func _enter():
 
 func _tick():
 	var move_vec = fixed.vec_mul(host.dir_x, host.dir_y, host.speed)
-	
+
 	trail_hitbox.x = fixed.round(fixed.mul(move_vec.x, "-1.0"))
 	trail_hitbox.y = fixed.round(fixed.mul(move_vec.y, "-1.0"))
 	

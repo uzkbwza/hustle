@@ -182,9 +182,11 @@ func setup_game_deferred(singleplayer, data):
 	if $"%P2InfoContainer".get_child(0) is PlayerInfo:
 		$"%P2InfoContainer".remove_child($"%P2InfoContainer".get_child(0))
 	$"%P1InfoContainer".add_child(p1_info_scene)
-	$"%P1InfoContainer".move_child(p1_info_scene, 0)
+	$"%P1InfoContainer".move_child(p1_info_scene, 1)
 	$"%P2InfoContainer".add_child(p2_info_scene)
-	$"%P2InfoContainer".move_child(p2_info_scene, 0)
+	$"%P2InfoContainer".move_child(p2_info_scene, 1)
+	ui_layer.p1_info_scene = p1_info_scene
+	ui_layer.p2_info_scene = p2_info_scene
 
 func _on_ghost_button_toggled(toggled):
 	if toggled:

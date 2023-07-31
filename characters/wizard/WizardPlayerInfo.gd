@@ -9,8 +9,6 @@ func set_fighter(fighter):
 		$HBoxContainer.alignment = BoxContainer.ALIGN_END
 		$"%HBoxContainer".alignment = BoxContainer.ALIGN_BEGIN
 	
-
-
 func _process(delta):
 	if is_instance_valid(fighter):
 		hover_bar.value = fighter.hover_left / float(fighter.HOVER_AMOUNT)

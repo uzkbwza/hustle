@@ -3073,25 +3073,6 @@ wall_slam = true
 start_tick = 8
 active_ticks = 1
 
-[node name="DashForward" parent="StateMachine" index="75"]
-loop_animation = true
-absolute_loop = true
-enter_force_dir_x = "1.0"
-enter_force_speed = "0.5"
-spawn_particle_on_enter = false
-enter_sfx = ExtResource( 282 )
-enter_sfx_volume = -16.0
-title = "Walk Forward"
-velocity_forward_meter_gain_multiplier = "2.0"
-dash_speed = 4
-fric = "0.02"
-spawn_particle = false
-
-[node name="UsableRequirement" type="Node" parent="StateMachine/DashForward" index="0"]
-script = ExtResource( 310 )
-method = "has_1k_cuts"
-inverse = true
-
 [node name="DashForward1k" type="Node2D" parent="StateMachine" index="76"]
 script = ExtResource( 311 )
 __meta__ = {
@@ -3130,13 +3111,32 @@ spawn_particle = false
 script = ExtResource( 310 )
 method = "has_1k_cuts"
 
-[node name="ChargeDashForward" parent="StateMachine" index="77"]
+[node name="DashForward" parent="StateMachine" index="78"]
+loop_animation = true
+absolute_loop = true
+enter_force_dir_x = "1.0"
+enter_force_speed = "0.5"
+spawn_particle_on_enter = false
+enter_sfx = ExtResource( 282 )
+enter_sfx_volume = -16.0
+title = "Walk Forward"
+velocity_forward_meter_gain_multiplier = "2.0"
+dash_speed = 4
+fric = "0.02"
+spawn_particle = false
+
+[node name="UsableRequirement" type="Node" parent="StateMachine/DashForward" index="0"]
+script = ExtResource( 310 )
+method = "has_1k_cuts"
+inverse = true
+
+[node name="ChargeDashForward" parent="StateMachine" index="79"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="78"]
+[node name="DashBackward" parent="StateMachine" index="80"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -3148,46 +3148,46 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="80"]
+[node name="DashStartup" parent="StateMachine" index="82"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="81"]
+[node name="Jump" parent="StateMachine" index="83"]
 speed = "8.5"
 
-[node name="DoubleJump" parent="StateMachine" index="84"]
+[node name="DoubleJump" parent="StateMachine" index="86"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="85"]
+[node name="AirDash" parent="StateMachine" index="87"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="ForwardThrow" parent="StateMachine" index="97"]
+[node name="ForwardThrow" parent="StateMachine" index="99"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="BackThrow" parent="StateMachine" index="98"]
+[node name="BackThrow" parent="StateMachine" index="100"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirForwardThrow" parent="StateMachine" index="99"]
+[node name="AirForwardThrow" parent="StateMachine" index="101"]
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirBackThrow" parent="StateMachine" index="100"]
+[node name="AirBackThrow" parent="StateMachine" index="102"]
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="101"]
+[node name="AirDownThrow" parent="StateMachine" index="103"]
 dir_x = "1.0"
 dir_y = "1.00"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="Taunt" parent="StateMachine" index="103"]
+[node name="Taunt" parent="StateMachine" index="105"]
 script = ExtResource( 255 )
 reset_momentum = true
 anim_length = 61
