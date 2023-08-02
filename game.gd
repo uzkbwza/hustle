@@ -279,6 +279,10 @@ func on_parry():
 	super_freeze_ticks = 10 
 	parry_freeze = true
 
+func on_block():
+	super_freeze_ticks = 7 
+	parry_freeze = true
+
 func on_global_hitlag(amount):
 	super_freeze_ticks = amount
 	parry_freeze = true
@@ -314,6 +318,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.connect("parried", self, "on_parry")
 	p1.connect("clashed", self, "on_clash")
 	p2.connect("clashed", self, "on_clash")
+#	p1.connect("blocked", self, "on_block")
+#	p2.connect("blocked", self, "on_block")
 	p1.connect("predicted", self, "on_prediction", [p1])
 	p2.connect("predicted", self, "on_prediction", [p2])
 	stage_width = Utils.int_clamp(match_data.stage_width, 100, 50000)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
-[ext_resource path="res://ui/HorizSlider/HorizSlider.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/CountOption/CountOption.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.gd" type="Script" id=3]
 
 [node name="ActionUIData" type="VBoxContainer"]
@@ -19,17 +19,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 60.0
 margin_bottom = 36.0
-centered = false
-
-[node name="Label" parent="Melee Timing" index="0"]
-margin_right = 60.0
-
-[node name="Direction" parent="Melee Timing" index="1"]
-margin_right = 60.0
-max_value = 20.0
-value = 1.0
-
-[node name="ValueLabel" parent="Melee Timing" index="2"]
-margin_right = 60.0
+min_value = 1
+max_value = 20
 
 [editable path="Melee Timing"]

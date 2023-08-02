@@ -67,7 +67,8 @@ export var can_clash = true
 export var hits_vs_dizzy = true
 export var beats_grab = true
 export var hits_projectiles = true
-export(int, 0, 1024) var plus_frames = 0
+export var guard_break = false
+export(int, -1024, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid
 
@@ -222,6 +223,10 @@ func to_data():
 	return HitboxData.new(self)
 
 func is_counter_hit():
+	if host.is_in_group("Fighter"):
+		if host.counterhit_this_turn:
+			return true
+		pass
 	return can_counter_hit and (host.is_in_group("Fighter") and host.initiative and host.opponent.current_state().has_hitboxes and host.opponent.current_state().can_be_counterhit) or (host.is_in_group("Fighter") and host.opponent.current_state().is_brace and !host.opponent.can_counter_hitbox(self))
 
 func spawn_whiff_particle():

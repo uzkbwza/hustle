@@ -12,7 +12,7 @@ func finished():
 	host.stop_particles()
 	host.disabled = true
 	if host.creator:
-		host.creator.can_summon = true
+		host.creator.can_summon_kick = true
 
 func _tick():
 	if host.disabled:

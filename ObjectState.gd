@@ -93,11 +93,15 @@ export var _c_Meta = 0
 export var host_commands = {
 }
 
+export var earliest_hitbox = 0
+
+
 export var _c_Auto = 0
 export var throw_positions: Dictionary = {}
 
 var enter_sfx_player
 var sfx_player
+
 
 var current_tick = -1
 var current_real_tick = -1
@@ -391,20 +395,26 @@ func setup_hitboxes():
 		if child is Hitbox:
 			hitboxes.append(child)
 			host.hitboxes.append(child)
+	var earliest = 999999999
 	for hitbox in hitboxes:
 		hitbox.init()
 		has_hitboxes = true
 		hitbox.host = host
-		if hitbox.start_tick >= 0:
+		if hitbox.start_tick > 0:
 			if hitbox_start_frames.has(hitbox.start_tick):
 				hitbox_start_frames[hitbox.start_tick].append(hitbox)
 			else:
 				hitbox_start_frames[hitbox.start_tick] = [hitbox]
+			if hitbox.start_tick < earliest:
+				earliest = hitbox.start_tick
 		hitbox.connect("hit_something", self, "__on_hit_something")
 		hitbox.connect("got_parried", self, "__on_got_parried")
 		for hitbox2 in hitboxes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)
+	if earliest_hitbox <= 0 and earliest != 999999999:
+		earliest_hitbox = earliest
+		
 
 func setup_hurtboxes():
 	for child in get_children():

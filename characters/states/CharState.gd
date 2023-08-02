@@ -64,6 +64,7 @@ export var usable_from_whiff_cancel_if_possible = true
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
 
+
 export var _c_Interrupt_Categories = 0
 export(BusyInterrupt) var busy_interrupt_type = BusyInterrupt.Normal
 export var burst_cancellable = true
@@ -129,6 +130,7 @@ var dash_iasa = false
 var started_in_air = false
 var hit_yet = false
 var hit_anything = false
+var was_blocked = false
 var hit_cancelled = false
 var started_during_combo = false
 
@@ -271,6 +273,7 @@ func _enter_shared():
 #		host.opponent.update_advantage()
 	hit_yet = false
 	hit_anything = false
+	was_blocked = false
 	started_in_air = false
 	host.update_grounded()
 	if change_stance_to:
@@ -280,7 +283,8 @@ func _enter_shared():
 	if uses_air_movement:
 		if !host.infinite_resources and host.gravity_enabled:
 			host.air_movements_left -= 1
-	call_deferred("update_sprite_frame")
+	if host.hitlag_ticks == 0:
+		call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		var dir = host.get_move_dir()
 		if dir == 0 or dir == host.get_opponent_dir():
@@ -459,7 +463,7 @@ func can_feint():
 	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
 func can_interrupt():
-	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit)
+	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit) or (was_blocked and current_tick == iasa_on_hit)
 
 func on_got_hit():
 	pass
@@ -490,6 +494,7 @@ func _exit_shared():
 	host.state_interruptable = false
 	host.projectile_hit_cancelling = false
 	host.has_hyper_armor = false
+	host.has_projectile_armor = false
 	host.state_hit_cancellable = false
 	host.clipping_wall = false
 #	if host.reverse_state:

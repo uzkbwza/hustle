@@ -35,4 +35,4 @@ func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
 	if defensive:
 		host.opponent.start_invulnerability()
-		host.gain_super_meter((host.MAX_SUPER_METER * 4) / 3)
+		host.gain_super_meter((host.MAX_SUPER_METER * 5) / 3)

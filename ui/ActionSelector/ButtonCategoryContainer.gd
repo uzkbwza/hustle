@@ -24,6 +24,7 @@ var player_id = null
 var category_int = -1
 
 var prediction_type = null
+var visibility_update = false
 
 func init(name):
 	label_text = name
@@ -35,30 +36,29 @@ func init(name):
 #			raise()
 #	snap_to_boundaries()
 
+func _ready():
+	connect("visibility_changed", self, "_on_visibility_changed")
+
+func _on_visibility_changed():
+	if visible and !visibility_update:
+		$"%ScrollContainer".rect_clip_content = true
+		visibility_update = true
+		pass
+
 func any_buttons_visible():
 	for button in $"%ButtonContainer".get_children():
 		if button.visible:
 			return true
 	return false
 
-func _process(_delta):
-#	if visible:
-#		snap_to_boundaries()
-#	if action_data_panel_container.visible and game:
-#		snap_action_data_to_player()
-#		action_data_panel_container.rect_global_position
-#		pass
-	if !mouse_over and can_update and Utils.is_mouse_in_control(self):
-		$"%ScrollContainer".rect_clip_content = false
-		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
-		rect_size.y = 1000
-		mouse_over = true
-		can_update = false
-		$UpdateTimer.start()
-#		rect_position.y = -$"%ScrollContainer".rect_min_size.y + BOX_SIZE
-		call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
-	
-	elif mouse_over  and can_update and !Utils.is_mouse_in_control(self):
+func get_num_available_moves():
+	var count = 0
+	for button in $"%ButtonContainer".get_children():
+		if button.visible:
+			count += 1
+	return count
+
+func update_mouse_over():
 		$"%ScrollContainer".rect_clip_content = true
 		$"%ScrollContainer".rect_min_size.y = BOX_SIZE
 		rect_size.y = DEFAULT_HEIGHT
@@ -66,6 +66,36 @@ func _process(_delta):
 		mouse_over = false
 		can_update = false
 		$UpdateTimer.start()
+
+func update_mouse_elsewhere():
+		$"%ScrollContainer".rect_clip_content = false
+		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
+
+		rect_size.y = 1000
+		mouse_over = true
+		can_update = false
+		$UpdateTimer.start()
+#		rect_position.y = -$"%ScrollContainer".rect_min_size.y + BOX_SIZE
+		call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
+			
+func _process(_delta):
+#	if visible:
+#		snap_to_boundaries()
+#	if action_data_panel_container.visible and game:
+#		snap_action_data_to_player()
+#		action_data_panel_container.rect_global_position
+#		pass
+
+	if !mouse_over and can_update and Utils.is_mouse_in_control(self):
+		update_mouse_elsewhere()
+		
+	elif mouse_over  and can_update and !Utils.is_mouse_in_control(self):
+		update_mouse_over()
+	call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
+	$"%TooManyMoves".visible = get_num_available_moves() > 9
+	if mouse_over:
+		$"%TooManyMoves".visible = false
+	set_deferred("visibility_update", false)
 
 func set_pos_y(y):
 	rect_position.y = y
@@ -109,10 +139,19 @@ func refresh():
 			$"%Label".modulate = Color.cyan
 			active_button = button
 			selected_button_text = button.action_title
+			update_frame_display(button)
+			update_mouse_elsewhere()
 			return
 	$"%Label".text = label_text
 	$"%Label".modulate = Color.white
 	$"%Label".modulate.a = 0.25
+	$"%FrameLabel".text = ""
+
+func update_frame_display(button):
+	$"%FrameLabel".text = ""
+	if button and button.get("earliest_hitbox") and button.earliest_hitbox > 0:
+		$"%FrameLabel".text = "[~%sf]" % button.earliest_hitbox
+	pass
 
 func on_button_mouse_entered(button):
 	if get_prediction():
@@ -121,6 +160,7 @@ func on_button_mouse_entered(button):
 	$"%Label".text = button.action_title
 	if button.action_title == selected_button_text:
 		return
+	update_frame_display(button)
 	$"%Label".modulate = Color.green
 
 func on_button_mouse_exited():

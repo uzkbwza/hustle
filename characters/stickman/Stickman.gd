@@ -1,5 +1,6 @@
 extends Fighter
-var can_summon = true
+var can_summon_kunai = true
+var can_summon_kick = true
 var bomb_thrown = false
 var bomb_projectile = null
 var storing_momentum = false
@@ -16,9 +17,13 @@ var used_grappling_hook = false
 var whip_beam_charged = false
 var substituted_objects = {}
 var skull_shaker_bleed_ticks = 0
+var stored_speed = "0"
+var released_this_turn = false
+var will_release_momentum = false
 
 #var hook_dir = Vector2()
 
+const RELEASE_MODIFIER = "1.35"
 const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
@@ -41,6 +46,36 @@ func process_extra(extra):
 	if extra.has("detach"):
 		if extra.detach:
 			detach()
+	
+	will_release_momentum = false
+	if extra.has("release"):
+		if extra.release:
+			if extra.has("release_dir"):
+				will_release_momentum = true
+				var dir = extra.release_dir
+				var impulse = xy_to_dir(dir.x, dir.y, fixed.mul(RELEASE_MODIFIER, stored_speed))
+				stored_momentum_x = impulse.x
+				stored_momentum_y = impulse.y
+				if fixed.lt(stored_momentum_y, "0"):
+					var vel = get_vel()
+					set_vel(vel.x, "0")
+					stored_momentum_y = fixed.mul(stored_momentum_y, "0.5")
+
+func apply_forces():
+	if released_this_turn:
+		apply_forces_no_limit()
+	else:
+		.apply_forces()
+	pass
+
+func release_momentum():
+#		reset_momentum()
+		apply_force(stored_momentum_x, stored_momentum_y)
+		storing_momentum = false
+		released_this_turn = true
+		will_release_momentum = false
+		play_sound("Swish2")
+		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
 
 func detach():
 	var hook = obj_from_name(grappling_hook_projectile)
@@ -49,6 +84,8 @@ func detach():
 
 func tick():
 	.tick()
+	if turn_frames == 1:
+		released_this_turn = false
 	var hook = obj_from_name(grappling_hook_projectile)
 	if is_in_hurt_state():
 		pulling = false
@@ -77,6 +114,13 @@ func tick():
 		if skull_shaker_bleed_ticks % 10 == 0:
 			opponent.take_damage(SKULL_SHAKER_BLEED_DAMAGE, 0, "0.25")
 	
+	if will_release_momentum and current_state().current_tick == 1:
+		release_momentum()
+
+	if released_this_turn:
+#	if released_this_turn and turn_frames % 1 == 0:
+		create_speed_after_image(Color("99ff333d"))
+
 	if is_grounded():
 		used_grappling_hook = false
 

@@ -1796,6 +1796,7 @@ force_tick = 2
 host_commands = {
 12: "try_shoot"
 }
+earliest_hitbox = 9
 title = "Vert. Slash"
 type = 1
 button_texture = ExtResource( 154 )
@@ -1998,6 +1999,7 @@ hit_sound = ExtResource( 142 )
 dir_y = "0"
 knockback = "2.0"
 pushback_x = "-5.0"
+minimum_grounded_frames = -4
 knockdown = true
 disable_collision = false
 start_tick = 9
@@ -2024,6 +2026,7 @@ dir_y = "2"
 knockback = "90"
 pushback_x = "-10.0"
 grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = -4
 knockdown = true
 ground_bounce = false
 start_tick = 23
@@ -2098,13 +2101,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2211,6 +2214,7 @@ height = 10
 damage = 70
 hitstun_ticks = 11
 victim_hitlag = 8
+guard_break = true
 hit_height = 0
 dir_x = "0.25"
 dir_y = "1.0"
@@ -2230,6 +2234,7 @@ endless = true
 force_dir_y = "1.0"
 force_speed = "6.0"
 force_tick = 8
+earliest_hitbox = 12
 title = "Downward Cleave"
 type = 1
 button_texture = ExtResource( 261 )
@@ -2258,6 +2263,8 @@ height = 10
 damage = 70
 hitstun_ticks = 8
 victim_hitlag = 7
+damage_proration = 1
+guard_break = true
 hit_height = 0
 dir_x = "0.25"
 dir_y = "1.0"
@@ -3153,6 +3160,9 @@ title = "Walk"
 
 [node name="Jump" parent="StateMachine" index="83"]
 speed = "8.5"
+
+[node name="SuperJump" parent="StateMachine" index="85"]
+selectable = false
 
 [node name="DoubleJump" parent="StateMachine" index="86"]
 speed = "7"

@@ -9,6 +9,7 @@ const HITSTUN_DECAY_PER_HIT = 1
 const DI_BRACE_RATIO = "-0.25"
 
 var brace = false
+var guard_broken = false
 
 enum BOUNCE {
 	LEFT_WALL,
@@ -43,6 +44,7 @@ func _enter_shared():
 	host.busy_interrupt = true
 	host.clear_buffer()
 	._enter_shared()
+	call_deferred("update_sprite_frame")
 	host.brace_effect_applied_yet = true
 
 func _tick_shared():
@@ -97,6 +99,7 @@ func _exit_shared():
 	host.z_index = 0
 	brace = false
 	host.hit_out_of_brace = false
+	guard_broken = false
 	._exit_shared()
 
 func can_interrupt():

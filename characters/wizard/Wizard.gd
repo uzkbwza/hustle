@@ -108,7 +108,11 @@ func on_state_started(state):
 	if state is CharacterHurtState:
 		hovering = false
 		detonating_bombs = false
-
+func gain_super_meter(amount,stale_amount = "1.0"):
+	if orb_projectile:
+		amount = fixed.round(fixed.mul(str(amount), "0.5"))
+	.gain_super_meter(amount, stale_amount)
+	
 func on_got_hit():
 	hovering = false
 	fast_falling = false

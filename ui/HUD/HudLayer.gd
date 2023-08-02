@@ -14,6 +14,9 @@ onready var p2_burst_meter = $"%P2BurstMeter"
 onready var p1_super_meter = $"%P1SuperMeter"
 onready var p2_super_meter = $"%P2SuperMeter"
 
+onready var active_p1_super_meter = $"%ActiveP1SuperMeter"
+onready var active_p2_super_meter = $"%ActiveP2SuperMeter"
+
 onready var p1_num_supers = $"%P1NumSupers"
 onready var p2_num_supers = $"%P2NumSupers"
 
@@ -86,6 +89,10 @@ func init(game):
 	
 	p1_super_meter.max_value = p1.MAX_SUPER_METER
 	p2_super_meter.max_value = p2.MAX_SUPER_METER
+	
+	active_p1_super_meter.max_value = p1.MAX_SUPER_METER
+	active_p2_super_meter.max_value = p2.MAX_SUPER_METER
+	
 	p1_burst_meter.fighter = p1
 	p2_burst_meter.fighter = p2
 
@@ -105,12 +112,15 @@ func init(game):
 	game.connect("game_won", self, "on_game_won")
 	pass
 
-func healthbar_armor_effect(player, healthbar: TextureProgress, no_armor_image, armor_image):
+func healthbar_armor_effect(player, healthbar: TextureProgress, no_armor_image, armor_image, projectile_armor_image):
 	if player.has_armor():
-		if healthbar.texture_progress == no_armor_image:
+		if healthbar.texture_progress != armor_image:
 			healthbar.texture_progress = armor_image
+	elif player.has_projectile_armor():
+		if healthbar.texture_progress != projectile_armor_image:
+			healthbar.texture_progress = projectile_armor_image
 	else:
-		if healthbar.texture_progress == armor_image:
+		if healthbar.texture_progress != no_armor_image:
 			healthbar.texture_progress = no_armor_image
 
 func on_game_won(winner):
@@ -142,12 +152,16 @@ func _physics_process(_delta):
 		p2_healthbar.value = max(p2.hp, 0)
 		if p2_prev_super < p2.supers_available:
 			p2_super_meter.value = p2.MAX_SUPER_METER
+			active_p2_super_meter.value = p2.MAX_SUPER_METER
 		else:
 			p2_super_meter.value = p2.super_meter
+			active_p2_super_meter.value = p2.super_meter
 		if p1_prev_super < p1.supers_available:
 			p1_super_meter.value = p1.MAX_SUPER_METER
+			active_p1_super_meter.value = p1.MAX_SUPER_METER
 		else:
 			p1_super_meter.value = p1.super_meter
+			active_p1_super_meter.value = p1.super_meter
 		p1_prev_super = p1.supers_available
 		p2_prev_super = p2.supers_available
 		p1_num_supers.texture.current_frame = clamp(p1.supers_available, 0, 9)
@@ -173,10 +187,10 @@ func _physics_process(_delta):
 			p1_ghost_health_bar.visible = false
 			p2_ghost_health_bar.visible = false
 #
-		healthbar_armor_effect(p1, p1_healthbar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"))
-		healthbar_armor_effect(p1, p1_ghost_health_bar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"))
-		healthbar_armor_effect(p2, p2_healthbar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"))
-		healthbar_armor_effect(p2, p2_ghost_health_bar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"))
+		healthbar_armor_effect(p1, p1_healthbar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"), preload("res://ui/healthbar_projectile_armor.png"))
+		healthbar_armor_effect(p1, p1_ghost_health_bar, preload("res://ui/healthbar3.png"), preload("res://ui/healthbar3_armor.png"), preload("res://ui/healthbar_projectile_armor.png"))
+		healthbar_armor_effect(p2, p2_healthbar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"), preload("res://ui/healthbar_projectile_armor_p2.png"))
+		healthbar_armor_effect(p2, p2_ghost_health_bar, preload("res://ui/healthbar_p2_3.png"), preload("res://ui/healthbar_p2_3_armor.png"), preload("res://ui/healthbar_projectile_armor_p2.png"))
 
 		$"%P1ShowStyle".visible = game.game_paused and p1.applied_style != null
 		$"%P2ShowStyle".visible = game.game_paused and p2.applied_style != null
@@ -201,8 +215,15 @@ func _physics_process(_delta):
 		$"%P2SuperTexture".visible = game.p2_super
 		p1_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p1.supers_available < 1 else preload("res://ui/super_ready.tres")
 		p2_super_meter.texture_progress = preload("res://ui/super_bar3.png") if p2.supers_available < 1 else preload("res://ui/super_ready.tres")
+
+		active_p1_super_meter.texture_progress = preload("res://ui/super_bar_small3.png") if p1.supers_available < 1 else preload("res://ui/super_ready_small.tres")
+		active_p2_super_meter.texture_progress = preload("res://ui/super_bar_small3.png") if p2.supers_available < 1 else preload("res://ui/super_ready_small.tres")
+
+
 		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P1GuardBreakLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().guard_broken and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P2GuardBreakLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().guard_broken and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		p1_brace_label.visible = p1.current_state() is CounterAttack and p1.current_state().bracing and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		p2_brace_label.visible = p2.current_state() is CounterAttack and p2.current_state().bracing  and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		$"%P1AdvantageLabel".visible = p1.initiative and p1.current_state().initiative_effect

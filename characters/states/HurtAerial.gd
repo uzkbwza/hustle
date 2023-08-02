@@ -39,6 +39,8 @@ func _enter():
 #	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	counter = hitbox.counter_hit
+	if counter:
+		host.opponent.counterhit_this_turn = true
 	if (hitbox.ground_bounce and host.is_grounded()) and fixed.gt(hitbox.dir_y, "0"):
 		begin_ground_bounce()
 	

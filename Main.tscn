@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=2]
+[gd_scene load_steps=82 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://ui/NetworkDebugLabel.gd" type="Script" id=7]
 [ext_resource path="res://ui/HUD/HudLayer.gd" type="Script" id=8]
 [ext_resource path="res://ui/HUD/BurstMeter.gd" type="Script" id=9]
+[ext_resource path="res://ui/super_bar_small3.png" type="Texture" id=10]
 [ext_resource path="res://BottomBar.gd" type="Script" id=11]
 [ext_resource path="res://ui/CSS/CharacterSelect.tscn" type="PackedScene" id=12]
 [ext_resource path="res://ui/GhostSpeed.gd" type="Script" id=13]
@@ -68,6 +69,7 @@
 [ext_resource path="res://ui/Credits.tscn" type="PackedScene" id=67]
 [ext_resource path="res://modloader/workshop_uploader/ModUploader.tscn" type="PackedScene" id=68]
 [ext_resource path="res://ui/PixeloidSans-Bold.ttf" type="DynamicFontData" id=69]
+[ext_resource path="res://ui/super_bar_small2.png" type="Texture" id=70]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -311,88 +313,6 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="HboxContainer" type="HBoxContainer" parent="HudLayer/HudLayer"]
-margin_left = 32.0
-margin_top = 52.0
-margin_right = 608.0
-margin_bottom = 64.0
-
-[node name="P1ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
-unique_name_in_owner = true
-margin_right = 46.0
-margin_bottom = 12.0
-text = "style"
-flat = true
-
-[node name="Control" type="Control" parent="HudLayer/HudLayer/HboxContainer"]
-margin_left = 47.0
-margin_right = 529.0
-margin_bottom = 12.0
-size_flags_horizontal = 3
-
-[node name="P2ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
-unique_name_in_owner = true
-margin_left = 530.0
-margin_right = 576.0
-margin_bottom = 12.0
-text = "style"
-flat = true
-
-[node name="AirMovementDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
-margin_left = 76.0
-margin_top = 35.0
-margin_right = 564.0
-margin_bottom = 48.0
-alignment = 1
-
-[node name="P1AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_top = 1.0
-margin_right = 52.0
-margin_bottom = 12.0
-text = "Air Options"
-align = 1
-
-[node name="P1AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P1AirMovementLabel"]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -25.0
-margin_right = 25.0
-margin_bottom = 16.0
-mouse_filter = 2
-script = ExtResource( 20 )
-
-[node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_left = 53.0
-margin_right = 435.0
-margin_bottom = 13.0
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="P2AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_left = 436.0
-margin_top = 1.0
-margin_right = 488.0
-margin_bottom = 12.0
-text = "Air Options"
-align = 1
-
-[node name="P2AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P2AirMovementLabel"]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -25.0
-margin_right = 25.0
-margin_bottom = 16.0
-mouse_filter = 2
-script = ExtResource( 20 )
-player_id = 2
-
 [node name="VBoxContainer" type="VBoxContainer" parent="HudLayer/HudLayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -569,20 +489,75 @@ expand = true
 stretch_mode = 4
 flip_h = true
 
+[node name="AirMovementDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
+margin_left = 73.0
+margin_top = 27.0
+margin_right = 567.0
+margin_bottom = 47.0
+alignment = 1
+
+[node name="P1AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
+margin_top = 4.0
+margin_right = 52.0
+margin_bottom = 15.0
+text = "Air Options"
+align = 1
+
+[node name="P1AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P1AirMovementLabel"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -24.0
+margin_top = -2.0
+margin_right = 26.0
+margin_bottom = 14.0
+mouse_filter = 2
+script = ExtResource( 20 )
+
+[node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
+margin_left = 53.0
+margin_right = 441.0
+margin_bottom = 20.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="P2AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
+margin_left = 442.0
+margin_top = 4.0
+margin_right = 494.0
+margin_bottom = 15.0
+text = "Air Options"
+align = 1
+
+[node name="P2AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P2AirMovementLabel"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -27.0
+margin_top = -2.0
+margin_right = 23.0
+margin_bottom = 14.0
+mouse_filter = 2
+script = ExtResource( 20 )
+player_id = 2
+
 [node name="FeintDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -192.0
-margin_top = -174.0
+margin_left = -189.0
 margin_right = 189.0
-margin_bottom = -102.0
+margin_bottom = 77.0
+alignment = 1
 
 [node name="Label" type="Label" parent="HudLayer/HudLayer/FeintDisplay"]
-margin_top = 30.0
+margin_top = 33.0
 margin_right = 68.0
-margin_bottom = 41.0
+margin_bottom = 44.0
 rect_min_size = Vector2( 68, 0 )
 text = "Free Cancels"
 align = 1
@@ -594,23 +569,23 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -31.0
-margin_top = 5.5
+margin_top = 3.5
 margin_right = 31.0
-margin_bottom = 21.5
+margin_bottom = 19.5
 grow_horizontal = 2
 script = ExtResource( 63 )
 
 [node name="Control" type="Control" parent="HudLayer/HudLayer/FeintDisplay"]
 margin_left = 69.0
-margin_right = 312.0
-margin_bottom = 72.0
+margin_right = 309.0
+margin_bottom = 77.0
 size_flags_horizontal = 3
 
 [node name="Label2" type="Label" parent="HudLayer/HudLayer/FeintDisplay"]
-margin_left = 313.0
-margin_top = 30.0
-margin_right = 381.0
-margin_bottom = 41.0
+margin_left = 310.0
+margin_top = 33.0
+margin_right = 378.0
+margin_bottom = 44.0
 rect_min_size = Vector2( 68, 0 )
 text = "Free Cancels"
 align = 1
@@ -622,9 +597,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -31.0
-margin_top = 5.5
+margin_top = 3.5
 margin_right = 31.0
-margin_bottom = 21.5
+margin_bottom = 19.5
 grow_horizontal = 2
 script = ExtResource( 63 )
 player_id = 2
@@ -667,9 +642,7 @@ margin_left = 14.0
 margin_top = 59.0
 margin_right = 54.0
 margin_bottom = 70.0
-grow_horizontal = 2
 grow_vertical = 2
-align = 1
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/HBoxContainer"]
 margin_left = 41.0
@@ -695,9 +668,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -4.0
+margin_left = -19.0
 margin_top = -8.0
-margin_right = 36.0
+margin_right = 25.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 40, 40 )
 custom_fonts/font = SubResource( 15 )
@@ -711,13 +684,13 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -6.0
+margin_left = -15.0
 margin_top = -2.0
-margin_right = 34.0
+margin_right = 25.0
 margin_bottom = 9.0
-grow_horizontal = 2
+grow_horizontal = 0
 grow_vertical = 2
-align = 1
+align = 2
 
 [node name="TopBar2" type="HBoxContainer" parent="HudLayer/HudLayer"]
 anchor_left = 0.5
@@ -824,6 +797,33 @@ align = 2
 valign = 2
 clip_text = true
 
+[node name="HboxContainer" type="HBoxContainer" parent="HudLayer/HudLayer"]
+margin_left = 28.0
+margin_top = 48.0
+margin_right = 612.0
+margin_bottom = 60.0
+
+[node name="P1ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
+unique_name_in_owner = true
+margin_right = 46.0
+margin_bottom = 12.0
+text = "style"
+flat = true
+
+[node name="Control" type="Control" parent="HudLayer/HudLayer/HboxContainer"]
+margin_left = 47.0
+margin_right = 537.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+
+[node name="P2ShowStyle" type="CheckButton" parent="HudLayer/HudLayer/HboxContainer"]
+unique_name_in_owner = true
+margin_left = 538.0
+margin_right = 584.0
+margin_bottom = 12.0
+text = "style"
+flat = true
+
 [node name="P1CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
 modulate = Color( 0.94902, 1, 0.192157, 1 )
@@ -831,10 +831,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -247.0
-margin_top = -112.0
-margin_right = -202.0
-margin_bottom = -101.0
+margin_left = -279.0
+margin_top = -56.0
+margin_right = -234.0
+margin_bottom = -45.0
 theme = ExtResource( 4 )
 text = "COUNTER!"
 
@@ -845,10 +845,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -247.0
-margin_top = -103.0
-margin_right = -202.0
-margin_bottom = -92.0
+margin_left = -279.0
+margin_top = -38.0
+margin_right = -226.0
+margin_bottom = -27.0
 theme = ExtResource( 4 )
 text = "INITIATIVE"
 
@@ -859,27 +859,40 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -247.0
-margin_top = -94.0
-margin_right = -194.0
-margin_bottom = -83.0
+margin_left = -279.0
+margin_top = -29.0
+margin_right = -226.0
+margin_bottom = -18.0
 theme = ExtResource( 4 )
 text = "SAD!"
 
 [node name="P1BraceLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
-visible = false
 modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -247.0
-margin_top = -85.0
-margin_right = -194.0
-margin_bottom = -74.0
+margin_left = -279.0
+margin_top = -20.0
+margin_right = -226.0
+margin_bottom = -9.0
 theme = ExtResource( 4 )
 text = "BRACE!"
+
+[node name="P1GuardBreakLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.486275, 0.121569, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -279.0
+margin_top = -47.0
+margin_right = -214.0
+margin_bottom = -36.0
+theme = ExtResource( 4 )
+text = "GUARD BREAK"
 
 [node name="P2CounterLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
@@ -888,10 +901,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 201.0
-margin_top = -112.0
-margin_right = 246.0
-margin_bottom = -101.0
+margin_left = 235.0
+margin_top = -56.0
+margin_right = 280.0
+margin_bottom = -45.0
 theme = ExtResource( 4 )
 text = "COUNTER!"
 align = 2
@@ -903,10 +916,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 191.0
-margin_top = -103.0
-margin_right = 246.0
-margin_bottom = -92.0
+margin_left = 225.0
+margin_top = -38.0
+margin_right = 280.0
+margin_bottom = -27.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
 text = "INITIATIVE"
@@ -919,10 +932,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 191.0
-margin_top = -94.0
-margin_right = 246.0
-margin_bottom = -83.0
+margin_left = 225.0
+margin_top = -29.0
+margin_right = 280.0
+margin_bottom = -18.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
 text = "SAD!"
@@ -930,19 +943,34 @@ align = 2
 
 [node name="P2BraceLabel" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
-visible = false
 modulate = Color( 0.113725, 0.552941, 0.960784, 1 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 191.0
-margin_top = -85.0
-margin_right = 246.0
-margin_bottom = -74.0
+margin_left = 225.0
+margin_top = -20.0
+margin_right = 280.0
+margin_bottom = -9.0
 grow_horizontal = 0
 theme = ExtResource( 4 )
 text = "BRACE!"
+align = 2
+
+[node name="P2GuardBreakLabel" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+modulate = Color( 1, 0.486275, 0.121569, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 215.0
+margin_top = -47.0
+margin_right = 280.0
+margin_bottom = -36.0
+grow_horizontal = 0
+theme = ExtResource( 4 )
+text = "GUARD BREAK"
 align = 2
 
 [node name="WinLabel" type="Label" parent="HudLayer"]
@@ -965,6 +993,7 @@ anims/RESET = SubResource( 11 )
 anims/game_won = SubResource( 12 )
 
 [node name="UILayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 script = ExtResource( 1 )
 
 [node name="BgCircle" type="Control" parent="UILayer"]
@@ -1124,9 +1153,70 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="Control" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
-margin_top = 65.0
+margin_top = 44.0
+margin_right = 319.0
+margin_bottom = 44.0
+
+[node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 45.0
 margin_right = 319.0
 margin_bottom = 65.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
+unique_name_in_owner = true
+margin_right = 319.0
+margin_bottom = 20.0
+mouse_filter = 2
+
+[node name="Padding" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/P1SuperContainer"]
+margin_right = 20.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/P1SuperContainer"]
+unique_name_in_owner = true
+margin_left = 21.0
+margin_right = 121.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+max_value = 1000.0
+texture_over = ExtResource( 31 )
+texture_progress = ExtResource( 32 )
+
+[node name="P1NumSupers" type="TextureRect" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/P1SuperContainer/P1SuperMeter"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -16.0
+margin_top = -15.0
+margin_right = 8.0
+margin_bottom = 8.0
+rect_min_size = Vector2( 10, 0 )
+mouse_filter = 2
+texture = SubResource( 17 )
+expand = true
+stretch_mode = 4
+
+[node name="Level" type="TextureRect" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer/P1SuperContainer/P1SuperMeter"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -23.0
+margin_top = -5.0
+margin_right = -2.0
+margin_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource( 35 )
 
 [node name="P1ActionButtons" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -1146,6 +1236,66 @@ mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
+
+[node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 45.0
+margin_right = 320.0
+margin_bottom = 65.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="P2SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer"]
+unique_name_in_owner = true
+margin_right = 320.0
+margin_bottom = 20.0
+mouse_filter = 2
+alignment = 2
+
+[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/P2SuperContainer"]
+unique_name_in_owner = true
+margin_left = 199.0
+margin_right = 299.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 20 )
+mouse_filter = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+max_value = 1000.0
+texture_over = ExtResource( 33 )
+texture_progress = ExtResource( 34 )
+fill_mode = 1
+
+[node name="P2NumSupers" type="TextureRect" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/P2SuperContainer/P2SuperMeter"]
+unique_name_in_owner = true
+margin_left = -8.0
+margin_top = -5.0
+margin_right = 16.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 10, 0 )
+mouse_filter = 2
+texture = SubResource( 16 )
+expand = true
+stretch_mode = 4
+
+[node name="Level" type="TextureRect" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/P2SuperContainer/P2SuperMeter"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -98.0
+margin_top = -5.0
+margin_right = -77.0
+margin_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource( 35 )
+
+[node name="Padding" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2/P2InfoContainer/P2SuperContainer"]
+margin_left = 300.0
+margin_right = 320.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
 
 [node name="P2ActionButtons" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer2" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -1414,44 +1564,40 @@ mouse_default_cursor_shape = 2
 icon = ExtResource( 64 )
 icon_align = 1
 
-[node name="ActivePlayerInfoContainer" type="HBoxContainer" parent="UILayer/GameUI"]
+[node name="ActivePlayer" type="Control" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+margin_left = 310.5
+margin_top = 346.0
+margin_right = 350.5
+margin_bottom = 386.0
+mouse_filter = 2
+
+[node name="ActivePlayerSuperContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayer"]
+unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -63.0
-margin_top = -133.0
-margin_right = 180.0
-margin_bottom = -98.0
+margin_left = -152.5
+margin_top = -323.0
+margin_right = 131.5
+margin_bottom = -278.0
 mouse_filter = 2
 
-[node name="ActivePlayerInfoP1Container" type="VBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer"]
+[node name="ActiveP1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer"]
 unique_name_in_owner = true
-margin_right = 121.0
-margin_bottom = 35.0
+margin_right = 141.0
+margin_bottom = 45.0
 mouse_filter = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container"]
-unique_name_in_owner = true
-margin_right = 121.0
-margin_bottom = 20.0
-mouse_filter = 2
-
-[node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container/P1InfoContainer"]
-unique_name_in_owner = true
-margin_right = 121.0
-margin_bottom = 20.0
-mouse_filter = 2
-
-[node name="Padding" type="Control" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container/P1InfoContainer/P1SuperContainer"]
+[node name="Padding" type="Control" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP1SuperContainer"]
 margin_right = 20.0
-margin_bottom = 20.0
+margin_bottom = 45.0
 rect_min_size = Vector2( 20, 0 )
 mouse_filter = 2
 
-[node name="P1SuperMeter" type="TextureProgress" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container/P1InfoContainer/P1SuperContainer"]
+[node name="ActiveP1SuperMeter" type="TextureProgress" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP1SuperContainer"]
 unique_name_in_owner = true
 margin_left = 21.0
 margin_right = 121.0
@@ -1461,102 +1607,103 @@ mouse_filter = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 max_value = 1000.0
-texture_over = ExtResource( 31 )
-texture_progress = ExtResource( 32 )
+texture_over = ExtResource( 70 )
+texture_progress = ExtResource( 10 )
 
-[node name="P1NumSupers" type="TextureRect" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container/P1InfoContainer/P1SuperContainer/P1SuperMeter"]
-unique_name_in_owner = true
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = -16.0
-margin_top = -15.0
-margin_right = 8.0
-margin_bottom = 8.0
-rect_min_size = Vector2( 10, 0 )
-mouse_filter = 2
-texture = SubResource( 17 )
-expand = true
-stretch_mode = 4
-
-[node name="Level" type="TextureRect" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP1Container/P1InfoContainer/P1SuperContainer/P1SuperMeter"]
+[node name="Level" type="TextureRect" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP1SuperContainer/ActiveP1SuperMeter"]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -23.0
-margin_top = -5.0
-margin_right = -2.0
-margin_bottom = 1.0
+margin_left = -33.0
+margin_top = -15.0
+margin_right = -12.0
+margin_bottom = -9.0
 mouse_filter = 2
 texture = ExtResource( 35 )
 
-[node name="ActivePlayerInfoP2Container" type="VBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer"]
+[node name="ActiveP2SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer"]
 unique_name_in_owner = true
-margin_left = 122.0
-margin_right = 243.0
-margin_bottom = 35.0
+margin_left = 142.0
+margin_right = 284.0
+margin_bottom = 45.0
 mouse_filter = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="P2InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container"]
-unique_name_in_owner = true
-margin_right = 121.0
-margin_bottom = 20.0
-mouse_filter = 2
-
-[node name="P2SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container/P2InfoContainer"]
-unique_name_in_owner = true
-margin_right = 121.0
-margin_bottom = 20.0
-mouse_filter = 2
 alignment = 2
 
-[node name="P2SuperMeter" type="TextureProgress" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container/P2InfoContainer/P2SuperContainer"]
+[node name="ActiveP2SuperMeter" type="TextureProgress" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP2SuperContainer"]
 unique_name_in_owner = true
-margin_right = 100.0
+margin_left = 21.0
+margin_right = 121.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 100, 20 )
 mouse_filter = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 max_value = 1000.0
-texture_over = ExtResource( 33 )
-texture_progress = ExtResource( 34 )
+texture_over = ExtResource( 70 )
+texture_progress = ExtResource( 10 )
 fill_mode = 1
 
-[node name="P2NumSupers" type="TextureRect" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container/P2InfoContainer/P2SuperContainer/P2SuperMeter"]
+[node name="Level2" type="TextureRect" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP2SuperContainer/ActiveP2SuperMeter"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -85.0
+margin_top = -13.0
+margin_right = -64.0
+margin_bottom = -7.0
+mouse_filter = 2
+texture = ExtResource( 35 )
+
+[node name="Padding" type="Control" parent="UILayer/GameUI/ActivePlayer/ActivePlayerSuperContainer/ActiveP2SuperContainer"]
+margin_left = 122.0
+margin_right = 142.0
+margin_bottom = 45.0
+rect_min_size = Vector2( 20, 0 )
+mouse_filter = 2
+
+[node name="ActivePlayerInfoContainer" type="HBoxContainer" parent="UILayer/GameUI/ActivePlayer"]
 unique_name_in_owner = true
-margin_left = -8.0
-margin_top = -5.0
-margin_right = 16.0
-margin_bottom = 18.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -274.0
+margin_top = -282.0
+margin_right = 258.0
+margin_bottom = -257.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="ActiveP1NumSupers" type="TextureRect" parent="UILayer/GameUI/ActivePlayer"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -67.5
+margin_top = -329.0
+margin_right = -43.5
+margin_bottom = -306.0
+rect_min_size = Vector2( 10, 0 )
+mouse_filter = 2
+texture = SubResource( 17 )
+expand = true
+stretch_mode = 4
+
+[node name="ActiveP2NumSupers" type="TextureRect" parent="UILayer/GameUI/ActivePlayer"]
+unique_name_in_owner = true
+margin_left = 22.5
+margin_top = -309.0
+margin_right = 46.5
+margin_bottom = -286.0
 rect_min_size = Vector2( 10, 0 )
 mouse_filter = 2
 texture = SubResource( 16 )
 expand = true
 stretch_mode = 4
-
-[node name="Level" type="TextureRect" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container/P2InfoContainer/P2SuperContainer/P2SuperMeter"]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -98.0
-margin_top = -5.0
-margin_right = -77.0
-margin_bottom = 1.0
-mouse_filter = 2
-texture = ExtResource( 35 )
-
-[node name="Padding" type="Control" parent="UILayer/GameUI/ActivePlayerInfoContainer/ActivePlayerInfoP2Container/P2InfoContainer/P2SuperContainer"]
-margin_left = 101.0
-margin_right = 121.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 20, 0 )
-mouse_filter = 2
 
 [node name="HelpScreen" type="ColorRect" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1866,6 +2013,9 @@ margin_bottom = 20.0
 texture = ExtResource( 15 )
 expand = true
 stretch_mode = 4
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="IvySlyLinkButton" type="LinkButton" parent="UILayer/MainMenu/Title"]
 unique_name_in_owner = true

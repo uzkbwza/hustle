@@ -6,50 +6,89 @@
 [ext_resource path="res://characters/robo/loic_meter_progress1.png" type="Texture" id=5]
 [ext_resource path="res://characters/robo/shield_indicator.png" type="Texture" id=6]
 
-[node name="PlayerInfo" type="VBoxContainer"]
+[node name="PlayerInfo" type="MarginContainer"]
 margin_right = 319.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 0, 30 )
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 mouse_filter = 2
 size_flags_horizontal = 3
+custom_constants/margin_right = 20
+custom_constants/margin_left = 20
 script = ExtResource( 2 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_right = 319.0
-margin_bottom = 30.0
+[node name="HBoxContainer2" type="VBoxContainer" parent="."]
+margin_left = 20.0
+margin_right = 299.0
+margin_bottom = 20.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer2"]
+unique_name_in_owner = true
+margin_right = 279.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 14, 0 )
 mouse_filter = 2
 
-[node name="LandingIndicator" type="TextureRect" parent="HBoxContainer"]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="HBoxContainer2/HBoxContainer"]
 margin_right = 30.0
-margin_bottom = 30.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 30, 0 )
+
+[node name="LandingIndicator" type="TextureRect" parent="HBoxContainer2/HBoxContainer/Control"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -9.0
+margin_bottom = -9.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 30, 20 )
 mouse_filter = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 texture = ExtResource( 3 )
+expand = true
+stretch_mode = 3
 
-[node name="LOICMeterContainer" type="VBoxContainer" parent="HBoxContainer"]
+[node name="LOICMeterContainer" type="VBoxContainer" parent="HBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
 margin_left = 34.0
 margin_right = 85.0
-margin_bottom = 30.0
+margin_bottom = 20.0
 mouse_filter = 2
 alignment = 2
 
-[node name="LOICMeter" type="TextureProgress" parent="HBoxContainer/LOICMeterContainer"]
+[node name="LOICMeter" type="TextureProgress" parent="HBoxContainer2/HBoxContainer/LOICMeterContainer"]
 unique_name_in_owner = true
-margin_top = 10.0
 margin_right = 51.0
-margin_bottom = 30.0
+margin_bottom = 20.0
 mouse_filter = 2
 max_value = 10.0
 texture_over = ExtResource( 4 )
 texture_progress = ExtResource( 5 )
 
-[node name="ArmorIndicator" type="TextureRect" parent="HBoxContainer"]
+[node name="ArmorIndicatorContainer" type="Control" parent="HBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 89.0
 margin_right = 103.0
-margin_bottom = 30.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 14, 20 )
+
+[node name="ArmorIndicator" type="TextureRect" parent="HBoxContainer2/HBoxContainer/ArmorIndicatorContainer"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -7.0
+margin_top = -19.0
+margin_right = 7.0
+margin_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 14, 20 )
 mouse_filter = 2
+size_flags_horizontal = 0
 size_flags_vertical = 8
 texture = ExtResource( 6 )
+expand = true
+stretch_mode = 3

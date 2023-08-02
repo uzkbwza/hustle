@@ -15,11 +15,12 @@ func _frame_4():
 	if data.x != 0:
 		var object = host.spawn_object(KUNAI_SUMMON_SCENE, SPAWN_X, SPAWN_Y, true, data.duplicate())
 		object.set_facing(host.get_facing_int())
+		host.can_summon_kunai = false
 	else:
 		var object = host.spawn_object(SLIDE_SUMMON_SCENE, SPAWN_X, SPAWN_Y)
 		object.set_facing(host.get_facing_int())
+		host.can_summon_kick = false
 #	var obj_state = object.state_machine.get_state("Default")
-	host.can_summon = false
 	
 func is_usable():
-	return .is_usable() and host.can_summon
+	return .is_usable() and host.can_summon_kunai or host.can_summon_kick

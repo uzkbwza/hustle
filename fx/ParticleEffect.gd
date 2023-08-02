@@ -4,7 +4,6 @@ class_name ParticleEffect
 
 const FPS = 60
 
-
 export var free=true
 export var one_shot = true
 export var lifetime = 1.0

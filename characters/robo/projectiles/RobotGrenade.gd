@@ -81,7 +81,7 @@ func hit_by(hitbox):
 					hits_chained = 0
 				else:
 					hits_chained += 1
-				if hits_chained > 1:
+				if hits_chained > 0:
 					hit_cancel_on_hit = false
 				
 				if player_object.combo_count > 0:

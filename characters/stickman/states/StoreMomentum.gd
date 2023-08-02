@@ -1,4 +1,4 @@
-extends SuperMove
+extends CharacterState
 
 export var release = false
 
@@ -9,8 +9,11 @@ func _frame_1():
 		var vel = host.get_vel()
 		host.stored_momentum_x = vel.x
 		host.stored_momentum_y = vel.y
+		host.stored_speed = fixed.vec_len(vel.x, vel.y)
 		host.reset_momentum()
 		host.storing_momentum = true
+#		if fixed.lt(host.stored_momentum_y, "0"):
+#			host.stored_momentum_y = fixed.mul(host.stored_momentum_y, "0.5")
 	else:
 		host.reset_momentum()
 		host.storing_momentum = false

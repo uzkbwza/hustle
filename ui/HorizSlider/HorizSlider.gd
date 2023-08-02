@@ -6,6 +6,9 @@ onready var default = $Direction.value
 
 export var centered = true
 
+export var min_value = 0
+export var max_value = 100
+
 var buffer_value_changed = false
 
 func _input(event: InputEvent):

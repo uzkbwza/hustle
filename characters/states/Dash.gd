@@ -31,6 +31,10 @@ func _enter():
 func get_velocity_forward_meter_gain_multiplier():
 	return fixed.mul(velocity_forward_meter_gain_multiplier, dist_ratio)
 
+func _frame_0():
+	if dir_x < 0:
+		host.start_throw_invulnerability()
+
 func _frame_1():
 	if dir_x < 0:
 		MAX_SPEED_RATIO = "1.0"
@@ -58,6 +62,10 @@ func _frame_1():
 	if spawn_particle:
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 	host.apply_grav()
+
+func _frame_7():
+	if dir_x < 0:
+		host.end_throw_invulnerability()
 
 func _tick():
 	host.apply_x_fric(fric)

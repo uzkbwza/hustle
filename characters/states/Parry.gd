@@ -40,10 +40,6 @@ func _frame_0():
 	interruptible_on_opponent_turn = false
 	anim_length = 20
 	iasa_at = -1
-#
-#func _frame_1():
-#	parry_active = true
-#	interruptible_on_opponent_turn = false
 
 func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
@@ -75,6 +71,8 @@ func can_parry_hitbox(hitbox):
 		return false
 	if !parry_active:
 		return false
+
+		
 	match hitbox.hit_height:
 		Hitbox.HitHeight.High:
 			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both

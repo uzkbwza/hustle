@@ -7,7 +7,7 @@ export var push = false
 func _frame_0():
 	host.end_throw_invulnerability()
 	if data == null:
-		data = { "x" : 0 }
+		data = { "count" : 0 }
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -19,6 +19,10 @@ func _frame_0():
 	anim_length = 20
 	iasa_at = - 1
 	host.add_penalty(10, true)
+	if host.is_grounded():
+		anim_name = "ParryHigh"
+	else:
+		anim_name = "ParryLow"
 
 func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
@@ -46,6 +50,7 @@ func can_parry_hitbox(hitbox):
 		return false
 	if not parry_active:
 		return false
+
 	match hitbox.hit_height:
 		Hitbox.HitHeight.High:
 			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both
@@ -57,8 +62,8 @@ func can_parry_hitbox(hitbox):
 
 func _tick():
 	host.apply_fric()
-	if air_type == AirType.Aerial:
-		host.apply_grav()
+#	if air_type == AirType.Aerial:
+	host.apply_grav()
 	if host.combo_count > 0:
 		if current_tick > 60 and parried:
 			enable_interrupt()

@@ -3,8 +3,8 @@ extends Fighter
 class_name Robot
 
 const MAX_ARMOR_PIPS = 1
-const FLY_SPEED = "8"
-const FLY_TICKS = 20
+const FLY_SPEED = "8.5"
+const FLY_TICKS = 25
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
 const START_LOIC_METER: int = 500
@@ -139,7 +139,11 @@ func copy_to(f: BaseObj):
 	pass
 
 func has_armor():
-	return armor_active and !(current_state() is CharacterHurtState)
+	return (armor_active and !(current_state() is CharacterHurtState))
+#
+#func has_projectile_armor():
+#	if current_state().state_name == "SuperJump" and !is_grounded():
+#		return true
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 #	if magnet_scale:
@@ -256,9 +260,15 @@ func tick():
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
 			set_vel(fly_vel.x, fixed.mul(fly_vel.y, "0.66"))
 			fly_ticks_left -= 1
-			if fly_ticks_left <= 0:
+			if fly_ticks_left <= 0: 
 				flying_dir = null
 				stop_fly_fx()
+			elif current_tick % 2 == 0:
+				if flying_dir.x != 0:
+					if flying_dir.x != get_opponent_dir():
+						add_penalty(1)
+				elif flying_dir.y == -1:
+					add_penalty(1)
 	if (loic_meter < LOIC_METER) and !loic_draining:
 		if armor_pips > 0:
 			loic_meter += LOIC_GAIN
@@ -355,6 +365,7 @@ func process_extra(extra):
 				start_fly = true
 #			reset_momentum()
 			flying_dir = extra.fly_dir
+
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled
 		if extra.armor_enabled:

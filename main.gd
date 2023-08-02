@@ -178,13 +178,19 @@ func setup_game_deferred(singleplayer, data):
 	p1_info_scene.set_fighter(p1)
 	p2_info_scene.set_fighter(p2)
 	if $"%P1InfoContainer".get_child(0) is PlayerInfo:
-		$"%P1InfoContainer".remove_child($"%P1InfoContainer".get_child(0))
+#		$"%P1InfoContainer".remove_child($"%P1InfoContainer".get_child(0))
+		$"%P1InfoContainer".get_child(0).queue_free()
 	if $"%P2InfoContainer".get_child(0) is PlayerInfo:
-		$"%P2InfoContainer".remove_child($"%P2InfoContainer".get_child(0))
+#		$"%P2InfoContainer".remove_child($"%P2InfoContainer".get_child(0))
+		$"%P2InfoContainer".get_child(0).queue_free()
+	for child in $"%ActivePlayerInfoContainer".get_children():
+		child.queue_free()
+
+
 	$"%P1InfoContainer".add_child(p1_info_scene)
-	$"%P1InfoContainer".move_child(p1_info_scene, 1)
+	$"%P1InfoContainer".move_child(p1_info_scene, 0)
 	$"%P2InfoContainer".add_child(p2_info_scene)
-	$"%P2InfoContainer".move_child(p2_info_scene, 1)
+	$"%P2InfoContainer".move_child(p2_info_scene, 0)
 	ui_layer.p1_info_scene = p1_info_scene
 	ui_layer.p2_info_scene = p2_info_scene
 

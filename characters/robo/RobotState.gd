@@ -2,6 +2,7 @@ extends CharacterState
 
 class_name RobotState
 
+export var _c_Robot_Obsolete = 0
 export var is_super = false
 export var super_level = 1
 export var supers_used = -1

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/ActionSelector/ButtonCategoryContainer.gd" type="Script" id=2]
 [ext_resource path="res://button_container_theme.tres" type="Theme" id=3]
+[ext_resource path="res://ui/ActionSelector/too_many_moves.png" type="Texture" id=4]
 
 [node name="Control" type="Control"]
 show_behind_parent = true
@@ -62,6 +63,18 @@ margin_bottom = -1.0
 grow_horizontal = 2
 text = "Predict"
 
+[node name="FrameLabel" type="Label" parent="VBoxContainer/CenterContainer"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -20.0
+margin_top = -21.0
+margin_right = 20.0
+margin_bottom = -10.0
+align = 1
+
 [node name="ButtonCategoryContainer" type="PanelContainer" parent="VBoxContainer"]
 self_modulate = Color( 1, 1, 1, 0 )
 margin_top = 2.0
@@ -102,9 +115,12 @@ theme_type_variation = "InvisScrollbar"
 
 [node name="ButtonContainer" type="GridContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -52.0
 margin_right = 54.0
-margin_bottom = 52.0
 grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -114,9 +130,9 @@ columns = 3
 
 [node name="ScrollContainer2" type="ScrollContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
 visible = false
-margin_top = 82.0
-margin_right = 57.0
-margin_bottom = 82.0
+margin_top = 64.0
+margin_right = 54.0
+margin_bottom = 64.0
 rect_min_size = Vector2( 48, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -125,7 +141,7 @@ scroll_horizontal_enabled = false
 
 [node name="Panel2" type="Panel" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer2"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_right = 57.0
+margin_right = 54.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -159,6 +175,18 @@ theme = ExtResource( 1 )
 [node name="UpdateTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+
+[node name="TooManyMoves" type="TextureRect" parent="."]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_top = 9.0
+margin_right = -1.0
+margin_bottom = -939.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+stretch_mode = 4
 
 [connection signal="mouse_entered" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_exited"]

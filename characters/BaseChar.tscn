@@ -541,6 +541,7 @@ anim_length = 20
 title = "Push Block"
 type = 4
 button_texture = ExtResource( 184 )
+air_type = 2
 dynamic_iasa = false
 reversible = false
 interrupt_from_string = "Grounded
@@ -573,6 +574,7 @@ title = "Block"
 type = 4
 data_ui_scene = ExtResource( 183 )
 button_texture = ExtResource( 99 )
+air_type = 2
 dynamic_iasa = false
 reversible = false
 interrupt_from_string = "Grounded
@@ -630,6 +632,7 @@ button_texture = ExtResource( 98 )
 air_type = 1
 dynamic_iasa = false
 reversible = false
+selectable = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -783,10 +786,12 @@ anim_length = 25
 particle_scene = ExtResource( 120 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
+title = "Burst"
 type = 3
 button_texture = ExtResource( 85 )
 air_type = 2
 dynamic_iasa = false
+neutral_only = true
 burst_cancellable = false
 instant_cancellable = false
 can_feint_if_possible = false
@@ -836,8 +841,11 @@ button_texture = ExtResource( 96 )
 air_type = 2
 iasa_at = 15
 dynamic_iasa = false
+combo_only = true
 burst_cancellable = false
-interrupt_from_string = "OffensiveBurst"
+interrupt_from_string = "OffensiveBurst
+Grounded
+Aerial"
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "Grounded

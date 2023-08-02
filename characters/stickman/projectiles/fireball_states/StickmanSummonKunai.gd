@@ -61,4 +61,4 @@ func _frame_45():
 	host.stop_particles()
 	host.disabled = true
 	if host.creator:
-		host.creator.can_summon = true
+		host.creator.can_summon_kunai = true

@@ -56,6 +56,7 @@ var ground_bounce_knockback_modifier = "1.0"
 var hits_projectiles = true
 var cancellable = false
 var followup_state = ""
+var guard_break = false
 
 func get_damage():
 	if combo_count > 0:
@@ -167,6 +168,8 @@ func _init(state):
 		cancellable = state.cancellable
 	if state.get("followup_state") != null:
 		followup_state = state.followup_state
+	if state.get("guard_break") != null:
+		guard_break = state.guard_break
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

@@ -78,9 +78,9 @@ func _ready():
 		top_row_items.invert()
 		for i in range(top_row_items.size()):
 			$"%TopRow".move_child(top_row_items[i], i)
-		$"%LastMoveTexture".rect_position.x += 45
+		$"%LastMoveTexture".rect_position.x += 40
 	else:
-		$"%LastMoveTexture".rect_position.x -= 45
+		$"%LastMoveTexture".rect_position.x -= 40
 #		$"%DIPlotContainer".alignment = BoxContainer.ALIGN_BEGIN
 
 func _get_opposite_buttons():
@@ -272,6 +272,9 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	container.add_button(button)
 	if button.get("flip_icon") != null:
 		button.flip_icon = flip_icon
+	
+	if button.get("earliest_hitbox") != null:
+		button.earliest_hitbox = state.earliest_hitbox
 	
 	button.set_player_id(player_id)
 	if data_scene:

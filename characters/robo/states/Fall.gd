@@ -6,8 +6,8 @@ func _enter():
 func _tick():
 	._tick()
 	if host.flying_dir != null:
-		iasa_at = 7
-		if current_tick > 0 and current_tick % 7 == 0:
+		iasa_at = 9
+		if current_tick > 0 and current_tick % 9 == 0:
 			enable_interrupt()
 	if current_tick > 1 and host.is_grounded():
 		return "Landing"

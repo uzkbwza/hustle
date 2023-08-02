@@ -3,12 +3,13 @@ extends PlayerInfo
 const LOIC_READY_BAR = preload("res://characters/robo/loic_meter_progress2.png")
 const LOIC_CHARGING_BAR = preload("res://characters/robo/loic_meter_progress1.png")
 
+
 func set_fighter(fighter):
 	.set_fighter(fighter)
-	$HBoxContainer.alignment = BoxContainer.ALIGN_BEGIN if player_id == 1 else BoxContainer.ALIGN_END
+	$"%HBoxContainer".alignment = BoxContainer.ALIGN_BEGIN if player_id == 1 else BoxContainer.ALIGN_END
 	if player_id == 2:
-		$HBoxContainer.move_child($HBoxContainer/LOICMeterContainer, 0)
-		$HBoxContainer.move_child($"%ArmorIndicator", 0)
+		$"%HBoxContainer".move_child($"%LOICMeterContainer", 0)
+		$"%HBoxContainer".move_child($"%ArmorIndicatorContainer", 0)
 		$"%LOICMeter".fill_mode = TextureProgress.FILL_RIGHT_TO_LEFT
 
 func _process(delta):

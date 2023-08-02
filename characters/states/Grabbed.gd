@@ -6,6 +6,7 @@ func _ready():
 func _enter():
 	host.set_snap_to_ground(false)
 	host.has_hyper_armor = false
+	host.has_projectile_armor = false
 	host.colliding_with_opponent = false
 	host.opponent.colliding_with_opponent = false
 	host.start_invulnerability()

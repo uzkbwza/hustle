@@ -440,6 +440,7 @@ ReplayManager="*res://ReplayManager.gd"
 Network="*res://Network.gd"
 SteamLobby="*res://SteamLobby.gd"
 Custom="*res://Custom.gd"
+ModOverride="*res://ModOverride.gd"
 
 [debug]
 
