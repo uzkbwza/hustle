@@ -64,11 +64,11 @@ margin_bottom = 339.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 1
-always_max = true
 limit_angle = true
 limit_range_degrees = 110.0
 limit_center_degrees = 10.0
 limit_symmetrical = false
+default_value = Vector2( 1, 0 )
 snap_angles = 4
 snap_align_to_limit_center = false
 

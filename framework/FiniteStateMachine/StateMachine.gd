@@ -196,6 +196,7 @@ func _change_state(state_name: String, data=null, enter=true, exit=true) -> void
 		animated_sprite.frame = 0
 		animated_sprite.play.call_deferred(state.animation)
 	state.data = data
+
 	if enter:
 		var new_state = state._enter_shared()
 		if new_state:

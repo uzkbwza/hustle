@@ -68,6 +68,7 @@ export var hits_vs_dizzy = true
 export var beats_grab = true
 export var hits_projectiles = true
 export var guard_break = false
+export var block_punishable = false
 export(int, -1024, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid
@@ -148,9 +149,19 @@ var whiff_sound_player
 var hit_sound_player
 var hit_bass_sound_player
 
+var native = null
+
+var property_list: PoolStringArray
+
 func copy_to(hitbox: CollisionBox):
-	var properties = get_script().get_script_property_list()
-	for variable in properties:
+	if hitbox == null:
+		return
+	hitbox.property_list = property_list
+	if native:
+		native.copy_state(self, hitbox)
+		return
+#	var properties = get_script().get_script_property_list()
+	for variable in property_list:
 		var value = get(variable.name)
 		if not (value is Object or value is Array or value is Dictionary):
 			hitbox.set(variable.name, value)
@@ -244,7 +255,12 @@ func init():
 		width *= -1
 	if combo_hitstun_ticks == -1:
 		combo_hitstun_ticks = hitstun_ticks
+	update_property_list()
 	call_deferred("setup_audio")
+
+func update_property_list():
+	if !host.is_ghost:
+		property_list = Utils.get_copiable_properties(self)
 
 func get_real_knockback():
 	if host.is_in_group("Fighter"):
@@ -291,7 +307,7 @@ func hit(obj):
 	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit) and otg_check(obj):
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		var dir = get_dir_float(true)
-		if grounded_hit_state == "HurtGrounded" and obj.is_grounded():
+		if grounded_hit_state is String and grounded_hit_state == "HurtGrounded" and obj.is_grounded():
 				dir.y *= 0
 		for hitbox in grouped_hitboxes:
 			hitbox.hit_objects.append(obj.name)

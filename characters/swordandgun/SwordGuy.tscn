@@ -1570,8 +1570,12 @@ interrupt_from_string = "Lasso"
 z_index = 1000
 script = ExtResource( 166 )
 increment_combo = false
-knockdown_extends_hitstun = false
-active_ticks = 1
+_c_Grouping = 1
+_c_Sfx = true
+_c_Knockback = false
+_c_Knockback_Type = "1.0"
+_c_Frame_Data = false
+_c_Loop_Data = false
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 79 )
@@ -1665,6 +1669,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1682,6 +1687,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1722,6 +1728,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1740,6 +1747,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1758,6 +1766,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1776,6 +1785,7 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
+plus_frames = -2
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1956,6 +1966,7 @@ damage = 120
 hitlag_ticks = 7
 victim_hitlag = 7
 damage_proration = -1
+guard_break = true
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 141 )
 dir_y = "-0.25"
@@ -2064,6 +2075,7 @@ cancellable = false
 sdi_modifier = "0.5"
 ignore_armor = true
 followup_state = "ImpaleFollowup"
+plus_frames = -4
 screenshake_amount = 2
 rumble = false
 hit_sound = ExtResource( 142 )
@@ -2214,7 +2226,6 @@ height = 10
 damage = 70
 hitstun_ticks = 11
 victim_hitlag = 8
-guard_break = true
 hit_height = 0
 dir_x = "0.25"
 dir_y = "1.0"
@@ -2263,7 +2274,6 @@ height = 10
 damage = 70
 hitstun_ticks = 8
 victim_hitlag = 7
-damage_proration = 1
 guard_break = true
 hit_height = 0
 dir_x = "0.25"
@@ -2825,6 +2835,7 @@ data_ui_scene = ExtResource( 314 )
 button_texture = ExtResource( 161 )
 air_type = 2
 dynamic_iasa = false
+can_feint_if_possible = false
 interrupt_from_string = "Gun
 LassoThrow
 Shoot"
@@ -2869,6 +2880,7 @@ button_texture = ExtResource( 292 )
 air_type = 2
 dynamic_iasa = false
 reversible = false
+can_feint_if_possible = false
 interrupt_from_string = "Gun
 LassoThrow
 Shoot"
@@ -3028,6 +3040,7 @@ height = 14
 damage = 50
 hitstun_ticks = 19
 hitlag_ticks = 5
+block_punishable = true
 group = 1
 hit_sound = ExtResource( 179 )
 dir_x = "-1.0"
@@ -3171,6 +3184,22 @@ speed = "7"
 interrupt_from_string = ""
 interrupt_into_string = ""
 
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+_c_Grouping = 1
+_c_Sfx = true
+_c_Knockback = false
+_c_Knockback_Type = "1.0"
+_c_Frame_Data = false
+_c_Loop_Data = false
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+_c_Grouping = 1
+_c_Sfx = true
+_c_Knockback = false
+_c_Knockback_Type = "1.0"
+_c_Frame_Data = false
+_c_Loop_Data = false
+
 [node name="ForwardThrow" parent="StateMachine" index="99"]
 knockback = "11.0"
 dir_y = "0.0"
@@ -3184,14 +3213,20 @@ screenshake_amount = 0
 screenshake_frames = 0
 
 [node name="AirForwardThrow" parent="StateMachine" index="101"]
+hitstun_ticks = 17
+knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
 [node name="AirBackThrow" parent="StateMachine" index="102"]
+hitstun_ticks = 17
+knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
 [node name="AirDownThrow" parent="StateMachine" index="103"]
+hitstun_ticks = 17
+knockback = "14"
 dir_x = "1.0"
 dir_y = "1.00"
 screenshake_amount = 0

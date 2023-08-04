@@ -32,6 +32,7 @@ export var hits_otg = false
 export var increment_combo = true
 export var hard_knockdown = false
 export var force_grounded = false
+export var air_ground_bounce = false
 export var wall_slam = false
 export var di_modifier = "1.0"
 export var minimum_grounded_frames = -1

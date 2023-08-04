@@ -11,6 +11,7 @@ var animation = ""
 var host
 var active = false
 var data = null
+var initialized = false
 
 signal queue_change(state, self_)
 signal queue_change_with_data(state, data, self_)
@@ -35,6 +36,7 @@ func _previous_state():
 		return get_parent().states_stack[-2]
 
 func init():
+	initialized = true
 	pass
 
 func _enter_tree():

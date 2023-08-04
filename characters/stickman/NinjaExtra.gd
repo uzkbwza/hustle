@@ -33,8 +33,8 @@ func show_options():
 	detach_button.set_pressed_no_signal(false)
 	release_button.set_pressed_no_signal(false)
 	boost_dir.set_facing(fighter.get_opponent_dir())
-
-	if fighter.storing_momentum:
+	boost_dir.limit_angle = fighter.combo_count <= 0
+	if fighter.momentum_stores > 0:
 		release_button.show()
 
 	if fighter.bomb_thrown:
@@ -45,6 +45,17 @@ func show_options():
 		pull_button.show()
 	if obj:
 		detach_button.show()
+		
+func update_selected_move(move_state):
+	.update_selected_move(move_state)
+	release_button.disabled = false
+	if move_state is CharacterState:
+		if move_state.type == CharacterState.ActionType.Defense \
+		or move_state.type == CharacterState.ActionType.Movement:
+			boost_dir.hide()
+			release_button.set_pressed_no_signal(false)
+			release_button.disabled = true
+	pass
 
 func get_extra():
 	var extra = {

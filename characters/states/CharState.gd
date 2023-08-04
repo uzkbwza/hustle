@@ -173,8 +173,12 @@ func get_busy_interrupt_into():
 func get_allowed_stances():
 	return allowed_stances
 
-
 func init():
+	if iasa_at < 0:
+		iasa_at = anim_length + iasa_at
+	if starting_iasa_at == -1:
+		starting_iasa_at = iasa_at
+	interrupt_frames = interrupt_frames.duplicate(true)
 	connect("state_interruptable", host, "on_state_interruptable", [self])
 	connect("state_hit_cancellable", host, "on_state_hit_cancellable", [self])
 	host.connect("got_hit", self, "on_got_hit")
@@ -193,6 +197,10 @@ func init():
 		hit_cancel_into.append("OffensiveBurst")
 	if instant_cancellable:
 		hit_cancel_into.append("InstantCancel")
+	hit_cancel_into.append("GroundedDefense")
+	hit_cancel_into.append("AerialDefense")
+	hit_cancel_into.append("GroundedGrab")
+	hit_cancel_into.append("AerialGrab")
 	if title == "":
 		title = state_name
 	match busy_interrupt_type:
@@ -203,11 +211,6 @@ func init():
 				busy_interrupt_into.append("BusyHurt")
 		BusyInterrupt.None:
 			pass
-	if iasa_at < 0:
-		iasa_at = anim_length + iasa_at
-	if starting_iasa_at == -1:
-		starting_iasa_at = iasa_at
-	interrupt_frames = interrupt_frames.duplicate(true)
 	.init()
 
 # func copy_to(state: ObjectState):
@@ -339,7 +342,10 @@ func _can_hit_cancel(obj, hitbox):
 			return false
 		if !can_hit_cancel():
 			return false
-		if obj.is_in_group("Fighter") or obj.get("hit_cancel_on_hit"):
+		var can_hit_cancel = false
+		if obj.has_method("can_hit_cancel"):
+			can_hit_cancel = obj.can_hit_cancel(host)
+		if obj.is_in_group("Fighter") or can_hit_cancel:
 			var projectile = !obj.is_in_group("Fighter")
 			if projectile or hitbox.followup_state == "":
 				return true

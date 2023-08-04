@@ -3,7 +3,7 @@ var can_summon_kunai = true
 var can_summon_kick = true
 var bomb_thrown = false
 var bomb_projectile = null
-var storing_momentum = false
+var momentum_stores = 0
 var stored_momentum_x = ""
 var stored_momentum_y = ""
 var sticky_bombs_left = 3
@@ -17,7 +17,7 @@ var used_grappling_hook = false
 var whip_beam_charged = false
 var substituted_objects = {}
 var skull_shaker_bleed_ticks = 0
-var stored_speed = "0"
+var stored_speed = "1"
 var released_this_turn = false
 var will_release_momentum = false
 
@@ -31,6 +31,11 @@ const MAX_PULL_UPWARD_SPEED = "-10"
 const BACKWARD_PULL_PENALTY = 2
 const SKULL_SHAKER_BLEED_TICKS = 70
 const SKULL_SHAKER_BLEED_DAMAGE = 10
+
+func init(pos=null):
+	.init(pos)
+	if infinite_resources:
+		momentum_stores = 3
 
 func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
@@ -71,7 +76,10 @@ func apply_forces():
 func release_momentum():
 #		reset_momentum()
 		apply_force(stored_momentum_x, stored_momentum_y)
-		storing_momentum = false
+		if !infinite_resources:
+			momentum_stores -= 1
+		if momentum_stores < 0:
+			momentum_stores = 0
 		released_this_turn = true
 		will_release_momentum = false
 		play_sound("Swish2")
@@ -81,6 +89,13 @@ func detach():
 	var hook = obj_from_name(grappling_hook_projectile)
 	if hook:
 		hook.disable()
+
+func apply_grav():
+	if previous_state() and previous_state().name == "AirDash":
+		if !(current_state() is CharacterHurtState):
+			if turn_frames <= 7:
+				return
+	.apply_grav()
 
 func tick():
 	.tick()
@@ -114,12 +129,14 @@ func tick():
 		if skull_shaker_bleed_ticks % 10 == 0:
 			opponent.take_damage(SKULL_SHAKER_BLEED_DAMAGE, 0, "0.25")
 	
-	if will_release_momentum and current_state().current_tick == 1:
+	if will_release_momentum and turn_frames == 1:
 		release_momentum()
 
 	if released_this_turn:
 #	if released_this_turn and turn_frames % 1 == 0:
-		create_speed_after_image(Color("99ff333d"))
+		var color = style_extra_color_2 if (style_extra_color_2 and applied_style)  else extra_color_2
+		color.a = 0.5
+		create_speed_after_image(color)
 
 	if is_grounded():
 		used_grappling_hook = false

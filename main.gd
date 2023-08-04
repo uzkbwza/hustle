@@ -257,7 +257,7 @@ func _start_ghost():
 		return
 	if !game.prediction_enabled:
 		return
-	
+#
 	ghost_game = preload("res://Game.tscn").instance()
 	ghost_game.is_ghost = true
 	$"%GhostViewport".add_child(ghost_game)

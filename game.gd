@@ -1332,8 +1332,8 @@ func _physics_process(_delta):
 					get_player(id).on_action_selected(input.action, input.data, input.extra)
 
 func ghost_tick():
-	p1.actionable_label.hide()
-	p2.actionable_label.hide()
+#	p1.actionable_label.hide()
+#	p2.actionable_label.hide()
 	var simulate_frames = 1
 	if ghost_speed == 1:
 		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
@@ -1361,12 +1361,16 @@ func ghost_tick():
 			p1.set_ghost_colors()
 			if ghost_freeze:
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
-				p1.actionable_label.show()
-				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
+			if !p1.actionable_label.visible:
+				p1.actionable_label.show()
+				p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+			emit_signal("ghost_my_turn")
 			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2):
-				p2.actionable_label.show()
+				if !p2.actionable_label.visible:
+					p2.actionable_label.show()
+					p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
 				ghost_p2_actionable = true
 				
 #			else:
@@ -1382,13 +1386,17 @@ func ghost_tick():
 			p2.set_ghost_colors()
 			if ghost_freeze:
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
-				p2.actionable_label.show()
-				emit_signal("ghost_my_turn")
 			else:
 				ghost_actionable_freeze_ticks = 1
+			if !p2.actionable_label.visible:
+				p2.actionable_label.show()
+				p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+			emit_signal("ghost_my_turn")
 			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or negative_on_hit(p1):
 				ghost_p1_actionable = true
-				p1.actionable_label.show()
+				if !p1.actionable_label.visible:
+					p1.actionable_label.show()
+					p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
 				
 #			else:
 #				ghost_actionable_freeze_ticks = 1

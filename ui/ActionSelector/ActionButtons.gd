@@ -695,6 +695,7 @@ func activate(refresh=true):
 	yield(get_tree(), "idle_frame")
 #	if !$"%ReverseButton".disabled:
 	$"%ReverseButton".show()
+	fighter.update_property_list()
 	if !refresh:
 		return
 	button_pressed = false

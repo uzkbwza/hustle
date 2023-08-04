@@ -9,16 +9,30 @@ func _frame_0():
 #	left_ground = false
 
 func _frame_7():
-	left_ground = true
+	if !started_in_air:
+		left_ground = true
 
 func _tick():
 	if current_tick <= 6:
 		left_ground = false
+	else:
+		if started_in_air:
+			if host.is_grounded():
+				if current_tick < 15:
+					host.set_vel(host.get_vel().x, "0")
+					var force = fixed.normalized_vec_times("1.1", "-0.25", "11.0")
+					host.apply_force_relative(force.x,  force.y)
+				else:
+					left_ground = true
+
 	if current_tick < 24:
 		host.start_projectile_invulnerability()
 	else:
 		host.end_projectile_invulnerability()
-		
+	
+
+				
+	
 	host.apply_fric()
 	host.apply_grav()
 	host.apply_forces()

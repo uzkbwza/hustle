@@ -62,6 +62,9 @@ func on_hit_ceiling():
 func on_got_blocked():
 	pass
 
+func can_hit_cancel(_fighter):
+	return hit_cancel_on_hit
+
 func hit_by(hitbox):
 	if hitbox:
 		if hitbox.throw:

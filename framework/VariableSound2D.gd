@@ -5,7 +5,7 @@ class_name VariableSound2D
 export var pitch_variation = 0.1
 export var one_shot = false
 export var streams: Array = []
-var pitch_scale_
+var pitch_scale_ = 0.0
 
 var rng = BetterRng.new()
 # Declare member variables here. Examples:

@@ -149,8 +149,8 @@ func refresh():
 
 func update_frame_display(button):
 	$"%FrameLabel".text = ""
-	if button and button.get("earliest_hitbox") and button.earliest_hitbox > 0:
-		$"%FrameLabel".text = "[~%sf]" % button.earliest_hitbox
+#	if button and button.get("earliest_hitbox") and button.earliest_hitbox > 0:
+#		$"%FrameLabel".text = "[~%sf]" % button.earliest_hitbox
 	pass
 
 func on_button_mouse_entered(button):

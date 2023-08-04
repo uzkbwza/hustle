@@ -57,31 +57,18 @@ func _frame_9():
 	var obj = host.spawn_object(PROJECTILES[charges - 1],0,0)
 	var default = obj.state_machine.get_node("Default")
 	var hitbox = default.get_node("Hitbox")
-	for f in get_tree().get_nodes_in_group("Fighter"):
-		if(f==host):
-			continue
-		if(f.is_ghost!=host.is_ghost):
-			continue
-		var fc = f.get_pos()
-		var v1 = (MAX_DISTS[charges - 1])
-		var v2 = fixed.vec_len(str(pos.x-fc.x),str(pos.y-fc.y))
-		var v
-		if fixed.lt(v1, v2):
-			v = v1
-		else:
-			v = v2
-		var floc = fixed.vec_mul(dir.x, dir.y, v)
-		var h = hitbox.duplicate()
-		hitbox.copy_to(h)
-		obj.hitboxes.append(h)
-		default.add_child(h)
-		h.init()
-		h.host = obj
-		h.x = fixed.round(fixed.mul(floc.x, str(host.get_facing_int())))
-		h.y = fixed.round(fixed.sub(str(floc.y), str(f.hurtbox.height)))
+	var fc = host.opponent.get_pos()
+	var v1 = (MAX_DISTS[charges - 1])
+	var v2 = fixed.vec_len(str(pos.x-fc.x),str(pos.y-fc.y))
+	var v
+	if fixed.lt(v1, v2):
+		v = v1
+	else:
+		v = v2
+	var floc = fixed.vec_mul(dir.x, dir.y, v)
+	hitbox.x = fixed.round(fixed.mul(floc.x, str(host.get_facing_int())))
+	hitbox.y = fixed.round(fixed.sub(str(floc.y), str(host.hurtbox.height)))
 
-	default.remove_child(hitbox)
-	obj.hitboxes.remove(0)
 #	var dir = Vector2(data["Direction"]["x"], data["Direction"]["y"]).normalized()
 #	var pos = host.get_pos()
 #	var obj = host.spawn_object(PROJECTILES[charges - 1],0,0)

@@ -71,6 +71,7 @@ var creator_name = null
 var creator = null
 
 var fixed = FixedMath.new()
+var native = NativeMethods.new()
 
 var state_interruptable = true
 var state_hit_cancellable = false
@@ -246,6 +247,7 @@ func copy_to(o: BaseObj):
 	if !initialized:
 		init()
 	var current_state = current_state()
+#	print(current_state().property_list)
 	o.state_machine.starting_state = current_state.name
 	o.spawn_data = current_state.copy_data()
 	o.set_pos(get_pos().x, get_pos().y)
@@ -267,7 +269,7 @@ func copy_to(o: BaseObj):
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_to(o.state_machine.states_map[state])
 #	state_machine.states_map[current_state().state_name].copy_to(o.state_machine.states_map[current_state().state_name])
-	
+
 	for state in state_machine.states_stack:
 		o.state_machine.states_stack.append(o.state_machine.states_map[state.name])
 

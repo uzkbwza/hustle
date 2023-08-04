@@ -1,4 +1,4 @@
-[gd_scene load_steps=186 format=2]
+[gd_scene load_steps=188 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -184,6 +184,8 @@
 [ext_resource path="res://characters/states/NewParry.gd" type="Script" id=182]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ParryActionUIData.tscn" type="PackedScene" id=183]
 [ext_resource path="res://ui/ActionSelector/StateIcons/push_block.png" type="Texture" id=184]
+[ext_resource path="res://sound/common/Block2.wav" type="AudioStream" id=185]
+[ext_resource path="res://sound/common/Block3.wav" type="AudioStream" id=186]
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -432,40 +434,53 @@ volume_db = -4.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Parry2" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+[node name="Block2" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+stream = ExtResource( 185 )
+volume_db = -7.0
+pitch_scale = 1.5
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Block3" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+stream = ExtResource( 186 )
+volume_db = -10.0
+bus = "Fx"
+script = ExtResource( 130 )
+
+[node name="Parry2" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
 stream = ExtResource( 132 )
 volume_db = -20.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Super" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+[node name="Super" type="AudioStreamPlayer2D" parent="Sounds" index="5"]
 stream = ExtResource( 136 )
 volume_db = -4.0
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Super2" type="AudioStreamPlayer2D" parent="Sounds" index="4"]
+[node name="Super2" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
 stream = ExtResource( 137 )
 volume_db = -10.0
 bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.05
 
-[node name="Super3" type="AudioStreamPlayer2D" parent="Sounds" index="5"]
+[node name="Super3" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
 stream = ExtResource( 138 )
 volume_db = -4.0
 bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.025
 
-[node name="Predict" type="AudioStreamPlayer2D" parent="Sounds" index="6"]
+[node name="Predict" type="AudioStreamPlayer2D" parent="Sounds" index="8"]
 stream = ExtResource( 166 )
 volume_db = -18.0
 pitch_scale = 1.5
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="Predict2" type="AudioStreamPlayer2D" parent="Sounds" index="7"]
+[node name="Predict2" type="AudioStreamPlayer2D" parent="Sounds" index="9"]
 stream = ExtResource( 168 )
 volume_db = -18.0
 pitch_scale = 1.5
@@ -473,36 +488,36 @@ bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.11
 
-[node name="Predict3" type="AudioStreamPlayer2D" parent="Sounds" index="8"]
+[node name="Predict3" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
 stream = ExtResource( 167 )
 volume_db = -20.0
 bus = "Fx"
 script = ExtResource( 130 )
 pitch_variation = 0.01
 
-[node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="9"]
+[node name="QuitterSound" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
 stream = ExtResource( 155 )
 volume_db = -20.0
 bus = "Fx"
 
-[node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
+[node name="HitBass" type="AudioStreamPlayer2D" parent="Sounds" index="12"]
 stream = ExtResource( 161 )
 volume_db = -5.0
 bus = "Fx"
 
-[node name="GroundBounce" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
+[node name="GroundBounce" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
 stream = ExtResource( 175 )
 volume_db = -5.0
 bus = "Fx"
 
-[node name="SuperGain" type="AudioStreamPlayer2D" parent="Sounds" index="12"]
+[node name="SuperGain" type="AudioStreamPlayer2D" parent="Sounds" index="14"]
 stream = ExtResource( 135 )
 volume_db = -15.0
 pitch_scale = 1.25
 bus = "Fx"
 script = ExtResource( 130 )
 
-[node name="SuperGain2" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
+[node name="SuperGain2" type="AudioStreamPlayer2D" parent="Sounds" index="15"]
 stream = ExtResource( 181 )
 volume_db = -15.0
 bus = "Fx"
@@ -556,7 +571,6 @@ Aerial"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
-initiative_effect = true
 super_level_ = 1
 super_freeze_ticks_ = 2
 super_effect_ = true
@@ -589,7 +603,6 @@ Aerial"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
-initiative_effect = true
 parry_type = 2
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="3"]
@@ -802,6 +815,7 @@ Aerial"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 release_opponent_on_startup = true
+initiative_effect = true
 defensive = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DefensiveBurst" index="0"]
@@ -1321,6 +1335,8 @@ super_freeze_ticks = 3
 [node name="HurtDizzy" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 28 )
 reset_momentum = true
+anim_length = 8
+loop_animation = true
 endless = true
 type = 5
 busy_interrupt_type = 1
@@ -1348,6 +1364,8 @@ interrupt_exceptions_string = "CounterAttack"
 [node name="HurtAerial" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 27 )
 reset_momentum = true
+anim_length = 8
+loop_animation = true
 endless = true
 air_type = 1
 busy_interrupt_type = 1
@@ -1358,6 +1376,8 @@ change_stance_to = "Normal"
 [node name="HurtGrounded" type="Node2D" parent="StateMachine" index="38"]
 script = ExtResource( 28 )
 reset_momentum = true
+anim_length = 8
+loop_animation = true
 endless = true
 type = 5
 busy_interrupt_type = 1
@@ -1728,7 +1748,9 @@ margin_top = -40.0
 margin_right = 44.0
 margin_bottom = -26.0
 theme = ExtResource( 47 )
-text = "Ready"
+custom_constants/line_spacing = -2
+text = "Ready
+test"
 align = 1
 __meta__ = {
 "_edit_lock_": true

@@ -23,6 +23,9 @@ func _enter():
 		backdash_iasa = false
 		beats_backdash = true
 
+func _frame_0():
+	host.has_projectile_armor = true
+
 func _frame_5():
 	if !host.reverse_state:
 		host.move_directly_relative((EXTRA_FORWARD_MOVEMENT if !host.reverse_state else 0), 0) 

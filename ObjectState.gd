@@ -108,8 +108,10 @@ var current_real_tick = -1
 var start_tick = -1
 var last_facing = 1
 var fixed
+var native
 
 var anim_name
+var property_list: PoolStringArray
 
 var has_hitboxes = false
 
@@ -126,6 +128,7 @@ var hurtbox_state_change_frames = {
 	
 }
 
+var all_hitbox_nodes = []
 var frame_methods = []
 var frame_methods_shared = []
 var max_tick = -1
@@ -312,7 +315,7 @@ func update_hurtbox():
 			current_hurtbox.end(host)
 		current_hurtbox = hurtbox_state_change_frames[current_tick]
 		current_hurtbox.start(host)
-		
+
 func copy_data():
 	var d = null
 	if data:
@@ -322,18 +325,41 @@ func copy_data():
 			d = data
 	return d
 
-func copy_to(state: ObjectState):
-	var properties = get_script().get_script_property_list()
-	for variable in properties:
-		var value = get(variable.name)
-		if not (value is Object or value is Array or value is Dictionary):
-			state.set(variable.name, value)
+#func set(key, value):
+#	if key == "test":
+#		print("setting %s to %s" % [key, value])
+#	.set(key, value)
+
+func _copy_to(state: ObjectState):
+#	var properties = get_script().get_script_property_list()
+##
+#	for variable in properties:
+#		var value = get(variable.name)
+#		if not (value is Object or value is Array or value is Dictionary):
+#			state.set(variable.name, value)
+
 	state.data = copy_data()
 	state.current_real_tick = current_real_tick
 	state.current_tick = current_real_tick
 	for h in get_children():
 		if(h is Hitbox):
 			h.copy_to(state.get_node(h.name))
+#	for i in range(all_hitbox_nodes.size()):
+#		var to_hitbox = state.all_hitbox_nodes[i]
+#		to_hitbox.hit_objects = all_hitbox_nodes[i].hit_objects.duplicate()
+#		if all_hitbox_nodes[i].active:
+#			to_hitbox.activate()
+#			to_hitbox.tick = all_hitbox_nodes[i].tick
+#			to_hitbox.enabled = all_hitbox_nodes[i].enabled
+#			all_hitbox_nodes[i].copy_to(to_hitbox)
+#			to_hitbox.update_position(host.pos.x, host.pos.y)
+
+func copy_to(state: ObjectState):
+#	print(get_script().get_script_property_list())
+	state.property_list = property_list
+#	print(property_list)
+	native.copy_state(self, state)
+	_copy_to(state)
 
 func copy_hurtbox_states(state: ObjectState):
 	for i in range(get_child_count()):
@@ -359,6 +385,7 @@ func init():
 	connect("state_started", host, "on_state_started", [self])
 	connect("state_ended", host, "on_state_ended", [self])
 	fixed = host.fixed
+	native = host.native
 	anim_name = sprite_animation if sprite_animation else state_name
 	if sprite_anim_length < 0:
 		if host.sprite.frames.has_animation(anim_name):
@@ -373,6 +400,14 @@ func init():
 			if not (child.tick in host_command_nodes):
 				host_command_nodes[child.tick] = []
 			host_command_nodes[child.tick].append(child)
+	update_property_list()
+	.init()
+
+func update_property_list():
+	if !host.is_ghost:
+		property_list = Utils.get_copiable_properties(self)
+		for hitbox in all_hitbox_nodes:
+			hitbox.update_property_list()
 
 func setup_audio():
 	if enter_sfx:
@@ -390,16 +425,19 @@ func setup_audio():
 		sfx_player.volume_db = sfx_volume
 
 func setup_hitboxes():
-	var hitboxes = []
+	all_hitbox_nodes = []
 	for child in get_children():
 		if child is Hitbox:
-			hitboxes.append(child)
+			all_hitbox_nodes.append(child)
 			host.hitboxes.append(child)
+			child.native = native
 	var earliest = 999999999
-	for hitbox in hitboxes:
+	for hitbox in all_hitbox_nodes:
+		hitbox.host = host
 		hitbox.init()
 		has_hitboxes = true
-		hitbox.host = host
+		if !host.is_ghost:
+			hitbox.property_list = get_script().get_property_list()
 		if hitbox.start_tick > 0:
 			if hitbox_start_frames.has(hitbox.start_tick):
 				hitbox_start_frames[hitbox.start_tick].append(hitbox)
@@ -409,7 +447,7 @@ func setup_hitboxes():
 				earliest = hitbox.start_tick
 		hitbox.connect("hit_something", self, "__on_hit_something")
 		hitbox.connect("got_parried", self, "__on_got_parried")
-		for hitbox2 in hitboxes:
+		for hitbox2 in all_hitbox_nodes:
 			if hitbox2.group == hitbox.group:
 				hitbox.grouped_hitboxes.append(hitbox2)
 	if earliest_hitbox <= 0 and earliest != 999999999:

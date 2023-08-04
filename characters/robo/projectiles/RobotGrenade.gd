@@ -53,6 +53,11 @@ func explode():
 	disable()
 	spawn_object(EXPLOSION, 0, -8)
 
+func can_hit_cancel(fighter):
+	if active:
+		return hit_cancel_on_hit and fighter.id == id
+	return hit_cancel_on_hit
+
 func hit_by(hitbox):
 	.hit_by(hitbox)
 	if hitbox:
@@ -83,6 +88,10 @@ func hit_by(hitbox):
 					hits_chained += 1
 				if hits_chained > 0:
 					hit_cancel_on_hit = false
+				
+				if active and host_object.id != id:
+					explode()
+					return
 				
 				if player_object.combo_count > 0:
 					hit_cancel_on_hit = true

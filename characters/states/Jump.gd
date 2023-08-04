@@ -22,10 +22,17 @@ const SUPER_JUMP_FORCES_END_TICK = 25
 
 var queue_backdash_check = false
 
+#var test = 0
+
 var jump_tick = 1
-var squat
-var force_x
-var force_y
+var squat = false
+var force_x = "0.0"
+var force_y = "0.0"
+#
+#func _enter():
+#	test += 1
+#	if test == 2:
+#		host.take_damage(900)
 
 func jump():
 	var vel = host.get_vel()

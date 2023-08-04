@@ -23,6 +23,7 @@ func _ready():
 	hitbox2.start_tick = chainsaw_start_tick + 1
 	hitbox.active_ticks = chainsaw_end_tick - chainsaw_start_tick + 1
 	hitbox2.active_ticks = chainsaw_end_tick - chainsaw_start_tick + 1
+	iasa_on_hit = chainsaw_end_tick
 
 func _enter():
 	var start_vec = xy_to_dir(data["Start"].x, data["Start"].y)
@@ -113,10 +114,10 @@ func _tick():
 		hitbox2.dir_y = kb_dir.y
 		host.chainsaw_arm.global_rotation = arm_angle
 	pass
-
-func _on_hit_something(obj, hitbox):
-	._on_hit_something(obj, hitbox)
-	iasa_at = chainsaw_end_tick
+#
+#func _on_hit_something(obj, hitbox):
+#	._on_hit_something(obj, hitbox)
+#	iasa_at = chainsaw_end_tick
 
 func _exit():
 	for ghost in host.chainsaw_arm_ghosts:

@@ -4,6 +4,7 @@ class_name Robot
 
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8.5"
+const FORWARD_FLY_SPEED_MODIFIER = "1.2"
 const FLY_TICKS = 25
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
@@ -225,7 +226,8 @@ func tick():
 		armor_startup_ticks -= 1
 		if armor_startup_ticks == 0:
 			armor_active = true
-			spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect2.tscn"), Vector2(0, -16))
+			spawn_particle_effect_relative(preload("res://characters/robo/ShieldEffect2.tscn"), Vector2(0, -1
+			))
 			play_sound("ArmorBeep2")
 			buffer_armor = false
 #	if armor_active:
@@ -258,6 +260,8 @@ func tick():
 	if flying_dir:
 		if !is_grounded():
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
+			if flying_dir.x == get_opponent_dir():
+				fly_vel.x = fixed.mul(fly_vel.x, FORWARD_FLY_SPEED_MODIFIER)
 			set_vel(fly_vel.x, fixed.mul(fly_vel.y, "0.66"))
 			fly_ticks_left -= 1
 			if fly_ticks_left <= 0: 

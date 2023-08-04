@@ -35,6 +35,25 @@ static func int_abs(n: int):
 		n *= -1
 	return n
 
+static func get_copiable_properties(node: Node):
+	var list = PoolStringArray()
+	for property in node.get_script().get_script_property_list():
+		var name = property.name
+		var value = node.get(name)
+		var type: = typeof(value)
+		var valid = true
+		match type:
+			TYPE_OBJECT: valid = false
+			TYPE_ARRAY: valid = false
+			TYPE_DICTIONARY: valid = false
+			TYPE_NIL: valid = false
+			TYPE_STRING_ARRAY: valid = false
+
+		if !valid:
+			continue
+		list.append(name)
+	return list
+
 static func int_sign(n: int):
 	if n == 0:
 		return 0

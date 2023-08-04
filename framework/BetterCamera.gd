@@ -68,6 +68,7 @@ func bump(dir=Vector2(), amount=default_screenshake_amount, time=default_screens
 	offs.dir = dir
 	offs.rng = rng
 	
+	
 	if dir == Vector2():
 		offs.random = true
 	

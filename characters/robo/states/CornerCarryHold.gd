@@ -28,3 +28,4 @@ func _tick():
 		spawn_particle_relative(particle_scene, particle_position * Vector2(host.get_facing_int(), 1))
 	if host.penalty > 0:
 		host.penalty = 0
+#	host.create_speed_after_image_from_style()

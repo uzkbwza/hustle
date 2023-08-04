@@ -57,6 +57,8 @@ var hits_projectiles = true
 var cancellable = false
 var followup_state = ""
 var guard_break = false
+var block_punishable = false
+var looping = false
 
 func get_damage():
 	if combo_count > 0:
@@ -170,6 +172,11 @@ func _init(state):
 		followup_state = state.followup_state
 	if state.get("guard_break") != null:
 		guard_break = state.guard_break
+	if state.get("block_punishable") != null:
+		block_punishable = state.block_punishable
+	if state.get("looping") != null:
+		looping = state.looping
+
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage

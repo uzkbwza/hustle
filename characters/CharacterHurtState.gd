@@ -26,7 +26,7 @@ func _enter_tree():
 
 func init():
 	.init()
-	busy_interrupt_into.append("Nudge")
+#	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
 	brace = false
