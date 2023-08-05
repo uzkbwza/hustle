@@ -836,4 +836,5 @@ func normal_tick():
 	update_grounded()
 
 func _draw():
+#	draw_circle(to_local(get_pos_visual()), 5, Color.white)
 	pass

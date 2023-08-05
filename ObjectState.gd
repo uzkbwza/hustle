@@ -156,12 +156,14 @@ func process_projectile(_projectile):
 func get_active_hitboxes():
 	var hitboxes = []
 	var pos = host.get_pos()
-	for start_frame in hitbox_start_frames:
-		var items = hitbox_start_frames[start_frame]
-		for item in items:
-			if item is Hitbox:
-				item.update_position(pos.x,pos.y)
-				hitboxes.append(item)
+#	for start_frame in hitbox_start_frames:
+	for hitbox in all_hitbox_nodes:
+#		var items = hitbox_start_frames[start_frame]
+#		for item in items:
+			if hitbox is Hitbox:
+				if hitbox.active:
+					hitbox.update_position(pos.x,pos.y)
+					hitboxes.append(hitbox)
 	return hitboxes
 
 func _tick_before():
@@ -331,28 +333,18 @@ func copy_data():
 #	.set(key, value)
 
 func _copy_to(state: ObjectState):
-#	var properties = get_script().get_script_property_list()
-##
-#	for variable in properties:
-#		var value = get(variable.name)
-#		if not (value is Object or value is Array or value is Dictionary):
-#			state.set(variable.name, value)
-
 	state.data = copy_data()
 	state.current_real_tick = current_real_tick
 	state.current_tick = current_real_tick
+	var pos = host.get_pos()
 	for h in get_children():
 		if(h is Hitbox):
 			h.copy_to(state.get_node(h.name))
-#	for i in range(all_hitbox_nodes.size()):
-#		var to_hitbox = state.all_hitbox_nodes[i]
-#		to_hitbox.hit_objects = all_hitbox_nodes[i].hit_objects.duplicate()
-#		if all_hitbox_nodes[i].active:
-#			to_hitbox.activate()
-#			to_hitbox.tick = all_hitbox_nodes[i].tick
-#			to_hitbox.enabled = all_hitbox_nodes[i].enabled
-#			all_hitbox_nodes[i].copy_to(to_hitbox)
-#			to_hitbox.update_position(host.pos.x, host.pos.y)
+			h.update_position(pos.x, pos.y)
+#	for h in all_hitbox_nodes:
+#		if(h is Hitbox):
+#			h.copy_to(state.get_node(h.name))
+#			h.update_position(pos.x, pos.y)
 
 func copy_to(state: ObjectState):
 #	print(get_script().get_script_property_list())
@@ -371,7 +363,9 @@ func copy_hurtbox_states(state: ObjectState):
 			child.copy_to(state.get_child(i))
 
 func activate_hitbox(hitbox):
+	hitbox.facing = host.get_facing()
 	hitbox.activate()
+
 
 func terminate_hitboxes():
 	for hitbox in get_active_hitboxes():
@@ -402,6 +396,20 @@ func init():
 			host_command_nodes[child.tick].append(child)
 	update_property_list()
 	.init()
+
+func get_host_command(command_name):
+	for command in host_command_nodes.values() + host_commands.values():
+		if command is Array:
+			for c in command:
+				if c is Dictionary:
+					if command_name in c:
+						return c
+				elif c is HostCommand:
+					if command_name == c.command:
+						return c
+		if command is Dictionary:
+			if command_name in command:
+				return command
 
 func update_property_list():
 	if !host.is_ghost:

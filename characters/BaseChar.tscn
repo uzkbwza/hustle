@@ -740,7 +740,8 @@ title = "Wait"
 button_texture = ExtResource( 55 )
 interruptible_on_opponent_turn = true
 interrupt_from_string = "GroundedIdle
-Grounded"
+Grounded
+Wait"
 interrupt_into_string = "Grounded
 Aerial"
 

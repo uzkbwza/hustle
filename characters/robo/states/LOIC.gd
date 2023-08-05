@@ -1,7 +1,7 @@
 extends RobotState
 
 const MIN_AIM_TICKS_GALVANIZE = 20
-const MIN_AIM_TICKS = 20
+const MIN_AIM_TICKS = 14
 const MAX_AIM_TICKS = 85
 
 export var self_ = false

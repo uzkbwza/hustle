@@ -65,6 +65,7 @@ text = "Predict"
 
 [node name="FrameLabel" type="Label" parent="VBoxContainer/CenterContainer"]
 unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.509804 )
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5

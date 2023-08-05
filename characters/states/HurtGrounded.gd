@@ -24,6 +24,9 @@ func _enter():
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
 	wall_slam = hitbox.wall_slam and host.wall_slams < host.MAX_WALL_SLAMS
 	counter = hitbox.counter_hit
+	if counter:
+		host.opponent.counterhit_this_turn = true
+
 	var x = get_x_dir(hitbox)
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var y = hitbox.dir_y

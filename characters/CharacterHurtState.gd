@@ -49,6 +49,7 @@ func _enter_shared():
 
 func _tick_shared():
 	._tick_shared()
+
 	if current_tick < 5:
 		host.release_opponent()
 	if current_tick % SMOKE_FREQUENCY == 0:

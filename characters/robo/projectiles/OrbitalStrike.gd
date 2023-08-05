@@ -15,7 +15,7 @@ func tick():
 	if current_state().name == "Default":
 		line_drawer.width = min((current_state().current_tick / float(aim_ticks)) * MAX_WIDTH, MAX_WIDTH)
 		line_drawer.color = Color("88ff333d")
-		beep.pitch_scale_ = lerp(1.5, 3.0, current_state().current_tick / float(85))
+		beep.pitch_scale_ = lerp(1.5, 3.5, current_state().current_tick / float(85))
 	elif current_state().name == "Fire":
 		line_drawer.color = Color("94e4ff")
 		line_drawer.width = max(62 - (current_state().current_tick * 5), 0)

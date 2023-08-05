@@ -20,6 +20,9 @@ var skull_shaker_bleed_ticks = 0
 var stored_speed = "1"
 var released_this_turn = false
 var will_release_momentum = false
+var will_store_momentum = false
+var boosted_during_combo = false
+var current_momentum = "0"
 
 #var hook_dir = Vector2()
 
@@ -28,6 +31,7 @@ const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
 const MAX_PULL_UPWARD_SPEED = "-10"
+const MAX_MOMENTUM_UPWARD_SPEED = "-10"
 const BACKWARD_PULL_PENALTY = 2
 const SKULL_SHAKER_BLEED_TICKS = 70
 const SKULL_SHAKER_BLEED_DAMAGE = 10
@@ -42,6 +46,8 @@ func explode_sticky_bomb():
 		objs_map[bomb_projectile].explode()
 
 func process_extra(extra):
+	var vel = get_vel()
+	current_momentum = fixed.vec_len(vel.x, vel.y)
 	.process_extra(extra)
 	if extra.has("explode"):
 		if extra["explode"]:
@@ -51,7 +57,6 @@ func process_extra(extra):
 	if extra.has("detach"):
 		if extra.detach:
 			detach()
-	
 	will_release_momentum = false
 	if extra.has("release"):
 		if extra.release:
@@ -62,9 +67,14 @@ func process_extra(extra):
 				stored_momentum_x = impulse.x
 				stored_momentum_y = impulse.y
 				if fixed.lt(stored_momentum_y, "0"):
-					var vel = get_vel()
-					set_vel(vel.x, "0")
-					stored_momentum_y = fixed.mul(stored_momentum_y, "0.5")
+					if fixed.lt(fixed.add(get_vel().y, stored_momentum_y), MAX_MOMENTUM_UPWARD_SPEED):
+						set_vel(vel.x, "0")
+						stored_momentum_y = MAX_MOMENTUM_UPWARD_SPEED
+
+				super_effect(2)
+				use_super_bar()
+	if extra.has("store"):
+		will_store_momentum = extra.store
 
 func apply_forces():
 	if released_this_turn:
@@ -73,6 +83,21 @@ func apply_forces():
 		.apply_forces()
 	pass
 
+func store_momentum():
+		var speed = current_momentum
+		stored_speed = speed if fixed.gt(speed, stored_speed) else stored_speed
+		if infinite_resources and fixed.lt(stored_speed, "11"):
+			stored_speed = "11"
+#		print(stored_speed)
+		reset_momentum()
+		momentum_stores += 1
+		if momentum_stores > 3:
+			momentum_stores = 3
+		will_store_momentum = false
+		play_sound("Swish3")
+		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
+		
+
 func release_momentum():
 #		reset_momentum()
 		apply_force(stored_momentum_x, stored_momentum_y)
@@ -80,10 +105,19 @@ func release_momentum():
 			momentum_stores -= 1
 		if momentum_stores < 0:
 			momentum_stores = 0
+		if momentum_stores == 0:
+			stored_speed = "0"
+#		else:
+#			stored_speed = fixed.mul(stored_speed, fixed.sub("1", RELEASE_MODIFIER))
 		released_this_turn = true
 		will_release_momentum = false
 		play_sound("Swish2")
-		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
+		boosted_during_combo = true
+		spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
+
+func reset_combo():
+	.reset_combo()
+	boosted_during_combo = false
 
 func detach():
 	var hook = obj_from_name(grappling_hook_projectile)
@@ -99,7 +133,7 @@ func apply_grav():
 
 func tick():
 	.tick()
-	if turn_frames == 1:
+	if turn_frames <= 1:
 		released_this_turn = false
 	var hook = obj_from_name(grappling_hook_projectile)
 	if is_in_hurt_state():
@@ -131,6 +165,9 @@ func tick():
 	
 	if will_release_momentum and turn_frames == 1:
 		release_momentum()
+
+	if will_store_momentum and turn_frames == 2:
+		store_momentum()
 
 	if released_this_turn:
 #	if released_this_turn and turn_frames % 1 == 0:

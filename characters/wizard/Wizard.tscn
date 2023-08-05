@@ -1216,7 +1216,7 @@ damage = 115
 hitstun_ticks = 23
 hitlag_ticks = 6
 victim_hitlag = 11
-block_punishable = true
+plus_frames = -3
 hit_height = 0
 screenshake_amount = 5
 whiff_sound = ExtResource( 140 )
@@ -1362,6 +1362,8 @@ hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = -1
+guard_break = true
+block_punishable = true
 plus_frames = -2
 hit_height = 2
 screenshake_amount = 5
@@ -2077,6 +2079,7 @@ enter_sfx_volume = -13.0
 title = "Draw Moisture"
 type = 2
 button_texture = ExtResource( 290 )
+selectable = false
 interrupt_from_string = "Grounded
 GroundedSpecial
 Aerial

@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/NinjaExtra.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=4]
+[ext_resource path="res://characters/stickman/sprites/actionicons/store_momentum.png" type="Texture" id=5]
+[ext_resource path="res://characters/stickman/sprites/actionicons/release_momentum.png" type="Texture" id=6]
 
 [node name="NinjaExtra" instance=ExtResource( 1 )]
 theme = ExtResource( 3 )
@@ -11,8 +13,8 @@ alignment = 1
 script = ExtResource( 2 )
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="." index="0"]
-margin_left = 256.0
-margin_right = 322.0
+margin_left = 251.0
+margin_right = 317.0
 margin_bottom = 360.0
 alignment = 2
 
@@ -50,8 +52,8 @@ custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Detonate"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="1"]
-margin_left = 323.0
-margin_right = 383.0
+margin_left = 318.0
+margin_right = 388.0
 margin_bottom = 360.0
 alignment = 2
 
@@ -75,11 +77,28 @@ snap_align_to_limit_center = false
 [node name="ReleaseButton" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
 margin_top = 340.0
-margin_right = 50.0
+margin_right = 70.0
 margin_bottom = 360.0
 rect_min_size = Vector2( 34, 20 )
+hint_tooltip = "Unleash your stored momentum."
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Boost"
+icon = ExtResource( 6 )
+
+[node name="StoreButton" type="CheckButton" parent="VBoxContainer" index="2"]
+unique_name_in_owner = true
+visible = false
+margin_top = 340.0
+margin_right = 69.0
+margin_bottom = 360.0
+rect_min_size = Vector2( 34, 20 )
+hint_tooltip = "Save your momentum and use it later."
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Store"
+icon = ExtResource( 5 )

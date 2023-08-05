@@ -19,6 +19,7 @@ func _enter():
 		backdash_iasa = true
 		beats_backdash = false
 		flip_lag += FLIP_LAG
+		host.add_penalty(10)
 	else:
 		backdash_iasa = false
 		beats_backdash = true

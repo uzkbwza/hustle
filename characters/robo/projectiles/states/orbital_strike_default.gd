@@ -1,10 +1,10 @@
 extends DefaultFireball
 
 #const MOVE_SPEED = "0.5"
-const MOVE_T = "0.15"
-const AIM_INCREASE = "0.007"
+const MOVE_T = "0.25"
+const AIM_INCREASE = "0.01"
 const FADE_IN_TIME = 6
-const MAX_T = "0.50"
+const MAX_T = "0.70"
 
 func _enter():
 	host.sprite.modulate.a = 0

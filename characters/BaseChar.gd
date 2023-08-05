@@ -59,7 +59,7 @@ const BASE_PLUS_FRAMES = 1
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
-const GUARD_BREAK_SCALING = 2
+const GUARD_BREAK_SCALING = 1
 
 const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.0"
 const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
@@ -264,11 +264,13 @@ var melee_attack_combo_scaling_applied = false
 var wall_slams = 0
 
 var counterhit_this_turn = false
+var guard_broken_this_turn = false
 
 var last_pos = null
 var penalty = 0
 var penalty_buffer = 0
 var penalty_ticks = 0
+var blockstun_ticks = 0
 
 var emote_tween: SceneTreeTween
 
@@ -493,7 +495,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -534,6 +536,7 @@ func copy_to(f):
 	f.has_hyper_armor = has_hyper_armor
 	f.has_projectile_armor = has_hyper_armor
 	f.has_projectile_armor = has_projectile_armor
+	f.stance = stance
 	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()
 	f.set_facing(get_facing_int(), true)
@@ -1142,6 +1145,7 @@ func hit_by(hitbox, force_hit=false):
 					hit_by(hitbox, true)
 					if current_state().get("guard_broken") != null:
 						current_state().guard_broken = true
+						guard_broken_this_turn = true
 					return
 
 		opponent.got_parried = true
@@ -1181,7 +1185,7 @@ func hit_by(hitbox, force_hit=false):
 				current_state().iasa_at = opponent.current_state().iasa_at
 				current_state().current_tick = 0
 				opponent.current_state().was_blocked = true
-				opponent.hitlag_ticks += block_hitlag
+				opponent.blockstun_ticks += block_hitlag
 				if !(hitbox.looping and !hitbox.cancellable):
 					if !hitbox.block_punishable:
 						if opponent.current_state()._can_hit_cancel(self, hitbox):
@@ -1191,7 +1195,6 @@ func hit_by(hitbox, force_hit=false):
 						opponent.last_turn_block = true
 					else:
 						current_state().enable_interrupt()
-				
 				var vel = get_vel()
 				if fixed.sign(str(get_opponent_dir())) == fixed.sign(vel.x):
 					set_vel("0", vel.y)
@@ -1203,14 +1206,14 @@ func hit_by(hitbox, force_hit=false):
 				apply_force(fixed.mul(str(get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
 
 			current_state().interruptible_on_opponent_turn = true
-			hitlag_ticks = 0
+			blockstun_ticks = 0
 			var total_plus_frames = hitbox.plus_frames + (BASE_PLUS_FRAMES if !projectile else 0)
 			if total_plus_frames > 0:
 				blocked_hitbox_plus_frames = total_plus_frames
 			elif total_plus_frames < 0:
 				opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
 			if not projectile:
-				hitlag_ticks += block_hitlag
+				blockstun_ticks += block_hitlag
 
 			spawn_particle_effect(preload("res://fx/FlawedParryEffect.tscn"), get_pos_visual() + particle_location)
 			parried = false
@@ -1561,6 +1564,7 @@ func tick_before():
 		opponent.turn_frames = 0
 		turn_start_effects()
 		counterhit_this_turn = false
+		guard_broken_this_turn = false
 		if current_state() is CounterAttack:
 			current_state().bracing = false
 		if brace_effect_applied_yet:
@@ -1658,8 +1662,11 @@ func tick():
 			elif projectile_hit_cancelling:
 				state_interruptable = true
 				can_nudge = false
+
+	elif blockstun_ticks > 0:
+		blockstun_ticks -= 1
 	else:
-		if opponent.hitlag_ticks <= 0:
+		if opponent.blockstun_ticks <= 0:
 			turn_frames += 1
 		if projectile_hit_cancelling:
 			state_interruptable = true

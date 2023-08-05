@@ -18,12 +18,18 @@ var dir = 1
 
 export var teleport = false
 
+onready var hitbox = $Hitbox
+
 func _frame_0():
 	host.z_index = -2
 	lag_frames = 0
 	hit = false
 	var move_dir = host.get_opponent_dir()
 	host.apply_force(fixed.mul(str(move_dir), "4"), "0")
+	if host.combo_count > 0:
+		hitbox.followup_state = "ImpaleFollowup"
+	else:
+		hitbox.followup_state = "ImpaleFollowupHKD"
 
 func _frame_5():
 	if teleport:
@@ -46,7 +52,7 @@ func align(reverse = true):
 
 func _frame_6():
 	if teleport:
-		host.start_projectile_invulnerability()
+#		host.start_projectile_invulnerability()
 #		host.end_invulnerability()
 		host.set_vel(tp_vel_x, tp_vel_y)
 		host.set_pos(tp_pos_x, tp_pos_y)

@@ -2,6 +2,8 @@ extends PlayerExtra
 
 var current_dir = null
 
+var jump_selected
+
 func _ready():
 	$"%FlyDir".connect("data_changed", self, "emit_signal", ["data_changed"])
 	$"%FlyEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
@@ -10,7 +12,8 @@ func _ready():
 	$"%PullEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%PullEnabled".connect("pressed", $"%ArmorEnabled", "set_pressed_no_signal", [false])
 	$"%ArmorEnabled".connect("pressed", $"%PullEnabled", "set_pressed_no_signal", [false])
-
+	$"%DriveCancel".connect("pressed", self, "emit_signal", ["data_changed"])
+	
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
 	return {
@@ -19,8 +22,36 @@ func get_extra():
 		"armor_enabled": $"%ArmorEnabled".pressed,
 		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
 		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
+		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed()
+#		"force_fly": false
 	}
 
+func drive_pressed():
+	return $"%DriveCancel".pressed and $"%DriveCancel".visible
+
+func update_selected_move(move_state):
+	.update_selected_move(move_state)
+	$"%ArmorEnabled".disabled = false
+	if move_state is CharacterState:
+		if move_state.name != "Step" and (\
+		move_state.type == CharacterState.ActionType.Defense \
+		or move_state.type == CharacterState.ActionType.Movement):
+			$"%ArmorEnabled".set_pressed_no_signal(false)
+			$"%ArmorEnabled".disabled = true
+#	if fighter.is_grounded():
+#		$"%FlyDir".hide()
+#		$"%FlyEnabled".hide()
+#		if move_state and move_state.name == "Jump":
+#			jump_selected = true
+#			$"%FlyDir".show()
+#			$"%FlyEnabled".show()
+#		else:
+#			$"%FlyEnabled".set_pressed_no_signal(false)
+
+	if move_state:
+		$"%DriveCancel".visible = false
+		if move_state.get_host_command("try_drive_cancel"):
+			$"%DriveCancel".visible = true
 
 func show_options():
 	$"%FlyDir".hide()
@@ -31,6 +62,7 @@ func show_options():
 	$"%FlyDir".set_dir("Neutral")
 	$"%FlyDir".facing = fighter.get_opponent_dir()
 	$"%FlyDir".init()
+	$"%DriveCancel".hide()
 	if current_dir:
 		$"%FlyDir".set_dir(current_dir)
 #	$"%FlyEnabled".set_pressed_no_signal(false)
@@ -40,7 +72,7 @@ func show_options():
 			$"%NadeActive".show()
 	if fighter.magnet_installed:
 		$"%PullEnabled".show()
-	if fighter.is_grounded():
+	if fighter.is_grounded() and !jump_selected:
 		$"%FlyDir".hide()
 		$"%FlyEnabled".hide()
 	else:
@@ -63,6 +95,7 @@ func reset():
 	$"%ArmorEnabled".set_pressed_no_signal(false)
 	$"%NadeActive".set_pressed_no_signal(false)
 	$"%PullEnabled".set_pressed_no_signal(false)
+	$"%DriveCancel".set_pressed_no_signal(fighter.stance == "Drive")
 
 func on_data_changed():
 #	if $"%ArmorEnabled".pressed and $"%PullEnabled".pressed:

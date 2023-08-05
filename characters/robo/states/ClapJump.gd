@@ -34,7 +34,7 @@ func _frame_2():
 
 func _frame_3():
 	var force = fixed.normalized_vec_times("1.0", "-0.25", "8.0")
-	if data.x * host.get_facing_int() == -1:
+	if data.Direction.x * host.get_facing_int() == -1:
 		force.x = fixed.mul(force.x, "-0.55")
 	host.apply_force_relative(force.x, force.y)
 
@@ -42,8 +42,8 @@ func _tick():
 #	host.apply_force(0, 1)
 	
 	host.apply_grav_custom(grav, max_fall_speed)
-	if jumping and current_tick >= 10:
+	if jumping and current_tick >= 10 and !(data.Auto and current_real_tick < 25):
 		current_tick = 9
-	if jumping and current_tick > 1 and host.is_grounded():
+	if jumping and current_tick > 1 and (host.is_grounded() or (data.Auto and current_real_tick < 25)):
 		jumping = false
 		host.big_landing_effect()

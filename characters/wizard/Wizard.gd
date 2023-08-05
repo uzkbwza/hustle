@@ -56,6 +56,11 @@ func init(pos=null):
 		hover_left = HOVER_AMOUNT
 	geyser_charge = 0
 	default_dash_speed = $StateMachine/DashForward.dash_speed
+	if !is_connected("parried",self, "on_parried"):
+		connect("parried", self, "on_parried")
+
+func on_parried():
+	add_geyser_charge()
 
 func apply_grav():
 	if fast_falling:
@@ -121,6 +126,12 @@ func on_got_hit():
 		if obj:
 			obj.drop()
 		boulder_projectile = null
+
+func _on_hit_something(obj, hitbox):
+	if obj.is_in_group("Fighter"):
+		if combo_count == 1:
+			add_geyser_charge()
+	._on_hit_something(obj, hitbox)
 
 func tick():
 	if spark_speed_frames > 0:

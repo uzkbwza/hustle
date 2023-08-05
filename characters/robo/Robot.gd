@@ -56,7 +56,9 @@ var armor_startup_ticks = 0
 #var magnet_scale = false
 var used_earthquake_grab = false
 var started_magnet_in_initiative = false
-
+var force_fly = false
+var drive_cancel = false
+var buffer_drive_cancel = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -136,7 +138,8 @@ func copy_to(f: BaseObj):
 	f.flame_touching_opponent = flame_touching_opponent
 	f.magnet_polygon.polygon = magnet_polygon.polygon
 	f.magnet_polygon2.polygon = magnet_polygon2.polygon
-	
+	f.drive_cancel = drive_cancel
+	f.buffer_drive_cancel = buffer_drive_cancel
 	pass
 
 func has_armor():
@@ -243,10 +246,10 @@ func tick():
 		if not (current_state() is CharacterHurtState):
 			add_armor_pip()
 		landed_move = false
-	if is_grounded():
-		flying_dir = null
-		if fly_fx_started:
-			stop_fly_fx()
+	if is_grounded() and !force_fly:
+			flying_dir = null
+			if fly_fx_started:
+				stop_fly_fx()
 	if is_in_hurt_state():
 		flying_dir = null
 	if flying_dir != null and current_state().get("can_fly") != null and !current_state().can_fly:
@@ -258,11 +261,15 @@ func tick():
 		start_fly = false
 		start_fly_fx()
 	if flying_dir:
-		if !is_grounded():
+		if (!is_grounded() or force_fly):
 			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
 			if flying_dir.x == get_opponent_dir():
 				fly_vel.x = fixed.mul(fly_vel.x, FORWARD_FLY_SPEED_MODIFIER)
+			if force_fly:
+				if fixed.ge(fly_vel.y, "0"):
+					fly_vel.y = "0"
 			set_vel(fly_vel.x, fixed.mul(fly_vel.y, "0.66"))
+
 			fly_ticks_left -= 1
 			if fly_ticks_left <= 0: 
 				flying_dir = null
@@ -298,6 +305,9 @@ func tick():
 	if !can_ground_pound and get_pos().y < GROUND_POUND_MIN_HEIGHT and !is_in_hurt_state():
 		can_ground_pound = true
 		ground_pound_active_effect()
+	if buffer_drive_cancel:
+		buffer_drive_cancel = false
+		drive_cancel = true
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
@@ -358,24 +368,27 @@ func stop_magnet_fx():
 func process_extra(extra):
 	.process_extra(extra)
 	var can_fly = true
+	force_fly = false
 #	if current_state().get("can_fly") != null and current_state().can_fly == false:
 #		can_fly = false
 	if busy_interrupt:
 		can_fly = false
-	if extra.has("fly_dir") and !is_grounded() and can_fly:
+	if extra.has("fly_dir") and (!is_grounded() or extra.get("force_fly")) and can_fly:
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
 			if flying_dir == null or !same_dir:
 				start_fly = true
 #			reset_momentum()
 			flying_dir = extra.fly_dir
+			if extra.has("force_fly"):
+				force_fly = extra.force_fly
 
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled
 		if extra.armor_enabled:
 			if current_state().state_name == "WhiffInstantCancel":
 				armor_startup_ticks += WC_EXTRA_ARMOR_STARTUP_TICKS
-				print("hello")
+#				print("hello")
 				
 	if extra.has("nade_activated") and grenade_object != null:
 		if extra.nade_activated:
@@ -387,7 +400,23 @@ func process_extra(extra):
 		if extra.pull_enabled:
 			start_magnetizing()
 
+	if extra.has("drive_cancel"):
+		buffer_drive_cancel = extra.drive_cancel
 
+func try_drive_cancel():
+#	print("here")
+	if got_parried:
+		return
+	if !drive_cancel:
+		return
+	drive_cancel = false
+	if stance == "Drive":
+		change_state("UnDriveCancel")
+	else:
+		change_state("DriveCancel")
+
+func on_state_ended(state):
+	drive_cancel = false
 
 func _on_state_exited(state):
 	._on_state_exited(state)

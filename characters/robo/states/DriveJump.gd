@@ -1,13 +1,15 @@
 extends RobotState
 
 const VERTICAL_FORCE = "-10"
+const MINIMUM_FORCE = "-5"
 const X_FRIC = "0.015"
 const GRAV = "0.6"
 const FALL_SPEED = "16"
 const SPIN_RATE = TAU / 8
 
 func _frame_0():
-	host.apply_force("0", VERTICAL_FORCE)
+	var amount = host.fixed_map("0.0", VERTICAL_FORCE, MINIMUM_FORCE, VERTICAL_FORCE, xy_to_dir(data.x, "0", VERTICAL_FORCE).x)
+	host.apply_force("0", amount)
 	host.move_directly(0, -1)
 	host.set_grounded(false)
 	host.sprite.hide()

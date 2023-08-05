@@ -201,6 +201,8 @@ func init():
 	hit_cancel_into.append("AerialDefense")
 	hit_cancel_into.append("GroundedGrab")
 	hit_cancel_into.append("AerialGrab")
+	hit_cancel_into.append("Wait")
+	hit_cancel_into.append("Fall")
 	if title == "":
 		title = state_name
 	match busy_interrupt_type:
@@ -286,7 +288,7 @@ func _enter_shared():
 	if uses_air_movement:
 		if !host.infinite_resources and host.gravity_enabled:
 			host.air_movements_left -= 1
-	if host.hitlag_ticks == 0:
+	if host.hitlag_ticks == 0 and host.blockstun_ticks == 0:
 		call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		var dir = host.get_move_dir()

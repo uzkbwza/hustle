@@ -222,8 +222,8 @@ func _physics_process(_delta):
 
 		$"%P1CounterLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		$"%P2CounterLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().counter and (game.game_paused or (game.real_tick / 2) % 2 == 0)
-		$"%P1GuardBreakLabel".visible = p2.current_state() is CharacterHurtState and p2.current_state().guard_broken and (game.game_paused or (game.real_tick / 2) % 2 == 0)
-		$"%P2GuardBreakLabel".visible = p1.current_state() is CharacterHurtState and p1.current_state().guard_broken and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P1GuardBreakLabel".visible = p2.guard_broken_this_turn and (game.game_paused or (game.real_tick / 2) % 2 == 0)
+		$"%P2GuardBreakLabel".visible = p1.guard_broken_this_turn and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		p1_brace_label.visible = p1.current_state() is CounterAttack and p1.current_state().bracing and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		p2_brace_label.visible = p2.current_state() is CounterAttack and p2.current_state().bracing  and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		$"%P1AdvantageLabel".visible = p1.initiative and p1.current_state().initiative_effect

@@ -7,9 +7,11 @@ var descending = false
 
 func _frame_0():
 	descending = false
+	can_fly = true
 
 func _frame_3():
 	descending = true
+	can_fly = false
 
 func _tick():
 	if descending:

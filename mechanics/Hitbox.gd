@@ -157,15 +157,7 @@ func copy_to(hitbox: CollisionBox):
 	if hitbox == null:
 		return
 	hitbox.property_list = property_list
-	if native:
-		native.copy_state(self, hitbox)
-		return
-#	var properties = get_script().get_script_property_list()
-	for variable in property_list:
-		var value = get(variable.name)
-		if not (value is Object or value is Array or value is Dictionary):
-			hitbox.set(variable.name, value)
-	pass
+	native.copy_state(self, hitbox)
 
 func is_projectile():
 	return !host.is_in_group("Fighter")

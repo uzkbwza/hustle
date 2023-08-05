@@ -41,6 +41,7 @@ func _enter():
 	counter = hitbox.counter_hit
 	if counter:
 		host.opponent.counterhit_this_turn = true
+
 	if (hitbox.ground_bounce and host.is_grounded()) and fixed.gt(hitbox.dir_y, "0"):
 		begin_ground_bounce()
 	
