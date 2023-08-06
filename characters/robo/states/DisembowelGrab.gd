@@ -8,4 +8,4 @@ onready var hitbox_4 = $Hitbox4
 
 func _frame_0():
 	for h in [hitbox, hitbox_2, hitbox_3, hitbox_4]:
-		h.followup_state = "DisembowelGrabFollowup" if !data else "TryCatchGroundSlam"
+		h.throw_state = "DisembowelGrabFollowup" if !data else "TryCatchGroundSlam"

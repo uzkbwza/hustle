@@ -26,7 +26,7 @@ var current_momentum = "0"
 
 #var hook_dir = Vector2()
 
-const RELEASE_MODIFIER = "1.35"
+const RELEASE_MODIFIER = "1.20"
 const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
@@ -112,8 +112,11 @@ func release_momentum():
 		released_this_turn = true
 		will_release_momentum = false
 		play_sound("Swish2")
-		boosted_during_combo = true
+		if combo_count > 0:
+			boosted_during_combo = true
+			combo_count += 1
 		spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
+		colliding_with_opponent = false
 
 func reset_combo():
 	.reset_combo()
@@ -177,6 +180,12 @@ func tick():
 
 	if is_grounded():
 		used_grappling_hook = false
+
+func on_got_parried():
+	.on_got_parried()
+	if released_this_turn:
+		hitlag_ticks +=  20
+	pass
 
 func on_got_hit():
 	if bomb_projectile or bomb_thrown:

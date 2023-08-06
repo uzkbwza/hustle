@@ -1030,39 +1030,6 @@ text = "OPPONENT DISCONNECTED"
 align = 1
 valign = 1
 
-[node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="DebugLabelP1" type="Label" parent="UILayer/DebugContainer"]
-unique_name_in_owner = true
-margin_right = 318.0
-margin_bottom = 360.0
-size_flags_horizontal = 3
-size_flags_vertical = 7
-theme = ExtResource( 4 )
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="DebugLabelP2" type="Label" parent="UILayer/DebugContainer"]
-unique_name_in_owner = true
-margin_left = 322.0
-margin_right = 640.0
-margin_bottom = 360.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource( 4 )
-align = 2
-__meta__ = {
-"_edit_lock_": true
-}
-
 [node name="CurrentTick" type="Label" parent="UILayer"]
 anchor_right = 1.0
 margin_top = -1.0
@@ -1555,6 +1522,20 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 margin_top = 71.0
 margin_bottom = 85.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="BlockAdvantageLabel" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 56.0
+margin_bottom = 70.0
 theme = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 align = 1
@@ -2703,13 +2684,46 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -49.0
-margin_top = -132.0
-margin_right = 49.0
-margin_bottom = -113.0
+margin_left = -45.0
+margin_top = -119.0
+margin_right = 46.0
+margin_bottom = -100.0
 grow_horizontal = 2
 theme = ExtResource( 4 )
 text = "our game is stuck!"
+
+[node name="DebugContainer" type="HBoxContainer" parent="UILayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="DebugLabelP1" type="Label" parent="UILayer/DebugContainer"]
+unique_name_in_owner = true
+margin_right = 318.0
+margin_bottom = 360.0
+size_flags_horizontal = 3
+size_flags_vertical = 7
+theme = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="DebugLabelP2" type="Label" parent="UILayer/DebugContainer"]
+unique_name_in_owner = true
+margin_left = 322.0
+margin_right = 640.0
+margin_bottom = 360.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 4 )
+align = 2
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="GhostWaitTimer" type="Timer" parent="."]
 unique_name_in_owner = true

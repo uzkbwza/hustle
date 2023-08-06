@@ -36,4 +36,4 @@ func _tick():
 func is_usable():
 #	if !release:
 #		return .is_usable() and !host.storing_momentum
-	return .is_usable() and host.momentum_stores < 3
+	return .is_usable() and (host.momentum_stores < 3 or host.infinite_resources)

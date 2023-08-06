@@ -1966,6 +1966,7 @@ damage = 120
 hitlag_ticks = 7
 victim_hitlag = 7
 damage_proration = -1
+guard_break = true
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 141 )
 dir_y = "-0.25"

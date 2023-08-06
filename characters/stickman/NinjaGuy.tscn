@@ -1710,10 +1710,12 @@ iasa_on_hit = 14
 instant_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
-Reversal"
+Reversal
+Uppercut"
 interrupt_into_string = "AerialSpecial
 AerialAttack
 AerialSuper"
+interrupt_exceptions_string = "Uppercut"
 allowed_stances_string = "BackSway
 Normal"
 change_stance_to = "Normal"
@@ -1727,7 +1729,6 @@ y = -14
 width = 12
 height = 13
 damage = 120
-hitstun_ticks = 60
 hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
@@ -1751,7 +1752,7 @@ y = -28
 width = 14
 height = 19
 damage = 60
-hitstun_ticks = 50
+hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 6
 cancellable = false
@@ -1786,15 +1787,19 @@ type = 2
 button_texture = ExtResource( 37 )
 air_type = 1
 iasa_on_hit = 14
+self_hit_cancellable = false
+self_interruptable = false
 instant_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
 Aerial
 AerialSpecial
-Reversal"
+Reversal
+Uppercut"
 interrupt_into_string = "AerialSpecial
 AerialAttack
 AerialSuper"
+interrupt_exceptions_string = "Uppercut"
 allowed_stances_string = "BackSway
 Normal"
 change_stance_to = "Normal"
@@ -1807,7 +1812,7 @@ y = -14
 width = 12
 height = 13
 damage = 150
-hitstun_ticks = 40
+hitstun_ticks = 25
 hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
@@ -1831,6 +1836,7 @@ y = -28
 width = 14
 height = 19
 damage = 90
+hitstun_ticks = 17
 hitlag_ticks = 6
 victim_hitlag = 6
 cancellable = false

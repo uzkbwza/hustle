@@ -203,6 +203,7 @@ func play_whiff_sound():
 func activate():
 	if active:
 		return
+	update_position(host.get_pos().x, host.get_pos().y)
 	spawn_whiff_particle()
 	play_whiff_sound()
 	tick = 0
@@ -361,12 +362,14 @@ func get_dir_float(facing=false):
 	return Vector2(float(dir_x) * (get_facing_int() if facing else 1), float(dir_y))
 
 func can_draw_box():
-	if Global.get("show_hitboxes") and !Network.get("multiplayer_active"):
+	if Global.get("show_hitboxes"):
 		return (active and enabled and Global.show_hitboxes)
 	else:
 		return .can_draw_box()
 
 func tick():
+	var pos = host.get_pos()
+	update_position(pos.x, pos.y)
 	if looping:
 		var loop_tick = tick % (loop_active_ticks + loop_inactive_ticks)
 		var prev_enabled = enabled

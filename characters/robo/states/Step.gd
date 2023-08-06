@@ -25,7 +25,8 @@ func _enter():
 		beats_backdash = true
 
 func _frame_0():
-	host.has_projectile_armor = true
+	if charged:
+		host.has_projectile_armor = true
 
 func _frame_5():
 	if !host.reverse_state:

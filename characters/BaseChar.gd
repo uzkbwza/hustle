@@ -52,7 +52,7 @@ const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
 const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
-const PUSH_BLOCK_FORCE = "-5"
+const PUSH_BLOCK_FORCE = "-10"
 
 const BASE_PLUS_FRAMES = 1
 
@@ -1123,8 +1123,8 @@ func hit_by(hitbox, force_hit=false):
 #				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
 				var parry_timing = turn_frames + opponent.hitlag_ticks
 				
-				var in_parry_window = (parry_timing == current_state().data.count or current_state().data.count == 20 and turn_frames >= 20) or parried_last_state or hitbox.hitbox_type == Hitbox.HitboxType.Burst
-				var perfect_requirement = (opponent.current_state().feinting or opponent.feinting or initiative) or parried_last_state
+				var in_parry_window = (parry_timing == current_state().data.count or current_state().data.count == 20 and turn_frames >= 20) or hitbox.hitbox_type == Hitbox.HitboxType.Burst
+				var perfect_requirement = (opponent.current_state().feinting or opponent.feinting or initiative)
 				perfect_parry = current_state().can_parry and (always_perfect_parry or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:
 					perfect_parry = true
@@ -1201,9 +1201,9 @@ func hit_by(hitbox, force_hit=false):
 				apply_force(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(str(get_opponent_dir()), fixed.mul(parry_knockback_divisor, "-1"))), hitbox.block_pushback_modifier), "0")
 				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), hitbox.block_pushback_modifier), "0")
 
-			if current_state().get("push"):
-#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
-				apply_force(fixed.mul(str(get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
+				if current_state().get("push"):
+	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
+					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
 
 			current_state().interruptible_on_opponent_turn = true
 			blockstun_ticks = 0
@@ -1231,9 +1231,9 @@ func hit_by(hitbox, force_hit=false):
 			if not projectile:
 				gain_super_meter(parry_meter)
 			else:
-				if host.has_method("on_got_parried"):
-					host.on_got_parried()
-					gain_super_meter(parry_meter / 3)
+				gain_super_meter(parry_meter / 3)
+			if host.has_method("on_got_parried"):
+				host.on_got_parried()
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
 			play_sound("Parry")
@@ -1554,7 +1554,6 @@ func tick_before():
 		use_buffer = false
 		used_buffer = true
 		clear_buffer()
-
 	if queued_extra:
 		last_input["extra"] = queued_extra
 		process_extra(queued_extra)
@@ -1662,12 +1661,14 @@ func tick():
 			elif projectile_hit_cancelling:
 				state_interruptable = true
 				can_nudge = false
-
+		turn_frames += 1
 	elif blockstun_ticks > 0:
 		blockstun_ticks -= 1
 	else:
-		if opponent.blockstun_ticks <= 0:
-			turn_frames += 1
+		turn_frames += 1
+#		if current_tick > 1:
+#			blocked_hitbox_plus_frames = 0
+#			pass
 		if projectile_hit_cancelling:
 			state_interruptable = true
 			can_nudge = false
@@ -1888,6 +1889,19 @@ func get_state_hash():
 	var pos = get_pos()
 	var vel = get_vel()
 	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(current_state().state_name)
+
+func on_got_parried():
+	deactivate_hitboxes()
+	pass
+
+func on_got_blocked():
+	deactivate_hitboxes()
+	pass
+
+func deactivate_hitboxes():
+	current_state().terminate_hitboxes()
+	pass
+
 
 func forfeit():
 	will_forfeit = true

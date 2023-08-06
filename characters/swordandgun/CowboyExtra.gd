@@ -41,13 +41,14 @@ func reset():
 
 
 func update_tp_button():
+		$"%TpButton".disabled = false
 		$"%TpButton".show()
 		if fighter.is_grounded() or fighter.air_movements_left > 0:
 			$"%TpButton".show()
 		else:
 			$"%TpButton".hide()
-#		if fighter.current_state().state_name in ["Brandish", "QuickerDraw"]:
-#			$"%TpButton".hide()
+		if fighter.current_state().type == CharacterState.ActionType.Defense:
+			$"%TpButton".disabled = true
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)

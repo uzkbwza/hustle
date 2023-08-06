@@ -156,13 +156,15 @@ func process_projectile(_projectile):
 func get_active_hitboxes():
 	var hitboxes = []
 	var pos = host.get_pos()
-#	for start_frame in hitbox_start_frames:
-	for hitbox in all_hitbox_nodes:
-#		var items = hitbox_start_frames[start_frame]
-#		for item in items:
+	for start_frame in hitbox_start_frames:
+		var items = hitbox_start_frames[start_frame]
+		for hitbox in items:
 			if hitbox is Hitbox:
 				if hitbox.active:
-					hitbox.update_position(pos.x,pos.y)
+					hitboxes.append(hitbox)
+	for hitbox in all_hitbox_nodes:
+			if hitbox is Hitbox:
+				if hitbox.active and !(hitbox in hitboxes):
 					hitboxes.append(hitbox)
 	return hitboxes
 

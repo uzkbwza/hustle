@@ -39,6 +39,7 @@ onready var lobby = $Lobby
 onready var direct_connect_lobby = $DirectConnectLobby
 onready var p1_turn_timer = $"%P1TurnTimer"
 onready var p2_turn_timer = $"%P2TurnTimer"
+onready var block_advantage_label = $"%BlockAdvantageLabel"
 
 var p1_synced_time = null
 var p2_synced_time = null
@@ -649,7 +650,10 @@ func _process(delta):
 				opponent_id = (you_id % 2) + 1
 			var you = ghost_game.get_player(you_id)
 			var opponent = ghost_game.get_player(opponent_id)
-			var advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
+			var advantage = 0
+			var block_advantage = 0
+			
+			block_advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
 			if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
 				advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
 
@@ -661,8 +665,19 @@ func _process(delta):
 				advantage_label.text = "frame advantage: " + str(advantage)
 			if advantage == 0:
 				advantage_label.text = ""
+
+			if block_advantage > 0:
+				block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
+				block_advantage_label.text = "block advantage: +" + str(block_advantage)
+			elif block_advantage < 0:
+				block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
+				block_advantage_label.text = "block advantage: " + str(block_advantage)
+			else:
+				block_advantage_label.text = ""
+
 		else:
 			advantage_label.text = ""
+			block_advantage_label.text == ""
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
 	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
 	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
