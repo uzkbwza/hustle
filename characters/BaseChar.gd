@@ -54,7 +54,8 @@ const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
 
-const BASE_PLUS_FRAMES = 1
+const BASE_PLUS_FRAMES = 2
+const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
 
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
@@ -1111,8 +1112,6 @@ func hit_by(hitbox, force_hit=false):
 				launched_by(hitbox)
 				reset_pushback()
 				opponent.reset_pushback()
-				
-				
 	else:
 		var host = objs_map[hitbox.host]
 		var projectile = not host.is_in_group("Fighter")
@@ -1123,7 +1122,7 @@ func hit_by(hitbox, force_hit=false):
 #				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
 				var parry_timing = turn_frames + opponent.hitlag_ticks
 				
-				var in_parry_window = (parry_timing == current_state().data.count or current_state().data.count == 20 and turn_frames >= 20) or hitbox.hitbox_type == Hitbox.HitboxType.Burst
+				var in_parry_window = (parry_timing == current_state().data.count or current_state().data.count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
 				var perfect_requirement = (opponent.current_state().feinting or opponent.feinting or initiative)
 				perfect_parry = current_state().can_parry and (always_perfect_parry or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:
@@ -1136,7 +1135,8 @@ func hit_by(hitbox, force_hit=false):
 #			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or (current_state().current_tick == current_state().data.x - 1 and host.has_projectile_parry_window))
 		if perfect_parry:
 			parried_last_state = true
-			parry_combo = true
+			if !hitbox.block_punishable:
+				parry_combo = true
 		else:
 			blocked_last_hit = true
 			if !projectile and !perfect_parry and !last_turn_block and initiative:
@@ -1169,14 +1169,18 @@ func hit_by(hitbox, force_hit=false):
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
 		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == - 1 else hitbox.parry_meter_gain
 		current_state().parry(perfect_parry)
+		
+		blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
+		
 		if not perfect_parry:
 			last_turn_block = true
 
 			take_damage(fixed.round(fixed.mul(str(hitbox.damage / parry_chip_divisor), hitbox.chip_damage_modifier)), 0, "0.6", 0, "2.0")
 
 #			gain_super_meter(parry_meter / 6)
-#			opponent.gain_super_meter(parry_meter / 6)
+			opponent.gain_super_meter(parry_meter / 6)
 			var block_hitlag = hitbox.hitlag_ticks + 1
+
 			if not projectile:
 				if current_state() is GroundedParryState:
 					add_penalty(15, true)
@@ -1186,12 +1190,14 @@ func hit_by(hitbox, force_hit=false):
 				current_state().current_tick = 0
 				opponent.current_state().was_blocked = true
 				opponent.blockstun_ticks += block_hitlag
+				if opponent.feints < opponent.num_feints:
+					opponent.feints += 1
 				if !(hitbox.looping and !hitbox.cancellable):
 					if !hitbox.block_punishable:
-						if opponent.current_state()._can_hit_cancel(self, hitbox):
-							opponent.current_state().enable_hit_cancel()
-						else:
-							opponent.current_state().enable_interrupt()
+#						if opponent.current_state()._can_hit_cancel(self, hitbox):
+#							opponent.current_state().enable_hit_cancel()
+#						else:
+						opponent.current_state().enable_interrupt()
 						opponent.last_turn_block = true
 					else:
 						current_state().enable_interrupt()
@@ -1207,7 +1213,12 @@ func hit_by(hitbox, force_hit=false):
 
 			current_state().interruptible_on_opponent_turn = true
 			blockstun_ticks = 0
-			var total_plus_frames = hitbox.plus_frames + (BASE_PLUS_FRAMES if !projectile else 0)
+			var total_plus_frames = hitbox.plus_frames
+			if !projectile:
+				total_plus_frames += BASE_PLUS_FRAMES
+				if !is_grounded():
+					total_plus_frames += VS_AERIAL_ADDITIONAL_PLUS_FRAMES
+	
 			if total_plus_frames > 0:
 				blocked_hitbox_plus_frames = total_plus_frames
 			elif total_plus_frames < 0:
@@ -1585,6 +1596,8 @@ func tick_before():
 				queued_action = current_state().fallback_state
 			if feinted_last:
 				feint_parriable = true
+			if !current_state().interruptible_on_opponent_turn:
+				current_state().on_continue()
 #			elif projectile_hit_cancelling:
 #				queued_action = current_state().fallback_state
 
@@ -1791,11 +1804,26 @@ func add_penalty(amount, ignore_min_distance=false):
 	if !sadness_enabled:
 		return
 
-	if !ignore_min_distance and amount > 0:
-		var opp_pos = obj_local_center(opponent)
-		var opp_dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
-		if fixed.lt(opp_dist, MIN_DIST_SADNESS):
-			return
+
+	
+	if amount > 0:
+		if !ignore_min_distance:
+			var opp_pos = obj_local_center(opponent)
+			var opp_dist = fixed.vec_len(str(opp_pos.x), str(opp_pos.y))
+			if fixed.lt(opp_dist, MIN_DIST_SADNESS):
+				return
+				
+		var modifier = "1.0"
+		if is_grounded() and !opponent.is_grounded():
+			modifier = "0.25"
+		elif !is_grounded() and opponent.is_grounded():
+			modifier = "1.0"
+		amount = fixed.round(fixed.mul(str(amount), modifier))
+	else:
+		var modifier = "1.0"
+		if !is_grounded() and opponent.is_grounded():
+			modifier = "0.75"
+		amount = fixed.round(fixed.mul(str(amount), modifier))
 		
 #	print("adding penalty: " + str(amount))
 	penalty += amount

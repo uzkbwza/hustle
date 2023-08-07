@@ -4,6 +4,8 @@ class_name GroundedParryState
 
 export var push = false
 
+var punishable = false
+
 func _frame_0():
 	host.end_throw_invulnerability()
 	if data == null:
@@ -15,7 +17,8 @@ func _frame_0():
 	parry_active = true
 	parry_tick = 0
 	parried = false
-	interruptible_on_opponent_turn = true
+	interruptible_on_opponent_turn = host.combo_count <= 0
+	punishable = false
 	anim_length = 20
 	iasa_at = - 1
 	host.add_penalty(10, true)
@@ -26,6 +29,9 @@ func _frame_0():
 
 func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
+
+func on_continue():
+	punishable = true
 
 func _frame_10():
 	pass
@@ -42,6 +48,8 @@ func parry(perfect = true):
 	self.perfect = perfect
 
 func can_parry_hitbox(hitbox):
+	if punishable:
+		return false
 	if not perfect:
 		return true
 	if hitbox == null:
@@ -50,7 +58,6 @@ func can_parry_hitbox(hitbox):
 		return false
 	if not parry_active:
 		return false
-
 	match hitbox.hit_height:
 		Hitbox.HitHeight.High:
 			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both

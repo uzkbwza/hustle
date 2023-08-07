@@ -1484,7 +1484,45 @@ start_tick = 3
 active_ticks = 3
 throw_state = "AirForwardThrow"
 
-[node name="ForwardThrow" type="Node2D" parent="StateMachine" index="44"]
+[node name="JumpGrab" type="Node2D" parent="StateMachine" index="44"]
+script = ExtResource( 86 )
+sprite_animation = "Grab"
+anim_length = 15
+title = "Throw"
+type = 1
+data_ui_scene = ExtResource( 179 )
+button_texture = ExtResource( 112 )
+air_type = 1
+throw_techable = true
+instant_cancellable = false
+can_feint_if_possible = false
+interrupt_from_string = "Aerial
+AerialAttack
+AerialGrab"
+interrupt_into_string = "Aerial
+Grounded"
+allowed_stances_string = "All"
+change_stance_to = "Normal"
+whiff_meter_gain_multiplier = "0.0"
+jump_grab = true
+forward_throw_state = "AirForwardThrow"
+back_throw_state = "AirBackThrow"
+
+[node name="ThrowBox" type="Node2D" parent="StateMachine/JumpGrab" index="0"]
+z_index = 1000
+script = ExtResource( 87 )
+x = 14
+y = -37
+width = 15
+height = 15
+increment_combo = false
+hits_vs_grounded = false
+hit_sound = ExtResource( 160 )
+start_tick = 6
+active_ticks = 3
+throw_state = "AirForwardThrow"
+
+[node name="ForwardThrow" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1518,7 +1556,7 @@ screenshake_frames = 5
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
-[node name="BackThrow" type="Node2D" parent="StateMachine" index="45"]
+[node name="BackThrow" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1553,7 +1591,7 @@ screenshake_frames = 5
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
-[node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="46"]
+[node name="AirForwardThrow" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1587,7 +1625,7 @@ screenshake_frames = 5
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
-[node name="AirBackThrow" type="Node2D" parent="StateMachine" index="47"]
+[node name="AirBackThrow" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1622,7 +1660,7 @@ screenshake_frames = 5
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
-[node name="AirDownThrow" type="Node2D" parent="StateMachine" index="48"]
+[node name="AirDownThrow" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 90 )
 apply_forces = true
 apply_fric = true
@@ -1657,7 +1695,7 @@ screenshake_frames = 5
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
-[node name="ThrowTech" type="Node2D" parent="StateMachine" index="49"]
+[node name="ThrowTech" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 94 )
 reset_momentum = true
 anim_length = 30
@@ -1666,7 +1704,7 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 
-[node name="Taunt" type="Node2D" parent="StateMachine" index="50"]
+[node name="Taunt" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 156 )
 apply_forces = true
 apply_fric = true
@@ -1686,7 +1724,7 @@ Hustle"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="51"]
+[node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 153 )
 particle_scene = ExtResource( 154 )
 particle_position = Vector2( 0, -16 )

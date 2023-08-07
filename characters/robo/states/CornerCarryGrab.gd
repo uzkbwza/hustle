@@ -1,6 +1,6 @@
 extends RobotState
 
-const ADDED_FORCE = "1.0"
+const ADDED_FORCE = "2.0"
 const RELEASE_DIST_FROM_WALL = 64
 const MAX_TICK = 15
 const COMBO_DURATION = 20

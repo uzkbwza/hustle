@@ -10,5 +10,6 @@ func _enter():
 		next_state_on_hold = true
 		next_state_on_hold_on_opponent_turn = true
 
+
 func _exit():
 	host.stop_hustle_fx()

@@ -28,3 +28,11 @@ margin_right = 50.0
 margin_bottom = 39.0
 text = "dash"
 script = ExtResource( 4 )
+
+[node name="Jump" type="CheckButton" parent="."]
+visible = false
+margin_top = 40.0
+margin_right = 50.0
+margin_bottom = 52.0
+text = "jump"
+script = ExtResource( 4 )

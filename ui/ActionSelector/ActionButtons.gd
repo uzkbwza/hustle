@@ -499,6 +499,7 @@ func update_buttons(refresh = true):
 			if button != current_button:
 				if button.data_node:
 					button.data_node.hide()
+					button.data_node.set_facing(fighter.get_facing_int())
 					button.data_node.fighter_update()
 
 	var state = fighter.state_machine.state
@@ -637,7 +638,7 @@ func activate(refresh=true):
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)
 	$"%ReverseButton".pressed = false
-	$"%FeintButton".pressed = false
+	$"%FeintButton".pressed = fighter.feints > 0
 #	tween_spread()
 	current_action = null
 	current_button = null
@@ -695,9 +696,9 @@ func activate(refresh=true):
 	yield(get_tree(), "idle_frame")
 #	if !$"%ReverseButton".disabled:
 	$"%ReverseButton".show()
-	fighter.update_property_list()
 	if !refresh:
 		return
+	fighter.update_property_list()
 	button_pressed = false
 	send_ui_action("Continue")
 	if user_facing:

@@ -461,7 +461,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	if !ReplayManager.resimulating:
 		show_state()
 	if ReplayManager.playback and !ReplayManager.resimulating and !is_ghost:
-		yield(get_tree().create_timer(0.5 if !ReplayManager.replaying_ingame else 0.1), "timeout")
+		yield(get_tree().create_timer(0.5 if !ReplayManager.replaying_ingame else 0.25), "timeout")
 	game_started = true
 	if !is_ghost:
 		if SteamLobby.is_fighting():

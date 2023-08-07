@@ -467,6 +467,9 @@ func _tick_after():
 func update_parameters():
 	pass
 
+func on_continue():
+	pass
+
 func can_feint():
 	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
