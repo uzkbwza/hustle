@@ -1496,6 +1496,7 @@ air_type = 1
 throw_techable = true
 instant_cancellable = false
 can_feint_if_possible = false
+selectable = false
 interrupt_from_string = "Aerial
 AerialAttack
 AerialGrab"
