@@ -23,6 +23,7 @@ var will_release_momentum = false
 var will_store_momentum = false
 var boosted_during_combo = false
 var current_momentum = "0"
+var boost_frames_left = 0
 
 #var hook_dir = Vector2()
 
@@ -35,6 +36,7 @@ const MAX_MOMENTUM_UPWARD_SPEED = "-10"
 const BACKWARD_PULL_PENALTY = 2
 const SKULL_SHAKER_BLEED_TICKS = 70
 const SKULL_SHAKER_BLEED_DAMAGE = 10
+const BOOST_MIN_FRAMES = 10
 
 func init(pos=null):
 	.init(pos)
@@ -136,7 +138,7 @@ func apply_grav():
 
 func tick():
 	.tick()
-	if turn_frames <= 1:
+	if turn_frames <= 1 and boost_frames_left <= 0:
 		released_this_turn = false
 	var hook = obj_from_name(grappling_hook_projectile)
 	if is_in_hurt_state():

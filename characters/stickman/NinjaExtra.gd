@@ -40,6 +40,7 @@ func show_options():
 	boost_dir.hide()
 	release_button.hide()
 	store_button.hide()
+	boost_dir.reset()
 	store_button.set_pressed_no_signal(false)
 	bomb_button.set_pressed_no_signal(false)
 	pull_button.set_pressed_no_signal(fighter.pulling)
@@ -74,6 +75,7 @@ func update_selected_move(move_state):
 		boost_dir.hide()
 		release_button.set_pressed_no_signal(false)
 		release_button.disabled = true
+
 func get_extra():
 	var extra = {
 		"explode": bomb_button.pressed,

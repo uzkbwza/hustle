@@ -625,6 +625,9 @@ func set_flash(on):
 	panel.set_flash(on)
 	update()
 
+func reset():
+	update_value(get_default_value())
+
 var facing = 1 setget set_facing
 func set_facing(val):
 	var old_facing = facing

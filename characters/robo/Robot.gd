@@ -59,6 +59,7 @@ var started_magnet_in_initiative = false
 var force_fly = false
 var drive_cancel = false
 var buffer_drive_cancel = false
+var super_armor_installed = false
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -143,8 +144,11 @@ func copy_to(f: BaseObj):
 	pass
 
 func has_armor():
+	return (armor_active and super_armor_installed and !(current_state() is CharacterHurtState))
+
+func has_autograb_armor():
 	return (armor_active and !(current_state() is CharacterHurtState))
-#
+
 #func has_projectile_armor():
 #	if current_state().state_name == "SuperJump" and !is_grounded():
 #		return true
@@ -221,6 +225,8 @@ func tick():
 		armor_pips = 0
 		got_hit = false
 		buffer_armor = false
+		if armor_active:
+			super_armor_installed = false
 		armor_active = false
 		if armor_startup_ticks > 0:
 			armor_startup_ticks = 0
@@ -424,12 +430,16 @@ func _on_state_exited(state):
 		armor_startup_ticks += ARMOR_STARTUP_TICKS
 		armor_pips = 0
 	else:
+		if armor_active:
+			super_armor_installed = false
 		armor_active = false
 
 func on_state_interruptable(state=null):
 	.on_state_interruptable(state)
+	if armor_active:
+		super_armor_installed = false
 	armor_active = false
-#
+
 #func on_state_started(state):
 #	.on_state_started(state)
 #	flying_states_left -= 1

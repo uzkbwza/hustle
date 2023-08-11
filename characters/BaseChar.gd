@@ -816,6 +816,9 @@ func debug_text():
 func has_armor():
 	return has_hyper_armor
 
+func has_autograb_armor():
+	return false
+
 func has_projectile_armor():
 	return has_projectile_armor
 
@@ -857,6 +860,12 @@ func launched_by(hitbox):
 	if !hitbox.ignore_armor:
 		if projectile and has_projectile_armor():
 			will_launch = false
+	var will_block = false
+	if will_launch:
+		if has_autograb_armor():
+			will_launch = false
+			will_block = !projectile
+
 	var scaling_offset = hitbox.combo_scaling_amount - 1
 	
 
@@ -894,6 +903,9 @@ func launched_by(hitbox):
 #			reset_penalty()
 #			opponent.reset_penalty()
 
+	elif will_block:
+		change_state("ParryHigh", {"count": 0} )
+		block_hitbox(hitbox, false, true, true)
 
 	if has_hyper_armor:
 		hit_during_armor = true
@@ -1113,6 +1125,9 @@ func hit_by(hitbox, force_hit=false):
 				reset_pushback()
 				opponent.reset_pushback()
 	else:
+		block_hitbox(hitbox)
+
+func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_break=false):
 		var host = objs_map[hitbox.host]
 		var projectile = not host.is_in_group("Fighter")
 		var perfect_parry
@@ -1133,6 +1148,11 @@ func hit_by(hitbox, force_hit=false):
 		else:
 			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
 #			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or (current_state().current_tick == current_state().data.x - 1 and host.has_projectile_parry_window))
+		if force_parry:
+			perfect_parry = true
+		if force_block:
+			perfect_parry = false
+
 		if perfect_parry:
 			parried_last_state = true
 			if !hitbox.block_punishable:
@@ -1140,7 +1160,7 @@ func hit_by(hitbox, force_hit=false):
 		else:
 			blocked_last_hit = true
 			if !projectile and !perfect_parry and !last_turn_block and initiative:
-				if hitbox.guard_break:
+				if hitbox.guard_break and !ignore_guard_break:
 					hitbox.damage_proration = Utils.int_max(GUARD_BREAK_SCALING, hitbox.damage_proration)
 					hit_by(hitbox, true)
 					if current_state().get("guard_broken") != null:
@@ -1170,7 +1190,6 @@ func hit_by(hitbox, force_hit=false):
 		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == - 1 else hitbox.parry_meter_gain
 		current_state().parry(perfect_parry)
 		
-		blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
 		
 		if not perfect_parry:
 			last_turn_block = true
@@ -1182,6 +1201,7 @@ func hit_by(hitbox, force_hit=false):
 			var block_hitlag = hitbox.hitlag_ticks + 1
 
 			if not projectile:
+				
 				if current_state() is GroundedParryState:
 					add_penalty(15, true)
 				current_state().anim_length = opponent.current_state().anim_length
@@ -1210,7 +1230,8 @@ func hit_by(hitbox, force_hit=false):
 				if current_state().get("push"):
 	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
 					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
-
+			else:
+				blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
 			current_state().interruptible_on_opponent_turn = true
 			blockstun_ticks = 0
 			var total_plus_frames = hitbox.plus_frames
@@ -1919,13 +1940,16 @@ func get_state_hash():
 	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(current_state().state_name)
 
 func on_got_parried():
-	deactivate_hitboxes()
-	pass
+	deactivate_current_hitbox()
 
 func on_got_blocked():
-	deactivate_hitboxes()
-	pass
+	deactivate_current_hitbox()
 
+func deactivate_current_hitbox():
+	for hitbox in get_active_hitboxes():
+		if hitbox.active and hitbox.enabled and !hitbox.looping:
+			hitbox.deactivate()
+	
 func deactivate_hitboxes():
 	current_state().terminate_hitboxes()
 	pass

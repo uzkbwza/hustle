@@ -20,3 +20,4 @@ func _enter():
 	if camera:
 		camera.bump(Vector2.UP, 50, 30 / 60.0)
 	host.start_invulnerability()
+	host.super_armor_installed = true

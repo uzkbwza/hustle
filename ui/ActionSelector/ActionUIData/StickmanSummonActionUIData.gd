@@ -40,4 +40,4 @@ func fighter_update():
 		if !fighter.can_summon_kick:
 			direction.set_S(false)
 			if fighter.can_summon_kunai:
-				direction.set_dir("W")
+				direction.set_dir("E")
