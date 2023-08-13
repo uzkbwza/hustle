@@ -19,7 +19,7 @@ var starting_y = 0
 func _enter():
 	if data == null:
 		data = { "x": -host.get_facing_int() if back else host.get_facing_int(), "y": 0 }
-	var go_back = !back and (data.x != host.get_facing_int())
+	var go_back = !back and (data.x == -host.get_facing_int())
 	if go_back and !back:
 		return "AirDash2Back" if !cuts else "AirDash1kBack"
 	if back:

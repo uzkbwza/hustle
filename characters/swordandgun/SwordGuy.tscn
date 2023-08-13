@@ -1,4 +1,4 @@
-[gd_scene load_steps=330 format=2]
+[gd_scene load_steps=331 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -325,6 +325,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/pistol_whip.png" type="Texture" id=323]
 [ext_resource path="res://characters/swordandgun/sprites/airdash_back.png" type="Texture" id=324]
 [ext_resource path="res://characters/swordandgun/sprites/pistol_whip5.png" type="Texture" id=325]
+[ext_resource path="res://characters/swordandgun/states/PistolWhip.gd" type="Script" id=326]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -2225,13 +2226,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded
@@ -2288,13 +2289,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded
@@ -2537,7 +2538,10 @@ start_tick = 6
 active_ticks = 4
 
 [node name="PistolWhip" type="Node2D" parent="StateMachine" index="34"]
-script = ExtResource( 167 )
+script = ExtResource( 326 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true
