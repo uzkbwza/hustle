@@ -1,6 +1,7 @@
 extends Node
 
 signal game_started()
+signal game_setup()
 
 onready var ui_layer = $UILayer
 onready var game_layer = $GameLayer
@@ -115,6 +116,7 @@ func _on_match_ready(data):
 	setup_game(singleplayer, data)
 	emit_signal("game_started")
 
+
 func show_lobby():
 	$"%DirectConnectLobby".show()
 	$"%Lobby".show()
@@ -124,6 +126,7 @@ func setup_game(singleplayer, data):
 	if is_instance_valid(game):
 		game.queue_free()
 	call_deferred("setup_game_deferred", singleplayer, data)
+	emit_signal("game_setup")
 
 func setup_main_menu_game():
 	game = preload("res://Game.tscn").instance()

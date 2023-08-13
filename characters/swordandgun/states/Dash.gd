@@ -9,8 +9,8 @@ var starting_y = 0
 func _enter():
 	if host.reverse_state:
 		beats_backdash = false
-		backdash_iasa = true
 	else:
+		backdash_iasa = true
 		beats_backdash = true
 		backdash_iasa = false
 

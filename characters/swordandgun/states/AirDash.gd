@@ -12,10 +12,17 @@ export var DOWNWARD_FORCE_SPEED = "15.0"
 
 export var startup_invuln = true
 export var grounded = false
+export var back = false
+export var cuts = false
 var starting_y = 0
 
 func _enter():
-	if host.reverse_state:
+	if data == null:
+		data = { "x": -host.get_facing_int() if back else host.get_facing_int(), "y": 0 }
+	var go_back = !back and (data.x != host.get_facing_int())
+	if go_back and !back:
+		return "AirDash2Back" if !cuts else "AirDash1kBack"
+	if back:
 		beats_backdash = false
 		backdash_iasa = true
 	else:
@@ -29,7 +36,7 @@ func _frame_0():
 	if startup_invuln and host.initiative:
 		host.start_projectile_invulnerability()
 	var down = data.x == 0
-	var force_x = DOWNWARD_FORCE_X if down else FORWARD_FORCE_X
+	var force_x = DOWNWARD_FORCE_X if down else fixed.mul(FORWARD_FORCE_X, str(data.x * host.get_facing_int()))
 	var force_y = DOWNWARD_FORCE_Y if down else FORWARD_FORCE_Y
 	var force_speed = DOWNWARD_FORCE_SPEED if down else FORWARD_FORCE_SPEED
 	var force = fixed.normalized_vec_times(force_x, force_y, force_speed)

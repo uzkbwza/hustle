@@ -1216,6 +1216,7 @@ damage = 115
 hitstun_ticks = 23
 hitlag_ticks = 6
 victim_hitlag = 11
+guard_break = true
 plus_frames = -3
 hit_height = 0
 screenshake_amount = 5
@@ -1362,9 +1363,6 @@ hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = -1
-guard_break = true
-block_punishable = true
-plus_frames = -2
 hit_height = 2
 screenshake_amount = 5
 hit_sound = ExtResource( 145 )
@@ -1904,6 +1902,8 @@ hitstun_ticks = 22
 victim_hitlag = 10
 damage_proration = -1
 cancellable = false
+guard_break = true
+block_punishable = true
 plus_frames = 2
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -1924,6 +1924,8 @@ hitstun_ticks = 22
 victim_hitlag = 10
 damage_proration = -1
 cancellable = false
+guard_break = true
+block_punishable = true
 plus_frames = 2
 whiff_particle = ExtResource( 203 )
 whiff_sound = ExtResource( 143 )
@@ -2302,7 +2304,7 @@ start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="ForwardThrow" parent="StateMachine" index="75"]
+[node name="ForwardThrow" parent="StateMachine" index="76"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2316,7 +2318,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="BackThrow" parent="StateMachine" index="76"]
+[node name="BackThrow" parent="StateMachine" index="77"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2330,7 +2332,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirForwardThrow" parent="StateMachine" index="77"]
+[node name="AirForwardThrow" parent="StateMachine" index="78"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2342,7 +2344,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirBackThrow" parent="StateMachine" index="78"]
+[node name="AirBackThrow" parent="StateMachine" index="79"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2354,7 +2356,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirDownThrow" parent="StateMachine" index="79"]
+[node name="AirDownThrow" parent="StateMachine" index="80"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2365,11 +2367,11 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="ThrowTech" parent="StateMachine" index="80"]
+[node name="ThrowTech" parent="StateMachine" index="81"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
 
-[node name="Taunt" parent="StateMachine" index="81"]
+[node name="Taunt" parent="StateMachine" index="82"]
 script = ExtResource( 257 )
 apply_fric = false

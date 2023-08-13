@@ -911,7 +911,10 @@ func launched_by(hitbox):
 		hit_during_armor = true
 
 	emit_hit_by_signal(hitbox)
-	take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier, scaling_offset)
+	var damage = hitbox.get_damage()
+	if will_block:
+		damage = fixed.round(fixed.mul(str(damage), "0.5"))
+	take_damage(damage, hitbox.minimum_damage, hitbox.meter_gain_modifier, scaling_offset)
 
 	if will_launch:
 		state_tick()

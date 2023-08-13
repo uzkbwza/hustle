@@ -90,6 +90,12 @@ func attempt_triggered_attack():
 		triggered_attacks.erase(current_tick)
 
 func trigger_attack(attack_type, attack_delay):
+	if attack_type == "Lightning":
+		if strikes_left > 0 or strike_ticks_left > 0:
+			return
+		for attack in triggered_attacks.values():
+			if attack == "Lightning":
+				return
 	triggered_attacks[current_tick + attack_delay] = attack_type
 
 func drain_super():
