@@ -1033,6 +1033,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -4196,10 +4197,6 @@ release_sfx_volume = -6.0
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
-
-[node name="OffensiveBurst" parent="StateMachine" index="64"]
-interrupt_from_string = "OffensiveBurst
-"
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false

@@ -296,20 +296,23 @@ func _tick_shared():
 			host.apply_forces()
 
 func process_hitboxes():
+	host.update_data()
+	var pos = host.get_pos()
 	if hitbox_start_frames.has(current_tick + 1):
 		for hitbox in hitbox_start_frames[current_tick + 1]:
+			hitbox.update_position(pos.x, pos.y)
 			activate_hitbox(hitbox)
 			if hitbox is Hitbox:
 				if hitbox.hitbox_type == Hitbox.HitboxType.ThrowHit:
 					hitbox.hit(host.opponent)
 					hitbox.deactivate()
 	for hitbox in get_active_hitboxes():
+		hitbox.update_position(pos.x, pos.y)
 		hitbox.facing = host.get_facing()
 		if hitbox.active:
 			hitbox.tick()
 		else:
 			deactivate_hitbox(hitbox)
-
 
 func update_hurtbox():
 	if current_hurtbox:

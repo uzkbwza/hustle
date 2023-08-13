@@ -829,8 +829,18 @@ func resolve_collisions(p1, p2, step=0):
 func apply_hitboxes(players):
 	var px1 = players[0]
 	var px2 = players[1]
+
 	var p1_hitboxes = px1.get_active_hitboxes()
 	var p2_hitboxes = px2.get_active_hitboxes()
+
+	var p1_pos = px1.get_pos()
+	var p2_pos = px2.get_pos()
+	
+	for hitbox in p1_hitboxes:
+		hitbox.update_position(p1_pos.x, p1_pos.y)
+	for hitbox in p2_hitboxes:
+		hitbox.update_position(p2_pos.x, p2_pos.y)
+
 	var p2_hit_by = get_colliding_hitbox(p1_hitboxes, px2.hurtbox) if not px2.invulnerable else null
 	var p1_hit_by = get_colliding_hitbox(p2_hitboxes, px1.hurtbox) if not px1.invulnerable else null
 	var p1_hit = false
