@@ -25,7 +25,7 @@ Neutral = false
 SW = false
 S = false
 
-[node name="Parry Timing" parent="." instance=ExtResource( 2 )]
+[node name="Melee Parry Timing" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 63.0
@@ -34,4 +34,14 @@ margin_bottom = 99.0
 min_value = 1
 max_value = 20
 
-[editable path="Parry Timing"]
+[node name="Label" parent="Melee Parry Timing" index="0"]
+self_modulate = Color( 1, 1, 1, 0 )
+clip_text = true
+
+[node name="Label2" type="Label" parent="Melee Parry Timing/HSlider" index="0"]
+margin_left = -17.0
+margin_top = -11.0
+margin_right = 75.0
+text = "Melee Parry Timing"
+
+[editable path="Melee Parry Timing"]

@@ -3,7 +3,7 @@ extends CharacterState
 onready var throw_box = $ThrowBox
 
 const IS_GRAB = true
-const DASH_LAG = 3
+const DASH_LAG = 4
 const DASH_SPEED = "14"
 const JUMP_HEIGHT = "-10"
 

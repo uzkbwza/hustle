@@ -29,6 +29,7 @@ func init():
 #	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
+	host.blocked_hitbox_plus_frames = 0
 	brace = false
 	host.feinting = false
 	host.release_opponent()

@@ -1137,26 +1137,28 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		var perfect_parry
 		var parry_type = current_state().parry_type
 
-		if current_state() is GroundedParryState:
-			
-#				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
-			var parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
-			
-			var in_parry_window = (parry_timing == current_state().data["Parry Timing"].count or current_state().data["Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-			var perfect_requirement = current_state().matches_hitbox_height(hitbox)
-			if projectile:
-				perfect_requirement = perfect_requirement and host.has_projectile_parry_window
-			else:
-				perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
+		if not projectile:
+			if current_state() is GroundedParryState:
+	#				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
+				var parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
-			perfect_parry = current_state().can_parry and (always_perfect_parry or (in_parry_window) and perfect_requirement and !blocked_last_hit)
-			if opponent.feint_parriable:
-				perfect_parry = true
+				var in_parry_window = (parry_timing == current_state().data["Melee Parry Timing"].count or current_state().data["Melee Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
+				var perfect_requirement = current_state().matches_hitbox_height(hitbox)
+				if projectile:
+					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
+				else:
+					perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
+					
+				perfect_parry = current_state().can_parry and (always_perfect_parry or (in_parry_window) and perfect_requirement and !blocked_last_hit)
+				if opponent.feint_parriable:
+					perfect_parry = true
+			else:
+				var parry_timing = turn_frames
+				var in_parry_window = (parry_timing == current_state().data["Melee Parry Timing"].count or current_state().data["Melee Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
+	#				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
+				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 		else:
-			var parry_timing = turn_frames
-			var in_parry_window = (parry_timing == current_state().data["Parry Timing"].count or current_state().data["Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-#				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
-			perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
+			perfect_parry = current_state().can_parry and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
 
 # old
 #		if not projectile:
@@ -1278,7 +1280,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if !is_grounded():
 					total_plus_frames += VS_AERIAL_ADDITIONAL_PLUS_FRAMES
 
-	
 			if total_plus_frames > 0:
 				blocked_hitbox_plus_frames = total_plus_frames
 			elif total_plus_frames < 0:

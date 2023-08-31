@@ -9,7 +9,7 @@ var punishable = false
 func _frame_0():
 	host.end_throw_invulnerability()
 	if data == null:
-		data = { "Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
+		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -22,6 +22,7 @@ func _frame_0():
 	punishable = false
 	anim_length = 20
 	iasa_at = - 1
+	host.blocked_hitbox_plus_frames = 0
 	host.add_penalty(10, true)
 	if host.is_grounded():
 		anim_name = "ParryHigh" if data["Block Height"].y == 0 else "ParryLow"
