@@ -67,6 +67,7 @@ onready var global_option_check_buttons = {
 	$"%LastMoveIndicatorButton": "show_last_move_indicators",
 	$"%ProjectileOwnersButton": "show_projectile_owners",
 	$"%SpeedLinesButton": "speed_lines_enabled",
+	$"%AutoFCButton": "auto_fc",
 }
 
 func _ready():
@@ -101,7 +102,7 @@ func _ready():
 	Network.connect("force_open_action_buttons", self, "on_player_actionable")
 
 	SteamLobby.connect("join_lobby_success", self, "_on_join_lobby_success")
-	
+	$"%OptionsContainer".hide()
 	p1_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [1])
 	p2_turn_timer.connect("timeout", self, "_on_turn_timer_timeout", [2])
 	for lobby in [$"%Lobby", $"%DirectConnectLobby", SteamLobby]:

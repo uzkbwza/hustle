@@ -9,11 +9,12 @@ var punishable = false
 func _frame_0():
 	host.end_throw_invulnerability()
 	if data == null:
-		data = { "count" : 0 }
+		data = { "Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
 	parry_type = initial_parry_type
+	parry_type = ParryHeight.High if data["Block Height"].y == 0 else ParryHeight.Low
 	parry_active = true
 	parry_tick = 0
 	parried = false
@@ -23,7 +24,7 @@ func _frame_0():
 	iasa_at = - 1
 	host.add_penalty(10, true)
 	if host.is_grounded():
-		anim_name = "ParryHigh"
+		anim_name = "ParryHigh" if data["Block Height"].y == 0 else "ParryLow"
 	else:
 		anim_name = "ParryLow"
 
@@ -35,6 +36,20 @@ func on_continue():
 
 func _frame_10():
 	pass
+
+func matches_hitbox_height(hitbox, parry_type=null):
+	if push:
+		return true
+	if parry_type == null:
+		parry_type = self.parry_type
+	match hitbox.hit_height:
+		Hitbox.HitHeight.High:
+			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both
+		Hitbox.HitHeight.Mid:
+			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both
+		Hitbox.HitHeight.Low:
+			return parry_type == ParryHeight.Low or parry_type == ParryHeight.Both
+	return false
 
 func parry(perfect = true):
 	perfect = perfect and can_parry
@@ -58,15 +73,8 @@ func can_parry_hitbox(hitbox):
 		return false
 	if not parry_active:
 		return false
-	match hitbox.hit_height:
-		Hitbox.HitHeight.High:
-			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both
-		Hitbox.HitHeight.Mid:
-			return parry_type == ParryHeight.High or parry_type == ParryHeight.Both
-		Hitbox.HitHeight.Low:
-			return parry_type == ParryHeight.Low or parry_type == ParryHeight.Both
-	return false
-
+	return true
+	
 func _tick():
 	host.apply_fric()
 #	if air_type == AirType.Aerial:
@@ -78,7 +86,6 @@ func _tick():
 	host.apply_forces()
 #	host.parry_chip_divisor = host.PARRY_CHIP_DIVISOR / (1 + abs(current_tick - data.x + 1) * 0.2)
 	host.parry_knockback_divisor = host.PARRY_GROUNDED_KNOCKBACK_DIVISOR
-
 
 func _exit():
 	parry_active = false

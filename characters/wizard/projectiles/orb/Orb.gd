@@ -96,6 +96,9 @@ func trigger_attack(attack_type, attack_delay):
 		for attack in triggered_attacks.values():
 			if attack == "Lightning":
 				return
+	if attack_type == "Sword":
+		if current_state().state_name == "Sword":
+			return
 	triggered_attacks[current_tick + attack_delay] = attack_type
 
 func drain_super():

@@ -543,7 +543,7 @@ func tick():
 			object.set_pos( - stage_width, pos.y)
 		elif pos.x > stage_width:
 			object.set_pos(stage_width, pos.y)
-		if has_ceiling and pos.y < - ceiling_height:
+		if has_ceiling and pos.y <= - ceiling_height:
 			object.set_y( - ceiling_height)
 			object.on_hit_ceiling()
 
@@ -985,6 +985,15 @@ func apply_hitboxes(players):
 	for object in objects:
 		if object.disabled:
 			continue
+		
+		# ty wuffie
+		var o_hitboxes = object.get_active_hitboxes()
+
+		var o_pos = object.get_pos()
+
+		for hitbox in o_hitboxes:
+			hitbox.update_position(o_pos.x, o_pos.y)
+
 		for p in [px1, px2]:
 			var p_hit_by
 			if p == p1:

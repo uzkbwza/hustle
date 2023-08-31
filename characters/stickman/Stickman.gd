@@ -17,7 +17,9 @@ var used_grappling_hook = false
 var whip_beam_charged = false
 var substituted_objects = {}
 var skull_shaker_bleed_ticks = 0
-var stored_speed = "1"
+var stored_speed_1 = "1"
+var stored_speed_2 = "1"
+var stored_speed_3 = "1"
 var released_this_turn = false
 var will_release_momentum = false
 var will_store_momentum = false
@@ -65,6 +67,14 @@ func process_extra(extra):
 			if extra.has("release_dir"):
 				will_release_momentum = true
 				var dir = extra.release_dir
+				var stored_speed = "0"
+				match momentum_stores:
+					1:
+						stored_speed = stored_speed_1
+					2:
+						stored_speed = stored_speed_2
+					3:
+						stored_speed = stored_speed_3
 				var impulse = xy_to_dir(dir.x, dir.y, fixed.mul(RELEASE_MODIFIER, stored_speed))
 				stored_momentum_x = impulse.x
 				stored_momentum_y = impulse.y
@@ -87,7 +97,7 @@ func apply_forces():
 
 func store_momentum():
 		var speed = current_momentum
-		stored_speed = speed if fixed.gt(speed, stored_speed) else stored_speed
+		var stored_speed = speed
 		if infinite_resources and fixed.lt(stored_speed, "11"):
 			stored_speed = "11"
 #		print(stored_speed)
@@ -95,6 +105,14 @@ func store_momentum():
 		momentum_stores += 1
 		if momentum_stores > 3:
 			momentum_stores = 3
+		match momentum_stores:
+			1:
+				stored_speed_1 = stored_speed
+			2:
+				stored_speed_2 = stored_speed
+			3:
+				stored_speed_3 = stored_speed
+
 		will_store_momentum = false
 		play_sound("Swish3")
 		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
@@ -107,8 +125,7 @@ func release_momentum():
 			momentum_stores -= 1
 		if momentum_stores < 0:
 			momentum_stores = 0
-		if momentum_stores == 0:
-			stored_speed = "0"
+
 #		else:
 #			stored_speed = fixed.mul(stored_speed, fixed.sub("1", RELEASE_MODIFIER))
 		released_this_turn = true

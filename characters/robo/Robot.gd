@@ -440,26 +440,7 @@ func on_state_interruptable(state=null):
 		super_armor_installed = false
 	armor_active = false
 
-#func on_state_started(state):
-#	.on_state_started(state)
-#	flying_states_left -= 1
-#	if flying_states_left == 0:
-#		flying_dir = null
-	
 	
 func _draw():
 	if magnet_ticks_left > 0:
 		draw_arc(Vector2(), float(MAGNET_SAFE_DIST) + Utils.wave(-2, 2, 0.5), 0, TAU, 128, Color("aad440b6"), 3.0)
-
-#func launched_by(hitbox):
-#	if armor_pips > 0:
-#		hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
-#		hitlag_applied = hitlag_ticks
-#		if hitbox.rumble:
-#			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
-#
-#		emit_signal("got_hit")
-#		take_damage(hitbox.damage, hitbox.minimum_damage)
-#		armor_pips -= 1
-#	else:
-#		.launched_by(hitbox)

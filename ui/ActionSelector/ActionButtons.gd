@@ -73,6 +73,7 @@ func _ready():
 	$"%DI".connect("data_changed", self, "send_ui_action")
 	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
 	$"%FeintButton".connect("pressed", self, "send_ui_action", [null])
+
 	if !player_id == 1:
 		var top_row_items = $"%TopRow".get_children()
 		top_row_items.invert()
@@ -638,7 +639,7 @@ func activate(refresh=true):
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)
 	$"%ReverseButton".pressed = false
-	$"%FeintButton".pressed = fighter.feints > 0
+	$"%FeintButton".pressed = (Global.auto_fc or !user_facing) and fighter.feints > 0
 #	tween_spread()
 	current_action = null
 	current_button = null

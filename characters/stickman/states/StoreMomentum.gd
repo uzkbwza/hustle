@@ -10,7 +10,7 @@ func _frame_1():
 		host.stored_momentum_x = vel.x
 		host.stored_momentum_y = vel.y
 		var speed = fixed.vec_len(vel.x, vel.y)
-		host.stored_speed = speed if fixed.gt(speed, host.stored_speed) else host.stored_speed
+		var stored_speed = speed
 		if host.infinite_resources and fixed.lt(host.stored_speed, "11"):
 			host.stored_speed = "11"
 #		print(host.stored_speed)
@@ -18,6 +18,13 @@ func _frame_1():
 		host.momentum_stores += 1
 		if host.momentum_stores > 3:
 			host.momentum_stores = 3
+		match host.momentum_stores:
+			1:
+				host.stored_speed_1 = stored_speed
+			2:
+				host.stored_speed_2 = stored_speed
+			3:
+				host.stored_speed_3 = stored_speed
 #		if fixed.lt(host.stored_momentum_y, "0"):
 #			host.stored_momentum_y = fixed.mul(host.stored_momentum_y, "0.5")
 #	else:

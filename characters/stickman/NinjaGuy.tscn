@@ -611,7 +611,9 @@ grappling_hook_projectile
 used_grappling_hook
 substituted_objects
 skull_shaker_bleed_ticks
-stored_speed
+stored_speed_1
+stored_speed_2
+stored_speed_3
 released_this_turn
 current_momentum
 boosted_during_combo"
@@ -1939,6 +1941,7 @@ damage = 100
 hitstun_ticks = 34
 hitlag_ticks = 8
 victim_hitlag = 8
+plus_frames = 1
 hit_height = 0
 screenshake_amount = 7
 dir_x = "2.0"
@@ -2123,6 +2126,7 @@ damage_proration = -1
 cancellable = false
 di_modifier = "0.3"
 sdi_modifier = "0.2"
+plus_frames = 3
 hit_sound = ExtResource( 42 )
 knockback = "2.5"
 pushback_x = "0.0"
@@ -2141,7 +2145,7 @@ damage = 50
 hitstun_ticks = 23
 victim_hitlag = 4
 damage_proration = -1
-plus_frames = 1
+plus_frames = 3
 group = 1
 hit_sound = ExtResource( 42 )
 knockback = "4.0"
@@ -2187,6 +2191,7 @@ damage = 120
 hitstun_ticks = 23
 hitlag_ticks = 7
 victim_hitlag = 7
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
@@ -2231,6 +2236,7 @@ damage = 120
 hitstun_ticks = 23
 hitlag_ticks = 7
 victim_hitlag = 7
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_y = "1.0"
@@ -2888,7 +2894,7 @@ minimum_damage = 15
 hitstun_ticks = 17
 hitlag_ticks = 7
 cancellable = false
-plus_frames = -4
+plus_frames = -2
 hit_height = 2
 hit_sound = ExtResource( 41 )
 dir_x = "-1.0"
@@ -3199,14 +3205,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
@@ -3214,6 +3212,14 @@ ExtResource( 219 ): {
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3372,7 +3378,7 @@ damage = 76
 hitstun_ticks = 18
 hitlag_ticks = 5
 victim_hitlag = 9
-plus_frames = 1
+plus_frames = 3
 hit_height = 0
 screenshake_amount = 2
 hit_sound = ExtResource( 41 )

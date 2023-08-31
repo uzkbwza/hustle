@@ -25,7 +25,7 @@ func _frame_0():
 func _tick():
 	var pos = host.get_pos()
 	host.update_grounded()
-	if !hit_something and ((host.is_grounded() and fizzle_on_ground) or (fizzle_on_walls and (pos.x < -host.stage_width or pos.x > host.stage_width))):
+	if !hit_something and ((host.is_grounded() and fizzle_on_ground) or (fizzle_on_walls and (pos.x <= -host.stage_width or pos.x >= host.stage_width))):
 		fizzle()
 		host.hurtbox.width = 0
 		host.hurtbox.height = 0
