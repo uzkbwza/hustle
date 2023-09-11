@@ -47,7 +47,7 @@ func update_tp_button():
 			$"%TpButton".show()
 		else:
 			$"%TpButton".hide()
-		if fighter.current_state().type == CharacterState.ActionType.Defense:
+		if selected_move and selected_move.type == CharacterState.ActionType.Defense:
 			$"%TpButton".disabled = true
 
 func update_selected_move(move_state):

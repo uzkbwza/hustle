@@ -49,6 +49,7 @@ no_hitlag = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="ParticleEffect" parent="Flip/Particles" index="0"]
@@ -74,6 +75,7 @@ bounces = 6
 damage = 95
 hitstun_ticks = 15
 hitlag_ticks = 4
+plus_frames = 2
 knockback = "6.0"
 grounded_hit_state = "HurtGrounded"
 

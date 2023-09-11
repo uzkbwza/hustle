@@ -55,3 +55,7 @@ func _tick():
 	if dash_lag > 0:
 		current_tick = 0
 		dash_lag -= 1
+		update_sprite_frame()
+	if current_tick == 4:
+		if data and data.get("Dash"):
+			throw_box.deactivate()

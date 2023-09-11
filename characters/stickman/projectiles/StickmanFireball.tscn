@@ -81,6 +81,7 @@ damage = 60
 hitstun_ticks = 11
 hitlag_ticks = 8
 victim_hitlag = 8
+plus_frames = 2
 screenshake_amount = 2
 hit_sound = ExtResource( 8 )
 start_tick = 1

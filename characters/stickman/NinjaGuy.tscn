@@ -1,4 +1,4 @@
-[gd_scene load_steps=249 format=2]
+[gd_scene load_steps=250 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -245,6 +245,7 @@
 [ext_resource path="res://characters/stickman/NinjaPlayerInfo.tscn" type="PackedScene" id=243]
 [ext_resource path="res://fx/JumpParticle.tscn" type="PackedScene" id=244]
 [ext_resource path="res://characters/stickman/sprites/portrait3.png" type="Texture" id=245]
+[ext_resource path="res://characters/stickman/sprites/stickman57.png" type="Texture" id=246]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -353,7 +354,7 @@ animations = [ {
 "name": "Getup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ) ],
+"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ) ],
 "loop": true,
 "name": "Grab",
 "speed": 60.0
@@ -1901,6 +1902,7 @@ damage = 60
 hitstun_ticks = 18
 hitlag_ticks = 5
 victim_hitlag = 9
+plus_frames = 3
 hit_height = 0
 screenshake_amount = 2
 hit_sound = ExtResource( 41 )
@@ -1993,6 +1995,7 @@ height = 7
 damage = 80
 hitstun_ticks = 23
 victim_hitlag = 4
+plus_frames = 2
 hit_sound = ExtResource( 42 )
 knockback = "8.0"
 start_tick = 7
@@ -2036,6 +2039,7 @@ height = 11
 damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
+plus_frames = 2
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
@@ -2054,6 +2058,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+plus_frames = 2
 priority = 1
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
@@ -2073,6 +2078,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+plus_frames = 2
 priority = 2
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
@@ -2191,6 +2197,7 @@ damage = 120
 hitstun_ticks = 23
 hitlag_ticks = 7
 victim_hitlag = 7
+guard_break = true
 plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 42 )
@@ -2236,6 +2243,7 @@ damage = 120
 hitstun_ticks = 23
 hitlag_ticks = 7
 victim_hitlag = 7
+guard_break = true
 plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 42 )
@@ -2276,6 +2284,7 @@ height = 8
 damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
+plus_frames = 1
 hit_height = 0
 hit_sound = ExtResource( 39 )
 knockback = "5.0"
@@ -2295,6 +2304,7 @@ height = 9
 damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
+plus_frames = 1
 hit_height = 0
 hit_sound = ExtResource( 39 )
 knockback = "5.0"
@@ -2408,6 +2418,7 @@ damage = 95
 hitstun_ticks = 18
 hitlag_ticks = 6
 cancellable = false
+plus_frames = 1
 hit_height = 2
 screenshake_amount = 6
 knockdown = true
@@ -2437,6 +2448,7 @@ height = 14
 damage = 40
 hitstun_ticks = 20
 victim_hitlag = 4
+plus_frames = 3
 hit_height = 0
 dir_x = "0.1"
 knockback = "5.0"
@@ -2515,6 +2527,7 @@ hitstun_ticks = 20
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = 1
+plus_frames = 2
 hit_height = 2
 hit_sound = ExtResource( 41 )
 knockback = "5.0"
@@ -2570,6 +2583,7 @@ hit_sound = ExtResource( 40 )
 dir_y = "-0.25"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 0
 knockdown = true
 start_tick = 7
 active_ticks = 2
@@ -2692,7 +2706,7 @@ damage = 70
 hitstun_ticks = 20
 hitlag_ticks = 6
 victim_hitlag = 6
-plus_frames = 1
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 41 )
 dir_y = "1.0"
@@ -2846,6 +2860,7 @@ minimum_damage = 70
 hitstun_ticks = 26
 hitlag_ticks = 10
 cancellable = false
+plus_frames = 4
 rumble = false
 hit_sound = ExtResource( 44 )
 dir_y = "-0.1"
@@ -3132,6 +3147,7 @@ increment_combo = false
 ignore_armor = true
 followup_state = "HitGrabFollowup"
 hits_vs_dizzy = false
+plus_frames = -2
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 dir_y = "0.0"
@@ -3179,6 +3195,7 @@ increment_combo = false
 ignore_armor = true
 followup_state = "HitGrabFollowup"
 hits_vs_dizzy = false
+plus_frames = -2
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 grounded_hit_state = "Grabbed"
@@ -3205,10 +3222,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
-},
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
@@ -3220,6 +3233,10 @@ ExtResource( 222 ): {
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
+},
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3410,6 +3427,14 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
+},
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
@@ -3417,14 +3442,6 @@ ExtResource( 206 ): {
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
-},
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -3463,6 +3480,14 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="90"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
@@ -3470,14 +3495,6 @@ ExtResource( 206 ): {
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
 },
 ExtResource( 210 ): {
 "x": 37,

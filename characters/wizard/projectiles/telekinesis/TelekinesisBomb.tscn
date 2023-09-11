@@ -79,6 +79,7 @@ loop_animation = true
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]
 damage = 0
 increment_combo = false
+plus_frames = 3
 whiff_sound = null
 hit_sound = null
 hit_bass_sound = null

@@ -146,7 +146,7 @@ func copy_to(f: BaseObj):
 func has_armor():
 	return (armor_active and super_armor_installed and !(current_state() is CharacterHurtState))
 
-func has_autograb_armor():
+func has_autoblock_armor():
 	return (armor_active and !(current_state() is CharacterHurtState))
 
 #func has_projectile_armor():

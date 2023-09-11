@@ -68,6 +68,7 @@ damage = 70
 hitstun_ticks = 20
 hitlag_ticks = 5
 victim_hitlag = 5
+plus_frames = 2
 hit_sound = ExtResource( 5 )
 knockback = "5.0"
 start_tick = 1

@@ -817,7 +817,7 @@ func debug_text():
 func has_armor():
 	return has_hyper_armor
 
-func has_autograb_armor():
+func has_autoblock_armor():
 	return false
 
 func has_projectile_armor():
@@ -863,7 +863,7 @@ func launched_by(hitbox):
 			will_launch = false
 	var will_block = false
 	if will_launch:
-		if has_autograb_armor():
+		if has_autoblock_armor():
 			will_launch = false
 			will_block = !projectile
 
@@ -905,8 +905,8 @@ func launched_by(hitbox):
 #			opponent.reset_penalty()
 
 	elif will_block:
-		change_state("ParryHigh", {"count": 0} )
-		block_hitbox(hitbox, false, true, true)
+		change_state("ParryHigh")
+		block_hitbox(hitbox, false, true, true, has_autoblock_armor())
 
 	if has_hyper_armor:
 		hit_during_armor = true
@@ -1131,7 +1131,7 @@ func hit_by(hitbox, force_hit=false):
 	else:
 		block_hitbox(hitbox)
 
-func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_break=false):
+func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_break=false, autoblock_armor=false):
 		var host = objs_map[hitbox.host]
 		var projectile = not host.is_in_group("Fighter")
 		var perfect_parry
@@ -1152,6 +1152,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				perfect_parry = current_state().can_parry and (always_perfect_parry or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:
 					perfect_parry = true
+
 			else:
 				var parry_timing = turn_frames
 				var in_parry_window = (parry_timing == current_state().data["Melee Parry Timing"].count or current_state().data["Melee Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
@@ -1191,6 +1192,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_combo = true
 		else:
 			blocked_last_hit = true
+			start_throw_invulnerability()
 			if !projectile and !perfect_parry and !last_turn_block and initiative:
 				if hitbox.guard_break and !ignore_guard_break:
 					hitbox.damage_proration = Utils.int_max(GUARD_BREAK_SCALING, hitbox.damage_proration)
@@ -1231,7 +1233,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			if !current_state().matches_hitbox_height(hitbox, parry_type):
 				chip += fixed.round(fixed.mul(fixed.mul(str(hitbox.damage / parry_chip_divisor), "0.5"), hitbox.chip_damage_modifier))
 
-			take_damage(chip, 0, "0.6", 0, "2.0")
+			if !autoblock_armor:
+				take_damage(chip, 0, "0.6", 0, "2.0")
 #			gain_super_meter(parry_meter / 6)
 			opponent.gain_super_meter(parry_meter / 6)
 			var block_hitlag = hitbox.hitlag_ticks + 1
@@ -1266,9 +1269,11 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if current_state().get("push"):
 	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
 					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
-			else:
-				blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
+
+			blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
+
 			current_state().interruptible_on_opponent_turn = true
+
 			blockstun_ticks = 0
 			var total_plus_frames = hitbox.plus_frames
 			
@@ -1627,6 +1632,8 @@ func tick_before():
 		used_buffer = true
 		clear_buffer()
 	if queued_extra:
+		turn_frames = 0
+		opponent.turn_frames = 0
 		last_input["extra"] = queued_extra
 		process_extra(queued_extra)
 		pressed_feint = feinting

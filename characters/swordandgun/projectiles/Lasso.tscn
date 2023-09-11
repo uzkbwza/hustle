@@ -72,6 +72,7 @@ hitlag_ticks = 0
 victim_hitlag = 4
 increment_combo = false
 ignore_armor = true
+plus_frames = 1
 replace_hit_particle = true
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"

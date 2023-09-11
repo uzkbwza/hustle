@@ -116,6 +116,7 @@ height = 9
 damage = 105
 hitstun_ticks = 18
 hitlag_ticks = 3
+plus_frames = 1
 hit_sound = ExtResource( 8 )
 dir_y = "-0.70"
 knockback = "7.0"

@@ -823,8 +823,8 @@ epic_horse_moment = ExtResource( 308 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 6 )
-animation = "PistolWhip"
-frame = 6
+animation = "3Combo"
+frame = 24
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -883,7 +883,8 @@ next_state_on_hold_on_opponent_turn = true
 reversible = false
 interrupt_from_string = "Grounded
 GroundedMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
@@ -914,7 +915,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -924,7 +924,8 @@ interrupt_from_string = "Grounded
 GroundedMovement
 Aerial
 AerialMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
@@ -953,7 +954,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -964,7 +964,8 @@ interrupt_from_string = "Grounded
 GroundedMovement
 Aerial
 AerialMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
@@ -997,7 +998,8 @@ next_state_on_hold_on_opponent_turn = true
 reversible = false
 interrupt_from_string = "Grounded
 GroundedMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 initiative_effect = true
@@ -1030,7 +1032,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1040,7 +1041,8 @@ interrupt_from_string = "Grounded
 GroundedMovement
 Aerial
 AerialMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
@@ -1075,7 +1077,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1086,7 +1087,8 @@ interrupt_from_string = "Grounded
 GroundedMovement
 Aerial
 AerialMovement
-Jump"
+Jump
+Dash"
 interrupt_into_string = "Grounded
 Aerial"
 beats_backdash = true
@@ -1158,6 +1160,7 @@ hitstun_ticks = 18
 victim_hitlag = 5
 cancellable = false
 sdi_modifier = "0.5"
+plus_frames = 2
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
 dir_x = "0.5"
@@ -1176,6 +1179,7 @@ hitstun_ticks = 18
 victim_hitlag = 5
 cancellable = false
 sdi_modifier = "0.5"
+plus_frames = 2
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
 dir_x = "0.5"
@@ -1191,6 +1195,7 @@ height = 12
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1209,6 +1214,7 @@ height = 9
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1227,6 +1233,7 @@ height = 13
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1248,6 +1255,7 @@ hitstun_ticks = 28
 hitlag_ticks = 7
 victim_hitlag = 10
 sdi_modifier = "1.3"
+plus_frames = 3
 group = 2
 screenshake_amount = 7
 hit_sound = ExtResource( 207 )
@@ -1270,6 +1278,7 @@ hitstun_ticks = 28
 hitlag_ticks = 7
 victim_hitlag = 10
 sdi_modifier = "1.3"
+plus_frames = 3
 group = 2
 screenshake_amount = 7
 hit_sound = ExtResource( 207 )
@@ -1319,6 +1328,7 @@ hitstun_ticks = 18
 victim_hitlag = 5
 cancellable = false
 sdi_modifier = "0.5"
+plus_frames = 2
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
 dir_x = "0.5"
@@ -1339,6 +1349,7 @@ hitstun_ticks = 18
 victim_hitlag = 5
 cancellable = false
 sdi_modifier = "0.5"
+plus_frames = 2
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
 dir_x = "0.5"
@@ -1356,6 +1367,7 @@ height = 12
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1375,6 +1387,7 @@ height = 9
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1394,6 +1407,7 @@ height = 13
 damage = 40
 hitstun_ticks = 25
 victim_hitlag = 5
+plus_frames = 2
 group = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -1416,6 +1430,7 @@ hitstun_ticks = 28
 hitlag_ticks = 7
 victim_hitlag = 10
 sdi_modifier = "1.3"
+plus_frames = 3
 group = 2
 screenshake_amount = 7
 hit_sound = ExtResource( 207 )
@@ -1438,6 +1453,7 @@ hitstun_ticks = 28
 hitlag_ticks = 7
 victim_hitlag = 10
 sdi_modifier = "1.3"
+plus_frames = 3
 group = 2
 screenshake_amount = 7
 hit_sound = ExtResource( 207 )
@@ -1487,6 +1503,7 @@ hitstun_ticks = 7
 combo_hitstun_ticks = 17
 hitlag_ticks = 2
 victim_hitlag = 4
+plus_frames = 1
 screenshake_amount = 2
 whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
@@ -1539,6 +1556,7 @@ hitstun_ticks = 12
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
 victim_hitlag = 4
+plus_frames = 1
 screenshake_amount = 2
 whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
@@ -1585,6 +1603,7 @@ hitlag_ticks = 2
 victim_hitlag = 4
 damage_proration = 1
 sdi_modifier = "1.2"
+plus_frames = 1
 screenshake_amount = 2
 whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
@@ -1982,6 +2001,7 @@ hitstun_ticks = 29
 hitlag_ticks = 7
 victim_hitlag = 9
 sdi_modifier = "1.2"
+plus_frames = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
 dir_x = "-0.15"
@@ -2027,6 +2047,7 @@ hitstun_ticks = 29
 hitlag_ticks = 7
 victim_hitlag = 9
 sdi_modifier = "1.2"
+plus_frames = 1
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
 dir_x = "-0.15"
@@ -2225,13 +2246,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2288,13 +2309,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 interrupt_into_string = "Grounded
@@ -2402,6 +2423,7 @@ height = 10
 damage = 70
 hitstun_ticks = 11
 victim_hitlag = 8
+plus_frames = 2
 hit_height = 0
 dir_x = "0.25"
 dir_y = "1.0"
@@ -2450,6 +2472,7 @@ height = 10
 damage = 70
 hitstun_ticks = 8
 victim_hitlag = 7
+plus_frames = 2
 hit_height = 0
 dir_x = "0.25"
 dir_y = "1.0"
@@ -2487,6 +2510,7 @@ damage = 70
 hitstun_ticks = 14
 victim_hitlag = 6
 damage_proration = 1
+plus_frames = 1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 144 )
@@ -2529,6 +2553,7 @@ width = 24
 height = 14
 damage = 90
 hitstun_ticks = 17
+plus_frames = 2
 hit_height = 0
 whiff_sound = ExtResource( 146 )
 hit_sound = ExtResource( 148 )
@@ -2578,7 +2603,7 @@ dir_x = "0.1"
 dir_y = "1.0"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 5
+minimum_grounded_frames = 2
 knockdown = true
 knockdown_extends_hitstun = false
 ground_bounce = false
@@ -2601,7 +2626,7 @@ dir_x = "0.1"
 dir_y = "1.0"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 5
+minimum_grounded_frames = 2
 knockdown = true
 knockdown_extends_hitstun = false
 ground_bounce = false
@@ -2624,7 +2649,7 @@ dir_x = "0.1"
 dir_y = "1.0"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 5
+minimum_grounded_frames = 2
 knockdown = true
 knockdown_extends_hitstun = false
 ground_bounce = false
@@ -2647,7 +2672,7 @@ dir_x = "0.1"
 dir_y = "1.0"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 5
+minimum_grounded_frames = 2
 knockdown = true
 knockdown_extends_hitstun = false
 ground_bounce = false
@@ -2670,7 +2695,7 @@ dir_x = "0.1"
 dir_y = "1.0"
 knockback = "9.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 5
+minimum_grounded_frames = 2
 knockdown = true
 knockdown_extends_hitstun = false
 ground_bounce = false
@@ -2870,6 +2895,7 @@ type = 2
 data_ui_scene = ExtResource( 298 )
 button_texture = ExtResource( 297 )
 air_type = 2
+uses_air_movement = true
 reversible = false
 interrupt_from_string = "Grounded
 GroundedMovement
@@ -2902,6 +2928,7 @@ type = 2
 data_ui_scene = ExtResource( 298 )
 button_texture = ExtResource( 297 )
 air_type = 2
+uses_air_movement = true
 reversible = false
 interrupt_from_string = "Grounded
 GroundedMovement
@@ -3024,7 +3051,8 @@ interrupt_into_string = "Gun
 SlowHolster
 AerialSuper
 GroundedSuper
-Teleport"
+Teleport
+Dash"
 interrupt_exceptions_string = "FastTeleport
 Hustle"
 super_level = 0
@@ -3046,7 +3074,8 @@ interrupt_into_string = "Gun
 SlowHolster
 AerialSuper
 GroundedSuper
-Parry"
+Teleport
+Dash"
 interrupt_exceptions_string = "FastTeleport
 Hustle"
 super_level = 0
@@ -3454,6 +3483,9 @@ spawn_particle_on_enter = false
 enter_sfx = ExtResource( 282 )
 enter_sfx_volume = -16.0
 title = "Walk Forward"
+interrupt_from_string = "GroundedMovement
+Grounded
+"
 velocity_forward_meter_gain_multiplier = "2.0"
 dash_speed = 4
 fric = "0.02"
@@ -3477,6 +3509,9 @@ spawn_particle_on_enter = false
 enter_sfx = ExtResource( 282 )
 enter_sfx_volume = -16.0
 title = "Walk Back"
+interrupt_from_string = "GroundedMovement
+Grounded
+"
 dash_speed = 4
 fric = "0.02"
 spawn_particle = false

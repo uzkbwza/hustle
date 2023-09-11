@@ -81,6 +81,7 @@ height = 6
 damage = 80
 hitstun_ticks = 50
 victim_hitlag = 4
+plus_frames = 1
 hit_height = 2
 dir_x = "-0.40"
 knockback = "6.0"

@@ -1033,6 +1033,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1254,6 +1255,7 @@ hitstun_ticks = 20
 victim_hitlag = 8
 sdi_modifier = "0.25"
 beats_grab = false
+plus_frames = 3
 screenshake_amount = 8
 hit_sound = ExtResource( 181 )
 knockback = "6"
@@ -1273,6 +1275,7 @@ victim_hitlag = 9
 cancellable = false
 sdi_modifier = "0.05"
 beats_grab = false
+plus_frames = 3
 group = 1
 screenshake_amount = 6
 whiff_sound = ExtResource( 153 )
@@ -1377,6 +1380,7 @@ GroundedSuper
 Jump"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/EyeBeam" index="0"]
+position = Vector2( -2, 0 )
 z_index = 1000
 script = ExtResource( 83 )
 x = 20
@@ -1385,6 +1389,7 @@ height = 5
 damage = 60
 hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 whiff_sound = ExtResource( 132 )
 whiff_sound_volume = -18.0
 knockback = "7.0"
@@ -1392,6 +1397,7 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/EyeBeam" index="1"]
+position = Vector2( -2, 0 )
 z_index = 1000
 script = ExtResource( 83 )
 x = 41
@@ -1400,6 +1406,7 @@ height = 5
 damage = 60
 hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 whiff_sound = ExtResource( 132 )
 whiff_sound_volume = -18.0
 knockback = "7.0"
@@ -1407,6 +1414,7 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/EyeBeam" index="2"]
+position = Vector2( -2, 0 )
 z_index = 1000
 script = ExtResource( 83 )
 x = 59
@@ -1415,6 +1423,7 @@ height = 5
 damage = 60
 hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 whiff_sound = ExtResource( 132 )
 whiff_sound_volume = -18.0
 knockback = "7.0"
@@ -1422,6 +1431,7 @@ start_tick = 6
 active_ticks = 3
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/EyeBeam" index="3"]
+position = Vector2( -2, 0 )
 z_index = 1000
 script = ExtResource( 83 )
 x = 70
@@ -1431,6 +1441,7 @@ height = 10
 damage = 90
 hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 priority = 1
 whiff_sound = ExtResource( 132 )
 hit_sound = ExtResource( 128 )
@@ -1473,12 +1484,13 @@ y = -35
 width = 28
 height = 2
 damage = 60
-hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 whiff_sound = ExtResource( 132 )
 whiff_sound_volume = -18.0
 dir_y = "-0.25"
 knockback = "7.0"
+grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
 
@@ -1490,14 +1502,15 @@ y = -36
 width = 10
 height = 10
 damage = 90
-hits_vs_grounded = false
 beats_grab = false
+plus_frames = 1
 priority = 1
 whiff_sound = ExtResource( 132 )
 hit_sound = ExtResource( 128 )
 whiff_sound_volume = -18.0
 dir_y = "-0.25"
 knockback = "7.0"
+grounded_hit_state = "HurtAerial"
 start_tick = 6
 active_ticks = 3
 
@@ -1648,6 +1661,7 @@ hitlag_ticks = 6
 victim_hitlag = 8
 damage_proration = 2
 beats_grab = false
+plus_frames = 1
 hit_height = 2
 screenshake_amount = 5
 whiff_sound = ExtResource( 91 )
@@ -1673,6 +1687,7 @@ cancellable = false
 hits_otg = true
 hits_vs_standing = false
 beats_grab = false
+plus_frames = 1
 hit_height = 2
 priority = 1
 screenshake_amount = 5
@@ -1722,6 +1737,7 @@ victim_hitlag = 8
 damage_proration = 1
 hits_otg = true
 beats_grab = false
+plus_frames = 1
 hit_height = 2
 screenshake_amount = 5
 whiff_sound = ExtResource( 91 )
@@ -1780,6 +1796,7 @@ damage = 50
 hitstun_ticks = 20
 hitlag_ticks = 8
 beats_grab = false
+plus_frames = 2
 hit_height = 0
 priority = 1
 hit_sound = ExtResource( 159 )
@@ -1801,6 +1818,7 @@ height = 6
 damage = 50
 hitstun_ticks = 20
 beats_grab = false
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
@@ -1820,6 +1838,7 @@ height = 6
 damage = 70
 hitstun_ticks = 20
 beats_grab = false
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
@@ -1839,6 +1858,7 @@ height = 6
 damage = 70
 hitstun_ticks = 20
 beats_grab = false
+plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 75 )
 dir_y = "1.0"
@@ -1915,6 +1935,10 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
+},
 ExtResource( 200 ): {
 "x": 5,
 "y": -12
@@ -1923,6 +1947,10 @@ ExtResource( 201 ): {
 "x": -15,
 "y": 0
 },
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
+},
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
@@ -1930,14 +1958,6 @@ ExtResource( 202 ): {
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
-},
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
-},
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
 }
 }
 update_facing_on_exit = false
@@ -2250,6 +2270,38 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
 ExtResource( 109 ): {
 "x": 70,
 "y": 15
@@ -2261,38 +2313,6 @@ ExtResource( 110 ): {
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
 }
 }
 iasa_at = 49
@@ -2367,13 +2387,13 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 263 ): {
-"x": 124,
-"y": -72
-},
 ExtResource( 262 ): {
 "x": 40,
 "y": -33
+},
+ExtResource( 263 ): {
+"x": 124,
+"y": -72
 },
 ExtResource( 264 ): {
 "x": 124,
@@ -2546,13 +2566,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -2587,6 +2607,38 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 115 ): {
+"x": -41,
+"y": -46
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
 ExtResource( 109 ): {
 "x": 70,
 "y": 15
@@ -2598,38 +2650,6 @@ ExtResource( 110 ): {
 ExtResource( 111 ): {
 "x": -31,
 "y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 115 ): {
-"x": -41,
-"y": -46
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
 }
 }
 iasa_at = 49
@@ -2769,6 +2789,7 @@ minimum_damage = 50
 hitstun_ticks = 40
 hitlag_ticks = 12
 beats_grab = false
+plus_frames = 3
 whiff_sound = ExtResource( 133 )
 hit_sound = ExtResource( 142 )
 dir_x = "2.0"
@@ -2805,6 +2826,7 @@ minimum_damage = 50
 hitstun_ticks = 40
 hitlag_ticks = 12
 beats_grab = false
+plus_frames = 3
 hit_sound = ExtResource( 142 )
 dir_x = "2.0"
 dir_y = "1.0"
@@ -2837,6 +2859,7 @@ height = 12
 damage = 50
 hitstun_ticks = 18
 beats_grab = false
+plus_frames = 1
 hit_sound = ExtResource( 75 )
 dir_x = "0"
 dir_y = "1"
@@ -2963,7 +2986,7 @@ victim_hitlag = 10
 cancellable = false
 sdi_modifier = "0.5"
 beats_grab = false
-plus_frames = 1
+plus_frames = 3
 hit_sound = ExtResource( 142 )
 whiff_sound_volume = -4.0
 block_pushback_modifier = "0.35"
@@ -2987,7 +3010,7 @@ victim_hitlag = 10
 cancellable = false
 sdi_modifier = "0.5"
 beats_grab = false
-plus_frames = 1
+plus_frames = 3
 priority = 1
 hit_sound = ExtResource( 142 )
 whiff_sound_volume = -4.0
@@ -3039,6 +3062,7 @@ damage = 65
 hitstun_ticks = 16
 victim_hitlag = 10
 beats_grab = false
+plus_frames = -2
 whiff_sound = ExtResource( 269 )
 hit_sound = ExtResource( 238 )
 hit_sound_volume = -1.0
@@ -3147,6 +3171,7 @@ hitlag_ticks = 6
 damage_proration = 2
 cancellable = false
 beats_grab = false
+plus_frames = 1
 screenshake_amount = 8
 whiff_sound = ExtResource( 238 )
 hit_sound = ExtResource( 159 )
@@ -3201,6 +3226,7 @@ cancellable = false
 hits_otg = true
 followup_state = "EarthquakeThrow"
 beats_grab = false
+plus_frames = 2
 priority = 2
 whiff_particle = ExtResource( 321 )
 whiff_sound = ExtResource( 88 )
@@ -3225,6 +3251,7 @@ victim_hitlag = 5
 cancellable = false
 hits_otg = true
 beats_grab = false
+plus_frames = 2
 priority = 1
 whiff_particle = ExtResource( 321 )
 whiff_sound = ExtResource( 88 )
@@ -3252,6 +3279,7 @@ victim_hitlag = 5
 cancellable = false
 hits_otg = true
 beats_grab = false
+plus_frames = 2
 priority = 1
 whiff_sound = ExtResource( 88 )
 hit_sound = ExtResource( 75 )
@@ -3277,6 +3305,7 @@ damage_proration = 1
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
+plus_frames = 2
 hit_height = 2
 hit_sound = ExtResource( 75 )
 whiff_sound_volume = -2.0
@@ -3311,6 +3340,14 @@ sfx_tick = 18
 sfx_volume = -8.0
 flip_frame = 11
 throw_positions = {
+ExtResource( 431 ): {
+"x": 33,
+"y": 12
+},
+ExtResource( 427 ): {
+"x": -19,
+"y": -12
+},
 ExtResource( 429 ): {
 "x": 36,
 "y": 13
@@ -3318,14 +3355,6 @@ ExtResource( 429 ): {
 ExtResource( 432 ): {
 "x": 44,
 "y": -7
-},
-ExtResource( 427 ): {
-"x": -19,
-"y": -12
-},
-ExtResource( 431 ): {
-"x": 33,
-"y": 12
 }
 }
 title = "Back Throw"
@@ -3422,7 +3451,7 @@ loop_active_ticks = 4
 
 [node name="HostCommand" type="Node" parent="StateMachine/Lariat" index="2"]
 script = ExtResource( 460 )
-tick = 11
+tick = 12
 command = "try_drive_cancel"
 
 [node name="Drive" type="Node2D" parent="StateMachine" index="46"]
@@ -3565,6 +3594,7 @@ height = 17
 damage = 50
 hitstun_ticks = 20
 beats_grab = false
+plus_frames = 2
 hit_height = 0
 knockback = "14.0"
 launch_reversible = true
@@ -3612,6 +3642,7 @@ height = 6
 damage = 100
 cancellable = false
 beats_grab = false
+plus_frames = 1
 hit_height = 2
 hit_sound = ExtResource( 145 )
 dir_x = "1.2"
@@ -3662,6 +3693,7 @@ height = 13
 damage = 80
 hitstun_ticks = 14
 beats_grab = false
+plus_frames = 1
 hit_height = 0
 hit_sound = ExtResource( 371 )
 dir_y = "-0.1"
@@ -3680,6 +3712,7 @@ height = 9
 damage = 80
 hitstun_ticks = 14
 beats_grab = false
+plus_frames = 1
 hit_sound = ExtResource( 371 )
 knockback = "8.0"
 disable_collision = false
@@ -3752,6 +3785,7 @@ height = 13
 damage = 100
 hitstun_ticks = 20
 beats_grab = false
+plus_frames = 3
 hit_height = 0
 hit_sound = ExtResource( 371 )
 dir_y = "-0.5"
@@ -3773,6 +3807,7 @@ damage = 100
 hitstun_ticks = 20
 hits_otg = true
 beats_grab = false
+plus_frames = 3
 hit_sound = ExtResource( 371 )
 dir_x = "0.10"
 dir_y = "-0.5"
@@ -3882,6 +3917,10 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
+},
 ExtResource( 374 ): {
 "x": 14,
 "y": -7
@@ -3893,10 +3932,6 @@ ExtResource( 372 ): {
 ExtResource( 373 ): {
 "x": 34,
 "y": -11
-},
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
 }
 }
 interrupt_into_string = "Grounded"
@@ -3990,6 +4025,7 @@ damage = 60
 hits_otg = true
 hits_vs_aerial = false
 beats_grab = false
+plus_frames = 1
 hit_sound = ExtResource( 312 )
 dir_y = "0.25"
 knockback = "5.0"
@@ -4151,17 +4187,13 @@ enter_force_speed = "10"
 enter_sfx = ExtResource( 459 )
 enter_sfx_volume = -10.0
 throw_positions = {
-ExtResource( 448 ): {
-"x": -16,
-"y": -2
-},
-ExtResource( 450 ): {
-"x": 15,
-"y": 21
-},
 ExtResource( 451 ): {
 "x": -13,
 "y": -24
+},
+ExtResource( 445 ): {
+"x": -17,
+"y": 18
 },
 ExtResource( 443 ): {
 "x": -12,
@@ -4171,13 +4203,17 @@ ExtResource( 447 ): {
 "x": 52,
 "y": 49
 },
+ExtResource( 448 ): {
+"x": -16,
+"y": -2
+},
+ExtResource( 450 ): {
+"x": 15,
+"y": 21
+},
 ExtResource( 449 ): {
 "x": 7,
 "y": -22
-},
-ExtResource( 445 ): {
-"x": -17,
-"y": 18
 }
 }
 iasa_at = 40
@@ -4285,25 +4321,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
-},
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
+},
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
 },
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
 },
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
+},
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 }
 }
 release_frame = 18
@@ -4367,25 +4403,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
-},
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
+},
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
 },
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
 },
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
+},
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 }
 }
 release_frame = 18

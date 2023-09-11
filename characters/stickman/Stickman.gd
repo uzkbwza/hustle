@@ -27,8 +27,6 @@ var boosted_during_combo = false
 var current_momentum = "0"
 var boost_frames_left = 0
 
-#var hook_dir = Vector2()
-
 const RELEASE_MODIFIER = "1.20"
 const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
@@ -61,7 +59,7 @@ func process_extra(extra):
 	if extra.has("detach"):
 		if extra.detach:
 			detach()
-	will_release_momentum = false
+
 	if extra.has("release"):
 		if extra.release:
 			if extra.has("release_dir"):
@@ -82,7 +80,6 @@ func process_extra(extra):
 					if fixed.lt(fixed.add(get_vel().y, stored_momentum_y), MAX_MOMENTUM_UPWARD_SPEED):
 						set_vel(vel.x, "0")
 						stored_momentum_y = MAX_MOMENTUM_UPWARD_SPEED
-
 				super_effect(2)
 				use_super_bar()
 	if extra.has("store"):

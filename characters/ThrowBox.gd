@@ -1,5 +1,3 @@
-tool
-
 extends Hitbox
 
 class_name ThrowBox

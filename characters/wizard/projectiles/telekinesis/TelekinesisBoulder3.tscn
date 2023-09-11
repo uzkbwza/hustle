@@ -66,6 +66,7 @@ width = 12
 height = 11
 damage = 120
 hitlag_ticks = 9
+plus_frames = 4
 knockback = "9.0"
 
 [node name="IndicatorDraw" parent="." index="6"]

@@ -107,6 +107,7 @@ script = ExtResource( 7 )
 y = -8
 width = 7
 height = 7
+plus_frames = 1
 start_tick = -1
 always_on = true
 
@@ -131,6 +132,7 @@ width = 7
 height = 7
 damage = 80
 hitstun_ticks = 14
+plus_frames = 1
 hit_sound = ExtResource( 10 )
 knockback = "8.0"
 start_tick = 1

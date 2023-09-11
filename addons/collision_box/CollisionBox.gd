@@ -122,6 +122,8 @@ func box_draw():
 			if parent.is_in_group("BaseObj"):
 				if parent.projectile_invulnerable:
 					color = Color.pink
+				if parent.throw_invulnerable:
+					color = Color.green
 				if parent.invulnerable:
 					color = Color.blue
 		
