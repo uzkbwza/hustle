@@ -117,7 +117,7 @@ func store_momentum():
 
 func release_momentum():
 #		reset_momentum()
-		apply_force(stored_momentum_x, stored_momentum_y)
+		apply_force(stored_momentum_x, stored_momentum_y if !is_grounded() else "0")
 		if !infinite_resources:
 			momentum_stores -= 1
 		if momentum_stores < 0:
@@ -133,7 +133,9 @@ func release_momentum():
 			combo_count += 1
 		spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
 		colliding_with_opponent = false
-
+		super_effect(2)
+		use_super_bar()
+	
 func reset_combo():
 	.reset_combo()
 	boosted_during_combo = false

@@ -1613,7 +1613,7 @@ visible = false
 beats_grab = false
 pushback_x = "0.0"
 
-[node name="ForwardThrow" parent="StateMachine" index="61"]
+[node name="ForwardThrow" parent="StateMachine" index="62"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -1628,6 +1628,10 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
+},
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
@@ -1635,10 +1639,6 @@ ExtResource( 81 ): {
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
-},
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
 }
 }
 land_cancel = true
@@ -1651,7 +1651,7 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="BackThrow" parent="StateMachine" index="62"]
+[node name="BackThrow" parent="StateMachine" index="63"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -1675,7 +1675,7 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="AirForwardThrow" parent="StateMachine" index="63"]
+[node name="AirForwardThrow" parent="StateMachine" index="64"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -1699,7 +1699,7 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="AirBackThrow" parent="StateMachine" index="64"]
+[node name="AirBackThrow" parent="StateMachine" index="65"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -1723,13 +1723,13 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="AirDownThrow" parent="StateMachine" index="65"]
+[node name="AirDownThrow" parent="StateMachine" index="66"]
 custom_grav = "0.25"
 interrupt_from_string = ""
 dir_x = "1.0"
 di_modifier = "1.5"
 
-[node name="Taunt" parent="StateMachine" index="67"]
+[node name="Taunt" parent="StateMachine" index="68"]
 script = ExtResource( 141 )
 __meta__ = {
 "_editor_description_": ""

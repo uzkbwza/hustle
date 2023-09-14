@@ -15,6 +15,9 @@ func _ready():
 		if child.has_signal("data_changed"):
 			child.connect("data_changed", self, "emit_signal", ["data_changed"])
 
+func on_opponent_button_selected(button):
+	pass
+
 func get_data():
 	var children = get_children()
 	if children.size() == 1:

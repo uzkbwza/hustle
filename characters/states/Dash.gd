@@ -1,6 +1,7 @@
 extends CharacterState
 
 const MIN_IASA = 7
+const MIN_NEUTRAL_IASA = 9
 const MAX_IASA = 14
 const MIN_SPEED_RATIO = "0.5"
 var MAX_SPEED_RATIO = "1.25"
@@ -44,11 +45,12 @@ func _frame_1():
 		MAX_SPEED_RATIO = "1.25"
 		beats_backdash = true
 		dist_ratio = fixed.add(fixed.div(str(data.x), "100"), "0.0")
+		var min_iasa = MIN_IASA if host.combo_count > 0 else MIN_NEUTRAL_IASA
 #		starting_iasa_at = 
 		if !charged and host.combo_count > 0:
-			starting_iasa_at = MIN_IASA
+			starting_iasa_at = min_iasa
 		else:
-			starting_iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), 1)
+			starting_iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(dist_ratio, str(MAX_IASA - min_iasa)), str(min_iasa))), 1)
 #		print(iasa_at)
 		iasa_at = starting_iasa_at
 	if startup_lag != 0:

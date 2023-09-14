@@ -10,10 +10,10 @@ func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 #	host.end_throw_invulnerability()
-
+	host.blockstun_ticks = 0
 
 func _frame_0():
-
+#	host.blockstun_ticks = 0
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true

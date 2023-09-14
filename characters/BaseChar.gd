@@ -538,6 +538,7 @@ func copy_to(f):
 	f.has_hyper_armor = has_hyper_armor
 	f.has_projectile_armor = has_hyper_armor
 	f.has_projectile_armor = has_projectile_armor
+	f.blockstun_ticks = blockstun_ticks
 	f.stance = stance
 	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()

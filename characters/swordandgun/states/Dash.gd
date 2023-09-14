@@ -1,6 +1,8 @@
 extends CharacterState
 
 const MAX_EXTRA_LAG_FRAMES = 3
+const MIN_IASA = 7
+const MIN_NEUTRAL_IASA = 9
 
 export var startup_invuln = true
 export var grounded = false
@@ -15,6 +17,9 @@ func _enter():
 		backdash_iasa = false
 
 func _frame_0():
+	var min_iasa = MIN_IASA if host.combo_count > 0 else MIN_NEUTRAL_IASA
+	starting_iasa_at = min_iasa
+	iasa_at = min_iasa
 	starting_y = host.get_pos().y
 	host.move_directly(0, -1)
 	host.set_grounded(false)

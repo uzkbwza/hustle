@@ -49,6 +49,7 @@ func update_tp_button():
 			$"%TpButton".hide()
 		if selected_move and selected_move.type == CharacterState.ActionType.Defense:
 			$"%TpButton".disabled = true
+			$"%TpButton".set_pressed_no_signal(false)
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)

@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://ui/ActionSelector/ActionButton.gd"
 }, {
 "base": "Control",
+"class": "ActionButtons",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ActionButtons.gd"
+}, {
+"base": "Control",
 "class": "ActionUIData",
 "language": "GDScript",
 "path": "res://ui/ActionSelector/ActionUIData/ActionUIData.gd"
@@ -356,6 +361,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ActionButton": "",
+"ActionButtons": "",
 "ActionUIData": "",
 "Array2D": "",
 "BaseObj": "",

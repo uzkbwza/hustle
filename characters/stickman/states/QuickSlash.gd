@@ -186,9 +186,10 @@ func can_hit_cancel():
 	return (host.combo_count > 1 or !host.opponent.is_grounded()) and attack == 0
 
 func _got_parried():
-	host.hitlag_ticks += 15
-	host.reset_momentum()
-	pass
+	return
+#	host.hitlag_ticks += 15
+#	host.reset_momentum()
+#	pass
 
 func _on_hit_something(obj, hitbox):
 #	iasa_at = IASA

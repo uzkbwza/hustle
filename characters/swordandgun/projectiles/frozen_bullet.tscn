@@ -78,7 +78,6 @@ minimum_damage = 30
 hitstun_ticks = 18
 victim_hitlag = 5
 di_modifier = "2.0"
-plus_frames = 2
 screenshake_amount = 7
 dir_y = "-0.25"
 knockback = "12.0"

@@ -1,8 +1,11 @@
 extends Control
 
+class_name ActionButtons
+
 signal action_selected(action, data, extra)
 signal turn_ended()
 signal action_clicked(action, data, extra)
+
 signal opponent_ready()
 
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
@@ -35,16 +38,15 @@ var locked_in = false
 var can_lock_in = true
 var attempting_lock_in = false
 var lock_in_pressed = false
-
 var continue_button
-
 var spread_amount = 0.0
 var spread_tween: SceneTreeTween = null
-
 var nudge_button
 
+export var opponent_action_buttons_path: NodePath
+onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_buttons_path)
+
 var button_category_containers = {
-	
 }
 
 func _input(event):
@@ -83,6 +85,14 @@ func _ready():
 	else:
 		$"%LastMoveTexture".rect_position.x -= 40
 #		$"%DIPlotContainer".alignment = BoxContainer.ALIGN_BEGIN
+	opponent_action_buttons.connect("action_clicked", self, "on_opponent_action_clicked")
+
+func on_opponent_action_clicked(_action, _data, _extra):
+	if current_button and current_button.data_node:
+		current_button.data_node.on_opponent_button_selected(opponent_action_buttons.current_button)
+#	if opponent_action_buttons.current_button and opponent_action_buttons.current_button.data_node:
+#		opponent_action_buttons.current_button.data_node.on_opponent_button_selected(current_button)
+	pass
 
 func _get_opposite_buttons():
 	return opposite_buttons
@@ -274,7 +284,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	if button.get("flip_icon") != null:
 		button.flip_icon = flip_icon
 	
-	if button.get("earliest_hitbox") != null:
+	if button.get("earliest_hitbox") != null and state != null:
 		button.earliest_hitbox = state.earliest_hitbox
 	
 	button.set_player_id(player_id)
@@ -389,19 +399,20 @@ func on_action_selected(action, button):
 		if button.data_node:
 			button.data_node.hide()
 			button.container.hide_data_container()
-
+	
 	last_button = button
 	if button.data_node:
 		call_deferred("show_button_data_node", button)
-
+		
+	if current_button and current_button.data_node:
+		current_button.data_node.on_opponent_button_selected(opponent_action_buttons.current_button)
+	
 	$"%ReverseButton".set_disabled(!button.reversible)
 	if button.state:
 		$"%FeintButton".set_disabled(!button.state.can_feint())
 	else:
 		$"%FeintButton".set_disabled(true)
 	send_ui_action()
-
-
 
 func show_button_data_node(button):
 	yield(get_tree(), "idle_frame")

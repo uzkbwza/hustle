@@ -4,7 +4,7 @@ class_name Robot
 
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8.5"
-const FORWARD_FLY_SPEED_MODIFIER = "1.2"
+const FORWARD_FLY_SPEED_MODIFIER = "1.0"
 const FLY_TICKS = 25
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
@@ -60,6 +60,7 @@ var force_fly = false
 var drive_cancel = false
 var buffer_drive_cancel = false
 var super_armor_installed = false
+var propel_friction_ticks = 0
 
 onready var chainsaw_arm = $"%ChainsawArm"
 onready var drive_jump_sprite = $"%DriveJumpSprite"
@@ -206,7 +207,6 @@ func magnetize():
 
 		var direct_movement = fixed.vec_mul(dir.x, dir.y, direct_movement_amount)
 
-
 		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
 		opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
 #		if fixed.gt(dist, "90"):
@@ -221,6 +221,10 @@ func add_armor_pip():
 
 func tick():
 	.tick()
+	if propel_friction_ticks > 0:
+		propel_friction_ticks -= 1
+		if propel_friction_ticks == 0:
+			chara.set_ground_friction(ground_friction)
 	if got_hit:
 		armor_pips = 0
 		got_hit = false

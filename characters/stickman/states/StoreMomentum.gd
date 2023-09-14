@@ -11,8 +11,7 @@ func _frame_1():
 		host.stored_momentum_y = vel.y
 		var speed = fixed.vec_len(vel.x, vel.y)
 		var stored_speed = speed
-		if host.infinite_resources and fixed.lt(host.stored_speed, "11"):
-			host.stored_speed = "11"
+
 #		print(host.stored_speed)
 		host.reset_momentum()
 		host.momentum_stores += 1

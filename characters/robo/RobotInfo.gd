@@ -16,8 +16,8 @@ func _process(delta):
 	$"%LandingIndicator".modulate.a = 0.15
 	if fighter.can_ground_pound:
 		$"%LandingIndicator".modulate.a = 1.0 if Utils.pulse(0.3, 0.65) else 0.75
-	$"%ArmorIndicator".modulate.a = 0.15
 	$"%ArmorIndicator".modulate = Color("d440b6") if fighter.super_armor_installed else Color.white
+	$"%ArmorIndicator".modulate.a = 0.15
 	if fighter.armor_pips > 0:
 		$"%ArmorIndicator".modulate.a = 1.0 if Utils.pulse(0.3, 0.65) else 0.75
 	$"%LOICMeter".texture_progress = LOIC_READY_BAR if fighter.can_loic else LOIC_CHARGING_BAR

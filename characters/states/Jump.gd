@@ -13,7 +13,7 @@ export var super_jump_speed_override = ""
 export var fall_anim = false
 export var fall_anim_speed = "1"
 
-const SHORT_HOP_IASA = 7
+const SHORT_HOP_IASA = 9
 const FULL_HOP_IASA = 14
 const FULL_HOP_LENGTH = "0.7"
 const SUPER_JUMP_SPEED = "17.0"
@@ -97,7 +97,7 @@ func _frame_0():
 			interrupt_frames[0] = 10
 			interrupt_frames[1] = 21
 		else:
-			interrupt_frames[0] = 7
+			interrupt_frames[0] = SHORT_HOP_IASA
 			interrupt_frames[1] = 18
 	sfx_tick = jump_tick
 

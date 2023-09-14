@@ -11,6 +11,8 @@ var container = null
 var reversible = false
 var state = null
 
+var earliest_hitbox = 0
+
 func setup(name, title, texture=null):
 	action_name = name
 	action_title = title

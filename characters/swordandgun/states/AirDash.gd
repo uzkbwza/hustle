@@ -21,7 +21,7 @@ func _enter():
 		data = { "x": -host.get_facing_int() if back else host.get_facing_int(), "y": 0 }
 	var go_back = !back and (data.x == -host.get_facing_int())
 	if go_back and !back:
-		host.air_movements_left += 1
+#		host.air_movements_left += 1
 		return "AirDash2Back" if !cuts else "AirDash1kBack"
 	if back:
 		beats_backdash = false

@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/propel.wav-eb9f46b99872712179d5de359f5247dd.sample"
+
+[deps]
+
+source_file="res://characters/robo/sound/propel.wav"
+dest_files=[ "res://.import/propel.wav-eb9f46b99872712179d5de359f5247dd.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

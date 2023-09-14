@@ -34,7 +34,6 @@ animations = [ {
 [node name="BaseProjectile" instance=ExtResource( 2 )]
 material = SubResource( 1 )
 has_projectile_parry_window = false
-always_parriable = true
 deletes_other_projectiles = false
 movable = false
 

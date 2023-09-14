@@ -6,6 +6,8 @@ const MAX_DISTS = [
 	"500",
 ]
 
+const STARTUP_LAG = 2
+
 const PARTICLES = [
 	preload("res://characters/wizard/GeyserParticleEffect.tscn"),
 	preload("res://characters/wizard/GeyserParticleEffect2.tscn"),
@@ -23,9 +25,13 @@ var center_y = 0
 var particle
 
 var charges = 3
+var startup_lag = STARTUP_LAG
 
 func _enter():
 	charges = data["Charge"].count
+
+func _frame_0():
+	startup_lag = STARTUP_LAG
 	
 func is_usable():
 	return host.geyser_charge > 0 and .is_usable()
@@ -35,6 +41,9 @@ func _tick():
 		return "Landing"
 	if charges == 3 and current_tick == 1:
 		current_tick = 2
+	if startup_lag > 0:
+		current_tick = 0
+		startup_lag -= 1
 
 func _exit():
 	if particle:
