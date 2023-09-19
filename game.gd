@@ -1067,7 +1067,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			if !hitbox.overlaps(hurtbox):
 				continue
 			if hitbox is ThrowBox and !host.can_be_thrown():
-				hitbox.save_hit_object(host)
+				if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
+					hitbox.save_hit_object(host)
 				continue
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
 				continue
