@@ -755,6 +755,9 @@ func thrown_by(hitbox: ThrowBox):
 	emit_signal("got_hit")
 	state_machine._change_state("Grabbed")
 
+func on_grabbed():
+	pass
+
 func hitbox_from_name(hitbox_name):
 	var hitbox_props = hitbox_name.split("_")
 	var obj_name = hitbox_props[0]
@@ -905,6 +908,8 @@ func launched_by(hitbox):
 			opponent.refresh_feints()
 #			reset_penalty()
 #			opponent.reset_penalty()
+		
+		on_launched()
 
 	elif will_block:
 		change_state("ParryHigh")
@@ -922,6 +927,8 @@ func launched_by(hitbox):
 	if will_launch:
 		state_tick()
 
+func on_launched():
+	pass
 
 func can_counter_hitbox(hitbox):
 	var host = obj_from_name(hitbox.host)

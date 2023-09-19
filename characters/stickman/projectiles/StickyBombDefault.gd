@@ -5,7 +5,7 @@ const ATTACH_DISTANCE = "16"
 #	host.attached = false
 
 var attach_frames = 0
-var explode_ticks = 8
+var explode_ticks = 10
 
 func _frame_0():
 	attach_frames = 0

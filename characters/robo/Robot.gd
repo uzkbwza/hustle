@@ -122,13 +122,18 @@ func on_got_hit_by_fighter():
 		got_hit = true
 
 func on_got_hit():
-	if !armor_active:
-		if orbital_strike_projectile and orbital_strike_projectile in objs_map:
-			objs_map[orbital_strike_projectile].disable()
-			orbital_strike_out = false
-			orbital_strike_projectile = null
+	pass
 #		if magnet_ticks_left > 1:
 #			magnet_ticks_left = 1
+
+func on_launched():
+	if orbital_strike_projectile and orbital_strike_projectile in objs_map:
+		objs_map[orbital_strike_projectile].disable()
+		orbital_strike_out = false
+		orbital_strike_projectile = null
+
+func on_grabbed():
+	on_launched()
 
 func copy_to(f: BaseObj):
 	.copy_to(f)

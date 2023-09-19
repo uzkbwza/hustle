@@ -8,6 +8,7 @@ const DI_HORIZONTAL_MODIFIER = "0.85"
 const DI_DEGRADATION_PER_HIT = "0.5"
 const NUDGE_DISTANCE = 10
 const ARM_TIME_REDUCTION_ON_HIT = 5
+const ARM_TIME_ON_OPPONENT_HIT = 4
 
 onready var my_hitbox = $StateMachine/Active/Hitbox
 onready var active_indicator = $Flip/ActiveIndicator
@@ -30,11 +31,12 @@ func init(pos=null):
 
 func tick():
 	.tick()
-	ticks_left -= 1
-	if ticks_left <= 0:
-		explode()
-	elif ticks_left <= ACTIVATE_TIME:
-		activate()
+	if hitlag_ticks <= 0:
+		ticks_left -= 1
+		if ticks_left <= 0:
+			explode()
+		elif ticks_left <= ACTIVATE_TIME:
+			activate()
 
 func activate():
 	if active:
@@ -89,10 +91,6 @@ func hit_by(hitbox):
 				if hits_chained > 0:
 					hit_cancel_on_hit = false
 				
-				if active and host_object.id != id:
-					explode()
-					return
-				
 				if player_object.combo_count > 0:
 					hit_cancel_on_hit = true
 				
@@ -107,10 +105,13 @@ func hit_by(hitbox):
 					apply_force(fixed.mul(di_force.x, DI_HORIZONTAL_MODIFIER), di_force.y)
 				
 				if active:
-					ticks_left -= ARM_TIME_REDUCTION_ON_HIT
+					if host_object.id != id:
+						ticks_left = Utils.int_min(ticks_left, ARM_TIME_ON_OPPONENT_HIT)
+					else:
+						ticks_left -= ARM_TIME_REDUCTION_ON_HIT
 					if ticks_left < 0:
 						ticks_left = 0
-#					explode()
+	#					explode()
 
 
 

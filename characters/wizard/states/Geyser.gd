@@ -6,7 +6,7 @@ const MAX_DISTS = [
 	"500",
 ]
 
-const STARTUP_LAG = 2
+const STARTUP_LAG = 5
 
 const PARTICLES = [
 	preload("res://characters/wizard/GeyserParticleEffect.tscn"),

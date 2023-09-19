@@ -9,6 +9,7 @@ func _enter():
 	host.has_projectile_armor = false
 	host.colliding_with_opponent = false
 	host.opponent.colliding_with_opponent = false
+	host.on_grabbed()
 	host.start_invulnerability()
 
 

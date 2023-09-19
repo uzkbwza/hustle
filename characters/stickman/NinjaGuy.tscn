@@ -3453,7 +3453,6 @@ knockback = "11.0"
 dir_y = "-0.40"
 damage = 0
 damage_in_combo = 0
-increment_combo = false
 di_modifier = "1.5"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ForwardThrow" index="0"]
@@ -3465,7 +3464,9 @@ damage = 110
 damage_in_combo = 70
 hitbox_type = 2
 hitstun_ticks = 20
+damage_proration = 2
 cancellable = false
+increment_combo = false
 hit_sound = ExtResource( 41 )
 dir_x = "1"
 dir_y = "-0.30"
@@ -3510,7 +3511,6 @@ knockback = "11.0"
 dir_y = "-0.40"
 damage = 0
 damage_in_combo = 0
-increment_combo = false
 di_modifier = "1.5"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackThrow" index="0"]
@@ -3525,7 +3525,9 @@ damage = 110
 damage_in_combo = 70
 hitbox_type = 2
 hitstun_ticks = 20
+damage_proration = 2
 cancellable = false
+increment_combo = false
 hit_sound = ExtResource( 41 )
 dir_x = "1"
 dir_y = "-0.30"

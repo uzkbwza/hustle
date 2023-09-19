@@ -1553,6 +1553,7 @@ damage = 150
 damage_in_combo = 90
 screenshake_amount = 10
 screenshake_frames = 5
+damage_proration = 2
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
@@ -1588,6 +1589,7 @@ damage_in_combo = 90
 reverse = true
 screenshake_amount = 10
 screenshake_frames = 5
+damage_proration = 2
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
@@ -1622,6 +1624,7 @@ damage = 150
 damage_in_combo = 90
 screenshake_amount = 10
 screenshake_frames = 5
+damage_proration = 2
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
@@ -1657,6 +1660,7 @@ damage_in_combo = 90
 reverse = true
 screenshake_amount = 10
 screenshake_frames = 5
+damage_proration = 2
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 
@@ -1692,6 +1696,7 @@ damage = 150
 damage_in_combo = 90
 screenshake_amount = 10
 screenshake_frames = 5
+damage_proration = 2
 release_sfx = ExtResource( 178 )
 release_sfx_volume = -7.0
 

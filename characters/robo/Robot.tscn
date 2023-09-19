@@ -1051,6 +1051,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -2504,6 +2505,7 @@ title = "BOUNDS CHECK"
 type = 2
 button_texture = ExtResource( 290 )
 update_facing_on_exit = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
 AerialSpecial
@@ -2544,6 +2546,7 @@ type = 2
 button_texture = ExtResource( 290 )
 air_type = 1
 update_facing_on_exit = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
 AerialSpecial
@@ -4262,7 +4265,7 @@ release_throw_pos_y = 1000
 hitstun_ticks = 20
 knockback = "7.0"
 dir_y = "1.5"
-damage = 130
+damage = 125
 screenshake_amount = 8
 screenshake_frames = 10
 air_ground_bounce = true

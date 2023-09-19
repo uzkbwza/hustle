@@ -36,6 +36,7 @@ export var air_ground_bounce = false
 export var wall_slam = false
 export var di_modifier = "1.0"
 export var minimum_grounded_frames = -1
+export var damage_proration = 0
 
 export(Hitbox.HitHeight) var hit_height = Hitbox.HitHeight.Mid
 #export var incr_combo = false
