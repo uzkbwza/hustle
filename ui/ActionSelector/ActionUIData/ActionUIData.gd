@@ -7,6 +7,7 @@ signal data_changed()
 export var display_offset = Vector2()
 
 var facing = -1
+var action_buttons = null
 
 var fighter = null
 
@@ -15,7 +16,12 @@ func _ready():
 		if child.has_signal("data_changed"):
 			child.connect("data_changed", self, "emit_signal", ["data_changed"])
 
+
+
 func on_opponent_button_selected(button):
+	pass
+
+func on_button_selected():
 	pass
 
 func get_data():

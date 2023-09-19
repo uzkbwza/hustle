@@ -68,6 +68,10 @@ damage = 120
 hitlag_ticks = 9
 plus_frames = 4
 knockback = "9.0"
+hard_knockdown = true
+
+[node name="Hitbox" parent="StateMachine/Drop" index="0"]
+hard_knockdown = true
 
 [node name="IndicatorDraw" parent="." index="6"]
 visible = true

@@ -290,6 +290,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	button.set_player_id(player_id)
 	if data_scene:
 		data_node = data_scene.instance()
+		data_node.action_buttons = self
 		data_node.fighter = fighter
 		$"%DataContainer".add_child(data_node)
 	button.set_data_node(data_node)
@@ -403,9 +404,11 @@ func on_action_selected(action, button):
 	last_button = button
 	if button.data_node:
 		call_deferred("show_button_data_node", button)
-		
+
+	if opponent_action_buttons.current_button and opponent_action_buttons.current_button.data_node:
+		opponent_action_buttons.current_button.data_node.on_opponent_button_selected(current_button)
 	if current_button and current_button.data_node:
-		current_button.data_node.on_opponent_button_selected(opponent_action_buttons.current_button)
+		current_button.data_node.on_button_selected()
 	
 	$"%ReverseButton".set_disabled(!button.reversible)
 	if button.state:

@@ -1416,7 +1416,7 @@ interrupt_into_string = "AerialThrow"
 
 [node name="Grab" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 86 )
-anim_length = 15
+anim_length = 17
 title = "Throw"
 type = 1
 data_ui_scene = ExtResource( 180 )
@@ -1442,14 +1442,14 @@ height = 12
 increment_combo = false
 hits_vs_aerial = false
 hit_sound = ExtResource( 160 )
-start_tick = 3
+start_tick = 5
 active_ticks = 3
 throw_state = "ForwardThrow"
 
 [node name="AirGrab" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 86 )
 sprite_animation = "Grab"
-anim_length = 15
+anim_length = 17
 title = "Throw"
 type = 1
 data_ui_scene = ExtResource( 179 )
@@ -1479,7 +1479,7 @@ height = 12
 increment_combo = false
 hits_vs_grounded = false
 hit_sound = ExtResource( 160 )
-start_tick = 3
+start_tick = 5
 active_ticks = 3
 throw_state = "AirForwardThrow"
 

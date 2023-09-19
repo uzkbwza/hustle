@@ -1,19 +1,23 @@
 extends ParryState
 
+const IS_NEW_PARRY = true
+
 class_name GroundedParryState
 
 export var push = false
+
 
 var punishable = false
 
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
-#	host.end_throw_invulnerability()
-	host.blockstun_ticks = 0
+	if !_previous_state().get("IS_NEW_PARRY"):
+#		host.blockstun_ticks = 0
+		pass
 
 func _frame_0():
-#	host.blockstun_ticks = 0
+
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -32,6 +36,7 @@ func _frame_0():
 		anim_name = "ParryHigh" if data["Block Height"].y == 0 else "ParryLow"
 	else:
 		anim_name = "ParryLow"
+	host.blockstun_ticks = 0
 
 func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"

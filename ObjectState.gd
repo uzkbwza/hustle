@@ -94,6 +94,7 @@ export var host_commands = {
 }
 
 export var earliest_hitbox = 0
+var earliest_hitbox_node = null
 
 
 export var _c_Auto = 0
@@ -458,6 +459,7 @@ func setup_hitboxes():
 				hitbox_start_frames[hitbox.start_tick] = [hitbox]
 			if hitbox.start_tick < earliest:
 				earliest = hitbox.start_tick
+				earliest_hitbox_node = hitbox
 		hitbox.connect("hit_something", self, "__on_hit_something")
 		hitbox.connect("got_parried", self, "__on_got_parried")
 		for hitbox2 in all_hitbox_nodes:

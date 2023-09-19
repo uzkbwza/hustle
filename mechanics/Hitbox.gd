@@ -298,14 +298,22 @@ func get_real_hitstun():
 func otg_check(obj):
 	return !obj.is_otg() or hits_otg
 
+func save_hit_object(obj):
+	for hitbox in grouped_hitboxes:
+		hitbox.hit_objects.append(obj.name)
+
+func already_hit_object(obj):
+	for hitbox in grouped_hitboxes:
+		if obj.obj_name in hitbox.hit_objects:
+			return true
+
 func hit(obj):
 	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit) and otg_check(obj):
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		var dir = get_dir_float(true)
 		if grounded_hit_state is String and grounded_hit_state == "HurtGrounded" and obj.is_grounded():
 				dir.y *= 0
-		for hitbox in grouped_hitboxes:
-			hitbox.hit_objects.append(obj.name)
+		save_hit_object(obj)
 		obj.hit_by(self.to_data())
 		var can_hit = true
 		if obj.is_in_group("Fighter"):
@@ -386,4 +394,5 @@ func tick():
 	if tick > active_ticks:
 		if !always_on:
 			deactivate()
+
 	update()

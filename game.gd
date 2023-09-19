@@ -1064,7 +1064,10 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 				host = host.host
 			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
-			if hitbox is ThrowBox and host.throw_invulnerable:
+			if !hitbox.overlaps(hurtbox):
+				continue
+			if hitbox is ThrowBox and !host.can_be_thrown():
+				hitbox.save_hit_object(host)
 				continue
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
 				continue
@@ -1074,8 +1077,10 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 				continue
 			if !host.is_in_group("Fighter") and !hitbox.hits_projectiles:
 				continue
-			if hitbox.overlaps(hurtbox):
-				hit_by = hitbox
+			if hitbox.already_hit_object(host):
+				continue
+			hit_by = hitbox
+
 	return hit_by
 
 func is_waiting_on_player():

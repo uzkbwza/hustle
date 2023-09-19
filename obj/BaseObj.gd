@@ -243,6 +243,9 @@ func _on_hit_something(obj, hitbox):
 func hit_fighter_last():
 	return last_object_hit == get_opponent().obj_name or last_object_hit == get_fighter().obj_name
 
+func can_be_thrown():
+	return !throw_invulnerable
+
 func copy_to(o: BaseObj):
 	if !initialized:
 		init()

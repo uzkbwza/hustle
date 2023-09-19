@@ -863,8 +863,9 @@ func launched_by(hitbox):
 		if projectile and has_projectile_armor():
 			will_launch = false
 	var will_block = false
+	var autoblock = has_autoblock_armor()
 	if will_launch:
-		if has_autoblock_armor():
+		if autoblock:
 			will_launch = false
 			will_block = !projectile
 
@@ -907,7 +908,7 @@ func launched_by(hitbox):
 
 	elif will_block:
 		change_state("ParryHigh")
-		block_hitbox(hitbox, false, true, true, has_autoblock_armor())
+		block_hitbox(hitbox, false, true, true, autoblock)
 
 	if has_hyper_armor:
 		hit_during_armor = true
@@ -1241,7 +1242,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			var block_hitlag = hitbox.hitlag_ticks + 1
 
 			if not projectile:
-				
+				if autoblock_armor:
+					opponent.hitlag_ticks = 0
 				if current_state() is GroundedParryState:
 					add_penalty(15, true)
 				current_state().anim_length = opponent.current_state().anim_length
@@ -1721,6 +1723,9 @@ func get_sadness_distance_penalty():
 		amount = fixed.round(fixed.div(dist, DISTANCE_EXTRA_SADNESS))
 #	print(amount)
 	return 1 + amount
+
+func can_be_thrown():
+	return .can_be_thrown() and blockstun_ticks <= 0
 
 func tick():
 	if hitlag_ticks > 0:

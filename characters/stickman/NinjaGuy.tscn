@@ -354,7 +354,7 @@ animations = [ {
 "name": "Getup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ) ],
+"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 246 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ) ],
 "loop": true,
 "name": "Grab",
 "speed": 60.0
@@ -3221,21 +3221,21 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 218 ): {
+ExtResource( 219 ): {
 "x": 24,
-"y": 2
+"y": 3
 },
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
 },
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
-},
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3426,14 +3426,6 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 15,
-"y": -10
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
@@ -3441,6 +3433,14 @@ ExtResource( 206 ): {
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
 }
 }
 burst_cancellable = false
@@ -3454,7 +3454,7 @@ dir_y = "-0.40"
 damage = 0
 damage_in_combo = 0
 increment_combo = false
-di_modifier = "1.25"
+di_modifier = "1.5"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ForwardThrow" index="0"]
 z_index = 1000
@@ -3479,14 +3479,6 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="90"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
@@ -3498,6 +3490,14 @@ ExtResource( 210 ): {
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 }
 }
 burst_cancellable = false
@@ -3511,7 +3511,7 @@ dir_y = "-0.40"
 damage = 0
 damage_in_combo = 0
 increment_combo = false
-di_modifier = "1.25"
+di_modifier = "1.5"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackThrow" index="0"]
 z_index = 1000
