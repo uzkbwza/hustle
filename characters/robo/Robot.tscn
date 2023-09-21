@@ -528,7 +528,7 @@ animations = [ {
 "name": "ClapLand",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 96 ), ExtResource( 96 ), ExtResource( 95 ), ExtResource( 95 ), ExtResource( 99 ), ExtResource( 99 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 100 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 103 ), ExtResource( 106 ), ExtResource( 105 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ) ],
+"frames": [ ExtResource( 96 ), ExtResource( 95 ), ExtResource( 95 ), ExtResource( 99 ), ExtResource( 102 ), ExtResource( 102 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 104 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 98 ), ExtResource( 100 ), ExtResource( 97 ), ExtResource( 97 ), ExtResource( 103 ), ExtResource( 106 ), ExtResource( 105 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ) ],
 "loop": true,
 "name": "CommandGrab",
 "speed": 5.0
@@ -773,7 +773,7 @@ animations = [ {
 "name": "Magnetize",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 220 ), ExtResource( 220 ), ExtResource( 220 ), ExtResource( 224 ), ExtResource( 235 ), ExtResource( 230 ), ExtResource( 236 ), ExtResource( 227 ), ExtResource( 234 ), ExtResource( 231 ), ExtResource( 231 ), ExtResource( 231 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 233 ), ExtResource( 233 ), ExtResource( 225 ), ExtResource( 225 ), ExtResource( 228 ), ExtResource( 228 ), ExtResource( 220 ) ],
+"frames": [ ExtResource( 220 ), ExtResource( 224 ), ExtResource( 235 ), ExtResource( 230 ), ExtResource( 236 ), ExtResource( 227 ), ExtResource( 234 ), ExtResource( 231 ), ExtResource( 231 ), ExtResource( 231 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 232 ), ExtResource( 229 ), ExtResource( 229 ), ExtResource( 226 ), ExtResource( 226 ), ExtResource( 233 ), ExtResource( 233 ), ExtResource( 225 ), ExtResource( 225 ), ExtResource( 228 ), ExtResource( 228 ) ],
 "loop": true,
 "name": "Missile",
 "speed": 5.0
@@ -1043,6 +1043,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1969,29 +1970,29 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 201 ): {
-"x": -15,
-"y": 0
-},
 ExtResource( 203 ): {
 "x": -37,
 "y": -11
 },
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
 },
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
+},
+ExtResource( 201 ): {
+"x": -15,
+"y": 0
+},
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
-},
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
 }
 }
 update_facing_on_exit = false
@@ -2304,49 +2305,49 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
 },
 ExtResource( 113 ): {
 "x": 62,
 "y": -13
 },
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
 },
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -2405,13 +2406,9 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 264 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -2425,13 +2422,17 @@ ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
-ExtResource( 254 ): {
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
+ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
-ExtResource( 253 ): {
-"x": 116,
-"y": -66
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -2504,7 +2505,6 @@ title = "BOUNDS CHECK"
 type = 2
 button_texture = ExtResource( 290 )
 update_facing_on_exit = false
-can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
 AerialSpecial
@@ -2545,7 +2545,6 @@ type = 2
 button_texture = ExtResource( 290 )
 air_type = 1
 update_facing_on_exit = false
-can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
 AerialSpecial
@@ -2602,13 +2601,13 @@ sfx = ExtResource( 159 )
 sfx_tick = 5
 sfx_volume = -10.0
 throw_positions = {
-ExtResource( 287 ): {
-"x": -20,
-"y": -14
-},
 ExtResource( 286 ): {
 "x": 34,
 "y": -13
+},
+ExtResource( 287 ): {
+"x": -20,
+"y": -14
 }
 }
 interruptible_on_opponent_turn = true
@@ -2643,49 +2642,49 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
 },
 ExtResource( 113 ): {
 "x": 62,
 "y": -13
 },
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
 },
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -2743,7 +2742,7 @@ script = ExtResource( 194 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 34
+anim_length = 32
 force_dir_x = "1.0"
 force_speed = "14"
 force_tick = 3
@@ -2771,7 +2770,7 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
-start_tick = 7
+start_tick = 5
 active_ticks = 4
 throw_state = "GroundSlam"
 
@@ -2787,7 +2786,7 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
-start_tick = 9
+start_tick = 7
 active_ticks = 2
 throw_state = "GroundSlam"
 
@@ -3063,7 +3062,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Missile"
-anim_length = 25
+anim_length = 23
 force_dir_x = "-1.0"
 force_speed = "2.0"
 force_tick = 12
@@ -3108,7 +3107,7 @@ dir_y = "-0.35"
 knockback = "12.0"
 pushback_x = "-1.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 13
+start_tick = 11
 active_ticks = 1
 
 [node name="WindBox" type="Node2D" parent="StateMachine/Vacuum" index="1"]
@@ -3379,6 +3378,10 @@ ExtResource( 429 ): {
 "x": 36,
 "y": 13
 },
+ExtResource( 432 ): {
+"x": 44,
+"y": -7
+},
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
@@ -3386,10 +3389,6 @@ ExtResource( 427 ): {
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
-},
-ExtResource( 432 ): {
-"x": 44,
-"y": -7
 }
 }
 title = "Back Throw"
@@ -3953,21 +3952,21 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 374 ): {
-"x": 14,
-"y": -7
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 },
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
 },
+ExtResource( 374 ): {
+"x": 14,
+"y": -7
+},
 ExtResource( 375 ): {
 "x": 31,
 "y": -8
-},
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
 }
 }
 interrupt_into_string = "Grounded"
@@ -4223,17 +4222,13 @@ enter_force_speed = "10"
 enter_sfx = ExtResource( 459 )
 enter_sfx_volume = -10.0
 throw_positions = {
-ExtResource( 449 ): {
-"x": 7,
-"y": -22
-},
-ExtResource( 451 ): {
-"x": -13,
-"y": -24
-},
 ExtResource( 445 ): {
 "x": -17,
 "y": 18
+},
+ExtResource( 443 ): {
+"x": -12,
+"y": 21
 },
 ExtResource( 447 ): {
 "x": 52,
@@ -4243,12 +4238,16 @@ ExtResource( 448 ): {
 "x": -16,
 "y": -2
 },
+ExtResource( 451 ): {
+"x": -13,
+"y": -24
+},
+ExtResource( 449 ): {
+"x": 7,
+"y": -22
+},
 ExtResource( 450 ): {
 "x": 15,
-"y": 21
-},
-ExtResource( 443 ): {
-"x": -12,
 "y": 21
 }
 }
@@ -4357,13 +4356,9 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 },
 ExtResource( 304 ): {
 "x": 29,
@@ -4373,9 +4368,13 @@ ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 }
 }
 release_frame = 18
@@ -4439,13 +4438,9 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 },
 ExtResource( 304 ): {
 "x": 34,
@@ -4455,9 +4450,13 @@ ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 }
 }
 release_frame = 18
