@@ -34,6 +34,8 @@ enum HitHeight {
 	Low
 }
 
+export var activated = true
+
 export var _c_Damage = 0
 export var damage: int = 0
 export var damage_in_combo: int = -1

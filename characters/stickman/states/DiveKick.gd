@@ -42,6 +42,15 @@ func _frame_12():
 #	host.update_facing()
 	moving = true
 	
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if grounded:
+#		host.reset_momentum()
+		host.set_vel(host.get_vel().x, "0")
+		moving = false
+		queue_state_change("Fall")
+	pass
+	
 
 func _tick():
 	if !grounded and current_tick == 3:

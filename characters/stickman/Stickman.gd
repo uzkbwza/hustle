@@ -27,7 +27,7 @@ var boosted_during_combo = false
 var current_momentum = "0"
 var boost_frames_left = 0
 
-const RELEASE_MODIFIER = "1.20"
+const RELEASE_MODIFIER = "1.175"
 const HOOK_DISABLE_DIST = "32"
 const HOOK_PULL_SPEED = "3"
 const MAX_PULL_SPEED = "15"
@@ -80,8 +80,8 @@ func process_extra(extra):
 					if fixed.lt(fixed.add(get_vel().y, stored_momentum_y), MAX_MOMENTUM_UPWARD_SPEED):
 						set_vel(vel.x, "0")
 						stored_momentum_y = MAX_MOMENTUM_UPWARD_SPEED
-				super_effect(2)
-				use_super_bar()
+#				super_effect(2)
+#				use_super_bar()
 	if extra.has("store"):
 		will_store_momentum = extra.store
 
@@ -113,7 +113,6 @@ func store_momentum():
 		will_store_momentum = false
 		play_sound("Swish3")
 		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
-		
 
 func release_momentum():
 #		reset_momentum()
@@ -133,9 +132,9 @@ func release_momentum():
 			combo_count += 1
 		spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
 		colliding_with_opponent = false
-		super_effect(2)
-		use_super_bar()
-	
+#		super_effect(2)
+#		use_super_bar()
+
 func reset_combo():
 	.reset_combo()
 	boosted_during_combo = false

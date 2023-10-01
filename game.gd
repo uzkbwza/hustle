@@ -909,6 +909,7 @@ func apply_hitboxes(players):
 				if valid_clash:
 					clashed = true
 					clash_position = p2_hitbox.get_overlap_center_float(p1_hitbox)
+					
 					break
 
 	if clashed:

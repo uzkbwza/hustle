@@ -6,6 +6,8 @@ const MOMENTUM_REDUCTION_Y = "0.75"
 const GROUNDED_SPEED = "7.5"
 const AERIAL_SPEED = "7"
 
+const STARTUP_LAG = 3
+
 export(PackedScene) var projectile
 export var projectile_x = 16
 export var projectile_y = -16
@@ -13,8 +15,12 @@ export var speed_modifier_amount = "2.0"
 export var push_back_amount = "-2.0"
 
 var speed_modifier
+var startup_lag = 0
 
 var projectile_spawned = false
+
+func _enter():
+	startup_lag = STARTUP_LAG
 
 func _frame_0():
 	var vel = host.get_vel()
@@ -48,9 +54,13 @@ func _frame_5():
 #	print(object.dir_y)
 
 func _tick():
+	if startup_lag > 0 and current_tick == 3:
+		startup_lag -= 1
+		current_tick = 2
 	host.apply_fric()
 	host.apply_forces()
 	if air_type == AirType.Aerial and projectile_spawned:
 		host.apply_grav()
 		if host.is_grounded():
 			return "Landing"
+	

@@ -359,6 +359,8 @@ func clash():
 	projectile_hit_cancelling = false
 #	apply_force_relative(-CLASH_MOVE_BACK, 0)
 	add_pushback(str(-CLASH_MOVE_BACK))
+	if feints < num_feints:
+		feints += 1
 	emit_signal("clashed")
 
 func init(pos=null):
@@ -813,6 +815,9 @@ func debug_text():
 #			"combo_proration": combo_proration,
 			"flipped": reverse_state,
 #			"real": current_state().current_real_tick,
+			"blocked_hitbox_plus_frames": blocked_hitbox_plus_frames,
+			"blockstun_ticks": blockstun_ticks,
+			"hitlag_ticks": hitlag_ticks,
 			"parry_combo": parry_combo,
 			"turn_frames": current_state().current_real_tick
 		}
@@ -891,8 +896,6 @@ func launched_by(hitbox):
 					state = "HurtAerial"
 					grounded_hits_taken = 0
 
-
-
 		increment_opponent_combo(hitbox)
 		
 		
@@ -912,7 +915,7 @@ func launched_by(hitbox):
 		on_launched()
 
 	elif will_block:
-		change_state("ParryHigh")
+		change_state("ParryHigh" if !autoblock else "ParryAuto")
 		block_hitbox(hitbox, false, true, true, autoblock)
 
 	if has_hyper_armor:
@@ -1232,7 +1235,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			particle_location = hitbox.get_overlap_center_float(hurtbox)
 		var parry_meter = PARRY_METER if hitbox.parry_meter_gain == - 1 else hitbox.parry_meter_gain
 		current_state().parry(perfect_parry)
-		
 		
 		if not perfect_parry:
 			last_turn_block = true
@@ -2013,7 +2015,6 @@ func deactivate_current_hitbox():
 func deactivate_hitboxes():
 	current_state().terminate_hitboxes()
 	pass
-
 
 func forfeit():
 	will_forfeit = true

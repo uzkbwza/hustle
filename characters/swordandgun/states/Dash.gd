@@ -1,6 +1,6 @@
 extends CharacterState
 
-const MAX_EXTRA_LAG_FRAMES = 3
+const MAX_EXTRA_LAG_FRAMES = 5
 const MIN_IASA = 7
 const MIN_NEUTRAL_IASA = 9
 

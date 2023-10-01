@@ -53,3 +53,9 @@ func _exit():
 			host.objs_map[host.lasso_projectile].disable()
 		host.lasso_projectile = null
 		
+func is_usable():
+	var gun = host.obj_from_name(host.gun_projectile)
+	if gun:
+		if gun.lassoed:
+			return false
+	return .is_usable()

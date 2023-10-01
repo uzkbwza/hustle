@@ -301,6 +301,8 @@ func process_hitboxes():
 	var pos = host.get_pos()
 	if hitbox_start_frames.has(current_tick + 1):
 		for hitbox in hitbox_start_frames[current_tick + 1]:
+			if !hitbox.activated:
+				continue
 			hitbox.update_position(pos.x, pos.y)
 			activate_hitbox(hitbox)
 			if hitbox is Hitbox:

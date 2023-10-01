@@ -42,6 +42,9 @@ func _on_action_buttons_visibility_changed():
 		$"%P1SuperContainer".show()
 		$"%P2SuperContainer".show()
 		$"%ActivePlayer".hide()
+		if p1_info_scene:
+			p1_info_scene.on_position_changed(false)
+			p2_info_scene.on_position_changed(false)
 	else:
 		$"%P1SuperContainer".hide()
 		$"%P2SuperContainer".hide()
@@ -50,3 +53,5 @@ func _on_action_buttons_visibility_changed():
 		if p1_info_scene:
 			active_player_info_container.add_child(p1_info_scene)
 			active_player_info_container.add_child(p2_info_scene)
+			p1_info_scene.on_position_changed(true)
+			p2_info_scene.on_position_changed(true)

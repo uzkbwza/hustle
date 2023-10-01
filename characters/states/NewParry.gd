@@ -5,19 +5,17 @@ const IS_NEW_PARRY = true
 class_name GroundedParryState
 
 export var push = false
-
+export var autoguard = false
 
 var punishable = false
 
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
-	if !_previous_state().get("IS_NEW_PARRY"):
-#		host.blockstun_ticks = 0
-		pass
+	if !_previous_state().get("IS_NEW_PARRY") and !autoguard:
+		host.blockstun_ticks = 0
 
 func _frame_0():
-
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true

@@ -45,15 +45,11 @@ export(AudioStream) var release_sfx = null
 export var release_sfx_volume = -10.0
 export var play_release_sfx_bass = true
 
-
-
 var hitlag_ticks = 0
 var victim_hitlag = 0
 var throw = true
 
 var release_sfx_player = null
-
-#	released = false
 
 func _enter():
 	released = false

@@ -8,8 +8,8 @@
 [node name="XYPlot" type="Container"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -580.0
-margin_bottom = -294.0
+margin_right = 60.0
+margin_bottom = 66.0
 rect_min_size = Vector2( 60, 66 )
 mouse_filter = 2
 size_flags_horizontal = 0

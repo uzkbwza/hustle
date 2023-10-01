@@ -4,6 +4,10 @@ const MAX_DIST = "200"
 const X_MULTIPLIER = "1.5"
 const Y_MULTIPLIER = "1.25"
 
+func _frame_0():
+	anim_length = 13
+	if host.combo_count > 0:
+		anim_length = 10
 
 func process_projectile(projectile):
 	var dir = xy_to_dir(data.x, data.y, MAX_DIST)

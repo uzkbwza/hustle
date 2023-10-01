@@ -7,6 +7,7 @@ export var screenshake_amount = 12
 
 var can_be_picked_up = false
 var shot = false
+var lassoed = true
 
 func init(pos=null):
 	.init(pos)

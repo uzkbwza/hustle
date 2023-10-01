@@ -13,9 +13,12 @@ func _enter_shared():
 
 
 func _frame_0():
-	host.start_invulnerability()
 	host.flying_dir = null
 	host.fly_ticks_left = 0
 
-func _frame_7():
+func _frame_1():
+	host.start_invulnerability()
+	host.start_projectile_invulnerability()
+
+func _frame_8():
 	host.end_invulnerability()

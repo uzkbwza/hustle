@@ -11,6 +11,7 @@ onready var shooting_arm = $"%ShootingArm"
 const BARREL_LOCATION_X = "26"
 const BARREL_LOCATION_Y = "-5"
 const GUN_PICKUP_DISTANCE = "26"
+const GUN_PICKUP_DISTANCE_BOOMERANG = "32"
 const IS_COWBOY = true # lol
 const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageExplosion.tscn")
 const AFTER_IMAGE_MAX_DIST = "410"
@@ -73,6 +74,8 @@ func shift():
 		shifted_this_frame = true
 		if obj.get_pos().y >= 0:
 			set_vel(get_vel().x, "0")
+		if combo_count <= 0:
+			add_penalty(25)
 
 func start_1k_cuts_buff():
 	max_air_speed = MAX_AIR_SPEED_1KCUTS
@@ -139,7 +142,8 @@ func tick():
 		var gun = objs_map[gun_projectile]
 		if is_instance_valid(gun) and gun.data and !gun.disabled:
 			var dist = obj_local_center(gun)
-			if gun.can_be_picked_up and fixed.lt(fixed.vec_len(str(dist.x), str(dist.y)), GUN_PICKUP_DISTANCE):
+			var pickup_dist = GUN_PICKUP_DISTANCE_BOOMERANG if gun.shot else GUN_PICKUP_DISTANCE
+			if gun.can_be_picked_up and fixed.lt(fixed.vec_len(str(dist.x), str(dist.y)), pickup_dist):
 				gun.disable()
 				has_gun = true
 				gun_projectile = null
@@ -212,8 +216,13 @@ func _draw():
 		draw_target = to_local(Vector2(obj_pos.x, obj_pos.y))
 	elif lasso_parried:
 		draw_lasso = true
-		
 		draw_target = to_local(opponent.get_center_position_float())
+	elif gun_projectile:
+		var gun = obj_from_name(gun_projectile)
+		if gun and gun.lassoed:
+			draw_lasso = true
+			draw_target = to_local(gun.get_center_position_float())
+		
 	draw_target -= draw_target.normalized() * 8
 	if draw_lasso:
 		draw_line(Vector2(0, -16), draw_target, Color("704137"), 2.0, false)

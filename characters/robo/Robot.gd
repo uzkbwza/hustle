@@ -98,7 +98,7 @@ func setup_magnet_circle():
 				vec2 *= -1
 			outer.append(vec1)
 			hole.append(vec2)
-			
+
 	#	print(magnet_polygon.polygon)
 	#	print(circle_polygon)
 		var clipped = Geometry.clip_polygons_2d(PoolVector2Array(hole), PoolVector2Array(outer))

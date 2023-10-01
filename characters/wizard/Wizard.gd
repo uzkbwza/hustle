@@ -55,6 +55,8 @@ func init(pos=null):
 	if infinite_resources:
 		hover_left = HOVER_AMOUNT
 	geyser_charge = 0
+	if infinite_resources:
+		geyser_charge = 3
 	default_dash_speed = $StateMachine/DashForward.dash_speed
 	if !is_connected("parried",self, "on_parried"):
 		connect("parried", self, "on_parried")

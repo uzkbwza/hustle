@@ -30,7 +30,7 @@ func _frame_0():
 			host.shot_dir_x = data["Direction"].x
 			host.shot_dir_y = data["Direction"].y
 
-		iasa_at = 7
+		iasa_at = 9
 		if host.consecutive_shots > 0:
 			iasa_at = -1
 			host.consecutive_shots -= 1

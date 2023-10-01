@@ -64,7 +64,8 @@ func _frame_0():
 		return
 	
 	if super_level > 0:
-		iasa_at = 9
+		iasa_at = 8
+		backwards_stall_frames = 2
 #		starting_iasa_at = iasa_at
 #		host.start_invulnerability()
 		return

@@ -48,7 +48,7 @@ func show_options():
 	release_button.set_pressed_no_signal(false)
 	boost_dir.set_facing(fighter.get_opponent_dir())
 	boost_dir.limit_angle = fighter.combo_count <= 0
-	if fighter.momentum_stores > 0 and fighter.supers_available > 0:
+	if fighter.momentum_stores > 0:
 		release_button.show()
 #	if (fighter.momentum_stores < 3 and !fighter.boosted_during_combo) or fighter.infinite_resources:
 #		store_button.show()

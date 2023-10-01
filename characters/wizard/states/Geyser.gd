@@ -13,11 +13,40 @@ const PARTICLES = [
 	preload("res://characters/wizard/GeyserParticleEffect2.tscn"),
 	preload("res://characters/wizard/GeyserParticleEffect3.tscn"),
 ]
+
 const PROJECTILES = [
 	preload("res://characters/wizard/projectiles/GeyserProjectile.tscn"),
 	preload("res://characters/wizard/projectiles/GeyserProjectile2.tscn"),
 	preload("res://characters/wizard/projectiles/GeyserProjectile3.tscn"),
 ]
+
+const DAMAGE = [
+	130, 
+	150, 
+	170
+]
+
+const MINDAMAGE = [
+	0,
+	50,
+	80,
+]
+
+const TIMING = [
+	11,
+	11,
+	10,
+]
+
+const PLUS = [
+	1,
+	3,
+	4,
+]
+
+onready var hitbox1 = $Hitbox1
+onready var hitbox2 = $Hitbox2
+onready var hitbox3 = $Hitbox3
 
 var center_x = 0
 var center_y = 0
@@ -32,7 +61,22 @@ func _enter():
 
 func _frame_0():
 	startup_lag = STARTUP_LAG
-	
+	var dir = xy_to_dir(data["Direction"]["x"], data["Direction"]["y"])
+	var level = charges - 1
+	var dist = MAX_DISTS[level]
+	hitbox1.activated = false
+	hitbox2.activated = false
+	hitbox3.activated = false
+	var hitbox = [hitbox1, hitbox2, hitbox3][level]
+	hitbox.activated = true
+	hitbox.damage = DAMAGE[level]
+	hitbox.minimum_damage = MINDAMAGE[level]
+	hitbox.start_tick = TIMING[level]
+	hitbox.plus_frames = PLUS[level]
+	var to = fixed.vec_mul(dir.x, dir.y, dist)
+	hitbox.to_x = fixed.round(to.x) * host.get_facing_int()
+	hitbox.to_y = fixed.round(to.y)
+
 func is_usable():
 	return host.geyser_charge > 0 and .is_usable()
 
@@ -58,25 +102,31 @@ func _frame_7():
 	center_y = pos.y
 
 func _frame_9():
-	host.geyser_charge -= charges
+	if !host.infinite_resources:
+		host.geyser_charge -= charges
 	if host.geyser_charge < 0:
 		host.geyser_charge = 0
-	var dir = xy_to_dir(data["Direction"]["x"], data["Direction"]["y"])
-	var pos = host.get_pos()
-	var obj = host.spawn_object(PROJECTILES[charges - 1],0,0)
-	var default = obj.state_machine.get_node("Default")
-	var hitbox = default.get_node("Hitbox")
-	var fc = host.opponent.get_pos()
-	var v1 = (MAX_DISTS[charges - 1])
-	var v2 = fixed.vec_len(str(pos.x-fc.x),str(pos.y-fc.y))
-	var v
-	if fixed.lt(v1, v2):
-		v = v1
-	else:
-		v = v2
-	var floc = fixed.vec_mul(dir.x, dir.y, v)
-	hitbox.x = fixed.round(fixed.mul(floc.x, str(host.get_facing_int())))
-	hitbox.y = fixed.round(fixed.sub(str(floc.y), str(host.hurtbox.height)))
+
+
+#func _frame_9():
+#	if host.geyser_charge < 0:
+#		host.geyser_charge = 0
+#	var dir = xy_to_dir(data["Direction"]["x"], data["Direction"]["y"])
+#	var pos = host.get_pos()
+#	var obj = host.spawn_object(PROJECTILES[charges - 1],0,0)
+#	var default = obj.state_machine.get_node("Default")
+#	var hitbox = default.get_node("Hitbox")
+#	var fc = host.opponent.get_pos()
+#	var v1 = (MAX_DISTS[charges - 1])
+#	var v2 = fixed.vec_len(str(pos.x-fc.x),str(pos.y-fc.y))
+#	var v
+#	if fixed.lt(v1, v2):
+#		v = v1
+#	else:
+#		v = v2
+#	var floc = fixed.vec_mul(dir.x, dir.y, v)
+#	hitbox.x = fixed.round(fixed.mul(floc.x, str(host.get_facing_int())))
+#	hitbox.y = fixed.round(fixed.sub(str(floc.y), str(host.hurtbox.height)))
 
 #	var dir = Vector2(data["Direction"]["x"], data["Direction"]["y"]).normalized()
 #	var pos = host.get_pos()

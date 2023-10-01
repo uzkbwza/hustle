@@ -6,24 +6,34 @@ export var tech = false
 
 var force
 var accel
+var back = false
 
 
 func _enter():
+	back = false
 	host.used_air_dodge = true
 	force = xy_to_dir(data.x, 0, speed, "1")
 	accel = xy_to_dir(data.x, 0, accel_speed, "1")
 	if "-" in force.x:
 		if host.get_facing() == "Right":
 			anim_name = "RollBackward"
+			back = true
 			force.x = fixed.mul(force.x, "0.3")
 		else:
 			anim_name = "RollForward"
 	else:
 		if host.get_facing() == "Left":
 			anim_name = "RollBackward"
+			back = true
 			force.x = fixed.mul(force.x, "0.3")
 		else:
 			anim_name = "RollForward"
+	if back:
+		anim_length = 19
+		iasa_at = 19
+	else:
+		anim_length = 18
+		iasa_at = 18
 	host.apply_force(force.x, str(0))
 
 func _frame_0():

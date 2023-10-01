@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=2]
+[gd_scene load_steps=83 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -70,6 +70,7 @@
 [ext_resource path="res://modloader/workshop_uploader/ModUploader.tscn" type="PackedScene" id=68]
 [ext_resource path="res://ui/PixeloidSans-Bold.ttf" type="DynamicFontData" id=69]
 [ext_resource path="res://ui/super_bar_small2.png" type="Texture" id=70]
+[ext_resource path="res://DebugContainer.gd" type="Script" id=71]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -2707,6 +2708,7 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+script = ExtResource( 71 )
 __meta__ = {
 "_edit_lock_": true
 }
