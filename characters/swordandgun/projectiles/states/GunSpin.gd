@@ -42,8 +42,8 @@ func _tick():
 		host.can_be_picked_up = true
 		if !host.lassoed:
 			anim_name = "Idle"
-		host.sprite.rotation = 0
-		hitbox.deactivate()
+			hitbox.deactivate()
+			host.sprite.rotation = 0
 		pull = true
 
 	if host.shot:

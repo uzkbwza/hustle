@@ -251,7 +251,6 @@ func start_moisture_effect():
 func stop_moisture_effect():
 	$"%DrawMoistureParticle".stop_emitting()
 
-
 func process_extra(extra):
 	.process_extra(extra)
 #	if current_state() is CharacterHurtState:

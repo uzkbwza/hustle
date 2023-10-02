@@ -1,6 +1,7 @@
 extends ObjectState
 
 const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash.tscn")
+const BULLET_SCENE = preload("res://characters/swordandgun/projectiles/NewTimeBullet.tscn")
 onready var hitbox = $Hitbox
 
 var pos
@@ -20,13 +21,17 @@ func f1():
 
 func f2():
 	pos = host.obj_local_center(host.creator.opponent)
+	var my_pos = host.get_pos()
 	var dir = fixed.normalized_vec(str(pos.x), str(pos.y))
 	spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(), Vector2(float(dir.x), float(dir.y)))
+	var bullet = host.creator.spawn_object(BULLET_SCENE, my_pos.x, my_pos.y, true, null, false)
+	bullet.dir_x = dir.x
+	bullet.dir_y = dir.y
 	host.play_sound("Shoot")
 	host.play_sound("ShootBass")
 	host.sprite.hide()
 	hitbox.update_position(pos.x, pos.y)
-	hitbox.activate()
+#	hitbox.activate()
 
 func f3():
 	host.disable()

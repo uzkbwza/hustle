@@ -178,7 +178,7 @@ func _addMisingList():
 	if mod_w_missing.size() > 0:
 		for missing in mod_w_missing:
 			var label = Label.new()
-			label.text = missing + ": Missing Dependency " + str(mod_w_missing.get(missing))
+			label.text = missing + ": Missing Dependency: " + str(mod_w_missing.get(missing))
 			list.list_container.add_child(label)
 		$"%MainMenu".get_node("ModMissingContainer").set("visible", true)
 	

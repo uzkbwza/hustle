@@ -106,6 +106,7 @@ func add_mod(mod):
 	info.get_node("VBoxContainer").add_child(auth_lab)
 	info.get_node("VBoxContainer").add_child(ver_lab)
 	if mod[1].requires != [""]:
+		printt("mod info",mod[1].name,mod[1].requires)
 		var req = "Requires: " + str(mod[1].requires)
 		var req_lab = generateLabel(req, 0)
 		info.get_node("VBoxContainer").add_child(req_lab)

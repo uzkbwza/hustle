@@ -7,6 +7,8 @@ const NEW_BULLET = true
 
 var dir_x = "0"
 var dir_y = "0"
+var arc_x = "0"
+var arc_y = "0"
 
 var last_pos_visual = Vector2()
 var last_pos_visual_ricochet = Vector2()

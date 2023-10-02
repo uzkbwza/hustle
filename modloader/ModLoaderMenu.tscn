@@ -60,7 +60,7 @@ scroll_horizontal_enabled = false
 
 [node name="Mods" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/ScrollContainer" index="0"]
 unique_name_in_owner = true
-margin_right = 114.0
+margin_right = 120.0
 rect_clip_content = true
 size_flags_horizontal = 3
 

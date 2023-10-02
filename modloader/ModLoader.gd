@@ -139,35 +139,44 @@ func _initMods():
 
 func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
-	var missing_dependices = modInfo[2].requires
+	var missing_dependices = modInfo[2].requires.duplicate()
+	var dependices_loaded = false
 	for item in modInfo[2].requires:
-		var depend_loaded = false
+		item = item.strip_edges()
+		if item.replace(" ", "") == "":
+			modInfo[2].requires.erase(item)
+			missing_dependices.erase(item)
+		
 		for mods in active_mods:
 			if mods[2].name == item:
 				#initialize this mod
 				missing_dependices.erase(item)
 				
 				
-				if modInfo[2].overwrites:
-					mods_w_overwrites.append(modSubFolder)
-				
-				if len(missing_dependices) == 0:
-					depend_loaded = true
-				else:
-					depend_loaded = false
-					
-				
-		if !depend_loaded:
-			if first:
-				# dependency wasn't loaded prior, set aside and load later
-				mods_w_depend.append(modInfo)
-			elif !first:
-				# dependency wasn't loaded at all
-				print(str(modInfo[2].friendly_name) + ": Missing Dependency " + str(modInfo[2].requires))
-				mods_w_missing_depend[modInfo[2].friendly_name] = modInfo[2].requires
-		else:
-			modInfo[0] = ResourceLoader.load(modInfo[0])
-			active_mods.append(modInfo)
+			
+		
+	
+	if len(missing_dependices) == 0:
+		dependices_loaded = true
+	else:
+		dependices_loaded = false
+	
+	if !dependices_loaded:
+		if first:
+			# dependency wasn't loaded prior, set aside and load later
+			mods_w_depend.append(modInfo)
+		elif !first:
+			# dependency wasn't loaded at all
+			print(str(modInfo[2].friendly_name) + ": Missing Dependency: " + str(missing_dependices))
+			mods_w_missing_depend[modInfo[2].friendly_name] = missing_dependices
+	else:
+		if modInfo[2].overwrites:
+			mods_w_overwrites.append(modSubFolder)
+			return
+			
+		modInfo[0] = ResourceLoader.load(modInfo[0])
+		active_mods.append(modInfo)
+	
 
 # Compares metadata priority, and if the same, uses the resource path of the Packed Scene
 func _compareScriptPriority(a, b):
@@ -243,9 +252,11 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 	var instCharTS = load(Global.name_paths.get(charName)).instance()
 	var instCharAnim = instCharTS.get_node("Flip/Sprite")
 	var instCharFrames = instCharAnim.get_sprite_frames()
+	
 	#Instantiate replacable assets: sounds
 	var instCharSounds = instCharTS.get_node("Sounds").get_children()
 	var instCharStates = instCharTS.get_node("StateMachine").get_children()
+	
 	#Replace all images in animation frames
 	for media in charImages:
 		var newFrameTex = textureGet(media)
@@ -265,6 +276,21 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			instCharAnim = instCharTS.get_node("Flip/Sprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
+		
+		elif charName == "Robot" and media.split("/")[ - 3 ] == "ChainsawArm":
+			instCharAnim = instCharTS.get_node("Flip/ChainsawArm")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			instCharAnim = instCharTS.get_node("Flip/Sprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			
+		elif charName == "Robot" and media.split("/")[ - 3 ] == "DriveJumpSprite":
+			instCharAnim = instCharTS.get_node("Flip/DriveJumpSprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			instCharAnim = instCharTS.get_node("Flip/Sprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
+		
 		else :
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			

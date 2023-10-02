@@ -32,12 +32,19 @@ func drive_pressed():
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
 	$"%ArmorEnabled".disabled = false
+	$"%FlyEnabled".disabled = false
+
 	if move_state is CharacterState:
 		if move_state.name != "Step" and (\
 		move_state.type == CharacterState.ActionType.Defense \
 		or move_state.type == CharacterState.ActionType.Movement):
 			$"%ArmorEnabled".set_pressed_no_signal(false)
 			$"%ArmorEnabled".disabled = true
+	if move_state is GroundedParryState:
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
+
+		pass
 #	if fighter.is_grounded():
 #		$"%FlyDir".hide()
 #		$"%FlyEnabled".hide()

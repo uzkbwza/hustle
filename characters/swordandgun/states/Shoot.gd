@@ -60,7 +60,7 @@ func _frame_4():
 		if host.is_grounded():
 			force.y = "0"
 		host.apply_force(force.x, force.y)
-#		host.use_bullet()
+		host.use_bullet()
 		var camera = host.get_camera()
 		if camera:
 			camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
@@ -172,4 +172,4 @@ func _tick():
 		queue_state_change("SlowHolster")
 
 func is_usable():
-	return .is_usable() and (host.bullets_left > 0 or (temporal)) and host.has_gun
+	return .is_usable() and (host.bullets_left > 0) and host.has_gun

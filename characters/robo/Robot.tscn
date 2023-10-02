@@ -1052,7 +1052,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1761,17 +1760,18 @@ Aerial"
 can_be_counterhit = false
 charged = true
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/ChargedStep" index="0"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/ChargedStep" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-x = 9
-width = 31
+x = 14
+y = -3
+width = 25
+height = 10
 damage = 60
 hitstun_ticks = 14
 hitlag_ticks = 6
 victim_hitlag = 8
-damage_proration = 1
-hits_otg = true
+damage_proration = 2
 beats_grab = false
 plus_frames = 1
 hit_height = 2
@@ -1781,6 +1781,36 @@ hit_sound = ExtResource( 75 )
 dir_y = "1.0"
 knockback = "4.0"
 knockdown = true
+start_tick = 9
+
+[node name="Hitbox3" type="Node2D" parent="StateMachine/ChargedStep" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 14
+y = -3
+width = 25
+height = 10
+damage = 60
+hitstun_ticks = 14
+hitlag_ticks = 6
+victim_hitlag = 8
+damage_proration = 2
+cancellable = false
+hits_otg = true
+hits_vs_standing = false
+beats_grab = false
+plus_frames = 1
+hit_height = 2
+priority = 1
+screenshake_amount = 5
+whiff_sound = ExtResource( 91 )
+hit_sound = ExtResource( 75 )
+dir_x = "0.20"
+knockback = "3.0"
+grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 8
+knockdown = true
+knockdown_extends_hitstun = false
 start_tick = 9
 
 [node name="Return" type="Node2D" parent="StateMachine" index="17"]

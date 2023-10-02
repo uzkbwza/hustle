@@ -12,6 +12,9 @@ const BOUNCE_HITLAG = 3
 const TERRAIN_DI_AMOUNT = "0.35"
 const DAMAGE_MODIFIER_PER_HIT = "0.8"
 const MIN_TERRAIN_RICOCHET_AMOUNT = "0.1"
+const DI_INFLUENCE = "0.125"
+
+export var temporal = false
 
 onready var front_hitbox = $Hitbox
 onready var middle_hitbox = $Hitbox3
@@ -34,6 +37,7 @@ func _on_hit_something(obj, hitbox):
 			h.hitstun_ticks /= 2
 			if h.hitstun_ticks < 5:
 				h.hitstun_ticks = 5
+#			h.scale_combo = false	
 
 func bounce_off_foresight():
 	if bounce_lag_ticks > 0:
@@ -138,7 +142,6 @@ func _tick():
 		host.disable()
 	if host.no_draw_ticks > 0:
 		host.no_draw_ticks -= 1
-
 
 func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	if bounce_lag_ticks > 0:

@@ -53,6 +53,8 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
+const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
+
 
 const BASE_PLUS_FRAMES = 0
 const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
@@ -1275,7 +1277,12 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				var vel = get_vel()
 				if fixed.sign(str(get_opponent_dir())) == fixed.sign(vel.x):
 					set_vel("0", vel.y)
-				apply_force(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(str(get_opponent_dir()), fixed.mul(parry_knockback_divisor, "-1"))), hitbox.block_pushback_modifier), "0")
+				var pushback_force = fixed.mul(fixed.div(hitbox.knockback, fixed.mul(str(get_opponent_dir()), fixed.mul(parry_knockback_divisor, "-1"))), hitbox.block_pushback_modifier)
+				if !is_grounded():
+					pushback_force = fixed.mul(pushback_force, AIR_BLOCK_PUSHBACK_MODIFIER)
+				
+				apply_force(pushback_force, "0")
+				
 				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), hitbox.block_pushback_modifier), "0")
 
 				if current_state().get("push"):

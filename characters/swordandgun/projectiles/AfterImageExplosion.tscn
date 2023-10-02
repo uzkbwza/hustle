@@ -69,6 +69,7 @@ whiff_sound_volume = -5.0
 bass_on_whiff = true
 dir_y = "-0.50"
 launch_reversible = true
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=336 format=2]
+[gd_scene load_steps=337 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -327,6 +327,7 @@
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw3.png" type="Texture" id=325]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw1.png" type="Texture" id=326]
 [ext_resource path="res://characters/wizard/projectiles/ZephyrThrowEffect.tscn" type="PackedScene" id=327]
+[ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=328]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -1159,7 +1160,7 @@ anim_length = 24
 force_dir_x = "1.5"
 force_dir_y = "-4.0"
 force_speed = "0.9"
-force_tick = 5
+force_tick = 3
 sfx = ExtResource( 147 )
 sfx_tick = 3
 title = "Icicle"
@@ -1539,18 +1540,17 @@ damage = 120
 minimum_damage = 50
 hitlag_ticks = 12
 victim_hitlag = 15
+di_modifier = "1.5"
 plus_frames = 2
 screenshake_amount = 7
 whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_y = "1.0"
-knockback = "12.75"
+knockback = "15"
 pushback_x = "2.0"
 grounded_hit_state = "HurtAerial"
-minimum_grounded_frames = 10
 knockdown = true
 knockdown_extends_hitstun = false
-ground_bounce = false
 start_tick = 7
 active_ticks = 1
 
@@ -2228,7 +2228,7 @@ anim_length = 34
 particle_scene = ExtResource( 271 )
 particle_position = Vector2( 0, -16 )
 enter_sfx = ExtResource( 147 )
-sfx = ExtResource( 277 )
+sfx = ExtResource( 328 )
 sfx_tick = 10
 sfx_volume = -10.0
 type = 2
@@ -2262,7 +2262,13 @@ height = 18
 damage = 130
 hitstun_ticks = 18
 plus_frames = 1
+screenshake_amount = 7
+screenshake_frames = 10
+bump_on_whiff = true
+whiff_sound = ExtResource( 277 )
 hit_sound = ExtResource( 318 )
+whiff_sound_volume = -7.0
+bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
@@ -2277,7 +2283,13 @@ damage = 150
 minimum_damage = 50
 hitstun_ticks = 18
 plus_frames = 3
+screenshake_amount = 7
+screenshake_frames = 10
+bump_on_whiff = true
+whiff_sound = ExtResource( 277 )
 hit_sound = ExtResource( 318 )
+whiff_sound_volume = -7.0
+bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
@@ -2292,7 +2304,13 @@ damage = 170
 minimum_damage = 80
 hitstun_ticks = 18
 plus_frames = 4
+screenshake_amount = 7
+screenshake_frames = 10
+bump_on_whiff = true
+whiff_sound = ExtResource( 277 )
 hit_sound = ExtResource( 318 )
+whiff_sound_volume = -7.0
+bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2

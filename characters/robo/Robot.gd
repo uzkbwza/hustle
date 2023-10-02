@@ -295,6 +295,9 @@ func tick():
 						add_penalty(1)
 				elif flying_dir.y == -1:
 					add_penalty(1)
+		if current_state() is GroundedParryState:
+			flying_dir = null
+			stop_fly_fx()
 	if (loic_meter < LOIC_METER) and !loic_draining:
 		if armor_pips > 0:
 			loic_meter += LOIC_GAIN
