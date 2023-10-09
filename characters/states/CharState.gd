@@ -513,3 +513,9 @@ func _exit_shared():
 #	host.sprite.rotation = 0
 	emit_signal("state_ended")
 	host.z_index = 0
+
+func update_sprite_frame():
+	if host.blockstun_ticks > 0:
+		return
+	.update_sprite_frame()
+	pass

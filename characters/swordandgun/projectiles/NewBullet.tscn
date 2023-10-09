@@ -72,6 +72,7 @@ height = 10
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 3 )
+temporal = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
@@ -81,7 +82,7 @@ height = 4
 damage = 120
 damage_in_combo = 82
 minimum_damage = 30
-chip_damage_modifier = "0.6"
+chip_damage_modifier = "0.67"
 hitstun_ticks = 18
 hitlag_ticks = 3
 victim_hitlag = 6
@@ -106,7 +107,7 @@ height = 4
 damage = 120
 damage_in_combo = 82
 minimum_damage = 30
-chip_damage_modifier = "0.6"
+chip_damage_modifier = "0.67"
 hitstun_ticks = 18
 hitlag_ticks = 3
 victim_hitlag = 6
@@ -131,7 +132,7 @@ height = 4
 damage = 120
 damage_in_combo = 82
 minimum_damage = 30
-chip_damage_modifier = "0.6"
+chip_damage_modifier = "0.67"
 hitstun_ticks = 18
 hitlag_ticks = 3
 victim_hitlag = 6

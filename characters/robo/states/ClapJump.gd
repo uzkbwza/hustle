@@ -5,14 +5,20 @@ const STARTED_IN_AIR_GRAV = "0.80"
 const MAX_FALL_SPEED = "3.0"
 const STARTED_IN_AIR_MAX_FALL_SPEED = "8.0"
 const EXTRA_VICTIM_HITLAG = 25
+const AUTO_LAG = 4
 
 onready var hitbox = $Hitbox
 
 var jumping = false
 var grav = GRAV
 var max_fall_speed = MAX_FALL_SPEED
+var auto_lag = AUTO_LAG
+
+func _enter():
+	pass
 
 func _frame_0():
+	auto_lag = AUTO_LAG
 	grav = GRAV if host.is_grounded() else STARTED_IN_AIR_GRAV
 	max_fall_speed = MAX_FALL_SPEED if host.is_grounded() else STARTED_IN_AIR_MAX_FALL_SPEED
 	host.set_grounded(false)
@@ -42,8 +48,14 @@ func _tick():
 #	host.apply_force(0, 1)
 	
 	host.apply_grav_custom(grav, max_fall_speed)
-	if jumping and current_tick >= 10 and !(data.Auto and current_real_tick < 25):
-		current_tick = 9
-	if jumping and current_tick > 1 and (host.is_grounded() or (data.Auto and current_real_tick < 25)):
+	if jumping and current_tick >= 10:
+		if !(data.Auto or current_real_tick < 25):
+			current_tick = 9
+	if jumping and data.Auto and current_tick >= 10:
+		if data.Auto and auto_lag > 0:
+			current_tick = 9
+			auto_lag -= 1
+
+	if jumping and current_tick > 1 and (host.is_grounded()):
 		jumping = false
 		host.big_landing_effect()

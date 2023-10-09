@@ -80,8 +80,8 @@ func process_extra(extra):
 					if fixed.lt(fixed.add(get_vel().y, stored_momentum_y), MAX_MOMENTUM_UPWARD_SPEED):
 						set_vel(vel.x, "0")
 						stored_momentum_y = MAX_MOMENTUM_UPWARD_SPEED
-#				super_effect(2)
-#				use_super_bar()
+				super_effect(2)
+				use_super_bar()
 	if extra.has("store"):
 		will_store_momentum = extra.store
 

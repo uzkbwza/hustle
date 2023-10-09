@@ -421,6 +421,16 @@ func process_extra(extra):
 	if extra.has("drive_cancel"):
 		buffer_drive_cancel = extra.drive_cancel
 
+func on_attack_blocked():
+	if current_state().get_host_command("try_drive_cancel"):
+		if drive_cancel:
+			drive_cancel = false
+			buffer_drive_cancel = false
+			if stance == "Drive":
+				change_state("UnDriveCancel")
+			else:
+				change_state("DriveCancel")
+
 func try_drive_cancel():
 #	print("here")
 	if got_parried:

@@ -7,6 +7,7 @@ const MIN_NEUTRAL_IASA = 9
 export var startup_invuln = true
 export var grounded = false
 var starting_y = 0
+export var super = false
 
 func _enter():
 	if host.reverse_state:
@@ -39,3 +40,5 @@ func _tick():
 #			print(lag)
 			queue_state_change("Landing", lag)
 			var vel = host.get_vel()
+	if super:
+		host.move_directly_relative(5, 0)

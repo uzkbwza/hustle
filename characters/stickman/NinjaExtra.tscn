@@ -76,6 +76,7 @@ snap_align_to_limit_center = false
 
 [node name="ReleaseButton" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
+modulate = Color( 0.831373, 0.25098, 0.713726, 1 )
 margin_top = 340.0
 margin_right = 70.0
 margin_bottom = 360.0
@@ -85,7 +86,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color_hover_pressed = Color( 0, 0, 0, 1 )
-custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
 text = "Boost"
 icon = ExtResource( 6 )
 

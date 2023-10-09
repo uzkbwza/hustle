@@ -27,6 +27,6 @@ func _exit():
 func _tick():
 	host.apply_x_fric(GROUND_FRIC)
 #	host.apply_fric()
-	host.apply_forces()
+	host.apply_forces_no_limit()
 	if host.hp <= 0:
 		endless = true

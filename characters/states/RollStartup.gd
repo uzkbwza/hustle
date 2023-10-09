@@ -29,20 +29,21 @@ func _enter():
 		else:
 			anim_name = "RollForward"
 	if back:
-		anim_length = 19
-		iasa_at = 19
+		anim_length = 22
+		iasa_at = 22
 	else:
-		anim_length = 18
-		iasa_at = 18
+		anim_length = 20
+		iasa_at = 20
 	host.apply_force(force.x, str(0))
+	host.start_throw_invulnerability()
+	host.start_projectile_invulnerability()
 
 func _frame_0():
 	if tech:
 		if !data.get("no_invuln"):
 			host.start_invulnerability()
 		host.colliding_with_opponent = false
-	host.start_throw_invulnerability()
-	host.start_projectile_invulnerability()
+
 
 func _frame_1():
 	host.colliding_with_opponent = false

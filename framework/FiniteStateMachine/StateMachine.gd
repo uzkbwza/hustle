@@ -185,16 +185,17 @@ func _change_state(state_name: String, data=null, enter=true, exit=true) -> void
 	state.set_process(true)
 #	Debug.dbg("stack size", states_stack.size())
 	
-	var animation_player = self.animation_player.get_ref()
-	if animation_player != null:
-#		if animation_player.has_animation("RESET"):
-#			animation_player.play("RESET")
-		if animation_player.has_animation(state.animation):
-			animation_player.play.call_deferred(state.animation)
-	var animated_sprite = self.animated_sprite.get_ref()
-	if animated_sprite != null and animated_sprite.frames.has_animation(state.animation):
-		animated_sprite.frame = 0
-		animated_sprite.play.call_deferred(state.animation)
+#	var animation_player = self.animation_player.get_ref()
+#	if animation_player != null:
+##		if animation_player.has_animation("RESET"):
+##			animation_player.play("RESET")
+#		if animation_player.has_animation(state.animation):
+#			animation_player.play.call_deferred(state.animation)
+#	var animated_sprite = self.animated_sprite.get_ref()
+#	if animated_sprite != null and animated_sprite.frames.has_animation(state.animation):
+#		animated_sprite.frame = 0
+#		animated_sprite.play.call_deferred(state.animation)
+
 	state.data = data
 
 	if enter:

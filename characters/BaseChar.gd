@@ -282,6 +282,7 @@ var feints = 2
 var feinted_last = false
 var feint_parriable = false
 
+
 #var current_prediction = -1
 
 var current_nudge = {
@@ -1255,14 +1256,15 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			if not projectile:
 				if autoblock_armor:
 					opponent.hitlag_ticks = 0
-				if current_state() is GroundedParryState:
-					add_penalty(15, true)
+
 				current_state().anim_length = opponent.current_state().anim_length
 				current_state().endless = opponent.current_state().endless
 				current_state().iasa_at = opponent.current_state().iasa_at
 				current_state().current_tick = 0
 				opponent.current_state().was_blocked = true
+				opponent.on_attack_blocked()
 				opponent.blockstun_ticks += block_hitlag
+				opponent.add_penalty(-10)
 				if opponent.feints < opponent.num_feints:
 					opponent.feints += 1
 				if !(hitbox.looping and !hitbox.cancellable):
@@ -1430,6 +1432,9 @@ func set_color(color, extra_color_1=null, extra_color_2=null):
 func release_opponent():
 	if opponent.current_state().state_name == "Grabbed":
 		opponent.change_state("Fall")
+
+func on_attack_blocked():
+	pass
 
 func get_di_scaling(brace=true):
 	if brace and hit_out_of_brace:
@@ -1768,6 +1773,7 @@ func tick():
 	elif blockstun_ticks > 0:
 		blockstun_ticks -= 1
 	else:
+
 		turn_frames += 1
 #		if current_tick > 1:
 #			blocked_hitbox_plus_frames = 0

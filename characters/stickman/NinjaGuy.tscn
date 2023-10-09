@@ -2747,6 +2747,7 @@ enter_sfx_volume = -4.0
 title = "Store Momentum"
 type = 3
 button_texture = ExtResource( 51 )
+air_type = 2
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -3221,6 +3222,10 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
+},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
@@ -3236,10 +3241,6 @@ ExtResource( 218 ): {
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
 "y": -7
-},
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
 }
 }
 button_texture = ExtResource( 223 )
@@ -3405,6 +3406,9 @@ always_on = true
 [node name="Jump" parent="StateMachine" index="73"]
 y_modifier = "1.33"
 
+[node name="SuperJump" parent="StateMachine" index="75"]
+interrupt_exceptions_string = "StoreMomentum"
+
 [node name="DoubleJump" parent="StateMachine" index="76"]
 allowed_stances_string = "All"
 change_stance_to = "Normal"
@@ -3426,16 +3430,16 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 15,
+ExtResource( 206 ): {
+"x": 13,
 "y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
 },
-ExtResource( 206 ): {
-"x": 13,
+ExtResource( 207 ): {
+"x": 15,
 "y": -10
 },
 ExtResource( 208 ): {
@@ -3480,17 +3484,17 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="91"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 },
 ExtResource( 208 ): {
 "x": 13,

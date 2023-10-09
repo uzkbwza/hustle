@@ -36,6 +36,7 @@ var bullet_cancelling = false
 var stance_teleport_x = 0
 var detonating = false
 var shifting = false
+
 var shifted_this_frame = false
 var shifted_last_frame = false
 var stance_teleport_y = 0
@@ -193,6 +194,15 @@ func use_bullet():
 
 func has_1k_cuts():
 	return cut_projectile != null
+
+func on_attack_blocked():
+	if !bullet_cancelling:
+		return
+	if !has_gun:
+		return
+	if bullets_left > 0:
+		bullet_cancelling = false
+		change_state("QuickerDraw")
 
 func on_got_hit():
 	if cut_projectile:

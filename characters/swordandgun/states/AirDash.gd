@@ -16,6 +16,7 @@ export var startup_invuln = true
 export var grounded = false
 export var back = false
 export var cuts = false
+
 var starting_y = 0
 
 func _enter():

@@ -825,13 +825,13 @@ ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1052,7 +1052,6 @@ width = 10
 height = 10
 damage = 40
 hitstun_ticks = 14
-guard_break = true
 hit_height = 0
 knockback = "5.0"
 launch_reversible = true
@@ -1489,7 +1488,7 @@ script = ExtResource( 115 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 15
+anim_length = 18
 sfx = ExtResource( 152 )
 sfx_tick = 6
 title = "Flame Wave"
@@ -1858,13 +1857,13 @@ ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 type = 1
@@ -2231,6 +2230,7 @@ enter_sfx = ExtResource( 147 )
 sfx = ExtResource( 328 )
 sfx_tick = 10
 sfx_volume = -10.0
+earliest_hitbox = 14
 type = 2
 data_ui_scene = ExtResource( 272 )
 button_texture = ExtResource( 278 )

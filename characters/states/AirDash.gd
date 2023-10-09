@@ -6,7 +6,8 @@ const Y_MODIFIER = "0.60"
 const MIN_IASA = 0
 const MAX_IASA = 14
 const COMBO_IASA = 7
-const MAX_EXTRA_LAG_FRAMES = 3
+const MAX_EXTRA_LAG_FRAMES = 5
+const NEUTRAL_MIN_IASA = 10
 
 export var dir_x = "3.0"
 export var dir_y = "-5.0"
@@ -27,7 +28,7 @@ func _frame_0():
 	if host.combo_count > 0:
 		starting_iasa_at = COMBO_IASA
 	else:
-		starting_iasa_at = fixed.round(fixed.add(fixed.mul(fixed.vec_len(dir.x, dir.y), str(MAX_IASA - MIN_IASA)), str(MIN_IASA)))
+		starting_iasa_at = Utils.int_max(fixed.round(fixed.add(fixed.mul(fixed.vec_len(dir.x, dir.y), str(MAX_IASA - MIN_IASA)), str(MIN_IASA))), NEUTRAL_MIN_IASA)
 	iasa_at = starting_iasa_at
 	if "-" in force.x:
 		if host.get_facing() == "Right" and data.x != 0:

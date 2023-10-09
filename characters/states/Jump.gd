@@ -14,6 +14,7 @@ export var fall_anim = false
 export var fall_anim_speed = "1"
 
 const SHORT_HOP_IASA = 9
+const SHORT_HOP_COMBO_IASA = 7
 const FULL_HOP_IASA = 14
 const FULL_HOP_LENGTH = "0.7"
 const SUPER_JUMP_SPEED = "17.0"
@@ -66,6 +67,7 @@ func _frame_7():
 		jump()
 
 func _frame_0():
+	interruptible_on_opponent_turn = true
 	queue_backdash_check = false
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
@@ -97,7 +99,7 @@ func _frame_0():
 			interrupt_frames[0] = 10
 			interrupt_frames[1] = 21
 		else:
-			interrupt_frames[0] = SHORT_HOP_IASA
+			interrupt_frames[0] = SHORT_HOP_IASA if host.combo_count <= 0 else SHORT_HOP_COMBO_IASA
 			interrupt_frames[1] = 18
 	sfx_tick = jump_tick
 
@@ -116,9 +118,6 @@ func _frame_1():
 			beats_backdash = full_hop == (opponent_full_hop or !opponent_state.super_jump)
 
 func _tick():
-	if interrupt_frames.size() > 0:
-		if current_tick >= interrupt_frames[0]:
-			interruptible_on_opponent_turn = true
 	if current_tick >= jump_tick:
 		if "-" in force_x:
 			if host.get_facing() == "Right" and data.x != 0:
@@ -141,5 +140,3 @@ func _tick():
 	if current_tick > jump_tick:
 		if host.is_grounded():
 			return "Landing"
-	else:
-		interruptible_on_opponent_turn = false

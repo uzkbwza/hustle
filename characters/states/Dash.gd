@@ -56,10 +56,12 @@ func _frame_1():
 	if startup_lag != 0:
 		return
 	var dash_force = str(dir_x * dash_speed)
-	if _previous_state_name() == "ChargeDash" or data and data.has("charged"):
-		dash_force = fixed.mul(dash_force, "2")
-		charged = true
-		data["charged"] = true
+	if _previous_state_name() == "ChargeDash" or (data and data.has("charged")):
+		if dir_x >= 0:
+			charged = true
+			if (data and data.has("charged")):
+				data["charged"] = true
+			dash_force = fixed.mul(dash_force, "2")
 	host.apply_force_relative(fixed.mul(dash_force, fixed.add(fixed.mul(dist_ratio, fixed.sub(MAX_SPEED_RATIO, MIN_SPEED_RATIO)), MIN_SPEED_RATIO)), "0")
 	if spawn_particle:
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
