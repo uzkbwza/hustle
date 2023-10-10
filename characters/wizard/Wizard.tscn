@@ -1,4 +1,4 @@
-[gd_scene load_steps=337 format=2]
+[gd_scene load_steps=336 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -293,7 +293,6 @@
 [ext_resource path="res://characters/wizard/ActionUiData/VileClutchActionUIData.tscn" type="PackedScene" id=291]
 [ext_resource path="res://characters/wizard/SparkSpeedParticle.tscn" type="PackedScene" id=292]
 [ext_resource path="res://characters/wizard/sounds/sparkspeed.wav" type="AudioStream" id=293]
-[ext_resource path="res://characters/wizard/Landing.gd" type="Script" id=294]
 [ext_resource path="res://characters/wizard/states/ConjurePebble.gd" type="Script" id=295]
 [ext_resource path="res://characters/wizard/sprites/telekinesis6.png" type="Texture" id=296]
 [ext_resource path="res://characters/wizard/sprites/telekinesis2.png" type="Texture" id=297]
@@ -1030,7 +1029,6 @@ type = 1
 button_texture = ExtResource( 169 )
 air_type = 1
 land_cancel = true
-landing_recovery = 6
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack"
@@ -1095,7 +1093,6 @@ type = 1
 button_texture = ExtResource( 170 )
 air_type = 1
 land_cancel = true
-landing_recovery = 6
 iasa_at = 14
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
@@ -1167,7 +1164,6 @@ type = 1
 button_texture = ExtResource( 170 )
 air_type = 1
 land_cancel = true
-landing_recovery = 6
 min_land_cancel_frame = 7
 iasa_on_hit = 11
 self_hit_cancellable = false
@@ -2460,7 +2456,9 @@ start_tick = 6
 active_ticks = 2
 
 [node name="Landing" parent="StateMachine" index="50"]
-script = ExtResource( 294 )
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="TechRoll" parent="StateMachine" index="54"]
 sprite_anim_length = -1

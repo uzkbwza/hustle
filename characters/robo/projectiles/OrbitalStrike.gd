@@ -3,6 +3,8 @@ extends BaseProjectile
 var aim_ticks = 60
 var self_ = false
 
+var t = "0"
+
 const MAX_WIDTH = 32
 
 export var body_target_texture: Texture
@@ -18,7 +20,8 @@ func tick():
 		beep.pitch_scale_ = lerp(1.5, 3.5, current_state().current_tick / float(85))
 	elif current_state().name == "Fire":
 		line_drawer.color = Color("94e4ff")
-		line_drawer.width = max(62 - (current_state().current_tick * 5), 0)
+		line_drawer.width = max(62 - (max(0, current_state().current_tick - 8) * 5), 0)
+
 
 func _process(delta):
 	update()

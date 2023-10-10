@@ -53,7 +53,8 @@ material = SubResource( 1 )
 z_index = 100
 script = ExtResource( 8 )
 extra_state_variables = "aim_ticks
-self_"
+self_
+t"
 has_projectile_parry_window = false
 immunity_susceptible = false
 deletes_other_projectiles = false
@@ -117,11 +118,11 @@ script = ExtResource( 12 )
 y = -200000
 width = 29
 height = 200000
-damage = 190
+damage = 215
 damage_in_combo = 110
 minimum_damage = 70
 victim_hitlag = 10
-combo_scaling_amount = 3
+combo_scaling_amount = 2
 hits_otg = true
 plus_frames = 1
 hit_height = 0
@@ -135,5 +136,5 @@ launch_reversible = true
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
-start_tick = 1
-active_ticks = 3
+start_tick = 2
+active_ticks = 8

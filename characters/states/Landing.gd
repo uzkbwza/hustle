@@ -1,7 +1,7 @@
 extends CharacterState
 
 const DEFAULT_LAG = 4
-const MAX_EXTRA_LAG_FRAMES = 0
+const MAX_EXTRA_LAG_FRAMES = 5
 
 var lag = 0
 

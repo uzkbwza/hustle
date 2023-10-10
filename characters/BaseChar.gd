@@ -122,7 +122,7 @@ const METER_GAIN_MODIFIER = "1.0"
 
 const CLASH_MOVE_BACK = 3
 
-const MIN_PENALTY = -50
+const MIN_PENALTY = -20
 const MAX_PENALTY = 75
 const PENALTY_MIN_DISPLAY = 50
 
@@ -1272,7 +1272,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 #						if opponent.current_state()._can_hit_cancel(self, hitbox):
 #							opponent.current_state().enable_hit_cancel()
 #						else:
-						opponent.current_state().enable_interrupt()
+						current_state().enable_interrupt()
+						opponent.current_state().interruptible_on_opponent_turn = true
 						opponent.last_turn_block = true
 					else:
 						current_state().enable_interrupt()
@@ -1328,6 +1329,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)
+				add_penalty(-20)
 			else:
 				gain_super_meter(parry_meter / 3)
 			if host.has_method("on_got_parried"):

@@ -1,8 +1,9 @@
 extends ParryState
 
+class_name GroundedParryState
+
 const IS_NEW_PARRY = true
 
-class_name GroundedParryState
 
 export var push = false
 export var autoguard = false

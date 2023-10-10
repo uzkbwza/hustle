@@ -27,6 +27,7 @@ func _tick():
 		var t = fixed.add(MOVE_T, fixed.mul(AIM_INCREASE, str(current_tick)))
 		if fixed.gt(t, MAX_T):
 			t = MAX_T
+		host.t = t
 #		print(t)
 		host.set_pos(fixed.round(fixed.lerp_string(str(host.get_pos().x), str(host.get_pos().x + pos.x), t)), 0)
 	var drain_ratio = fixed.sub("1.0", fixed.div(str(current_tick), str(host.aim_ticks)))
