@@ -57,6 +57,9 @@ func jump():
 	host.apply_force(force.x, force.y)
 	force_x = force.x
 	force_y = force.y
+	interruptible_on_opponent_turn = true
+	next_state_on_hold = true
+	next_state_on_hold_on_opponent_turn = true
 
 func _frame_4():
 	if squat and !super_jump:
@@ -67,7 +70,10 @@ func _frame_7():
 		jump()
 
 func _frame_0():
-	interruptible_on_opponent_turn = true
+	if !super_jump:
+		interruptible_on_opponent_turn = true
+	next_state_on_hold = false
+	next_state_on_hold_on_opponent_turn = false
 	queue_backdash_check = false
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)

@@ -4,7 +4,7 @@ const GRAV = "0.58"
 const STARTED_IN_AIR_GRAV = "0.80"
 const MAX_FALL_SPEED = "3.0"
 const STARTED_IN_AIR_MAX_FALL_SPEED = "8.0"
-const EXTRA_VICTIM_HITLAG = 25
+const EXTRA_VICTIM_HITLAG = 10
 const AUTO_LAG = 4
 
 onready var hitbox = $Hitbox
@@ -31,6 +31,10 @@ func _frame_0():
 		hitbox.victim_hitlag = hitbox.hitlag_ticks
 		hitbox.ground_bounce = true
 		hitbox.grounded_hit_state = "HurtAerial"
+	if data.Auto:
+		hitbox.combo_scaling_amount = 2
+	else:
+		hitbox.combo_scaling_amount = 1
 
 func _frame_1():
 	host.move_directly_relative(-10, 0)
@@ -48,13 +52,11 @@ func _tick():
 #	host.apply_force(0, 1)
 	
 	host.apply_grav_custom(grav, max_fall_speed)
-	if jumping and current_tick >= 10:
-		if !(data.Auto or current_real_tick < 25):
-			current_tick = 9
-	if jumping and data.Auto and current_tick >= 10:
-		if data.Auto and auto_lag > 0:
-			current_tick = 9
+	if jumping and current_tick >= 10 and auto_lag > 0:
+		current_tick = 9
+		if data.Auto:
 			auto_lag -= 1
+
 
 	if jumping and current_tick > 1 and (host.is_grounded()):
 		jumping = false

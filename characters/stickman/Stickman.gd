@@ -34,8 +34,8 @@ const MAX_PULL_SPEED = "15"
 const MAX_PULL_UPWARD_SPEED = "-10"
 const MAX_MOMENTUM_UPWARD_SPEED = "-10"
 const BACKWARD_PULL_PENALTY = 2
-const SKULL_SHAKER_BLEED_TICKS = 70
-const SKULL_SHAKER_BLEED_DAMAGE = 10
+const SKULL_SHAKER_BLEED_TICKS = 80
+const SKULL_SHAKER_BLEED_DAMAGE = 2
 const BOOST_MIN_FRAMES = 10
 
 func init(pos=null):
@@ -180,7 +180,7 @@ func tick():
 	
 	if skull_shaker_bleed_ticks > 0:
 		skull_shaker_bleed_ticks -= 1
-		if skull_shaker_bleed_ticks % 10 == 0:
+		if skull_shaker_bleed_ticks % 8 == 0:
 			opponent.take_damage(SKULL_SHAKER_BLEED_DAMAGE, 0, "0.25")
 	
 	if will_release_momentum and turn_frames == 1:

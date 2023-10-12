@@ -13,6 +13,8 @@ func _ready():
 func _frame_0():
 	host.flying_dir = null
 	host.stop_fly_fx()
+	if host.air_movements_left < host.num_air_movements:
+		host.air_movements_left += 1
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

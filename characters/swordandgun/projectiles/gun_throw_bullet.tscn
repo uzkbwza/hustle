@@ -9,7 +9,13 @@
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 4 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -28,9 +34,9 @@ material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 5 )
 extra_state_variables = "distance"
-always_parriable = true
+has_projectile_parry_window = false
 deletes_other_projectiles = false
-fizzle_on_ceiling = false
+frozen = false
 
 [node name="Sprite" parent="Flip" index="0"]
 visible = false

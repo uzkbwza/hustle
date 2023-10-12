@@ -1,0 +1,104 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=2]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=3]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="MuzzleFlash" instance=ExtResource( 3 )]
+material = SubResource( 2 )
+
+[node name="Flash3" type="CPUParticles2D" parent="." index="1"]
+emitting = false
+amount = 12
+one_shot = true
+speed_scale = 8.05
+explosiveness = 0.92
+randomness = 0.5
+lifetime_randomness = 0.37
+texture = ExtResource( 2 )
+emission_shape = 1
+emission_sphere_radius = 6.37
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 90.69
+initial_velocity_random = 1.0
+damping = 337.79
+scale_amount = 4.19
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.113725, 0.552941, 0.960784, 1 )
+
+[node name="Flash1" type="CPUParticles2D" parent="." index="2"]
+emitting = false
+amount = 12
+one_shot = true
+speed_scale = 8.05
+explosiveness = 0.92
+randomness = 0.5
+lifetime_randomness = 0.37
+texture = ExtResource( 2 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 90.69
+initial_velocity_random = 1.0
+damping = 337.79
+scale_amount = 4.74
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+
+[node name="Flash2" type="CPUParticles2D" parent="." index="3"]
+emitting = false
+amount = 12
+one_shot = true
+speed_scale = 5.92
+explosiveness = 0.92
+randomness = 0.5
+lifetime_randomness = 0.37
+texture = ExtResource( 2 )
+spread = 1.66
+gravity = Vector2( 0, 0 )
+initial_velocity = 606.83
+initial_velocity_random = 1.0
+damping = 353.57
+scale_amount = 1.65
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.113725, 0.552941, 0.960784, 1 )
+
+[node name="Smoke" type="CPUParticles2D" parent="." index="4"]
+emitting = false
+amount = 12
+one_shot = true
+speed_scale = 3.0
+explosiveness = 0.92
+randomness = 1.0
+lifetime_randomness = 0.38
+texture = ExtResource( 2 )
+emission_shape = 2
+emission_rect_extents = Vector2( 10.426, 3.437 )
+spread = 31.52
+gravity = Vector2( 0, -98 )
+initial_velocity = 148.0
+initial_velocity_random = 1.0
+damping = 117.05
+scale_amount = 1.46
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )

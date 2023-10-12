@@ -137,4 +137,4 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 2
-active_ticks = 8
+active_ticks = 3

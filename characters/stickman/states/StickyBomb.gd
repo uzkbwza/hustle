@@ -6,11 +6,16 @@ const THROW_DIR_Y = "1.15"
 const GRAV = "0.35"
 const FALL_SPEED = "5"
 
+
 func _frame_0():
 	host.colliding_with_opponent = false
 	var vel = host.get_vel()
 #	host.set_vel(vel.x, "0")
 	pass
+
+func apply_enter_force():
+	if data:
+		.apply_enter_force()
 
 func _tick():
 	if current_tick == 15:
@@ -21,8 +26,11 @@ func _tick():
 		obj.apply_force(force.x, force.y)
 	if current_tick > 10 and host.is_grounded():
 		return "Landing"
-	host.apply_grav_custom(GRAV, FALL_SPEED)
-	
+	if data:
+		host.apply_grav_custom(GRAV, FALL_SPEED)
+	else:
+		host.apply_grav()
+
 func is_usable():
 	return .is_usable() and !host.bomb_thrown and host.sticky_bombs_left > 0
 

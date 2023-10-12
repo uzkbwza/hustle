@@ -4,8 +4,11 @@ class_name Robot
 
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8.5"
+const FLY_FORCE = "2.0"
 const FORWARD_FLY_SPEED_MODIFIER = "1.0"
 const FLY_TICKS = 25
+const MAX_FLY_UP_SPEED = "-9"
+const MIN_FLY_UP_SPEED = "-4"
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
 const START_LOIC_METER: int = 500
@@ -28,6 +31,9 @@ const NEUTRAL_MAGNET_MODIFIER_MAX = "2.75"
 const MAGNET_VISUAL_ARC_SIZE = 20000
 const ARMOR_STARTUP_TICKS = 3
 const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
+
+const FLY_GRAV = "0.05"
+const FLY_MAX_FALL_SPEED = "100.0"
 
 var loic_draining = false
 var armor_pips = 1
@@ -155,9 +161,6 @@ func has_armor():
 func has_autoblock_armor():
 	return (armor_active and !(current_state() is CharacterHurtState))
 
-#func has_projectile_armor():
-#	if current_state().state_name == "SuperJump" and !is_grounded():
-#		return true
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 #	if magnet_scale:
@@ -178,6 +181,8 @@ func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1)
 func apply_grav():
 	if flying_dir == null:
 		.apply_grav()
+	else:
+		.apply_grav_custom(FLY_GRAV, FLY_MAX_FALL_SPEED)
 
 func big_landing_effect():
 	spawn_particle_effect_relative(preload("res://fx/LandingParticle.tscn"))
@@ -201,8 +206,6 @@ func magnetize():
 
 		if combo_count == 0:
 			magnet_strength = fixed.mul(magnet_strength, NEUTRAL_MAGNET_MODIFIER)
-			
-
 			
 		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
 		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
@@ -277,14 +280,36 @@ func tick():
 		start_fly_fx()
 	if flying_dir:
 		if (!is_grounded() or force_fly):
-			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
+#			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
+			var vel = get_vel()
+			var fly_force = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_FORCE)
 			if flying_dir.x == get_opponent_dir():
-				fly_vel.x = fixed.mul(fly_vel.x, FORWARD_FLY_SPEED_MODIFIER)
+				fly_force.x = fixed.mul(fly_force.x, FORWARD_FLY_SPEED_MODIFIER)
 			if force_fly:
-				if fixed.ge(fly_vel.y, "0"):
-					fly_vel.y = "0"
-			set_vel(fly_vel.x, fixed.mul(fly_vel.y, "0.66"))
+				if fixed.ge(fly_force.y, "0"):
+					fly_force.y = "0"
+			
+			var upward_speed = fly_force.y
+			var upward_speed_mod = "1.0"
+			var air_options_ratio = fixed.div(str(air_movements_left), str(num_air_movements))
+			if fixed.lt(fly_force.y, "0"):
+				upward_speed_mod = "1.0"
+				upward_speed_mod = fixed.mul(upward_speed_mod, air_options_ratio)
+				if fixed.lt(upward_speed_mod, "0.3"):
+					upward_speed_mod = "0.3"
 
+			apply_force(fly_force.x, fixed.mul(upward_speed, fixed.mul(upward_speed_mod, "0.66")))
+
+			var max_upward_speed = fixed.mul(MAX_FLY_UP_SPEED, upward_speed_mod)
+			if fixed.lt(max_upward_speed, MIN_FLY_UP_SPEED):
+				max_upward_speed = MIN_FLY_UP_SPEED
+			
+			if fixed.lt(vel.y, max_upward_speed):
+				set_vel(vel.x, max_upward_speed)
+			if fixed.eq(fixed.vec_len(fly_force.x, fly_force.y), "0"):
+				var new_vel = fixed.vec_mul(vel.x, vel.y, "0.90")
+				set_vel(new_vel.x, new_vel.y)
+				pass
 			fly_ticks_left -= 1
 			if fly_ticks_left <= 0: 
 				flying_dir = null
@@ -295,9 +320,7 @@ func tick():
 						add_penalty(1)
 				elif flying_dir.y == -1:
 					add_penalty(1)
-		if current_state() is GroundedParryState:
-			flying_dir = null
-			stop_fly_fx()
+
 	if (loic_meter < LOIC_METER) and !loic_draining:
 		if armor_pips > 0:
 			loic_meter += LOIC_GAIN
@@ -431,7 +454,7 @@ func on_attack_blocked():
 			else:
 				change_state("DriveCancel")
 
-func try_drive_cancel():
+func try_drive_cancel(fast=false):
 #	print("here")
 	if got_parried:
 		return
@@ -441,7 +464,7 @@ func try_drive_cancel():
 	if stance == "Drive":
 		change_state("UnDriveCancel")
 	else:
-		change_state("DriveCancel")
+		change_state("DriveCancel" if !fast else "FastDriveCancel")
 
 func on_state_ended(state):
 	drive_cancel = false

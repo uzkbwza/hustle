@@ -1541,6 +1541,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -1594,6 +1595,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -1641,6 +1643,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "4.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 7
@@ -1735,11 +1738,6 @@ z_index = 1000
 script = ExtResource( 166 )
 increment_combo = false
 _c_Grouping = 1
-_c_Sfx = true
-_c_Knockback = false
-_c_Knockback_Type = "1.0"
-_c_Frame_Data = false
-_c_Loop_Data = false
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 79 )
@@ -2127,7 +2125,7 @@ width = 29
 height = 4
 damage = 120
 hitlag_ticks = 7
-victim_hitlag = 7
+victim_hitlag = 10
 damage_proration = -1
 guard_break = true
 whiff_sound = ExtResource( 152 )
@@ -3734,19 +3732,9 @@ interrupt_into_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 _c_Grouping = 1
-_c_Sfx = true
-_c_Knockback = false
-_c_Knockback_Type = "1.0"
-_c_Frame_Data = false
-_c_Loop_Data = false
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 _c_Grouping = 1
-_c_Sfx = true
-_c_Knockback = false
-_c_Knockback_Type = "1.0"
-_c_Frame_Data = false
-_c_Loop_Data = false
 
 [node name="ForwardThrow" parent="StateMachine" index="107"]
 knockback = "11.0"

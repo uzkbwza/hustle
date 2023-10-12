@@ -20,9 +20,13 @@ func f1():
 		host.set_facing(facing)
 
 func f2():
+	var dir = fixed.normalized_vec(str(host.creator.current_di.x), str(host.creator.current_di.y))
+	if fixed.eq(fixed.vec_len(dir.x, dir.y), "0"):
+		dir.x = str(host.creator.get_facing_int())
+		pass
 	pos = host.obj_local_center(host.creator.opponent)
 	var my_pos = host.get_pos()
-	var dir = fixed.normalized_vec(str(pos.x), str(pos.y))
+
 	spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(), Vector2(float(dir.x), float(dir.y)))
 	var bullet = host.creator.spawn_object(BULLET_SCENE, my_pos.x, my_pos.y, true, null, false)
 	bullet.dir_x = dir.x

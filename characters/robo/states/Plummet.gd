@@ -7,15 +7,16 @@ var descending = false
 
 func _frame_0():
 	descending = false
-	can_fly = true
+#	can_fly = true
 
 func _frame_3():
 	descending = true
-	can_fly = false
+#	can_fly = false
 
 func _tick():
 	if descending:
-		host.set_vel("0", DESCEND_SPEED)
+		host.set_vel(host.get_vel().x, DESCEND_SPEED)
+		descending = false
 	host.apply_forces()
 	if host.is_grounded():
 		return "Landing"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=250 format=2]
+[gd_scene load_steps=251 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -246,6 +246,7 @@
 [ext_resource path="res://fx/JumpParticle.tscn" type="PackedScene" id=244]
 [ext_resource path="res://characters/stickman/sprites/portrait3.png" type="Texture" id=245]
 [ext_resource path="res://characters/stickman/sprites/stickman57.png" type="Texture" id=246]
+[ext_resource path="res://characters/stickman/ActionUIData/StickyBombActionUIData.tscn" type="PackedScene" id=247]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -687,7 +688,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 reset_momentum = true
-anim_length = 13
+anim_length = 11
 sfx = ExtResource( 43 )
 sfx_tick = 4
 title = "Shuriken"
@@ -2351,6 +2352,7 @@ sfx_tick = 10
 sfx_volume = -8.0
 title = "Sticky Bomb"
 type = 2
+data_ui_scene = ExtResource( 247 )
 button_texture = ExtResource( 64 )
 air_type = 2
 interrupt_from_string = "GroundedSpecial
@@ -2359,23 +2361,20 @@ Grounded
 Aerial"
 interrupt_into_string = "Grounded
 Aerial"
+allowed_stances_string = "Normal
+BackSway"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/StickyBomb" index="0"]
 z_index = 1000
 script = ExtResource( 68 )
 x = 4
-y = -17
+y = -15
 width = 9
-height = 8
+height = 10
 increment_combo = false
 _c_Grouping = 1
-_c_Sfx = true
-_c_Knockback = false
-_c_Knockback_Type = "1.0"
-_c_Frame_Data = false
 start_tick = 10
 active_ticks = 4
-_c_Loop_Data = false
 throw_state = "StickyBombThrow"
 
 [node name="WhipWave" type="Node2D" parent="StateMachine" index="49"]
@@ -3147,7 +3146,6 @@ increment_combo = false
 ignore_armor = true
 followup_state = "HitGrabFollowup"
 hits_vs_dizzy = false
-plus_frames = -2
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 dir_y = "0.0"
@@ -3195,7 +3193,6 @@ increment_combo = false
 ignore_armor = true
 followup_state = "HitGrabFollowup"
 hits_vs_dizzy = false
-plus_frames = -2
 replace_hit_particle = true
 hit_sound = ExtResource( 220 )
 grounded_hit_state = "Grabbed"
@@ -3251,7 +3248,7 @@ release_frame = 14
 start_throw_pos_x = 3
 release_throw_pos_x = 8
 release_throw_pos_y = 1
-hitstun_ticks = 31
+hitstun_ticks = 32
 knockback = "2.0"
 knockdown = false
 aerial_hit_state = "HurtDizzy"
@@ -3271,7 +3268,7 @@ x = 15
 y = -18
 width = 10
 height = 10
-damage = 93
+damage = 120
 hitbox_type = 2
 hitstun_ticks = 31
 cancellable = false

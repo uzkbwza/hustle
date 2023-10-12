@@ -13,9 +13,11 @@ var distance = "0.0"
 
 func init(pos=null):
 	.init(pos)
-	if frozen:
-		if creator:
-			creator.connect("got_hit", self, "disable")
+#	if frozen:
+#		if creator:
+#			creator.connect("got_hit", self, "disable")
+
+
 
 func scale_damage(damage: int):
 	if frozen:
@@ -39,3 +41,7 @@ func scale_hitstun(hitstun: int):
 	if fixed.lt(scaled_hitstun, min_hitstun):
 		return fixed.round(min_hitstun)
 	return fixed.round(scaled_hitstun)
+
+func hit_by(hitbox):
+	.hit_by(hitbox)
+	disable()

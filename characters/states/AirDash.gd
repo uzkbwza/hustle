@@ -7,7 +7,7 @@ const MIN_IASA = 0
 const MAX_IASA = 14
 const COMBO_IASA = 7
 const MAX_EXTRA_LAG_FRAMES = 5
-const NEUTRAL_MIN_IASA = 10
+const NEUTRAL_MIN_IASA = 9
 
 export var dir_x = "3.0"
 export var dir_y = "-5.0"

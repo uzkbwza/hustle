@@ -293,6 +293,7 @@
 [ext_resource path="res://characters/wizard/ActionUiData/VileClutchActionUIData.tscn" type="PackedScene" id=291]
 [ext_resource path="res://characters/wizard/SparkSpeedParticle.tscn" type="PackedScene" id=292]
 [ext_resource path="res://characters/wizard/sounds/sparkspeed.wav" type="AudioStream" id=293]
+[ext_resource path="res://characters/wizard/ZephyrThrow.gd" type="Script" id=294]
 [ext_resource path="res://characters/wizard/states/ConjurePebble.gd" type="Script" id=295]
 [ext_resource path="res://characters/wizard/sprites/telekinesis6.png" type="Texture" id=296]
 [ext_resource path="res://characters/wizard/sprites/telekinesis2.png" type="Texture" id=297]
@@ -317,7 +318,6 @@
 [ext_resource path="res://characters/wizard/states/IceSpikeGround.gd" type="Script" id=316]
 [ext_resource path="res://mechanics/SweptHitbox.gd" type="Script" id=317]
 [ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=318]
-[ext_resource path="res://characters/states/ThrowState.gd" type="Script" id=319]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw5.png" type="Texture" id=320]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw4.png" type="Texture" id=321]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw2.png" type="Texture" id=322]
@@ -845,8 +845,8 @@ extra_color_2 = Color( 0.580392, 0.894118, 1, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 13 )
-animation = "ZephyrThrow"
-frame = 32
+animation = "IceSpikeAir"
+frame = 4
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -1484,7 +1484,7 @@ script = ExtResource( 115 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 18
+anim_length = 17
 sfx = ExtResource( 152 )
 sfx_tick = 6
 title = "Flame Wave"
@@ -1497,7 +1497,6 @@ AerialSpecial
 GroundedSpecial"
 interrupt_into_string = "Aerial
 Grounded"
-trigger_orb_type = "OrbDart"
 trigger_orb_delay = 30
 
 [node name="Liftoff" type="Node2D" parent="StateMachine" index="21"]
@@ -1534,15 +1533,15 @@ height = 15
 damage = 120
 minimum_damage = 50
 hitlag_ticks = 12
-victim_hitlag = 15
+victim_hitlag = 14
 di_modifier = "1.5"
 plus_frames = 2
 screenshake_amount = 7
 whiff_sound = ExtResource( 143 )
 hit_sound = ExtResource( 142 )
 dir_y = "1.0"
-knockback = "15"
-pushback_x = "2.0"
+knockback = "18.5"
+pushback_x = "3.5"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -1770,8 +1769,7 @@ AerialSuper
 GroundedSpecial
 AerialSpecial"
 initiative_effect = true
-trigger_orb_type = "OrbDart"
-trigger_orb_delay = 25
+trigger_orb_delay = 70
 
 [node name="WindBox" type="Node2D" parent="StateMachine/WindForce" index="0"]
 z_index = 1000
@@ -1829,7 +1827,10 @@ start_tick = 9
 active_ticks = 23
 
 [node name="ZephyrThrow" type="Node2D" parent="StateMachine" index="30"]
-script = ExtResource( 319 )
+script = ExtResource( 294 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true

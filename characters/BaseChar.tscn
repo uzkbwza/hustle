@@ -976,6 +976,7 @@ script = ExtResource( 10 )
 fallback_state = "Fall"
 sprite_animation = "Jump"
 anim_length = 11
+loop_animation = true
 button_texture = ExtResource( 55 )
 air_type = 1
 interruptible_on_opponent_turn = true
@@ -1333,7 +1334,7 @@ super_freeze_ticks = 3
 [node name="WhiffInstantCancel" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 140 )
 sprite_animation = "InstantCancel"
-anim_length = 3
+anim_length = 2
 enter_sfx = ExtResource( 133 )
 enter_sfx_volume = -10.0
 title = "Whiff Cancel"

@@ -5,6 +5,8 @@ class_name NewBullet
 const SPEED = "50" 
 const NEW_BULLET = true
 
+export var color = Color("f2ff31")
+
 var dir_x = "0"
 var dir_y = "0"
 var arc_x = "0"
@@ -39,9 +41,9 @@ func _draw():
 	if !disabled:
 		if no_draw_ticks > 0:
 			return
-		draw_line(to_local(last_pos_visual), Vector2(), Color("f2ff31"), 4.0)
+		draw_line(to_local(last_pos_visual), Vector2(), color, 4.0)
 		if to_local(last_pos_visual) == Vector2():
-			draw_circle(Vector2(), 6.0, Color("f2ff31"))
+			draw_circle(Vector2(), 6.0, color)
 
 func hit_by(hitbox):
 	if hitbox.hitbox_type == Hitbox.HitboxType.Flip:

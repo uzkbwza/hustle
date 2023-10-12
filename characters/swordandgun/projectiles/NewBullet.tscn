@@ -33,6 +33,7 @@ no_draw_ticks"
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 can_be_hit_by_melee = true
+color = Color( 0.94902, 1, 0.192157, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )

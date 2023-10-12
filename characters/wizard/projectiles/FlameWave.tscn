@@ -55,7 +55,6 @@ damage = 30
 hitstun_ticks = 14
 hitlag_ticks = 0
 victim_hitlag = 4
-plus_frames = 1
 hit_sound = ExtResource( 5 )
 dir_y = "-0.120"
 start_tick = 1

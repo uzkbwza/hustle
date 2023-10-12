@@ -413,6 +413,11 @@ func hash_rng():
 	logic_rng.seed = hash(logic_rng.state + input_hash)
 #	print(logic_rng.seed)
 
+func obj_distance(obj):
+	var my_pos = get_pos()
+	var obj_pos = obj.get_pos()
+	return fixed.vec_dist(str(my_pos.x), str(my_pos.y), str(obj_pos.x), str(obj_pos.y))
+
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = projectile.instance()
 	obj.creator_name = obj_name

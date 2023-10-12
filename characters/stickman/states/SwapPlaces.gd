@@ -6,6 +6,7 @@ const NEUTRAL_LAG = 2
 const BACKWARD_PENALTY_AMOUNT_PER_PX = "0.25"
 const BACKWARD_PENALTY_MAX_AMOUNT = 35
 const BACKWARD_PENALTY_MIN_AMOUNT = 10
+const CROSS_THROUGH_PENALTY = 20
 
 var obj_name
 var neutral_lag = 0
@@ -17,6 +18,8 @@ func _frame_0():
 
 func _frame_6():
 	var projectiles = get_usable_projectiles()
+	var crossed_sides = false
+	var start_dir = host.get_opponent_dir()
 	if projectiles:
 		var obj = projectiles[-1]
 		var obj_pos = obj.get_pos()
@@ -38,7 +41,10 @@ func _frame_6():
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), obj.get_center_position_float())
 		host.spawn_particle_effect(preload("res://characters/stickman/projectiles/SummonParticle.tscn"), host.get_center_position_float())
 		host.detach()
-		
+		host.update_data()
+		if start_dir != host.get_opponent_dir():
+			host.add_penalty(CROSS_THROUGH_PENALTY, true)
+
 	if host.combo_count == 0:
 		host.hitlag_ticks += 2
 
