@@ -3,7 +3,10 @@ extends ThrowState
 func _frame_0():
 	if !host.is_grounded():
 		host.reset_momentum()
-		host.start_invulnerability()
+
+func _frame_27():
+		host.end_invulnerability()
+		host.start_projectile_invulnerability()
 
 func _tick():
 	if current_tick > 18:

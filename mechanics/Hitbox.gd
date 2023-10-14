@@ -69,6 +69,7 @@ export var can_clash = true
 export var hits_vs_dizzy = true
 export var beats_grab = true
 export var hits_projectiles = true
+export var ignore_projectile_armor = false
 
 export var _c_Block_Properties = 0
 export var guard_break = false

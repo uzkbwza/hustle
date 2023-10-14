@@ -1,5 +1,7 @@
 extends CharacterState
 
+class_name RollDodge
+
 export var speed = "8.5"
 export var accel_speed = "0.7"
 export var tech = false
@@ -10,6 +12,7 @@ var back = false
 
 
 func _enter():
+	host.on_roll_started()
 	back = false
 	host.used_air_dodge = true
 	force = xy_to_dir(data.x, 0, speed, "1")
@@ -29,11 +32,11 @@ func _enter():
 		else:
 			anim_name = "RollForward"
 	if back:
+		anim_length = 20
+		iasa_at = 20
+	else:
 		anim_length = 19
 		iasa_at = 19
-	else:
-		anim_length = 18
-		iasa_at = 18
 	host.apply_force(force.x, str(0))
 	host.start_throw_invulnerability()
 	host.start_projectile_invulnerability()

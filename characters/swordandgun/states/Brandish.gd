@@ -8,6 +8,9 @@ func _frame_0():
 	else:
 		fallback_state = "Shoot2"
 
+func _frame_7():
+	interruptible_on_opponent_turn = true
+
 func _tick():
 	host.apply_fric()
 	host.apply_forces()

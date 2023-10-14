@@ -874,14 +874,15 @@ func launched_by(hitbox):
 	
 	var will_launch =  hitbox.ignore_armor or !has_armor()
 	if !hitbox.ignore_armor:
-		if projectile and has_projectile_armor():
+		if projectile and has_projectile_armor() and !hitbox.ignore_projectile_armor:
 			will_launch = false
 	var will_block = false
 	var autoblock = has_autoblock_armor()
 	if will_launch:
 		if autoblock:
-			will_launch = false
-			will_block = !projectile
+			if !hitbox.ignore_projectile_armor and !hitbox.ignore_armor:
+				will_launch = false
+				will_block = !projectile
 
 	var scaling_offset = hitbox.combo_scaling_amount - 1
 	
@@ -937,6 +938,9 @@ func launched_by(hitbox):
 		state_tick()
 
 func on_launched():
+	pass
+
+func on_roll_started():
 	pass
 
 func can_counter_hitbox(hitbox):

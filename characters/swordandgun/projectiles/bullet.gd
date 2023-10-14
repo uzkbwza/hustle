@@ -17,8 +17,6 @@ func init(pos=null):
 #		if creator:
 #			creator.connect("got_hit", self, "disable")
 
-
-
 func scale_damage(damage: int):
 	if frozen:
 		return damage

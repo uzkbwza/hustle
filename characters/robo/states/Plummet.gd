@@ -15,8 +15,10 @@ func _frame_3():
 
 func _tick():
 	if descending:
-		host.set_vel(host.get_vel().x, DESCEND_SPEED)
+		host.set_vel(fixed.mul(host.get_vel().x, "0.05"), DESCEND_SPEED)
 		descending = false
+		if host.flying_dir:
+			host.flying_dir.x = 0
 	host.apply_forces()
 	if host.is_grounded():
 		return "Landing"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=474 format=2]
+[gd_scene load_steps=477 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -412,7 +412,7 @@
 [ext_resource path="res://characters/robo/actionuidata/GrenadeActionUIData.tscn" type="PackedScene" id=410]
 [ext_resource path="res://characters/robo/Grenade.gd" type="Script" id=411]
 [ext_resource path="res://characters/robo/sound/nade2.wav" type="AudioStream" id=412]
-[ext_resource path="res://characters/robo/sprites/actionicons/remote_bomb.png" type="Texture" id=413]
+[ext_resource path="res://characters/robo/sprites/actionicons/remote_bomb2.png" type="Texture" id=413]
 [ext_resource path="res://characters/robo/states/Return.gd" type="Script" id=414]
 [ext_resource path="res://characters/robo/sound/mechanical8.wav" type="AudioStream" id=415]
 [ext_resource path="res://characters/robo/sound/mechanical7.wav" type="AudioStream" id=416]
@@ -465,6 +465,9 @@
 [ext_resource path="res://characters/robo/states/Propel.gd" type="Script" id=463]
 [ext_resource path="res://characters/robo/sound/propel.wav" type="AudioStream" id=464]
 [ext_resource path="res://characters/robo/sound/beep19.wav" type="AudioStream" id=465]
+[ext_resource path="res://characters/robo/Roll.gd" type="Script" id=466]
+[ext_resource path="res://characters/robo/sprites/actionicons/propel.png" type="Texture" id=467]
+[ext_resource path="res://characters/robo/sprites/actionicons/overflow.png" type="Texture" id=468]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -1034,8 +1037,8 @@ extra_color_2 = Color( 0.94902, 1, 0.192157, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 12 )
-animation = "DriveWheelie"
-frame = 9
+animation = "SawBlade"
+frame = 7
 offset = Vector2( 0, -16 )
 
 [node name="ChainsawArm" type="AnimatedSprite" parent="Flip" index="1"]
@@ -1043,7 +1046,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1131,17 +1133,17 @@ volume_db = -12.0
 script = ExtResource( 90 )
 pitch_variation = 0.15
 
-[node name="CornerCarryFlyClick" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
-stream = ExtResource( 156 )
-volume_db = -8.0
-pitch_scale = 2.79
-script = ExtResource( 90 )
-pitch_variation = 0.01
-
-[node name="LOICBeep" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
+[node name="LOICBeep" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
 stream = ExtResource( 302 )
 volume_db = -12.0
 pitch_scale = 2.0
+script = ExtResource( 90 )
+pitch_variation = 0.01
+
+[node name="CornerCarryFlyClick" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
+stream = ExtResource( 156 )
+volume_db = -8.0
+pitch_scale = 2.79
 script = ExtResource( 90 )
 pitch_variation = 0.01
 
@@ -1225,6 +1227,12 @@ y = -17
 width = 15
 height = 17
 
+[node name="Roll" parent="StateMachine" index="6"]
+script = ExtResource( 466 )
+__meta__ = {
+"_editor_description_": ""
+}
+
 [node name="SawBlade" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 168 )
 apply_forces = true
@@ -1271,13 +1279,57 @@ knockback = "6"
 start_tick = 8
 active_ticks = 2
 
-[node name="Hitbox2" type="Node2D" parent="StateMachine/SawBlade" index="1"]
+[node name="Hitbox3" type="Node2D" parent="StateMachine/SawBlade" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 21
+y = -30
+width = 14
+height = 10
+damage = 90
+hitstun_ticks = 20
+victim_hitlag = 8
+sdi_modifier = "0.25"
+beats_grab = false
+plus_frames = 3
+screenshake_amount = 8
+hit_sound = ExtResource( 181 )
+knockback = "6"
+start_tick = 8
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/SawBlade" index="2"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 57
 y = -47
 width = 12
 height = 12
+damage = 35
+hitstun_ticks = 20
+victim_hitlag = 9
+cancellable = false
+sdi_modifier = "0.05"
+beats_grab = false
+plus_frames = 3
+group = 1
+screenshake_amount = 6
+whiff_sound = ExtResource( 153 )
+hit_sound = ExtResource( 182 )
+knockback = "4.0"
+start_tick = 10
+active_ticks = 6
+looping = true
+loop_active_ticks = 1
+loop_inactive_ticks = 1
+
+[node name="Hitbox4" type="Node2D" parent="StateMachine/SawBlade" index="3"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 23
+y = -30
+width = 12
+height = 10
 damage = 35
 hitstun_ticks = 20
 victim_hitlag = 9
@@ -1627,38 +1679,7 @@ knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 11
 
-[node name="Propel" type="Node2D" parent="StateMachine" index="14"]
-script = ExtResource( 463 )
-apply_forces = true
-apply_grav = true
-reset_x_momentum = true
-anim_length = 12
-force_dir_x = "1.0"
-force_speed = "18.0"
-force_tick = 3
-enter_sfx = ExtResource( 465 )
-enter_sfx_volume = -12.0
-sfx = ExtResource( 464 )
-sfx_tick = 3
-sfx_volume = -12.0
-title = "PROPEL"
-interruptible_on_opponent_turn = true
-next_state_on_hold_on_opponent_turn = true
-reversible = false
-interrupt_from_string = "Grounded
-Dash
-GroundedMovement"
-interrupt_into_string = "Grounded
-Aerial"
-beats_backdash = true
-
-[node name="HostCommand" type="Node" parent="StateMachine/Propel" index="0"]
-script = ExtResource( 460 )
-tick = 7
-command = "try_drive_cancel"
-args = [ true ]
-
-[node name="Step" type="Node2D" parent="StateMachine" index="15"]
+[node name="Step" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 87 )
 apply_fric = true
 apply_grav = true
@@ -1674,6 +1695,7 @@ enter_sfx = ExtResource( 416 )
 earliest_hitbox = 11
 title = "STEP"
 button_texture = ExtResource( 221 )
+flip_with_facing = true
 iasa_at = 7
 allow_framecheat = true
 next_state_on_hold = false
@@ -1742,6 +1764,39 @@ knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
 
+[node name="Propel" type="Node2D" parent="StateMachine" index="15"]
+script = ExtResource( 463 )
+apply_forces = true
+apply_grav = true
+reset_x_momentum = true
+anim_length = 12
+force_dir_x = "1.0"
+force_speed = "18.0"
+force_tick = 3
+enter_sfx = ExtResource( 465 )
+enter_sfx_volume = -12.0
+sfx = ExtResource( 464 )
+sfx_tick = 3
+sfx_volume = -12.0
+title = "PROPEL"
+button_texture = ExtResource( 467 )
+flip_with_facing = true
+interruptible_on_opponent_turn = true
+next_state_on_hold_on_opponent_turn = true
+reversible = false
+interrupt_from_string = "Grounded
+Dash
+GroundedMovement"
+interrupt_into_string = "Grounded
+Aerial"
+beats_backdash = true
+
+[node name="HostCommand" type="Node" parent="StateMachine/Propel" index="0"]
+script = ExtResource( 460 )
+tick = 7
+command = "try_drive_cancel"
+args = [ true ]
+
 [node name="ChargedStep" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 87 )
 apply_fric = true
@@ -1755,6 +1810,7 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "13.0"
 title = "STEP"
 button_texture = ExtResource( 221 )
+flip_with_facing = true
 iasa_at = 7
 allow_framecheat = true
 next_state_on_hold = false
@@ -1831,6 +1887,7 @@ enter_sfx = ExtResource( 415 )
 force_same_direction_as_previous_state = true
 title = "RETURN"
 button_texture = ExtResource( 417 )
+flip_with_facing = true
 reversible = false
 interrupt_from_string = "Return"
 interrupt_into_string = "Grounded
@@ -1979,6 +2036,7 @@ height = 22
 increment_combo = false
 hits_vs_grounded = false
 beats_grab = false
+ignore_projectile_armor = null
 start_tick = 6
 active_ticks = 6
 throw_state = "KillProcessSpin"
@@ -2237,6 +2295,7 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
+ignore_projectile_armor = null
 hit_height = 0
 hit_sound = ExtResource( 281 )
 dir_y = "1.0"
@@ -2261,6 +2320,7 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
+ignore_projectile_armor = null
 hit_height = 0
 hit_sound = ExtResource( 281 )
 dir_y = "1.0"
@@ -2285,6 +2345,7 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
+ignore_projectile_armor = null
 hit_height = 0
 hit_sound = ExtResource( 281 )
 dir_y = "1.0"
@@ -2309,6 +2370,7 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
+ignore_projectile_armor = null
 hit_height = 0
 hit_sound = ExtResource( 281 )
 dir_y = "1.0"
@@ -2560,6 +2622,7 @@ combo_scaling_amount = 2
 increment_combo = false
 hits_vs_aerial = false
 beats_grab = false
+ignore_projectile_armor = null
 hit_sound = ExtResource( 281 )
 start_tick = 5
 active_ticks = 10
@@ -2601,6 +2664,7 @@ combo_scaling_amount = 2
 increment_combo = false
 hits_vs_grounded = false
 beats_grab = false
+ignore_projectile_armor = null
 hit_sound = ExtResource( 281 )
 start_tick = 5
 active_ticks = 10
@@ -2811,6 +2875,7 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
+ignore_projectile_armor = null
 start_tick = 5
 active_ticks = 4
 throw_state = "GroundSlam"
@@ -2827,6 +2892,7 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
+ignore_projectile_armor = null
 start_tick = 7
 active_ticks = 2
 throw_state = "GroundSlam"
@@ -2840,6 +2906,7 @@ anim_length = 24
 sfx = ExtResource( 155 )
 sfx_tick = 3
 sfx_volume = -10.0
+earliest_hitbox = 13
 title = "THUNDER CLAP"
 type = 2
 data_ui_scene = ExtResource( 273 )
@@ -2934,7 +3001,7 @@ z_index = 1000
 script = ExtResource( 83 )
 y = -8
 height = 12
-damage = 50
+damage = 80
 hitstun_ticks = 18
 beats_grab = false
 plus_frames = 1
@@ -3832,7 +3899,7 @@ type = 2
 button_texture = ExtResource( 381 )
 iasa_at = 4
 interruptible_on_opponent_turn = true
-next_state_on_hold = false
+next_state_on_hold_on_opponent_turn = true
 interrupt_into_string = "Grounded
 Aerial"
 interrupt_exceptions_string = "GroundedGrab"
@@ -4227,6 +4294,7 @@ width = 13
 height = 13
 hits_vs_aerial = false
 beats_grab = false
+ignore_projectile_armor = null
 hit_sound = ExtResource( 281 )
 start_tick = 4
 active_ticks = 7
@@ -4281,6 +4349,7 @@ ExtResource( 374 ): {
 "y": -7
 }
 }
+iasa_at = 20
 interrupt_into_string = "Grounded"
 change_stance_to = "Normal"
 release = true
@@ -4290,8 +4359,10 @@ start_throw_pos_y = -7
 release_throw_pos_x = 33
 release_throw_pos_y = -24
 hitstun_ticks = 25
-knockback = "12.0"
-dir_y = "-0.10"
+knockback = "8"
+dir_x = "0.4"
+dir_y = "-1"
+knockdown_extends_hitstun = false
 damage = 120
 wall_slam = true
 
@@ -4486,6 +4557,7 @@ enter_force_dir_y = "1.0"
 enter_force_speed = "5.0"
 title = "OVERFLOW"
 type = 2
+button_texture = ExtResource( 468 )
 air_type = 1
 land_cancel = true
 landing_recovery = 6
@@ -4504,6 +4576,7 @@ width = 18
 damage_proration = 1
 increment_combo = false
 hits_vs_aerial = false
+ignore_projectile_armor = null
 screenshake_amount = 8
 hit_sound = ExtResource( 281 )
 knockback = "16.0"
@@ -4594,17 +4667,19 @@ script = ExtResource( 400 )
 [node name="Landing" parent="StateMachine" index="74"]
 script = ExtResource( 82 )
 dynamic_iasa = false
+hit_cancel_into_string = "GroundedSuper"
 can_be_counterhit = false
 whiff_meter_gain_multiplier = "0.0"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Landing" index="0"]
 z_index = 1000
 script = ExtResource( 83 )
-width = 40000
+width = 200
 height = 2
 damage = -1
 hitlag_ticks = 1
 victim_hitlag = 8
+cancellable = false
 hits_otg = true
 hits_vs_aerial = false
 beats_grab = false

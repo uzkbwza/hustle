@@ -58,6 +58,7 @@ var cancellable = false
 var followup_state = ""
 var guard_break = false
 var block_punishable = false
+var ignore_projectile_armor = false
 var looping = false
 
 func get_damage():
@@ -176,6 +177,8 @@ func _init(state):
 		block_punishable = state.block_punishable
 	if state.get("looping") != null:
 		looping = state.looping
+	if state.get("ignore_projectile_armor") != null:
+		ignore_projectile_armor = state.ignore_projectile_armor
 
 
 	if damage_in_combo == -1:

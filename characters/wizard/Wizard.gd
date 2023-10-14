@@ -61,6 +61,10 @@ func init(pos=null):
 	if !is_connected("parried",self, "on_parried"):
 		connect("parried", self, "on_parried")
 
+func on_roll_started():
+	hovering = false
+	fast_falling = false
+
 func on_parried():
 	add_geyser_charge()
 

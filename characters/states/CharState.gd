@@ -514,8 +514,8 @@ func _exit_shared():
 	emit_signal("state_ended")
 	host.z_index = 0
 
-func update_sprite_frame():
-	if host.blockstun_ticks > 0:
+func update_sprite_frame(force=false):
+	if host.blockstun_ticks > 0 and !force:
 		return
 	.update_sprite_frame()
 	pass

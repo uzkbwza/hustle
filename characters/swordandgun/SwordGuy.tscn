@@ -1016,7 +1016,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Dash"
-anim_length = 16
+anim_length = 21
 force_dir_x = "1.4"
 force_dir_y = "-0.45"
 force_speed = "11.0"
@@ -1026,7 +1026,7 @@ enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 button_texture = ExtResource( 264 )
 flip_with_facing = true
-iasa_at = 7
+iasa_at = 12
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
 reversible = false
@@ -1737,6 +1737,7 @@ interrupt_from_string = "Lasso"
 z_index = 1000
 script = ExtResource( 166 )
 increment_combo = false
+ignore_projectile_armor = null
 _c_Grouping = 1
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="19"]
@@ -3234,6 +3235,7 @@ title = "Quick Draw"
 type = 2
 button_texture = ExtResource( 159 )
 air_type = 2
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "Grounded
 GroundedSpecial
 Aerial

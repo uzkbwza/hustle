@@ -4,10 +4,12 @@ class_name Robot
 
 const MAX_ARMOR_PIPS = 1
 const FLY_SPEED = "8.5"
-const FLY_FORCE = "2.0"
+const FLY_FORCE = "1.65"
 const FORWARD_FLY_SPEED_MODIFIER = "1.0"
+const MAX_FORWARD_FLIGHT_SPEED = "10"
+const MAX_BACKWARD_FLIGHT_SPEED = "5"
 const FLY_TICKS = 25
-const MAX_FLY_UP_SPEED = "-9"
+const MAX_FLY_UP_SPEED = "-6"
 const MIN_FLY_UP_SPEED = "-4"
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
@@ -179,7 +181,7 @@ func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1)
 	pass
 
 func apply_grav():
-	if flying_dir == null:
+	if flying_dir == null or (fixed.lt(get_vel().y, "0") and flying_dir.x != 0 and flying_dir.y >= 0):
 		.apply_grav()
 	else:
 		.apply_grav_custom(FLY_GRAV, FLY_MAX_FALL_SPEED)
@@ -279,6 +281,9 @@ func tick():
 		start_fly = false
 		start_fly_fx()
 	if flying_dir:
+		if current_tick % 5 == 0:
+#			play_sound("FlySound")
+			play_sound("CornerCarryFlyClick")
 		if (!is_grounded() or force_fly):
 #			var fly_vel = fixed.normalized_vec_times(str(flying_dir.x), str(flying_dir.y), FLY_SPEED)
 			var vel = get_vel()
@@ -295,21 +300,27 @@ func tick():
 			if fixed.lt(fly_force.y, "0"):
 				upward_speed_mod = "1.0"
 				upward_speed_mod = fixed.mul(upward_speed_mod, air_options_ratio)
-				if fixed.lt(upward_speed_mod, "0.3"):
+				if fixed.lt(upward_speed_mod, "0.75"):
 					upward_speed_mod = "0.3"
 
-			apply_force(fly_force.x, fixed.mul(upward_speed, fixed.mul(upward_speed_mod, "0.66")))
-
-			var max_upward_speed = fixed.mul(MAX_FLY_UP_SPEED, upward_speed_mod)
-			if fixed.lt(max_upward_speed, MIN_FLY_UP_SPEED):
-				max_upward_speed = MIN_FLY_UP_SPEED
+			apply_force(fly_force.x, fixed.mul(upward_speed, fixed.mul(upward_speed_mod, "0.4")))
 			
-			if fixed.lt(vel.y, max_upward_speed):
-				set_vel(vel.x, max_upward_speed)
+			var max_horiz_speed = MAX_BACKWARD_FLIGHT_SPEED if fixed.sign(vel.x) != get_opponent_dir() else MAX_FORWARD_FLIGHT_SPEED
+
+			if fixed.lt(vel.y, MAX_FLY_UP_SPEED):
+				update_data()
+				vel = get_vel()
+				set_vel(vel.x, MAX_FLY_UP_SPEED)
+
+			if fixed.abs(vel.x) > max_horiz_speed and fixed.sign(vel.x) == flying_dir.x:
+				update_data()
+				vel = get_vel()
+				set_vel(fixed.mul(max_horiz_speed, str(fixed.sign(vel.x))), vel.y)
+
 			if fixed.eq(fixed.vec_len(fly_force.x, fly_force.y), "0"):
 				var new_vel = fixed.vec_mul(vel.x, vel.y, "0.90")
 				set_vel(new_vel.x, new_vel.y)
-				pass
+
 			fly_ticks_left -= 1
 			if fly_ticks_left <= 0: 
 				flying_dir = null

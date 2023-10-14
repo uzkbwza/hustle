@@ -47,6 +47,10 @@ func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
 		objs_map[bomb_projectile].explode()
 
+
+func on_roll_started():
+	detach()
+
 func process_extra(extra):
 	var vel = get_vel()
 	current_momentum = fixed.vec_len(vel.x, vel.y)

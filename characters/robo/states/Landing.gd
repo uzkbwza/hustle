@@ -9,6 +9,7 @@ const BASE_HITSTUN = 30
 const MIN_HITSTUN = 10
 const LESS_HITSTUN_PER_PIXEL = "0.1"
 const LESS_DAMAGE_PER_PIXEL = "0.25"
+const DAMAGE_MODIFIER = "0.3"
 const GROUND_POUND_LAG = 8
 
 var has_hitbox = false
@@ -20,7 +21,7 @@ func _frame_0():
 	has_hitbox = prev.busy_interrupt_type != BusyInterrupt.Hurt and !(prev is CharacterHurtState)
 #	set_lag(null if !has_hitbox else GROUND_POUND_LAG)
 	hitbox.hits_vs_grounded = host.can_ground_pound and fixed.gt(speed, SPEED_HITBOX_ACTIVATION) and has_hitbox
-	hitbox.x = host.obj_local_pos(host.opponent).x * host.get_facing_int()
+#	hitbox.x = host.obj_local_pos(host.opponent).x * host.get_facing_int()
 #	hitbox.start_tick = -1 if !has_hitbox else 1
 	var ratio = fixed.div(speed, SPEED_HITBOX_RATIO)
 	var damage = fixed.round(fixed.mul(ratio, str(BASE_DAMAGE)))
@@ -29,6 +30,9 @@ func _frame_0():
 	damage = fixed.round(fixed.sub(str(damage), fixed.mul(str(dist), LESS_DAMAGE_PER_PIXEL)))
 	if damage < BASE_DAMAGE:
 		damage = BASE_DAMAGE
+	
+	damage = fixed.round(fixed.mul(DAMAGE_MODIFIER, str(damage)))
+	
 	hitbox.damage = damage
 	
 	var hitstun = BASE_HITSTUN - fixed.round(fixed.mul(str(dist), LESS_HITSTUN_PER_PIXEL))

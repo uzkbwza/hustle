@@ -2361,8 +2361,6 @@ Grounded
 Aerial"
 interrupt_into_string = "Grounded
 Aerial"
-allowed_stances_string = "Normal
-BackSway"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/StickyBomb" index="0"]
 z_index = 1000
@@ -2372,6 +2370,7 @@ y = -15
 width = 9
 height = 10
 increment_combo = false
+ignore_projectile_armor = null
 _c_Grouping = 1
 start_tick = 10
 active_ticks = 4
