@@ -726,7 +726,7 @@ apply_fric = true
 apply_grav = true
 anim_length = 14
 projectile_scene = ExtResource( 236 )
-projectile_tick = 6
+projectile_tick = 5
 projectile_pos_x = 16
 projectile_pos_y = -16
 title = "Grappling Hook"
@@ -2361,6 +2361,9 @@ Grounded
 Aerial"
 interrupt_into_string = "Grounded
 Aerial"
+allowed_stances_string = "Normal
+BackSway"
+change_stance_to = "Normal"
 
 [node name="ThrowBox" type="Node2D" parent="StateMachine/StickyBomb" index="0"]
 z_index = 1000
@@ -2370,7 +2373,6 @@ y = -15
 width = 9
 height = 10
 increment_combo = false
-ignore_projectile_armor = null
 _c_Grouping = 1
 start_tick = 10
 active_ticks = 4
@@ -2792,7 +2794,6 @@ script = ExtResource( 72 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-reset_momentum = true
 anim_length = 12
 force_dir_x = "1.0"
 force_speed = "2.0"
@@ -2804,9 +2805,12 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 73 )
 type = 2
 button_texture = ExtResource( 77 )
+air_type = 2
 interrupt_from_string = "GroundedSpecial
 Grounded
-Reversal"
+Reversal
+Aerial
+AerialSpecial"
 interrupt_into_string = "GroundedAttack
 GroundedSpecial
 GroundedSuper
@@ -2860,7 +2864,9 @@ hitlag_ticks = 10
 cancellable = false
 plus_frames = 4
 rumble = false
+whiff_sound = ExtResource( 82 )
 hit_sound = ExtResource( 44 )
+whiff_sound_volume = -10.0
 dir_y = "-0.1"
 knockback = "20"
 wall_slam = true

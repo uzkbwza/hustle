@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/projectiles/hook.png" type="Texture" id=2]
@@ -11,11 +11,18 @@
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=9]
 [ext_resource path="res://sound/common/catch.wav" type="AudioStream" id=10]
 [ext_resource path="res://sound/common/clash1.wav" type="AudioStream" id=11]
+[ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=12]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false
@@ -74,16 +81,21 @@ script = ExtResource( 9 )
 width = 4
 height = 4
 damage = 20
-hitstun_ticks = 8
-hitlag_ticks = 7
+hitstun_ticks = 14
+combo_hitstun_ticks = 5
+hit_sound = ExtResource( 12 )
+dir_y = "-0.25"
+knockback = "6"
+grounded_hit_state = "HurtAerial"
+start_tick = 1
 always_on = true
 
 [node name="Locked" type="Node2D" parent="StateMachine" index="1"]
 script = ExtResource( 8 )
+reset_momentum = true
 fallback_state = "Default"
 sprite_animation = "Default"
 loop_animation = true
 endless = true
-reset_momentum = true
 enter_sfx = ExtResource( 10 )
 enter_sfx_volume = -10.0

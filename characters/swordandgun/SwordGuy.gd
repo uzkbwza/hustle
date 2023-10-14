@@ -16,6 +16,8 @@ const IS_COWBOY = true # lol
 const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterImageExplosion.tscn")
 const AFTER_IMAGE_MAX_DIST = "410"
 const MAX_AIR_SPEED_1KCUTS = "12"
+const CUTS_METER_DRAIN_1 = 2
+const CUTS_METER_DRAIN_2 = 3
 
 var bullets_left = 6
 var cut_projectile = null
@@ -129,6 +131,11 @@ func tick():
 		var proj = objs_map[cut_projectile]
 		if proj == null or proj.disabled:
 			cut_projectile = null
+		else:
+			if current_tick % 2 == 0:
+				use_super_meter(CUTS_METER_DRAIN_1)
+			else:
+				use_super_meter(CUTS_METER_DRAIN_2)
 	if is_grounded():
 		if used_aerial_h_slash:
 			used_aerial_h_slash = false

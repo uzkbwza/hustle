@@ -261,12 +261,13 @@ func update_property_list():
 		property_list = Utils.get_copiable_properties(self)
 
 func get_real_knockback():
-	if host.is_in_group("Fighter"):
-		if not (host.current_state().state_name in host.combo_moves_used):
+	var creator = host.get_fighter()
+	if creator:
+		if not (creator.current_state().state_name in creator.combo_moves_used):
 			return knockback
-		var knockback_modifier = host.fixed.powu(COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED if host.opponent.is_grounded() else COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL, host.combo_moves_used[host.current_state().state_name])
-		var final_kb = host.fixed.mul(knockback, knockback_modifier)
-		if host.fixed.gt(final_kb, MAX_KNOCKBACK):
+		var knockback_modifier = creator.fixed.powu(COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED if creator.opponent.is_grounded() else COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL, creator.combo_moves_used[creator.current_state().state_name])
+		var final_kb = creator.fixed.mul(knockback, knockback_modifier)
+		if creator.fixed.gt(final_kb, MAX_KNOCKBACK):
 			final_kb = MAX_KNOCKBACK
 #		var max_kb = host.fixed.mul(knockback, "2")
 #		if host.fixed.gt(final_kb, max_kb):
@@ -289,11 +290,12 @@ func get_real_knockback():
 #	return damage
 
 func get_real_hitstun():
-	if host.is_in_group("Fighter"):
-		var ticks = hitstun_ticks if !host.combo_count > 0 else combo_hitstun_ticks
-		if not (host.current_state().state_name in host.combo_moves_used):
+	var creator = host.get_fighter()
+	if creator:
+		var ticks = hitstun_ticks if !creator.combo_count > 0 else combo_hitstun_ticks
+		if not (creator.current_state().state_name in creator.combo_moves_used):
 			return ticks
-		var final_hitstun = Utils.int_max(ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (host.combo_moves_used[host.current_state().state_name] + 1)), ticks / 2)
+		var final_hitstun = Utils.int_max(ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (creator.combo_moves_used[creator.current_state().state_name] + 1)), ticks / 2)
 		return final_hitstun
 	else:
 		return hitstun_ticks
@@ -335,7 +337,6 @@ func hit(obj):
 			if obj.on_the_ground:
 				if !hits_otg:
 					can_hit = false
-
 
 			if !hits_vs_dizzy:
 				if obj.current_state().state_name == "HurtDizzy":

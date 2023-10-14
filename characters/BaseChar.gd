@@ -1342,6 +1342,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				gain_super_meter(parry_meter)
 				add_penalty(-20)
 			else:
+				add_penalty(-10)
 				gain_super_meter(parry_meter / 3)
 			if host.has_method("on_got_parried"):
 				host.on_got_parried()
@@ -1510,6 +1511,8 @@ func super_effect(freeze_ticks=0):
 	play_sound("Super3")
 
 func use_air_movement():
+	if infinite_resources:
+		return
 	if air_movements_left > 0:
 		air_movements_left -= 1
 
@@ -1952,6 +1955,9 @@ func add_penalty(amount, ignore_min_distance=false):
 		had_sadness = true
 	if penalty < MIN_PENALTY:
 		penalty = MIN_PENALTY
+
+func has_super_meter():
+	return super_meter > 0 or supers_available > 0
 
 func reset_penalty():
 	penalty = 0

@@ -1797,7 +1797,6 @@ y = -22
 width = 14
 height = 19
 hits_vs_grounded = false
-ignore_projectile_armor = null
 group = 1
 start_tick = 7
 active_ticks = 23
@@ -2259,7 +2258,6 @@ width = 18
 height = 18
 damage = 130
 hitstun_ticks = 18
-ignore_projectile_armor = null
 plus_frames = 1
 screenshake_amount = 7
 screenshake_frames = 10
@@ -2281,7 +2279,6 @@ height = 18
 damage = 150
 minimum_damage = 50
 hitstun_ticks = 18
-ignore_projectile_armor = null
 plus_frames = 3
 screenshake_amount = 7
 screenshake_frames = 10
@@ -2303,7 +2300,6 @@ height = 18
 damage = 170
 minimum_damage = 80
 hitstun_ticks = 18
-ignore_projectile_armor = null
 plus_frames = 4
 screenshake_amount = 7
 screenshake_frames = 10
@@ -2504,6 +2500,15 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
+
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+ignore_projectile_armor = false
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+ignore_projectile_armor = false
+
+[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
+ignore_projectile_armor = false
 
 [node name="ForwardThrow" parent="StateMachine" index="78"]
 anim_length = 24

@@ -276,7 +276,7 @@ func tick():
 		flying_dir = null
 	if start_fly and flying_dir != null:
 		fly_ticks_left = FLY_TICKS
-		air_movements_left -= 1
+		use_air_movement()
 		fly_fx_started = true
 		start_fly = false
 		start_fly_fx()
@@ -300,8 +300,13 @@ func tick():
 			if fixed.lt(fly_force.y, "0"):
 				upward_speed_mod = "1.0"
 				upward_speed_mod = fixed.mul(upward_speed_mod, air_options_ratio)
-				if fixed.lt(upward_speed_mod, "0.75"):
+				if fixed.lt(upward_speed_mod, "0.3"):
 					upward_speed_mod = "0.3"
+
+			if flying_dir.y < 0 and fixed.gt(vel.y, "0"):
+				update_data()
+				vel = get_vel()
+				set_vel(vel.x, "0")
 
 			apply_force(fly_force.x, fixed.mul(upward_speed, fixed.mul(upward_speed_mod, "0.4")))
 			
