@@ -84,6 +84,7 @@ y = 67
 width = 10
 height = 64
 damage = 100
+chip_damage_modifier = "0.8"
 hitstun_ticks = 10
 hitlag_ticks = 2
 victim_hitlag = 10

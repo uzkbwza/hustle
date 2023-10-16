@@ -100,7 +100,7 @@ func _tick():
 #	print(move_y_amount)
 	
 	
-	if host.is_grounded() and current_tick > 5:
+	if host.is_grounded() and current_tick > (5 if !grounded else 10):
 		host.reset_momentum()
 		host.apply_force_relative((move_x + move_x_modifier) / 2, 0)
 		return "Landing"

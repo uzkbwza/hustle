@@ -74,6 +74,7 @@ export var ignore_projectile_armor = false
 export var _c_Block_Properties = 0
 export var guard_break = false
 export var block_punishable = false
+export var block_cancel_allowed = true
 export(int, -1024, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid

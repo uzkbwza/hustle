@@ -13,7 +13,6 @@ func _ready():
 	main.connect("game_setup", self, "_on_action_buttons_visibility_changed")
 
 func _on_action_buttons_visibility_changed():
-	
 	var p1_info_scene = ui_layer.p1_info_scene
 	var p2_info_scene = ui_layer.p2_info_scene
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/SuperJumpActionUIData.gd" type="Script" id=2]
 [ext_resource path="res://ui/XYPlot/SemicirclePlot.tscn" type="PackedScene" id=3]
 
 [node name="ActionUIData" instance=ExtResource( 1 )]
@@ -8,6 +9,11 @@ margin_right = 50.0
 margin_bottom = 62.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 33.0 ],
+"_edit_vertical_guides_": [ 41.0 ]
+}
 
 [node name="JumpArc" parent="." index="0" instance=ExtResource( 3 )]
 anchor_right = 0.0
@@ -17,7 +23,7 @@ rect_min_size = Vector2( 60, 66 )
 panel_type = 2
 left_quarter = false
 always_max = true
-limit_range_degrees = 60.0
-limit_center_degrees = -60.0
+limit_range_degrees = 30.0
+limit_center_degrees = -45.0
 default_value = Vector2( 0.5, -0.866025 )
-snap_angles = 1
+snap = false

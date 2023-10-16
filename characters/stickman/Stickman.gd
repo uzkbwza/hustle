@@ -120,14 +120,15 @@ func store_momentum():
 
 func release_momentum():
 #		reset_momentum()
+		var can_boost_vert = !is_grounded()
+		if current_state().get_node_or_null("AirBoost") != null:
+			can_boost_vert = true
 		apply_force(stored_momentum_x, stored_momentum_y if !is_grounded() else "0")
 		if !infinite_resources:
 			momentum_stores -= 1
 		if momentum_stores < 0:
 			momentum_stores = 0
 
-#		else:
-#			stored_speed = fixed.mul(stored_speed, fixed.sub("1", RELEASE_MODIFIER))
 		released_this_turn = true
 		will_release_momentum = false
 		play_sound("Swish2")

@@ -1737,6 +1737,7 @@ interrupt_from_string = "Lasso"
 z_index = 1000
 script = ExtResource( 166 )
 increment_combo = false
+block_cancel_allowed = null
 _c_Grouping = 1
 
 [node name="HSlash" type="Node2D" parent="StateMachine" index="19"]
@@ -3728,7 +3729,7 @@ speed = "8.5"
 fallback_state = "SuperDash"
 
 [node name="SuperJump" parent="StateMachine" index="92"]
-selectable = false
+y_modifier = "0.8"
 
 [node name="DoubleJump" parent="StateMachine" index="93"]
 speed = "7"
@@ -3738,10 +3739,15 @@ interrupt_from_string = ""
 interrupt_into_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+block_cancel_allowed = null
 _c_Grouping = 1
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+block_cancel_allowed = null
 _c_Grouping = 1
+
+[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
+block_cancel_allowed = null
 
 [node name="ForwardThrow" parent="StateMachine" index="107"]
 knockback = "11.0"

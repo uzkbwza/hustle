@@ -67,8 +67,6 @@ modulate = Color( 0.396078, 0.901961, 1, 1 )
 show_behind_parent = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 60.0
-margin_bottom = 66.0
 size_flags_horizontal = 1
 
 [node name="Padding2" type="Control" parent="TopRow"]

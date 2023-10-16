@@ -1458,6 +1458,7 @@ func _unhandled_input(event: InputEvent):
 			if event.is_action_pressed("edit_replay"):
 				if ReplayManager.playback:
 					buffer_edit = true
+					ReplayManager.play_full = false
 	if !is_ghost:
 		if event is InputEventMouseButton:
 			if event.pressed:

@@ -60,6 +60,7 @@ var guard_break = false
 var block_punishable = false
 var ignore_projectile_armor = false
 var looping = false
+var block_cancel_allowed = true
 
 func get_damage():
 	if combo_count > 0:
@@ -179,6 +180,8 @@ func _init(state):
 		looping = state.looping
 	if state.get("ignore_projectile_armor") != null:
 		ignore_projectile_armor = state.ignore_projectile_armor
+	if state.get("block_cancel_allowed") != null:
+		block_cancel_allowed = state.block_cancel_allowed
 
 
 	if damage_in_combo == -1:

@@ -1963,6 +1963,8 @@ wall_slam = true
 start_tick = 11
 active_ticks = 8
 
+[node name="AirBoost" type="Node" parent="StateMachine/JumpKick" index="1"]
+
 [node name="NunChukLight" type="Node2D" parent="StateMachine" index="41"]
 script = ExtResource( 66 )
 apply_forces = true
@@ -2382,6 +2384,7 @@ y = -15
 width = 9
 height = 10
 increment_combo = false
+block_cancel_allowed = null
 _c_Grouping = 1
 start_tick = 10
 active_ticks = 4
@@ -2427,6 +2430,7 @@ damage = 95
 hitstun_ticks = 18
 hitlag_ticks = 6
 cancellable = false
+block_cancel_allowed = false
 plus_frames = 1
 hit_height = 2
 screenshake_amount = 6
@@ -2651,6 +2655,8 @@ y = -22
 width = 15
 height = 13
 endless = true
+
+[node name="AirBoost" type="Node" parent="StateMachine/DropKick" index="2"]
 
 [node name="IzunaDrop" type="Node2D" parent="StateMachine" index="55"]
 script = ExtResource( 232 )
@@ -3234,13 +3240,13 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 ExtResource( 221 ): {
 "x": 27,
@@ -3415,6 +3421,8 @@ dir_y = "1.0"
 start_tick = 12
 always_on = true
 
+[node name="AirBoost" type="Node" parent="StateMachine/DiveKick2" index="1"]
+
 [node name="Jump" parent="StateMachine" index="73"]
 y_modifier = "1.33"
 
@@ -3429,10 +3437,15 @@ change_stance_to = "Normal"
 hit_cancel_exceptions_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+block_cancel_allowed = null
 _c_Grouping = 1
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+block_cancel_allowed = null
 _c_Grouping = 1
+
+[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
+block_cancel_allowed = null
 
 [node name="ForwardThrow" parent="StateMachine" index="90"]
 sprite_animation = "GroundedThrow"
@@ -3446,16 +3459,16 @@ ExtResource( 208 ): {
 "x": 14,
 "y": -11
 },
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
 },
 ExtResource( 206 ): {
 "x": 13,
-"y": -10
-},
-ExtResource( 207 ): {
-"x": 15,
 "y": -10
 }
 }
@@ -3500,6 +3513,14 @@ ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
@@ -3507,14 +3528,6 @@ ExtResource( 209 ): {
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
 }
 }
 burst_cancellable = false

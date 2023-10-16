@@ -1476,6 +1476,7 @@ width = 15
 height = 12
 increment_combo = false
 hits_vs_aerial = false
+block_cancel_allowed = null
 hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
@@ -1513,6 +1514,7 @@ width = 15
 height = 12
 increment_combo = false
 hits_vs_grounded = false
+block_cancel_allowed = null
 hit_sound = ExtResource( 160 )
 start_tick = 3
 active_ticks = 3
@@ -1552,6 +1554,7 @@ width = 15
 height = 15
 increment_combo = false
 hits_vs_grounded = false
+block_cancel_allowed = null
 hit_sound = ExtResource( 160 )
 start_tick = 6
 active_ticks = 3
@@ -1835,16 +1838,16 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="EmoteLabel" type="Label" parent="." index="10"]
+[node name="EmoteLabel" type="RichTextLabel" parent="." index="10"]
 margin_left = -141.0
-margin_top = -68.0
+margin_top = -60.0
 margin_right = 141.0
-margin_bottom = -36.0
+margin_bottom = -46.968
 grow_horizontal = 2
+grow_vertical = 0
 theme = ExtResource( 47 )
-align = 1
-autowrap = true
-clip_text = true
+fit_content_height = true
+scroll_active = false
 __meta__ = {
 "_edit_lock_": true
 }

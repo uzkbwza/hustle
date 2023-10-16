@@ -6,6 +6,7 @@ const HITBOX_OFFSET = "-28.0"
 const FAST_FALL_REDUCTION = 200
 
 onready var hitbox = $Hitbox
+onready var hitbox2 = $Hitbox2
 var particle_x
 var particle_y
 
@@ -13,7 +14,9 @@ func _frame_0():
 	land_cancel = false
 	if host.fast_falling:
 		host.hover_left -= FAST_FALL_REDUCTION
+	hitbox2.plus_frames = 1
 
+	
 func _frame_6():
 	host.reset_momentum()
 #	host.move_directly(0, -1)
@@ -41,6 +44,8 @@ func _frame_6():
 	host.colliding_with_opponent = false
 	
 func _tick():
+	if host.spark_speed_frames > 0:
+		hitbox2.plus_frames = 2
 	host.apply_forces_no_limit()
 	var vel = host.get_vel()
 	if current_tick > 7:

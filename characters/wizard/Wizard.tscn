@@ -808,29 +808,29 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
-},
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
 },
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1798,6 +1798,7 @@ y = -22
 width = 14
 height = 19
 hits_vs_grounded = false
+block_cancel_allowed = null
 group = 1
 start_tick = 7
 active_ticks = 23
@@ -1839,29 +1840,29 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
-},
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
 },
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 }
 }
 type = 1
@@ -2501,6 +2502,15 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
+
+[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+block_cancel_allowed = null
+
+[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+block_cancel_allowed = null
+
+[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
+block_cancel_allowed = null
 
 [node name="ForwardThrow" parent="StateMachine" index="78"]
 anim_length = 24

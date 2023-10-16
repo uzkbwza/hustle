@@ -37,6 +37,7 @@ margin_right = 60.0
 margin_bottom = 25.0
 size_flags_vertical = 8
 toggle_mode = true
+pressed = true
 text = "High"
 icon = ExtResource( 6 )
 

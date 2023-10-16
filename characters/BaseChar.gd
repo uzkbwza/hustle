@@ -51,6 +51,7 @@ const INCORRECT_PREDICTION_LAG = 7
 
 const PARRY_CHIP_DIVISOR = 3
 const PARRY_KNOCKBACK_DIVISOR = "3"
+
 const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
@@ -667,7 +668,8 @@ func emote(message):
 	if is_instance_valid(emote_tween):
 		emote_tween.kill()
 	emote_tween = create_tween()
-	$EmoteLabel.text = ProfanityFilter.filter(message)
+	$EmoteLabel.clear()
+	$EmoteLabel.append_bbcode("[center]" + ProfanityFilter.filter(message))
 	$EmoteLabel.show()
 	emote_tween.tween_method(self, "set_emote_visible", 1.0, 0.0, 3.0)
 
@@ -824,6 +826,7 @@ func debug_text():
 			"blocked_hitbox_plus_frames": blocked_hitbox_plus_frames,
 			"blockstun_ticks": blockstun_ticks,
 			"hitlag_ticks": hitlag_ticks,
+			"feinting": feinting,
 			"parry_combo": parry_combo,
 			"turn_frames": current_state().current_real_tick
 		}
@@ -1226,11 +1229,14 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 						guard_broken_this_turn = true
 					return
 
-		opponent.got_parried = true
-		opponent.feinting = false
+		if not projectile:
+			if !perfect_parry:
+				opponent.feinting = false
+			else:
+				opponent.got_parried = true
 		
-		if (not projectile) and !current_state() is GroundedParryState:
-			opponent.current_state().feinting = false
+			if !current_state() is GroundedParryState:
+				opponent.current_state().feinting = false
 		
 		parried = true
 
@@ -1277,7 +1283,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				opponent.add_penalty(-10)
 				if opponent.feints < opponent.num_feints:
 					opponent.feints += 1
-				if !(hitbox.looping and !hitbox.cancellable):
+				if !(hitbox.looping and !hitbox.cancellable) and hitbox.block_cancel_allowed:
 					if !hitbox.block_punishable or autoblock_armor:
 #						if opponent.current_state()._can_hit_cancel(self, hitbox):
 #							opponent.current_state().enable_hit_cancel()
@@ -1344,14 +1350,15 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			else:
 				add_penalty(-10)
 				gain_super_meter(parry_meter / 3)
+#				if opponent.feinting:
+#					opponent.current_state().interruptible_on_opponent_turn = true
+#					opponent.current_state().enable_interrupt()
 			if host.has_method("on_got_parried"):
 				host.on_got_parried()
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
-
-
 
 func parry_effect(location, absolute=false):
 	if !absolute:

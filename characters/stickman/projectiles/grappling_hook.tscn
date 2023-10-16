@@ -87,7 +87,6 @@ hit_sound = ExtResource( 12 )
 dir_y = "-0.25"
 knockback = "6"
 grounded_hit_state = "HurtAerial"
-start_tick = 1
 always_on = true
 
 [node name="Locked" type="Node2D" parent="StateMachine" index="1"]

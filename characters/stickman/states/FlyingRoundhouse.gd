@@ -5,9 +5,6 @@ var left_ground = false
 func _frame_0():
 	left_ground = false
 
-#func _frame_1():
-#	left_ground = false
-
 func _frame_7():
 	if !started_in_air:
 		left_ground = true
