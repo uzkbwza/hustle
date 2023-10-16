@@ -69,6 +69,7 @@ var disabled = false
 
 var creator_name = null
 var creator = null
+var can_update_sprite = true
 
 var fixed = FixedMath.new()
 var native = NativeMethods.new()
@@ -91,7 +92,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "last_object_hit", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "last_object_hit", "can_update_sprite", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -794,6 +795,7 @@ func tick():
 	
 #	for particle in particles.get_children():
 #		particle.tick()
+	can_update_sprite = true
 	update_collision_boxes()
 	update_data()
 

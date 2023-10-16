@@ -133,10 +133,16 @@ func on_got_hit():
 			obj.drop()
 		boulder_projectile = null
 
+func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
+	if !projectile:
+		if combo_count < 1:
+			if not "Geyser" in current_state().name:
+				add_geyser_charge()
+	.incr_combo(scale, projectile, force, combo_scale_amount)
+	
+
 func _on_hit_something(obj, hitbox):
-	if obj.is_in_group("Fighter"):
-		if combo_count == 1:
-			add_geyser_charge()
+
 	._on_hit_something(obj, hitbox)
 
 func tick():

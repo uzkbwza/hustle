@@ -184,6 +184,7 @@ func try_shoot():
 		return
 	if bullets_left > 0:
 		bullet_cancelling = false
+		can_update_sprite = false
 		change_state("QuickerDraw")
 
 func on_state_ended(state):
@@ -209,6 +210,7 @@ func on_attack_blocked():
 		return
 	if bullets_left > 0:
 		bullet_cancelling = false
+		can_update_sprite = false
 		change_state("QuickerDraw")
 
 func on_got_hit():

@@ -4,9 +4,11 @@ const DESCEND_SPEED = "13"
 const MIN_HEIGHT = -20
 
 var descending = false
+var apply_gravity = false
 
 func _frame_0():
 	descending = false
+	apply_gravity = false
 #	can_fly = true
 
 func _frame_3():
@@ -18,7 +20,14 @@ func _tick():
 		host.set_vel(fixed.mul(host.get_vel().x, "0.05"), DESCEND_SPEED)
 		descending = false
 		if host.flying_dir:
-			host.flying_dir.x = 0
+			host.flying_dir = { "x": 0, "y": host.flying_dir.y }
+
+	if fixed.lt(host.get_vel().y, "0"):
+		apply_gravity = true
+
+	if host.flying_dir == null and apply_gravity:
+		host.apply_grav()
+
 	host.apply_forces()
 	if host.is_grounded():
 		return "Landing"

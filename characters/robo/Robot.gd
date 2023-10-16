@@ -439,6 +439,8 @@ func process_extra(extra):
 			flying_dir = extra.fly_dir
 			if extra.has("force_fly"):
 				force_fly = extra.force_fly
+		elif extra.has("fly_enabled") and !extra.fly_enabled:
+			flying_dir = null
 
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled

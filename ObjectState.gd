@@ -201,7 +201,8 @@ func _tick_shared():
 #		if process_hitboxes() == true:
 		process_hitboxes()
 #			return process_feint()
-		update_sprite_frame()
+		if host.can_update_sprite:
+			update_sprite_frame()
 		update_hurtbox()
 		if current_tick == sfx_tick and sfx_player and !ReplayManager.resimulating:
 			sfx_player.play()

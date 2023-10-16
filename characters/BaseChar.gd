@@ -1555,6 +1555,16 @@ func clean_parried_hitboxes():
 func get_opponent_dir():
 	return Utils.int_sign(opponent.get_pos().x - get_pos().x)
 
+func get_opponent_dir_vec(normalized=true):
+	var my_pos = get_pos()
+	var opp_pos = opponent.get_pos()
+	if normalized:
+		return fixed.normalized_vec(str(opp_pos.x - my_pos.x), str(opp_pos.y - my_pos.y))
+	return {
+		"x": opp_pos.x - my_pos.x,
+		"y": opp_pos.y - my_pos.y
+	}
+
 func get_opponent():
 	return opponent
 
@@ -1855,9 +1865,9 @@ func tick():
 	for particle in particles.get_children():
 		particle.tick()
 	any_available_actions = true
+	can_update_sprite = true
 	last_vel = get_vel()
 	var pos = get_pos()
-
 
 #	if opponent.combo_count > 0:
 #		current_prediction = -1

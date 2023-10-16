@@ -111,11 +111,13 @@ func hit_by(hitbox):
 						ticks_left -= ARM_TIME_REDUCTION_ON_HIT
 					if ticks_left < 0:
 						ticks_left = 0
-	#					explode()
 
-
-
-	emit_signal("got_hit")
+func on_got_blocked():
+	var vel = get_vel()
+	if active:
+		ticks_left = Utils.int_min(ticks_left, ARM_TIME_ON_OPPONENT_HIT)
+	else:
+		set_vel(fixed.mul(vel.x, "-0.9"), vel.y) 
 
 func disable():
 	.disable()

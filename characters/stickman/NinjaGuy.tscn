@@ -1,4 +1,4 @@
-[gd_scene load_steps=251 format=2]
+[gd_scene load_steps=254 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -247,6 +247,9 @@
 [ext_resource path="res://characters/stickman/sprites/portrait3.png" type="Texture" id=245]
 [ext_resource path="res://characters/stickman/sprites/stickman57.png" type="Texture" id=246]
 [ext_resource path="res://characters/stickman/ActionUIData/StickyBombActionUIData.tscn" type="PackedScene" id=247]
+[ext_resource path="res://characters/stickman/sprites/up_kick1.png" type="Texture" id=248]
+[ext_resource path="res://characters/stickman/sprites/up_kick2.png" type="Texture" id=249]
+[ext_resource path="res://characters/stickman/ActionUIData/DiveKick2ActionUIData.tscn" type="PackedScene" id=250]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -328,6 +331,11 @@ animations = [ {
 "frames": [ ExtResource( 81 ), ExtResource( 81 ), ExtResource( 81 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 174 ), ExtResource( 168 ) ],
 "loop": true,
 "name": "DiveKick2",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 81 ), ExtResource( 81 ), ExtResource( 81 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 249 ) ],
+"loop": true,
+"name": "DiveKick2Up",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 132 ), ExtResource( 104 ), ExtResource( 131 ), ExtResource( 85 ) ],
@@ -630,7 +638,8 @@ extra_color_2 = Color( 1, 0.2, 0.239216, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 4 )
-animation = "DiveKick2"
+animation = "DiveKick2Up"
+frame = 11
 
 [node name="Super2" parent="Sounds" index="6"]
 pitch_variation = 0.1
@@ -2806,6 +2815,7 @@ enter_sfx = ExtResource( 73 )
 type = 2
 button_texture = ExtResource( 77 )
 air_type = 2
+uses_air_movement = true
 interrupt_from_string = "GroundedSpecial
 Grounded
 Reversal
@@ -3224,13 +3234,13 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
 },
 ExtResource( 221 ): {
 "x": 27,
@@ -3354,7 +3364,7 @@ Aerial"
 
 [node name="DiveKick2" type="Node2D" parent="StateMachine" index="71"]
 script = ExtResource( 12 )
-endless = true
+anim_length = 25
 force_dir_x = "0.5"
 force_dir_y = "-1.0"
 force_speed = "5"
@@ -3364,7 +3374,7 @@ sfx = ExtResource( 188 )
 sfx_tick = 4
 title = "Dive Kick"
 type = 1
-data_ui_scene = ExtResource( 18 )
+data_ui_scene = ExtResource( 250 )
 button_texture = ExtResource( 32 )
 next_state_on_hold = false
 self_hit_cancellable = false
@@ -3432,21 +3442,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
 },
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
+},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
-},
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
 }
 }
 burst_cancellable = false
@@ -3486,25 +3496,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="91"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
 },
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 }
 }
 burst_cancellable = false

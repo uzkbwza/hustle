@@ -1,4 +1,4 @@
-[gd_scene load_steps=331 format=2]
+[gd_scene load_steps=330 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -264,7 +264,6 @@
 [ext_resource path="res://characters/swordandgun/sprites/shield2.png" type="Texture" id=262]
 [ext_resource path="res://characters/swordandgun/sprites/shield1.png" type="Texture" id=263]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/dash.png" type="Texture" id=264]
-[ext_resource path="res://characters/swordandgun/sprites/action_buttons/fastteleport.png" type="Texture" id=265]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw4.png" type="Texture" id=266]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw2.png" type="Texture" id=267]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw5.png" type="Texture" id=268]
@@ -3211,7 +3210,7 @@ enter_sfx_volume = -7.0
 title = "Teleport"
 type = 3
 data_ui_scene = ExtResource( 102 )
-button_texture = ExtResource( 265 )
+button_texture = ExtResource( 137 )
 air_type = 2
 uses_air_movement = true
 iasa_at = 9

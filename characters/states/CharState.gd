@@ -288,8 +288,9 @@ func _enter_shared():
 	if uses_air_movement:
 		if !host.infinite_resources and host.gravity_enabled:
 			host.air_movements_left -= 1
-	if host.hitlag_ticks == 0 and host.blockstun_ticks == 0:
-		call_deferred("update_sprite_frame")
+#	if host.hitlag_ticks == 0 and host.blockstun_ticks == 0:
+#		if host.can_update_sprite:
+#			call_deferred("update_sprite_frame")
 	if has_hitboxes:
 		var dir = host.get_move_dir()
 		if dir == 0 or dir == host.get_opponent_dir():
@@ -313,7 +314,6 @@ func enable_interrupt(check_opponent=true, remove_hitlag=false):
 			host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
 		if !allow_framecheat:
 			queue_state_change(fallback_state)
-
 	emit_signal("state_interruptable")
 
 func enable_hit_cancel(projectile=false):
@@ -514,8 +514,8 @@ func _exit_shared():
 	emit_signal("state_ended")
 	host.z_index = 0
 
-func update_sprite_frame(force=false):
-	if host.blockstun_ticks > 0 and !force:
-		return
+func update_sprite_frame():
+#	if host.blockstun_ticks > 0 and !force:
+#		return
 	.update_sprite_frame()
-	pass
+#	pass

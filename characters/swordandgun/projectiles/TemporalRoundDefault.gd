@@ -22,8 +22,8 @@ func f1():
 func f2():
 	var dir = fixed.normalized_vec(str(host.creator.current_di.x), str(host.creator.current_di.y))
 	if fixed.eq(fixed.vec_len(dir.x, dir.y), "0"):
-		dir.x = str(host.creator.get_facing_int())
-		pass
+		dir = host.creator.get_opponent_dir_vec()
+		
 	pos = host.obj_local_center(host.creator.opponent)
 	var my_pos = host.get_pos()
 

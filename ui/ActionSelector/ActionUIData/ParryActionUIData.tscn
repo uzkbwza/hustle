@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/CountOption/CountOption.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ParryActionUIData.gd" type="Script" id=3]
-[ext_resource path="res://ui/8Way/8Way.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/BlockHeightSelector.gd" type="Script" id=4]
+[ext_resource path="res://ui/ActionSelector/StateIcons/parry_low_small.png" type="Texture" id=5]
+[ext_resource path="res://ui/ActionSelector/StateIcons/parry_high_small.png" type="Texture" id=6]
 
 [node name="ActionUIData" type="VBoxContainer"]
 anchor_right = 1.0
@@ -18,22 +20,41 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="Block Height" parent="." instance=ExtResource( 4 )]
-margin_bottom = 44.0
-NW = false
-N = false
-NE = false
-W = false
-Neutral = false
-SW = false
-S = false
+[node name="Block Height" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+margin_right = 60.0
+margin_bottom = 39.0
+script = ExtResource( 4 )
+
+[node name="Label2" type="Label" parent="Block Height"]
+margin_right = 60.0
+margin_bottom = 11.0
+text = "Block Height"
+
+[node name="High" type="Button" parent="Block Height"]
+margin_top = 12.0
+margin_right = 60.0
+margin_bottom = 25.0
+size_flags_vertical = 8
+toggle_mode = true
+text = "High"
+icon = ExtResource( 6 )
+
+[node name="Low" type="Button" parent="Block Height"]
+margin_top = 26.0
+margin_right = 60.0
+margin_bottom = 39.0
+size_flags_vertical = 8
+toggle_mode = true
+text = "Low"
+icon = ExtResource( 5 )
 
 [node name="Melee Parry Timing" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 45.0
+margin_top = 40.0
 margin_right = 60.0
-margin_bottom = 81.0
+margin_bottom = 76.0
 min_value = 1
 max_value = 20
 
@@ -46,5 +67,8 @@ margin_left = -17.0
 margin_top = -11.0
 margin_right = 75.0
 text = "Melee Parry Timing"
+
+[connection signal="toggled" from="Block Height/High" to="Block Height" method="_on_High_toggled"]
+[connection signal="toggled" from="Block Height/Low" to="Block Height" method="_on_Low_toggled"]
 
 [editable path="Melee Parry Timing"]

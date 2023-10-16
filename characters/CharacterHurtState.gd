@@ -29,7 +29,6 @@ func init():
 #	busy_interrupt_into.append("Nudge")
 
 func _enter_shared():
-
 	host.blocked_hitbox_plus_frames = 0
 	brace = false
 	host.feinting = false
@@ -46,14 +45,10 @@ func _enter_shared():
 	host.busy_interrupt = true
 	host.clear_buffer()
 	._enter_shared()
-	call_deferred("update_sprite_frame")
+
 	host.brace_effect_applied_yet = true
 
-func update_sprite_frame(_force=false):
-	.update_sprite_frame(true)
-
 func _tick_shared():
-	update_sprite_frame()
 	._tick_shared()
 
 	if current_tick < 5:

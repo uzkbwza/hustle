@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.7.27-steam-unstable"
+var VERSION = "1.7.28-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -31,6 +31,7 @@ var speed_lines_enabled = true
 var auto_fc = true
 
 var mouse_world_position = Vector2()
+var rng = BetterRng.new()
 
 var name_paths = {
 	"Ninja": "res://characters/stickman/NinjaGuy.tscn",
@@ -91,6 +92,8 @@ func _enter_tree():
 #	ghost_afterimages = data.options.ghost_afterimages
 #	fullscreen = data.options.fullscreen
 #	show_hitboxes = data.options.show_hitboxes
+	randomize()
+	rng.randomize()
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
 #	load_supporter_pack()
@@ -100,18 +103,18 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
-	randomize()
 	if randi() % 50 == 0 and !SteamHustle.STARTED:
 		emit_signal("nag_window")
 
 func set_music_enabled(on):
 	music_enabled = on
 	if on:
-		play_song("bg1")
-		pass
+		play_random_song()
 	else:
 		audio_player.stop()
-		pass
+
+func play_random_song():
+	play_song(rng.choose(songs.keys()))
 
 func has_supporter_pack():
 	return true
