@@ -13,6 +13,9 @@ export var grounded = false
 var move_x_modifier = 0
 var move_y_modifier = 0
 
+var move_x_amount = "0"
+var move_y_amount = "0"
+
 var moving = false
 
 onready var hitbox = $Hitbox
@@ -31,10 +34,11 @@ func _frame_0():
 		anim_name = "DiveKick2"
 		
 		hitbox.y = -9
-		
+		hitbox.hits_vs_grounded = true
 		hitbox.dir_y = "1.0"
 		
 		if data.y < 0:
+			hitbox.hits_vs_grounded = false
 			hitbox.dir_y = "-1.0"
 			anim_name = "DiveKick2Up"
 			hitbox.y -= 16
@@ -42,6 +46,16 @@ func _frame_0():
 	moving = false
 	move_x_modifier = abs(data.x) * x_modifier_amount
 	move_y_modifier = data.y * y_modifier_amount
+
+	move_x_amount = move_x + move_x_modifier
+	move_y_amount = Utils.int_sign2(data.y) * move_y + move_y_modifier
+	
+	var move_amount = "1.0"
+	if data.y < 0:
+		move_amount = "0.6"
+
+	move_x_amount = fixed.round(fixed.mul(str(move_x_amount), move_amount))
+	move_y_amount = fixed.round(fixed.mul(str(move_y_amount), move_amount))
 
 func _frame_4():
 	if grounded:
@@ -74,25 +88,16 @@ func _tick():
 		if host.initiative:
 			current_tick = 9
 
-	if grounded and data.y < 0 and current_tick == 5:
+	if grounded and data.y < 0 and current_tick == 4:
 		current_tick = 8
 
-	var move_amount = "1.0"
-	if data.y < 0:
-		move_amount = "0.6"
-	
-	var move_x_amount = move_x + move_x_modifier
-	var move_y_amount = Utils.int_sign(data.y) * move_y + move_y_modifier
-
-	move_x_amount = fixed.round(fixed.mul(str(move_x_amount), move_amount))
-	move_y_amount = fixed.round(fixed.mul(str(move_y_amount), move_amount))
 
 	if moving:
 		host.move_directly_relative(move_x_amount, move_y_amount)
 	else:
 		host.apply_forces()
 	
-#	print(move_x + move_x_modifier, move_y + move_y_modifier)
+#	print(move_y_amount)
 	
 	
 	if host.is_grounded() and current_tick > 5:

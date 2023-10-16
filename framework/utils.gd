@@ -61,6 +61,11 @@ static func int_sign(n: int):
 		return -1
 	return 1
 
+static func int_sign2(n: int):
+	if n < 0:
+		return -1
+	return 1
+
 static func frames(n, fps=60):
 	return (n / float(fps))
 

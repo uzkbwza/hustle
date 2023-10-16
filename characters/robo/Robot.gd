@@ -308,6 +308,11 @@ func tick():
 				vel = get_vel()
 				set_vel(vel.x, "0")
 
+			if flying_dir.y > 0 and fixed.lt(vel.y, "0"):
+				update_data()
+				vel = get_vel()
+				set_vel(vel.x, fixed.mul(vel.y, "0.75"))
+
 			apply_force(fly_force.x, fixed.mul(upward_speed, fixed.mul(upward_speed_mod, "0.4")))
 			
 			var max_horiz_speed = MAX_BACKWARD_FLIGHT_SPEED if fixed.sign(vel.x) != get_opponent_dir() else MAX_FORWARD_FLIGHT_SPEED
