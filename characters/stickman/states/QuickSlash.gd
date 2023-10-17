@@ -178,9 +178,9 @@ func get_next_attack():
 	var grounded = host.get_pos().y > -BUFFER_ATTACK_GROUND_SNAP_DISTANCE
 	match attack:
 		0: return null
-		1: return "GroundedPunch" if grounded else "AirUpwardPunch"
-		2: return "GroundedSweep" if grounded else "AirAttack"
-		3: return "NunChukHeavy" if grounded else "NunChukSpin"
+		1: return "GroundedPunchQS" if grounded else "AirUpwardPunchQS"
+		2: return "GroundedSweepQS" if grounded else "AirAttackQS"
+		3: return "NunChukHeavyQS" if grounded else "NunChukSpinQS"
 
 func can_hit_cancel():
 	return (host.combo_count > 1 or !host.opponent.is_grounded()) and attack == 0

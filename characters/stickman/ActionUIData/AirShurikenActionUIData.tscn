@@ -14,7 +14,7 @@ script = ExtResource( 1 )
 [node name="Aim" parent="." instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-min_length = 0.4
+min_length = 0.45
 limit_angle = true
 limit_range_degrees = 45.0
 limit_center_degrees = 45.0

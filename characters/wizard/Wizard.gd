@@ -246,7 +246,7 @@ func tick():
 				apply_force(force.x, force.y)
 
 		tether_ticks -= 1
-		if is_grounded():
+		if is_grounded() or is_in_hurt_state():
 			tether_ticks = 0
 
 	if combo_count <= 0 and !opponent.current_state().endless:

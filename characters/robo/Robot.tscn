@@ -1,4 +1,4 @@
-[gd_scene load_steps=482 format=2]
+[gd_scene load_steps=481 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/robo/Robot.gd" type="Script" id=2]
@@ -472,7 +472,6 @@
 [ext_resource path="res://characters/robo/sprites/propel1.png" type="Texture" id=470]
 [ext_resource path="res://sound/common/whiff1.wav" type="AudioStream" id=471]
 [ext_resource path="res://sound/common/hit1.wav" type="AudioStream" id=472]
-[ext_resource path="res://sound/common/hit_bass.wav" type="AudioStream" id=473]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -1064,7 +1063,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
-frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -2049,50 +2047,27 @@ height = 22
 increment_combo = false
 hits_vs_grounded = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 471 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 6
 active_ticks = 6
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "KillProcessSpin"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/KillProcess" index="1"]
@@ -2119,29 +2094,29 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
-},
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
+ExtResource( 200 ): {
+"x": 5,
+"y": -12
 },
 ExtResource( 204 ): {
 "x": 8,
 "y": -32
 },
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
-},
-ExtResource( 200 ): {
-"x": 5,
-"y": -12
-},
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
+},
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
+},
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
+},
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
 }
 }
 update_facing_on_exit = false
@@ -2349,50 +2324,28 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "6.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
+block_pushback_modifier = "False"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 9
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "DisembowelGrabFollowup"
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/DisembowelGrab" index="1"]
@@ -2409,50 +2362,28 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "6.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
+block_pushback_modifier = "False"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 9
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "DisembowelGrabFollowup"
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/DisembowelGrab" index="2"]
@@ -2469,50 +2400,28 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "6.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
+block_pushback_modifier = "False"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 9
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "DisembowelGrabFollowup"
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/DisembowelGrab" index="3"]
@@ -2529,50 +2438,28 @@ increment_combo = false
 hits_vs_grounded = false
 followup_state = "DisembowelGrabFollowup"
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "6.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
+block_pushback_modifier = "False"
 grounded_hit_state = "Grabbed"
 aerial_hit_state = "Grabbed"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 9
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "DisembowelGrabFollowup"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DisembowelGrab" index="4"]
@@ -2598,49 +2485,49 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 }
 }
 iasa_at = 49
@@ -2699,25 +2586,9 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
 ExtResource( 254 ): {
 "x": 124,
 "y": -72
-},
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
-},
-ExtResource( 264 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 253 ): {
-"x": 116,
-"y": -66
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -2726,6 +2597,22 @@ ExtResource( 263 ): {
 ExtResource( 260 ): {
 "x": 40,
 "y": -34
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
+ExtResource( 253 ): {
+"x": 116,
+"y": -66
+},
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 264 ): {
+"x": 124,
+"y": -72
 }
 }
 interrupt_into_string = "Grounded
@@ -2816,50 +2703,27 @@ combo_scaling_amount = 2
 increment_combo = false
 hits_vs_aerial = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 5
 active_ticks = 10
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "CornerCarryHold"
 
 [node name="CornerCarryGrabAir" type="Node2D" parent="StateMachine" index="27"]
@@ -2898,50 +2762,27 @@ combo_scaling_amount = 2
 increment_combo = false
 hits_vs_grounded = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 5
 active_ticks = 10
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "CornerCarryHold"
 
 [node name="CornerCarryHold" type="Node2D" parent="StateMachine" index="28"]
@@ -3021,49 +2862,49 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 108 ): {
-"x": -16,
-"y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
-},
-ExtResource( 110 ): {
-"x": 65,
-"y": -12
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
+ExtResource( 110 ): {
+"x": 65,
+"y": -12
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 108 ): {
+"x": -16,
+"y": -46
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
+},
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 }
 }
 iasa_at = 49
@@ -3149,50 +2990,27 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 471 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 5
 active_ticks = 4
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "GroundSlam"
 
 [node name="ThrowBox2" type="Node2D" parent="StateMachine/CommandGrab" index="1"]
@@ -3207,50 +3025,27 @@ combo_scaling_amount = 0
 cancellable = false
 hits_vs_aerial = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 471 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 7
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "GroundSlam"
 
 [node name="ClapJump" type="Node2D" parent="StateMachine" index="32"]
@@ -4005,13 +3800,13 @@ ExtResource( 427 ): {
 "x": -19,
 "y": -12
 },
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
-},
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 }
 }
 title = "Back Throw"
@@ -4069,13 +3864,13 @@ ExtResource( 427 ): {
 "x": -19,
 "y": -12
 },
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
-},
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 }
 }
 title = "Back Throw"
@@ -4654,50 +4449,27 @@ width = 13
 height = 13
 hits_vs_aerial = false
 beats_grab = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 4
 active_ticks = 7
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "DriveWheelieThrow"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/DriveWheelieGrab" index="1"]
@@ -4732,21 +4504,21 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 372 ): {
-"x": -24,
-"y": -6
-},
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 },
 ExtResource( 374 ): {
 "x": 14,
 "y": -7
 },
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
+},
+ExtResource( 372 ): {
+"x": -24,
+"y": -6
 }
 }
 iasa_at = 20
@@ -4976,50 +4748,27 @@ width = 18
 damage_proration = 1
 increment_combo = false
 hits_vs_aerial = false
-block_cancel_allowed = null
-plus_frames = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 8
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_sound = ExtResource( 281 )
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "16.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
 start_tick = 7
 active_ticks = 2
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "OverflowFollowup"
 
 [node name="OverflowFollowup" type="Node2D" parent="StateMachine" index="65"]
@@ -5046,29 +4795,29 @@ ExtResource( 443 ): {
 "x": -12,
 "y": 21
 },
-ExtResource( 445 ): {
-"x": -17,
-"y": 18
-},
-ExtResource( 450 ): {
-"x": 15,
-"y": 21
-},
 ExtResource( 448 ): {
 "x": -16,
 "y": -2
-},
-ExtResource( 451 ): {
-"x": -13,
-"y": -24
 },
 ExtResource( 449 ): {
 "x": 7,
 "y": -22
 },
+ExtResource( 450 ): {
+"x": 15,
+"y": 21
+},
+ExtResource( 445 ): {
+"x": -17,
+"y": 18
+},
 ExtResource( 447 ): {
 "x": 52,
 "y": 49
+},
+ExtResource( 451 ): {
+"x": -13,
+"y": -24
 }
 }
 iasa_at = 40
@@ -5158,46 +4907,25 @@ x = 15
 width = 14
 height = 14
 beats_grab = false
-plus_frames = true
+block_cancel_allowed = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 
 [node name="AirGrab" parent="StateMachine" index="100"]
 data_ui_scene = null
@@ -5207,89 +4935,47 @@ x = 15
 width = 14
 height = 14
 beats_grab = false
-plus_frames = true
+block_cancel_allowed = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 throw_state = "AirHold"
 
 [node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-plus_frames = true
+block_cancel_allowed = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0
 screenshake_frames = 4
-hit_particle = -1
-replace_hit_particle = null
-camera_bump_dir = false
-whiff_particle = Vector2( 0, 0 )
-bump_on_whiff = null
 rumble = false
-_c_Sfx = true
-whiff_sound = 0
 hit_bass_sound = ExtResource( 472 )
-whiff_sound_volume = ExtResource( 473 )
 hit_sound_volume = -8.0
-bass_on_whiff = -5.0
-_c_Knockback = false
-dir_x = 0
+dir_x = "0"
 dir_y = "1.0"
 knockback = "-1.0"
-launch_reversible = "10.0"
-block_pushback_modifier = false
-_c_Knockback_Type = "1.0"
-grounded_hit_state = 0
+block_pushback_modifier = "False"
 aerial_hit_state = "HurtGrounded"
-minimum_grounded_frames = "HurtAerial"
-knockdown = -1
 knockdown_extends_hitstun = false
 hard_knockdown = true
 disable_collision = false
 air_ground_bounce = true
 ground_bounce = false
-ground_bounce_knockback_modifier = true
-wall_slam = "1.0"
-_c_Frame_Data = false
-always_on = 5
-_c_Loop_Data = false
-looping = 0
-loop_active_ticks = false
+loop_active_ticks = 0
 
 [node name="ForwardThrow" parent="StateMachine" index="102"]
 anim_length = 29
@@ -5300,25 +4986,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
 },
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 310 ): {
-"x": -21,
-"y": -15
-},
 ExtResource( 309 ): {
 "x": -21,
 "y": -9
 },
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
+ExtResource( 310 ): {
+"x": -21,
+"y": -15
+},
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
 }
 }
 release_frame = 18
@@ -5382,25 +5068,25 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
 },
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 310 ): {
-"x": -20,
-"y": -16
-},
 ExtResource( 309 ): {
 "x": -21,
 "y": -11
 },
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
+ExtResource( 310 ): {
+"x": -20,
+"y": -16
+},
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
 }
 }
 release_frame = 18

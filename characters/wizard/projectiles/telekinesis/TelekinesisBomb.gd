@@ -1,6 +1,6 @@
 extends TelekinesisProjectile
 
-export var explode_tick = 30
+export var explode_tick = 60
 
 func tick():
 	.tick()

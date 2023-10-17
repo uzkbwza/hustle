@@ -1845,6 +1845,7 @@ margin_right = 141.0
 margin_bottom = -46.968
 grow_horizontal = 2
 grow_vertical = 0
+rect_clip_content = false
 theme = ExtResource( 47 )
 fit_content_height = true
 scroll_active = false

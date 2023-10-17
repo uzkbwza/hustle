@@ -2,18 +2,25 @@
 
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=2]
-[ext_resource path="res://characters/swordandgun/ActionUIData/ForesightActionUIData.gd" type="Script" id=3]
+[ext_resource path="res://characters/swordandgun/ActionUIData/TeleportActionUIData2.gd" type="Script" id=3]
 
 [node name="ActionUIData" instance=ExtResource( 1 )]
+margin_right = 60.0
+margin_bottom = 66.0
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 55.0 ],
+"_edit_vertical_guides_": [ 18.0 ],
+"_editor_description_": ""
+}
 
 [node name="Direction" parent="." index="0" instance=ExtResource( 2 )]
+unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 limit_angle = true
-limit_range_degrees = 150.0
-limit_center_degrees = 30.0
+limit_range_degrees = 210.0
+limit_center_degrees = 0.0
 limit_symmetrical = false
 snap_angles = 2
 snap_align_to_limit_center = false
-snap_radius = 0.03

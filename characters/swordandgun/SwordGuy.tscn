@@ -1,4 +1,4 @@
-[gd_scene load_steps=330 format=2]
+[gd_scene load_steps=331 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -264,6 +264,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/shield2.png" type="Texture" id=262]
 [ext_resource path="res://characters/swordandgun/sprites/shield1.png" type="Texture" id=263]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/dash.png" type="Texture" id=264]
+[ext_resource path="res://characters/swordandgun/ActionUIData/TeleportActionUIData2.tscn" type="PackedScene" id=265]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw4.png" type="Texture" id=266]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw2.png" type="Texture" id=267]
 [ext_resource path="res://characters/swordandgun/sprites/gun_throw5.png" type="Texture" id=268]
@@ -1530,7 +1531,7 @@ y = -16
 width = 19
 height = 19
 damage = 110
-damage_in_combo = 80
+damage_in_combo = 65
 hitstun_ticks = 7
 combo_hitstun_ticks = 17
 hitlag_ticks = 2
@@ -1541,7 +1542,6 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
-grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -1584,7 +1584,7 @@ y = -16
 width = 19
 height = 19
 damage = 110
-damage_in_combo = 90
+damage_in_combo = 65
 hitstun_ticks = 12
 combo_hitstun_ticks = 16
 hitlag_ticks = 2
@@ -1595,7 +1595,6 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
-grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -1632,6 +1631,7 @@ script = ExtResource( 83 )
 x = 128
 y = -16
 damage = 40
+damage_in_combo = 65
 hitstun_ticks = 7
 hitlag_ticks = 2
 victim_hitlag = 4
@@ -1643,7 +1643,6 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "4.0"
-grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 7
@@ -2463,6 +2462,7 @@ height = 10
 damage = 70
 hitstun_ticks = 11
 victim_hitlag = 8
+block_cancel_allowed = false
 plus_frames = 2
 hit_height = 0
 dir_x = "0.25"
@@ -2515,6 +2515,7 @@ height = 10
 damage = 70
 hitstun_ticks = 8
 victim_hitlag = 7
+block_cancel_allowed = false
 plus_frames = 2
 hit_height = 0
 dir_x = "0.25"
@@ -2647,7 +2648,7 @@ x = 14
 y = -17
 width = 15
 height = 19
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2670,7 +2671,7 @@ x = 7
 y = -13
 width = 15
 height = 19
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2693,7 +2694,7 @@ x = 6
 y = -40
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2716,7 +2717,7 @@ x = 15
 y = -34
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2739,7 +2740,7 @@ x = -9
 y = -4
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2792,7 +2793,7 @@ x = 14
 y = -17
 width = 15
 height = 19
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2815,7 +2816,7 @@ x = 7
 y = -13
 width = 15
 height = 19
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2838,7 +2839,7 @@ x = 6
 y = -40
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2861,7 +2862,7 @@ x = 15
 y = -34
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -2884,7 +2885,7 @@ x = -9
 y = -4
 width = 8
 height = 8
-damage = 118
+damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
@@ -3210,7 +3211,7 @@ enter_sfx = ExtResource( 138 )
 enter_sfx_volume = -7.0
 title = "Teleport"
 type = 3
-data_ui_scene = ExtResource( 102 )
+data_ui_scene = ExtResource( 265 )
 button_texture = ExtResource( 137 )
 air_type = 2
 uses_air_movement = true
@@ -3739,15 +3740,10 @@ interrupt_from_string = ""
 interrupt_into_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-block_cancel_allowed = null
 _c_Grouping = 1
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-block_cancel_allowed = null
 _c_Grouping = 1
-
-[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-block_cancel_allowed = null
 
 [node name="ForwardThrow" parent="StateMachine" index="107"]
 knockback = "11.0"
