@@ -1,5 +1,7 @@
 extends CharacterState
 
+class_name Getup
+
 const GROUND_FRIC = "0.125"
 
 export var hard = false

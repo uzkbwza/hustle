@@ -6,7 +6,7 @@ const SPEED_LIMIT = "22"
 func _frame_2():
 	host.start_projectile_invulnerability()
 	if host.reverse_state and host.combo_count <= 0:
-		host.add_penalty(40)
+		host.add_penalty(25)
 
 func _tick():
 	host.apply_forces_no_limit()

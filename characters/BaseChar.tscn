@@ -1053,6 +1053,10 @@ endless = true
 [node name="Getup" type="Node2D" parent="StateMachine" index="21"]
 rotation = -0.000486477
 script = ExtResource( 58 )
+apply_forces = true
+apply_fric = true
+apply_custom_x_fric = true
+custom_x_fric = "0.125"
 anim_length = 8
 title = "Getup"
 type = 4

@@ -8,6 +8,7 @@ var MAX_SPEED_RATIO = "1.25"
 
 export var dir_x = 1
 export var dash_speed = 100
+export var dash_speed_string = "0"
 export var fric = "0.05"
 export var spawn_particle = true
 export var startup_lag = 0
@@ -18,6 +19,7 @@ export var speed_limit = "40"
 var updated = false
 var charged = false
 var auto = false
+var dash_force = "0"
 
 var dist_ratio = "1.0"
 
@@ -55,7 +57,8 @@ func _frame_1():
 		iasa_at = starting_iasa_at
 	if startup_lag != 0:
 		return
-	var dash_force = str(dir_x * dash_speed)
+	var dash_force = str(dir_x * dash_speed) if dash_speed_string == "0" else fixed.mul(str(dir_x), dash_speed_string)
+#	dash_force = "8"
 	if _previous_state_name() == "ChargeDash" or (data and data.has("charged")):
 		if dir_x >= 0:
 			charged = true
@@ -81,7 +84,7 @@ func _tick():
 	host.limit_speed(speed_limit)
 	var repeated = _previous_state() and _previous_state_name() == name
 	if (startup_lag > 0 and current_tick == startup_lag) and !repeated:
-		host.apply_force_relative(dir_x * dash_speed, 0)
+		host.apply_force_relative(dash_force, "0")
 		if spawn_particle:
 			spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 #		interruptible_on_opponent_turn = true

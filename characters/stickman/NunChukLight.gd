@@ -12,7 +12,7 @@ func _enter():
 	determine_charge()
 
 func determine_charge():
-	if _previous_state_name() == "NunChukHeavy" and (state_name == "NunChukLight" or state_name == "NunChukLightHigh"):
+	if "NunChukHeavy" in _previous_state_name() and (state_name == "NunChukLight" or state_name == "NunChukLightHigh"):
 		charged = true
 	elif (_previous_state_name() == "NunChukLight" or _previous_state_name() == "NunChukLightHigh") and _previous_state().charged:
 		charged = true

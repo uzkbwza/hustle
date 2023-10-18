@@ -102,6 +102,7 @@ func _exit_shared():
 	brace = false
 	host.hit_out_of_brace = false
 	guard_broken = false
+	host.start_sadness_immunity()
 	._exit_shared()
 
 func can_interrupt():

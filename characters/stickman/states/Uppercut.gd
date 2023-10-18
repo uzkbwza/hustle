@@ -4,6 +4,9 @@ func _frame_0():
 #	if current_tick == 0:
 	if host.initiative and host.is_grounded():
 		host.start_invulnerability()
+	if !host.is_grounded():
+		host.start_throw_invulnerability()
+#		host.start_projectile_invulnerability()
 	var vel = host.get_vel()
 	if air_type != AirType.Aerial:
 		if fixed.sign(vel.x) != host.get_facing_int():
@@ -21,3 +24,5 @@ func _tick():
 
 func _frame_4():
 	host.end_invulnerability()
+	host.end_throw_invulnerability()
+#	host.end_projectile_invulnerability()

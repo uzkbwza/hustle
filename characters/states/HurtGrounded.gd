@@ -81,4 +81,3 @@ func _tick():
 		else:
 			enable_interrupt()
 			can_act = true
-

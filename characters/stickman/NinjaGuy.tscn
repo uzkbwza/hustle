@@ -473,7 +473,7 @@ animations = [ {
 "name": "NunChukLight",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 98 ) ],
+"frames": [ ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 122 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 123 ), ExtResource( 98 ) ],
 "loop": true,
 "name": "NunChukLightHigh",
 "speed": 5.0
@@ -2053,11 +2053,12 @@ damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
 plus_frames = 2
+hit_height = 0
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 5
 active_ticks = 3
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/NunChukLightHigh" index="1"]
@@ -2072,12 +2073,13 @@ hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
 plus_frames = 2
+hit_height = 0
 priority = 1
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 5
 active_ticks = 3
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/NunChukLightHigh" index="2"]
@@ -2092,12 +2094,13 @@ hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
 plus_frames = 2
+hit_height = 0
 priority = 2
 hit_sound = ExtResource( 42 )
 dir_x = "0.20"
 knockback = "6.0"
 grounded_hit_state = "HurtAerial"
-start_tick = 6
+start_tick = 5
 active_ticks = 3
 
 [node name="NunChukHeavy" type="Node2D" parent="StateMachine" index="43"]
@@ -2753,7 +2756,6 @@ hitstun_ticks = 20
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = 1
-plus_frames = -1
 hit_height = 2
 hit_sound = ExtResource( 41 )
 knockback = "5.0"
@@ -3003,6 +3005,7 @@ active_ticks = 7
 [node name="AirAttackQS" type="Node2D" parent="StateMachine" index="62"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
+sprite_animation = "AirAttack"
 anim_length = 40
 title = "Kick"
 type = 1
