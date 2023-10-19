@@ -21,6 +21,7 @@ const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31 
 
+
 var hover_left = 0
 var hover_drain_amount = 19
 var fast_fall_drain_amount = 20
@@ -43,12 +44,30 @@ var boulder_projectile = null
 
 var spark_bombs = []
 var nearby_spark_bombs = []
+
 var default_dash_speed = 0
 var spark_speed_frames = 0
 
 onready var liftoff_sprite = $"%LiftoffSprite"
 onready var spark_speed_particle = $"%SparkSpeedParticle"
-
+onready var geyser_particle_effect_1 = $Flip/Particles/GeyserParticleEffect
+onready var geyser_particle_effect_2 = $Flip/Particles/GeyserParticleEffect2
+onready var geyser_particle_effect_3 = $Flip/Particles/GeyserParticleEffect3
+#
+#func stop_geyser_particles():
+#	geyser_particle_effect_1.stop_emitting()
+#	geyser_particle_effect_2.stop_emitting()
+#	geyser_particle_effect_3.stop_emitting()
+#	geyser_particle_effect_1.hide()
+#	geyser_particle_effect_2.hide()
+#	geyser_particle_effect_3.hide()
+#
+#func start_geyser_particle(num, rot):
+#	var geyser = [geyser_particle_effect_1, geyser_particle_effect_2, geyser_particle_effect_3][num]
+#	geyser.rotation = rot
+#	geyser.show()
+#	geyser.start()
+#
 func init(pos=null):
 	.init(pos)
 	hover_left = (HOVER_AMOUNT / 4) * 3
@@ -60,7 +79,7 @@ func init(pos=null):
 	default_dash_speed = $StateMachine/DashForward.dash_speed
 	if !is_connected("parried",self, "on_parried"):
 		connect("parried", self, "on_parried")
-
+#	stop_geyser_particles()
 func on_roll_started():
 	hovering = false
 	fast_falling = false
@@ -254,6 +273,14 @@ func tick():
 
 	if hover_left <= 0:
 		hover_left = 0
+
+#	if geyser_particles:
+#		var my_pos = get_pos() 
+#		for particle in geyser_particles:
+#			if is_instance_valid(particle):
+#				particle.position = geyser_particles[particle]
+#			else:
+#				geyser_particles.erase(particle)
 
 func start_moisture_effect():
 	$"%DrawMoistureParticle".start_emitting()

@@ -70,6 +70,7 @@ max_air_speed = "15"
 max_fall_speed = "5"
 extra_state_variables = "attached
 detonating"
+has_projectile_parry_window = false
 deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]

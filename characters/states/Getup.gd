@@ -7,3 +7,6 @@ func _frame_0():
 #func _tick():
 #	host.apply_fric()
 #	host.apply_forces()
+
+func _exit():
+	host.start_wakeup_throw_immunity()

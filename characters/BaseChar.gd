@@ -58,6 +58,7 @@ const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
 const PUSH_BLOCK_DIST = "80"
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
+const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
 const BASE_PLUS_FRAMES = 0
 const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
@@ -289,6 +290,7 @@ var feints = 2
 var feinted_last = false
 var feint_parriable = false
 
+var grounded_last_frame = true
 
 #var current_prediction = -1
 
@@ -353,7 +355,7 @@ var minus_frames = 0
 var hitstun_decay_combo_count = 0
 
 var lowest_tick = 0
-
+var wakeup_throw_immunity_ticks = 0
 
 class InputState:
 	var name
@@ -509,7 +511,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "last_parry_tick", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -1568,6 +1570,7 @@ func get_opponent_dir():
 func get_opponent_dir_vec(normalized=true):
 	var my_pos = get_pos()
 	var opp_pos = opponent.get_pos()
+
 	if normalized:
 		return fixed.normalized_vec(str(opp_pos.x - my_pos.x), str(opp_pos.y - my_pos.y))
 	return {
@@ -1856,6 +1859,7 @@ func tick():
 				gain_super_meter(vel_gain_amount)
 	#	if current_state().current_tick == -1:
 	#		state_tick()
+
 	if state_interruptable:
 		update_grounded()
 		
@@ -1865,6 +1869,9 @@ func tick():
 		
 	if parried_last_state and current_tick - last_parry_tick >= AUTO_PARRY_TICKS:
 		parried_last_state = false
+
+	if wakeup_throw_immunity_ticks > 0:
+		wakeup_throw_immunity_ticks -= 1
 
 	if sadness_immunity_ticks > 0:
 		sadness_immunity_ticks -= 1
@@ -1927,9 +1934,12 @@ func tick():
 		parried_last_state = false
 	used_buffer = false
 
+	grounded_last_frame = is_grounded()
+
 #	lowest_tick = null
 	if forfeit:
 		forfeit_ticks += 1
+
 	if forfeit and forfeit_ticks > 2:
 		change_state("ForfeitExplosion")
 		forfeit = false
@@ -1937,6 +1947,10 @@ func tick():
 		if "emotes" in ReplayManager.frames:
 			if current_tick in ReplayManager.frames.emotes[id]:
 				emote(ReplayManager.frames.emotes[id][current_tick])
+
+func landing_effect():
+	spawn_particle_effect_relative(preload("res://fx/LandingParticle.tscn"))
+	play_sound("Landing")
 
 func get_move_dir():
 	return fixed.sign(last_vel.x)
@@ -2083,7 +2097,10 @@ func deactivate_hitboxes():
 
 func start_sadness_immunity():
 	sadness_immunity_ticks = SADNESS_IMMUNITY_TICKS
-	
+
+func start_wakeup_throw_immunity():
+	wakeup_throw_immunity_ticks = WAKEUP_THROW_IMMUNITY_TICKS
+
 func forfeit():
 	will_forfeit = true
 

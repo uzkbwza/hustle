@@ -1019,9 +1019,7 @@ func apply_hitboxes(players):
 				p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
 				if p_hit_by:
 					p_hit_by.hit(p)
-				
 
-			
 #			if can_be_hit_by_melee or can_be_hit_by_projectiles:
 #				for opp_object in objects:
 #					if opp_object.disabled:
@@ -1067,10 +1065,13 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if !hitbox.overlaps(hurtbox):
 				continue
-			if hitbox is ThrowBox and !host.can_be_thrown():
-				if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
-					hitbox.save_hit_object(host)
-				continue
+			if hitbox is ThrowBox:
+				if !host.can_be_thrown():
+					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
+						hitbox.save_hit_object(host)
+					continue
+				if host.wakeup_throw_immunity_ticks > 0:
+					continue
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
 				continue
 			if !otg and !hitbox.hits_vs_standing:
@@ -1467,6 +1468,7 @@ func _unhandled_input(event: InputEvent):
 				if event.button_index == BUTTON_WHEEL_DOWN:
 					zoom_out()
 	update_mouse_world_position()
+
 func update_camera_limits():
 	if camera_zoom == 1.0 and stage_width > 320:
 		camera.limit_left = -stage_width - CAMERA_PADDING

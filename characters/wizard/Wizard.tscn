@@ -1,4 +1,4 @@
-[gd_scene load_steps=336 format=2]
+[gd_scene load_steps=347 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/Wizard.gd" type="Script" id=2]
@@ -270,7 +270,7 @@
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/orb_tether.png" type="Texture" id=268]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/conjure_weapon.png" type="Texture" id=269]
 [ext_resource path="res://characters/wizard/states/Geyser.gd" type="Script" id=270]
-[ext_resource path="res://characters/wizard/GeyserParticleEffect.tscn" type="PackedScene" id=271]
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=271]
 [ext_resource path="res://characters/wizard/ActionUiData/GeyserActionUIData.tscn" type="PackedScene" id=272]
 [ext_resource path="res://characters/wizard/sprites/geyser2.png" type="Texture" id=273]
 [ext_resource path="res://characters/wizard/sprites/geyser4.png" type="Texture" id=274]
@@ -318,6 +318,7 @@
 [ext_resource path="res://characters/wizard/states/IceSpikeGround.gd" type="Script" id=316]
 [ext_resource path="res://mechanics/SweptHitbox.gd" type="Script" id=317]
 [ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=318]
+[ext_resource path="res://characters/wizard/sprites/water_jet2.png" type="Texture" id=319]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw5.png" type="Texture" id=320]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw4.png" type="Texture" id=321]
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw2.png" type="Texture" id=322]
@@ -327,6 +328,12 @@
 [ext_resource path="res://characters/wizard/sprites/zephyr_throw1.png" type="Texture" id=326]
 [ext_resource path="res://characters/wizard/projectiles/ZephyrThrowEffect.tscn" type="PackedScene" id=327]
 [ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=328]
+[ext_resource path="res://characters/wizard/sprites/water_jet6.png" type="Texture" id=329]
+[ext_resource path="res://characters/wizard/sprites/water_jet3.png" type="Texture" id=330]
+[ext_resource path="res://characters/wizard/sprites/water_jet5.png" type="Texture" id=331]
+[ext_resource path="res://characters/wizard/sprites/water_jet1.png" type="Texture" id=332]
+[ext_resource path="res://characters/wizard/sprites/water_jet4.png" type="Texture" id=333]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=334]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -779,6 +786,46 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 180 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=14]
+animations = [ {
+"frames": [ ExtResource( 332 ), ExtResource( 332 ), ExtResource( 332 ), ExtResource( 319 ), ExtResource( 319 ), ExtResource( 330 ), ExtResource( 330 ), ExtResource( 330 ), ExtResource( 333 ), ExtResource( 333 ), ExtResource( 333 ), ExtResource( 333 ), ExtResource( 331 ), ExtResource( 331 ), ExtResource( 331 ), ExtResource( 331 ), ExtResource( 331 ), ExtResource( 329 ), ExtResource( 329 ), ExtResource( 329 ), ExtResource( 329 ), ExtResource( 329 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Curve" id=15]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.0345528, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="PackedScene" id=16]
+_bundled = {
+"base_scene": 0,
+"conn_count": 0,
+"conns": PoolIntArray(  ),
+"editable_instances": [  ],
+"names": PoolStringArray( "ParticleEffect", "material", "Timer", "AnimatedSprite", "frames", "frame", "CPUParticles2D", "position", "amount", "lifetime", "speed_scale", "explosiveness", "lifetime_randomness", "texture", "emission_shape", "emission_rect_extents", "direction", "gravity", "initial_velocity", "initial_velocity_random", "damping", "damping_random", "scale_amount", "scale_amount_random", "scale_amount_curve" ),
+"node_count": 3,
+"node_paths": [  ],
+"nodes": PoolIntArray( -1, -1, 2147483647, 0, -1, 1, 1, 1, 0, 0, 0, 3, 524291, -1, 2, 4, 2, 5, 3, 0, 0, 0, 6, 786438, -1, 18, 7, 4, 8, 5, 9, 6, 10, 7, 11, 8, 12, 9, 13, 10, 14, 11, 15, 12, 16, 13, 17, 14, 18, 15, 19, 16, 20, 17, 21, 18, 22, 19, 23, 9, 24, 20, 0 ),
+"variants": [ ExtResource( 334 ), SubResource( 1 ), SubResource( 14 ), 3, Vector2( 200, 0 ), 128, 2.39, 3.08, 0.89, 1.0, ExtResource( 271 ), 2, Vector2( 200, 8 ), Vector2( 6.882, -1.27 ), Vector2( 0, 63.812 ), 95.14, 0.56, 70.06, 0.3, 3.45, SubResource( 15 ) ],
+"version": 2
+}
+
 [node name="Wizard" instance=ExtResource( 1 )]
 material = SubResource( 5 )
 script = ExtResource( 2 )
@@ -808,25 +855,25 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 322 ): {
 "x": 40,
@@ -1523,8 +1570,6 @@ Grounded"
 hit_cancel_into_string = "Grounded
 Aerial"
 velocity_forward_meter_gain_multiplier = "0.5"
-trigger_orb_type = "OrbDart"
-trigger_orb_delay = 15
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Liftoff" index="0"]
 z_index = 1000
@@ -1841,25 +1886,25 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 322 ): {
 "x": 40,
@@ -2224,7 +2269,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 anim_length = 34
-particle_scene = ExtResource( 271 )
+particle_scene = SubResource( 16 )
 particle_position = Vector2( 0, -16 )
 enter_sfx = ExtResource( 147 )
 sfx = ExtResource( 328 )

@@ -13,8 +13,13 @@ var punishable = false
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
-	if !_previous_state().get("IS_NEW_PARRY") and !autoguard:
+
+	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
 		host.blockstun_ticks = 0
+	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
+		host.blockstun_ticks = 0
+	if autoguard:
+		parry_active = true
 
 func _frame_0():
 	started_in_combo = host.combo_count > 0

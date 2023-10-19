@@ -1,7 +1,7 @@
 extends CharacterState
 
 const DEFAULT_LAG = 4
-const MAX_EXTRA_LAG_FRAMES = 5
+const MAX_EXTRA_LAG_FRAMES = 7
 
 var lag = 0
 
@@ -11,7 +11,8 @@ func set_lag(lag=null):
 	if data is int:
 		lag = data
 	if _previous_state() and host.combo_count <= 0 and host.opponent.combo_count <= 0:
-		lag = lag + Utils.int_max(MAX_EXTRA_LAG_FRAMES - _previous_state().current_tick, 0)
+#		lag = lag + Utils.int_max(MAX_EXTRA_LAG_FRAMES - _previous_state().current_tick, 0)
+		lag = lag + Utils.int_max(MAX_EXTRA_LAG_FRAMES - host.turn_frames, 0)
 	anim_length = lag
 	iasa_at = lag - 1
 

@@ -1063,6 +1063,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -4587,6 +4588,7 @@ flip_with_facing = true
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
 reversible = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 GroundedMovement"
 interrupt_into_string = "Grounded

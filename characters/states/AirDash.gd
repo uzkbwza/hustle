@@ -61,14 +61,16 @@ func _tick():
 	host.apply_forces_no_limit()
 	if host.is_grounded():
 		if host.combo_count > 0:
-			queue_state_change("Landing")
+#			queue_state_change("Landing")
+			pass
 		else:
-			var lag = 4 + Utils.int_max(MAX_EXTRA_LAG_FRAMES - current_tick, 0)
+#			var lag = 4 + Utils.int_max(MAX_EXTRA_LAG_FRAMES - current_tick, 0)
 #			var lag = 4
-			queue_state_change("Landing", lag)
+#			queue_state_change("Landing")
 			var vel = host.get_vel()
 			if host.get_opponent_dir() != fixed.sign(vel.x):
 				host.set_vel(fixed.mul(vel.x, "0.6"), vel.y)
 
-#func is_usable():
-#	return .is_usable() and host.get_pos().y <= -MIN_AIRDASH_HEIGHT
+	var pos = host.get_pos()
+#	if pos.y > -3:
+#		host.set_pos(pos.x, 0)

@@ -74,6 +74,14 @@ func start_emitting():
 		if child is CPUParticles2D:
 			child.emitting = true
 
+func start():
+	start_emitting()
+	for child in get_children():
+		if child is AnimatedSprite:
+			child.playing = false
+			child.frame = 0
+
+
 func stop_emitting():
 #	emitting = false
 	for child in get_children():

@@ -523,6 +523,12 @@ volume_db = -15.0
 bus = "Fx"
 script = ExtResource( 130 )
 
+[node name="Landing" type="AudioStreamPlayer2D" parent="Sounds" index="16"]
+stream = ExtResource( 128 )
+volume_db = -15.0
+bus = "Fx"
+script = ExtResource( 130 )
+
 [node name="CollisionBox" parent="." index="2"]
 y = -14
 width = 12
@@ -619,6 +625,7 @@ button_texture = ExtResource( 99 )
 air_type = 2
 dynamic_iasa = false
 reversible = false
+can_feint_if_possible = false
 selectable = false
 interrupt_from_string = "Grounded
 Aerial
@@ -1310,6 +1317,7 @@ button_texture = ExtResource( 66 )
 flip_with_facing = true
 air_type = 1
 uses_air_movement = true
+land_cancel = true
 interruptible_on_opponent_turn = true
 reversible = false
 interrupt_from_string = "AerialMovement
@@ -1763,6 +1771,7 @@ type = 4
 button_texture = ExtResource( 157 )
 interruptible_on_opponent_turn = true
 next_state_on_hold = false
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
 GroundedSuper

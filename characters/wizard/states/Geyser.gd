@@ -52,12 +52,15 @@ var center_x = 0
 var center_y = 0
 
 var particle
+var hit = false
 
 var charges = 3
 var startup_lag = STARTUP_LAG
 
 func _enter():
 	charges = data["Charge"].count
+	hit = false
+	particle = null
 
 func _frame_0():
 	startup_lag = STARTUP_LAG
@@ -88,15 +91,23 @@ func _tick():
 	if startup_lag > 0:
 		current_tick = 0
 		startup_lag -= 1
-
-func _exit():
 	if particle:
-		particle.queue_free()
-		particle = null
+		if !hit and current_tick < 14:
+			var my_pos = host.get_pos()
+			if is_instance_valid(particle):
+				particle.position = Vector2(my_pos.x, my_pos.y) + particle_position
+
+
+#func _exit():
+#	if particle:
+#		particle.queue_free()
+#		particle = null
 
 func _frame_7():
 	var dir = xy_to_dir(data["Direction"]["x"], data["Direction"]["y"])
-	particle = spawn_particle_relative(PARTICLES[charges - 1], particle_position, Vector2(float(dir.x), float(dir.y)))
+	particle = host._spawn_particle_effect(PARTICLES[charges - 1], particle_position, Vector2(float(dir.x), float(dir.y)))
+
+#	host.start_geyser_particle(charges - 1, Vector2(float(dir.x), float(dir.y)).angle())
 	var pos = host.get_pos()
 	center_x = pos.x
 	center_y = pos.y
@@ -155,3 +166,7 @@ func _frame_9():
 #		var h = obj.hitboxes[i]
 #		h.name = host.name+"_HB_"+str(i)
 #		h.activate()
+func _on_hit_something(obj, _hitbox):
+	if obj.is_in_group("Fighter"):
+		hit = true
+	._on_hit_something(obj, _hitbox)

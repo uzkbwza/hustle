@@ -3786,6 +3786,7 @@ force_speed = "2.0"
 force_tick = 23
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
+can_feint_if_possible = false
 hit_cancel_into_string = "Grounded
 Aerial"
 
