@@ -50,9 +50,7 @@ var spark_speed_frames = 0
 
 onready var liftoff_sprite = $"%LiftoffSprite"
 onready var spark_speed_particle = $"%SparkSpeedParticle"
-onready var geyser_particle_effect_1 = $Flip/Particles/GeyserParticleEffect
-onready var geyser_particle_effect_2 = $Flip/Particles/GeyserParticleEffect2
-onready var geyser_particle_effect_3 = $Flip/Particles/GeyserParticleEffect3
+
 #
 #func stop_geyser_particles():
 #	geyser_particle_effect_1.stop_emitting()
