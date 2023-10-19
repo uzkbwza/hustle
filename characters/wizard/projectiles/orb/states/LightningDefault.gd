@@ -11,3 +11,4 @@ func _enter():
 
 func _exit():
 	host.disable()
+	host.hide()

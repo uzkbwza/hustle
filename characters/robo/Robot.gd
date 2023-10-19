@@ -272,6 +272,7 @@ func tick():
 				stop_fly_fx()
 	if is_in_hurt_state():
 		flying_dir = null
+		stop_fly_fx()
 	if flying_dir != null and current_state().get("can_fly") != null and !current_state().can_fly:
 		flying_dir = null
 	if start_fly and flying_dir != null:

@@ -2134,7 +2134,7 @@ autowrap = true
 modulate = Color( 0.392157, 0.823529, 0.419608, 1 )
 margin_top = 82.0
 margin_right = 155.0
-margin_bottom = 107.0
+margin_bottom = 121.0
 text = "Complete:
 - Base game
 - Steam workshop"
@@ -2142,7 +2142,7 @@ autowrap = true
 
 [node name="Incomplete" type="Label" parent="UILayer/MainMenu/RoadmapContainer/RoadmapListContainer"]
 modulate = Color( 1, 1, 1, 0.482353 )
-margin_top = 108.0
+margin_top = 122.0
 margin_right = 155.0
 margin_bottom = 189.0
 text = "Incomplete:

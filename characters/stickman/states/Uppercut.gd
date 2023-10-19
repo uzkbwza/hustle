@@ -24,5 +24,7 @@ func _tick():
 
 func _frame_4():
 	host.end_invulnerability()
-	host.end_throw_invulnerability()
 #	host.end_projectile_invulnerability()
+
+func _frame_8():
+	host.end_throw_invulnerability()

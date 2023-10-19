@@ -48,6 +48,7 @@ func disable():
 		hitbox.deactivate()
 	stop_particles()
 
+
 func on_got_parried():
 	emit_signal("got_parried")
 
