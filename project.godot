@@ -99,7 +99,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://bin/FGCharacter.gdns"
 }, {
-"base": "Reference",
+"base": "",
 "class": "FGObject",
 "language": "NativeScript",
 "path": "res://bin/FGObject.gdns"
@@ -109,7 +109,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/BaseChar.gd"
 }, {
-"base": "Reference",
+"base": "",
 "class": "FixedMath",
 "language": "NativeScript",
 "path": "res://bin/FixedMath.gdns"
@@ -204,7 +204,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/beast/Beast.gd"
 }, {
-"base": "Reference",
+"base": "",
 "class": "NativeMethods",
 "language": "NativeScript",
 "path": "res://bin/NativeMethods.gdns"
