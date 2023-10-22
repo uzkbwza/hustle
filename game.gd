@@ -178,6 +178,16 @@ func connect_signals(object):
 func copy_to(game: Game):
 	if !game_started:
 		return
+#	var p1_pos = p1.get_pos()
+#	var p2_pos = p2.get_pos()
+#	print(p1_pos)
+#	print(p2_pos)
+#	game.p1.set_pos(p1_pos.x, p1_pos.y)
+#	game.p2.set_pos(p2_pos.x, p2_pos.y)
+	p1.chara.copy_to(game.p1.chara)
+	p2.chara.copy_to(game.p2.chara)
+	game.p1.update_data()
+	game.p2.update_data()
 	p1.copy_to(game.p1)
 	p2.copy_to(game.p2)
 	game.p1.hp = p1.hp

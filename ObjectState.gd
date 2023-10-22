@@ -41,6 +41,7 @@ export var loop_animation = false
 export var animation_loop_start = 0
 export var absolute_loop = false
 export var endless = false
+export var disable_at_end = false
 
 export var _c_Static_Force = 0
 export var force_dir_x = "0.0"
@@ -520,6 +521,8 @@ func _exit_shared():
 		current_hurtbox.end(host)
 	last_facing = host.get_facing_int()
 	host.reset_hurtbox()
+	if disable_at_end:
+		host.disable()
 
 func xy_to_dir(x, y, mul="1.0", div="100.0"):
 	return host.xy_to_dir(x, y, mul, div)

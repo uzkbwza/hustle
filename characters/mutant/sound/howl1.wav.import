@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/howl1.wav-047c27a231ca2e13a0c8f1a07a2c13ab.sample"
+
+[deps]
+
+source_file="res://characters/mutant/sound/howl1.wav"
+dest_files=[ "res://.import/howl1.wav-047c27a231ca2e13a0c8f1a07a2c13ab.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

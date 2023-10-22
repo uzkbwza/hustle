@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/caustic3.wav-0e8ce14d33917c463d21126c0f074fce.sample"
+
+[deps]
+
+source_file="res://characters/mutant/sound/caustic3.wav"
+dest_files=[ "res://.import/caustic3.wav-0e8ce14d33917c463d21126c0f074fce.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

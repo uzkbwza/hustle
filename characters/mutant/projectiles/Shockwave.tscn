@@ -1,0 +1,148 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/mutant/projectiles/sprites/shockwave1.png" type="Texture" id=2]
+[ext_resource path="res://characters/mutant/projectiles/sprites/shockwave2.png" type="Texture" id=3]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
+[ext_resource path="res://characters/mutant/projectiles/Shockwave.gd" type="Script" id=5]
+[ext_resource path="res://characters/stickman/projectiles/fireball_states/Default.gd" type="Script" id=6]
+[ext_resource path="res://characters/mutant/projectiles/sprites/shockwave3.png" type="Texture" id=7]
+[ext_resource path="res://characters/mutant/projectiles/sprites/shockwave4.png" type="Texture" id=8]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=9]
+[ext_resource path="res://fx/ParticleEffect.gd" type="Script" id=10]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=11]
+[ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=12]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 8 ) ],
+"loop": true,
+"name": "FizzleOut",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = ExtResource( 11 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=5]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.992574, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+max_fall_speed = "15"
+has_projectile_parry_window = false
+
+[node name="Sprite" parent="Flip" index="0"]
+z_index = 1
+frames = SubResource( 1 )
+animation = "Default"
+offset = Vector2( 0, -16 )
+
+[node name="ParticleEffect" type="Node2D" parent="Flip/Particles" index="0"]
+material = SubResource( 4 )
+script = ExtResource( 10 )
+free = false
+one_shot = false
+
+[node name="Timer" type="Timer" parent="Flip/Particles/ParticleEffect" index="0"]
+wait_time = 0.064
+one_shot = true
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="Flip/Particles/ParticleEffect" index="1"]
+position = Vector2( -11.575, -0.543 )
+amount = 32
+lifetime = 3.79
+preprocess = 0.04
+speed_scale = 5.03
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 9 )
+emission_shape = 2
+emission_rect_extents = Vector2( 16, 0 )
+spread = 9.14
+gravity = Vector2( 0, -9 )
+initial_velocity_random = 1.0
+scale_amount = 0.0
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 5 )
+color = Color( 0.92549, 1, 0.643137, 1 )
+
+[node name="CollisionBox" parent="." index="2"]
+y = -20
+width = 28
+
+[node name="Hurtbox" parent="." index="3"]
+x = 15
+y = -25
+width = 15
+height = 25
+
+[node name="Default" parent="StateMachine" index="0"]
+fallback_state = "FizzleOut"
+anim_length = 60
+ticks_per_frame = 3
+loop_animation = true
+endless = false
+move_x = 0
+move_x_string = "3.5"
+clash = false
+fizzle_on_ground = false
+fizzle_on_hit_opponent = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 4 )
+x = 16
+y = -23
+width = 12
+height = 23
+damage = 90
+hitstun_ticks = 12
+victim_hitlag = 8
+plus_frames = 2
+hit_sound = ExtResource( 12 )
+knockback = "4.0"
+start_tick = 1
+always_on = true
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Default" index="1"]
+z_index = 1000
+script = ExtResource( 4 )
+x = -8
+y = -4
+width = 12
+height = 4
+damage = 90
+hitstun_ticks = 12
+victim_hitlag = 8
+plus_frames = 2
+hit_sound = ExtResource( 12 )
+knockback = "4.0"
+start_tick = 1
+always_on = true
+
+[node name="FizzleOut" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 6 )
+fallback_state = "Default"
+anim_length = 6
+disable_at_end = true
+move_x_string = "3.5"
+fizzle_on_ground = false
+fizzle_on_walls = false

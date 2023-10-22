@@ -556,7 +556,8 @@ func copy_to(f):
 	f.stance = stance
 	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()
-	f.set_facing(get_facing_int(), true)
+	var facing = get_facing_int()
+	f.set_facing(facing, true)
 #	f.set_grounded(is_grounded())
 	f.update_data()
 
