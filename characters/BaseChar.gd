@@ -1171,13 +1171,15 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		var projectile = not host.is_in_group("Fighter")
 		var perfect_parry
 		var parry_type = current_state().parry_type
+		var input_timing = current_state().data["Melee Parry Timing"].count + (blocked_hitbox_plus_frames - opponent.blocked_hitbox_plus_frames)
+#		print(input_timing)
 
 		if not projectile:
 			if current_state() is GroundedParryState:
 	#				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
 				var parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
-				var in_parry_window = (parry_timing == current_state().data["Melee Parry Timing"].count or current_state().data["Melee Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
+				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
 				var perfect_requirement = can_perfect_parry() and current_state().matches_hitbox_height(hitbox)
 				if projectile:
 					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
@@ -1190,7 +1192,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 			else:
 				var parry_timing = turn_frames
-				var in_parry_window = (parry_timing == current_state().data["Melee Parry Timing"].count or current_state().data["Melee Parry Timing"].count == 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
+				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
 	#				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 		else:
@@ -1314,7 +1316,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 					pushback_force = fixed.mul(pushback_force, AIR_BLOCK_PUSHBACK_MODIFIER)
 				
 				apply_force(pushback_force, "0")
-				
 				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), hitbox.block_pushback_modifier), "0")
 
 			if !projectile or fixed.le(get_opponent_distance(), PUSH_BLOCK_DIST):
@@ -1326,7 +1327,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 			current_state().interruptible_on_opponent_turn = true
 
-			
 			var total_plus_frames = hitbox.plus_frames
 			
 			if !current_state().matches_hitbox_height(hitbox, parry_type):

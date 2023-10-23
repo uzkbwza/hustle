@@ -93,8 +93,7 @@ func can_parry_hitbox(hitbox):
 	return true
 	
 func _tick():
-	if !parried and !autoguard:
-			host.set_block_stun(1)
+
 	host.apply_fric()
 #	if air_type == AirType.Aerial:
 	host.apply_grav()
@@ -111,3 +110,8 @@ func _tick():
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false
+
+func enable_interrupt(check_opponent=true, remove_hitlag=false):
+	.enable_interrupt(check_opponent, remove_hitlag)
+	if !parried and !autoguard:
+		host.set_block_stun(1)

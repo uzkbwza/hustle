@@ -47,6 +47,7 @@ export var min_land_cancel_frame = -1
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
 export var iasa_on_hit = -1
+export var iasa_on_hit_on_block = true
 export var interrupt_frames = []
 export var throw_techable = false
 export var interruptible_on_opponent_turn = false
@@ -476,7 +477,7 @@ func can_feint():
 	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
 func can_interrupt():
-	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit) or (was_blocked and current_tick == iasa_on_hit)
+	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit) or (was_blocked and iasa_on_hit_on_block and current_tick == iasa_on_hit)
 
 func on_got_hit():
 	pass

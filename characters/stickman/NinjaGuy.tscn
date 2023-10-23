@@ -1720,6 +1720,8 @@ enter_force_speed = "7.0"
 title = "Uppercut"
 type = 2
 button_texture = ExtResource( 37 )
+iasa_on_hit = 14
+iasa_on_hit_on_block = false
 instant_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
