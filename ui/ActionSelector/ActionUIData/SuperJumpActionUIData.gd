@@ -8,3 +8,4 @@ func fighter_update():
 	if fighter.combo_count > 0:
 		jump_arc.limit_range_degrees = 60
 		jump_arc.limit_center_degrees = -60
+	jump_arc.update_value()

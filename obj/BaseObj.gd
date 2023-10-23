@@ -78,6 +78,8 @@ var state_interruptable = true
 var state_hit_cancellable = false
 
 var invulnerable = false
+var grounded_attack_immune = false
+var aerial_attack_immune = false
 
 var use_platforms = false
 var last_object_hit = ""
@@ -92,7 +94,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "last_object_hit", "can_update_sprite", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "grounded_attack_immune", "aerial_attack_immune", "last_object_hit", "can_update_sprite", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -471,6 +473,18 @@ func start_projectile_invulnerability():
 
 func end_projectile_invulnerability():
 	projectile_invulnerable = false
+
+func start_aerial_attack_invulnerability():
+	aerial_attack_immune = true
+
+func end_aerial_attack_invulnerability():
+	aerial_attack_immune = false
+
+func start_grounded_attack_invulnerability():
+	grounded_attack_immune = true
+
+func end_grounded_attack_invulnerability():
+	grounded_attack_immune = false
 
 func start_invulnerability():
 	invulnerable = true

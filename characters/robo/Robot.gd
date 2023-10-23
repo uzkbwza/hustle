@@ -229,6 +229,9 @@ func add_armor_pip():
 	if armor_pips > MAX_ARMOR_PIPS:
 		armor_pips = MAX_ARMOR_PIPS
 
+func can_perfect_parry():
+	return flying_dir == null
+
 func tick():
 	.tick()
 	if propel_friction_ticks > 0:
@@ -273,6 +276,9 @@ func tick():
 	if is_in_hurt_state():
 		flying_dir = null
 		stop_fly_fx()
+#	if current_state() is GroundedParryState:
+#		flying_dir = null
+#		stop_fly_fx()
 	if flying_dir != null and current_state().get("can_fly") != null and !current_state().can_fly:
 		flying_dir = null
 	if start_fly and flying_dir != null:
@@ -477,6 +483,11 @@ func on_attack_blocked():
 				change_state("UnDriveCancel")
 			else:
 				change_state("DriveCancel")
+
+func on_blocked_melee_attack():
+	flying_dir = null
+	stop_fly_fx()
+	pass
 
 func try_drive_cancel(fast=false):
 #	print("here")

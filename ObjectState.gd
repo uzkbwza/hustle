@@ -170,6 +170,24 @@ func get_active_hitboxes():
 					hitboxes.append(hitbox)
 	return hitboxes
 
+func get_active_hurtboxes():
+	var hurtboxes = []
+	for child in get_children():
+		if child is LimbHurtbox:
+			if is_hurtbox_active(child):
+				hurtboxes.append(child)
+
+func is_hurtbox_active(hurtbox: LimbHurtbox):
+	var after_start = hurtbox.start_tick <= 0
+	if !after_start:
+		if current_tick + 1 >= hurtbox.start_tick:
+			after_start = true
+	var before_end = hurtbox.end_tick <= 0
+	if !before_end:
+		if current_tick < hurtbox.end_tick:
+			before_end = true
+	return after_start and before_end
+
 func _tick_before():
 	pass
 
@@ -327,6 +345,9 @@ func update_hurtbox():
 			current_hurtbox.end(host)
 		current_hurtbox = hurtbox_state_change_frames[current_tick]
 		current_hurtbox.start(host)
+	for child in get_children():
+		if child is LimbHurtbox:
+			child.active = is_hurtbox_active(child)
 
 func copy_data():
 	var d = null
@@ -521,6 +542,13 @@ func _exit_shared():
 		current_hurtbox.end(host)
 	last_facing = host.get_facing_int()
 	host.reset_hurtbox()
+	host.end_invulnerability()
+	host.end_projectile_invulnerability()
+	host.end_throw_invulnerability()
+
+	host.end_aerial_attack_invulnerability()
+	host.end_grounded_attack_invulnerability()
+
 	if disable_at_end:
 		host.disable()
 

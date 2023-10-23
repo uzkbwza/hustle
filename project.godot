@@ -194,6 +194,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HurtboxState.gd"
 }, {
+"base": "CollisionBox",
+"class": "LimbHurtbox",
+"language": "GDScript",
+"path": "res://LimbHurtbox.gd"
+}, {
 "base": "Reference",
 "class": "MultiplayerClient",
 "language": "GDScript",
@@ -412,6 +417,7 @@ _global_script_class_icons={
 "HurtAerial": "",
 "HurtGrounded": "",
 "HurtboxState": "",
+"LimbHurtbox": "",
 "MultiplayerClient": "",
 "Mutant": "",
 "NativeMethods": "",

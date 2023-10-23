@@ -893,7 +893,7 @@ func apply_hitboxes(players):
 					continue
 				var valid_clash = false
 				
-
+				
 
 				if asymmetrical_clashing:
 					if p1_hit and not p2_hit:
@@ -1071,6 +1071,7 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			var host = hurtbox.get_parent()
 			if host is ObjectState:
 				host = host.host
+			var attacker = hitbox.host
 			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if !hitbox.overlaps(hurtbox):
@@ -1092,6 +1093,13 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 				continue
 			if hitbox.already_hit_object(host):
 				continue
+			if attacker:
+				if !attacker.is_grounded():
+					if host.aerial_attack_immune:
+						continue
+				else:
+					if host.grounded_attack_immune:
+						continue
 			hit_by = hitbox
 
 	return hit_by

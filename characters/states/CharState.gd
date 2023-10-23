@@ -270,6 +270,8 @@ func _enter_shared():
 	if force_same_direction_as_previous_state:
 		host.reverse_state = false
 	._enter_shared()
+	if !get("IS_NEW_PARRY"):
+		host.block_used_air_movement = false
 	started_during_combo = false
 	if dynamic_iasa:
 		interruptible_on_opponent_turn = start_interruptible_on_opponent_turn
@@ -495,12 +497,11 @@ func _exit_shared():
 		host.reverse_state = false
 		host.set_facing(host.get_facing_int())
 	terminate_hitboxes()
-	host.end_invulnerability()
-	host.end_projectile_invulnerability()
-	host.end_throw_invulnerability()
+
 	if release_opponent_on_exit:
 		host.release_opponent()
 	host.got_parried = false
+	host.got_blocked = false
 	host.colliding_with_opponent = true
 	host.state_interruptable = false
 	host.projectile_hit_cancelling = false

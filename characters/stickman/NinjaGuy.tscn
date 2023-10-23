@@ -1712,14 +1712,13 @@ __meta__ = {
 anim_length = 90
 force_dir_x = "0.76"
 force_dir_y = "-1.45"
-force_speed = "5.0"
+force_speed = "7.0"
 force_tick = 3
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 title = "Uppercut"
 type = 2
 button_texture = ExtResource( 37 )
-iasa_on_hit = 14
 instant_cancellable = false
 interrupt_from_string = "GroundedSpecial
 Grounded
@@ -1746,6 +1745,7 @@ hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
 cancellable = false
+can_clash = false
 block_punishable = true
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
@@ -1768,7 +1768,9 @@ damage = 60
 hitstun_ticks = 25
 hitlag_ticks = 6
 victim_hitlag = 6
+damage_proration = 2
 cancellable = false
+can_clash = false
 block_punishable = true
 group = 1
 screenshake_amount = 5
@@ -1780,7 +1782,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 6
-active_ticks = 3
+active_ticks = 4
 
 [node name="UppercutAir" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 7 )
@@ -1830,6 +1832,7 @@ hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
 cancellable = false
+can_clash = false
 block_punishable = true
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
@@ -1853,6 +1856,7 @@ hitstun_ticks = 17
 hitlag_ticks = 6
 victim_hitlag = 6
 cancellable = false
+can_clash = false
 block_punishable = true
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
@@ -1954,6 +1958,7 @@ damage = 100
 hitstun_ticks = 34
 hitlag_ticks = 8
 victim_hitlag = 8
+block_cancel_allowed = false
 plus_frames = 1
 hit_height = 0
 screenshake_amount = 7
@@ -2052,6 +2057,7 @@ height = 11
 damage = 70
 hitstun_ticks = 23
 victim_hitlag = 4
+block_cancel_allowed = false
 plus_frames = 1
 hit_height = 0
 hit_sound = ExtResource( 42 )
@@ -2072,6 +2078,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+block_cancel_allowed = false
 plus_frames = 1
 hit_height = 0
 priority = 1
@@ -2093,6 +2100,7 @@ damage = 100
 hitstun_ticks = 23
 victim_hitlag = 4
 hits_vs_grounded = false
+block_cancel_allowed = false
 plus_frames = 1
 hit_height = 0
 priority = 2
@@ -3061,7 +3069,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 sprite_animation = "Summon"
-anim_length = 15
+anim_length = 13
 particle_scene = ExtResource( 53 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
@@ -3548,21 +3556,21 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3759,21 +3767,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
+},
 ExtResource( 206 ): {
 "x": 13,
-"y": -10
-},
-ExtResource( 207 ): {
-"x": 15,
 "y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
 },
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
 }
 }
 burst_cancellable = false
@@ -3813,21 +3821,21 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="97"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
-},
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
 },
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
 },
 ExtResource( 210 ): {
 "x": 37,

@@ -17,8 +17,10 @@ func _enter():
 	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
 		host.blockstun_ticks = 0
 	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
-		host.blockstun_ticks = 0
-	if autoguard:
+		parry_active = true
+	elif _previous_state().get("IS_NEW_PARRY") and _previous_state().push:
+		parry_active = true
+	elif autoguard:
 		parry_active = true
 
 func _frame_0():

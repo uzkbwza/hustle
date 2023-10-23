@@ -43,7 +43,6 @@ func update_selected_move(move_state):
 	if move_state is RollDodge:
 		$"%FlyEnabled".set_pressed_no_signal(false)
 		$"%FlyEnabled".disabled = true
-		pass
 #	if fighter.is_grounded():
 #		$"%FlyDir".hide()
 #		$"%FlyEnabled".hide()

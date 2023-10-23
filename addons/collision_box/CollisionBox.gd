@@ -124,6 +124,10 @@ func box_draw():
 					color = Color.pink
 				if parent.throw_invulnerable:
 					color = Color.green
+				if parent.aerial_attack_immune:
+					color = Color.blueviolet
+				if parent.grounded_attack_immune:
+					color = Color.brown
 				if parent.invulnerable:
 					color = Color.blue
 		
