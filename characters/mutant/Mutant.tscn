@@ -123,7 +123,7 @@
 [ext_resource path="res://characters/mutant/sprites/air_swipe8.png" type="Texture" id=121]
 [ext_resource path="res://characters/mutant/states/ForwardDashFollowup.gd" type="Script" id=122]
 [ext_resource path="res://characters/mutant/actionuidata/DashAttackActionUIData.tscn" type="PackedScene" id=123]
-[ext_resource path="res://ui/ActionSelector/ActionUIData/GrabActionUIData.tscn" type="PackedScene" id=124]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/AirGrabActionUIData2.tscn" type="PackedScene" id=124]
 [ext_resource path="res://characters/mutant/DashThroughAttack.gd" type="Script" id=125]
 [ext_resource path="res://characters/mutant/sprites/dash_through_attack3.png" type="Texture" id=126]
 [ext_resource path="res://characters/mutant/sprites/dash_through_attack5.png" type="Texture" id=127]
@@ -345,7 +345,7 @@ animations = [ {
 "name": "RollForward",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 146 ), ExtResource( 146 ), ExtResource( 147 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 149 ), ExtResource( 149 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ) ],
+"frames": [ ExtResource( 146 ), ExtResource( 147 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 148 ), ExtResource( 149 ), ExtResource( 149 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 150 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 151 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ) ],
 "loop": true,
 "name": "Shockwave",
 "speed": 5.0
@@ -423,7 +423,8 @@ extra_color_2 = Color( 0, 0.521569, 0.380392, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 3 )
-animation = "InstantCancel"
+animation = "Shockwave"
+frame = 11
 offset = Vector2( 0, -16 )
 
 [node name="Swish" type="AudioStreamPlayer2D" parent="Sounds" index="12"]
@@ -884,6 +885,7 @@ apply_fric = true
 apply_grav = true
 sprite_animation = "SwipeUp"
 anim_length = 16
+animation_loop_start = 1
 force_speed = "6.0"
 enter_force_dir_x = "1.0"
 enter_force_speed = "3.0"
@@ -916,6 +918,7 @@ damage_proration = 1
 cancellable = false
 hits_vs_grounded = false
 beats_grab = false
+block_cancel_allowed = false
 hit_height = 0
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
@@ -939,6 +942,7 @@ damage_proration = 1
 cancellable = false
 hits_vs_grounded = false
 beats_grab = false
+block_cancel_allowed = false
 hit_height = 0
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
@@ -979,7 +983,7 @@ y = -8
 width = 25
 height = 8
 damage = 70
-hitstun_ticks = 15
+hitstun_ticks = 16
 victim_hitlag = 7
 damage_proration = 1
 cancellable = false
@@ -1198,9 +1202,8 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 anim_length = 22
-enter_force_dir_x = "10"
-enter_force_speed = "10.0"
-flip_frame = 6
+enter_force_dir_x = "1"
+enter_force_speed = "8.0"
 type = 1
 iasa_on_hit = 17
 interrupt_from_string = "ForwardDashAttack"
@@ -1214,6 +1217,7 @@ x = 17
 y = -16
 width = 17
 height = 7
+hitstun_ticks = 25
 victim_hitlag = 7
 cancellable = false
 whiff_sound = ExtResource( 31 )
@@ -1504,7 +1508,7 @@ __meta__ = {
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 24
+anim_length = 22
 force_dir_x = "1.0"
 force_speed = "6.0"
 force_tick = 12
@@ -1522,8 +1526,54 @@ projectile_pos_x = 30
 projectile_match_facing = true
 title = "Shockwave"
 type = 2
+iasa_on_hit = 20
 interrupt_from_string = "Grounded
 GroundedSpecial"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+AerialAttack
+AerialSpecial
+AerialSuper"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Shockwave" index="0"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 17
+y = -14
+width = 10
+damage = 75
+hitstun_ticks = 16
+hitlag_ticks = 14
+cancellable = false
+di_modifier = "0.8"
+sdi_modifier = "0.1"
+block_cancel_allowed = false
+whiff_sound = ExtResource( 31 )
+hit_sound = ExtResource( 20 )
+start_tick = 12
+active_ticks = 2
+
+[node name="Hitbox2" type="Node2D" parent="StateMachine/Shockwave" index="1"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 5
+y = -33
+width = 11
+height = 5
+damage = 75
+hitstun_ticks = 16
+hitlag_ticks = 14
+cancellable = false
+di_modifier = "0.8"
+sdi_modifier = "0.1"
+block_cancel_allowed = false
+whiff_sound = ExtResource( 31 )
+hit_sound = ExtResource( 20 )
+start_tick = 12
+active_ticks = 2
 
 [node name="Sweep" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 4 )
@@ -1706,13 +1756,13 @@ ExtResource( 79 ): {
 "x": 23,
 "y": 16
 },
-ExtResource( 81 ): {
-"x": -11,
-"y": -6
-},
 ExtResource( 82 ): {
 "x": -8,
 "y": -5
+},
+ExtResource( 81 ): {
+"x": -11,
+"y": -6
 }
 }
 land_cancel = true

@@ -7,7 +7,7 @@ var hit_frame = 0
 
 const MUZZLE_FLASH_SCENE = preload("res://characters/swordandgun/projectiles/MuzzleFlash.tscn")
 
-const SHOOT_FRAMES_AFTER_HITTING = 20
+const SHOOT_FRAMES_AFTER_HITTING = 18
 const PICKUP_TICKS_AFTER_SHOOT = 1
 const PICKUP_TICKS_AFTER_THROW = 15
 const BOOMERANG_SPEED = "0.75"

@@ -1315,7 +1315,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if !is_grounded():
 					pushback_force = fixed.mul(pushback_force, AIR_BLOCK_PUSHBACK_MODIFIER)
 				
-				apply_force(pushback_force, "0")
+				if pushback_force != null:
+					apply_force(pushback_force, "0")
 				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), hitbox.block_pushback_modifier), "0")
 
 			if !projectile or fixed.le(get_opponent_distance(), PUSH_BLOCK_DIST):
@@ -1358,6 +1359,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			if not projectile:
 				gain_super_meter(parry_meter)
 				add_penalty(-20)
+				
 			else:
 				add_penalty(-10)
 				gain_super_meter(parry_meter / 3)
@@ -1370,6 +1372,9 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+			set_block_stun(0)
+			blocked_hitbox_plus_frames = 0
+			blockstun_ticks = 0
 
 func set_block_stun(total_plus_frames, block_hitlag=null):
 #	blockstun_ticks = 0

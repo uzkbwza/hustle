@@ -72,6 +72,7 @@ func parry(perfect = true):
 	perfect = perfect and can_parry
 	if perfect:
 		enable_interrupt()
+		host.set_block_stun(0)
 	else:
 		parry_type = ParryHeight.Both
 		host.start_throw_invulnerability()
@@ -80,6 +81,7 @@ func parry(perfect = true):
 	self.perfect = perfect
 
 func can_parry_hitbox(hitbox):
+	
 	if punishable:
 		return false
 	if not perfect:

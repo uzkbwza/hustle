@@ -505,6 +505,7 @@ func __on_hit_something(obj, hitbox):
 		_on_hit_something(obj, hitbox)
 		host._on_hit_something(obj, hitbox)
 
+
 func __on_got_parried():
 	if active:
 		_got_parried()
