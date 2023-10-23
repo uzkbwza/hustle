@@ -157,6 +157,10 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	host.rng.randomize()
 	host.play_sound("Ricochet" + str(host.rng.randi_range(1, NUM_RICOCHET_SOUNDS + 1)))
 	host.play_sound("RicochetNoise")
+
+	for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
+		hitbox.chip_damage_modifier = "0.37"
+
 	bounce_lag_ticks += BOUNCE_HITLAG
 	reset_hitbox_cooldown = RESET_HITBOX_TICKS
 	if di_influence:
@@ -167,7 +171,5 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 				var dir = fixed.normalized_vec(str(di.x), str(di.y))
 				var bounce_dir_x = fixed.lerp_string(host.dir_x, str(dir.x), lerp_amount)
 				var bounce_dir_y = fixed.lerp_string(host.dir_y, str(dir.y), lerp_amount)
-
-				
 				host.dir_x = bounce_dir_x
 				host.dir_y = bounce_dir_y

@@ -1326,7 +1326,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 			current_state().interruptible_on_opponent_turn = true
 
-			blockstun_ticks = 0
+			
 			var total_plus_frames = hitbox.plus_frames
 			
 			if !current_state().matches_hitbox_height(hitbox, parry_type):
@@ -1337,12 +1337,10 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if !is_grounded():
 					total_plus_frames += VS_AERIAL_ADDITIONAL_PLUS_FRAMES
 
-			if total_plus_frames > 0:
-				blocked_hitbox_plus_frames = total_plus_frames
-			elif total_plus_frames < 0:
-				opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
-			if not projectile:
-				blockstun_ticks += block_hitlag
+			set_block_stun(total_plus_frames, 0 if projectile else block_hitlag)
+#
+#			if not projectile:
+#				blockstun_ticks += block_hitlag
 
 			spawn_particle_effect(preload("res://fx/FlawedParryEffect.tscn"), get_pos_visual() + particle_location)
 			parried = false
@@ -1372,6 +1370,17 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+
+func set_block_stun(total_plus_frames, block_hitlag=null):
+#	blockstun_ticks = 0
+	if block_hitlag == null:
+		block_hitlag = total_plus_frames
+	if total_plus_frames > 0:
+		blocked_hitbox_plus_frames = total_plus_frames
+	elif total_plus_frames < 0:
+		opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
+	blockstun_ticks = block_hitlag
+
 
 func parry_effect(location, absolute=false):
 	if !absolute:
@@ -1578,10 +1587,22 @@ func clean_parried_hitboxes():
 func get_opponent_dir():
 	return Utils.int_sign(opponent.get_pos().x - get_pos().x)
 
+func get_dir_vec(pos, normalized=true):
+
+	var my_pos = get_pos()
+	
+	if normalized:
+		return fixed.normalized_vec(str(pos.x - my_pos.x), str(pos.y - my_pos.y))
+	return {
+		"x": pos.x - my_pos.x,
+		"y": pos.y - my_pos.y
+	}
+
+
 func get_opponent_dir_vec(normalized=true):
 	var my_pos = get_pos()
 	var opp_pos = opponent.get_pos()
-
+	
 	if normalized:
 		return fixed.normalized_vec(str(opp_pos.x - my_pos.x), str(opp_pos.y - my_pos.y))
 	return {

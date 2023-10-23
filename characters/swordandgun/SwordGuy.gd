@@ -78,7 +78,7 @@ func shift():
 		if obj.get_pos().y >= 0:
 			set_vel(get_vel().x, "0")
 		if combo_count <= 0:
-			add_penalty(25)
+			add_penalty(15)
 
 func start_1k_cuts_buff():
 	max_air_speed = MAX_AIR_SPEED_1KCUTS

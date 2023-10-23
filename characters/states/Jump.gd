@@ -34,11 +34,11 @@ var force_y = "0.0"
 #	test += 1
 #	if test == 2:
 #		host.take_damage(900)
-
 func jump():
 	var vel = host.get_vel()
 	host.set_grounded(false)
 	host.set_vel(fixed.mul(vel.x, x_speed_preserved), "0")
+
 	var force = xy_to_dir(data["x"], data["y"])
 	var force_power = fixed.vec_mul(force.x, force.y, fixed.powu(fixed.vec_len(force.x, force.y), 2))
 	force = Utils.fixed_vec2_string(fixed.div(fixed.add(force_power.x, force.x), "2"), fixed.div(fixed.add(force_power.y, force.y), "2"))
@@ -70,6 +70,17 @@ func _frame_7():
 		jump()
 
 func _frame_0():
+	if data is String and data == "homing":
+		var dir = host.get_opponent_dir_vec()
+		if fixed.gt(dir.y, "-0.34"):
+			dir.y = "-0.34"
+			dir.x = fixed.mul(str(host.get_facing_int()), "0.94")
+		dir = fixed.normalized_vec(dir.x, dir.y)
+		data = {
+			"x": fixed.round(fixed.mul(dir.x, "100")),
+			"y": fixed.round(fixed.mul(dir.y, "100"))
+		}
+
 	if !super_jump:
 		interruptible_on_opponent_turn = true
 	next_state_on_hold = false

@@ -24,6 +24,7 @@ func _enter():
 		parry_active = true
 
 func _frame_0():
+
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -92,6 +93,8 @@ func can_parry_hitbox(hitbox):
 	return true
 	
 func _tick():
+	if !parried and !autoguard:
+			host.set_block_stun(1)
 	host.apply_fric()
 #	if air_type == AirType.Aerial:
 	host.apply_grav()
@@ -102,6 +105,8 @@ func _tick():
 	host.apply_forces()
 #	host.parry_chip_divisor = host.PARRY_CHIP_DIVISOR / (1 + abs(current_tick - data.x + 1) * 0.2)
 	host.parry_knockback_divisor = host.PARRY_GROUNDED_KNOCKBACK_DIVISOR
+	if current_tick == 4 and host.opponent.current_state().get("IS_NEW_PARRY"):
+		enable_interrupt()
 
 func _exit():
 	parry_active = false

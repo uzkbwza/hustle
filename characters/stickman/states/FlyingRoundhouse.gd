@@ -1,10 +1,14 @@
 extends CharacterState
 
 var left_ground = false
+var started_on_ground = false
+
+onready var hitbox = $Hitbox
 
 func _frame_0():
 	left_ground = false
-
+	started_on_ground = host.is_grounded()
+	
 func _frame_7():
 	if !started_in_air:
 		left_ground = true
@@ -28,10 +32,9 @@ func _tick():
 		host.end_projectile_invulnerability()
 	
 
-				
-	
+	hitbox.block_cancel_allowed = !started_on_ground and !host.opponent.is_grounded()
 	host.apply_fric()
 	host.apply_grav()
 	host.apply_forces()
 	if left_ground and host.is_grounded():
-		queue_state_change("Landing", 15)
+		queue_state_change("JumpKickLanding", 15)
