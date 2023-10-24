@@ -5,7 +5,7 @@ const X_MULTIPLIER = "1.5"
 const Y_MULTIPLIER = "1.25"
 
 func _frame_0():
-	anim_length = 13
+	anim_length = 14
 	if host.combo_count > 0:
 		anim_length = 10
 

@@ -1372,9 +1372,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
-			set_block_stun(0)
-			blocked_hitbox_plus_frames = 0
-			blockstun_ticks = 0
+
 
 func set_block_stun(total_plus_frames, block_hitlag=null):
 #	blockstun_ticks = 0
@@ -1770,6 +1768,9 @@ func tick_before():
 				feint_parriable = true
 			if !current_state().interruptible_on_opponent_turn:
 				current_state().on_continue()
+
+		if current_state().interruptible_on_opponent_turn:
+			current_state().opponent_turn_interrupt()
 #			elif projectile_hit_cancelling:
 #				queued_action = current_state().fallback_state
 

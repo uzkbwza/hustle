@@ -482,6 +482,9 @@ func can_interrupt():
 func on_got_hit():
 	pass
 
+func opponent_turn_interrupt():
+	pass
+
 func _exit_shared():
 	beats_backdash = false
 	if feinting and end_feint:
