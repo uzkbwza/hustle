@@ -34,7 +34,7 @@ last_hit_by
 no_draw_ticks"
 has_projectile_parry_window = false
 deletes_other_projectiles = false
-can_be_hit_by_melee = true
+projectile_immune = true
 color = Color( 1, 0.486275, 0.121569, 1 )
 
 [node name="Sprite" parent="Flip" index="0"]

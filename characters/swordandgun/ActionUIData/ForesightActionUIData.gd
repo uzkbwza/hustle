@@ -8,3 +8,4 @@ func fighter_update():
 	if fighter.is_grounded():
 		direction.limit_range_degrees = 210
 		direction.limit_center_degrees = 0
+	direction.update_value(direction.get_default_value())

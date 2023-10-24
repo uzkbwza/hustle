@@ -4,10 +4,13 @@ var reversing_command_grab = false
 
 func _enter():
 	reversing_command_grab = data
-	host.start_throw_invulnerability()
+
 
 func _frame_1():
 	host.move_directly_relative(5, 0)
+
+func _frame_3():
+	host.start_throw_invulnerability()
 
 func _frame_5():
 	host.end_throw_invulnerability()

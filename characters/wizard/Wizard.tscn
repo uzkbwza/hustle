@@ -855,21 +855,21 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 321 ): {
 "x": 60,
@@ -1571,7 +1571,7 @@ hit_cancel_into_string = "Grounded
 Aerial"
 velocity_forward_meter_gain_multiplier = "0.5"
 trigger_orb_type = "OrbDart"
-trigger_orb_delay = 15
+trigger_orb_delay = 18
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Liftoff" index="0"]
 z_index = 1000
@@ -1888,21 +1888,21 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 321 ): {
 "x": 60,

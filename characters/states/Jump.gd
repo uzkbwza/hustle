@@ -31,10 +31,20 @@ var force_x = "0.0"
 var force_y = "0.0"
 #
 #func _enter():
+#	var vec = xy_to_dir(data["x"], data["y"], "1")
+#	var length = fixed.vec_len(vec.x, vec.y)
+#	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
+#	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
+#	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
+#	if !squat:
+#		host.start_throw_invulnerability()
 #	test += 1
 #	if test == 2:
 #		host.take_damage(900)
+
+
 func jump():
+#	host.end_throw_invulnerability()
 	var vel = host.get_vel()
 	host.set_grounded(false)
 	host.set_vel(fixed.mul(vel.x, x_speed_preserved), "0")

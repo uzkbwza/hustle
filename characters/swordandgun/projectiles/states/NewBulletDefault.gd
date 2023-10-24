@@ -146,7 +146,8 @@ func _tick():
 func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	if bounce_lag_ticks > 0:
 		return
-	host.damages_own_team = true
+	if !temporal:
+		host.damages_own_team = true
 	bounces_left -= 1
 	if bounces_left == 0:
 		host.disable()

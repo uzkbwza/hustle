@@ -20,6 +20,8 @@ func _enter():
 		parry_active = true
 	elif _previous_state().get("IS_NEW_PARRY") and _previous_state().push:
 		parry_active = true
+	elif push and _previous_state().get("IS_NEW_PARRY") and !_previous_state().push:
+		parry_active = true
 	elif autoguard:
 		parry_active = true
 
@@ -115,13 +117,15 @@ func _exit():
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
 	if !parried and !autoguard:
-		host.set_block_stun(1)
+#		host.set_block_stun(1)
 		host.blocked_hitbox_plus_frames = 1
-		host.blockstun_ticks = 1
+#		host.blockstun_ticks = 1
+		pass
 
 func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
 	if !parried and !autoguard:
-		host.set_block_stun(1)
+#		host.set_block_stun(1)
 		host.blocked_hitbox_plus_frames = 1
-		host.blockstun_ticks = 1
+#		host.blockstun_ticks = 1
+		pass
