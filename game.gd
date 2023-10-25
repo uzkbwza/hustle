@@ -1218,7 +1218,7 @@ func process_tick():
 			var someones_turn = false
 			if p1.state_interruptable and !p1_turn:
 				p2.busy_interrupt = (!p2.state_interruptable and !(p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2)))
-
+				p2.state_interruptable = true
 				p1.show_you_label()
 				p1_turn = true
 #				p1.update_advantage()

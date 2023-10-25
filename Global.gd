@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.8.9-steam"
+var VERSION = "1.8.10-steam"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player

@@ -75,6 +75,7 @@ func parry(perfect = true):
 	if perfect:
 		enable_interrupt()
 		host.set_block_stun(0)
+		host.blocked_hitbox_plus_frames = 0
 	else:
 		parry_type = ParryHeight.Both
 		host.start_throw_invulnerability()
