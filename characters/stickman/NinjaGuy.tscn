@@ -3563,14 +3563,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
@@ -3578,6 +3570,14 @@ ExtResource( 219 ): {
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
+},
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3615,10 +3615,13 @@ height = 10
 damage = 120
 hitbox_type = 2
 hitstun_ticks = 31
+hitlag_ticks = 0
 cancellable = false
 sdi_modifier = "0.0"
 force_grounded = true
 hit_height = 0
+screenshake_amount = 8
+screenshake_frames = 8
 hit_sound = ExtResource( 217 )
 knockback = "6.0"
 grounded_hit_state = "HurtDizzy"
@@ -3774,21 +3777,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
-},
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
+},
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 }
 }
 burst_cancellable = false
@@ -3828,25 +3831,25 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="98"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false

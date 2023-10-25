@@ -74,6 +74,7 @@ func _init(state):
 		hitstun_ticks = state.hitstun_ticks
 	else:
 		hitstun_ticks = state.get_real_hitstun()
+
 	facing = state.host.get_facing()
 	if !state.has_method("get_real_knockback"):
 		knockback = state.knockback

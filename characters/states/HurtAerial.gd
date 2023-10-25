@@ -38,6 +38,7 @@ func _enter():
 	wall_slam = hitbox.wall_slam and host.wall_slams < host.MAX_WALL_SLAMS
 #	hitstun = hitbox.hitstun_ticks + hitstun_modifier(hitbox)
 	hitstun = global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox))
+#	print(hitstun)
 	counter = hitbox.counter_hit
 	if counter:
 		host.opponent.counterhit_this_turn = true
@@ -62,6 +63,7 @@ func _enter():
 	host.set_facing(Utils.int_sign(fixed.round(x)) * -1)
 	var di = host.get_scaled_di(host.current_di)
 	var di_force = fixed.vec_mul(di.x, di.y, fixed.mul(DI_STRENGTH, hitbox.di_modifier))
+
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"

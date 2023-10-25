@@ -862,14 +862,17 @@ func increment_opponent_combo(hitbox):
 		if opponent.combo_count <= 1:
 			opponent.combo_proration = hitbox.damage_proration
 
-func launched_by(hitbox):
-	
-#		if hitlag_ticks < hitbox.victim_hitlag:
+func apply_hitlag(hitbox):
 	hitlag_ticks = hitbox.victim_hitlag + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
 	if braced_attack:
 		hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), SUCCESSFUL_BRACE_HITSTUN_MODIFIER))
 	hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), global_hitstop_modifier))
 	hitlag_applied = hitlag_ticks
+
+func launched_by(hitbox):
+	
+#		if hitlag_ticks < hitbox.victim_hitlag:
+	apply_hitlag(hitbox)
 	
 	if objs_map.has(hitbox.host):
 		var host = objs_map[hitbox.host]
@@ -1155,6 +1158,11 @@ func hit_by(hitbox, force_hit=false):
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 			Hitbox.HitboxType.ThrowHit:
 				emit_signal("got_hit")
+				apply_hitlag(hitbox)
+				opponent.apply_hitlag(hitbox)
+				if hitbox.rumble:
+					rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
+	
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
 				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
 			Hitbox.HitboxType.OffensiveBurst:

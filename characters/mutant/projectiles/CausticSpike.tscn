@@ -25,7 +25,6 @@
 [ext_resource path="res://characters/mutant/sound/caustic3.wav" type="AudioStream" id=23]
 [ext_resource path="res://characters/mutant/sound/caustic4.wav" type="AudioStream" id=24]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
 shader = ExtResource( 2 )

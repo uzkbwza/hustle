@@ -7,8 +7,10 @@ var released = false
 export var _c_Throw_Data = 0
 export var release = false
 export var release_frame = -1
+export var use_start_throw_pos = true
 export var start_throw_pos_x = 0
 export var start_throw_pos_y = 0
+export var use_release_throw_pos = true
 export var release_throw_pos_x = 0
 export var release_throw_pos_y = 0
 
@@ -77,8 +79,11 @@ func update_throw_position():
 func _frame_0_shared():
 	._frame_0_shared()
 	host.opponent.change_state("Grabbed")
-	host.throw_pos_x = start_throw_pos_x
-	host.throw_pos_y = start_throw_pos_y
+	if use_start_throw_pos:
+		host.throw_pos_x = start_throw_pos_x
+		host.throw_pos_y = start_throw_pos_y
+	else:
+		update_throw_position()
 	var throw_pos = host.get_global_throw_pos()
 	host.opponent.set_pos(throw_pos.x, throw_pos.y)
 
@@ -116,8 +121,11 @@ func _exit():
 
 func _release():
 	throw = false
-	host.throw_pos_x = release_throw_pos_x
-	host.throw_pos_y = release_throw_pos_y
+	if use_release_throw_pos:
+		host.throw_pos_x = release_throw_pos_x
+		host.throw_pos_y = release_throw_pos_y
+	else:
+		update_throw_position()
 	var pos = host.get_global_throw_pos()
 	host.opponent.set_pos(pos.x, pos.y)
 	host.opponent.update_facing()
