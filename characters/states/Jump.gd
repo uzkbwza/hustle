@@ -46,7 +46,7 @@ func _enter():
 
 
 func jump():
-#	host.end_throw_invulnerability()
+	host.end_throw_invulnerability()
 	var vel = host.get_vel()
 	host.set_grounded(false)
 	host.set_vel(fixed.mul(vel.x, x_speed_preserved), "0")
