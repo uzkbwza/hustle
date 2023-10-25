@@ -23,6 +23,8 @@ var p2_ghost_extra
 
 var match_data = {}
 
+var started_ghost_this_frame = false
+
 func _ready():
 	ui_layer.connect("singleplayer_started", self, "_on_game_started", [true])
 	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")
@@ -233,6 +235,9 @@ func _process(_delta):
 		$"%SpeedLines".tick = game.current_tick
 		$"%SpeedLines".on = !game.is_waiting_on_player()
 
+func _physics_process(delta):
+	set_deferred("started_ghost_this_frame", false)
+
 func align_afterimages():
 	if is_instance_valid(game):
 		var zoom = game.camera.zoom.x * game.camera_zoom
@@ -243,6 +248,9 @@ func align_afterimages():
 			image.visible = $"%AfterimageButton".pressed
 
 func _start_ghost():
+	if started_ghost_this_frame:
+		return
+	started_ghost_this_frame = true
 	if !$"%GhostWaitTimer".is_stopped():
 		yield($"%GhostWaitTimer", "timeout")
 		return
@@ -285,6 +293,7 @@ func _start_ghost():
 	p2.queued_extra = p2_ghost_extra
 	p2.is_ghost = true
 	call_deferred("fix_ghost_objects", ghost_game)
+
 
 func ghost_my_turn():
 	if Global.freeze_ghost_sound:
