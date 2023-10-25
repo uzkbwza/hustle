@@ -236,7 +236,6 @@ func saveScene(modifiedScene, scenePath:String):
 	_savedObjects.append(packed_scene)
 	
 func _getTexsFromSheet(spritePath, columns, rows):
-	
 	pass
 
 func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement support

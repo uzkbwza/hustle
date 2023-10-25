@@ -51,6 +51,7 @@ const PREDICTION_CORRECT_SUPER_GAIN = 30
 const INCORRECT_PREDICTION_LAG = 7
 
 const PARRY_CHIP_DIVISOR = 3
+const PUSH_BLOCK_CHIP_MODIFIER = "0.33"
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
 const PARRY_COMBO_SCALING = "0.85"
@@ -1279,12 +1280,16 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			last_turn_block = true
 
 			var chip = fixed.round(fixed.mul(str(hitbox.damage / parry_chip_divisor), hitbox.chip_damage_modifier))
+			var push_block = current_state().get("push")
+			if push_block:
+				chip = fixed.round(fixed.mul(str(chip), PUSH_BLOCK_CHIP_MODIFIER))
 
 			if !current_state().matches_hitbox_height(hitbox, parry_type):
 				chip += fixed.round(fixed.mul(fixed.mul(str(hitbox.damage / parry_chip_divisor), "0.5"), hitbox.chip_damage_modifier))
 
 			if !autoblock_armor:
 				take_damage(chip, 0, "0.6", 0, "2.0")
+
 #			gain_super_meter(parry_meter / 6)
 			opponent.gain_super_meter(parry_meter / 6)
 			var block_hitlag = hitbox.hitlag_ticks + 1
@@ -1439,6 +1444,9 @@ func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0", combo_scaling
 	add_penalty(-25)
 	if hp < 0:
 		hp = 0
+	if current_state() is GroundedParryState and current_state().push:
+		if hp <= 0:
+			hp = 1
 
 func get_guts():
 	var current_guts = "1"

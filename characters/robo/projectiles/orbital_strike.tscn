@@ -133,6 +133,7 @@ dir_x = "0.25"
 dir_y = "1.0"
 knockback = "8.0"
 launch_reversible = true
+block_pushback_modifier = "2.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false

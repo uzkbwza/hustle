@@ -96,7 +96,7 @@ export var host_commands = {
 
 export var earliest_hitbox = 0
 var earliest_hitbox_node = null
-
+var is_guard_break = false
 
 export var _c_Auto = 0
 export var throw_positions: Dictionary = {}
@@ -470,6 +470,8 @@ func setup_hitboxes():
 			all_hitbox_nodes.append(child)
 			host.hitboxes.append(child)
 			child.native = native
+			if child.guard_break:
+				is_guard_break = true
 	var earliest = 999999999
 	for hitbox in all_hitbox_nodes:
 		hitbox.host = host

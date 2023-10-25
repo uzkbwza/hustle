@@ -287,6 +287,9 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	if button.get("earliest_hitbox") != null and state != null:
 		button.earliest_hitbox = state.earliest_hitbox
 	
+	if button.get("is_guard_break") != null and state != null:
+		button.is_guard_break = state.is_guard_break
+	
 	button.set_player_id(player_id)
 	if data_scene:
 		data_node = data_scene.instance()
@@ -298,6 +301,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	button.connect("data_changed", self, "send_ui_action")
 	button.container = container
 	button.connect("was_pressed", self, "on_action_selected", [button])
+	button.end_setup()
 	$"%ButtonSoundPlayer".add_container(button)
 	return button
 

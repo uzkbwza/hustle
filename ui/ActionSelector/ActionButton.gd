@@ -15,6 +15,7 @@ var custom_texture = false
 var reversible = false
 var flip_icon = true
 var state = null
+var is_guard_break = false
 
 var earliest_hitbox = 0
 
@@ -27,6 +28,10 @@ func setup(name, title, texture=null):
 #	$"%Button".text = title
 	hint_tooltip = title
 	$"%Button".hint_tooltip = title
+
+func end_setup():
+	$"%GuardBreakTexture".visible = is_guard_break
+	pass
 
 func set_player_id(player_id):
 	if player_id != 1 and custom_texture and flip_icon:

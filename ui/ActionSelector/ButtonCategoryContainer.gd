@@ -66,11 +66,12 @@ func update_mouse_over():
 		mouse_over = false
 		can_update = false
 		$UpdateTimer.start()
+		$"%GuardBreakLabel".hide()
 
 func update_mouse_elsewhere():
 		$"%ScrollContainer".rect_clip_content = false
 		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
-
+#		$"%GuardBreakLabel".hide()
 		rect_size.y = 1000
 		mouse_over = true
 		can_update = false
@@ -121,6 +122,7 @@ func add_button(button):
 	button.connect("mouse_entered", self, "on_button_mouse_entered", [button])
 	button.connect("mouse_exited", self, "on_button_mouse_exited")
 
+
 func get_prediction():
 	return $"%PredictButton".pressed and $"%PredictButton".visible
 
@@ -133,11 +135,13 @@ func refresh():
 		$"%Label".modulate = Color.white
 		$"%Label".modulate.a = 1.0
 		return
+	$"%GuardBreakLabel".hide()
 	for button in $"%ButtonContainer".get_children():
 		if button.is_pressed():
 			on_button_mouse_entered(button)
 			$"%Label".modulate = Color.cyan
 			active_button = button
+			$"%GuardBreakLabel".visible = button.is_guard_break
 			selected_button_text = button.action_title
 			update_frame_display(button)
 			update_mouse_elsewhere()
@@ -147,10 +151,15 @@ func refresh():
 	$"%Label".modulate.a = 0.25
 	$"%FrameLabel".text = ""
 
+
 func update_frame_display(button):
 	$"%FrameLabel".text = ""
+	$"%GuardBreakLabel".hide()
 	if button and button.get("earliest_hitbox") and button.earliest_hitbox > 0:
 		$"%FrameLabel".text = "[~%sf]" % button.earliest_hitbox
+	if button and button.get("is_guard_break"):
+		$"%GuardBreakLabel".visible = button.is_guard_break
+
 	pass
 
 func on_button_mouse_entered(button):
@@ -158,13 +167,15 @@ func on_button_mouse_entered(button):
 		return
 	_on_ButtonContainer_mouse_entered()
 	$"%Label".text = button.action_title
-	if button.action_title == selected_button_text:
-		return
+#	if button.action_title == selected_button_text:
+#		return
 	update_frame_display(button)
+
 	$"%Label".modulate = Color.green
 
 func on_button_mouse_exited():
 	refresh()
+#	$"%GuardBreakLabel".hide()
 
 func show_data_container():
 	$"%ActionDataPanelContainer".show()
@@ -191,6 +202,7 @@ func hide_data_container():
 
 
 func _on_ButtonContainer_mouse_entered():
+	
 #	$"%ScrollContainer".rect_clip_content = false
 #	mouse_over = true
 	pass # Replace with function body.

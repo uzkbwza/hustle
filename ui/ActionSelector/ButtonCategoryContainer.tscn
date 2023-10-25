@@ -63,6 +63,22 @@ margin_bottom = -1.0
 grow_horizontal = 2
 text = "Predict"
 
+[node name="GuardBreakLabel" type="Label" parent="VBoxContainer/CenterContainer"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 1, 1, 1, 0.509804 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -30.0
+margin_top = -29.0
+margin_right = 30.0
+margin_bottom = -18.0
+custom_colors/font_color = Color( 1, 0.486275, 0.121569, 1 )
+text = "Guard Break"
+align = 1
+
 [node name="FrameLabel" type="Label" parent="VBoxContainer/CenterContainer"]
 unique_name_in_owner = true
 modulate = Color( 1, 1, 1, 0.509804 )

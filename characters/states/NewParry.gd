@@ -111,6 +111,7 @@ func _tick():
 	if current_tick == 4 and host.opponent.current_state().get("IS_NEW_PARRY"):
 		enable_interrupt()
 
+
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false

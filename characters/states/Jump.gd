@@ -20,6 +20,7 @@ const FULL_HOP_LENGTH = "0.7"
 const SUPER_JUMP_SPEED = "17.0"
 const BASE_JUMP_SPEED = "0.5"
 const SUPER_JUMP_FORCES_END_TICK = 25
+const IS_JUMP = true
 
 var queue_backdash_check = false
 
@@ -30,14 +31,15 @@ var squat = false
 var force_x = "0.0"
 var force_y = "0.0"
 #
-#func _enter():
-#	var vec = xy_to_dir(data["x"], data["y"], "1")
-#	var length = fixed.vec_len(vec.x, vec.y)
-#	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
-#	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
-#	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
-#	if !squat:
-#		host.start_throw_invulnerability()
+func _enter():
+
+	var vec = xy_to_dir(data["x"], data["y"], "1")
+	var length = fixed.vec_len(vec.x, vec.y)
+	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
+	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
+	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
+	if !squat:
+		host.start_throw_invulnerability()
 #	test += 1
 #	if test == 2:
 #		host.take_damage(900)

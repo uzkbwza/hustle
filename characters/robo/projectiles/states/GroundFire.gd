@@ -15,7 +15,8 @@ func _tick():
 				fighter.flame_touching_opponent = host.obj_name
 			if fighter.flame_touching_opponent == host.obj_name:
 				if !opponent.invulnerable and opponent.is_grounded():
-					opponent.take_damage(DAMAGE)
+					if !(opponent.current_state().get("IS_JUMP")):
+						opponent.take_damage(DAMAGE)
 		else:
 			if fighter and fighter.flame_touching_opponent == host.obj_name:
 				fighter.flame_touching_opponent = null

@@ -10,6 +10,7 @@ var data_node = null
 var container = null
 var reversible = false
 var state = null
+var is_guard_break = false
 
 var earliest_hitbox = 0
 
@@ -35,6 +36,9 @@ func set_data_node(node):
 	data_node = node
 	if node:
 		node.connect("data_changed", self, "emit_signal", ["data_changed"])
+	
+func end_setup():
+	pass
 
 func get_data():
 	if data_node:
