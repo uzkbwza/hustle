@@ -1665,11 +1665,10 @@ unique_name_in_owner = true
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -274.0
-margin_top = -282.0
+margin_top = -287.0
 margin_right = 258.0
-margin_bottom = -257.0
+margin_bottom = -262.0
 grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 

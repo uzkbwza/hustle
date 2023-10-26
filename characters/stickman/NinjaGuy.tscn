@@ -3252,7 +3252,7 @@ minimum_damage = 15
 hitstun_ticks = 17
 hitlag_ticks = 7
 cancellable = false
-plus_frames = -2
+plus_frames = -3
 hit_height = 2
 hit_sound = ExtResource( 41 )
 dir_x = "-1.0"
@@ -3563,14 +3563,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
-},
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
@@ -3578,6 +3570,14 @@ ExtResource( 222 ): {
 ExtResource( 221 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3781,6 +3781,10 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
 ExtResource( 207 ): {
 "x": 15,
 "y": -10
@@ -3788,10 +3792,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -3835,6 +3835,10 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
+},
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
@@ -3846,10 +3850,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
 }
 }
 burst_cancellable = false

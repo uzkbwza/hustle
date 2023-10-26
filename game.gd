@@ -1081,8 +1081,9 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
 						hitbox.save_hit_object(host)
 					continue
-				if host.wakeup_throw_immunity_ticks > 0:
-					continue
+				if host.is_in_group("Fighter"):
+					if host.wakeup_throw_immunity_ticks > 0:
+						continue
 			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
 				continue
 			if !otg and !hitbox.hits_vs_standing:

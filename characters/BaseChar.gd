@@ -15,6 +15,7 @@ signal predicted()
 #signal got_counter_hit()
 
 var MAX_HEALTH = 1000
+
 #const STALING_REDUCTIONS = [
 #	"1.0",
 #	"0.90",
@@ -28,6 +29,7 @@ var MAX_HEALTH = 1000
 #	"0.41",
 #	"0.40",
 #]
+
 const MAX_STALES = 15
 const MIN_STALE_MODIFIER = "0.2"
 
@@ -57,7 +59,7 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
-const PUSH_BLOCK_DIST = "80"
+const PUSH_BLOCK_DIST = "110"
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
