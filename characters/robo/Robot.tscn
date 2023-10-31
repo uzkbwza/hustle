@@ -4007,7 +4007,7 @@ type = 2
 button_texture = ExtResource( 381 )
 iasa_at = 10
 interruptible_on_opponent_turn = true
-next_state_on_hold = false
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
