@@ -1075,7 +1075,14 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if !hitbox.overlaps(hurtbox):
-				continue
+				var any_collisions = false
+				if host:
+					for hurtbox_ in host.current_state().get_active_hurtboxes():
+						if hitbox.overlaps(hurtbox_):
+							any_collisions = true
+							break
+				if !any_collisions:
+					continue
 			if hitbox is ThrowBox:
 				if !host.can_be_thrown():
 					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:

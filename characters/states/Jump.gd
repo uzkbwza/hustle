@@ -32,7 +32,16 @@ var force_x = "0.0"
 var force_y = "0.0"
 #
 func _enter():
-
+	if data is String and data == "homing":
+		var dir = host.get_opponent_dir_vec()
+		if fixed.gt(dir.y, "-0.34"):
+			dir.y = "-0.34"
+			dir.x = fixed.mul(str(host.get_facing_int()), "0.94")
+		dir = fixed.normalized_vec(dir.x, dir.y)
+		data = {
+			"x": fixed.round(fixed.mul(dir.x, "100")),
+			"y": fixed.round(fixed.mul(dir.y, "100"))
+		}
 	var vec = xy_to_dir(data["x"], data["y"], "1")
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)

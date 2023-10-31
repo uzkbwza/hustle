@@ -14,6 +14,9 @@ var current_tick = 0
 
 var prev_state
 
+func _ready():
+	z_index = 999
+
 func start(host):
 	started = true
 	ended = false
@@ -22,7 +25,7 @@ func start(host):
 		"height": host.hurtbox.height,
 		"x": host.hurtbox.x,
 		"y": host.hurtbox.y,
-		"can_draw": host.hurtbox.can_draw,
+		"can_draw": host.hurtbox.can_draw,	
 	}
 	host.hurtbox.width = width
 	host.hurtbox.height = height

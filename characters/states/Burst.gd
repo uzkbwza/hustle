@@ -8,6 +8,7 @@ var started_falling = false
 func _enter():
 	host.start_invulnerability()
 	host.start_projectile_invulnerability()
+	interruptible_on_opponent_turn = false
 	host.opponent.reset_combo()
 	started_falling = false
 	host.use_burst()

@@ -10,11 +10,15 @@ export var autoguard = false
 
 var punishable = false
 
+var extra_iasa = 0
+
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
+	extra_iasa = 0
 
 	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
+		extra_iasa = host.blockstun_ticks
 		host.blockstun_ticks = 0
 	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
 		parry_active = true
@@ -37,8 +41,8 @@ func _frame_0():
 	parried = false
 	interruptible_on_opponent_turn = host.combo_count <= 0
 	punishable = false
-	anim_length = 20
-	iasa_at = - 1
+	anim_length = 20 + extra_iasa
+	iasa_at = -1
 	host.blocked_hitbox_plus_frames = 0
 	host.add_penalty(10, true)
 	if host.is_grounded():

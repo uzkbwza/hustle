@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/mutant/MutantExtra.gd" type="Script" id=2]
+[ext_resource path="res://theme.tres" type="Theme" id=3]
+
+[node name="MutantExtra" instance=ExtResource( 1 )]
+theme = ExtResource( 3 )
+alignment = 1
+script = ExtResource( 2 )
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="." index="0"]
+margin_left = 296.0
+margin_right = 343.0
+margin_bottom = 360.0
+alignment = 2
+
+[node name="DisableSpikeButton" type="CheckButton" parent="VBoxContainer2" index="0"]
+unique_name_in_owner = true
+margin_top = 340.0
+margin_right = 47.0
+margin_bottom = 360.0
+rect_min_size = Vector2( 34, 20 )
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+pressed = true
+text = "Spike"

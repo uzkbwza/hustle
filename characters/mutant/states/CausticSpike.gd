@@ -8,6 +8,7 @@ func process_projectile(obj):
 	obj.apply_force(fixed.mul(PUSH, str(host.get_facing_int())), "0")
 	obj.apply_force(dir.x, dir.y)
 	obj.set_rotation(data)
+	host.spike_projectile = obj.obj_name
 
 func _enter():
 	initiative_effect = host.combo_count == 0

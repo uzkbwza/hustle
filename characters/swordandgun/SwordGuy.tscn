@@ -823,8 +823,8 @@ epic_horse_moment = ExtResource( 308 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 6 )
-animation = "3Combo"
-frame = 24
+animation = "HSlash"
+frame = 5
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
