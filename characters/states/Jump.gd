@@ -32,7 +32,7 @@ var force_x = "0.0"
 var force_y = "0.0"
 #
 func _enter():
-	if data is String and data == "homing":
+	if (data is String and data == "homing") or data == null:
 		var dir = host.get_opponent_dir_vec()
 		if fixed.gt(dir.y, "-0.34"):
 			dir.y = "-0.34"

@@ -20,6 +20,7 @@ script = ExtResource( 1 )
 unique_name_in_owner = true
 margin_right = 320.0
 margin_bottom = 20.0
+rect_min_size = Vector2( 320, 0 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -45,6 +46,9 @@ margin_bottom = 12.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="DataContainer" type="HBoxContainer" parent="TopRow/Panel/TopRowDataContainer"]
 unique_name_in_owner = true
@@ -64,6 +68,7 @@ alignment = 2
 [node name="DI" parent="TopRow/Panel/TopRowDataContainer/DIContainer" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 modulate = Color( 0.396078, 0.901961, 1, 1 )
+self_modulate = Color( 0.396078, 0.901961, 1, 1 )
 show_behind_parent = true
 anchor_right = 0.0
 anchor_bottom = 0.0

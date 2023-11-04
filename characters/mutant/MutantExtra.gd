@@ -15,8 +15,10 @@ func _on_disable_spike_toggled(_on):
 func show_options():
 	spike_button.hide()
 	spike_button.set_pressed_no_signal(true)
-	if fighter.obj_from_name(fighter.spike_projectile):
-		spike_button.show()
+	var spike = fighter.obj_from_name(fighter.spike_projectile)
+	if spike:
+		if spike.get("can_cancel"):
+			spike_button.show()
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)

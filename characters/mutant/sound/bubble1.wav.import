@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/bubble1.wav-4c0a0d78f95e539130ad392a01a5fb45.sample"
+
+[deps]
+
+source_file="res://characters/mutant/sound/bubble1.wav"
+dest_files=[ "res://.import/bubble1.wav-4c0a0d78f95e539130ad392a01a5fb45.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.8.18-steam"
+var VERSION = "1.8.21-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -12,6 +12,7 @@ var freeze_ghost_sound = true
 var ghost_afterimages = true
 var fullscreen = false
 var show_hitboxes = false
+var show_extra_info = false
 var light_mode = false
 var frame_advance = false
 var show_playback_controls = false
@@ -188,6 +189,7 @@ func save_options():
 			"show_playback_controls": show_playback_controls,
 			"show_projectile_owners": show_projectile_owners,
 			"default_dojo": 0,
+			"show_extra_info": show_extra_info,
 #			"light_mode": light_mode,
 			"enable_emotes": enable_emotes,
 			"enable_custom_colors": enable_custom_colors,
@@ -219,6 +221,7 @@ func get_default_player_data():
 			"show_projectile_owners": true,
 			"speed_lines_enabled": true,
 			"auto_fc": true,
+			"show_extra_info": false
 		}
 	}
 

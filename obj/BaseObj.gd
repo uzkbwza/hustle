@@ -56,6 +56,7 @@ var custom_hitspark
 var data
 var obj_data
 var current_tick = 0
+var game_tick = 0
 var hitlag_ticks = 0
 var combo_count = 0
 
@@ -94,7 +95,7 @@ var default_hurtbox = {
 var projectile_invulnerable = false
 var throw_invulnerable = false
 
-var state_variables = ["id", "grounded_attack_immune", "aerial_attack_immune", "last_object_hit", "can_update_sprite", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
+var state_variables = ["id", "grounded_attack_immune", "game_tick", "match_seed", "aerial_attack_immune", "last_object_hit", "can_update_sprite", "last_hit_frame", "damages_own_team", "ceiling_height", "has_ceiling", "has_projectile_parry_window", "always_parriable", "use_platforms", "gravity", "ground_friction", "air_friction", "max_ground_speed", "max_air_speed", "max_fall_speed", "projectile_invulnerable", "gravity_enabled", "default_hurtbox", "throw_invulnerable", "creator_name", "name", "obj_name", "stage_width", "hitlag_ticks", "combo_count", "invulnerable", "current_tick", "disabled", "state_interruptable", "state_hit_cancellable"]
 
 var hitboxes = []
 
@@ -114,7 +115,9 @@ var sounds = {
 }
 
 var logic_rng: BetterRng
+var logic_rng_static: BetterRng
 var logic_rng_seed = 0
+var logic_rng_static_seed = 0
 
 func _enter_tree():
 	if obj_name:
@@ -324,8 +327,13 @@ func copy_to(o: BaseObj):
 	for state in o.state_machine.states_map:
 		state_machine.states_map[state].copy_hurtbox_states(o.state_machine.states_map[state])
 	o.logic_rng = BetterRng.new()
+	o.logic_rng_static = BetterRng.new()
+	
 	o.logic_rng.seed = logic_rng_seed
+	o.logic_rng_static.seed = logic_rng_static_seed
+	
 	o.logic_rng.state = logic_rng.state
+	o.logic_rng_static.state = logic_rng_static.state
 
 	
 func get_frames():
@@ -409,6 +417,10 @@ func get_opponent():
 func get_fighter():
 	return null
 
+func hash_static_rng():
+	var input_hash = hash(game_tick)
+	logic_rng_static.seed = hash(logic_rng_static.state + input_hash)
+	
 func hash_rng():
 	var fighter = get_fighter()
 	var opponent = get_opponent()
@@ -824,7 +836,11 @@ func state_tick():
 		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
 			state_machine.queue_state(state_machine.state.fallback_state)
 			state_machine.tick()
-	
+
+func fixed_deg_to_rad(n):
+	assert(n is int or n is String)
+	return fixed.mul(str(n), "0.01745329251")
+
 func randi_():
 	hash_rng()
 	return logic_rng.randi()
@@ -843,7 +859,29 @@ func randi_choice(choices: Array):
 
 func randi_weighted_choice(choices: Array, weights: Array):
 	assert(weights == [] or choices.size() == weights.size())
+	hash_rng()
 	return choices[logic_rng.weighted_choice(choices, weights)]
+
+func randi_static():
+	hash_static_rng()
+	return logic_rng_static.randi()
+
+func randi_range_static(a: int, b: int):
+	hash_static_rng()
+	return logic_rng_static.randi_range(a, b)
+
+func randi_percent_static(n: int) -> bool:
+	hash_static_rng()
+	return logic_rng_static.randi_range(0, 99) < n
+
+func randi_choice_static(choices: Array):
+	hash_static_rng()
+	return logic_rng_static.choose(choices)
+
+func randi_weighted_choice_static(choices: Array, weights: Array):
+	assert(weights == [] or choices.size() == weights.size())
+	hash_static_rng()
+	return choices[logic_rng_static.weighted_choice(choices, weights)]
 
 func should_hide_rng() -> bool:
 	return is_ghost and (!Global.current_game.singleplayer or Global.current_game.spectating)
@@ -858,6 +896,7 @@ func normal_tick():
 	state_tick()
 	update_data()
 	current_tick += 1
+	game_tick += 1
 	update_grounded()
 
 func _draw():

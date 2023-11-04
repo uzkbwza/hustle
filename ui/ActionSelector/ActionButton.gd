@@ -57,7 +57,6 @@ func get_data():
 	return null
 
 func _ready():
-#	$"%Button".connect("pressed", self, "on_pressed")
 	$"%Button".connect("mouse_entered", self, "emit_signal", ["mouse_entered"])
 	$"%Button".connect("mouse_exited", self, "emit_signal", ["mouse_exited"])
 	$"%Button".connect("toggled", self, "on_toggled")
@@ -70,9 +69,6 @@ func on_visibility_changed():
 func on_toggled(on):
 	emit_signal("toggled", on)
 	emit_signal("was_pressed", action_name)
-
-#func on_pressed():
-#	emit_signal("was_pressed", action_name)
 
 func set_pressed_no_signal(on):
 	$"%Button".set_pressed_no_signal(on)

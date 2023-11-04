@@ -15,7 +15,7 @@ func _frame_0():
 	if host.fast_falling:
 		host.hover_left -= FAST_FALL_REDUCTION
 	hitbox2.plus_frames = 1
-
+	landing_recovery = 6
 	
 func _frame_6():
 	host.reset_momentum()

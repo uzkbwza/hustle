@@ -855,29 +855,29 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 323 ): {
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
+ExtResource( 320 ): {
 "x": 62,
-"y": -128
+"y": -126
 },
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 320 ): {
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 323 ): {
 "x": 62,
-"y": -126
+"y": -128
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1467,7 +1467,7 @@ start_tick = 7
 active_ticks = 13
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/Kick" index="1"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 228 )
 y = -8
 height = 8
@@ -1619,7 +1619,7 @@ script = ExtResource( 122 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 14
+anim_length = 16
 sfx = ExtResource( 152 )
 sfx_tick = 6
 title = "Magic Dart"
@@ -1888,29 +1888,29 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 323 ): {
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
+ExtResource( 320 ): {
 "x": 62,
-"y": -128
+"y": -126
 },
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 320 ): {
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 323 ): {
 "x": 62,
-"y": -126
+"y": -128
 }
 }
 type = 1
@@ -2029,7 +2029,7 @@ start_tick = 11
 active_ticks = 3
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/ConjureWeapon" index="1"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 228 )
 y = -12
 width = 15
@@ -2038,7 +2038,7 @@ start_tick = 10
 active_ticks = 3
 
 [node name="HurtboxState2" type="Node2D" parent="StateMachine/ConjureWeapon" index="2"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 228 )
 y = -14
 width = 15

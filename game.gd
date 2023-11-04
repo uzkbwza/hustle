@@ -253,9 +253,12 @@ func on_object_spawned(obj: BaseObj):
 	obj.ceiling_height = ceiling_height
 	obj.obj_name = str(objs_map.size() + 1)
 	obj.logic_rng = BetterRng.new()
+	obj.logic_rng_static = BetterRng.new()
 	var seed_ = hash(match_data.seed + (objs_map.size() + 1))
 	obj.logic_rng.seed = seed_
 	obj.logic_rng_seed = seed_
+	obj.logic_rng_static.seed = match_data.seed
+	obj.logic_rng_static_seed = match_data.seed
 	objs_map[obj.obj_name if obj.obj_name else obj.name] = obj
 	obj.objs_map = objs_map
 	obj.connect("tree_exited", self, "_on_obj_exit_tree", [obj])
@@ -363,10 +366,17 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2.name = "P2"
 	p1.logic_rng = BetterRng.new()
 	p2.logic_rng = BetterRng.new()
+	p1.logic_rng_static = BetterRng.new()
+	p2.logic_rng_static = BetterRng.new()
 	p1.logic_rng.seed = hash(match_data.seed)
 	p1.logic_rng_seed = hash(match_data.seed)
 	p2.logic_rng.seed = hash(match_data.seed + 1)
 	p2.logic_rng_seed = hash(match_data.seed + 1)
+	p1.logic_rng_static.seed =  hash(match_data.seed)
+	p1.logic_rng_static_seed =  hash(match_data.seed)
+	p2.logic_rng_static.seed =  hash(match_data.seed + 1)
+	p2.logic_rng_static_seed =  hash(match_data.seed + 1)
+
 	p2.id = 2
 	p1.is_ghost = is_ghost
 	p2.is_ghost = is_ghost
@@ -1076,7 +1086,7 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if !hitbox.overlaps(hurtbox):
 				var any_collisions = false
-				if host:
+				if host and host.current_state():
 					for hurtbox_ in host.current_state().get_active_hurtboxes():
 						if hitbox.overlaps(hurtbox_):
 							any_collisions = true
@@ -1108,6 +1118,8 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 				else:
 					if host.grounded_attack_immune:
 						continue
+				if attacker.id == host.id and !hitbox.allowed_to_hit_own_team:
+					continue
 			hit_by = hitbox
 
 	return hit_by
@@ -1396,7 +1408,8 @@ func ghost_tick():
 	if ghost_speed == 1:
 		ghost_multiplier = 4
 	ghost_advantage_tick /= ghost_multiplier
-
+	p1.grounded_indicator.hide()
+	p2.grounded_indicator.hide()
 	for i in range(simulate_frames):
 		if ghost_actionable_freeze_ticks == 0:
 			simulate_one_tick()
@@ -1419,11 +1432,15 @@ func ghost_tick():
 			if !p1.actionable_label.visible:
 				p1.actionable_label.show()
 				p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+				p1.grounded_indicator.visible = p1.is_grounded() and p1.ghost_was_in_air
+#				p2.grounded_indicator.visible = p2.is_grounded()
 			emit_signal("ghost_my_turn")
 			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2):
 				if !p2.actionable_label.visible:
 					p2.actionable_label.show()
 					p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+#					p1.grounded_indicator.visible = p1.is_grounded()
+					p2.grounded_indicator.visible = p2.is_grounded() and p2.ghost_was_in_air
 				ghost_p2_actionable = true
 				
 #			else:
@@ -1444,12 +1461,16 @@ func ghost_tick():
 			if !p2.actionable_label.visible:
 				p2.actionable_label.show()
 				p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+#				p1.grounded_indicator.visible = p1.is_grounded()
+				p2.grounded_indicator.visible = p2.is_grounded() and p2.ghost_was_in_air
 			emit_signal("ghost_my_turn")
 			if p1.current_state().interruptible_on_opponent_turn or p1.feinting or negative_on_hit(p1):
 				ghost_p1_actionable = true
 				if !p1.actionable_label.visible:
 					p1.actionable_label.show()
 					p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+					p1.grounded_indicator.visible = p1.is_grounded() and p1.ghost_was_in_air
+#					p2.grounded_indicator.visible = p2.is_grounded()
 				
 #			else:
 #				ghost_actionable_freeze_ticks = 1

@@ -2261,7 +2261,7 @@ start_tick = 13
 active_ticks = 4
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/ImpaleTeleport" index="1"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 182 )
 __meta__ = {
 "_editor_description_": ""
@@ -2286,13 +2286,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded
@@ -2349,13 +2349,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 interrupt_into_string = "Grounded

@@ -14,15 +14,16 @@ var fighter = null
 func _ready():
 	for child in get_children():
 		if child.has_signal("data_changed"):
-			child.connect("data_changed", self, "emit_signal", ["data_changed"])
-
-
+			child.connect("data_changed", self, "on_data_changed")
 
 func on_opponent_button_selected(button):
 	pass
 
 func on_button_selected():
 	pass
+
+func on_data_changed():
+	emit_signal("data_changed")
 
 func get_data():
 	var children = get_children()

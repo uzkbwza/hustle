@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/mutant/projectiles/PoisonParticle.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://characters/mutant/projectiles/states/PoisonDefault.gd" type="Script" id=4]
+[ext_resource path="res://characters/mutant/projectiles/Poison.gd" type="Script" id=5]
+[ext_resource path="res://characters/mutant/projectiles/PoisonParticle2.tscn" type="PackedScene" id=6]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+extra_state_variables = "spawn_acid_bubble_cooldown
+spawn_acid_bubble_startup"
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+animation = "Default"
+
+[node name="PoisonParticle2" parent="Flip/Particles" index="0" instance=ExtResource( 6 )]
+material = SubResource( 3 )
+
+[node name="PoisonParticle" parent="Flip/Particles" index="1" instance=ExtResource( 2 )]
+material = SubResource( 1 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 0
+height = 0
+
+[node name="Hurtbox" parent="." index="3"]
+width = 0
+height = 0
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 4 )

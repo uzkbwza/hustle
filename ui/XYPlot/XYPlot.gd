@@ -395,7 +395,8 @@ func _process(_delta):
 
 	if buffer_changed:
 		buffer_changed = false
-		call_deferred("emit_signal", "data_changed")
+		if is_visible_in_tree():
+			call_deferred("emit_signal", "data_changed")
 
 	var rect = get_global_rect()
 	var mouse_position = get_global_mouse_position()

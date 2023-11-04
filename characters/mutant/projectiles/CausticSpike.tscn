@@ -55,7 +55,8 @@ __meta__ = {
 "_editor_description_": ""
 }
 air_friction = "1.0"
-extra_state_variables = "rotate_dir"
+extra_state_variables = "rotate_dir
+can_cancel"
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 projectile_immune = true

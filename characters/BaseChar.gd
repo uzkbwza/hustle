@@ -10,6 +10,7 @@ signal undo()
 signal forfeit()
 signal clashed()
 #signal blocked()
+signal blocked_melee_attack()
 signal predicted()
 
 #signal got_counter_hit()
@@ -144,6 +145,8 @@ export(Texture) var character_portrait2
 onready var you_label = $YouLabel
 onready var actionable_label = $ActionableLabel
 onready var quitter_label = $"%QuitterLabel"
+onready var velocity_label_container = $VelocityLabelContainer
+onready var grounded_indicator = $GroundedIndicator
 
 var input_state = InputState.new()
 
@@ -299,6 +302,8 @@ var feint_parriable = false
 var grounded_last_frame = true
 
 #var current_prediction = -1
+
+var ghost_was_in_air = false
 
 var current_nudge = {
 	"x": "0",
@@ -582,6 +587,8 @@ func use_burst():
 #	if infinite_resources:
 #		return
 	bursts_available -= 1
+	if bursts_available < 0:
+		bursts_available = 0
 	refresh_air_movements()
 
 func use_burst_meter(amount):
@@ -1848,6 +1855,8 @@ func can_be_thrown():
 	return .can_be_thrown() and blockstun_ticks <= 0
 
 func tick():
+	if is_ghost and !is_grounded():
+		ghost_was_in_air = true
 	if hitlag_ticks > 0:
 		if can_nudge:
 			if fixed.round(fixed.mul(fixed.vec_len(current_nudge.x, current_nudge.y), "100.0")) > 1:
@@ -1902,6 +1911,7 @@ func tick():
 			used_air_dodge = false
 			refresh_air_movements()
 		current_tick += 1
+		game_tick += 1
 		if not (current_state().is_hurt_state) and !(opponent.current_state().is_hurt_state):
 			var x_vel_int = chara.get_x_vel_int()
 			if Utils.int_sign(x_vel_int) == Utils.int_sign(opponent.get_pos().x - get_pos().x):
@@ -1931,6 +1941,8 @@ func tick():
 
 	if sadness_immunity_ticks > 0:
 		sadness_immunity_ticks -= 1
+
+
 
 	gain_burst_meter()
 	update_data()
@@ -2167,7 +2179,8 @@ func forfeit():
 	will_forfeit = true
 
 func on_blocked_melee_attack():
-	pass
+	emit_signal("blocked_melee_attack")
+
 
 func _draw():
 #	draw_circle(Vector2(), 0.01, Color.transparent) # possible fix to esoteric graphics bug

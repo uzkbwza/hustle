@@ -485,6 +485,7 @@ func on_attack_blocked():
 				change_state("DriveCancel")
 
 func on_blocked_melee_attack():
+	.on_blocked_melee_attack()
 	flying_dir = null
 	stop_fly_fx()
 	pass

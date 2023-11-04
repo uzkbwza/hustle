@@ -251,6 +251,7 @@ func _start_ghost():
 	if started_ghost_this_frame:
 		return
 	started_ghost_this_frame = true
+#	print("starting ghost" + str(randi()))
 	if !$"%GhostWaitTimer".is_stopped():
 		yield($"%GhostWaitTimer", "timeout")
 		return

@@ -1,4 +1,4 @@
-[gd_scene load_steps=188 format=2]
+[gd_scene load_steps=191 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -186,6 +186,9 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/push_block.png" type="Texture" id=184]
 [ext_resource path="res://sound/common/Block2.wav" type="AudioStream" id=185]
 [ext_resource path="res://sound/common/Block3.wav" type="AudioStream" id=186]
+[ext_resource path="res://characters/VelocityLabel.gd" type="Script" id=187]
+[ext_resource path="res://characters/grounded.png" type="Texture" id=188]
+[ext_resource path="res://characters/Grounded.gd" type="Script" id=189]
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -1025,7 +1028,7 @@ interrupt_exceptions_string = "CounterAttack"
 change_stance_to = "Normal"
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/Knockdown" index="0"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 152 )
 y = -4
 width = 25
@@ -1049,7 +1052,7 @@ change_stance_to = "Normal"
 hard = true
 
 [node name="HurtboxState" type="Node2D" parent="StateMachine/HardKnockdown" index="0"]
-z_index = 1000
+z_index = 999
 script = ExtResource( 152 )
 y = -4
 width = 25
@@ -1865,3 +1868,34 @@ scroll_active = false
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="VelocityLabelContainer" type="Node2D" parent="." index="11"]
+z_index = 1024
+
+[node name="VelocityLabel" type="RichTextLabel" parent="VelocityLabelContainer" index="0"]
+margin_left = -49.0
+margin_right = 49.0
+margin_bottom = 81.0
+theme = ExtResource( 47 )
+scroll_active = false
+script = ExtResource( 187 )
+
+[node name="GroundedIndicator" type="Sprite" parent="." index="12"]
+visible = false
+position = Vector2( 0, 8 )
+z_index = 1000
+texture = ExtResource( 188 )
+script = ExtResource( 189 )
+
+[node name="Label" type="Label" parent="GroundedIndicator" index="0"]
+visible = false
+modulate = Color( 0.92549, 1, 0.643137, 1 )
+margin_left = -32.0
+margin_top = -1.0
+margin_right = 31.0
+margin_bottom = 13.0
+theme = ExtResource( 47 )
+text = "Grounded"
+align = 1
+
+[connection signal="mouse_entered" from="VelocityLabelContainer/VelocityLabel" to="VelocityLabelContainer/VelocityLabel" method="_on_VelocityLabel_mouse_entered"]

@@ -43,6 +43,8 @@ var spread_amount = 0.0
 var spread_tween: SceneTreeTween = null
 var nudge_button
 
+var buffered_ui_actions = []
+
 export var opponent_action_buttons_path: NodePath
 onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_buttons_path)
 
@@ -148,6 +150,9 @@ func _process(delta):
 		continue_button.set_pressed(true)
 		continue_button.on_pressed()
 	unpress_extra_on_lock_in()
+	if buffered_ui_actions:
+		_send_ui_action(buffered_ui_actions[-1])
+		buffered_ui_actions = []
 	
 func unpress_extra_on_lock_in():
 	var select_button: Button = $"%SelectButton"
@@ -334,6 +339,9 @@ func _on_prediction_selected(selected_category):
 	_get_opposite_buttons().send_ui_action()
 
 func send_ui_action(action=null):
+	buffered_ui_actions.append(action)
+
+func _send_ui_action(action=null):
 	current_extra = get_extra()
 	if !is_instance_valid(game):
 		return

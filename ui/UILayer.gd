@@ -68,6 +68,8 @@ onready var global_option_check_buttons = {
 	$"%ProjectileOwnersButton": "show_projectile_owners",
 	$"%SpeedLinesButton": "speed_lines_enabled",
 	$"%AutoFCButton": "auto_fc",
+	$"%ExtraInfoButton": "show_extra_info",
+
 }
 
 func _ready():

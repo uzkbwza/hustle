@@ -44,11 +44,11 @@ func _tick():
 			right_hitbox_4,
 		]:
 			var vec = fixed.rotate_vec(str(hitbox_start_angles[hitbox].x), str(hitbox_start_angles[hitbox].y), angle)
-			hitbox.x = fixed.round(vec.x)
+			hitbox.x = fixed.round(vec.x) * host.get_facing_int()
 			hitbox.y = fixed.round(vec.y)
 
-func _frame_21():
-#	host.screen_bump(Vector2(), 10, 0.25)
+func _frame_20():
+	host.can_cancel = false
 	pass
 
 func _frame_38():

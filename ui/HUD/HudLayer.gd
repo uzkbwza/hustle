@@ -41,6 +41,9 @@ onready var p2_sadness_label = $"%P2SadnessLabel"
 onready var p1_brace_label = $"%P1BraceLabel"
 onready var p2_brace_label = $"%P2BraceLabel"
 
+onready var extra_info_container = $"%ExtraInfoContainer"
+onready var extra_info_label_1 = $"%ExtraInfoLabel1"
+onready var extra_info_label_2 = $"%ExtraInfoLabel2"
 
 
 const TRAIL_DRAIN_RATE = 25
@@ -67,6 +70,8 @@ func init(game):
 	$"%WinLabel".hide()
 	p1 = game.get_player(1)
 	p2 = game.get_player(2)
+	extra_info_label_1.fighter = p1
+	extra_info_label_2.fighter = p2
 	p1_air_option_display.fighter = p1
 	p2_air_option_display.fighter = p2
 	$"%P1Portrait".texture = p1.character_portrait
