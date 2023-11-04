@@ -41,6 +41,8 @@ func _frame_6():
 	host.liftoff_sprite.rotation = float(fixed.vec_to_angle(fixed.mul(dir.x, str(host.get_facing_int())), dir.y)) + TAU/4
 #	$"%LiftoffParticles".set_enabled(true)
 	land_cancel = true
+	host.play_sound("HitBass")
+	host.screen_bump(Vector2(), 3, 0.15)
 	host.colliding_with_opponent = false
 	
 func _tick():
