@@ -663,8 +663,8 @@ func gain_super_meter(amount,stale_amount = "1.0"):
 
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = .spawn_object(projectile, pos_x, pos_y, relative, data, local)
-	if obj is BaseProjectile:
-		add_penalty(-2)
+#	if obj is BaseProjectile:
+#		add_penalty(-2)
 	return obj
 
 func combo_stale_meter(meter: int):
