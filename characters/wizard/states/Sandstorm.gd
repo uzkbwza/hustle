@@ -16,7 +16,7 @@ onready var windbox = $WindBox
 func _tick():
 	$"%GustParticle".stop_emitting()
 #	if throwbox.active and throwbox.enabled:
-	if current_tick < iasa_at and current_tick > 1:
+	if current_tick < 15 and current_tick > 1:
 		var dir = xy_to_dir(data.x, data.y)
 		var wb = windbox
 		$"%GustParticle".start_emitting()
