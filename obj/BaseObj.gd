@@ -705,6 +705,11 @@ func get_object_dir(obj):
 		return get_facing_int()
 	return dir
 
+func get_object_dir_vec(obj):
+	var my_pos = get_pos()
+	var obj_pos = obj.get_pos()
+	return fixed.normalized_vec(str(obj_pos.x - my_pos.x), str(obj_pos.y - my_pos.y))
+
 func move_directly(x, y):
 	check_params(x, y)
 	if x is int:

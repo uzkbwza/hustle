@@ -16,21 +16,22 @@ func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
-
-	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
-		extra_iasa = host.blockstun_ticks
-		host.blockstun_ticks = 0
-	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
-		parry_active = true
-	elif _previous_state().get("IS_NEW_PARRY") and _previous_state().push:
-		parry_active = true
-	elif push and _previous_state().get("IS_NEW_PARRY") and !_previous_state().push:
-		parry_active = true
-	elif autoguard:
-		parry_active = true
-
-func _frame_0():
-
+	start()
+#
+#	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
+#		extra_iasa = host.blockstun_ticks
+#		host.blockstun_ticks = 0
+#	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
+#		parry_active = true
+#	elif _previous_state().get("IS_NEW_PARRY") and _previous_state().push:
+#		parry_active = true
+#	elif push and _previous_state().get("IS_NEW_PARRY") and !_previous_state().push:
+#		parry_active = true
+#	elif autoguard:
+#		parry_active = true
+#
+#func _frame_0():
+func start():
 	started_in_combo = host.combo_count > 0
 	endless = false
 	perfect = true
@@ -40,16 +41,19 @@ func _frame_0():
 	parry_tick = 0
 	parried = false
 	interruptible_on_opponent_turn = host.combo_count <= 0
-	punishable = false
 	anim_length = 20 + extra_iasa
 	iasa_at = -1
 	host.blocked_hitbox_plus_frames = 0
-	host.add_penalty(10, true)
+#	host.add_penalty(10, true)
 	if host.is_grounded():
 		anim_name = "ParryHigh" if data["Block Height"].y == 0 else "ParryLow"
 	else:
 		anim_name = "ParryLow"
-	host.blockstun_ticks = 0
+#	host.blockstun_ticks = 0
+
+func _frame_0():
+	start()
+	punishable = false
 
 func is_usable():
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
@@ -115,14 +119,13 @@ func _tick():
 	if current_tick == 4 and host.opponent.current_state().get("IS_NEW_PARRY"):
 		enable_interrupt()
 
-
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
-	if !parried and !autoguard:
+	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
 		host.blocked_hitbox_plus_frames = 1
 #		host.blockstun_ticks = 1
@@ -130,7 +133,7 @@ func enable_interrupt(check_opponent=true, remove_hitlag=false):
 
 func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
-	if !parried and !autoguard:
+	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
 		host.blocked_hitbox_plus_frames = 1
 #		host.blockstun_ticks = 1

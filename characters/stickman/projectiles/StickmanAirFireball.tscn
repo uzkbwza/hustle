@@ -51,5 +51,4 @@ move_y = 7
 
 [node name="Hitbox" parent="StateMachine/Default" index="0"]
 x = -2
-plus_frames = 2
 dir_y = "1.0"

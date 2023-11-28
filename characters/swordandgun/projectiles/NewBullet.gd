@@ -51,7 +51,6 @@ func hit_by(hitbox):
 		return
 	var dir = fixed.normalized_vec(hitbox.dir_x, hitbox.dir_y)
 	dir_x = fixed.mul(dir.x, get_hitbox_x_dir(hitbox))
-#	dir_x = dir.x
 	dir_y = dir.y
 	var hitter = obj_from_name(hitbox.host)
 	

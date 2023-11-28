@@ -58,3 +58,8 @@ func _frame_0():
 	var camera = host.get_camera()
 	if camera:
 		camera.bump(Vector2.UP, fixed.round(fixed.mul(ratio, "2")), max(fixed.round(fixed.mul(ratio, "1")) / 60.0, 20 / 60.0))
+
+func _tick():
+	._tick()
+	if has_hitbox:
+		interruptible_on_opponent_turn = false

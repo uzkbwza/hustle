@@ -73,6 +73,8 @@ height = 10
 
 [node name="Default" parent="StateMachine" index="0"]
 script = ExtResource( 3 )
+apply_forces = true
+apply_fric = true
 temporal = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]

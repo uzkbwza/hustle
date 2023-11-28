@@ -60,7 +60,7 @@ func _frame_4():
 		if host.is_grounded():
 			force.y = "0"
 		host.apply_force(force.x, force.y)
-		host.use_bullet()
+#		host.use_bullet()
 		var camera = host.get_camera()
 		if camera:
 			camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
@@ -74,6 +74,7 @@ func _frame_4():
 		
 		bullet.set_facing(Utils.int_sign(host.opponent.get_pos().x - pos.x))
 		var barrel_location = host.get_barrel_location(angle)
+		host.temporal_round = bullet.obj_name
 
 func is_accurate(dir, angle):
 #	print(fixed.angle_dist(fixed.vec_to_angle(dir.x, dir.y), angle))
@@ -103,6 +104,7 @@ func _frame_3():
 		var camera = host.get_camera()
 		if camera:
 			camera.bump(Vector2(float(dir.x), float(dir.y)), screenshake_amount, 0.25)
+
 		bullet_location = host.opponent.get_hurtbox_center()
 		var opp_vel = host.opponent.get_vel()
 		bullet_location.x = fixed.round(fixed.add(str(bullet_location.x), opp_vel.x))
@@ -172,4 +174,4 @@ func _tick():
 		queue_state_change("SlowHolster")
 
 func is_usable():
-	return .is_usable() and (host.bullets_left > 0) and host.has_gun
+	return .is_usable() and (host.bullets_left > 0 or temporal) and host.has_gun

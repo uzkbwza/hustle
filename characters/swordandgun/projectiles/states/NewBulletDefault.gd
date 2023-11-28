@@ -3,7 +3,7 @@ extends ObjectState
 const AIR_DRAG_MOD = "0.95"
 const RICOCHET_SPEED_MOD = "0.75"
 const MIN_SPEED = "4.0"
-const BOUNCES = 5
+const BOUNCES = 6
 const FORESIGHT_DIST = "20"
 const KNOCKBACK = "12"
 const RESET_HITBOX_TICKS = 2
@@ -13,6 +13,7 @@ const TERRAIN_DI_AMOUNT = "0.35"
 const DAMAGE_MODIFIER_PER_HIT = "0.8"
 const MIN_TERRAIN_RICOCHET_AMOUNT = "0.1"
 const DI_INFLUENCE = "0.125"
+const BOUNCED_OFF_FORESIGHT_TIMER = 5
 
 export var temporal = false
 
@@ -22,9 +23,10 @@ onready var trail_hitbox = $Hitbox2
 
 var bounces_left = BOUNCES
 var reset_hitbox_cooldown = 0
-var bounced_off_foresight = false
+
 
 var bounce_lag_ticks = 0
+var bounced_off_foresight_timer = 0
 
 
 func _on_hit_something(obj, hitbox):
@@ -54,8 +56,8 @@ func bounce_off_foresight():
 				host.reset_speed()
 
 func bounce_full_control(force=false):
-	var creator = host.get_fighter()
-	if creator is Cowboy:
+	var creator = host.get_owned_fighter()
+	if creator.is_in_group("Fighter"):
 		var di = creator.current_di
 		var di_active = di.x != 0 or di.y != 0
 		if di_active or force:
@@ -66,13 +68,16 @@ func bounce_full_control(force=false):
 				dir = xy_to_dir(di.x, di.y)
 			host.dir_x = str(dir.x)
 			host.dir_y = str(dir.y)
-			bounced_off_foresight = true
+			bounced_off_foresight_timer = BOUNCED_OFF_FORESIGHT_TIMER
 			on_bounce(false)
 
 func _enter():
 	host.set_facing(1) 
 
 func _tick():
+	if bounced_off_foresight_timer > 0:
+		bounced_off_foresight_timer -= 1
+
 	var move_vec = fixed.vec_mul(host.dir_x, host.dir_y, host.speed)
 
 	trail_hitbox.x = fixed.round(fixed.mul(move_vec.x, "-1.0"))
@@ -131,11 +136,15 @@ func _tick():
 		if host.ricochet:
 			host.ricochet = false
 		if reset_hitbox_cooldown <= 0:
-			queue_state_change("Default")
+#			queue_state_change("Default")
+			for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
+#				hitbox.reset_hit_objects()
+#				host.get_opponent().parried_hitboxes.erase(hitbox.name)
+				queue_state_change("Default")
 
 	host.speed = fixed.mul(host.speed, AIR_DRAG_MOD)
 
-	if !bounced_off_foresight:
+	if bounced_off_foresight_timer <= 0:
 		bounce_off_foresight()
 
 	if fixed.lt(host.speed, MIN_SPEED):
@@ -144,6 +153,7 @@ func _tick():
 		host.no_draw_ticks -= 1
 
 func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
+
 	if bounce_lag_ticks > 0:
 		return
 	if !temporal:
@@ -161,7 +171,9 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 
 	for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
 		hitbox.chip_damage_modifier = "0.37"
-
+		hitbox.reset_hit_objects()
+		host.get_opponent().parried_hitboxes.erase(hitbox.name)
+	
 	bounce_lag_ticks += BOUNCE_HITLAG
 	reset_hitbox_cooldown = RESET_HITBOX_TICKS
 	if di_influence:

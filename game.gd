@@ -127,6 +127,8 @@ var ceiling_height = 400
 var has_ceiling = true
 var mouse_position = Vector2()
 
+var ghost_simulated_ticks = 0
+
 var is_in_replay = false
 
 var ghost_actionable_freeze_ticks = 0
@@ -1138,6 +1140,7 @@ func simulate_until_ready():
 
 func simulate_one_tick():
 	tick()
+
 	show_state()
 
 func resimulate():
@@ -1402,25 +1405,40 @@ func ghost_tick():
 	var simulate_frames = 1
 	if ghost_speed == 1:
 		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
-	ghost_tick += 1
-	var ghost_advantage_tick = ghost_tick
-	var ghost_multiplier = 1
-	if ghost_speed == 1:
-		ghost_multiplier = 4
-	ghost_advantage_tick /= ghost_multiplier
+#	ghost_tick += 1
+
+#	var ghost_multiplier = 1
+#	if ghost_speed == 1:
+#		ghost_multiplier = 4
+	if ghost_speed == 3:
+		simulate_frames = 2
+	if ghost_speed == 4:
+		simulate_frames = 4
+#	ghost_advantage_tick /= ghost_multiplier
 	p1.grounded_indicator.hide()
 	p2.grounded_indicator.hide()
 	for i in range(simulate_frames):
 		if ghost_actionable_freeze_ticks == 0:
+			ghost_simulated_ticks += 1
 			simulate_one_tick()
 		if current_tick > GHOST_FRAMES:
 			emit_signal("ghost_finished")
 
+		if p1.ghost_blocked_melee_attack > 0 and !p1.block_frame_label.visible:
+			p1.block_frame_label.show()
+			p1.block_frame_label.text = "Parry @ %sf" % p1.ghost_blocked_melee_attack
+		
+		if p2.ghost_blocked_melee_attack > 0 and !p2.block_frame_label.visible:
+			p2.block_frame_label.show()
+			p2.block_frame_label.text = "Parry @ %sf" % p2.ghost_blocked_melee_attack
+	
 		if (p1.state_interruptable or p1.dummy_interruptable or p1.state_hit_cancellable) and not ghost_p1_actionable:
-			p1_ghost_ready_tick = ghost_advantage_tick+(p1.hitlag_ticks*ghost_multiplier if !ghost_p2_actionable else 0)
+			p1_ghost_ready_tick = ghost_simulated_ticks+(p1.hitlag_ticks if !ghost_p2_actionable else 0)
+#			p1_ghost_ready_tick = ghost_advantage_tick+(p1.hitlag_ticks*ghost_multiplier if !ghost_p2_actionable else 0)
 		else:
 			p1_ghost_ready_tick = null
-		if(ghost_tick/ghost_multiplier==p1_ghost_ready_tick):
+		if(ghost_simulated_ticks==p1_ghost_ready_tick):
+#		if(ghost_tick/ghost_multiplier==p1_ghost_ready_tick):
 			p1.ghost_ready_tick = p1_ghost_ready_tick
 			p1_ghost_ready_tick = null
 			ghost_p1_actionable = true
@@ -1438,7 +1456,10 @@ func ghost_tick():
 			if p2.current_state().interruptible_on_opponent_turn or p2.feinting or negative_on_hit(p2):
 				if !p2.actionable_label.visible:
 					p2.actionable_label.show()
-					p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+					if p2.current_state().anim_length == p2.current_state().current_tick + 1 or p2.current_state().iasa_at == p2.current_state().current_tick:
+						p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+					else:
+						p2.actionable_label.text = "Interrupt\nin %sf" % p2.turn_frames
 #					p1.grounded_indicator.visible = p1.is_grounded()
 					p2.grounded_indicator.visible = p2.is_grounded() and p2.ghost_was_in_air
 				ghost_p2_actionable = true
@@ -1446,10 +1467,11 @@ func ghost_tick():
 #			else:
 #				ghost_actionable_freeze_ticks = 1
 		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
-			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
+			p2_ghost_ready_tick = ghost_simulated_ticks+(p2.hitlag_ticks if !ghost_p1_actionable else 0)
+#			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
 		else:
 			p2_ghost_ready_tick = null
-		if(ghost_tick/ghost_multiplier==p2_ghost_ready_tick):
+		if(ghost_simulated_ticks==p2_ghost_ready_tick):
 			p2.ghost_ready_tick = p2_ghost_ready_tick
 			p2_ghost_ready_tick = null
 			ghost_p2_actionable = true
@@ -1468,7 +1490,10 @@ func ghost_tick():
 				ghost_p1_actionable = true
 				if !p1.actionable_label.visible:
 					p1.actionable_label.show()
-					p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+					if p1.current_state().anim_length == p1.current_state().current_tick + 1 or p1.current_state().iasa_at == p1.current_state().current_tick:
+						p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+					else:
+						p1.actionable_label.text = "Interrupt\nin %sf" % p1.turn_frames
 					p1.grounded_indicator.visible = p1.is_grounded() and p1.ghost_was_in_air
 #					p2.grounded_indicator.visible = p2.is_grounded()
 				

@@ -51,21 +51,6 @@ var spark_speed_frames = 0
 onready var liftoff_sprite = $"%LiftoffSprite"
 onready var spark_speed_particle = $"%SparkSpeedParticle"
 
-#
-#func stop_geyser_particles():
-#	geyser_particle_effect_1.stop_emitting()
-#	geyser_particle_effect_2.stop_emitting()
-#	geyser_particle_effect_3.stop_emitting()
-#	geyser_particle_effect_1.hide()
-#	geyser_particle_effect_2.hide()
-#	geyser_particle_effect_3.hide()
-#
-#func start_geyser_particle(num, rot):
-#	var geyser = [geyser_particle_effect_1, geyser_particle_effect_2, geyser_particle_effect_3][num]
-#	geyser.rotation = rot
-#	geyser.show()
-#	geyser.start()
-#
 func init(pos=null):
 	.init(pos)
 	hover_left = (HOVER_AMOUNT / 4) * 3
@@ -77,7 +62,11 @@ func init(pos=null):
 	default_dash_speed = $StateMachine/DashForward.dash_speed
 	if !is_connected("parried",self, "on_parried"):
 		connect("parried", self, "on_parried")
-#	stop_geyser_particles()
+
+func on_blocked_melee_attack():
+	.on_blocked_melee_attack()
+	hovering = false
+	
 func on_roll_started():
 	hovering = false
 	fast_falling = false
@@ -149,6 +138,10 @@ func on_got_hit():
 		if obj:
 			obj.drop()
 		boulder_projectile = null
+
+func on_got_parried():
+	.on_got_parried()
+	hitlag_ticks += 6
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 	if !projectile:

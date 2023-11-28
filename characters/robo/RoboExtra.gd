@@ -23,7 +23,6 @@ func get_extra():
 		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
 		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
 		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed()
-#		"force_fly": false
 	}
 
 func drive_pressed():
@@ -43,6 +42,12 @@ func update_selected_move(move_state):
 	if move_state is RollDodge:
 		$"%FlyEnabled".set_pressed_no_signal(false)
 		$"%FlyEnabled".disabled = true
+	if move_state and move_state.get("IS_NEW_PARRY") and fighter.in_blockstring:
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
+	if fighter.in_blockstring and fighter.current_state().get("IS_NEW_PARRY") and move_state == null:
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
 #	if fighter.is_grounded():
 #		$"%FlyDir".hide()
 #		$"%FlyEnabled".hide()
@@ -57,6 +62,9 @@ func update_selected_move(move_state):
 		$"%DriveCancel".visible = false
 		if move_state.get_host_command("try_drive_cancel"):
 			$"%DriveCancel".visible = true
+
+		if move_state.is_grab and $"%ArmorEnabled".pressed:
+			can_feint = false
 
 func show_options():
 	$"%FlyDir".hide()

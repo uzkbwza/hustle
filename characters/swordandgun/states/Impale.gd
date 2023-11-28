@@ -26,10 +26,10 @@ func _frame_0():
 	hit = false
 	var move_dir = host.get_opponent_dir()
 	host.apply_force(fixed.mul(str(move_dir), "4"), "0")
-#	if host.combo_count > 0:
-	hitbox.followup_state = "ImpaleFollowup"
-#	else:
-#		hitbox.followup_state = "ImpaleFollowupHKD"
+	if host.combo_count > 0:
+		hitbox.followup_state = "ImpaleFollowupCombo"
+	else:
+		hitbox.followup_state = "ImpaleFollowup"
 
 func _frame_5():
 	if teleport:

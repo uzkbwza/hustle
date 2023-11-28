@@ -1,5 +1,7 @@
 extends SuperMove
 
+const IS_GUN_PULL = true
+
 export var quicker = false
 
 func _frame_0():
@@ -7,9 +9,9 @@ func _frame_0():
 		fallback_state = "SlowHolster"
 	else:
 		fallback_state = "Shoot2"
-
-func _frame_7():
-	interruptible_on_opponent_turn = true
+#
+#func _frame_7():
+#	interruptible_on_opponent_turn = true
 
 func _tick():
 	host.apply_fric()

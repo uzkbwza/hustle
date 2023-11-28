@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=2]
+[gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -72,6 +72,7 @@
 [ext_resource path="res://ui/super_bar_small2.png" type="Texture" id=70]
 [ext_resource path="res://DebugContainer.gd" type="Script" id=71]
 [ext_resource path="res://ui/VelocityLabel.gd" type="Script" id=72]
+[ext_resource path="res://sound/ui/outtatime.wav" type="AudioStream" id=73]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -1337,7 +1338,6 @@ custom_constants/margin_left = 5
 
 [node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 5.0
 margin_right = 636.0
 margin_bottom = 12.0
@@ -1347,8 +1347,8 @@ alignment = 1
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 19.0
-margin_right = 119.0
+margin_left = 4.0
+margin_right = 104.0
 margin_bottom = 12.0
 theme = ExtResource( 4 )
 pressed = true
@@ -1357,32 +1357,32 @@ text = "show prediction"
 
 [node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 120.0
-margin_right = 201.0
+margin_left = 105.0
+margin_right = 186.0
 margin_bottom = 12.0
 pressed = true
 text = "afterimages"
 
 [node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 202.0
-margin_right = 304.0
+margin_left = 187.0
+margin_right = 289.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze on ready"
 
 [node name="FreezeSound" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 305.0
-margin_right = 393.0
+margin_left = 290.0
+margin_right = 378.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze sound"
 
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 394.0
-margin_right = 522.0
+margin_left = 379.0
+margin_right = 537.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
@@ -1414,9 +1414,17 @@ text = "x1"
 
 [node name="3Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
-visible = false
 margin_left = 129.0
 margin_right = 143.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 0 )
+toggle_mode = true
+text = "x2"
+
+[node name="4Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
+unique_name_in_owner = true
+margin_left = 144.0
+margin_right = 158.0
 margin_bottom = 12.0
 rect_min_size = Vector2( 12, 0 )
 toggle_mode = true
@@ -1424,15 +1432,15 @@ text = "x4"
 
 [node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 523.0
-margin_right = 596.0
+margin_left = 538.0
+margin_right = 611.0
 margin_bottom = 12.0
 text = "clear particles"
 
 [node name="PredictionSettingsCloseButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 597.0
-margin_right = 611.0
+margin_left = 612.0
+margin_right = 626.0
 margin_bottom = 12.0
 icon = ExtResource( 66 )
 
@@ -2494,6 +2502,12 @@ value = 1.0
 texture_progress = ExtResource( 14 )
 fill_mode = 5
 
+[node name="P1OuttaTimeSound" type="AudioStreamPlayer2D" parent="UILayer/P1TurnTimerBar"]
+unique_name_in_owner = true
+stream = ExtResource( 73 )
+volume_db = -25.0
+bus = "UI"
+
 [node name="P1TurnTimerLabel" type="Label" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -2526,6 +2540,13 @@ step = 0.001
 value = 1.0
 texture_progress = ExtResource( 14 )
 fill_mode = 4
+
+[node name="P2OuttaTimeSound" type="AudioStreamPlayer2D" parent="UILayer/P2TurnTimerBar"]
+unique_name_in_owner = true
+position = Vector2( -534, 0 )
+stream = ExtResource( 73 )
+volume_db = -25.0
+bus = "UI"
 
 [node name="P2TurnTimerLabel" type="Label" parent="UILayer"]
 unique_name_in_owner = true

@@ -118,7 +118,8 @@ func _frame_5():
 				host.after_image_object = null
 	host.move_directly(dir.x, dir.y)
 	var vel = host.get_vel()
-	host.set_vel(vel.x, "0")
+	if !shift:
+		host.set_vel(vel.x, "0")
 	var tele_force = xy_to_dir(data.x, data.y, MOMENTUM_FORCE)
 	if fixed.lt(tele_force.y, "0"):
 		if host.combo_count <= 0:

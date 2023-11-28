@@ -617,22 +617,41 @@ func time_convert(time_in_sec):
 	return "%02d:%02d" % [minutes, seconds]
 
 func _process(delta):
-	if !p1_turn_timer.is_paused():
-#		if !turns_taken[1]:
-			var bar = $"%P1TurnTimerBar"
-			bar.value = p1_turn_timer.time_left / turn_time
-			if p1_turn_timer.time_left < 5:
-				bar.visible = Utils.wave(-1, 1, 0.064) > 0
-	if !p2_turn_timer.is_paused():
-#		if !turns_taken[2]:
-			var bar = $"%P2TurnTimerBar"
-			bar.value = p2_turn_timer.time_left / turn_time
-			if p2_turn_timer.time_left < 5:
-				bar.visible = Utils.wave(-1, 1, 0.064) > 0
+	
+	var p1_old_text = $"%P1TurnTimerLabel".text
 	$"%P1TurnTimerLabel".text = time_convert(int(floor(p1_turn_timer.time_left)))
+	var p1_different_text = p1_old_text != $"%P1TurnTimerLabel".text
+
+	var p2_old_text = $"%P2TurnTimerLabel".text
 	$"%P2TurnTimerLabel".text = time_convert(int(floor(p2_turn_timer.time_left)))
+	var p2_different_text = p2_old_text != $"%P2TurnTimerLabel".text
+
 	if $"%VersionLabel".visible:
 		$"%VersionLabel".text = "version " + Global.VERSION
+
+	var you_id = 1
+	var opponent_id = 2
+	if Network.multiplayer_active:
+		you_id = Network.player_id
+		opponent_id = (you_id % 2) + 1
+
+	if is_instance_valid(game):
+		if !p1_turn_timer.is_paused():
+	#		if !turns_taken[1]:
+				var bar = $"%P1TurnTimerBar"
+				bar.value = p1_turn_timer.time_left / turn_time
+				if p1_turn_timer.time_left < MIN_TURN_TIME:
+					bar.visible = Utils.wave(-1, 1, 0.064) > 0
+					if p1_different_text and you_id == 1:
+						$"%P1OuttaTimeSound".play()
+		if !p2_turn_timer.is_paused():
+	#		if !turns_taken[2]:
+				var bar = $"%P2TurnTimerBar"
+				bar.value = p2_turn_timer.time_left / turn_time
+				if p2_turn_timer.time_left < MIN_TURN_TIME:
+					bar.visible = Utils.wave(-1, 1, 0.064) > 0
+					if p2_different_text and you_id == 2:
+						$"%P2OuttaTimeSound".play()
 #	if !is_instance_valid(game):
 #		reset_ui()
 #	else:
@@ -646,11 +665,7 @@ func _process(delta):
 	var ghost_game = get_parent().ghost_game
 	if is_instance_valid(ghost_game) and is_instance_valid(game):
 		if game.game_paused:
-			var you_id = 1
-			var opponent_id = 2
-			if Network.multiplayer_active:
-				you_id = Network.player_id
-				opponent_id = (you_id % 2) + 1
+
 			var you = ghost_game.get_player(you_id)
 			var opponent = ghost_game.get_player(opponent_id)
 			var advantage = 0

@@ -7,6 +7,13 @@ onready var hitbox = $Hitbox
 
 var t = 0
 
+
+func _frame_1():
+	if !host.hitbox_out:
+		hitbox.activate()
+		host.hitbox_out = true
+		hitbox.hit_objects.append(host.get_fighter().obj_name)
+
 func _tick():
 	var vel = host.get_vel()
 	if host.is_grounded() and fixed.gt(host.last_vel_y, BOUNCE_THRESHOLD):

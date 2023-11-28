@@ -80,7 +80,8 @@ func _on_hit_something(obj, hitbox):
 			move_y_amount = fixed.mul(str(move_y_amount), "0.6")
 			host.set_vel(host.get_vel().x, move_y_amount)
 		moving = false
-		queue_state_change("Fall")
+		if obj.is_in_group("Fighter"):
+			queue_state_change("Fall")
 	pass
 
 func _tick():

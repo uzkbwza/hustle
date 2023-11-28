@@ -56,18 +56,13 @@ func get_overlap(box: CollisionBox):
 	}
 	var aabb1 = get_aabb()
 	var aabb2 = box.get_aabb()
-	if aabb1.x1 < aabb2.x2:
-		overlap["x1"] = aabb1.x1
-		overlap["x2"] = aabb2.x2
-	elif aabb1.x2 > aabb2.x1:
-		overlap["x1"] = aabb2.x1
-		overlap["x2"] = aabb1.x2
-	if aabb1.y1 < aabb2.y2:
-		overlap["y1"] = aabb1.y1
-		overlap["y2"] = aabb2.y2
-	elif aabb1.y2 > aabb2.y1:
-		overlap["y1"] = aabb2.y1
-		overlap["y2"] = aabb1.y2
+
+	overlap["x1"] = Utils.int_max(aabb1.x1, aabb2.x1)
+	overlap["y1"] = Utils.int_max(aabb1.y1, aabb2.y1)
+
+	overlap["x2"] = Utils.int_min(aabb1.x2, aabb2.x2)
+	overlap["y2"] = Utils.int_min(aabb1.y2, aabb2.y2)
+
 	return overlap
 
 func get_overlap_center(box: CollisionBox):
@@ -91,7 +86,11 @@ func get_center_float():
 func get_overlap_center_float(box: CollisionBox):
 	# used for hit effects
 	var overlap = get_overlap(box)
-	return Vector2((overlap.x1 + overlap.x2) / 2.0, (overlap.y1 + overlap.y2) / 2.0)
+	var center = Vector2((overlap.x1 + overlap.x2) / 2.0, (overlap.y1 + overlap.y2) / 2.0)
+	return center
+
+func get_hit_particle_location(box: CollisionBox):
+	return get_overlap_center_float(box)
 
 func overlaps(box: CollisionBox):
 	if width == 0 and height == 0:

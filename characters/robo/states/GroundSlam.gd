@@ -2,7 +2,7 @@ extends ThrowState
 
 const WALK_BACK_SPEED = "-4.0"
 const WALK_FORWARD_SPEED = "6.0"
-const NO_COMBO_DAMAGE = 270
+#const NO_COMBO_DAMAGE = 270
 const SINGLE_HIT_WAIT_TICKS = 2
 const SINGLE_HIT_START_TICK = 31
 const SINGLE_HIT_WAIT_TICK = 32

@@ -48,7 +48,9 @@ gravity = "0.4"
 max_air_speed = "20"
 max_fall_speed = "20"
 extra_state_variables = "can_be_picked_up
-shot"
+shot
+reeled
+lassoed"
 has_projectile_parry_window = false
 screenshake_amount = 12
 

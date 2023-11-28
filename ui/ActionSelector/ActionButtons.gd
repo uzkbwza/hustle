@@ -386,10 +386,19 @@ func _send_ui_action(action=null):
 		else:
 			$"%FeintButton".set_disabled(true)
 		$"%FeintButton".modulate = Color.white if fighter.feints > 0 else Color("d440b6")
+		if !$"%FeintButton".disabled:
+			$"%FeintButton".set_disabled(!fighter_extra.can_feint)
+			if $"%FeintButton".disabled:
+				$"%FeintButton".pressed = false
 
+
+				
 func extra_updated():
 	if fighter_extra:
 		fighter_extra.update_selected_move(current_button.state)
+	if !fighter_extra.can_feint:
+		$"%FeintButton".pressed = false
+		$"%FeintButton".set_disabled(true)
 #	on_action_selected(current_action, current_button)
 	send_ui_action()
 
@@ -424,9 +433,11 @@ func on_action_selected(action, button):
 	
 	$"%ReverseButton".set_disabled(!button.reversible)
 	if button.state:
-		$"%FeintButton".set_disabled(!button.state.can_feint())
+		$"%FeintButton".set_disabled(!(button.state.can_feint() and fighter_extra.can_feint))
 	else:
 		$"%FeintButton".set_disabled(true)
+	if !fighter_extra.can_feint:
+		$"%FeintButton".set_pressed_no_signal(false)
 	send_ui_action()
 
 func show_button_data_node(button):

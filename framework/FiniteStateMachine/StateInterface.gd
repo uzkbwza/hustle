@@ -12,6 +12,7 @@ var host
 var active = false
 var data = null
 var initialized = false
+var queued_state = null
 
 signal queue_change(state, self_)
 signal queue_change_with_data(state, data, self_)
@@ -23,6 +24,7 @@ func get_animation():
 		return animation
 
 func queue_state_change(state, data=null):
+	queued_state = state
 	if data == null:
 		emit_signal("queue_change", state, self)
 		return

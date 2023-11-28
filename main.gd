@@ -191,7 +191,6 @@ func setup_game_deferred(singleplayer, data):
 	for child in $"%ActivePlayerInfoContainer".get_children():
 		child.queue_free()
 
-
 	$"%P1InfoContainer".add_child(p1_info_scene)
 	$"%P1InfoContainer".move_child(p1_info_scene, 0)
 	$"%P2InfoContainer".add_child(p2_info_scene)

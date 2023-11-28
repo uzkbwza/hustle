@@ -19,6 +19,7 @@ var hits_chained = 0
 var last_hit_by = -1
 
 var active = false
+var hitbox_out = false
 
 var ticks_left = LIFETIME
 

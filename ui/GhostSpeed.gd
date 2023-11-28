@@ -34,3 +34,5 @@ func get_speed():
 		return 2
 	elif button_pressed == $"%3Speed":
 		return 3
+	elif button_pressed == $"%4Speed":
+		return 4

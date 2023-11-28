@@ -1785,6 +1785,7 @@ enter_sfx = ExtResource( 177 )
 enter_sfx_volume = -10.0
 title = "Toxic Fang"
 type = 2
+can_feint_if_possible = false
 interrupt_from_string = "Grounded
 GroundedSpecial
 "

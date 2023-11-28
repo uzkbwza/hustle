@@ -1,12 +1,12 @@
 extends CharacterState
 
-const MAX_X_DIST = 600
+const MAX_X_DIST = 300
 const MAX_Y_DIST = 300
 const NEUTRAL_LAG = 2
 const BACKWARD_PENALTY_AMOUNT_PER_PX = "0.25"
-const BACKWARD_PENALTY_MAX_AMOUNT = 35
-const BACKWARD_PENALTY_MIN_AMOUNT = 10
-const CROSS_THROUGH_PENALTY = 20
+const BACKWARD_PENALTY_MAX_AMOUNT = 15
+const BACKWARD_PENALTY_MIN_AMOUNT = 5
+const CROSS_THROUGH_PENALTY = 5
 
 var obj_name
 var neutral_lag = 0
@@ -76,7 +76,7 @@ func get_usable_projectiles():
 			if host.substituted_objects.has(obj_name):
 				continue
 			var obj_pos = obj.get_pos()
-			var my_pos = host.get_hurtbox_center()
+			var my_pos = host.opponent.get_hurtbox_center()
 			if Utils.int_abs(obj_pos.x - my_pos.x) > MAX_X_DIST or Utils.int_abs(obj_pos.y - my_pos.y) > MAX_Y_DIST:
 				continue
 			usable.append(obj)

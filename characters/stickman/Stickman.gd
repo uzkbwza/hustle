@@ -151,7 +151,7 @@ func detach():
 func apply_grav():
 	if previous_state() and previous_state().name == "AirDash":
 		if !(current_state() is CharacterHurtState):
-			if turn_frames <= 7:
+			if current_state().current_tick <= 7:
 				return
 	.apply_grav()
 

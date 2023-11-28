@@ -4,7 +4,7 @@ const GRAV = "0.58"
 const STARTED_IN_AIR_GRAV = "0.80"
 const MAX_FALL_SPEED = "3.0"
 const STARTED_IN_AIR_MAX_FALL_SPEED = "8.0"
-const EXTRA_VICTIM_HITLAG = 10
+const EXTRA_VICTIM_HITLAG = 15
 const AUTO_LAG = 4
 
 onready var hitbox = $Hitbox

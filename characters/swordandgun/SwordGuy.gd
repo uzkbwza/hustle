@@ -38,6 +38,7 @@ var bullet_cancelling = false
 var stance_teleport_x = 0
 var detonating = false
 var shifting = false
+var temporal_round = null
 
 var shifted_this_frame = false
 var shifted_last_frame = false
@@ -75,8 +76,8 @@ func shift():
 		obj.disable()
 		after_image_object = null
 		shifted_this_frame = true
-		if obj.get_pos().y >= 0:
-			set_vel(get_vel().x, "0")
+#		if obj.get_pos().y >= 0:
+#			set_vel(get_vel().x, "0")
 		if combo_count <= 0:
 			add_penalty(15)
 
@@ -211,7 +212,7 @@ func on_attack_blocked():
 	if bullets_left > 0:
 		bullet_cancelling = false
 		can_update_sprite = false
-		change_state("QuickerDraw")
+		change_state("Brandish")
 
 func on_got_hit():
 	if cut_projectile:
@@ -223,6 +224,11 @@ func on_got_hit():
 		if obj != null:
 			obj.disable()
 			after_image_object = null
+
+func can_block_cancel():
+	if current_state().name == "Brandish" or current_state().name == "QuickerDraw":
+		return false
+	return .can_block_cancel()
 
 func _draw():
 	._draw()

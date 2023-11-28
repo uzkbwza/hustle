@@ -246,7 +246,7 @@ func spawn_whiff_particle():
 		host.spawn_particle_effect(whiff_particle, Vector2(center.x, center.y), Vector2(x_facing(), 0))
 
 func spawn_particle(particle, obj, dir):
-	host.spawn_particle_effect(particle, get_overlap_center_float(obj.hurtbox), dir)
+	host.spawn_particle_effect(particle, get_hit_particle_location(obj.hurtbox), dir)
 
 func init():
 	if height < 0:
@@ -386,6 +386,14 @@ func can_draw_box():
 		return (active and enabled and Global.show_hitboxes)
 	else:
 		return .can_draw_box()
+
+func reset_hit_objects():
+	hit_objects.clear()
+	for hitbox in grouped_hitboxes:
+		hitbox.hit_objects.clear()
+	if active and enabled:
+		deactivate()
+		activate()
 
 func tick():
 	var pos = host.get_pos()

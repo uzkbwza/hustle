@@ -28,6 +28,21 @@ func on_data_changed():
 			orb_push.visible = false
 	
 
+func update_selected_move(move_state):
+	.update_selected_move(move_state)
+	$"%HoverButton".disabled = false
+	$"%FastFallButton".disabled = false
+	if move_state and move_state.get("IS_NEW_PARRY") and fighter.in_blockstring:
+		$"%HoverButton".set_pressed_no_signal(false)
+		$"%HoverButton".disabled = true
+		$"%FastFallButton".set_pressed_no_signal(false)
+		$"%FastFallButton".disabled = true
+	if fighter.in_blockstring and fighter.current_state().get("IS_NEW_PARRY") and move_state == null:
+		$"%HoverButton".set_pressed_no_signal(false)
+		$"%HoverButton".disabled = true
+		$"%FastFallButton".set_pressed_no_signal(false)
+		$"%FastFallButton".disabled = true
+
 func _on_hover_button_toggled(on):
 	if on:
 		fast_fall_button.set_pressed_no_signal(false)
@@ -81,8 +96,6 @@ func show_options():
 	if fighter.spark_bombs:
 		explode_button.show()
 	
-
-
 
 func get_extra():
 	var extra = {

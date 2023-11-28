@@ -50,6 +50,10 @@ func _frame_3():
 	bullet.dir_y = dir.y
 	if dodge:
 		host.start_invulnerability()
+	if data and data.has("ActivateTemporal") and data["ActivateTemporal"]:
+		var temporal_round = host.obj_from_name(host.temporal_round)
+		if temporal_round:
+			temporal_round.shoot()
 	host.use_bullet()
 
 func _frame_5():

@@ -23,6 +23,7 @@ func _enter():
 	host.can_be_picked_up = false
 	host.set_grounded(false)
 	apply_grav = true
+	hit_someone = false
 
 
 func _tick():
@@ -30,7 +31,7 @@ func _tick():
 		host.sprite.rotation += deg2rad(45)
 	if host.shot:
 		host.can_be_picked_up = true
-	if hit_someone:
+	if hit_someone and !host.shot and !host.reeled:
 		if current_tick == hit_frame + SHOOT_FRAMES_AFTER_HITTING:
 			if host.creator.bullets_left > 0:
 				host.creator.use_bullet()
@@ -45,6 +46,9 @@ func _tick():
 			hitbox.deactivate()
 			host.sprite.rotation = 0
 		pull = true
+
+	var vel = host.get_vel()
+	hitbox.dir_x = fixed.mul(str(fixed.sign(vel.x)), "-1")
 
 	if host.shot:
 		pull = true

@@ -409,6 +409,7 @@ character_portrait2 = null
 player_info_scene = ExtResource( 39 )
 player_extra_params_scene = ExtResource( 122 )
 damage_taken_modifier = "1.0"
+knockback_taken_modifier = "1.0"
 num_feints = 2
 use_extra_color_1 = false
 extra_color_1 = Color( 1, 0, 1, 1 )
@@ -418,7 +419,7 @@ extra_color_2 = Color( 1, 0, 1, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )
 frames = SubResource( 3 )
-animation = "WallSlam"
+animation = "Wait"
 offset = Vector2( 0, -18 )
 __meta__ = {
 "_edit_group_": true,
@@ -799,6 +800,7 @@ air_type = 2
 dynamic_iasa = false
 busy_interrupt_type = 2
 burst_cancellable = false
+reversible = false
 instant_cancellable = false
 can_feint_if_possible = false
 interrupt_from_string = "BusyHurt
@@ -848,6 +850,7 @@ air_type = 2
 dynamic_iasa = false
 neutral_only = true
 burst_cancellable = false
+reversible = false
 instant_cancellable = false
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
@@ -900,6 +903,7 @@ iasa_at = 15
 dynamic_iasa = false
 combo_only = true
 burst_cancellable = false
+reversible = false
 interrupt_from_string = "OffensiveBurst
 "
 interrupt_into_string = "Grounded
@@ -1072,6 +1076,7 @@ title = "Getup"
 type = 4
 button_texture = ExtResource( 121 )
 busy_interrupt_type = 1
+reversible = false
 interrupt_from_string = "OTG
 Getup"
 interrupt_into_string = "Grounded
@@ -1854,7 +1859,24 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="EmoteLabel" type="RichTextLabel" parent="." index="10"]
+[node name="BlockFrameLabel" type="Label" parent="." index="9"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -44.0
+margin_top = -49.0
+margin_right = 44.0
+margin_bottom = -38.0
+theme = ExtResource( 47 )
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+custom_constants/line_spacing = -2
+text = "parry @ xf "
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="EmoteLabel" type="RichTextLabel" parent="." index="11"]
 margin_left = -141.0
 margin_top = -60.0
 margin_right = 141.0
@@ -1869,7 +1891,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="VelocityLabelContainer" type="Node2D" parent="." index="11"]
+[node name="VelocityLabelContainer" type="Node2D" parent="." index="12"]
 z_index = 1024
 
 [node name="VelocityLabel" type="RichTextLabel" parent="VelocityLabelContainer" index="0"]
@@ -1880,7 +1902,7 @@ theme = ExtResource( 47 )
 scroll_active = false
 script = ExtResource( 187 )
 
-[node name="GroundedIndicator" type="Sprite" parent="." index="12"]
+[node name="GroundedIndicator" type="Sprite" parent="." index="13"]
 visible = false
 position = Vector2( 0, 8 )
 z_index = 1000

@@ -7,6 +7,7 @@ class_name PlayerExtra
 var fighter: Fighter
 var player_id
 var selected_move
+var can_feint = true
 
 func _ready():
 	connect("data_changed", self, "on_data_changed")
@@ -29,5 +30,6 @@ func reset():
 	pass
 
 func update_selected_move(move_state):
+	can_feint = true
 	selected_move = move_state
 	pass

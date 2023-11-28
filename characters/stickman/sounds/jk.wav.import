@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/jk.wav-2a56400e931bff986e0b72150f0d8734.sample"
+
+[deps]
+
+source_file="res://characters/stickman/sounds/jk.wav"
+dest_files=[ "res://.import/jk.wav-2a56400e931bff986e0b72150f0d8734.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

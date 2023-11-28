@@ -65,6 +65,7 @@ var armor_startup_ticks = 0
 var used_earthquake_grab = false
 var started_magnet_in_initiative = false
 var force_fly = false
+
 var drive_cancel = false
 var buffer_drive_cancel = false
 var super_armor_installed = false
@@ -128,6 +129,10 @@ func init(pos=null):
 func on_got_hit_by_fighter():
 	if armor_active:
 		got_hit = true
+
+func on_got_parried():
+	.on_got_parried()
+	flying_dir = null
 
 func on_got_hit():
 	pass
@@ -256,8 +261,9 @@ func tick():
 			))
 			play_sound("ArmorBeep2")
 			buffer_armor = false
-#	if armor_active:
-#		armor_pips = 0
+	if current_state().is_grab and feinting and armor_active:
+		feinting = false
+
 	if magnet_ticks_left > 0:
 		start_magnet_fx()
 		magnetize()
@@ -287,6 +293,7 @@ func tick():
 		fly_fx_started = true
 		start_fly = false
 		start_fly_fx()
+
 	if flying_dir:
 		if current_tick % 5 == 0:
 #			play_sound("FlySound")
@@ -442,6 +449,8 @@ func process_extra(extra):
 #		can_fly = false
 	if busy_interrupt:
 		can_fly = false
+#	if fly_blocked:
+#		can_fly = false
 	if extra.has("fly_dir") and (!is_grounded() or extra.get("force_fly")) and can_fly:
 		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)

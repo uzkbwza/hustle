@@ -8,6 +8,7 @@ export var screenshake_amount = 12
 var can_be_picked_up = false
 var shot = false
 var lassoed = true
+var reeled = false
 
 func init(pos=null):
 	.init(pos)
@@ -32,3 +33,8 @@ func shoot(fighter: Fighter):
 func on_got_blocked():
 	if current_state().name == "Spin":
 		current_state().pop_up()
+
+func reset_hitbox():
+	change_state("Spin")
+	reeled = true
+	pass

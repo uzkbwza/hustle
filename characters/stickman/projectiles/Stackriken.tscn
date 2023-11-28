@@ -1,0 +1,123 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/ParticleEffect.gd" type="Script" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://characters/stickman/projectiles/StackrikenDefault.gd" type="Script" id=4]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=5]
+[ext_resource path="res://characters/stickman/projectiles/sprites/stackriken.png" type="Texture" id=6]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=7]
+[ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=8]
+[ext_resource path="res://sound/common/swish.wav" type="AudioStream" id=9]
+[ext_resource path="res://sound/common/swish_long.wav" type="AudioStream" id=10]
+[ext_resource path="res://characters/stickman/StackrikenEffect.tscn" type="PackedScene" id=11]
+[ext_resource path="res://characters/stickman/projectiles/Stackriken.gd" type="Script" id=12]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0.851136 ), 0.0, 0.0, 0, 0, Vector2( 0.118557, 0.778409 ), 0.0, 0.0, 0, 0, Vector2( 0.561856, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+script = ExtResource( 12 )
+max_air_speed = "1000"
+max_fall_speed = "1000"
+extra_state_variables = "return_x
+return_y
+force_x
+force_y"
+has_projectile_parry_window = false
+
+[node name="Flip" parent="." index="0"]
+scale = Vector2( 1, 0.75 )
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+
+[node name="FireballTrail" type="Node2D" parent="Flip/Particles" index="0"]
+material = SubResource( 1 )
+z_index = -1
+script = ExtResource( 2 )
+free = false
+one_shot = false
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Flip/Particles/FireballTrail" index="0"]
+amount = 80
+lifetime = 2.0
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 5 )
+emission_shape = 1
+emission_sphere_radius = 12.35
+spread = 19.56
+gravity = Vector2( 0, 0 )
+initial_velocity = 37.43
+scale_amount = 0.65
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 3 )
+color = Color( 1, 0.2, 0.239216, 1 )
+
+[node name="Timer" type="Timer" parent="Flip/Particles/FireballTrail" index="1"]
+wait_time = 0.064
+one_shot = true
+
+[node name="Hurtbox" parent="." index="3"]
+width = 26
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 4 )
+custom_grav = "0.05"
+custom_grav_max_fall_speed = "10000"
+particle_scene = ExtResource( 11 )
+spawn_particle_on_enter = true
+enter_sfx_volume = -10.0
+sfx = ExtResource( 10 )
+sfx_tick = 2
+move_x = 0
+clash = false
+num_hits = 3
+lifetime = 90
+fizzle_on_walls = false
+fizzle_on_hit_opponent = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 7 )
+height = 11
+damage = 60
+minimum_damage = 15
+chip_damage_modifier = "1.7"
+hitstun_ticks = 15
+hitlag_ticks = 5
+sdi_modifier = "0.3"
+plus_frames = 1
+screenshake_amount = 8
+whiff_sound = ExtResource( 9 )
+hit_sound = ExtResource( 8 )
+grounded_hit_state = "HurtAerial"
+start_tick = 1
+always_on = true
+looping = true
+loop_active_ticks = 4
+loop_inactive_ticks = 1

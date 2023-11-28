@@ -23,3 +23,4 @@ func _tick():
 	if current_tick > 4:
 		host.apply_fric()
 	host.apply_forces()
+	interruptible_on_opponent_turn = host.opponent.combo_count <= 0 and lag <= DEFAULT_LAG

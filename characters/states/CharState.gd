@@ -139,6 +139,7 @@ var feinted_last = false
 var is_brace = false
 
 var feinting = false
+var land_cancelled = false
 
 var interrupt_into = [] setget , get_interrupt_into
 var interrupt_from = [] setget , get_interrupt_from
@@ -152,6 +153,7 @@ var usable_requirement_nodes = []
 var is_hurt_state = false
 var start_interruptible_on_opponent_turn = false
 var initiative_startup_reduction = false
+
 
 func get_interrupt_into():
 	return interrupt_into
@@ -280,6 +282,7 @@ func _enter_shared():
 #	if host.opponent:
 #		host.opponent.update_advantage()
 	hit_yet = false
+	land_cancelled = false
 	hit_anything = false
 	was_blocked = false
 	started_in_air = false
@@ -364,7 +367,7 @@ func try_hit_cancel(obj, hitbox):
 		enable_hit_cancel(projectile)
 		if projectile:
 			host.global_hitlag(host.hitlag_ticks)
-			host.hitlag_ticks = 0
+			host.hitlag_ticks = 1
 
 func process_hitboxes():
 #	if hitbox_start_frames.has(current_tick + 1) and host.feinting:
@@ -430,6 +433,7 @@ func _tick_shared():
 #		print(started_in_air)
 	if land_cancel and host.is_grounded() and started_in_air and current_tick > min_land_cancel_frame and fixed.ge(host.get_vel().y, "0"):
 		queue_state_change("Landing", landing_recovery if landing_recovery >= 0 else null)
+		_on_land_cancel()
 	if current_tick <= anim_length and !endless:
 		if can_interrupt() and !interrupt_into.empty():
 			enable_interrupt()
@@ -439,6 +443,10 @@ func _tick_shared():
 		host.colliding_with_opponent = false
 	if current_tick == no_collision_end_frame:
 		host.colliding_with_opponent = true
+
+func _on_land_cancel():
+	land_cancelled = true
+	pass
 
 func _tick_after():
 #	if backdash_iasa:

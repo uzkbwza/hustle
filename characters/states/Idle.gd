@@ -10,6 +10,7 @@ func _enter():
 func _tick():
 	host.apply_fric()
 	host.apply_forces()
+
 	if auto_fall:
 		if !host.is_grounded():
 			return "Fall"

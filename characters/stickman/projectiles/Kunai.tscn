@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/stickman/sprites/kunai.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=4]
 [ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=5]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=6]
+[ext_resource path="res://characters/stickman/projectiles/Kunai.gd" type="Script" id=7]
+[ext_resource path="res://characters/stickman/projectiles/FireballTrail.tscn" type="PackedScene" id=8]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -30,12 +32,37 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 6 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
-fizzle_on_ceiling = true
+script = ExtResource( 7 )
+max_fall_speed = "15"
+damages_own_team = true
+has_projectile_parry_window = false
+can_be_hit_by_melee = true
+hit_cancel_on_hit = true
+projectile_immune = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
+
+[node name="FireballTrail" parent="Flip/Particles" index="0" instance=ExtResource( 8 )]
+material = SubResource( 3 )
+z_index = -1
 
 [node name="CollisionBox" parent="." index="2"]
 width = 8
@@ -56,6 +83,7 @@ max_homing_speed = "10"
 start_homing = false
 lifetime = 6000
 relative_data_dir = true
+clash = false
 bounce_on_ground = false
 num_bounces = 2
 
@@ -68,6 +96,7 @@ damage = 70
 hitstun_ticks = 20
 hitlag_ticks = 5
 victim_hitlag = 5
+allowed_to_hit_own_team = false
 plus_frames = 2
 hit_sound = ExtResource( 5 )
 knockback = "5.0"

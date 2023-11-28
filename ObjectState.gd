@@ -104,7 +104,7 @@ export var throw_positions: Dictionary = {}
 var enter_sfx_player
 var sfx_player
 
-
+var is_grab = false
 var current_tick = -1
 var current_real_tick = -1
 var start_tick = -1
@@ -474,6 +474,8 @@ func setup_hitboxes():
 	all_hitbox_nodes = []
 	for child in get_children():
 		if child is Hitbox:
+			if child is ThrowBox:
+				is_grab = true
 			all_hitbox_nodes.append(child)
 			host.hitboxes.append(child)
 			child.native = native

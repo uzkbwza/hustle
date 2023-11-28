@@ -1,6 +1,7 @@
 extends RobotState
 
-const SPEED = "7.0"
+const SPEED = "10.5"
+#const HORIZ_MULTIPLIER = "1.5"
 
 func _ready():
 	pass # Replace with function body.

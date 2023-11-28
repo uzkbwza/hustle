@@ -9,8 +9,11 @@ export var boost = false
 
 func _frame_0():
 	if boost:
-		host.start_invulnerability()
 		host.start_fly_fx()
+
+func _frame_1():
+	if host.initiative:
+		host.start_invulnerability()
 
 func _frame_6():
 	host.end_invulnerability()

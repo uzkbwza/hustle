@@ -1,5 +1,7 @@
 extends Window
 
+const MAX_LINES = 300
+
 var showing = false
 
 # Called when the node enters the scene tree for the first time.
@@ -31,9 +33,11 @@ func on_chat_message_received(player_id: int, message: String):
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
 	node.fit_content_height = true
-	if !(player_id == Network.player_id):
+	if !(player_id == Network.player_id) and is_visible_in_tree():
 		$"ChatSound".play()
 	$"%MessageContainer".call_deferred("add_child", node)
+	if $"%MessageContainer".get_child_count() + 1 > MAX_LINES:
+		$"%MessageContainer".call_deferred("remove_child", $"%MessageContainer".get_child(0))
 	yield(get_tree(), 'idle_frame')
 	yield(get_tree(), 'idle_frame')
 	$"%ScrollContainer".scroll_vertical = 10000000000000000
@@ -120,9 +124,7 @@ func process_command(message: String):
 func send_message(message):
 	if process_command(message):
 		return
-#	print(message)
-#	print("[img" in message)
-#	print("res://ui/unknown2.png" in message)
+
 	if "[img" in message and "ui/unknown2.png" in message:
 		SteamHustle.unlock_achievement("ACH_JUMPSCARE")
 	if !Network.multiplayer_active and !SteamLobby.SPECTATING:

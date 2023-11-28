@@ -20,5 +20,5 @@ func _frame_1():
 	host.start_invulnerability()
 	host.start_projectile_invulnerability()
 
-func _frame_8():
+func _frame_9():
 	host.end_invulnerability()

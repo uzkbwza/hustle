@@ -3,7 +3,9 @@ extends WizardState
 const SPEED = "15.0"
 const SPARK_SPEED = "20.0"
 const HITBOX_OFFSET = "-28.0"
+const MAX_DOWN_SPEED = "10"
 const FAST_FALL_REDUCTION = 200
+const LAND_CANCEL_DAMAGE = 5
 
 onready var hitbox = $Hitbox
 onready var hitbox2 = $Hitbox2
@@ -34,7 +36,9 @@ func _frame_6():
 	particle_y = hitbox_offs.y
 	hitbox.x = fixed.round(hitbox_offs.x) * host.get_facing_int()
 	hitbox.y = fixed.round(hitbox_offs.y) - 16
-	host.apply_force(dir.x, dir.y)
+
+
+	host.apply_force(dir.x, dir.y if !host.fast_falling else fixed.mul(dir.y, "0.25"))
 	spawn_particle_relative(preload("res://characters/wizard/projectiles/CombustionEffect.tscn"), Vector2(particle_x, float(particle_y) - 16))
 	host.sprite.hide()
 	host.liftoff_sprite.show()
@@ -44,10 +48,15 @@ func _frame_6():
 	host.play_sound("HitBass")
 	host.screen_bump(Vector2(), 3, 0.15)
 	host.colliding_with_opponent = false
-	
+
 func _tick():
 	if host.spark_speed_frames > 0:
 		hitbox2.plus_frames = 2
+#	if host.spark_speed_frames <= 0:
+#		var vel = host.get_vel()
+#		if fixed.gt(vel.y, MAX_DOWN_SPEED):
+#			host.set_vel(vel.x, MAX_DOWN_SPEED)
+
 	host.apply_forces_no_limit()
 	var vel = host.get_vel()
 	if current_tick > 7:
@@ -58,8 +67,15 @@ func _tick():
 				if fixed.sign(vel.x) != host.get_facing_int():
 					landing_lag = 12
 			queue_state_change("Landing", landing_lag)
-	
+
 func _exit():
+	if queued_state == "Landing":
+#		host.take_damage(LAND_CANCEL_DAMAGE)
+		if host.combo_count <= 0:
+			var vel = host.get_vel()
+			host.set_vel(vel.x, fixed.mul(vel.y, "0.75"))
+		
+
 	host.liftoff_sprite.hide()
 	host.sprite.show()
 #	$"%LiftoffParticles".set_enabled(false)
