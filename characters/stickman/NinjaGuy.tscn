@@ -295,7 +295,7 @@ animations = [ {
 "name": "AirFireball",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 156 ), ExtResource( 156 ), ExtResource( 173 ) ],
+"frames": [ ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 152 ), ExtResource( 156 ), ExtResource( 156 ), ExtResource( 173 ) ],
 "loop": true,
 "name": "AirUpwardPunch",
 "speed": 60.0
@@ -726,7 +726,8 @@ button_texture = ExtResource( 33 )
 air_type = 1
 interrupt_from_string = "AerialSpecial
 Aerial"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Aerial
+Grounded"
 projectile = ExtResource( 21 )
 speed_modifier_amount = "1.5"
 
@@ -1730,7 +1731,10 @@ Reversal
 Uppercut"
 interrupt_into_string = "AerialSpecial
 AerialAttack
-AerialSuper"
+AerialSuper
+GroundedSpecial
+GroundedAttack
+GroundedSuper"
 interrupt_exceptions_string = "Uppercut"
 allowed_stances_string = "BackSway
 Normal"
@@ -1817,7 +1821,10 @@ Reversal
 Uppercut"
 interrupt_into_string = "AerialSpecial
 AerialAttack
-AerialSuper"
+AerialSuper
+GroundedSpecial
+GroundedAttack
+GroundedSuper"
 interrupt_exceptions_string = "Uppercut"
 allowed_stances_string = "BackSway
 Normal"
@@ -1880,7 +1887,8 @@ sprite_animation = "Landing"
 anim_length = 8
 title = "UppercutLanding"
 type = 2
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 
 [node name="DiveKick" type="Node2D" parent="StateMachine" index="39"]
 script = ExtResource( 12 )
@@ -2502,7 +2510,8 @@ sfx = ExtResource( 70 )
 sfx_tick = 30
 sfx_volume = -10.0
 type = 2
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Grounded
+Aerial"
 release = true
 release_frame = 29
 hitstun_ticks = 40
@@ -2550,7 +2559,6 @@ y = -15
 width = 9
 height = 10
 increment_combo = false
-block_cancel_allowed = null
 _c_Grouping = 1
 start_tick = 10
 active_ticks = 4
@@ -2608,18 +2616,17 @@ active_ticks = 3
 [node name="AirUpwardPunch" type="Node2D" parent="StateMachine" index="53"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
-anim_length = 22
+anim_length = 16
 title = "Punch"
 type = 1
 button_texture = ExtResource( 24 )
 air_type = 1
-self_hit_cancellable = false
-self_interruptable = false
 interrupt_from_string = "Aerial
-AirUpwardPunch"
-interrupt_into_string = "Aerial"
-hit_cancel_into_string = "Aerial"
-interrupt_exceptions_string = "AirUpwardPunch"
+"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "Aerial
+Grounded"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirUpwardPunch" index="0"]
 z_index = 1000
@@ -2635,24 +2642,25 @@ plus_frames = 1
 hit_height = 0
 dir_x = "0.1"
 knockback = "5.0"
-start_tick = 4
+start_tick = 5
 active_ticks = 2
 
 [node name="AirUpwardPunchQS" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 3 )
 fallback_state = "Fall"
 sprite_animation = "AirUpwardPunch"
-anim_length = 22
+anim_length = 16
 title = "Punch"
 type = 1
 button_texture = ExtResource( 24 )
 air_type = 1
-self_hit_cancellable = false
-self_interruptable = false
 selectable = false
-interrupt_into_string = "Aerial"
-hit_cancel_into_string = "Aerial"
-interrupt_exceptions_string = "AirUpwardPunch"
+interrupt_from_string = "Aerial
+"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "Aerial
+Grounded"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirUpwardPunchQS" index="0"]
 z_index = 1000
@@ -2669,7 +2677,7 @@ plus_frames = 1
 hit_height = 0
 dir_x = "0.1"
 knockback = "5.0"
-start_tick = 4
+start_tick = 5
 active_ticks = 2
 
 [node name="GroundedPunch" type="Node2D" parent="StateMachine" index="55"]
@@ -2923,7 +2931,8 @@ button_texture = ExtResource( 28 )
 interrupt_from_string = "GroundedAttack
 GroundedHeavy
 Grounded"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Grounded
+Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/DropKick" index="0"]
@@ -3007,7 +3016,8 @@ button_texture = ExtResource( 25 )
 air_type = 1
 interrupt_from_string = "AerialAttack
 Aerial"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Grounded
+Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirAttack" index="0"]
@@ -3042,7 +3052,8 @@ air_type = 1
 selectable = false
 interrupt_from_string = "AerialAttack
 Aerial"
-interrupt_into_string = "Aerial"
+interrupt_into_string = "Grounded
+Aerial"
 hit_cancel_into_string = "Aerial"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirAttackQS" index="0"]
@@ -3428,7 +3439,8 @@ force_dir_x = "1.0"
 force_speed = "8.0"
 type = 1
 button_texture = ExtResource( 25 )
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
 hit_cancel_into_string = "GroundedAttack
 GroundedSpecial
 GroundedSuper"
@@ -3576,6 +3588,10 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
+},
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
@@ -3587,10 +3603,6 @@ ExtResource( 219 ): {
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3776,11 +3788,28 @@ change_stance_to = "Normal"
 [node name="WhiffInstantCancel" parent="StateMachine" index="86"]
 hit_cancel_exceptions_string = ""
 
+[node name="Grab" parent="StateMachine" index="94"]
+interrupt_into_string = "Aerial
+Grounded"
+
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
+block_cancel_allowed = true
 _c_Grouping = 1
 
+[node name="AirGrab" parent="StateMachine" index="95"]
+interrupt_into_string = "Aerial
+Grounded"
+
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
+block_cancel_allowed = true
 _c_Grouping = 1
+
+[node name="JumpGrab" parent="StateMachine" index="96"]
+interrupt_into_string = "Aerial
+Grounded"
+
+[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
+block_cancel_allowed = true
 
 [node name="ForwardThrow" parent="StateMachine" index="97"]
 sprite_animation = "GroundedThrow"
@@ -3794,13 +3823,13 @@ ExtResource( 207 ): {
 "x": 15,
 "y": -10
 },
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
@@ -3809,6 +3838,8 @@ ExtResource( 209 ): {
 }
 burst_cancellable = false
 burstable = false
+interrupt_into_string = "Aerial
+Grounded"
 start_throw_pos_x = 0
 start_throw_pos_y = 0
 release_throw_pos_y = 0
@@ -3848,25 +3879,27 @@ ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
-},
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 }
 }
 burst_cancellable = false
 burstable = false
+interrupt_into_string = "Aerial
+Grounded"
 start_throw_pos_x = 0
 start_throw_pos_y = 0
 release_throw_pos_y = 0

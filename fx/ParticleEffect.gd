@@ -71,9 +71,10 @@ func start_emitting():
 	for child in get_children():
 		if child is Particles2D:
 			child.emitting = true
+			child.restart()
 		if child is CPUParticles2D:
 			child.emitting = true
-
+			child.restart()
 func start():
 	start_emitting()
 	for child in get_children():

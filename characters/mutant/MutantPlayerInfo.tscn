@@ -1,0 +1,100 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://characters/mutant/MutantPlayerInfo.gd" type="Script" id=1]
+[ext_resource path="res://characters/mutant/pip.png" type="Texture" id=2]
+[ext_resource path="res://characters/mutant/pip2.png" type="Texture" id=3]
+
+[sub_resource type="AnimatedTexture" id=1]
+frames = 2
+fps = 60.0
+frame_0/texture = ExtResource( 2 )
+frame_0/delay_sec = 0.5
+frame_1/texture = ExtResource( 3 )
+frame_1/delay_sec = 0.03
+
+[node name="PlayerInfo" type="MarginContainer"]
+margin_right = 104.0
+margin_bottom = 15.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_constants/margin_right = 23
+custom_constants/margin_left = 23
+script = ExtResource( 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 23.0
+margin_right = 81.0
+margin_bottom = 15.0
+custom_constants/separation = -1
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect3" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect4" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect5" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect6" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect7" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect8" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect9" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="TextureRect10" type="TextureRect" parent="HBoxContainer"]
+margin_left = 28.0
+margin_right = 29.0
+margin_bottom = 15.0
+texture = SubResource( 1 )
+stretch_mode = 4

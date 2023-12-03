@@ -25,14 +25,19 @@ animations = [ {
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 script = ExtResource( 7 )
+damages_own_team = true
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 movable = false
 can_be_hit_by_melee = true
+apply_hitlag_when_hit_by_melee = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )
 animation = "Default"
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="CollisionBox" parent="." index="2"]
 width = 5
@@ -63,10 +68,14 @@ damage = 3
 hitstun_ticks = 15
 hitlag_ticks = 8
 scale_combo = false
-di_modifier = "0.75"
 sdi_modifier = "0.1"
 allowed_to_hit_own_team = false
 hit_sound = ExtResource( 9 )
+hit_sound_volume = -8.0
+bass_sound_volume = -8.0
+knockback = "7.0"
+grounded_hit_state = "HurtAerial"
+minimum_grounded_frames = 10
 start_tick = 9
 always_on = true
 

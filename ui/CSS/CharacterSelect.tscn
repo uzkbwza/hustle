@@ -38,11 +38,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -194.0
-margin_top = 10.0
-margin_right = 194.0
-margin_bottom = 70.0
-alignment = 1
+margin_left = -117.0
+margin_top = 9.0
+margin_right = 117.0
+margin_bottom = 71.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="GoButton" type="Button" parent="."]
 unique_name_in_owner = true

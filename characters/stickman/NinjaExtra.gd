@@ -51,8 +51,6 @@ func show_options():
 
 	if fighter.momentum_stores > 0:
 		release_button.show()
-#	if (fighter.momentum_stores < 3 and !fighter.boosted_during_combo) or fighter.infinite_resources:
-#		store_button.show()
 
 	if fighter.bomb_thrown:
 		bomb_button.show()

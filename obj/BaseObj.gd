@@ -372,7 +372,7 @@ func update_data():
 	data = get_data()
 	obj_data = data["object_data"]
 	if initialized:
-		data["state_data"] = {
+		data["state_data"] =  {
 			"state": state_machine.state.state_name,
 			"frame": state_machine.state.current_tick,
 		}
@@ -595,6 +595,9 @@ func get_vel():
 func get_facing_int():
 	return -1 if get_facing() == "Left" else 1
 
+func detect(obj):
+	current_state().detect(obj)
+	
 func check_params(x, y):
 	assert((x is int and y is int) or (x is String and y is String))
 
@@ -775,6 +778,24 @@ func reset_pushback():
 func update_grounded():
 	chara.update_grounded()
 
+func on_got_parried():
+	current_state().on_got_perfect_parried()
+	deactivate_current_hitbox()
+
+func on_got_blocked():
+	current_state().on_got_blocked()
+	deactivate_current_hitbox()
+
+func deactivate_current_hitbox():
+	for hitbox in get_active_hitboxes():
+		if hitbox.active and hitbox.enabled and !hitbox.looping:
+			hitbox.deactivate()
+	
+func deactivate_hitboxes():
+	current_state().terminate_hitboxes()
+	pass
+
+
 func hit_by(hitbox: Hitbox):
 	emit_signal("got_hit")
 
@@ -903,6 +924,23 @@ func normal_tick():
 	current_tick += 1
 	game_tick += 1
 	update_grounded()
+
+func compare(obj):
+	var my_properties = get_property_list()
+	var other_properties = obj.get_property_list()
+	for property in my_properties:
+#		print(property.name)
+		if !is_instance_valid(self) or !is_instance_valid(obj):
+			return
+		var mine = get(property.name)
+		var other = obj.get(property.name)
+		if !(mine is Object) and !Utils.compare(mine, other):
+#			print("property mismatch: %s\n mine: %s\ntheirs: %s\n\n" % [property.name, mine, other])
+			pass
+		yield(get_tree(), "idle_frame")
+		yield(get_tree(), "idle_frame")
+		yield(get_tree(), "idle_frame")
+
 
 func _draw():
 #	draw_circle(to_local(get_pos_visual()), 5, Color.white)

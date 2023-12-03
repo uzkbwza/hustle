@@ -855,22 +855,6 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
@@ -878,6 +862,22 @@ ExtResource( 323 ): {
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1891,22 +1891,6 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
@@ -1914,6 +1898,22 @@ ExtResource( 323 ): {
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 }
 }
 type = 1
@@ -2215,6 +2215,7 @@ damage = 20
 hitbox_type = 1
 cancellable = false
 can_clash = false
+beats_grab = false
 plus_frames = -1
 screenshake_amount = 0
 replace_hit_particle = true
@@ -2236,6 +2237,7 @@ damage = 20
 hitbox_type = 1
 cancellable = false
 can_clash = false
+beats_grab = false
 plus_frames = -1
 priority = 1
 screenshake_amount = 0

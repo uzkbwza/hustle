@@ -70,6 +70,9 @@ func _frame_1():
 		spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 	host.apply_grav()
 
+func spawn_dash_particle():
+	spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
+
 func _frame_7():
 	if dir_x < 0:
 		host.end_throw_invulnerability()
@@ -88,8 +91,8 @@ func _tick():
 		if spawn_particle:
 			spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))
 #		interruptible_on_opponent_turn = true
-	if stop_frame > 0 and current_tick == stop_frame and !repeated:
-		host.reset_momentum()
+#	if stop_frame > 0 and current_tick == stop_frame and !repeated:
+#		host.reset_momentum()
 
 	if auto and dir_x > 0 and host.opponent.colliding_with_opponent and !host.opponent.is_in_hurt_state() and current_tick % 4 == 0:
 		host.update_data()

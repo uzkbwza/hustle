@@ -93,9 +93,9 @@ func get_vacuum_dir(hitbox):
 
 func get_x_dir(hitbox):
 	return host.get_hitbox_x_dir(hitbox)
-
-func _on_hit_something(_obj, _hitbox):
-	pass
+#
+#func _on_hit_something(_obj, _hitbox):
+#	pass
 
 func _exit_shared():
 	host.z_index = 0

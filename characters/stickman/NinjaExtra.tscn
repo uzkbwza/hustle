@@ -62,6 +62,7 @@ unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 273.0
+margin_right = 60.0
 margin_bottom = 339.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -76,7 +77,6 @@ snap_align_to_limit_center = false
 
 [node name="ReleaseButton" type="CheckButton" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
-modulate = Color( 0.831373, 0.25098, 0.713726, 1 )
 margin_top = 340.0
 margin_right = 70.0
 margin_bottom = 360.0
@@ -85,7 +85,12 @@ hint_tooltip = "Unleash your stored momentum."
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = ExtResource( 3 )
-custom_colors/font_color_hover_pressed = Color( 0, 0, 0, 1 )
+custom_colors/font_color_disabled = Color( 0.498039, 0.270588, 0.45098, 1 )
+custom_colors/font_color_focus = Color( 0.831373, 0.25098, 0.713726, 1 )
+custom_colors/font_color_hover_pressed = Color( 0.831373, 0.25098, 0.713726, 1 )
+custom_colors/font_color = Color( 0.831373, 0.25098, 0.713726, 1 )
+custom_colors/font_color_hover = Color( 0.831373, 0.25098, 0.713726, 1 )
+custom_colors/font_color_pressed = Color( 0.831373, 0.25098, 0.713726, 1 )
 text = "Boost"
 icon = ExtResource( 6 )
 

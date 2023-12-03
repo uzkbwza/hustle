@@ -2,7 +2,7 @@ tool
 
 extends CollisionBox
 
-class_name Hitbox
+class_name Hitbox, "res://addons/collision_box/hitbox.png"
 
 const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED = "1.25"
@@ -21,12 +21,14 @@ enum HitboxType {
 	OffensiveBurst,
 	Burst,
 	NoHitstun,
+	Detect,
 }
 
 #const DAMAGE_SUPER_GAIN_DIVISOR = 1
 
 signal hit_something(obj, hitbox)
 signal got_parried()
+signal got_blocked()
 
 enum HitHeight {
 	High
@@ -105,6 +107,7 @@ export(AudioStream) var hit_sound = preload("res://sound/common/hit1.wav")
 export(AudioStream) var hit_bass_sound = preload("res://sound/common/hit_bass.wav")
 export var whiff_sound_volume = -8.0
 export var hit_sound_volume = -5.0
+export var bass_sound_volume = -5.0
 export var bass_on_whiff = false
 
 export var _c_Knockback = 0
@@ -190,7 +193,7 @@ func setup_audio():
 			call_deferred("add_child", hit_bass_sound_player)
 			hit_bass_sound_player.bus = "Fx"
 			hit_bass_sound_player.stream = hit_bass_sound
-			hit_bass_sound_player.volume_db = hit_sound_volume
+			hit_bass_sound_player.volume_db = bass_sound_volume
 
 func play_whiff_sound():
 	if ReplayManager.resimulating or host.is_ghost:
@@ -325,6 +328,9 @@ func hit(obj):
 		if grounded_hit_state is String and grounded_hit_state == "HurtGrounded" and obj.is_grounded():
 				dir.y *= 0
 		save_hit_object(obj)
+		if hitbox_type == HitboxType.Detect:
+			host.detect(obj)
+			return
 		obj.hit_by(self.to_data())
 		var can_hit = true
 		if obj.is_in_group("Fighter"):
@@ -386,6 +392,11 @@ func can_draw_box():
 		return (active and enabled and Global.show_hitboxes)
 	else:
 		return .can_draw_box()
+
+func add_hit_object(obj_name):
+	for hitbox in grouped_hitboxes:
+		if !(obj_name in hitbox.hit_objects):
+			hitbox.hit_objects.append(hitbox)
 
 func reset_hit_objects():
 	hit_objects.clear()

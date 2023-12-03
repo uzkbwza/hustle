@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=4]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.607477, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -8.025, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+scale = Vector2( 5, 5 )
+amount = 32
+lifetime = 0.15
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 4 )
+emission_shape = 1
+emission_sphere_radius = 19.07
+spread = 180.0
+initial_velocity = 40.94
+initial_velocity_random = 0.74
+radial_accel = -5000.0
+scale_amount_random = 0.35
+scale_amount_curve = SubResource( 3 )
+color = Color( 0.392157, 0.823529, 0.419608, 1 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
+scale = Vector2( 5, 5 )
+amount = 32
+lifetime = 0.15
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 4 )
+emission_shape = 1
+emission_sphere_radius = 19.07
+spread = 180.0
+initial_velocity = 40.94
+initial_velocity_random = 0.74
+radial_accel = -5000.0
+scale_amount_random = 0.35
+scale_amount_curve = SubResource( 3 )
+color = Color( 0, 0.521569, 0.380392, 1 )

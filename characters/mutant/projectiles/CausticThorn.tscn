@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://characters/mutant/projectiles/CausticThornEffect.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://characters/mutant/projectiles/sprites/caustic_thorn2.png" type="Texture" id=4]
+[ext_resource path="res://characters/mutant/projectiles/sprites/caustic_thorn1.png" type="Texture" id=5]
+[ext_resource path="res://characters/mutant/projectiles/states/CausticThornDefault.gd" type="Script" id=6]
+[ext_resource path="res://mechanics/SweptHitbox.gd" type="Script" id=7]
+[ext_resource path="res://sound/common/swish.wav" type="AudioStream" id=8]
+[ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=9]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "Default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+fizzle_on_ceiling = true
+apply_hitlag_when_hit_by_melee = true
+projectile_immune = true
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 2 )
+animation = "Default"
+
+[node name="ParticleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 2 )]
+material = SubResource( 1 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 5
+height = 5
+
+[node name="Hurtbox" parent="." index="3"]
+width = 5
+height = 5
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 6 )
+ticks_per_frame = 3
+loop_animation = true
+enter_sfx = ExtResource( 8 )
+enter_sfx_volume = -5.0
+sfx = ExtResource( 8 )
+sfx_volume = -5.0
+move_x = 0
+clash = false
+lifetime = 9
+fizzle_on_hit_opponent = true
+
+[node name="SweptHitbox" type="Node2D" parent="StateMachine/Default" index="0"]
+z_index = 1000
+script = ExtResource( 7 )
+width = 3
+height = 3
+damage = 80
+damage_in_combo = 20
+minimum_damage = 5
+chip_damage_modifier = "0.5"
+hitstun_ticks = 20
+hitlag_ticks = 8
+victim_hitlag = 8
+damage_proration = 1
+scale_combo = false
+sdi_modifier = "0.5"
+whiff_sound = null
+hit_sound = ExtResource( 9 )
+bass_sound_volume = -10.0
+knockback = "6"
+start_tick = 1
+always_on = true
+to_x = -10

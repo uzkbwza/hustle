@@ -63,6 +63,7 @@ var looping = false
 var block_cancel_allowed = true
 var allowed_to_hit_own_team = true
 
+
 func get_damage():
 	if combo_count > 0:
 		return damage_in_combo

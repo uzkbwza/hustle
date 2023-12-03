@@ -18,6 +18,7 @@ const AFTER_IMAGE_MAX_DIST = "410"
 const MAX_AIR_SPEED_1KCUTS = "12"
 const CUTS_METER_DRAIN_1 = 2
 const CUTS_METER_DRAIN_2 = 3
+const DRIFT_SUPERS = 1
 
 var bullets_left = 6
 var cut_projectile = null
@@ -46,6 +47,7 @@ var stance_teleport_y = 0
 var ticks_until_time_shift = 0
 var lasso_parried = false
 var default_max_air_speed = "9"
+var milk_toggled = false
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -76,8 +78,8 @@ func shift():
 		obj.disable()
 		after_image_object = null
 		shifted_this_frame = true
-#		if obj.get_pos().y >= 0:
-#			set_vel(get_vel().x, "0")
+		if obj.get_pos().y >= 0:
+			set_vel(get_vel().x, "0")
 		if combo_count <= 0:
 			add_penalty(15)
 
@@ -115,6 +117,21 @@ func tick():
 				shifting = false
 
 	.tick()
+
+	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air and combo_count <= 0:
+		var obj = obj_from_name(after_image_object)
+		if supers_available >= DRIFT_SUPERS:
+			if obj:
+				detonating = false
+				obj.detonating = true
+				if !milk_toggled:
+					milk_toggled = true
+					super_effect(10)
+					for i in range(DRIFT_SUPERS):
+						use_super_bar()
+					combo_supers += 1
+					hitlag_ticks += 4
+
 
 	if shifted_last_frame:
 		if current_state().current_tick == 1 and current_state().has_hitboxes and not "Grab" in current_state().state_name:
@@ -193,7 +210,7 @@ func on_state_ended(state):
 	if state.state_name == "Roll":
 		lasso_parried = false
 	bullet_cancelling = false
-	pass
+	milk_toggled = false
 
 func use_bullet():
 	if infinite_resources:
@@ -229,6 +246,10 @@ func can_block_cancel():
 	if current_state().name == "Brandish" or current_state().name == "QuickerDraw":
 		return false
 	return .can_block_cancel()
+
+func on_state_started(state):
+	.on_state_started(state)
+			
 
 func _draw():
 	._draw()

@@ -9,7 +9,7 @@ func _frame_0():
 	left_ground = false
 	started_on_ground = host.is_grounded()
 	
-func _frame_2():
+func _frame_1():
 	host.start_projectile_invulnerability()
 	
 func _frame_7():
@@ -37,4 +37,4 @@ func _tick():
 	host.apply_grav()
 	host.apply_forces()
 	if left_ground and host.is_grounded():
-		queue_state_change("JumpKickLanding", 25)
+		queue_state_change("JumpKickLanding", 15)

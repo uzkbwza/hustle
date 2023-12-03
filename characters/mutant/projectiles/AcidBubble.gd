@@ -1,6 +1,7 @@
 extends BaseProjectile
 
 const KNOCKBACK_MULTIPLIER = "2.0"
+const MAX_SPEED = "10.0"
 
 func hit_by(hitbox):
 	.hit_by(hitbox)
@@ -12,3 +13,7 @@ func hit_by(hitbox):
 				apply_force(f.x, f.y)
 			else:
 				change_state("Pop")
+
+func tick():
+	.tick()
+	limit_speed(MAX_SPEED)

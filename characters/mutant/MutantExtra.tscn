@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ui/ActionSelector/PlayerExtra.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/mutant/MutantExtra.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
+[ext_resource path="res://ui/8Way/8Way.tscn" type="PackedScene" id=4]
 
 [node name="MutantExtra" instance=ExtResource( 1 )]
 theme = ExtResource( 3 )
@@ -10,18 +11,47 @@ alignment = 1
 script = ExtResource( 2 )
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="." index="0"]
-margin_left = 296.0
-margin_right = 343.0
+margin_left = 265.0
+margin_right = 324.0
 margin_bottom = 360.0
 alignment = 2
 
 [node name="DisableSpikeButton" type="CheckButton" parent="VBoxContainer2" index="0"]
 unique_name_in_owner = true
-margin_top = 340.0
-margin_right = 47.0
+margin_top = 348.0
+margin_right = 59.0
 margin_bottom = 360.0
-rect_min_size = Vector2( 34, 20 )
+rect_min_size = Vector2( 34, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 pressed = true
-text = "Spike"
+text = "Spike    "
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="." index="1"]
+margin_left = 325.0
+margin_right = 375.0
+margin_bottom = 360.0
+alignment = 2
+
+[node name="JukeDir" parent="VBoxContainer3" index="0" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+margin_top = 285.0
+margin_bottom = 347.0
+NW = false
+NE = false
+SW = false
+SE = false
+
+[node name="JukeButton" type="CheckButton" parent="VBoxContainer3" index="1"]
+unique_name_in_owner = true
+margin_top = 348.0
+margin_right = 50.0
+margin_bottom = 360.0
+rect_min_size = Vector2( 34, 0 )
+size_flags_vertical = 0
+theme = ExtResource( 3 )
+pressed = true
+text = "Juke"
+
+[connection signal="data_changed" from="VBoxContainer3/JukeDir" to="." method="_on_JukeDir_data_changed"]
+[connection signal="toggled" from="VBoxContainer3/JukeButton" to="." method="_on_JukeButton_toggled"]

@@ -5,8 +5,8 @@
 [ext_resource path="res://characters/stickman/NinjaGuy.tscn" type="PackedScene" id=3]
 
 [node name="CharacterButton" type="Button"]
-margin_right = 2.0
-margin_bottom = 60.0
+margin_right = 60.0
+margin_bottom = 20.0
 rect_min_size = Vector2( 60, 60 )
 theme = ExtResource( 2 )
 toggle_mode = true

@@ -7,8 +7,10 @@ const IS_NEW_PARRY = true
 
 export var push = false
 export var autoguard = false
+export var real_parry = false
 
 var punishable = false
+var whiffed_block = false
 
 var extra_iasa = 0
 
@@ -103,6 +105,7 @@ func can_parry_hitbox(hitbox):
 		return false
 	if not parry_active:
 		return false
+
 	return true
 	
 func _tick():
@@ -122,19 +125,23 @@ func _tick():
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false
+	
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
 	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
 		host.blocked_hitbox_plus_frames = 1
+		whiffed_block = true
 #		host.blockstun_ticks = 1
-		pass
-
+	else:
+		whiffed_block = false
+		
 func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
 	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
-		host.blocked_hitbox_plus_frames = 1
+		whiffed_block = true
 #		host.blockstun_ticks = 1
-		pass
+	else:
+		whiffed_block = false

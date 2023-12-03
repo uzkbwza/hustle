@@ -84,6 +84,7 @@ var HOLD_RESTARTS = [
 	"DashForward",
 #	"DashBackward",
 	"ParryHigh",
+	"BlockHigh",
 	"ParryLow",
 	"ParryAir",
 ]
@@ -582,6 +583,7 @@ func copy_to(f):
 	f.has_projectile_armor = has_hyper_armor
 	f.has_projectile_armor = has_projectile_armor
 	f.blockstun_ticks = blockstun_ticks
+	f.blocked_hitbox_plus_frames = blocked_hitbox_plus_frames
 	f.stance = stance
 	f.current_state().interrupt_frames = current_state().interrupt_frames.duplicate(true)
 	f.update_data()
@@ -809,7 +811,7 @@ func hitbox_from_name(hitbox_name):
 	var hitbox_props = hitbox_name.split("_")
 	var obj_name = hitbox_props[0]
 	var hitbox_id = int(hitbox_props[-1])
-	var obj = objs_map[obj_name]
+	var obj = obj_from_name(obj_name)
 	if obj:
 		return objs_map[obj_name].hitboxes[hitbox_id]
 
@@ -1218,12 +1220,13 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
 				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-				var perfect_requirement = can_perfect_parry() and current_state().matches_hitbox_height(hitbox)
+				var perfect_requirement = can_perfect_parry() and current_state().matches_hitbox_height(hitbox) and !current_state().whiffed_block
 #				if projectile:
 #					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
 #				else:
 				perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
-					
+				if is_ghost and perfect_requirement:
+					ghost_blocked_melee_attack = parry_timing
 				perfect_parry = current_state().can_parry and ((can_perfect_parry() and always_perfect_parry) or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:
 					perfect_parry = true
@@ -1260,10 +1263,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			perfect_parry = true
 		if force_block:
 			perfect_parry = false
-
-		if !projectile:
-			if is_ghost:
-				ghost_blocked_melee_attack = parry_timing
 
 		if perfect_parry:
 			parried_last_state = true
@@ -1673,6 +1672,7 @@ func update_property_list():
 		for state in state_machine.states_map:
 			state_machine.states_map[state].update_property_list()
 
+
 func get_advantage():
 	if opponent == null:
 		return true
@@ -1781,7 +1781,6 @@ func tick_before():
 #		process_prediction()
 
 	if use_buffer:
-#		print(buffered_input)
 		if buffered_input.has("action"):
 			queued_action = buffered_input.action
 		if buffered_input.has("data"):
@@ -2196,21 +2195,6 @@ func get_state_hash():
 	var vel = get_vel()
 	return hash(pos.x) + hash(pos.y) + hash(vel.x) + hash(vel.y) + hash(current_di.x) + hash(current_di.y) + hash(current_state().state_name)
 
-func on_got_parried():
-	deactivate_current_hitbox()
-
-func on_got_blocked():
-	deactivate_current_hitbox()
-
-func deactivate_current_hitbox():
-	for hitbox in get_active_hitboxes():
-		if hitbox.active and hitbox.enabled and !hitbox.looping:
-			hitbox.deactivate()
-	
-func deactivate_hitboxes():
-	current_state().terminate_hitboxes()
-	pass
-
 func start_sadness_immunity():
 	sadness_immunity_ticks = SADNESS_IMMUNITY_TICKS
 
@@ -2223,7 +2207,6 @@ func forfeit():
 func on_blocked_melee_attack():
 	emit_signal("blocked_melee_attack")
 	in_blockstring = true
-
 
 func _draw():
 #	draw_circle(Vector2(), 0.01, Color.transparent) # possible fix to esoteric graphics bug

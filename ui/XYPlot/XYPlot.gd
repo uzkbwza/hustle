@@ -20,6 +20,7 @@ onready var nub = $PlotPanelNub
 # self explanatory
 onready var x_label = $XLabel
 onready var y_label = $YLabel
+onready var update_timer = $"%UpdateTimer"
 
 ################################################################################
 ########################### property list boilerplate ##########################
@@ -483,6 +484,7 @@ const SNAP_AMOUNT = 0.1
 func _on_update_timer_timeout():
 	if mouse_clicked and mouse_over:
 		emit_signal("data_changed")
+		update_timer.start(get_update_speed())
 
 func _on_plot_mouse_entered():
 	mouse_over = true
@@ -495,12 +497,18 @@ func _on_plot_mouse_exited():
 		x_label.hide()
 		y_label.hide()
 
+func get_update_speed():
+	return ((1.0 + (1.0 / Global.get_ghost_speed_modifier())) / 2.0) * 0.3
+	pass
+
 func _on_plot_mouse_input_event(event:InputEventMouseButton):
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
 			if mouse_over:
 				mouse_clicked = true
-		else :
+				update_timer.start(get_update_speed())
+				call_deferred("emit_signal", "data_changed")
+		else:
 			mouse_clicked = false
 			if buffer_update:
 				buffer_changed = true

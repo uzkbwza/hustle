@@ -26,6 +26,9 @@ func on_opponent_hit():
 
 func tick():
 	.tick()
+	if get_fighter().opponent.combo_count > 0:
+		disable()
+		return
 	if spawn_acid_bubble_cooldown > 0:
 		spawn_acid_bubble_cooldown -= 1
 		if spawn_acid_bubble_cooldown <= 0:

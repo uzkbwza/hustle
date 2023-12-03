@@ -117,3 +117,8 @@ func on_data_changed():
 #	if $"%ArmorEnabled".pressed and $"%PullEnabled".pressed:
 #		$"%PullEnabled".set_pressed_no_signal(false)
 	pass
+
+
+func _on_FlyDir_data_changed():
+	$"%FlyEnabled".set_pressed_no_signal(true)
+	pass # Replace with function body.

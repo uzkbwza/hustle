@@ -48,7 +48,7 @@ func _frame_1():
 		else:
 			fallback_state = "DriveIdle"
 			hitbox.cancellable = true
-			anim_length = 10
+			anim_length = 12
 
 func _frame_5():
 	host.has_projectile_armor = false

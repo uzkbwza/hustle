@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=1]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=2]
+[ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=3]
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=4]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0.778409 ), 0.0, 0.0, 0, 0, Vector2( 0.897638, 0.423864 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 2 )]
+material = SubResource( 2 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="1"]
+z_index = -3
+amount = 1
+lifetime = 0.5
+preprocess = 0.02
+speed_scale = 1.32
+explosiveness = 1.0
+lifetime_randomness = 0.46
+texture = ExtResource( 3 )
+emission_shape = 1
+emission_sphere_radius = 16.1
+direction = Vector2( 0, 1 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 101.3
+initial_velocity_random = 0.23
+linear_accel = -100.0
+radial_accel = 357.28
+damping = 934.93
+scale_amount = 1.96
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.92549, 1, 0.643137, 1 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="2"]
+z_index = -3
+amount = 1
+lifetime = 0.5
+preprocess = 0.02
+speed_scale = 1.32
+explosiveness = 1.0
+lifetime_randomness = 0.46
+texture = ExtResource( 4 )
+emission_shape = 1
+emission_sphere_radius = 16.1
+direction = Vector2( 0, 1 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 101.3
+initial_velocity_random = 0.13
+linear_accel = -100.0
+radial_accel = 357.28
+damping = 934.93
+scale_amount = 1.96
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 1 )
+color = Color( 0.392157, 0.823529, 0.419608, 1 )

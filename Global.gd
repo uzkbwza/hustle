@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.8.24-steam"
+var VERSION = "1.8.24-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -30,6 +30,7 @@ var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
 var auto_fc = true
+var ghost_speed = 2
 
 var mouse_world_position = Vector2()
 var rng = BetterRng.new()
@@ -40,6 +41,7 @@ var name_paths = {
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 	"Robot": "res://characters/robo/Robot.tscn",
 	"Mutant": "res://characters/mutant/Mutant.tscn",
+	"Alien": "res://characters/alien/Alien.tscn",
 }
 
 var songs = {
@@ -98,6 +100,12 @@ func _enter_tree():
 	set_music_enabled(music_enabled)
 	set_fullscreen(fullscreen)
 #	load_supporter_pack()
+
+func get_ghost_speed_modifier():
+	if ghost_speed == 1:
+		return 0.25
+	if ghost_speed > 1:
+		return float(ghost_speed - 1)
 
 func _ready():
 	yield(get_tree(), "idle_frame")
@@ -183,6 +191,7 @@ func save_options():
 			"freeze_ghost_prediction": freeze_ghost_prediction,
 			"freeze_ghost_sound": freeze_ghost_sound,
 			"ghost_afterimages": ghost_afterimages,
+			"ghost_speed": ghost_speed,
 			"fullscreen": fullscreen,
 			"show_hitboxes": show_hitboxes,
 			"show_last_move_indicators": show_last_move_indicators,
@@ -210,6 +219,7 @@ func get_default_player_data():
 			"freeze_ghost_sound": true,
 			"ghost_afterimages": true,
 			"fullscreen": false,
+			"ghost_speed": 2,
 			"show_hitboxes": false,
 			"show_last_move_indicators": true,
 			"show_playback_controls": false,

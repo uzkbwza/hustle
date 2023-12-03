@@ -22,3 +22,7 @@ func _frame_1():
 
 func _frame_9():
 	host.end_invulnerability()
+
+func _frame_14():
+	var vel = host.get_vel()
+	host.set_vel(fixed.mul(vel.x, "0.5"), fixed.mul(vel.y, "0.5"))

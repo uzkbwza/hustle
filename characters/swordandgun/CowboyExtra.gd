@@ -4,10 +4,12 @@ var can_shoot = false
 var aerial = false
 var grounded = false
 
+
 func _ready():
 	Utils.pass_signal_along($"%ShootButton", self, "pressed", "data_changed")
 	Utils.pass_signal_along($"%DetonateButton", self, "pressed", "data_changed")
 	Utils.pass_signal_along($"%TpButton", self, "pressed", "data_changed")
+	Utils.pass_signal_along($"%MilkButton", self, "pressed", "data_changed")
 
 
 func get_extra():
@@ -33,12 +35,13 @@ func reset():
 	$"%ShootButton".pressed = false
 	$"%DetonateButton".hide()
 	$"%DetonateButton".pressed = false
+	$"%MilkButton".pressed = false
 	$"%TpButton".hide()
+	$"%MilkButton".hide()
 	$"%TpButton".pressed = false
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
 		update_tp_button()
-
 
 func update_tp_button():
 		$"%TpButton".disabled = false
@@ -50,6 +53,11 @@ func update_tp_button():
 		if selected_move and selected_move.type == CharacterState.ActionType.Defense:
 			$"%TpButton".disabled = true
 			$"%TpButton".set_pressed_no_signal(false)
+		var obj = fighter.obj_from_name(fighter.after_image_object)
+#		if obj:
+		if obj and !fighter.is_grounded():
+			$"%MilkButton".visible = obj.is_grounded()
+			$"%MilkButton".disabled =  fighter.supers_available < fighter.DRIFT_SUPERS
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
@@ -59,6 +67,7 @@ func update_selected_move(move_state):
 		$"%DetonateButton".show()
 		update_tp_button()
 
+
 	var obj = fighter.obj_from_name(fighter.after_image_object)
 	aerial = false
 	grounded = false
@@ -66,12 +75,21 @@ func update_selected_move(move_state):
 		if $"%TpButton".pressed: 
 			aerial = obj.get_pos().y < 0
 			grounded = obj.get_pos().y == 0
+		elif $"%MilkButton".pressed:
+			aerial = false
+			grounded = true
 
 func _on_DetonateButton_toggled(button_pressed):
 	$"%TpButton".set_pressed_no_signal(false)
+	$"%MilkButton".set_pressed_no_signal(false)
 	pass # Replace with function body.
 
 
 func _on_TpButton_toggled(button_pressed):
 	$"%DetonateButton".set_pressed_no_signal(false)
+	$"%MilkButton".set_pressed_no_signal(false)
 	pass # Replace with function body.
+
+func _on_MilkButton_toggled(button_pressed):
+	$"%DetonateButton".set_pressed_no_signal(false)
+	$"%TpButton".set_pressed_no_signal(false)

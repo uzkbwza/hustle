@@ -384,6 +384,36 @@ static func spring(x:float,  v:float, xt:float, zeta:float, omega:float, h:float
 #     position = temp[0]
 #     velocity = temp[1]
 
+static func compare(val1, val2):
+
+	if val1 == val2:
+		return true
+	elif typeof(val1) != typeof(val2):
+		return false
+	elif val1 is Dictionary and val2 is Dictionary:
+		for key in val1:
+			if val2.has(key):
+				if !compare(val1[key], val2[key]):
+					return false
+			else:
+				return false
+		return true
+	elif val1 is Array and val2 is Array:
+		if val1.size() != val2.size():
+			return false
+		for i in range(val1.size()):
+			if !compare(val1[i], val2[i]):
+				return false
+		return true
+	elif val1 is Object and val2 is Object:
+		for property in val1.get_property_list():
+			var prop1 = val1.get(property.name)
+			var prop2 = val2.get(property.name)
+			if !compare(prop1, prop2):
+				return false
+		return true
+	return false
+
 static func pass_signal_along(from: Node, to: Node, signal_name, to_signal_name:String=""):
 	from.connect(signal_name, to, "emit_signal", [signal_name if to_signal_name == "" else to_signal_name])
 

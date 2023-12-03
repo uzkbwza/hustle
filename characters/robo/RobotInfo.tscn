@@ -7,7 +7,7 @@
 [ext_resource path="res://characters/robo/shield_indicator.png" type="Texture" id=6]
 
 [node name="PlayerInfo" type="MarginContainer"]
-margin_right = 319.0
+margin_right = 143.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 mouse_filter = 2
@@ -18,12 +18,12 @@ script = ExtResource( 2 )
 
 [node name="HBoxContainer2" type="VBoxContainer" parent="."]
 margin_left = 20.0
-margin_right = 299.0
+margin_right = 123.0
 margin_bottom = 20.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer2"]
 unique_name_in_owner = true
-margin_right = 279.0
+margin_right = 103.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 14, 0 )
 mouse_filter = 2

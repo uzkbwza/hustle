@@ -1,10 +1,15 @@
-[gd_resource type="AudioBusLayout" load_steps=2 format=2]
+[gd_resource type="AudioBusLayout" load_steps=3 format=2]
+
+[sub_resource type="AudioEffectLimiter" id=2]
+resource_name = "Limiter"
 
 [sub_resource type="AudioEffectStereoEnhance" id=1]
 resource_name = "StereoEnhance"
 pan_pullout = 0.5
 
 [resource]
+bus/0/effect/0/effect = SubResource( 2 )
+bus/0/effect/0/enabled = true
 bus/1/name = "Fx"
 bus/1/solo = false
 bus/1/mute = false

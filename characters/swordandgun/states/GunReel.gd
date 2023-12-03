@@ -5,7 +5,7 @@ const PULL_SPEED = "15"
 func is_usable():
 	return .is_usable() and !host.has_gun
 
-func _frame_0():
+func _frame_8():
 	var obj = host.obj_from_name(host.gun_projectile)
 	if obj:
 		obj.reset_momentum()

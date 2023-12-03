@@ -1347,8 +1347,8 @@ alignment = 1
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 4.0
-margin_right = 104.0
+margin_left = 12.0
+margin_right = 112.0
 margin_bottom = 12.0
 theme = ExtResource( 4 )
 pressed = true
@@ -1357,32 +1357,32 @@ text = "show prediction"
 
 [node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 105.0
-margin_right = 186.0
+margin_left = 113.0
+margin_right = 194.0
 margin_bottom = 12.0
 pressed = true
 text = "afterimages"
 
 [node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 187.0
-margin_right = 289.0
+margin_left = 195.0
+margin_right = 297.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze on ready"
 
 [node name="FreezeSound" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 290.0
-margin_right = 378.0
+margin_left = 298.0
+margin_right = 386.0
 margin_bottom = 12.0
 pressed = true
 text = "freeze sound"
 
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 379.0
-margin_right = 537.0
+margin_left = 387.0
+margin_right = 530.0
 margin_bottom = 12.0
 script = ExtResource( 13 )
 
@@ -1423,6 +1423,7 @@ text = "x2"
 
 [node name="4Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
+visible = false
 margin_left = 144.0
 margin_right = 158.0
 margin_bottom = 12.0
@@ -1432,15 +1433,15 @@ text = "x4"
 
 [node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 538.0
-margin_right = 611.0
+margin_left = 531.0
+margin_right = 604.0
 margin_bottom = 12.0
 text = "clear particles"
 
 [node name="PredictionSettingsCloseButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 612.0
-margin_right = 626.0
+margin_left = 605.0
+margin_right = 619.0
 margin_bottom = 12.0
 icon = ExtResource( 66 )
 

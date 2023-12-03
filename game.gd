@@ -141,6 +141,8 @@ var p2_ghost_ready_tick
 
 var spectating = false
 
+var ghost_time = 0.0
+
 var camera_zoom = 1.0
 
 #var has_ghost_frozen_yet = false
@@ -156,6 +158,7 @@ func _ready():
 		for fx in fx_node.get_children():
 			fx.free()
 		$GhostStartTimer.start()
+		ghost_time = Time.get_unix_time_from_system()
 	else:
 		emit_signal("simulation_continue")
 
@@ -209,6 +212,7 @@ func copy_to(game: Game):
 				game.objs_map[str(game.objs_map.size() + 1)] = null
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
+	p1.compare(game.p1)
 
 func _on_super_started(ticks, player):
 	if is_ghost:
@@ -640,7 +644,7 @@ var priorities = [
 	funcref(self,"lower_health")
 ]
 
-func resolve_port_priority():
+func resolve_port_priority(id=false):
 	var priority = 0
 	var p1_state = p1.current_state()
 	var p2_state = p2.current_state()
@@ -649,7 +653,7 @@ func resolve_port_priority():
 		if(priority>0):
 			break
 	priority = max(1,priority)
-	return [p1,p2] if priority==1 else [p2,p1]
+	return ([p1,p2] if priority==1 else [p2,p1]) if !id else id
 
 func state_priority(p1_state, p2_state):
 	if p1_state.tick_priority < p2_state.tick_priority:
@@ -940,7 +944,7 @@ func apply_hitboxes(players):
 		px1.add_penalty(-25)
 		px2.add_penalty(-25)
 		_spawn_particle_effect(preload("res://fx/ClashEffect.tscn"), clash_position)
-	else :
+	else:
 		if p1_hit:
 				if !(p1_throwing and !p1_hit_by.beats_grab):
 					p1_hit_by.hit(px1)
@@ -1031,7 +1035,7 @@ func apply_hitboxes(players):
 		
 			if p:
 				var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
-				if obj_hit_by and can_be_hit_by_melee:
+				if obj_hit_by and (can_be_hit_by_melee or obj_hit_by.hitbox_type == Hitbox.HitboxType.Detect):
 					obj_hit_by.hit(object)
 
 				if p.projectile_invulnerable and object.get("immunity_susceptible"):
@@ -1095,6 +1099,7 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 							break
 				if !any_collisions:
 					continue
+			
 			if hitbox is ThrowBox:
 				if !host.can_be_thrown():
 					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
@@ -1319,7 +1324,20 @@ func _process(delta):
 
 	camera_snap_position = camera.position
 
-	
+	if is_ghost and Global.ghost_speed > 2:
+		var current_time = Time.get_unix_time_from_system()
+		var ghost_delta = current_time - ghost_time
+		var fps = 60
+		var fixed_delta = 1.0 / fps
+		var min_delta = fixed_delta * (1.0 / Global.get_ghost_speed_modifier())
+		if ghost_delta >= min_delta:
+			ghost_time = current_time
+			if ghost_actionable_freeze_ticks > 0:
+				pass
+			else:
+				for i in range(floor(ghost_delta / min_delta)):
+					call_deferred("ghost_tick")
+		
 
 func _physics_process(_delta):
 	if forfeit:
@@ -1351,9 +1369,9 @@ func _physics_process(_delta):
 			ghost_actionable_freeze_ticks -= 1
 			if ghost_actionable_freeze_ticks == 0:
 				emit_signal("make_afterimage")
-		else:
+		elif Global.ghost_speed <= 2:
 			call_deferred("ghost_tick")
-	
+
 	super_active = super_freeze_ticks > 0
 	if super_freeze_ticks > 0:
 		super_freeze_ticks -= 1
@@ -1405,15 +1423,12 @@ func ghost_tick():
 	var simulate_frames = 1
 	if ghost_speed == 1:
 		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
-#	ghost_tick += 1
+	ghost_tick += 1
 
 #	var ghost_multiplier = 1
 #	if ghost_speed == 1:
 #		ghost_multiplier = 4
-	if ghost_speed == 3:
-		simulate_frames = 2
-	if ghost_speed == 4:
-		simulate_frames = 4
+
 #	ghost_advantage_tick /= ghost_multiplier
 	p1.grounded_indicator.hide()
 	p2.grounded_indicator.hide()

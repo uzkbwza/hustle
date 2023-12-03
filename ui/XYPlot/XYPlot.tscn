@@ -8,8 +8,8 @@
 [node name="XYPlot" type="Container"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 60.0
-margin_bottom = 66.0
+margin_right = -580.0
+margin_bottom = -294.0
 rect_min_size = Vector2( 60, 66 )
 mouse_filter = 2
 size_flags_horizontal = 0
@@ -87,4 +87,4 @@ valign = 1
 [node name="UpdateTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 0.3
-autostart = true
+one_shot = true

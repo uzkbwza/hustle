@@ -19,3 +19,13 @@ func _frame_7():
 
 func _frame_25():
 	host.play_sound("Swish")
+
+func _frame_26():
+	host.play_sound("Howl")
+	host.play_sound("Howl2")
+
+	host.play_sound("HitBass")
+	
+func _frame_44():
+	._frame_44()
+	host.add_juke_pips(2)

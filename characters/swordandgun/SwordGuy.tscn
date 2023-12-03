@@ -1,4 +1,4 @@
-[gd_scene load_steps=334 format=2]
+[gd_scene load_steps=335 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -329,6 +329,7 @@
 [ext_resource path="res://ui/ActionSelector/StateIcons/taunt.png" type="Texture" id=327]
 [ext_resource path="res://characters/swordandgun/states/GunReel.gd" type="Script" id=328]
 [ext_resource path="res://sound/common/swish2.wav" type="AudioStream" id=329]
+[ext_resource path="res://characters/swordandgun/states/HurtAerial.gd" type="Script" id=330]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -722,7 +723,7 @@ animations = [ {
 "name": "TPStance",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 252 ), ExtResource( 252 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ) ],
+"frames": [ ExtResource( 246 ), ExtResource( 246 ), ExtResource( 252 ), ExtResource( 252 ), ExtResource( 247 ), ExtResource( 247 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 248 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 250 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 249 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 253 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 254 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ), ExtResource( 251 ) ],
 "loop": true,
 "name": "Taunt",
 "speed": 5.0
@@ -818,7 +819,8 @@ ticks_until_time_shift
 shifted_this_frame
 shifted_last_frame
 lasso_parried
-temporal_round"
+temporal_round
+milk_toggled"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -2147,6 +2149,7 @@ y = -21
 width = 46
 height = 4
 damage = 120
+hitstun_ticks = 35
 hitlag_ticks = 7
 victim_hitlag = 10
 damage_proration = -1
@@ -2157,6 +2160,7 @@ dir_y = "-0.16"
 knockback = "13.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
+knockdown_extends_hitstun = false
 wall_slam = true
 start_tick = 11
 active_ticks = 2
@@ -2309,6 +2313,7 @@ ExtResource( 124 ): {
 "y": -2
 }
 }
+air_type = 2
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "GroundedSuper
@@ -2374,6 +2379,7 @@ ExtResource( 124 ): {
 "y": -2
 }
 }
+air_type = 2
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "GroundedSuper
@@ -2396,7 +2402,7 @@ x = 31
 y = -12
 width = 202
 height = 82
-damage = 130
+damage = 145
 minimum_damage = 60
 victim_hitlag = 4
 scale_combo = false
@@ -2438,6 +2444,7 @@ ExtResource( 124 ): {
 "y": -2
 }
 }
+air_type = 2
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "GroundedSuper
@@ -2515,13 +2522,14 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "LassoReel"
-anim_length = 14
+anim_length = 16
 enter_sfx = ExtResource( 329 )
 enter_sfx_volume = -10.0
 title = "Gun Pull"
 type = 2
 button_texture = ExtResource( 181 )
 air_type = 2
+iasa_on_hit = 9
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -3693,9 +3701,10 @@ interrupt_into_string = "Gun
 SlowHolster
 AerialSuper
 GroundedSuper
-Teleport
 Guntrick"
-interrupt_exceptions_string = "Hustle"
+interrupt_exceptions_string = "Hustle
+Teleport
+FastTeleport"
 super_level = 0
 super_effect = false
 
@@ -3717,7 +3726,9 @@ AerialSuper
 GroundedSuper
 Teleport
 Guntrick"
-interrupt_exceptions_string = "Hustle"
+interrupt_exceptions_string = "Hustle
+Teleport
+FastTeleport"
 super_level = 0
 super_effect = false
 quicker = true
@@ -4180,6 +4191,30 @@ speed = "7"
 interrupt_from_string = ""
 interrupt_into_string = ""
 
+[node name="HurtAerial" parent="StateMachine" index="103"]
+script = ExtResource( 330 )
+__meta__ = {
+"_editor_description_": ""
+}
+next_state_on_hold = false
+hit_cancel_into_string = "Grounded
+Aerial"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/HurtAerial" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+y = -16
+width = 16
+height = 17
+damage = 40
+hitstun_ticks = 10
+hitlag_ticks = 9
+hits_projectiles = false
+hit_height = 0
+knockback = "6.0"
+send_away_from_center = true
+always_on = true
+
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 _c_Grouping = 1
 
@@ -4238,7 +4273,7 @@ y = -27
 width = 7
 height = 5
 damage = 20
-start_tick = 24
+start_tick = 22
 active_ticks = 2
 
 [node name="Guntrick" type="Node2D" parent="StateMachine" index="119"]
@@ -4280,5 +4315,5 @@ y = -27
 width = 7
 height = 5
 damage = 20
-start_tick = 24
+start_tick = 22
 active_ticks = 2

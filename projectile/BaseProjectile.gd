@@ -10,6 +10,7 @@ export var fizzle_on_ceiling = false
 export var movable = true
 export var can_be_hit_by_melee = false
 export var hit_cancel_on_hit = false
+export var apply_hitlag_when_hit_by_melee = true
 #export var can_be_hit_by_projectiles = false
 export var projectile_immune = false
 export var hitlag_modifier = "1.0"
@@ -74,8 +75,9 @@ func hit_by(hitbox):
 		if objs_map.has(hitbox.host):
 			var host = objs_map[hitbox.host]
 			var host_hitlag_ticks = fixed.round(fixed.mul(hitlag_modifier, str(hitbox.hitlag_ticks)))
-			if host.hitlag_ticks < host_hitlag_ticks:
-				host.hitlag_ticks = host_hitlag_ticks
+			if apply_hitlag_when_hit_by_melee:
+				if host.hitlag_ticks < host_hitlag_ticks:
+					host.hitlag_ticks = host_hitlag_ticks
 		if hitbox.rumble:
 			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
 	.hit_by(hitbox)

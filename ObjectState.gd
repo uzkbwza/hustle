@@ -40,6 +40,7 @@ export var ticks_per_frame = 1
 export var loop_animation = false
 export var animation_loop_start = 0
 export var absolute_loop = false
+export var refresh_loop = true
 export var endless = false
 export var disable_at_end = false
 
@@ -118,6 +119,7 @@ var property_list: PoolStringArray
 var has_hitboxes = false
 
 var current_hurtbox = null
+var same_as_last_state = false
 
 var host_command_nodes = {
 	
@@ -137,6 +139,7 @@ var frame_methods = []
 var frame_methods_shared = []
 var max_tick = -1
 var max_tick_shared = -1
+var exit_tick = -1
 
 func apply_enter_force():
 	if enter_force_speed != "0.0":
@@ -205,6 +208,11 @@ func spawn_exported_projectile():
 			obj.set_facing(host.get_facing_int())
 		process_projectile(obj)
 
+func spawn_enter_particle():
+	var pos = particle_position
+	pos.x *= host.get_facing_int()
+	spawn_particle_relative(particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
+
 func _tick_shared():
 #	if current_tick == -1:
 #		if has_method("_frame_0"):
@@ -212,9 +220,7 @@ func _tick_shared():
 
 	if current_tick == -1:
 		if spawn_particle_on_enter and particle_scene:
-			var pos = particle_position
-			pos.x *= host.get_facing_int()
-			spawn_particle_relative(particle_scene, pos, Vector2.RIGHT * host.get_facing_int())
+			spawn_enter_particle()
 		apply_enter_force()
 
 	current_real_tick += 1
@@ -455,6 +461,9 @@ func update_property_list():
 		for hitbox in all_hitbox_nodes:
 			hitbox.update_property_list()
 
+func play_enter_sfx():
+	enter_sfx_player.play()
+
 func setup_audio():
 	if enter_sfx:
 		enter_sfx_player = VariableSound2D.new()
@@ -517,6 +526,11 @@ func __on_hit_something(obj, hitbox):
 		_on_hit_something(obj, hitbox)
 		host._on_hit_something(obj, hitbox)
 
+func on_got_perfect_parried():
+	pass
+
+func on_got_blocked():
+	pass
 
 func __on_got_parried():
 	if active:
@@ -525,15 +539,23 @@ func __on_got_parried():
 func _got_parried():
 	pass
 
+func detect(obj):
+	pass
+
 func spawn_particle_relative(scene: PackedScene, pos=Vector2(), dir=Vector2.RIGHT):
 	var p = host.get_pos_visual()
 	return host.spawn_particle_effect(scene, p + pos, dir)
 
 func _enter_shared():
-	if force_same_direction_as_previous_state:
-		var prev = _previous_state()
-		if prev:
+	same_as_last_state = false
+	var prev = _previous_state()
+	if prev:
+		if force_same_direction_as_previous_state:
 			host.set_facing(prev.last_facing)
+		if prev != self:
+			exit_tick = -1
+		else:
+			same_as_last_state = true
 	if reset_momentum:
 		host.reset_momentum()
 	if reset_x_momentum:
@@ -547,10 +569,11 @@ func _enter_shared():
 	current_real_tick = -1
 	start_tick = host.current_tick
 	if enter_sfx_player and !ReplayManager.resimulating:
-		enter_sfx_player.play()
+		play_enter_sfx()
 	emit_signal("state_started")
 
 func _exit_shared():
+	exit_tick = current_tick + exit_tick
 	if current_hurtbox:
 		current_hurtbox.end(host)
 	last_facing = host.get_facing_int()
@@ -583,5 +606,10 @@ func update_sprite_frame():
 #	var frame = host.fixed.int_map((current_tick % sprite_anim_length) if loop_animation else Utils.int_min(current_tick, sprite_anim_length), 0, sprite_anim_length, 0, host.sprite.frames.get_frame_count(host.sprite.animation))
 	if loop_animation and absolute_loop:
 		sprite_tick = host.current_tick / ticks_per_frame
+	elif loop_animation and !refresh_loop:
+		if same_as_last_state:
+			sprite_tick = (current_tick + exit_tick) / ticks_per_frame
+#			print(str(sprite_tick) + "  " + str(exit_tick))
+		
 	var frame = (sprite_tick % (sprite_anim_length - animation_loop_start) + animation_loop_start) if (loop_animation and sprite_tick > animation_loop_start) else Utils.int_min(sprite_tick, sprite_anim_length)
 	host.sprite.frame = frame

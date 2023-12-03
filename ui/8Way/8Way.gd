@@ -163,8 +163,7 @@ func try_hide_section(section):
 	for button in section.get_children():
 		if not button.disabled:
 			hidden = false
-	if hidden:
-		section.hide()
+	section.visible = !hidden
 
 func reverse_dir(dir):
 	match dir:
@@ -216,6 +215,9 @@ func _prepare():
 	$"%Middle".show()
 	$"%Bottom".show()
 
+	try_hide_sections()
+
+func try_hide_sections():
 	try_hide_section($"%Top")
 	try_hide_section($"%Middle")
 	try_hide_section($"%Bottom")

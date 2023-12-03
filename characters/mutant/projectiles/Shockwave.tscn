@@ -11,7 +11,7 @@
 [ext_resource path="res://fx/particle_round_4x4.png" type="Texture" id=9]
 [ext_resource path="res://fx/ParticleEffect.gd" type="Script" id=10]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=11]
-[ext_resource path="res://sound/common/slash3.wav" type="AudioStream" id=12]
+[ext_resource path="res://sound/common/explosion3.wav" type="AudioStream" id=12]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -48,6 +48,7 @@ _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.992574, 0 ), 0.0, 0.0, 0, 
 script = ExtResource( 5 )
 max_fall_speed = "15"
 has_projectile_parry_window = false
+apply_hitlag_when_hit_by_melee = true
 
 [node name="Sprite" parent="Flip" index="0"]
 z_index = 1

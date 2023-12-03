@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fx/particle_round_hollow_4x4.png" type="Texture" id=1]
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -2.96883, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 2 )]
+material = SubResource( 2 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
+scale = Vector2( 4, 4 )
+amount = 6
+lifetime = 0.54
+explosiveness = 1.0
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 1
+emission_sphere_radius = 1.36
+spread = 180.0
+gravity = Vector2( 0, -98 )
+initial_velocity = 13.62
+initial_velocity_random = 0.74
+scale_amount_random = 0.09
+scale_amount_curve = SubResource( 3 )
+color = Color( 0.392157, 0.823529, 0.419608, 1 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
+rotation = -0.287979
+scale = Vector2( 4, 4 )
+amount = 6
+lifetime = 0.54
+explosiveness = 1.0
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 1
+emission_sphere_radius = 1.36
+spread = 180.0
+gravity = Vector2( 0, -98 )
+initial_velocity = 13.62
+initial_velocity_random = 0.74
+scale_amount_random = 0.04
+scale_amount_curve = SubResource( 3 )
+color = Color( 0, 0.521569, 0.380392, 1 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="3"]
+scale = Vector2( 4, 4 )
+amount = 6
+lifetime = 0.54
+explosiveness = 1.0
+lifetime_randomness = 1.0
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 1
+emission_sphere_radius = 1.36
+spread = 180.0
+gravity = Vector2( 0, -98 )
+initial_velocity = 13.62
+initial_velocity_random = 0.74
+scale_amount_random = 0.09
+scale_amount_curve = SubResource( 3 )
+color = Color( 0.392157, 0.823529, 0.419608, 1 )

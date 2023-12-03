@@ -60,3 +60,5 @@ margin_right = 52.0
 margin_bottom = 360.0
 size_flags_vertical = 0
 text = "Drive"
+
+[connection signal="data_changed" from="VBoxContainer/FlyDir" to="." method="_on_FlyDir_data_changed"]

@@ -129,6 +129,7 @@ var initiative_effect_spawned = false
 
 var dash_iasa = false
 var started_in_air = false
+var entered_in_air = false
 var hit_yet = false
 var hit_anything = false
 var was_blocked = false
@@ -284,6 +285,7 @@ func _enter_shared():
 	hit_yet = false
 	land_cancelled = false
 	hit_anything = false
+	entered_in_air = !host.is_grounded()
 	was_blocked = false
 	started_in_air = false
 	host.update_grounded()
@@ -431,7 +433,8 @@ func _tick_shared():
 		return next_state
 #	if land_cancel:
 #		print(started_in_air)
-	if land_cancel and host.is_grounded() and started_in_air and current_tick > min_land_cancel_frame and fixed.ge(host.get_vel().y, "0"):
+
+	if land_cancel and can_land_cancel() and host.is_grounded() and started_in_air and current_tick > min_land_cancel_frame and fixed.ge(host.get_vel().y, "0"):
 		queue_state_change("Landing", landing_recovery if landing_recovery >= 0 else null)
 		_on_land_cancel()
 	if current_tick <= anim_length and !endless:
@@ -443,6 +446,9 @@ func _tick_shared():
 		host.colliding_with_opponent = false
 	if current_tick == no_collision_end_frame:
 		host.colliding_with_opponent = true
+
+func can_land_cancel():
+	return true
 
 func _on_land_cancel():
 	land_cancelled = true

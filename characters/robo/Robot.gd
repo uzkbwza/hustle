@@ -14,8 +14,8 @@ const MIN_FLY_UP_SPEED = "-4"
 const GROUND_POUND_MIN_HEIGHT = -48
 const LOIC_METER: int = 1000
 const START_LOIC_METER: int = 500
-const LOIC_GAIN = 6
-const LOIC_GAIN_NO_ARMOR = 6
+const LOIC_GAIN = 5
+const LOIC_GAIN_NO_ARMOR = 5
 const MAGNET_TICKS = 100
 const MAGNET_STRENGTH = "2"
 const COMBO_MAGNET_STRENGTH = "1.0"
@@ -364,7 +364,7 @@ func tick():
 		if infinite_resources:
 			loic_meter = LOIC_METER
 			can_loic = true
-	if loic_meter >= LOIC_METER and supers_available > 0:
+	if loic_meter >= LOIC_METER and supers_available > 1:
 		if !can_loic:
 			play_sound("LOICBeep")
 		can_loic = true
