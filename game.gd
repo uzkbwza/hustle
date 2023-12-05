@@ -212,7 +212,7 @@ func copy_to(game: Game):
 				game.objs_map[str(game.objs_map.size() + 1)] = null
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
-	p1.compare(game.p1)
+
 
 func _on_super_started(ticks, player):
 	if is_ghost:

@@ -28,4 +28,4 @@ func _frame_26():
 	
 func _frame_44():
 	._frame_44()
-	host.add_juke_pips(2)
+	host.add_juke_pips(host.JUKE_PIPS_PER_USE)

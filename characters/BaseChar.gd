@@ -16,7 +16,7 @@ signal predicted()
 
 #signal got_counter_hit()
 
-var MAX_HEALTH = 1000
+var MAX_HEALTH = 1500
 
 #const STALING_REDUCTIONS = [
 #	"1.0",
@@ -101,9 +101,21 @@ const P1_COLOR = Color("aca2ff")
 const P2_COLOR = Color("ff7a81")
 
 const GUTS_REDUCTIONS = {
+	"1.0": "1.0",
+#	"0.8": "0.9",
+#	"0.7": "0.8",
+#	"0.6": "0.72",
+#	"0.5": "0.64",
+#	"0.4": "0.58",
+#	"0.3": "0.52",
+#	"0.2": "0.46",
+#	"0.1": "0.41",
+#	"0.1": "0.37",
+#	"0.05": "0.35",
+}
+#
+const GUTS_REDUCTIONS_OLD = {
 	"1": "1",
-#	"0.90": "1.10",
-#	"0.80": "1.0",
 	"0.70": "0.90",
 	"0.60": "0.80",
 	"0.50": "0.70",
@@ -112,6 +124,17 @@ const GUTS_REDUCTIONS = {
 	"0.20": "0.52",
 	"0.10": "0.50",
 }
+#
+#const GUTS_REDUCTIONS = {
+#	"1": "1",
+#	"0.70": "0.90",
+#	"0.60": "0.80",
+#	"0.50": "0.65",
+#	"0.40": "0.50",
+#	"0.30": "0.40",
+#	"0.20": "0.35",
+#	"0.10": "0.33",
+#}
 
 const MAX_GUTS = 10
 
@@ -164,6 +187,7 @@ export(PackedScene) var player_extra_params_scene
 
 export var damage_taken_modifier = "1.0"
 export var knockback_taken_modifier = "1.0"
+export var di_modifier = "1.0"
 export var num_feints = 2
 
 export var use_extra_color_1 = false
@@ -745,7 +769,7 @@ func emit_hit_by_signal(hitbox):
 func reset_combo():
 	if combo_damage >= 500:
 		unlock_achievement("ACH_5000_DAMAGE")
-	if touch_of_death and combo_damage >= 1000:
+	if touch_of_death and combo_damage >= MAX_HEALTH:
 		if !one_hit_ko and !turbo_mode and !extremely_turbo_mode and !infinite_resources and fixed.eq(global_damage_modifier, "1") and fixed.eq(global_hitstop_modifier, "1") and fixed.eq(global_hitstun_modifier, "1"):
 			unlock_achievement("ACH_TOUCH_OF_DEATH")
 	if visible_combo_count >= 20:
@@ -1263,6 +1287,9 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			perfect_parry = true
 		if force_block:
 			perfect_parry = false
+			
+#		if perfect_parry and !projectile and !current_state().get("real_parry"):
+#			perfect_parry = false
 
 		if perfect_parry:
 			parried_last_state = true
@@ -1403,6 +1430,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 #			play_sound("Parry")
 			if host.has_method("on_got_blocked"):
 				host.on_got_blocked()
+			if host.has_method("on_got_blocked_by"):
+				host.on_got_blocked_by(self)
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)
@@ -1416,6 +1445,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 #					opponent.current_state().enable_interrupt()
 			if host.has_method("on_got_parried"):
 				host.on_got_parried()
+			if host.has_method("on_got_parried_by"):
+				host.on_got_parried_by(self)
 			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_location)
 			play_sound("Parry2")
 			play_sound("Parry")
@@ -1546,6 +1577,7 @@ func get_di_scaling(brace=true):
 	var total = fixed.add(min_di_scaling, total_extra_scaling)
 	if brace and braced_attack:
 		total = fixed.mul(total, SUCCESSFUL_BRACE_DI_MODIFIER)
+	total = fixed.mul(total, di_modifier)
 	return total
 
 func get_scaled_di(di):
@@ -1855,6 +1887,18 @@ func tick_before():
 	queued_extra = null
 	was_my_turn = false
 	lowest_tick = current_state().current_real_tick
+
+func touching_which_wall():
+	var col_box = get_collision_box()
+	var vel = get_vel()
+	var bounce = 0
+
+	if (col_box.x1 <= -stage_width and fixed.le(vel.x, "0")):
+		bounce = -1
+	elif (col_box.x2 >= stage_width and fixed.ge(vel.x, "0")):
+		bounce = 1
+		
+	return bounce
 
 func turn_end_effects():
 	pass

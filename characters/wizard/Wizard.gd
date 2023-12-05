@@ -21,7 +21,6 @@ const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31 
 
-
 var hover_left = 0
 var hover_drain_amount = 19
 var fast_fall_drain_amount = 20
@@ -50,6 +49,10 @@ var spark_speed_frames = 0
 
 onready var liftoff_sprite = $"%LiftoffSprite"
 onready var spark_speed_particle = $"%SparkSpeedParticle"
+
+func copy_to(f):
+	.copy_to(f)
+	f.boulder_projectile = boulder_projectile
 
 func init(pos=null):
 	.init(pos)
@@ -141,7 +144,9 @@ func on_got_hit():
 
 func on_got_parried():
 	.on_got_parried()
-	hitlag_ticks += 6
+	if spark_speed_frames > 0:
+		hitlag_ticks += 6
+	hovering = false
 
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 	if !projectile:

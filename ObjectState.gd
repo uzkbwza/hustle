@@ -532,6 +532,12 @@ func on_got_perfect_parried():
 func on_got_blocked():
 	pass
 
+func on_got_blocked_by(who):
+	pass
+
+func on_got_perfect_parried_by(who):
+	pass
+
 func __on_got_parried():
 	if active:
 		_got_parried()

@@ -1338,6 +1338,7 @@ custom_constants/margin_left = 5
 
 [node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 5.0
 margin_right = 636.0
 margin_bottom = 12.0

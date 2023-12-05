@@ -17,3 +17,6 @@ func hit_by(hitbox):
 func tick():
 	.tick()
 	limit_speed(MAX_SPEED)
+
+func on_got_blocked():
+	change_state("Pop")

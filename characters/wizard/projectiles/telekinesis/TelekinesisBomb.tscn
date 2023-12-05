@@ -50,6 +50,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 script = ExtResource( 8 )
+apply_hitlag_when_hit_by_melee = true
 disable_obj = ExtResource( 4 )
 disable_particle = ExtResource( 5 )
 no_hitlag = false

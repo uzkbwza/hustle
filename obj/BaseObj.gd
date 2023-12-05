@@ -780,11 +780,21 @@ func update_grounded():
 
 func on_got_parried():
 	current_state().on_got_perfect_parried()
-	deactivate_current_hitbox()
+
 
 func on_got_blocked():
 	current_state().on_got_blocked()
-	deactivate_current_hitbox()
+
+
+func on_got_parried_by(who):
+	current_state().on_got_perfect_parried_by(who)
+	for hitbox in get_active_hitboxes():
+		hitbox.add_hit_object(who.obj_name)
+
+func on_got_blocked_by(who):
+	current_state().on_got_blocked_by(who)
+	for hitbox in get_active_hitboxes():
+		hitbox.add_hit_object(who.obj_name)
 
 func deactivate_current_hitbox():
 	for hitbox in get_active_hitboxes():

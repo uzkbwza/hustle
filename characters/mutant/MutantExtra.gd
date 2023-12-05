@@ -29,8 +29,8 @@ func show_options():
 #	juke_dir.set_Neutral(!fighter.is_grounded())
 	juke_dir.set_N(!fighter.is_grounded() and fighter.air_movements_left > 0)
 	juke_dir.call_deferred("try_hide_sections")
-	juke_button.disabled = fighter.juke_pips < fighter.JUKE_PIPS_PER_USE
-	juke_dir.show()
+	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
+	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
 	juke_dir.set_sensible_default("Neutral")
 
 func update_selected_move(move_state):
@@ -60,5 +60,5 @@ func _on_JukeButton_toggled(button_pressed):
 	
 
 func _on_JukeDir_data_changed():
-	$"%JukeButton".set_pressed_no_signal(true)
+	$"%JukeButton".set_pressed_no_signal($"%JukeButton".visible)
 	pass # Replace with function body.

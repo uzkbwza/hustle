@@ -3,8 +3,8 @@ extends Fighter
 class_name Mutant
 
 const INSTALL_TICKS = 120
-const JUKE_PIPS = 10
-const JUKE_PIPS_PER_USE = 2
+const JUKE_PIPS = 9
+const JUKE_PIPS_PER_USE = 3
 const JUKE_TICKS = 3
 const UP_JUKE_TICKS = 15
 const NEUTRAL_JUKE_TICKS = 6
@@ -22,11 +22,12 @@ var install_ticks = 0
 var shockwave_projectile = null
 var spike_projectile = null
 
-var juke_pips = JUKE_PIPS / 4
+var juke_pips = JUKE_PIPS_PER_USE
 var juke_dir_x = "0"
 var juke_dir_y = "0"
 var juke_ticks = 0
 var juke_dir_type = ""
+var juked_this_turn = false
 
 func apply_grav():
 	if juke_ticks > 0:
@@ -49,6 +50,7 @@ func stop_rebirth_fx():
 	rebirth_particle_effect.hide()
 
 func process_extra(extra):
+	juked_this_turn = false
 	.process_extra(extra)
 	if extra.has("spike_enabled"):
 		var obj = obj_from_name(spike_projectile)
@@ -84,6 +86,7 @@ func process_extra(extra):
 					juke_ticks = SIDE_JUKE_TICKS
 			add_juke_pips(-JUKE_PIPS_PER_USE)
 #			create_speed_after_image_from_style()
+			juked_this_turn = true
 			play_sound("Juke")
 			play_sound("Juke2")
 
@@ -111,21 +114,23 @@ func copy_to(f):
 	f.juke_ticks = juke_ticks
 
 func tick():
-
 	if twist_attack_sprite.visible: 
 		twist_attack_sprite.frame = (twist_attack_sprite.frame + 1) % twist_attack_sprite.frames.get_frame_count("default")
 	if juke_ticks > 0 and hitlag_ticks <= 0 and blockstun_ticks <= 0:
 		spawn_particle_effect_relative(preload("res://characters/mutant/JukeEffect.tscn"), Vector2(0, -16))
+		var juke_speed = JUKE_SPEED
+		if current_state().get("IS_FAST_SWIPE"):
+			juke_speed = fixed.mul(juke_speed, "0.25")
 		juke_ticks -= 1
 		if juke_dir_type == "Forward" or juke_dir_type == "Back":
 #			if juke_dir_type == "Back" and fixed.sign(get_vel().x) != get_opponent_dir() and fixed.ge(fixed.abs(get_vel().x), MAX_BACK_SPEED_FOR_JUKE):
 #				move_directly(fixed.mul(juke_dir_x, BACK_JUKE_SPEED), "0")
 			if juke_ticks <= JUKE_TICKS:
-				move_directly(fixed.mul(juke_dir_x, JUKE_SPEED), "0")
+				move_directly(fixed.mul(juke_dir_x, juke_speed), "0")
 			elif juke_ticks == JUKE_TICKS + 1:
 				create_speed_after_image_from_style()
 		if juke_dir_type == "Down":
-			move_directly("0", fixed.mul(juke_dir_y, JUKE_SPEED))
+			move_directly("0", fixed.mul(juke_dir_y, juke_speed))
 		if juke_dir_type == "Neutral":
 			reset_momentum()
 		if juke_dir_type == "Up" and current_state().get("IS_JUMP") == null and !(current_state() is ThrowState):
@@ -139,3 +144,8 @@ func tick():
 	if infinite_resources:
 		juke_pips = JUKE_PIPS
 	.tick()
+
+func on_got_parried():
+	if juked_this_turn:
+		juke_ticks = 0
+		hitlag_ticks += 5

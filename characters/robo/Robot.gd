@@ -108,15 +108,8 @@ func setup_magnet_circle():
 			outer.append(vec1)
 			hole.append(vec2)
 
-	#	print(magnet_polygon.polygon)
-	#	print(circle_polygon)
 		var clipped = Geometry.clip_polygons_2d(PoolVector2Array(hole), PoolVector2Array(outer))
 		mp.polygon = clipped[0]
-	#	print(circle_polygon)
-	#	print(Geometry.is_polygon_clockwise(magnet_polygon.polygon))
-#		print(mp.polygon)
-#		side.mp.polygon = clipped
-#	print(magnet_polygon.polygon)
 
 func init(pos=null):
 	.init(pos)
@@ -136,8 +129,6 @@ func on_got_parried():
 
 func on_got_hit():
 	pass
-#		if magnet_ticks_left > 1:
-#			magnet_ticks_left = 1
 
 func on_launched():
 	if orbital_strike_projectile and orbital_strike_projectile in objs_map:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/Chat/minimize_button1.png" type="Texture" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://framework/VariableSound.gd" type="Script" id=7]
 [ext_resource path="res://sound/ui/keyboard2.wav" type="AudioStream" id=8]
 [ext_resource path="res://sound/ui/chat.wav" type="AudioStream" id=9]
+[ext_resource path="res://ui/Chat/mute_button2.png" type="Texture" id=10]
+[ext_resource path="res://ui/Chat/mute_button1.png" type="Texture" id=11]
+[ext_resource path="res://ui/Chat/mute_button3.png" type="Texture" id=12]
 
 [sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 1, 1, 1, 0.380392 )
@@ -31,6 +34,7 @@ margin_bottom = 96.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource( 6 )
+force_mute_on_hide = false
 
 [node name="VBoxContainer" parent="." index="0"]
 margin_right = 131.0
@@ -54,6 +58,19 @@ action_mode = 0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 5 )
 texture_hover = ExtResource( 3 )
+
+[node name="MuteButton" type="TextureButton" parent="VBoxContainer/TitleBar" index="2"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -21.0
+margin_right = -11.0
+margin_bottom = 9.0
+toggle_mode = true
+action_mode = 0
+texture_normal = ExtResource( 11 )
+texture_pressed = ExtResource( 12 )
+texture_hover = ExtResource( 10 )
 
 [node name="Contents" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true

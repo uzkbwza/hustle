@@ -2,8 +2,6 @@ extends ObjectState
 
 class_name DefaultFireball
 
-const FREE_AFTER_TICKS = 60
-
 export var _c_Projectile_Dir = 0
 export var move_x = 4
 export var move_y = 0

@@ -22,7 +22,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=4]
 animations = [ {
-"frames": [ null, ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ), null, null ],
+"frames": [ ExtResource( 2 ), ExtResource( 2 ), null, null ],
 "loop": true,
 "name": "default",
 "speed": 5.0

@@ -89,12 +89,15 @@ func hit_by(hitbox):
 					hits_chained = 0
 				else:
 					hits_chained += 1
-				if hits_chained > 0:
-					hit_cancel_on_hit = false
-				
-				if player_object.combo_count > 0:
-					hit_cancel_on_hit = true
-				
+#				if hits_chained > 0:
+#					hit_cancel_on_hit = false
+
+#				if player_object.combo_count > 0:
+#					hit_cancel_on_hit = true
+#
+				# new
+				hit_cancel_on_hit = player_object.combo_count > 0 and hits_chained == 0
+
 				if host != player:
 					my_hitbox.hit_objects.append(player)
 				else:

@@ -44,5 +44,5 @@ func drop():
 		current_state().drop()
 
 func launch(data):
-	if current_state().name == "Default":
-		state_machine.queue_state("Launch", data)
+#	if current_state().name == "Default":
+	state_machine.queue_state("Launch", data)

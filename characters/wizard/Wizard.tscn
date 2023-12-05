@@ -855,25 +855,25 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 323 ): {
-"x": 62,
-"y": -128
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 },
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 323 ): {
+"x": 62,
+"y": -128
 },
 ExtResource( 326 ): {
 "x": 40,
@@ -884,6 +884,7 @@ character_portrait = ExtResource( 63 )
 character_portrait2 = ExtResource( 99 )
 player_info_scene = ExtResource( 4 )
 player_extra_params_scene = ExtResource( 3 )
+di_modifier = "1.0"
 use_extra_color_1 = true
 extra_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
 use_extra_color_2 = true
@@ -892,8 +893,8 @@ extra_color_2 = Color( 0.580392, 0.894118, 1, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 13 )
-animation = "IceSpikeAir"
-frame = 4
+animation = "Telekinesis"
+frame = 6
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -996,12 +997,32 @@ interrupt_into_string = "Aerial
 Grounded"
 super_freeze_ticks = 5
 
+[node name="Hitbox" type="Node2D" parent="StateMachine/Telekinesis" index="0"]
+z_index = 1000
+script = ExtResource( 304 )
+x = 12
+y = -5
+width = 10
+height = -5
+damage = 80
+hitstun_ticks = 18
+cancellable = false
+hit_sound = ExtResource( 145 )
+dir_x = "0.0"
+dir_y = "1.0"
+knockback = "5.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+knockdown_extends_hitstun = false
+start_tick = 5
+active_ticks = 2
+
 [node name="Launch" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 306 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 11
+anim_length = 12
 type = 3
 data_ui_scene = ExtResource( 307 )
 button_texture = ExtResource( 313 )
@@ -1891,25 +1912,25 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 323 ): {
-"x": 62,
-"y": -128
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 },
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 323 ): {
+"x": 62,
+"y": -128
 },
 ExtResource( 326 ): {
 "x": 40,
@@ -2018,10 +2039,11 @@ x = 50
 y = -10
 width = 35
 height = 12
-damage = 140
+damage = 120
 minimum_damage = 10
 hitstun_ticks = 20
 hitlag_ticks = 8
+damage_proration = 1
 plus_frames = 3
 screenshake_amount = 8
 hit_sound = ExtResource( 179 )

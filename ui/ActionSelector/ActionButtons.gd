@@ -654,6 +654,8 @@ func activate(refresh=true):
 		$"%LastMoveLabel".text = last_action.title if last_action.title else last_action.name
 		$"%LastMoveTexture".visible = !last_action.is_hurt_state
 		$"%LastMoveLabel".visible = !last_action.is_hurt_state
+		$"%LastMoveData".visible = !last_action.is_hurt_state
+		$"%LastMoveData".text = last_action.get_last_action_text()
 
 	var user_facing = game.singleplayer or Network.player_id == player_id
 	if Network.multiplayer_active:

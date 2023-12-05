@@ -23,6 +23,7 @@ func _tick():
 
 func on_got_blocked():
 	host.refresh_air_movements()
+	host.add_juke_pips(host.JUKE_PIPS_PER_USE - 1)
 	pulling = false
 
 func _frame_11():
@@ -35,5 +36,8 @@ func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
 	if obj.is_in_group("Fighter"):
 		host.refresh_air_movements()
-		host.add_juke_pips(1)
+		host.add_juke_pips(host.JUKE_PIPS_PER_USE - 1)
 		pulling = false
+
+func _exit():
+	host.stop_rebirth_fx()

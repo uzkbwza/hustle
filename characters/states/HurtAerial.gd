@@ -32,7 +32,7 @@ func begin_ground_bounce():
 func _enter():
 	ground_bounced = false
 	can_act = false
-	bounce_frames = 0
+
 	knockdown = hitbox.knockdown
 	hard_knockdown = hitbox.hard_knockdown
 	wall_slam = hitbox.wall_slam and host.wall_slams < host.MAX_WALL_SLAMS
@@ -77,6 +77,9 @@ func _enter():
 	host.apply_force(force_x, force_y)
 	host.move_directly(0, -1)
 	anim_name = "HurtAerial"
+
+func _frame_0():
+	bounce_frames = 0
 
 func _frame_1():
 	if host.braced_attack:

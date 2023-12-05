@@ -2,6 +2,8 @@ extends Window
 
 const MAX_LINES = 300
 
+export var force_mute_on_hide = false
+
 var showing = false
 
 # Called when the node enters the scene tree for the first time.
@@ -25,6 +27,10 @@ func _on_user_left(user):
 func line_edit_focus():
 	$"%LineEdit".grab_focus()
 
+func is_muted():
+	return $"%MuteButton".pressed or (!is_visible_in_tree() and force_mute_on_hide)
+	
+
 func on_chat_message_received(player_id: int, message: String):
 	var color = "ff333d" if player_id == 2 else "1d8df5"
 #	print("here")
@@ -33,8 +39,8 @@ func on_chat_message_received(player_id: int, message: String):
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
 	node.fit_content_height = true
-	if !(player_id == Network.player_id) and is_visible_in_tree():
-		$"ChatSound".play()
+	if !(player_id == Network.player_id):
+		play_chat_sound()
 	$"%MessageContainer".call_deferred("add_child", node)
 	if $"%MessageContainer".get_child_count() + 1 > MAX_LINES:
 		$"%MessageContainer".call_deferred("remove_child", $"%MessageContainer".get_child(0))
@@ -54,6 +60,10 @@ func god_message(message: String):
 	yield(get_tree(), 'idle_frame')
 	$"%ScrollContainer".scroll_vertical = 10000000000000000
 
+func play_chat_sound():
+	if !is_muted():
+		$"ChatSound".play()
+
 func on_steam_chat_message_received(steam_id: int, message: String):
 	if !SteamLobby.can_get_messages_from_user(steam_id):
 		return
@@ -71,7 +81,7 @@ func on_steam_chat_message_received(steam_id: int, message: String):
 	node.append_bbcode(text)
 	node.fit_content_height = true
 	if !(steam_id == SteamHustle.STEAM_ID):
-		$"ChatSound".play()
+		play_chat_sound()
 	
 	$"%MessageContainer".call_deferred("add_child", node)
 	yield(get_tree(), 'idle_frame')

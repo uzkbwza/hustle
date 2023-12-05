@@ -38,6 +38,7 @@ extra_state_variables = "detonating"
 deletes_other_projectiles = false
 movable = false
 can_be_hit_by_melee = true
+apply_hitlag_when_hit_by_melee = true
 projectile_immune = true
 hitlag_modifier = "0.0"
 

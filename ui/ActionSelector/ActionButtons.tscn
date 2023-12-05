@@ -72,6 +72,8 @@ self_modulate = Color( 0.396078, 0.901961, 1, 1 )
 show_behind_parent = true
 anchor_right = 0.0
 anchor_bottom = 0.0
+margin_right = 60.0
+margin_bottom = 66.0
 size_flags_horizontal = 1
 
 [node name="Padding2" type="Control" parent="TopRow"]
@@ -167,6 +169,18 @@ margin_left = -53.0
 margin_top = -26.0
 margin_right = 54.0
 margin_bottom = -15.0
+align = 1
+
+[node name="LastMoveData" type="Label" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons/SelectButton/Control/LastMoveTexture"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -53.0
+margin_top = -2.0
+margin_right = 54.0
+margin_bottom = 9.0
 align = 1
 
 [node name="FeintButton" type="CheckButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]

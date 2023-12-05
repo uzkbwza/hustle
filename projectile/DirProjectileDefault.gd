@@ -1,7 +1,5 @@
 extends ObjectState
 
-const FREE_AFTER_TICKS = 60
-
 export var _c_Projectile_Dir = 0
 export var move_speed = "15.0"
 

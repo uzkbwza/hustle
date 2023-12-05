@@ -13,6 +13,7 @@ onready var hitbox = $Hitbox
 
 func _enter():
 	var can_floor_bounce = true
+	host.reset_momentum()
 	host.launched = true
 	if launch:
 		var force = fixed.vec_mul(data.x, data.y, speed)
@@ -21,9 +22,6 @@ func _enter():
 #		host.movable = false
 	else:
 		host.stop_particles()
-	if host.creator:
-		if host.creator.boulder_projectile == host.obj_name:
-			host.creator.boulder_projectile = null
 
 func _tick():
 	var pos = host.get_pos()

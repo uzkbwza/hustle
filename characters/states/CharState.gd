@@ -454,6 +454,9 @@ func _on_land_cancel():
 	land_cancelled = true
 	pass
 
+func get_last_action_text() -> String:
+	return ""
+
 func _tick_after():
 #	if backdash_iasa:
 #		var opponent_state = host.opponent.current_state()

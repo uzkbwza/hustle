@@ -7,7 +7,7 @@ const IS_NEW_PARRY = true
 
 export var push = false
 export var autoguard = false
-export var real_parry = false
+#export var real_parry = false
 
 var punishable = false
 var whiffed_block = false
@@ -20,7 +20,8 @@ func _enter():
 	extra_iasa = 0
 	start()
 #
-#	if (!_previous_state().get("IS_NEW_PARRY") and !autoguard):
+	if (!_previous_state().get("IS_NEW_PARRY")):
+		whiffed_block = false
 #		extra_iasa = host.blockstun_ticks
 #		host.blockstun_ticks = 0
 #	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
@@ -32,7 +33,10 @@ func _enter():
 #	elif autoguard:
 #		parry_active = true
 #
-#func _frame_0():
+
+func get_last_action_text() -> String:
+	return "%sf" % data["Melee Parry Timing"].count 
+
 func start():
 	started_in_combo = host.combo_count > 0
 	endless = false

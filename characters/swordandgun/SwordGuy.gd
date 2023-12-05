@@ -118,19 +118,21 @@ func tick():
 
 	.tick()
 
-	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air and combo_count <= 0:
+	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air:
 		var obj = obj_from_name(after_image_object)
 		if supers_available >= DRIFT_SUPERS:
 			if obj:
 				detonating = false
 				obj.detonating = true
-				if !milk_toggled:
-					milk_toggled = true
-					super_effect(10)
-					for i in range(DRIFT_SUPERS):
-						use_super_bar()
-					combo_supers += 1
-					hitlag_ticks += 4
+			if !milk_toggled:
+				milk_toggled = true
+				super_effect(10)
+				for i in range(DRIFT_SUPERS):
+					use_super_bar()
+				combo_supers += 1
+				hitlag_ticks += 4
+				set_vel(get_vel().x, "0")
+			spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
 
 
 	if shifted_last_frame:
