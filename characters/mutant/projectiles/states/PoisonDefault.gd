@@ -17,5 +17,5 @@ func _tick():
 	if host.is_ghost:
 		host.poison_particle_2.hide()
 
-func _frame_340():
+func _frame_600():
 	host.disable()

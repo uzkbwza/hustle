@@ -299,8 +299,10 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	if data_scene:
 		data_node = data_scene.instance()
 		data_node.action_buttons = self
+		data_node.state = state
 		data_node.fighter = fighter
 		$"%DataContainer".add_child(data_node)
+		data_node.init()
 	button.set_data_node(data_node)
 	button.reversible = reversible
 	button.connect("data_changed", self, "send_ui_action")

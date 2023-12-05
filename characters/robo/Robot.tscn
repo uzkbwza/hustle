@@ -1060,6 +1060,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
+frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -1068,6 +1069,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -16 )
 frames = SubResource( 9 )
+frame = 1
 playing = true
 
 [node name="HustleEffect" parent="Flip/Particles" index="0" instance=ExtResource( 391 )]
@@ -1241,7 +1243,7 @@ y = -17
 width = 15
 height = 17
 
-[node name="Roll" parent="StateMachine" index="6"]
+[node name="Roll" parent="StateMachine" index="7"]
 script = ExtResource( 466 )
 __meta__ = {
 "_editor_description_": ""
@@ -4902,10 +4904,10 @@ beats_grab = false
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
 
-[node name="Fall" parent="StateMachine" index="76"]
+[node name="Fall" parent="StateMachine" index="77"]
 script = ExtResource( 400 )
 
-[node name="Landing" parent="StateMachine" index="77"]
+[node name="Landing" parent="StateMachine" index="78"]
 script = ExtResource( 82 )
 dynamic_iasa = false
 hit_cancel_into_string = "GroundedSuper"
@@ -4933,16 +4935,16 @@ grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
 
-[node name="DashForward" parent="StateMachine" index="83"]
+[node name="DashForward" parent="StateMachine" index="84"]
 interrupt_from_string = ""
 
-[node name="DashBackward" parent="StateMachine" index="85"]
+[node name="DashBackward" parent="StateMachine" index="86"]
 interrupt_from_string = ""
 
-[node name="ChargeDash" parent="StateMachine" index="89"]
+[node name="ChargeDash" parent="StateMachine" index="90"]
 fallback_state = "ChargedStep"
 
-[node name="SuperJump" parent="StateMachine" index="90"]
+[node name="SuperJump" parent="StateMachine" index="91"]
 script = ExtResource( 435 )
 __meta__ = {
 "_editor_description_": ""
@@ -4951,12 +4953,12 @@ speed = "18"
 super_jump_speed_override = "13"
 fall_anim = true
 
-[node name="DoubleJump" parent="StateMachine" index="91"]
+[node name="DoubleJump" parent="StateMachine" index="92"]
 interrupt_from_string = ""
 speed = "6"
 fall_anim = true
 
-[node name="AirDash" parent="StateMachine" index="92"]
+[node name="AirDash" parent="StateMachine" index="93"]
 interrupt_from_string = ""
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
@@ -4965,7 +4967,7 @@ beats_grab = false
 block_cancel_allowed = true
 hit_height = 0
 
-[node name="AirGrab" parent="StateMachine" index="103"]
+[node name="AirGrab" parent="StateMachine" index="104"]
 script = ExtResource( 474 )
 __meta__ = {
 "_editor_description_": ""
@@ -5018,7 +5020,7 @@ air_ground_bounce = true
 ground_bounce = false
 loop_active_ticks = 0
 
-[node name="ForwardThrow" parent="StateMachine" index="105"]
+[node name="ForwardThrow" parent="StateMachine" index="106"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -5060,7 +5062,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="BackThrow" parent="StateMachine" index="106"]
+[node name="BackThrow" parent="StateMachine" index="107"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -5080,7 +5082,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirForwardThrow" parent="StateMachine" index="107"]
+[node name="AirForwardThrow" parent="StateMachine" index="108"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -5100,7 +5102,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirBackThrow" parent="StateMachine" index="108"]
+[node name="AirBackThrow" parent="StateMachine" index="109"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -5142,7 +5144,7 @@ damage_in_combo = 95
 screenshake_amount = 8
 screenshake_frames = 6
 
-[node name="AirDownThrow" parent="StateMachine" index="109"]
+[node name="AirDownThrow" parent="StateMachine" index="110"]
 anim_length = 29
 force_dir_x = "1.0"
 force_speed = "8.0"
@@ -5155,7 +5157,7 @@ release_frame = 18
 start_throw_pos_x = -12
 start_throw_pos_y = -22
 
-[node name="Taunt" parent="StateMachine" index="111"]
+[node name="Taunt" parent="StateMachine" index="112"]
 script = ExtResource( 390 )
 particle_scene = ExtResource( 393 )
 particle_position = Vector2( 0, -16 )

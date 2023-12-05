@@ -30,7 +30,7 @@ func _ready():
 
 func _tick():
 	if current_tick > 0:
-		var dir = xy_to_dir(host.rotate_dir["x"], host.rotate_dir["y"])
+		var dir = xy_to_dir(host.rotate_dir_x, host.rotate_dir_y)
 		angle = fixed.lerp_string(angle, fixed.vec_to_angle(dir.x, dir.y), "0.2")
 		host.sprite.rotation = float(angle)
 		for hitbox in [

@@ -55,11 +55,11 @@ __meta__ = {
 "_editor_description_": ""
 }
 air_friction = "1.0"
-extra_state_variables = "rotate_dir
+extra_state_variables = "rotate_dir_x
+rotate_dir_y
 can_cancel"
 has_projectile_parry_window = false
 deletes_other_projectiles = false
-apply_hitlag_when_hit_by_melee = true
 projectile_immune = true
 
 [node name="Sprite" parent="Flip" index="0"]

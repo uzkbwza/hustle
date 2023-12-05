@@ -31,6 +31,18 @@ margin_right = 60.0
 margin_bottom = 11.0
 text = "Block Height"
 
+[node name="CantParry" type="Label" parent="Block Height/Label2"]
+unique_name_in_owner = true
+visible = false
+margin_left = -28.0
+margin_top = 40.0
+margin_right = 90.0
+margin_bottom = 72.0
+custom_constants/line_spacing = -1
+text = "can't parry after missed block"
+align = 1
+autowrap = true
+
 [node name="High" type="Button" parent="Block Height"]
 margin_top = 12.0
 margin_right = 60.0
@@ -51,6 +63,7 @@ text = "Low"
 icon = ExtResource( 5 )
 
 [node name="Melee Parry Timing" parent="." instance=ExtResource( 2 )]
+visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 40.0

@@ -44,6 +44,9 @@ func get_fighter():
 
 func disable():
 	sprite.hide()
+	state_machine.hide()
+	collision_box.hide()
+	hurtbox.hide()
 	disabled = true
 	for hitbox in get_active_hitboxes():
 		hitbox.deactivate()

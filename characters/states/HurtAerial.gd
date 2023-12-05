@@ -29,6 +29,9 @@ func begin_ground_bounce():
 	host.play_sound("HitBass")
 	host.play_sound("GroundBounce")
 
+func _exit():
+	bounce_frames = 0
+
 func _enter():
 	ground_bounced = false
 	can_act = false

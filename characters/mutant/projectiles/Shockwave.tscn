@@ -49,7 +49,8 @@ _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.992574, 0 ), 0.0, 0.0, 0, 
 script = ExtResource( 5 )
 max_fall_speed = "15"
 has_projectile_parry_window = false
-apply_hitlag_when_hit_by_melee = true
+can_be_hit_by_melee = true
+apply_hitlag_when_hit_by_melee = false
 
 [node name="Sprite" parent="Flip" index="0"]
 z_index = -1

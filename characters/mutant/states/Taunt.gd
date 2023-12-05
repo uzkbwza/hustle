@@ -1,19 +1,18 @@
 extends "res://characters/states/Taunt.gd"
 
+export var charge = false
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
+func _frame_1():
+	if charge:
+		current_tick = 26
+		host.add_juke_pips(host.JUKE_PIPS_PER_USE)
+		host.play_sound("Howl")
+		host.play_sound("Howl2")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 func _frame_7():
 	host.play_sound("Swish")
 
@@ -27,5 +26,9 @@ func _frame_26():
 	host.play_sound("HitBass")
 	
 func _frame_44():
-	._frame_44()
-	host.add_juke_pips(host.JUKE_PIPS_PER_USE)
+	if !charge:
+		host.add_juke_pips(host.JUKE_PIPS_PER_USE)
+		._frame_44()
+
+func is_usable():
+	return .is_usable()

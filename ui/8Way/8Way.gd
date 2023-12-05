@@ -93,7 +93,7 @@ func set_dir(dir, force_absolute = false):
 
 	button.emit_signal("pressed")
 
-func set_sensible_default(attempted_dir):
+func set_sensible_default(attempted_dir, emit_signal=true):
 	var dirs_list = DIRS_LEFT if ('W' in attempted_dir) or (consider_facing and facing == -1 and not 'E' in attempted_dir) else DIRS
 	for dir in dirs_list:
 		var button = get_node("%" + dir)
@@ -103,8 +103,12 @@ func set_sensible_default(attempted_dir):
 		if pressed_button:
 			pressed_button.pressed = false
 
-		button.emit_signal("pressed")
- 
+
+		if emit_signal:
+			button.emit_signal("pressed")
+		else:
+			 _on_button_pressed_no_signal(button)
+
 		return
 
 	assert(false, "trying to update a completely disabled 8Way")
@@ -124,6 +128,14 @@ func set_dir_from_data(data):
 func get_dir():
 	if pressed_button:
 		return dir_to_facing(pressed_button.name) if consider_facing else pressed_button.name
+
+func get_dir_name():
+	return pressed_button.name
+
+func get_button(button_name):
+	for button in get_buttons():
+		if button.name == button_name:
+			return button
 
 func get_buttons():
 	var buttons = []
@@ -146,6 +158,9 @@ func get_value(dir):
 
 func get_data():
 	if not pressed_button: return "Neutral"
+
+	if !pressed_button.is_visible_in_tree():
+		return get_value("Neutral")
 	# if consider_facing:
 	# 	return get_value(dir_to_facing(pressed_button.name))
 	# else:
@@ -183,6 +198,9 @@ func dir_to_facing(dir):
 
 func _on_button_pressed(button):
 	emit_signal("data_changed")
+	_on_button_pressed_no_signal(button)
+
+func _on_button_pressed_no_signal(button):
 	button.set_pressed_no_signal(true)
 	pressed_button = button
 

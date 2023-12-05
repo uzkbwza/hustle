@@ -43,6 +43,7 @@ export var uses_air_movement = false
 export var land_cancel = false
 export var landing_recovery = -1
 export var min_land_cancel_frame = -1
+export var land_cancel_state = "Landing"
 
 export var _c_Interrupt_Data = 0
 export var iasa_at = -1
@@ -61,6 +62,7 @@ export var combo_only = false
 export var neutral_only = false
 export var end_feint = true
 export var usable_from_whiff_cancel_if_possible = true
+export var hold_restart = ""
 
 var starting_iasa_at = -1
 var starting_interrupt_frames = []
@@ -222,6 +224,9 @@ func init():
 # func copy_to(state: ObjectState):
 #	.copy_to(state)
 #	state.interrupt_frames = interrupt_frames.duplicate()
+
+func get_hold_restart():
+	return hold_restart
 
 func get_ui_category():
 	return ActionType.keys()[type]
@@ -435,7 +440,7 @@ func _tick_shared():
 #		print(started_in_air)
 
 	if land_cancel and can_land_cancel() and host.is_grounded() and started_in_air and current_tick > min_land_cancel_frame and fixed.ge(host.get_vel().y, "0"):
-		queue_state_change("Landing", landing_recovery if landing_recovery >= 0 else null)
+		queue_state_change(land_cancel_state, landing_recovery if landing_recovery >= 0 else null)
 		_on_land_cancel()
 	if current_tick <= anim_length and !endless:
 		if can_interrupt() and !interrupt_into.empty():

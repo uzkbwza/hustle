@@ -10,9 +10,13 @@ export var autoguard = false
 #export var real_parry = false
 
 var punishable = false
-var whiffed_block = false
+var whiffed_block = false setget , get_whiffed_block
+export var reblock = false
 
 var extra_iasa = 0
+
+func get_whiffed_block():
+	return !parried and !autoguard and host.combo_count <= 0
 
 func _enter():
 	if data == null:
@@ -32,10 +36,15 @@ func _enter():
 #		parry_active = true
 #	elif autoguard:
 #		parry_active = true
-#
+
+func get_hold_restart():
+	if whiffed_block:
+		return "ParryAfterWhiff"
+	else:
+		return "ParryHigh"
 
 func get_last_action_text() -> String:
-	return "%sf" % data["Melee Parry Timing"].count 
+	return ("%sf" % data["Melee Parry Timing"].count) if !reblock else ""
 
 func start():
 	started_in_combo = host.combo_count > 0
@@ -62,7 +71,10 @@ func _frame_0():
 	punishable = false
 
 func is_usable():
-	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"
+	var current = host.current_state()
+	var whiffed_block_last = current.get("IS_NEW_PARRY") and current.whiffed_block
+	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel" and \
+	(whiffed_block_last if reblock else !whiffed_block_last)
 
 func on_continue():
 	punishable = true
@@ -129,7 +141,7 @@ func _tick():
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false
-	
+	host.whiffed_block = whiffed_block
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
@@ -140,11 +152,12 @@ func enable_interrupt(check_opponent=true, remove_hitlag=false):
 #		host.blockstun_ticks = 1
 	else:
 		whiffed_block = false
-		
+
 func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
 	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
+		host.blocked_hitbox_plus_frames = 1
 		whiffed_block = true
 #		host.blockstun_ticks = 1
 	else:

@@ -25,13 +25,6 @@ func show_options():
 	if spike:
 		if spike.get("can_cancel"):
 			spike_button.show()
-	juke_dir.set_S(!fighter.is_grounded())
-#	juke_dir.set_Neutral(!fighter.is_grounded())
-	juke_dir.set_N(!fighter.is_grounded() and fighter.air_movements_left > 0)
-	juke_dir.call_deferred("try_hide_sections")
-	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
-	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
-	juke_dir.set_sensible_default("Neutral")
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
@@ -40,7 +33,28 @@ func update_selected_move(move_state):
 		if move_state.type == CharacterState.ActionType.Defense or move_state.state_name == "DashBackward":
 			juke_button.set_pressed_no_signal(false)
 			juke_button.disabled = true
+	
+	var air_juke = move_state and move_state.get("force_air_juke")
+	var different = ((juke_dir.S or juke_dir.N) != air_juke)
+	juke_dir.set_S(!fighter.is_grounded())
+	juke_dir.set_SW(!fighter.is_grounded())
+	juke_dir.set_SE(!fighter.is_grounded())
+#	juke_dir.set_Neutral(!fighter.is_grounded())
+	juke_dir.set_N((!fighter.is_grounded() and fighter.air_movements_left > 0) or air_juke)
+	juke_dir.set_NE((!fighter.is_grounded() and fighter.air_movements_left > 0) or air_juke)
+	juke_dir.set_NW((!fighter.is_grounded() and fighter.air_movements_left > 0) or air_juke)
+	juke_dir.call_deferred("try_hide_sections")
+	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
+	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
 
+	if different:
+		juke_dir.set_sensible_default(juke_dir.pressed_button.name, false)
+#		juke_button.pressed = false
+		pass
+
+	
+	if $"%JukeButton".disabled:
+		$"%JukeButton".set_pressed_no_signal(false)
 
 func get_extra():
 	var extra = {
@@ -55,10 +69,11 @@ func reset():
 #	juke_dir.hide()
 
 func _on_JukeButton_toggled(button_pressed):
-#	juke_dir.visible = button_pressed
+#	if !button_pressed:
+#		juke_dir.set_sensible_default("Neutral")
 	pass
 	
-
 func _on_JukeDir_data_changed():
 	$"%JukeButton".set_pressed_no_signal($"%JukeButton".visible)
-	pass # Replace with function body.
+	if $"%JukeButton".disabled:
+		$"%JukeButton".set_pressed_no_signal(false)

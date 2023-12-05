@@ -43,8 +43,10 @@ func _enter():
 	hitbox.vacuum = false
 	hitbox_2.vacuum = false
 
-func _frame_10():
+func _frame_6():
 	moving = true
+
+func _frame_10():
 	host.sprite.hide()
 	host.twist_attack_sprite.show()
 	host.twist_attack_sprite.frame = 0

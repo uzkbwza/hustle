@@ -4,6 +4,7 @@ class_name BeastState
 
 export var moving_up_only = false
 export var moving_down_only = false
+export var force_air_juke = false
 
 func _enter_shared():
 	._enter_shared()

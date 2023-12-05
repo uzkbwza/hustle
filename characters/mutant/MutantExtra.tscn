@@ -37,10 +37,6 @@ alignment = 2
 unique_name_in_owner = true
 margin_top = 285.0
 margin_bottom = 347.0
-NW = false
-NE = false
-SW = false
-SE = false
 
 [node name="JukeButton" type="CheckButton" parent="VBoxContainer3" index="1"]
 unique_name_in_owner = true

@@ -13,3 +13,7 @@ func _frame_0():
 		if host.get_facing_int() == fixed.sign(host.get_vel().x):
 			host.reset_momentum()
 		return "ForwardDashBackFollowup"
+	host.start_projectile_invulnerability()
+
+func _frame_6():
+	host.end_projectile_invulnerability()

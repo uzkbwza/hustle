@@ -21,6 +21,15 @@ func _tick():
 		if current_tick > 5 - air_advantage:
 			if host.touching_which_wall() != 0 and !host.is_grounded() or current_tick >= anim_length - 1:
 				return "WallTrickFollowup"
+func _frame_0():
+	host.start_throw_invulnerability()
+
+func _frame_1():
+	host.start_projectile_invulnerability()
+
+func _frame_8():
+	host.end_projectile_invulnerability()
+	host.end_throw_invulnerability()
 
 func _exit():
 	host.reset_momentum()

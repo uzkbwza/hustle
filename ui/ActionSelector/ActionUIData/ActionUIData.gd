@@ -8,6 +8,7 @@ export var display_offset = Vector2()
 
 var facing = -1
 var action_buttons = null
+var state = null 
 
 var fighter = null
 
@@ -51,9 +52,10 @@ func get_facing():
 	return null
 
 func init():
-	for child in get_children():
-		if child.has_method("init"):
-			child.init()
+#	for child in get_children():
+#		if child.has_method("init"):
+#			child.init()
+	pass
 
 func fighter_update():
 	pass

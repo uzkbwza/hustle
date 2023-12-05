@@ -781,10 +781,8 @@ func update_grounded():
 func on_got_parried():
 	current_state().on_got_perfect_parried()
 
-
 func on_got_blocked():
 	current_state().on_got_blocked()
-
 
 func on_got_parried_by(who):
 	current_state().on_got_perfect_parried_by(who)

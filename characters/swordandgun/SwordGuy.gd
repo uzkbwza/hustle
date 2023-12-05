@@ -176,6 +176,8 @@ func tick():
 				has_gun = true
 				gun_projectile = null
 				play_sound("GunPickup")
+			if opponent.combo_count > 0:
+				gun.deactivate_current_hitbox()
 	if buffer_bullet_cancelling:
 		bullet_cancelling = true
 		buffer_bullet_cancelling = false
