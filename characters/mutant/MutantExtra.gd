@@ -47,7 +47,7 @@ func update_selected_move(move_state):
 	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
 	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
 
-	if different:
+	if different and fighter.is_grounded():
 		juke_dir.set_sensible_default(juke_dir.pressed_button.name, false)
 #		juke_button.pressed = false
 		pass

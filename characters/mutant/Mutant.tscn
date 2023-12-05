@@ -2142,6 +2142,7 @@ air_type = 1
 uses_air_movement = true
 iasa_at = 10
 interruptible_on_opponent_turn = true
+hold_restart = "AirDashForward"
 reversible = false
 interrupt_from_string = "AerialMovement
 Aerial
@@ -2798,7 +2799,7 @@ anim_length = 22
 enter_force_dir_x = "1"
 enter_force_speed = "8.0"
 title = "Sneak Attack"
-type = 1
+type = 2
 button_texture = ExtResource( 234 )
 iasa_on_hit = 17
 interrupt_from_string = "ForwardDashAttack"

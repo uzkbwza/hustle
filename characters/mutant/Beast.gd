@@ -61,6 +61,7 @@ func process_extra(extra):
 			if !extra.spike_enabled:
 				obj.disable()
 	var juke_dir = extra.get("juke_dir")
+	juke_ticks = 0
 	if juke_dir != null:
 		juke_dir = fixed.normalized_vec(str(juke_dir.x), str(juke_dir.y))
 	var invalid_juke_states = ["DashBackward"]
