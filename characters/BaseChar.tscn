@@ -1040,6 +1040,7 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 128 )
 enter_sfx_volume = -10.0
 type = 5
+next_state_on_hold_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"

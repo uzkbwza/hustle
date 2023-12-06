@@ -108,7 +108,6 @@ func set_sensible_default(attempted_dir, emit_signal=true):
 			button.emit_signal("pressed")
 		else:
 			 _on_button_pressed_no_signal(button)
-
 		return
 
 	assert(false, "trying to update a completely disabled 8Way")

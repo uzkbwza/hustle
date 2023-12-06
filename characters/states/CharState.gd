@@ -62,6 +62,7 @@ export var combo_only = false
 export var neutral_only = false
 export var end_feint = true
 export var usable_from_whiff_cancel_if_possible = true
+export var count_projectile_hits = true
 export var hold_restart = ""
 
 var starting_iasa_at = -1
@@ -78,6 +79,7 @@ export var reversible = true
 export var instant_cancellable = true
 export var force_feintable = false
 export var can_feint_if_possible = true
+
 
 export var selectable = true
 export(String, MULTILINE) var interrupt_from_string
@@ -137,6 +139,8 @@ var hit_anything = false
 var was_blocked = false
 var hit_cancelled = false
 var started_during_combo = false
+
+var hit_fighter = false
 
 var feinted_last = false
 var is_brace = false
@@ -290,6 +294,7 @@ func _enter_shared():
 	hit_yet = false
 	land_cancelled = false
 	hit_anything = false
+	hit_fighter = false
 	entered_in_air = !host.is_grounded()
 	was_blocked = false
 	started_in_air = false
@@ -327,6 +332,8 @@ func enable_interrupt(check_opponent=true, remove_hitlag=false):
 			host.opponent.current_state().queue_state_change(host.opponent.current_state().fallback_state)
 		if !allow_framecheat:
 			queue_state_change(fallback_state)
+	if hit_fighter and !allow_framecheat:
+			queue_state_change(fallback_state)
 	emit_signal("state_interruptable")
 
 func enable_hit_cancel(projectile=false):
@@ -338,8 +345,11 @@ func _on_hit_something(obj, hitbox):
 		host.stack_move_in_combo(state_name)
 		if host.combo_count > 0 and hit_yet:
 			started_during_combo = true
-	hit_anything = true
+	if count_projectile_hits and !obj.is_in_group("Fighter"):
+		hit_anything = true
 	if obj.is_in_group("Fighter"):
+		hit_anything = true
+		hit_fighter = true
 		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
 	._on_hit_something(obj, hitbox)

@@ -820,7 +820,8 @@ shifted_this_frame
 shifted_last_frame
 lasso_parried
 temporal_round
-milk_toggled"
+milk_toggled
+burst_cancel_combo"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -2758,7 +2759,10 @@ GroundedSpecial
 AerialSuper
 GroundedSuper
 AerialAttack
-GroundedAttack"
+GroundedAttack
+
+"
+hit_cancel_exceptions_string = "OffensiveBurst"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/PistolWhip" index="0"]
 z_index = 1000
@@ -2771,7 +2775,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2796,7 +2801,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2821,7 +2827,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2846,7 +2853,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2871,7 +2879,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2916,7 +2925,10 @@ GroundedSpecial
 AerialSuper
 GroundedSuper
 AerialAttack
-GroundedAttack"
+GroundedAttack
+
+"
+hit_cancel_exceptions_string = "OffensiveBurst"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/PistolWhipGround" index="0"]
 z_index = 1000
@@ -2929,7 +2941,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2954,7 +2967,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -2979,7 +2993,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -3004,7 +3019,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -3029,7 +3045,8 @@ damage = 128
 minimum_damage = 40
 hitstun_ticks = 22
 hitlag_ticks = 9
-victim_hitlag = 15
+victim_hitlag = 9
+sdi_modifier = "0.4"
 guard_break = true
 plus_frames = 1
 hit_sound = ExtResource( 142 )
@@ -3998,12 +4015,14 @@ height = 2
 damage = 90
 hitstun_ticks = 14
 hitlag_ticks = 6
+plus_frames = -1
 hit_height = 2
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 dir_x = "-2.0"
 dir_y = "-1.8"
 knockback = "8.5"
+block_pushback_modifier = "-1.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -4197,7 +4216,6 @@ script = ExtResource( 330 )
 __meta__ = {
 "_editor_description_": ""
 }
-next_state_on_hold = false
 hit_cancel_into_string = "Grounded
 Aerial"
 can_be_counterhit = false

@@ -147,7 +147,7 @@ func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
 	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
-		host.blocked_hitbox_plus_frames = 1
+#		host.blocked_hitbox_plus_frames = 1
 		whiffed_block = true
 #		host.blockstun_ticks = 1
 	else:
@@ -157,7 +157,7 @@ func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
 	if !parried and !autoguard and host.combo_count <= 0:
 #		host.set_block_stun(1)
-		host.blocked_hitbox_plus_frames = 1
+#		host.blocked_hitbox_plus_frames = 1
 		whiffed_block = true
 #		host.blockstun_ticks = 1
 	else:

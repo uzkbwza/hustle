@@ -770,6 +770,7 @@ type = 1
 data_ui_scene = ExtResource( 21 )
 button_texture = ExtResource( 224 )
 iasa_on_hit = 6
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "Swipe2"
@@ -783,6 +784,7 @@ AerialAttack
 AerialSpecial
 AerialSuper
 Jump"
+initiative_effect = true
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/Swipe2" index="0"]
 z_index = 1000
@@ -791,7 +793,7 @@ x = 23
 y = -22
 width = 19
 height = 5
-damage = 48
+damage = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 7
 victim_hitlag = 5
@@ -814,7 +816,7 @@ x = 16
 y = -25
 width = 17
 height = 6
-damage = 48
+damage = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 7
 victim_hitlag = 5
@@ -905,6 +907,7 @@ type = 1
 data_ui_scene = ExtResource( 21 )
 button_texture = ExtResource( 223 )
 iasa_on_hit = 6
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "GroundedAttack
@@ -920,6 +923,7 @@ AerialAttack
 AerialSpecial
 AerialSuper
 Jump"
+initiative_effect = true
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/Swipe" index="0"]
 z_index = 1000
@@ -928,7 +932,7 @@ x = 23
 y = -22
 width = 19
 height = 5
-damage = 48
+damage = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 7
 victim_hitlag = 5
@@ -951,7 +955,7 @@ x = 16
 y = -25
 width = 17
 height = 6
-damage = 48
+damage = 40
 hitstun_ticks = 6
 combo_hitstun_ticks = 7
 victim_hitlag = 5
@@ -1042,6 +1046,7 @@ title = "Low Swipe"
 type = 1
 button_texture = ExtResource( 286 )
 iasa_on_hit = 12
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "GroundedAttack
@@ -1105,6 +1110,7 @@ sfx_tick = 27
 sfx_volume = -8.0
 title = "Charge"
 type = 2
+next_state_on_hold_on_opponent_turn = true
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
 Aerial
@@ -1195,6 +1201,7 @@ type = 1
 button_texture = ExtResource( 225 )
 land_cancel = true
 land_cancel_state = "ShredLandCancel"
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Aerial
@@ -1349,6 +1356,7 @@ button_texture = ExtResource( 227 )
 land_cancel = true
 landing_recovery = 4
 iasa_on_hit = 18
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "GroundedAttack
@@ -1416,6 +1424,7 @@ title = "Overhead Claw"
 type = 1
 button_texture = ExtResource( 229 )
 iasa_on_hit = 19
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "Grounded
@@ -1467,6 +1476,7 @@ air_type = 1
 land_cancel = true
 land_cancel_state = "ShredLandCancel"
 iasa_on_hit = 21
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "Aerial
 AerialAttack"
 interrupt_into_string = "Aerial
@@ -1576,6 +1586,7 @@ enter_force_speed = "3.0"
 title = "Swipe Up"
 type = 1
 iasa_on_hit = 7
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_into_string = "Grounded
@@ -1648,6 +1659,7 @@ air_type = 1
 land_cancel = true
 min_land_cancel_frame = 5
 iasa_on_hit = 9
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "AerialAttack
 Aerial"
 interrupt_into_string = "Aerial
@@ -1689,6 +1701,7 @@ air_type = 1
 land_cancel = true
 landing_recovery = 4
 iasa_on_hit = 13
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 self_interruptable = false
 interrupt_from_string = "AerialAttack
@@ -2033,7 +2046,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "ThornBarrage"
-anim_length = 20
+anim_length = 18
 force_dir_x = "-1.0"
 force_speed = "5"
 force_tick = 7
@@ -2183,25 +2196,25 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 },
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
 },
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
-},
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
 },
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -2213,9 +2226,10 @@ release = true
 release_frame = 24
 use_start_throw_pos = false
 use_release_throw_pos = false
-hitstun_ticks = 30
-knockback = "10"
+hitstun_ticks = 10
+knockback = "16"
 dir_y = "0.5"
+knockdown = false
 knockdown_extends_hitstun = false
 grounded_hit_state = "HurtAerial"
 damage = 0
@@ -2223,7 +2237,7 @@ screenshake_amount = 10
 screenshake_frames = 5
 increment_combo = false
 force_grounded = true
-minimum_grounded_frames = 10
+minimum_grounded_frames = 5
 release_sfx = ExtResource( 178 )
 play_release_sfx_bass = false
 
@@ -2255,6 +2269,7 @@ sfx_volume = -12.0
 title = "BounceJump"
 air_type = 1
 land_cancel = true
+next_state_on_hold_on_opponent_turn = true
 interrupt_into_string = "Grounded
 Aerial"
 
@@ -2318,6 +2333,7 @@ air_type = 1
 land_cancel = true
 min_land_cancel_frame = 6
 iasa_on_hit = 18
+next_state_on_hold_on_opponent_turn = true
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
 Aerial
@@ -2396,6 +2412,7 @@ uses_air_movement = true
 iasa_on_hit = 24
 iasa_on_hit_on_block = false
 next_state_on_hold = false
+count_projectile_hits = false
 reversible = false
 interrupt_from_string = "GroundedSpecial
 AerialSpecial
@@ -2802,6 +2819,7 @@ title = "Sneak Attack"
 type = 2
 button_texture = ExtResource( 234 )
 iasa_on_hit = 17
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "ForwardDashAttack"
 interrupt_into_string = "Grounded
 Aerial"
@@ -2911,6 +2929,7 @@ spawn_particle_on_enter = true
 enter_sfx = ExtResource( 284 )
 enter_sfx_volume = -8.0
 type = 5
+next_state_on_hold_on_opponent_turn = true
 busy_interrupt_type = 1
 interrupt_into_string = "Grounded
 Aerial"
@@ -3046,10 +3065,6 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 81 ): {
-"x": -11,
-"y": -6
-},
 ExtResource( 82 ): {
 "x": -8,
 "y": -5
@@ -3057,6 +3072,10 @@ ExtResource( 82 ): {
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
+},
+ExtResource( 81 ): {
+"x": -11,
+"y": -6
 }
 }
 land_cancel = true

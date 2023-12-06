@@ -82,7 +82,7 @@ func _enter():
 	anim_name = "HurtAerial"
 
 func _frame_0():
-	bounce_frames = 0
+	pass
 
 func _frame_1():
 	if host.braced_attack:

@@ -40,4 +40,3 @@ func _tick_shared():
 	._tick_shared()
 	if current_tick == throw_invuln_frames and throw_invuln_frames > 0:
 		host.end_throw_invulnerability()
-		

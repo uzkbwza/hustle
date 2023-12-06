@@ -13,6 +13,11 @@ var back = false
 
 func _enter():
 	host.on_roll_started()
+#	if data.has("hitbox"):
+#		data = {
+#			"x": 1,
+#			"y": 0,
+#		}
 	back = false
 	host.used_air_dodge = true
 	force = xy_to_dir(data.x, 0, speed, "1")

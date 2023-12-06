@@ -26,13 +26,19 @@ func show_options():
 		if spike.get("can_cancel"):
 			spike_button.show()
 
+func is_invalid_state(state):
+	return state.type == CharacterState.ActionType.Defense or state.state_name == "DashBackward"
+
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
 	juke_button.disabled = fighter.juke_pips < fighter.JUKE_PIPS_PER_USE
 	if move_state is CharacterState:
-		if move_state.type == CharacterState.ActionType.Defense or move_state.state_name == "DashBackward":
+		if is_invalid_state(move_state):
 			juke_button.set_pressed_no_signal(false)
 			juke_button.disabled = true
+	elif is_invalid_state(fighter.current_state()):
+		juke_button.set_pressed_no_signal(false)
+		juke_button.disabled = true
 	
 	var air_juke = move_state and move_state.get("force_air_juke")
 	var different = ((juke_dir.S or juke_dir.N) != air_juke)
@@ -44,15 +50,17 @@ func update_selected_move(move_state):
 	juke_dir.set_NE((!fighter.is_grounded() and fighter.air_movements_left > 0) or air_juke)
 	juke_dir.set_NW((!fighter.is_grounded() and fighter.air_movements_left > 0) or air_juke)
 	juke_dir.call_deferred("try_hide_sections")
-	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
-	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE
+	
+	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE and fighter.opponent.combo_count <= 0
+	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE and fighter.opponent.combo_count <= 0
+
+	var current = juke_dir.pressed_button.name
 
 	if different and fighter.is_grounded():
-		juke_dir.set_sensible_default(juke_dir.pressed_button.name, false)
-#		juke_button.pressed = false
+		if !(current == "E" or current == "W"): 
+			juke_dir.set_sensible_default(juke_dir.pressed_button.name, false)
 		pass
 
-	
 	if $"%JukeButton".disabled:
 		$"%JukeButton".set_pressed_no_signal(false)
 

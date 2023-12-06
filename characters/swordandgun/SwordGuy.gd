@@ -118,7 +118,7 @@ func tick():
 
 	.tick()
 
-	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air:
+	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air and !is_in_hurt_state():
 		var obj = obj_from_name(after_image_object)
 		if supers_available >= DRIFT_SUPERS:
 			if obj:

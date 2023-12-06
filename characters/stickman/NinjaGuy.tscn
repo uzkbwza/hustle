@@ -674,10 +674,10 @@ script = ExtResource( 202 )
 [node name="Super3" parent="Sounds" index="11"]
 pitch_variation = 0.03
 
-[node name="Wait" parent="StateMachine" index="10"]
+[node name="Wait" parent="StateMachine" index="11"]
 change_stance_to = "Normal"
 
-[node name="Burst" parent="StateMachine" index="11"]
+[node name="Burst" parent="StateMachine" index="12"]
 interrupt_exceptions_string = "WhiffCancel"
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
@@ -686,10 +686,10 @@ beats_grab = false
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
 
-[node name="DashForward" parent="StateMachine" index="24"]
+[node name="DashForward" parent="StateMachine" index="25"]
 dash_speed = 14
 
-[node name="ChargeDashForward" parent="StateMachine" index="25"]
+[node name="ChargeDashForward" parent="StateMachine" index="26"]
 interrupt_from_string = ""
 dash_speed = 10
 
@@ -3589,10 +3589,6 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
@@ -3604,6 +3600,10 @@ ExtResource( 219 ): {
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3776,20 +3776,20 @@ always_on = true
 
 [node name="AirBoost" type="Node" parent="StateMachine/DiveKick2" index="1"]
 
-[node name="Jump" parent="StateMachine" index="80"]
+[node name="Jump" parent="StateMachine" index="81"]
 y_modifier = "1.33"
 
-[node name="SuperJump" parent="StateMachine" index="82"]
+[node name="SuperJump" parent="StateMachine" index="83"]
 interrupt_exceptions_string = "StoreMomentum"
 
-[node name="DoubleJump" parent="StateMachine" index="83"]
+[node name="DoubleJump" parent="StateMachine" index="84"]
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 
-[node name="WhiffInstantCancel" parent="StateMachine" index="86"]
+[node name="WhiffInstantCancel" parent="StateMachine" index="87"]
 hit_cancel_exceptions_string = ""
 
-[node name="Grab" parent="StateMachine" index="94"]
+[node name="Grab" parent="StateMachine" index="95"]
 interrupt_into_string = "Aerial
 Grounded"
 
@@ -3797,7 +3797,7 @@ Grounded"
 block_cancel_allowed = true
 _c_Grouping = 1
 
-[node name="AirGrab" parent="StateMachine" index="95"]
+[node name="AirGrab" parent="StateMachine" index="96"]
 interrupt_into_string = "Aerial
 Grounded"
 
@@ -3805,14 +3805,14 @@ Grounded"
 block_cancel_allowed = true
 _c_Grouping = 1
 
-[node name="JumpGrab" parent="StateMachine" index="96"]
+[node name="JumpGrab" parent="StateMachine" index="97"]
 interrupt_into_string = "Aerial
 Grounded"
 
 [node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
 block_cancel_allowed = true
 
-[node name="ForwardThrow" parent="StateMachine" index="97"]
+[node name="ForwardThrow" parent="StateMachine" index="98"]
 sprite_animation = "GroundedThrow"
 force_dir_x = "1.0"
 force_speed = "4.0"
@@ -3873,13 +3873,9 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="BackThrow" parent="StateMachine" index="98"]
+[node name="BackThrow" parent="StateMachine" index="99"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
@@ -3887,6 +3883,10 @@ ExtResource( 206 ): {
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
 },
 ExtResource( 209 ): {
 "x": 32,
@@ -3936,22 +3936,22 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="AirForwardThrow" parent="StateMachine" index="99"]
+[node name="AirForwardThrow" parent="StateMachine" index="100"]
 hitstun_ticks = 17
 knockback = "14"
 
-[node name="AirBackThrow" parent="StateMachine" index="100"]
+[node name="AirBackThrow" parent="StateMachine" index="101"]
 hitstun_ticks = 17
 knockback = "14"
 
-[node name="AirDownThrow" parent="StateMachine" index="101"]
+[node name="AirDownThrow" parent="StateMachine" index="102"]
 hitstun_ticks = 17
 knockback = "14"
 
-[node name="Taunt" parent="StateMachine" index="103"]
+[node name="Taunt" parent="StateMachine" index="104"]
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="104"]
+[node name="ForfeitExplosion" parent="StateMachine" index="105"]
 endless = true

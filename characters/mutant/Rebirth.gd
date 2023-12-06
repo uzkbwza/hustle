@@ -1,6 +1,7 @@
 extends BeastState
 
 const PULL_SPEED = "1.5"
+const REGEN = 50
 
 var pulling = false
 
@@ -25,6 +26,7 @@ func on_got_blocked():
 	host.refresh_air_movements()
 	host.add_juke_pips(host.JUKE_PIPS_PER_USE - 1)
 	pulling = false
+	host.hp += REGEN
 
 func _frame_11():
 	host.stop_rebirth_fx()
@@ -38,6 +40,7 @@ func _on_hit_something(obj, hitbox):
 		host.refresh_air_movements()
 		host.add_juke_pips(host.JUKE_PIPS_PER_USE - 1)
 		pulling = false
+		host.hp += REGEN
 
 func _exit():
 	host.stop_rebirth_fx()

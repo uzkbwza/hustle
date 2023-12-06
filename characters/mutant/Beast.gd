@@ -102,11 +102,13 @@ func init(pos=null):
 
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
-	add_juke_pips(1)
+	if !juked_this_turn:
+		add_juke_pips(1)
 
 func on_got_blocked():
 	.on_got_blocked()
-	add_juke_pips(1)
+	if !juked_this_turn:
+		add_juke_pips(1)
 
 func on_blocked_melee_attack():
 	.on_blocked_melee_attack()
@@ -172,4 +174,5 @@ func tick():
 func on_got_parried():
 	if juked_this_turn:
 		juke_ticks = 0
+		up_juke_ticks = 0
 		hitlag_ticks += 5
