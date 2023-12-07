@@ -28,11 +28,15 @@ func _ready():
 	]:
 		hitbox_start_angles[hitbox] = {x = hitbox.x, y = hitbox.y}
 
+func _enter():
+	if host.get_facing_int() == -1:
+		angle = str(PI)
+
 func _tick():
 	if current_tick > 0:
 		var dir = xy_to_dir(host.rotate_dir_x, host.rotate_dir_y)
 		angle = fixed.lerp_string(angle, fixed.vec_to_angle(dir.x, dir.y), "0.2")
-		host.sprite.rotation = float(angle)
+		host.sprite.rotation = (Utils.ang2vec(float(angle)) * Vector2(host.get_facing_int(), 1)).angle()
 		for hitbox in [
 			left_hitbox_1,
 			left_hitbox_2,
@@ -46,6 +50,7 @@ func _tick():
 			var vec = fixed.rotate_vec(str(hitbox_start_angles[hitbox].x), str(hitbox_start_angles[hitbox].y), angle)
 			hitbox.x = fixed.round(vec.x) * host.get_facing_int()
 			hitbox.y = fixed.round(vec.y)
+
 
 func _frame_20():
 	host.can_cancel = false

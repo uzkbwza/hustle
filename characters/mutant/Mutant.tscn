@@ -2020,6 +2020,7 @@ projectile_scene = ExtResource( 107 )
 projectile_tick = 20
 projectile_pos_x = 20
 projectile_pos_y = -20
+projectile_match_facing = true
 title = "Caustic Spike"
 type = 2
 data_ui_scene = ExtResource( 106 )
@@ -2099,21 +2100,21 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 166 ): {
-"x": -8,
-"y": -17
-},
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
 },
+ExtResource( 166 ): {
+"x": -8,
+"y": -17
+},
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 173 ): {
 "x": 9,
@@ -3262,13 +3263,13 @@ ExtResource( 79 ): {
 "x": 23,
 "y": 16
 },
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
-},
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
+},
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
 }
 }
 land_cancel = true

@@ -1254,7 +1254,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 #					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
 #				else:
 				perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
-				if is_ghost and perfect_requirement:
+				if is_ghost and perfect_requirement and !current_state().push:
 					ghost_blocked_melee_attack = parry_timing
 				perfect_parry = current_state().can_parry and ((can_perfect_parry() and always_perfect_parry) or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:

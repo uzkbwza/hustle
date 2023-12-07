@@ -23,6 +23,7 @@ func _enter():
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
 	start()
+	
 ##
 #	if (!_previous_state().get("IS_NEW_PARRY")):
 #		whiffed_block = false
@@ -44,6 +45,8 @@ func get_hold_restart():
 		return "ParryHigh"
 
 func get_last_action_text() -> String:
+	if push:
+		return ""
 	return ("%sf" % data["Melee Parry Timing"].count) if !reblock else ""
 
 func start():
@@ -68,7 +71,8 @@ func start():
 
 func _frame_0():
 	start()
-	punishable = false
+	if !(_previous_state() and _previous_state().get("IS_NEW_PARRY")) or _previous_state() == null:
+		punishable = false
 
 func is_usable():
 	var current = host.current_state()
@@ -120,6 +124,8 @@ func can_parry_hitbox(hitbox):
 	if not active:
 		return false
 	if not parry_active:
+		return false
+	if started_in_combo and host.combo_count <= 0:
 		return false
 
 	return true
