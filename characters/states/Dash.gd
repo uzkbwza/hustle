@@ -77,6 +77,7 @@ func get_hold_restart():
 		if host.air_movements_left > 0:
 			return "AirDashForward"
 		return "Fall"
+	return ""
 
 func spawn_dash_particle():
 	spawn_particle_relative(preload("res://fx/DashParticle.tscn"), host.hurtbox_pos_relative_float(), Vector2(dir_x, 0))

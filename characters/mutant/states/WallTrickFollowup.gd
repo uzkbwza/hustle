@@ -1,17 +1,22 @@
 extends BeastState
 
 const GO_FRAME = 16
-const MOVE_X = "1.5"
-const MOVE_Y = "1"
-const MOVE_SPEED = "30"
+const MOVE_X_1 = "2"
+const MOVE_Y_1 = "0.5"
+const MOVE_X_2 = "1.5"
+const MOVE_Y_2 = "1"
+const MOVE_SPEED = "37"
+
+export var downward = false
 
 var move_x
 var move_y
 
 func _enter():
-	var move = fixed.normalized_vec_times(MOVE_X, MOVE_Y, MOVE_SPEED)
+	var move = fixed.normalized_vec_times(MOVE_X_2 if downward else MOVE_X_1, MOVE_Y_2 if downward else MOVE_Y_1, MOVE_SPEED)
 	move_x = fixed.mul(move.x, str(host.get_facing_int()))
 	move_y = move.y
+
 
 func _frame_0():
 	var wall = host.touching_which_wall()
