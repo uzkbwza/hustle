@@ -16,7 +16,15 @@ export var reblock = false
 var extra_iasa = 0
 
 func get_whiffed_block():
+#	print()
+#	print(parried)
+#	print(autoguard)
+#	print(host.combo_count <= 0)
+#	print(_previous_state().state_name if _previous_state() else "no previous")
 	return !parried and !autoguard and host.combo_count <= 0 and (_previous_state().get("IS_NEW_PARRY") if _previous_state() else false)
+
+func get_whiffed_block_current():
+	return !parried and !autoguard and host.combo_count <= 0 and (host.current_state().get("IS_NEW_PARRY") if host.current_state() else false)
 
 func _enter():
 	if data == null:
@@ -76,7 +84,7 @@ func _frame_0():
 
 func is_usable():
 	var current = host.current_state()
-	var whiffed_block_last = current.get("IS_NEW_PARRY") and current.get_whiffed_block()
+	var whiffed_block_last = current.get("IS_NEW_PARRY") and current.get_whiffed_block_current()
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel" and \
 	(whiffed_block_last if reblock else !whiffed_block_last)
 
@@ -131,6 +139,7 @@ func can_parry_hitbox(hitbox):
 	return true
 	
 func _tick():
+#	interruptible_on_opponent_turn = !started_in_combo
 	host.apply_fric()
 #	if air_type == AirType.Aerial:
 	host.apply_grav()
@@ -151,20 +160,6 @@ func _exit():
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)
-#	if !parried and !autoguard and host.combo_count <= 0:
-##		host.set_block_stun(1)
-##		host.blocked_hitbox_plus_frames = 1
-#		whiffed_block = true
-##		host.blockstun_ticks = 1
-#	else:
-#		whiffed_block = false
 
 func opponent_turn_interrupt():
 	.opponent_turn_interrupt()
-#	if !parried and !autoguard and host.combo_count <= 0:
-##		host.set_block_stun(1)
-##		host.blocked_hitbox_plus_frames = 1
-#		whiffed_block = true
-##		host.blockstun_ticks = 1
-#	else:
-#		whiffed_block = false

@@ -1851,7 +1851,7 @@ func tick_before():
 			var current_state_name = current_state().name
 			if process_continue():
 				pass
-			elif current_state().get_hold_restart() != "":
+			elif current_state().get_hold_restart() != "" and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state().get_hold_restart()
 				queued_data = current_state().data
 			elif current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:

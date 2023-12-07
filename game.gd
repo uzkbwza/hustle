@@ -1008,6 +1008,9 @@ func apply_hitboxes(players):
 
 	var objects_to_hit = []
 	var objects_hit_each_other = false
+	var player_hit_object = false
+	var players_to_hit = []
+	var objects_hit_player = false
 	
 	for object in objects:
 		if object.disabled:
@@ -1036,7 +1039,8 @@ func apply_hitboxes(players):
 			if p:
 				var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
 				if obj_hit_by and (can_be_hit_by_melee or obj_hit_by.hitbox_type == Hitbox.HitboxType.Detect):
-					obj_hit_by.hit(object)
+					player_hit_object = true
+					objects_to_hit.append([obj_hit_by, object])
 
 				if p.projectile_invulnerable and object.get("immunity_susceptible"):
 					continue
@@ -1044,7 +1048,9 @@ func apply_hitboxes(players):
 				var hitboxes = object.get_active_hitboxes()
 				p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
 				if p_hit_by:
-					p_hit_by.hit(p)
+					players_to_hit.append([p_hit_by, p])
+					objects_hit_player = true
+#					p_hit_by.hit(p)
 
 #			if can_be_hit_by_melee or can_be_hit_by_projectiles:
 #				for opp_object in objects:
@@ -1076,8 +1082,11 @@ func apply_hitboxes(players):
 						objects_hit_each_other = true
 						objects_to_hit.append([obj_hit_by, object])
 		
-	if objects_hit_each_other:
+	if objects_hit_each_other or player_hit_object:
 		for pair in objects_to_hit:
+			pair[0].hit(pair[1])
+	if objects_hit_player:
+		for pair in players_to_hit:
 			pair[0].hit(pair[1])
 
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:

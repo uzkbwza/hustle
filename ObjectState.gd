@@ -347,6 +347,7 @@ func process_hitboxes():
 			deactivate_hitbox(hitbox)
 
 func process_hurtboxes():
+
 	if current_hurtbox:
 		current_hurtbox.tick(host)
 	if current_tick in hurtbox_state_change_frames:

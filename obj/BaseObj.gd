@@ -559,6 +559,8 @@ func screen_bump(dir=Vector2(), screenshake_amount=2.0, screenshake_time=0.1):
 
 func update_collision_boxes():
 #	update_data()
+	hurtbox.facing = get_facing()
+	collision_box.facing = get_facing()
 	var pos = get_pos()
 	collision_box.update_position(pos.x, pos.y)
 	hurtbox.update_position(pos.x, pos.y)

@@ -105,10 +105,18 @@ absolute_loop = true
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
 script = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": ""
+}
 y = -8
 width = 7
 height = 7
+damage = 80
+hitstun_ticks = 14
 plus_frames = 1
+hit_sound = ExtResource( 10 )
+knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 start_tick = -1
 always_on = true
 
@@ -136,5 +144,6 @@ hitstun_ticks = 14
 plus_frames = 1
 hit_sound = ExtResource( 10 )
 knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 start_tick = 1
 always_on = true
