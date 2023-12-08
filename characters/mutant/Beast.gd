@@ -95,6 +95,8 @@ func process_extra(extra):
 			play_sound("Juke")
 			play_sound("Juke2")
 
+func is_neutral_juke():
+	return juke_ticks > 0 and fixed.eq(juke_dir_x, "0") and fixed.eq(juke_dir_y, "0")
 
 func init(pos=null):
 	.init(pos)

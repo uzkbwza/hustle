@@ -545,6 +545,7 @@ func _exit_shared():
 	host.has_projectile_armor = false
 	host.state_hit_cancellable = false
 	host.clipping_wall = false
+
 #	if host.reverse_state:
 #		host.set_facing(host.get_facing_int() * -1)
 #	host.sprite.rotation = 0

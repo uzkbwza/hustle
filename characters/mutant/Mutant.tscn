@@ -2100,6 +2100,14 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
+},
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
+},
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
@@ -2108,17 +2116,9 @@ ExtResource( 166 ): {
 "x": -8,
 "y": -17
 },
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
-},
 ExtResource( 171 ): {
 "x": 15,
 "y": -10
-},
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
 }
 }
 interruptible_on_opponent_turn = true
@@ -2539,7 +2539,7 @@ apply_forces = true
 apply_fric = true
 apply_forces_no_limit = true
 fallback_state = "WallTrickFollowup"
-anim_length = 9
+anim_length = 10
 endless = true
 force_dir_x = "1.0"
 force_speed = "5.0"

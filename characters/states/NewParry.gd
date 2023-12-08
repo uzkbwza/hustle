@@ -21,30 +21,18 @@ func get_whiffed_block():
 #	print(autoguard)
 #	print(host.combo_count <= 0)
 #	print(_previous_state().state_name if _previous_state() else "no previous")
-	return !parried and !autoguard and host.combo_count <= 0 and (_previous_state().get("IS_NEW_PARRY") if _previous_state() else false)
+	var prev = _previous_state()
+	if prev and prev.get("IS_NEW_PARRY"):
+		return (!prev.parried and !prev.autoguard and host.combo_count <= 0)
+	return false
 
-func get_whiffed_block_current():
-	return !parried and !autoguard and host.combo_count <= 0 and (host.current_state().get("IS_NEW_PARRY") if host.current_state() else false)
 
+	
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
 	start()
-	
-##
-#	if (!_previous_state().get("IS_NEW_PARRY")):
-#		whiffed_block = false
-#		extra_iasa = host.blockstun_ticks
-#		host.blockstun_ticks = 0
-#	if _previous_state().get("IS_NEW_PARRY") and _previous_state().autoguard:
-#		parry_active = true
-#	elif _previous_state().get("IS_NEW_PARRY") and _previous_state().push:
-#		parry_active = true
-#	elif push and _previous_state().get("IS_NEW_PARRY") and !_previous_state().push:
-#		parry_active = true
-#	elif autoguard:
-#		parry_active = true
 
 func get_hold_restart():
 	if get_whiffed_block():
@@ -79,12 +67,15 @@ func start():
 
 func _frame_0():
 	start()
+#	host.whiffed_block = get_whiffed_block()
 	if !(_previous_state() and _previous_state().get("IS_NEW_PARRY")) or _previous_state() == null:
 		punishable = false
 
 func is_usable():
 	var current = host.current_state()
-	var whiffed_block_last = current.get("IS_NEW_PARRY") and current.get_whiffed_block_current()
+	var whiffed_block_last = false
+	if current and current.get("IS_NEW_PARRY"):
+		whiffed_block_last = (!current.parried and !current.autoguard and host.combo_count <= 0)
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel" and \
 	(whiffed_block_last if reblock else !whiffed_block_last)
 
@@ -156,7 +147,7 @@ func _tick():
 func _exit():
 	parry_active = false
 	host.blocked_last_hit = false
-	host.whiffed_block = get_whiffed_block()
+#	host.whiffed_block = get_whiffed_block()
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)

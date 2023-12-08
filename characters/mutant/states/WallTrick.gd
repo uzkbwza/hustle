@@ -7,7 +7,7 @@ const MOVE_Y_2 = "-1"
 const MOVE_SPEED_1 = "25"
 const MOVE_SPEED_2 = "19"
 
-const JUMP_TICK = 3
+const JUMP_TICK = 4
 const AIR_ADVANTAGE = JUMP_TICK - 1
 
 var air_advantage = 0
@@ -23,7 +23,6 @@ func _enter():
 	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2"
 
 func _tick():
-
 	if current_tick == JUMP_TICK - air_advantage:
 		spawn_particle_relative(particle_scene, Vector2(16 * host.get_facing_int(), 0), Vector2(host.get_facing_int() * float(MOVE_X_1 if data.y == 0 else MOVE_X_2), float(MOVE_Y_1 if data.y == 0 else MOVE_Y_2)))
 	if current_tick > (JUMP_TICK - 1) - air_advantage:
@@ -34,7 +33,9 @@ func _tick():
 				return fallback_state
 func _frame_0():
 	host.start_throw_invulnerability()
-
+	if host.is_neutral_juke():
+		host.juke_ticks += 2
+	
 func _frame_1():
 	host.start_projectile_invulnerability()
 
