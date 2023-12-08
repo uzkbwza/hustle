@@ -1450,11 +1450,11 @@ func ghost_tick():
 
 		if p1.ghost_blocked_melee_attack > 0 and !p1.block_frame_label.visible:
 			p1.block_frame_label.show()
-			p1.block_frame_label.text = "Parry @ %sf" % p1.ghost_blocked_melee_attack
+			p1.block_frame_label.text = "Parry %s @ %sf" % [p1.ghost_wrong_block, p1.ghost_blocked_melee_attack]
 		
 		if p2.ghost_blocked_melee_attack > 0 and !p2.block_frame_label.visible:
 			p2.block_frame_label.show()
-			p2.block_frame_label.text = "Parry @ %sf" % p2.ghost_blocked_melee_attack
+			p2.block_frame_label.text = "Parry %s @ %sf" % [p2.ghost_wrong_block, p2.ghost_blocked_melee_attack]
 	
 		if (p1.state_interruptable or p1.dummy_interruptable or p1.state_hit_cancellable) and not ghost_p1_actionable:
 			p1_ghost_ready_tick = ghost_simulated_ticks+(p1.hitlag_ticks if !ghost_p2_actionable else 0)

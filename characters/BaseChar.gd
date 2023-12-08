@@ -336,6 +336,7 @@ var grounded_last_frame = true
 #var current_prediction = -1
 
 var ghost_was_in_air = false
+var ghost_wrong_block = ""
 
 var current_nudge = {
 	"x": "0",
@@ -1254,13 +1255,16 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
 				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-				var perfect_requirement = can_perfect_parry() and current_state().matches_hitbox_height(hitbox) and (!current_state().get_whiffed_block())
+				var perfect_requirement_no_height =  can_perfect_parry() and (!current_state().get_whiffed_block())
+				var perfect_requirement = perfect_requirement_no_height and current_state().matches_hitbox_height(hitbox)
+				
 #				if projectile:
 #					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
 #				else:
 				perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
-				if is_ghost and perfect_requirement and !current_state().push:
+				if is_ghost and perfect_requirement_no_height and !current_state().push and ghost_blocked_melee_attack == -1:
 					ghost_blocked_melee_attack = parry_timing
+					ghost_wrong_block = "Low" if hitbox.hit_height == Hitbox.HitHeight.Low else "High"
 				perfect_parry = current_state().can_parry and ((can_perfect_parry() and always_perfect_parry) or (in_parry_window) and perfect_requirement and !blocked_last_hit)
 				if opponent.feint_parriable:
 					perfect_parry = true
