@@ -904,6 +904,7 @@ func debug_text():
 #			"parry_combo": parry_combo,
 			"turn_frames": turn_frames,
 			"whiffed_block": current_state().get_whiffed_block() if current_state().has_method("get_whiffed_block") else false,
+			"parried": current_state().get("parried"),
 			"state_interruptable": state_interruptable,
 		}
 	)
@@ -1255,13 +1256,12 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
 				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-				var perfect_requirement_no_height =  can_perfect_parry() and (!current_state().get_whiffed_block())
+				var perfect_requirement_no_height =  can_perfect_parry() and (!current_state().get_whiffed_block())  and (opponent.current_state().feinting or opponent.feinting or initiative)
 				var perfect_requirement = perfect_requirement_no_height and current_state().matches_hitbox_height(hitbox)
-				
+\
 #				if projectile:
 #					perfect_requirement = perfect_requirement and host.has_projectile_parry_window
 #				else:
-				perfect_requirement = perfect_requirement and (opponent.current_state().feinting or opponent.feinting or initiative)
 				if is_ghost and perfect_requirement_no_height and !current_state().push and ghost_blocked_melee_attack == -1:
 					ghost_blocked_melee_attack = parry_timing
 					ghost_wrong_block = "Low" if hitbox.hit_height == Hitbox.HitHeight.Low else "High"

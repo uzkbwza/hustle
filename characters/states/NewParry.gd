@@ -14,6 +14,7 @@ var punishable = false
 export var reblock = false
 
 var extra_iasa = 0
+var parried_last = false
 
 func get_whiffed_block():
 #	print()
@@ -23,7 +24,7 @@ func get_whiffed_block():
 #	print(_previous_state().state_name if _previous_state() else "no previous")
 	var prev = _previous_state()
 	if prev and prev.get("IS_NEW_PARRY"):
-		return (!prev.parried and !prev.autoguard and host.combo_count <= 0)
+		return (!prev.parried_last and !prev.autoguard and host.combo_count <= 0)
 	return false
 
 
@@ -110,6 +111,7 @@ func parry(perfect = true):
 		host.start_throw_invulnerability()
 	host.parried = true
 	parried = true
+	parried_last = true
 	self.perfect = perfect
 
 func can_parry_hitbox(hitbox):
@@ -146,6 +148,7 @@ func _tick():
 
 func _exit():
 	parry_active = false
+	parried_last = parried
 	host.blocked_last_hit = false
 #	host.whiffed_block = get_whiffed_block()
 

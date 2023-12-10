@@ -65,6 +65,9 @@ func hit_by(hitbox):
 			var random_dir = fixed.angle_to_vec(fixed.div(fixed.mul(str(random_angle), "6.28318530"), "360"))
 			dir_x = random_dir.x
 			dir_y = random_dir.y
+			get_fighter().parry_effect((get_center_position_float() + hitter.get_center_position_float()) / 2, true)
+			disable()
+			hitter.disable()
 
 func get_owned_fighter():
 	if last_hit_by == "":

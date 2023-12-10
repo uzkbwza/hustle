@@ -3940,7 +3940,6 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 release_opponent_on_startup = true
-super_level = 2
 super_freeze_ticks = 5
 temporal = true
 
