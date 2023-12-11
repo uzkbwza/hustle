@@ -50,6 +50,7 @@ export var hitstun_ticks: int = 30
 export var combo_hitstun_ticks: int = -1
 export var hitlag_ticks: int = 4
 export var victim_hitlag: int = -1
+export var combo_victim_hitlag: int = -1
 export var damage_proration: int = 0
 export var scale_combo = true
 export var combo_scaling_amount: int = 1
@@ -223,6 +224,8 @@ func activate():
 		cancellable = cancellable or (bool(host.get("turbo_mode")) and !throw)
 	if victim_hitlag == -1:
 		victim_hitlag = hitlag_ticks
+	if combo_victim_hitlag == -1:
+		combo_victim_hitlag = victim_hitlag
 	if bump_on_whiff and !host.is_ghost:
 		var camera = get_tree().get_nodes_in_group("Camera")[0]
 		camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames))
@@ -299,7 +302,7 @@ func get_real_knockback():
 func get_real_hitstun():
 	var creator = host.get_fighter()
 	if creator:
-		var ticks = hitstun_ticks if !creator.combo_count > 0 else combo_hitstun_ticks
+		var ticks = hitstun_ticks if creator.combo_count <= 0 else combo_hitstun_ticks
 		if !host.is_in_group("Fighter"):
 			return ticks
 		if not (creator.current_state().state_name in creator.combo_moves_used):
@@ -308,6 +311,13 @@ func get_real_hitstun():
 		return final_hitstun
 	else:
 		return hitstun_ticks
+
+func get_real_victim_hitlag():
+	var creator = host.get_fighter()
+	if creator: 
+		return victim_hitlag if creator.combo_count <= 0 else combo_victim_hitlag
+	else:
+		return victim_hitlag
 
 func otg_check(obj):
 	return !obj.is_otg() or hits_otg

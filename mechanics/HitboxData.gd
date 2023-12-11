@@ -68,7 +68,6 @@ func get_damage():
 	if combo_count > 0:
 		return damage_in_combo
 	return damage
-	
 
 func _init(state):
 	hit_height = state.hit_height
@@ -76,17 +75,18 @@ func _init(state):
 		hitstun_ticks = state.hitstun_ticks
 	else:
 		hitstun_ticks = state.get_real_hitstun()
-
+	if !state.has_method("get_real_victim_hitlag"):
+		victim_hitlag = state.victim_hitlag
+	else:
+		victim_hitlag = state.get_real_victim_hitlag()
 	facing = state.host.get_facing()
 	if !state.has_method("get_real_knockback"):
 		knockback = state.knockback
 	else:
-		knockback = state.get_real_knockback()	
-
+		knockback = state.get_real_knockback()
 	damage = state.damage
 	dir_y = state.dir_y
 	hitlag_ticks = state.hitlag_ticks
-	victim_hitlag = state.victim_hitlag
 	disable_collision = state.disable_collision
 	dir_x = state.dir_x
 	knockdown = state.knockdown

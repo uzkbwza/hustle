@@ -56,6 +56,9 @@ var received_synced_time = false
 
 var quit_on_rematch = true
 
+var p1_time_run_out = false
+var p2_time_run_out = false
+
 var p1_info_scene
 var p2_info_scene
 
@@ -69,6 +72,7 @@ onready var global_option_check_buttons = {
 	$"%SpeedLinesButton": "speed_lines_enabled",
 	$"%AutoFCButton": "auto_fc",
 	$"%ExtraInfoButton": "show_extra_info",
+	$"%TimerSoundButton": "enable_timer_sound",
 
 }
 
@@ -394,6 +398,8 @@ func init(game):
 	chess_timer = game.match_data.has("chess_timer") and game.match_data.chess_timer
 	timer_sync_tick = -1
 	lock_in_tick = -INF
+	p1_time_run_out = false
+	p2_time_run_out = false
 
 func _on_player_turn_ready(player_id):
 	if !is_instance_valid(game):
@@ -520,6 +526,9 @@ func on_player_actionable():
 #		if $"%P1ActionButtons".any_available_actions and $"%P2ActionButtons".any_available_actions:
 		if !game_started:
 #		if p1_turn_timer.is_stopped():
+			if chess_timer:
+				if is_instance_valid(game):
+					MIN_TURN_TIME = game.match_data.turn_min_length
 			p1_turn_timer.start()
 			p2_turn_timer.start()
 			game_started = true
@@ -532,8 +541,7 @@ func on_player_actionable():
 					p1_turn_timer.start(MIN_TURN_TIME)
 				if p2_turn_timer.time_left < MIN_TURN_TIME:
 					p2_turn_timer.start(MIN_TURN_TIME)
-				if is_instance_valid(game):
-					MIN_TURN_TIME = game.match_data.turn_min_length
+
 
 		p1_turn_timer.paused = false
 		p2_turn_timer.paused = false
@@ -642,8 +650,11 @@ func _process(delta):
 				bar.value = p1_turn_timer.time_left / turn_time
 				if p1_turn_timer.time_left < MIN_TURN_TIME:
 					bar.visible = Utils.wave(-1, 1, 0.064) > 0
-					if p1_different_text and you_id == 1:
-						$"%P1OuttaTimeSound".play()
+					if p1_different_text and you_id == 1 and p1_turn_timer.time_left:
+						if Global.enable_timer_sound and (round(p1_turn_timer.time_left) == MIN_TURN_TIME):
+							if !chess_timer or !p1_time_run_out:
+								p1_time_run_out = true
+								$"%P1OuttaTimeSound".play()
 		if !p2_turn_timer.is_paused():
 	#		if !turns_taken[2]:
 				var bar = $"%P2TurnTimerBar"
@@ -651,7 +662,10 @@ func _process(delta):
 				if p2_turn_timer.time_left < MIN_TURN_TIME:
 					bar.visible = Utils.wave(-1, 1, 0.064) > 0
 					if p2_different_text and you_id == 2:
-						$"%P2OuttaTimeSound".play()
+						if Global.enable_timer_sound and (round(p2_turn_timer.time_left) == MIN_TURN_TIME):
+							if !chess_timer or !p2_time_run_out:
+								p2_time_run_out = true
+								$"%P2OuttaTimeSound".play()
 #	if !is_instance_valid(game):
 #		reset_ui()
 #	else:

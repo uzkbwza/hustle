@@ -12,5 +12,5 @@ func _frame_1():
 func _frame_2():
 	host.start_throw_invulnerability()
 
-func _frame_5():
+func _frame_7():
 	host.end_throw_invulnerability()

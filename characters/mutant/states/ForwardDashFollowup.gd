@@ -14,6 +14,8 @@ func _frame_0():
 			host.reset_momentum()
 		return "ForwardDashBackFollowup"
 	host.start_projectile_invulnerability()
+	apply_grav = false
 
 func _frame_6():
 	host.end_projectile_invulnerability()
+	apply_grav = true

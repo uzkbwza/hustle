@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.8.42-steam-unstable"
+var VERSION = "1.8.45-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -26,6 +26,7 @@ var enable_custom_colors = true
 var enable_custom_particles = true
 var enable_custom_hit_sparks = true
 var enable_emotes = true
+var enable_timer_sound = true
 var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
@@ -197,6 +198,7 @@ func save_options():
 			"show_last_move_indicators": show_last_move_indicators,
 			"show_playback_controls": show_playback_controls,
 			"show_projectile_owners": show_projectile_owners,
+			"enable_timer_sound": enable_timer_sound,
 			"default_dojo": 0,
 			"show_extra_info": show_extra_info,
 #			"light_mode": light_mode,
@@ -224,6 +226,7 @@ func get_default_player_data():
 			"show_last_move_indicators": true,
 			"show_playback_controls": false,
 			"default_dojo": 0,
+			"enable_timer_sound": true,
 			"enable_emotes": true,
 			"enable_custom_colors": true,
 			"enable_custom_particles": true,

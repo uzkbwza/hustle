@@ -1,4 +1,4 @@
-[gd_scene load_steps=335 format=2]
+[gd_scene load_steps=336 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -330,6 +330,7 @@
 [ext_resource path="res://characters/swordandgun/states/GunReel.gd" type="Script" id=328]
 [ext_resource path="res://sound/common/swish2.wav" type="AudioStream" id=329]
 [ext_resource path="res://characters/swordandgun/states/HurtAerial.gd" type="Script" id=330]
+[ext_resource path="res://characters/swordandgun/states/Stinger.gd" type="Script" id=331]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -2118,7 +2119,10 @@ start_tick = 8
 active_ticks = 4
 
 [node name="Stinger" type="Node2D" parent="StateMachine" index="25"]
-script = ExtResource( 79 )
+script = ExtResource( 331 )
+__meta__ = {
+"_editor_description_": ""
+}
 sprite_animation = "Poke"
 anim_length = 30
 force_dir_x = "1.0"
@@ -2154,7 +2158,8 @@ height = 4
 damage = 120
 hitstun_ticks = 35
 hitlag_ticks = 7
-victim_hitlag = 10
+victim_hitlag = 13
+combo_victim_hitlag = 10
 damage_proration = -1
 guard_break = true
 whiff_sound = ExtResource( 152 )
@@ -3940,6 +3945,7 @@ interrupt_into_string = "Grounded
 Aerial"
 change_stance_to = "Normal"
 release_opponent_on_startup = true
+super_level = 2
 super_freeze_ticks = 5
 temporal = true
 

@@ -178,3 +178,8 @@ func _tick():
 	if current_tick > jump_tick:
 		if host.is_grounded():
 			return "Landing"
+
+func is_usable():
+	if !host.is_grounded() and host.blocked_last_turn:
+		return false
+	return .is_usable()

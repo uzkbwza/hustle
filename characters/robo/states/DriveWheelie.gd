@@ -12,7 +12,7 @@ func _frame_0():
 		host.start_fly_fx()
 
 func _frame_1():
-	if host.initiative:
+	if boost and host.initiative:
 		host.start_invulnerability()
 
 func _frame_6():

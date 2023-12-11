@@ -361,6 +361,7 @@ func process_hurtboxes():
 			hurtbox.active = is_hurtbox_active(hurtbox)
 			hurtbox.facing = host.get_facing()
 			hurtbox.update_position(pos.x, pos.y)
+	host.hurtbox.facing = host.get_facing()
 
 
 func copy_data():

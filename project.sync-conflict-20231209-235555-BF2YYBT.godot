@@ -1,0 +1,607 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Control",
+"class": "ActionButton",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ActionButton.gd"
+}, {
+"base": "Control",
+"class": "ActionButtons",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ActionButtons.gd"
+}, {
+"base": "Control",
+"class": "ActionUIData",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ActionUIData/ActionUIData.gd"
+}, {
+"base": "Reference",
+"class": "Array2D",
+"language": "GDScript",
+"path": "res://framework/Array2d.gd"
+}, {
+"base": "Node2D",
+"class": "BaseObj",
+"language": "GDScript",
+"path": "res://obj/BaseObj.gd"
+}, {
+"base": "BaseObj",
+"class": "BaseProjectile",
+"language": "GDScript",
+"path": "res://projectile/BaseProjectile.gd"
+}, {
+"base": "CharacterState",
+"class": "BeastState",
+"language": "GDScript",
+"path": "res://characters/mutant/states/BeastState.gd"
+}, {
+"base": "RandomNumberGenerator",
+"class": "BetterRng",
+"language": "GDScript",
+"path": "res://framework/BetterRng.gd"
+}, {
+"base": "Control",
+"class": "ButtonCategoryContainer",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/ButtonCategoryContainer.gd"
+}, {
+"base": "CharacterState",
+"class": "CharacterHurtState",
+"language": "GDScript",
+"path": "res://characters/CharacterHurtState.gd"
+}, {
+"base": "ObjectState",
+"class": "CharacterState",
+"language": "GDScript",
+"path": "res://characters/states/CharState.gd"
+}, {
+"base": "Node2D",
+"class": "CollisionBox",
+"language": "GDScript",
+"path": "res://addons/collision_box/CollisionBox.gd"
+}, {
+"base": "CharacterState",
+"class": "CounterAttack",
+"language": "GDScript",
+"path": "res://characters/states/CounterAttack.gd"
+}, {
+"base": "Fighter",
+"class": "Cowboy",
+"language": "GDScript",
+"path": "res://characters/swordandgun/SwordGuy.gd"
+}, {
+"base": "ParticleEffect",
+"class": "CustomTrailParticle",
+"language": "GDScript",
+"path": "res://fx/CustomTrailParticle.gd"
+}, {
+"base": "ObjectState",
+"class": "DefaultFireball",
+"language": "GDScript",
+"path": "res://characters/stickman/projectiles/fireball_states/Default.gd"
+}, {
+"base": "EditorProperty",
+"class": "EC_CreateCategory",
+"language": "GDScript",
+"path": "res://addons/export_categories/ec_create_category.gd"
+}, {
+"base": "",
+"class": "FGCharacter",
+"language": "NativeScript",
+"path": "res://bin/FGCharacter.gdns"
+}, {
+"base": "",
+"class": "FGObject",
+"language": "NativeScript",
+"path": "res://bin/FGObject.gdns"
+}, {
+"base": "BaseObj",
+"class": "Fighter",
+"language": "GDScript",
+"path": "res://characters/BaseChar.gd"
+}, {
+"base": "",
+"class": "FixedMath",
+"language": "NativeScript",
+"path": "res://bin/FixedMath.gdns"
+}, {
+"base": "Reference",
+"class": "FixedVec2String",
+"language": "GDScript",
+"path": "res://framework/FixedVec2String.gd"
+}, {
+"base": "BaseProjectile",
+"class": "ForesightAfterImage",
+"language": "GDScript",
+"path": "res://characters/swordandgun/projectiles/states/AfterImage.gd"
+}, {
+"base": "Node2D",
+"class": "Game",
+"language": "GDScript",
+"path": "res://game.gd"
+}, {
+"base": "",
+"class": "GameSimulation",
+"language": "NativeScript",
+"path": "res://bin/Simulation.gdns"
+}, {
+"base": "CharacterState",
+"class": "Getup",
+"language": "GDScript",
+"path": "res://characters/states/Knockdown.gd"
+}, {
+"base": "Camera2D",
+"class": "GoodCamera",
+"language": "GDScript",
+"path": "res://framework/BetterCamera.gd"
+}, {
+"base": "BaseProjectile",
+"class": "GrapplingHook",
+"language": "GDScript",
+"path": "res://characters/stickman/projectiles/grappling_hook.gd"
+}, {
+"base": "ParryState",
+"class": "GroundedParryState",
+"language": "GDScript",
+"path": "res://characters/states/NewParry.gd"
+}, {
+"base": "",
+"class": "HelloWorld",
+"language": "NativeScript",
+"path": "res://bin/HelloWorld.gdns"
+}, {
+"base": "CollisionBox",
+"class": "Hitbox",
+"language": "GDScript",
+"path": "res://mechanics/Hitbox.gd"
+}, {
+"base": "Reference",
+"class": "HitboxData",
+"language": "GDScript",
+"path": "res://mechanics/HitboxData.gd"
+}, {
+"base": "Node",
+"class": "HolePunch",
+"language": "GDScript",
+"path": "res://addons/Holepunch/holepunch_node.gd"
+}, {
+"base": "Node",
+"class": "HostCommand",
+"language": "GDScript",
+"path": "res://characters/CommandAt.gd"
+}, {
+"base": "CharacterHurtState",
+"class": "HurtAerial",
+"language": "GDScript",
+"path": "res://characters/states/HurtAerial.gd"
+}, {
+"base": "CharacterHurtState",
+"class": "HurtGrounded",
+"language": "GDScript",
+"path": "res://characters/states/HurtGrounded.gd"
+}, {
+"base": "CollisionBox",
+"class": "HurtboxState",
+"language": "GDScript",
+"path": "res://HurtboxState.gd"
+}, {
+"base": "CollisionBox",
+"class": "LimbHurtbox",
+"language": "GDScript",
+"path": "res://LimbHurtbox.gd"
+}, {
+"base": "Reference",
+"class": "MultiplayerClient",
+"language": "GDScript",
+"path": "res://networking/WebsocketClient.gd"
+}, {
+"base": "Fighter",
+"class": "Mutant",
+"language": "GDScript",
+"path": "res://characters/mutant/Beast.gd"
+}, {
+"base": "",
+"class": "NativeMethods",
+"language": "NativeScript",
+"path": "res://bin/NativeMethods.gdns"
+}, {
+"base": "BaseProjectile",
+"class": "NewBullet",
+"language": "GDScript",
+"path": "res://characters/swordandgun/projectiles/NewBullet.gd"
+}, {
+"base": "BaseProjectile",
+"class": "NinjaShuriken",
+"language": "GDScript",
+"path": "res://characters/stickman/projectiles/StickmanFireball.gd"
+}, {
+"base": "StateInterface",
+"class": "ObjectState",
+"language": "GDScript",
+"path": "res://ObjectState.gd"
+}, {
+"base": "CharacterState",
+"class": "ParryState",
+"language": "GDScript",
+"path": "res://characters/states/Parry.gd"
+}, {
+"base": "Node2D",
+"class": "ParticleEffect",
+"language": "GDScript",
+"path": "res://fx/ParticleEffect.gd"
+}, {
+"base": "HBoxContainer",
+"class": "PlayerExtra",
+"language": "GDScript",
+"path": "res://ui/ActionSelector/PlayerExtra.gd"
+}, {
+"base": "Control",
+"class": "PlayerInfo",
+"language": "GDScript",
+"path": "res://ui/PlayerInfo.gd"
+}, {
+"base": "Node",
+"class": "ProfanityFilter",
+"language": "GDScript",
+"path": "res://profanity_filter.gd"
+}, {
+"base": "Reference",
+"class": "QuadTree",
+"language": "GDScript",
+"path": "res://framework/QuadTree.gd"
+}, {
+"base": "RichTextEffect",
+"class": "RichTextGhost",
+"language": "GDScript",
+"path": "res://modloader/BBFx/GhostEffectBB.gd"
+}, {
+"base": "RichTextEffect",
+"class": "RichTextPulse",
+"language": "GDScript",
+"path": "res://modloader/BBFx/PulseEffectBB.gd"
+}, {
+"base": "RichTextEffect",
+"class": "RichTextRain",
+"language": "GDScript",
+"path": "res://modloader/BBFx/RainEffectBB.gd"
+}, {
+"base": "Fighter",
+"class": "Robot",
+"language": "GDScript",
+"path": "res://characters/robo/Robot.gd"
+}, {
+"base": "CharacterState",
+"class": "RobotState",
+"language": "GDScript",
+"path": "res://characters/robo/RobotState.gd"
+}, {
+"base": "CharacterState",
+"class": "RollDodge",
+"language": "GDScript",
+"path": "res://characters/states/RollStartup.gd"
+}, {
+"base": "Control",
+"class": "SettingsSlider",
+"language": "GDScript",
+"path": "res://ui/CustomizationScreen/SettingsSlider.gd"
+}, {
+"base": "Node",
+"class": "StateInterface",
+"language": "GDScript",
+"path": "res://framework/FiniteStateMachine/StateInterface.gd"
+}, {
+"base": "Node",
+"class": "StateMachine",
+"language": "GDScript",
+"path": "res://framework/FiniteStateMachine/StateMachine.gd"
+}, {
+"base": "Node",
+"class": "SteamWorkshop",
+"language": "GDScript",
+"path": "res://SteamWorkshop.gd"
+}, {
+"base": "BaseProjectile",
+"class": "StickyBomb",
+"language": "GDScript",
+"path": "res://characters/stickman/projectiles/StickyBomb.gd"
+}, {
+"base": "CharacterState",
+"class": "SuperMove",
+"language": "GDScript",
+"path": "res://characters/states/SuperMove.gd"
+}, {
+"base": "Hitbox",
+"class": "SweptHitbox",
+"language": "GDScript",
+"path": "res://mechanics/SweptHitbox.gd"
+}, {
+"base": "BaseProjectile",
+"class": "TelekinesisProjectile",
+"language": "GDScript",
+"path": "res://characters/wizard/projectiles/telekinesis/TelekinesisBoulder.gd"
+}, {
+"base": "Hitbox",
+"class": "ThrowBox",
+"language": "GDScript",
+"path": "res://characters/ThrowBox.gd"
+}, {
+"base": "CharacterState",
+"class": "ThrowState",
+"language": "GDScript",
+"path": "res://characters/states/ThrowState.gd"
+}, {
+"base": "Node",
+"class": "UGCItem",
+"language": "GDScript",
+"path": "res://UGCItem.gd"
+}, {
+"base": "Node",
+"class": "UsableRequirement",
+"language": "GDScript",
+"path": "res://characters/UsableRequirement.gd"
+}, {
+"base": "Node",
+"class": "Utils",
+"language": "GDScript",
+"path": "res://framework/utils.gd"
+}, {
+"base": "AudioStreamPlayer",
+"class": "VariableSound",
+"language": "GDScript",
+"path": "res://framework/VariableSound.gd"
+}, {
+"base": "AudioStreamPlayer2D",
+"class": "VariableSound2D",
+"language": "GDScript",
+"path": "res://framework/VariableSound2D.gd"
+}, {
+"base": "Control",
+"class": "Window",
+"language": "GDScript",
+"path": "res://ui/Window/Window.gd"
+}, {
+"base": "CharacterState",
+"class": "WizardState",
+"language": "GDScript",
+"path": "res://characters/wizard/states/WizardState.gd"
+}, {
+"base": "Container",
+"class": "XYPlot",
+"language": "GDScript",
+"path": "res://ui/XYPlot/XYPlot.gd"
+}, {
+"base": "Panel",
+"class": "YomiColorPicker",
+"language": "GDScript",
+"path": "res://ui/ColorPicker/CustomColorPicker.gd"
+} ]
+_global_script_class_icons={
+"ActionButton": "",
+"ActionButtons": "",
+"ActionUIData": "",
+"Array2D": "",
+"BaseObj": "",
+"BaseProjectile": "",
+"BeastState": "",
+"BetterRng": "",
+"ButtonCategoryContainer": "",
+"CharacterHurtState": "",
+"CharacterState": "",
+"CollisionBox": "",
+"CounterAttack": "",
+"Cowboy": "",
+"CustomTrailParticle": "",
+"DefaultFireball": "",
+"EC_CreateCategory": "",
+"FGCharacter": "",
+"FGObject": "",
+"Fighter": "",
+"FixedMath": "",
+"FixedVec2String": "",
+"ForesightAfterImage": "",
+"Game": "",
+"GameSimulation": "",
+"Getup": "",
+"GoodCamera": "",
+"GrapplingHook": "",
+"GroundedParryState": "",
+"HelloWorld": "",
+"Hitbox": "res://addons/collision_box/hitbox.png",
+"HitboxData": "",
+"HolePunch": "",
+"HostCommand": "",
+"HurtAerial": "",
+"HurtGrounded": "",
+"HurtboxState": "",
+"LimbHurtbox": "",
+"MultiplayerClient": "",
+"Mutant": "",
+"NativeMethods": "",
+"NewBullet": "",
+"NinjaShuriken": "",
+"ObjectState": "",
+"ParryState": "",
+"ParticleEffect": "",
+"PlayerExtra": "",
+"PlayerInfo": "",
+"ProfanityFilter": "",
+"QuadTree": "",
+"RichTextGhost": "",
+"RichTextPulse": "",
+"RichTextRain": "",
+"Robot": "",
+"RobotState": "",
+"RollDodge": "",
+"SettingsSlider": "",
+"StateInterface": "",
+"StateMachine": "",
+"SteamWorkshop": "",
+"StickyBomb": "",
+"SuperMove": "",
+"SweptHitbox": "",
+"TelekinesisProjectile": "",
+"ThrowBox": "res://addons/collision_box/throw_box.png",
+"ThrowState": "",
+"UGCItem": "",
+"UsableRequirement": "",
+"Utils": "",
+"VariableSound": "",
+"VariableSound2D": "",
+"Window": "",
+"WizardState": "",
+"XYPlot": "",
+"YomiColorPicker": ""
+}
+
+[application]
+
+config/name="Your Only Move Is HUSTLE"
+run/main_scene="res://Main.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="YourOnlyMoveIsHUSTLE"
+boot_splash/image="res://splash.png"
+boot_splash/use_filter=false
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
+config/icon="res://icon2.png"
+
+[autoload]
+
+Global="*res://Global.gd"
+SteamHustle="*res://SteamY.gd"
+ModLoader="*res://modloader/ModLoader.gd"
+ReplayManager="*res://ReplayManager.gd"
+Network="*res://Network.gd"
+SteamLobby="*res://SteamLobby.gd"
+Custom="*res://Custom.gd"
+ModOverride="*res://ModOverride.gd"
+
+[debug]
+
+gdscript/warnings/enable=false
+multirun/number_of_windows=2
+multirun/window_distance=1270
+multirun/add_custom_args=true
+multirun/first_window_args="listen"
+multirun/other_window_args="join"
+
+[display]
+
+window/size/width=640
+window/size/height=360
+window/size/borderless=true
+window/size/test_width=1280
+window/size/test_height=720
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/collision_box/plugin.cfg", "res://addons/export_categories/plugin.cfg", "res://addons/helpers/plugin.cfg", "res://addons/multirun/plugin.cfg" )
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+timers/tooltip_delay_sec=0.25
+
+[importer_defaults]
+
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": true,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": true,
+"process/invert_color": false,
+"process/normal_map_invert_y": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
+}
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":0,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777222,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_focus_next={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777218,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_focus_prev={
+"deadzone": 0.5,
+"events": [  ]
+}
+playback={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":82,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+frame_advance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":70,"unicode":0,"echo":false,"script":null)
+ ]
+}
+submit_action={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
+ ]
+}
+pause={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777217,"unicode":0,"echo":false,"script":null)
+ ]
+}
+edit_replay={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+toggle_frame_advance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":80,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+open_debug_panel={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":true,"meta":false,"command":true,"pressed":false,"scancode":0,"physical_scancode":68,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[logging]
+
+file_logging/enable_file_logging=true
+
+[memory]
+
+limits/message_queue/max_size_kb=58324
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+2d/snapping/use_gpu_pixel_snap=true
+environment/default_environment="res://default_env.tres"

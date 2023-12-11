@@ -1,4 +1,4 @@
-[gd_scene load_steps=294 format=2]
+[gd_scene load_steps=295 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
@@ -288,6 +288,7 @@
 [ext_resource path="res://characters/mutant/sprites/actionicons/low_swipe.png" type="Texture" id=286]
 [ext_resource path="res://characters/mutant/sprites/wall_trick4.png" type="Texture" id=287]
 [ext_resource path="res://characters/mutant/actionuidata/pounceactionuidata.tscn" type="PackedScene" id=288]
+[ext_resource path="res://characters/mutant/states/AcidSlashH.gd" type="Script" id=289]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -664,8 +665,8 @@ extra_color_2 = Color( 0.392157, 0.823529, 0.419608, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 7 )
-animation = "WallTrickFollowup2"
-frame = 3
+animation = "AcidSlashH"
+frame = 13
 offset = Vector2( 0, -16 )
 
 [node name="TwistAttackSprite" type="AnimatedSprite" parent="Flip" index="1"]
@@ -695,14 +696,14 @@ script = ExtResource( 211 )
 
 [node name="Howl" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
 stream = ExtResource( 142 )
-volume_db = -10.0
+volume_db = -13.0
 bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.05
 
 [node name="Howl2" type="AudioStreamPlayer2D" parent="Sounds" index="14"]
 stream = ExtResource( 210 )
-volume_db = -10.0
+volume_db = -13.0
 bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.05
@@ -1115,8 +1116,9 @@ sprite_animation = "Taunt"
 anim_length = 45
 sfx_tick = 27
 sfx_volume = -8.0
-title = "Charge"
+title = "Howl"
 type = 2
+air_type = 2
 next_state_on_hold_on_opponent_turn = true
 can_feint_if_possible = false
 interrupt_from_string = "Grounded
@@ -1810,6 +1812,7 @@ title = "Dash Attack"
 type = 1
 data_ui_scene = ExtResource( 123 )
 button_texture = ExtResource( 233 )
+air_type = 2
 land_cancel = true
 landing_recovery = 6
 iasa_on_hit = 25
@@ -2066,7 +2069,8 @@ Aerial
 Dash
 Jump"
 interrupt_into_string = "Grounded
-Aerial"
+Aerial
+ForwardDashAttack"
 allowed_stances_string = "All"
 change_stance_to = "Normal"
 beats_backdash = true
@@ -2100,25 +2104,25 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 160 ): {
-"x": 37,
-"y": -1
-},
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
 },
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
+ExtResource( 160 ): {
+"x": 37,
+"y": -1
+},
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 }
 }
 interruptible_on_opponent_turn = true
@@ -2854,13 +2858,15 @@ active_ticks = 1
 endless = true
 
 [node name="AcidSlashH" type="Node2D" parent="StateMachine" index="30"]
-script = ExtResource( 4 )
+script = ExtResource( 289 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 apply_grav = true
 anim_length = 26
 force_dir_x = "1.0"
-force_speed = "10.0"
 force_tick = 10
 title = "H. Acid Slash"
 type = 2
@@ -2896,12 +2902,13 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 3
 y = -16
-width = 82
+width = 89
 height = 8
 damage = 90
 damage_in_combo = 70
 minimum_damage = 10
-hitstun_ticks = 25
+hitstun_ticks = 38
+combo_hitstun_ticks = 25
 hitlag_ticks = 5
 cancellable = false
 parry_meter_gain = -2
@@ -2949,7 +2956,7 @@ script = ExtResource( 1 )
 y = -15
 width = 33
 height = 23
-damage = 150
+damage = 125
 minimum_damage = 30
 hitstun_ticks = 20
 hitlag_ticks = 10
@@ -3005,13 +3012,13 @@ scale = Vector2( 1.00576, 0.986852 )
 script = ExtResource( 125 )
 apply_forces = true
 apply_fric = true
-apply_grav = true
 anim_length = 22
 enter_force_dir_x = "1"
 enter_force_speed = "8.0"
 title = "Sneak Attack"
 type = 2
 button_texture = ExtResource( 234 )
+air_type = 2
 iasa_on_hit = 17
 next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "ForwardDashAttack"
@@ -3259,10 +3266,6 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
-},
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
@@ -3270,6 +3273,10 @@ ExtResource( 81 ): {
 ExtResource( 82 ): {
 "x": -8,
 "y": -5
+},
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
 }
 }
 land_cancel = true

@@ -1,7 +1,7 @@
 extends BeastState
 
 const PULL_SPEED = "1.5"
-const REGEN = 50
+const REGEN = 25
 
 var pulling = false
 

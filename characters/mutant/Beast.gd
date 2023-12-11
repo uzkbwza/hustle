@@ -143,7 +143,7 @@ func tick():
 	if (juke_ticks > 0 or up_juke_ticks > 0) and hitlag_ticks <= 0 and blockstun_ticks <= 0:
 		spawn_particle_effect_relative(preload("res://characters/mutant/JukeEffect.tscn"), Vector2(0, -16))
 		var juke_speed = JUKE_SPEED
-		if current_state().get("IS_FAST_SWIPE"):
+		if current_state().get("IS_FAST_SWIPE") or current_state().get("IS_GRAB"):
 			juke_speed = fixed.mul(juke_speed, "0.25")
 
 		if up_juke_ticks > 0:
