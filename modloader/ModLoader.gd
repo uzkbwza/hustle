@@ -1,6 +1,8 @@
 extends Node
 # MODLOADER V1.1 
 
+const CL_VERSION = "4.0.0"
+
 var _modZipFiles = []
 var active_mods = []
 var _savedObjects = [] # Things to keep to ensure they are not garbage collected
@@ -21,6 +23,11 @@ func _init():
 	var mod_options = JSON.parse(file.get_as_text()).result
 	
 	file.close()
+
+	installScriptExtension("res://modloader/MLStateSounds.gd") 
+	_loadMods()
+	print("----------------mods------loaded--------------------")
+
 	if !mod_options.modsEnabled:
 		return
 
@@ -37,10 +44,7 @@ func _init():
 	Global.VERSION += " Modded" 
 	
 	#This script has to be installed before the mods or else it doesn't get extended
-	installScriptExtension("res://modloader/MLStateSounds.gd") 
 
-	_loadMods()
-	print("----------------mods------loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
 	
@@ -143,6 +147,9 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 	var dependices_loaded = false
 	for item in modInfo[2].requires:
 		item = item.strip_edges()
+		if "char_loader" in item: 
+			# char loader is base game now, so this dependency is no longer needed.
+			item = ""
 		if item.replace(" ", "") == "":
 			modInfo[2].requires.erase(item)
 			missing_dependices.erase(item)
@@ -151,10 +158,7 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 			if mods[2].name == item:
 				#initialize this mod
 				missing_dependices.erase(item)
-				
-				
-			
-		
+
 	
 	if len(missing_dependices) == 0:
 		dependices_loaded = true

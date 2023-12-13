@@ -25,6 +25,8 @@ var match_data = {}
 
 var started_ghost_this_frame = false
 
+var _Global = Network
+
 func _ready():
 	ui_layer.connect("singleplayer_started", self, "_on_game_started", [true])
 	ui_layer.connect("loaded_replay", self, "_on_loaded_replay")
@@ -66,6 +68,23 @@ func _ready():
 	ReplayManager.replaying_ingame = false
 #	SteamHustle.print_all_achievements()
 
+	# charloader
+	var container = $"%OptionsContainer".get_node("VBoxContainer").get_node("Contents").get_node("VBoxContainer").get_node("VBoxContainer")
+
+	if (container.get_node_or_null("LoadOnStart") == null):
+		var btt = Button.new()
+		btt.name = "DeleteCache"
+		btt.text = "delete character cache"
+		container.add_child(btt)
+		container.move_child(btt, len(container.get_children()) - 4)
+		btt.connect("pressed", self, "_delete_char_cache", [btt])
+
+func _delete_char_cache(btt):
+	var dir = Directory.new()
+	_Global.css_instance.charPackages = {}
+	for f in ModLoader._get_all_files("user://char_cache", "pck"):
+		dir.remove(f)
+	get_tree().quit()
 func _on_show_style_toggled(on, player_id):
 	if is_instance_valid(game):
 		var player = game.get_player(player_id)
@@ -104,8 +123,15 @@ func _on_ghost_wait_timer_timeout():
 func _on_loaded_replay(match_data):
 	match_data["replay"] = true
 	_on_match_ready(match_data)
+	_Global.css_instance.net_loadReplayChars([match_data.selected_characters[1]["name"], match_data.selected_characters[2]["name"], match_data])
+	match_data["replay"] = true
+	_on_match_ready(match_data)
 
 func _on_received_spectator_match_data(data):
+	data["spectating"] = true
+	_on_match_ready(data)
+	get_node("/root/SteamLobby/LoadingSpectator/Label").text = "Spectating...\n(Loading Characters, this may take a while)"
+	_Global.css_instance.net_loadReplayChars([data.selected_characters[1]["name"], data.selected_characters[2]["name"], data])
 	data["spectating"] = true
 	_on_match_ready(data)
 
@@ -355,4 +381,3 @@ func _on_playback_requested():
 
 func _on_ReplayName_text_entered(_new_text):
 	save_replay()
-	pass
