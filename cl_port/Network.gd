@@ -13,9 +13,7 @@ var retro_P2P_doFix = false
 
 
 # these var declarations are necessary to force ModHashCheck.gd to not run, otherwise all of this code gets replaced
-var second_register = false
-var player1_hashes
-var player2_hashes
+
 #
 
 var player1_hash_to_folder
@@ -38,7 +36,7 @@ remotesync func register_player(new_player_name, id, mods, isSteam = false):
 	# failsafe in case you connect to a non-modded player, it'll show up as having no mods
 	if (typeof(mods) != TYPE_DICTIONARY):
 		mods = {"version" : mods, "active_mods":[]}
-	
+
 	if (mods.has("normal_mods")):
 		if not second_register:
 			player1_hashes = mods.normal_mods
@@ -58,7 +56,7 @@ remotesync func register_player(new_player_name, id, mods, isSteam = false):
 	else:
 		second_register = true
 	if mods.version != Global.VERSION:
-		emit_signal("game_error", "Mismatched game versions.\nYou: %s, Opponent: %s.\nVisit ivysly.itch.io/yomi-hustle to download the newest version." % [Global.VERSION, mods.version])
+		emit_signal("game_error", "Mismatched game versions.\nYou: %s, Opponent: %s." % [Global.VERSION, mods.version])
 		return 
 	
 	if (get_tree().get_network_unique_id() == id):

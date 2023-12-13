@@ -1,7 +1,5 @@
 extends "res://main.gd"
 
-var _Global = Network
-
 # delete character cache button
 func _ready():
 	var container = $"%OptionsContainer".get_node("VBoxContainer").get_node("Contents").get_node("VBoxContainer").get_node("VBoxContainer")

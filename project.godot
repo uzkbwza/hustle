@@ -480,7 +480,7 @@ SteamHustle="*res://SteamY.gd"
 ModLoader="*res://modloader/ModLoader.gd"
 ReplayManager="*res://ReplayManager.gd"
 Network="*res://cl_port/Network.gd"
-SteamLobby="*res://SteamLobby.gd"
+SteamLobby="*res://cl_port/SteamLobby.gd"
 Custom="*res://Custom.gd"
 ModOverride="*res://ModOverride.gd"
 

@@ -30,8 +30,7 @@ func _init(modLoader = ModLoader):
 	modLoader.installScriptExtension("res://cl_port/SteamLobby.gd")
 	modLoader.installScriptExtension("res://cl_port/uiSteamLobby.gd")
 	
-	installNetworkExtension("res://cl_port/Network.gd")
-
+#	installNetworkExtension("res://cl_port/Network.gd")
 func _ready():
 	var btt_scene = load("res://ui/CSS/CharacterButton.tscn").instance()
 	btt_scene.set_custom_minimum_size(Vector2(60, 20))

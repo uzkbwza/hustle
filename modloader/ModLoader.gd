@@ -25,8 +25,6 @@ func _init():
 	file.close()
 
 	installScriptExtension("res://modloader/MLStateSounds.gd") 
-	_loadMods()
-	print("----------------mods------loaded--------------------")
 
 	if !mod_options.modsEnabled:
 		return
@@ -44,7 +42,8 @@ func _init():
 	Global.VERSION += " Modded" 
 	
 	#This script has to be installed before the mods or else it doesn't get extended
-
+	_loadMods()
+	print("----------------mods------loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
 	
@@ -52,6 +51,7 @@ func _init():
 	call_deferred("append_hash")
 
 func append_hash():
+	return
 	var hashes = Network._get_hashes(ModLoader.active_mods)
 	var h = ""
 	for hash_ in hashes:
@@ -98,7 +98,6 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
 		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
 			continue
-
 		_modZipFiles.append(modFSPath)
 
 	dir.list_dir_end()
@@ -144,12 +143,12 @@ func _initMods():
 func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
 	var missing_dependices = modInfo[2].requires.duplicate()
+	missing_dependices.erase("char_loader")
+	# char loader is base game now, so this dependency is no longer needed.
 	var dependices_loaded = false
 	for item in modInfo[2].requires:
 		item = item.strip_edges()
-		if "char_loader" in item: 
-			# char loader is base game now, so this dependency is no longer needed.
-			item = ""
+
 		if item.replace(" ", "") == "":
 			modInfo[2].requires.erase(item)
 			missing_dependices.erase(item)

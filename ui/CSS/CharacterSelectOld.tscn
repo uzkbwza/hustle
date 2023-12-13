@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
+[ext_resource path="res://ui/CSS/CharacterSelectBase.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
 [ext_resource path="res://sound/ui/button_select4.wav" type="AudioStream" id=3]
 [ext_resource path="res://sound/ui/button_select2.wav" type="AudioStream" id=4]

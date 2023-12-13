@@ -1,4 +1,5 @@
-extends Node
+extends LineEdit
+onready var button = $Button
 
 
 # Declare member variables here. Examples:
@@ -14,3 +15,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+
+func _on_Button_pressed():
+	emit_signal("text_entered", text)
+	pass # Replace with function body.

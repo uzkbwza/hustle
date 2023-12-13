@@ -81,6 +81,10 @@ var p2_undo_action = null
 var session_id
 var session_username
 
+var second_register = false
+var player1_hashes
+var player2_hashes
+
 onready var timer = Timer.new()
 
 # Signals to let lobby GUI know what's going on.

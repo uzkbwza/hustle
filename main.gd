@@ -68,7 +68,7 @@ func _ready():
 	ReplayManager.replaying_ingame = false
 #	SteamHustle.print_all_achievements()
 
-	# charloader
+	########################### charloader
 	var container = $"%OptionsContainer".get_node("VBoxContainer").get_node("Contents").get_node("VBoxContainer").get_node("VBoxContainer")
 
 	if (container.get_node_or_null("LoadOnStart") == null):
@@ -381,3 +381,4 @@ func _on_playback_requested():
 
 func _on_ReplayName_text_entered(_new_text):
 	save_replay()
+
