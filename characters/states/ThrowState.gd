@@ -16,6 +16,7 @@ export var release_throw_pos_y = 0
 
 export var _c_Release_Data = 0
 export var hitstun_ticks: int = 0
+#export var combo_hitstun_ticks: int = -1
 export var knockback: String = "1.0"
 export var dir_x: String = "1.0"
 export var dir_y: String = "0.0"
@@ -118,6 +119,24 @@ func _tick_after():
 
 func _exit():
 	released = false
+#
+#
+#func get_real_hitstun():
+#	var creator = host.get_fighter()
+#	if creator:
+#		var ticks = hitstun_ticks if creator.combo_count <= 0 else combo_hitstun_ticks
+#		var started_above_0 = ticks > 0
+#		if creator.combo_proration > 0:
+#			ticks -= Hitbox.PRORATION_HITSTUN_ADJUSTMENT_AMOUNT * creator.combo_proration
+#		if host.is_in_group("Fighter"):
+#			if (creator.current_state().state_name in creator.combo_moves_used):
+#				ticks = Utils.int_max(ticks - (Hitbox.COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (creator.combo_moves_used[creator.current_state().state_name] + 1)), ticks / 2)
+#		if started_above_0 and ticks <= 0:
+#			ticks = 1
+#		return ticks
+#	else:
+#		return hitstun_ticks
+
 
 func _release():
 	throw = false

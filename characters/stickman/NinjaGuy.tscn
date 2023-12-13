@@ -2710,7 +2710,7 @@ x = 17
 y = -24
 width = 16
 height = 8
-damage = 30
+damage = 35
 hitstun_ticks = 12
 victim_hitlag = 4
 damage_proration = 2
@@ -3589,17 +3589,9 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
-},
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
 },
 ExtResource( 221 ): {
 "x": 27,
@@ -3608,6 +3600,14 @@ ExtResource( 221 ): {
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 }
 }
 button_texture = ExtResource( 223 )
@@ -3828,13 +3828,13 @@ ExtResource( 206 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
+},
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 }
 }
 burst_cancellable = false
@@ -3884,10 +3884,6 @@ ExtResource( 206 ): {
 "x": 12,
 "y": -10
 },
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
@@ -3895,6 +3891,10 @@ ExtResource( 209 ): {
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 }
 }
 burst_cancellable = false

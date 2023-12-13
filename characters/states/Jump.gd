@@ -24,6 +24,8 @@ const IS_JUMP = true
 
 var queue_backdash_check = false
 
+var front_squat = false
+
 #var test = 0
 
 var jump_tick = 1
@@ -32,6 +34,7 @@ var force_x = "0.0"
 var force_y = "0.0"
 #
 func _enter():
+	anim_name = "Landing"
 	if (data is String and data == "homing") or data == null:
 		var dir = host.get_opponent_dir_vec()
 		if fixed.gt(dir.y, "-0.34"):
@@ -42,17 +45,23 @@ func _enter():
 			"x": fixed.round(fixed.mul(dir.x, "100")),
 			"y": fixed.round(fixed.mul(dir.y, "100"))
 		}
-	var vec = xy_to_dir(data["x"], data["y"], "1")
-	var length = fixed.vec_len(vec.x, vec.y)
-	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
-	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
-	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
+
+
+
+	squat = is_squat()
 	if !squat:
 		host.start_throw_invulnerability()
+#	front_squat = !squat and host.combo_count <= 0
 #	test += 1
 #	if test == 2:
 #		host.take_damage(900)
 
+func is_squat():
+	var vec = xy_to_dir(data["x"], data["y"], "1")
+	var length = fixed.vec_len(vec.x, vec.y)
+	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
+	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
+	return super_jump or (air_type == AirType.Grounded and ((back) or host.combo_count <= 0) and full_hop)
 
 func jump():
 	host.end_throw_invulnerability()
@@ -91,6 +100,7 @@ func _frame_7():
 		jump()
 
 func _frame_0():
+	
 	if data is String and data == "homing":
 		var dir = host.get_opponent_dir_vec()
 		if fixed.gt(dir.y, "-0.34"):
@@ -111,7 +121,9 @@ func _frame_0():
 	var length = fixed.vec_len(vec.x, vec.y)
 	var full_hop = fixed.gt(length, FULL_HOP_LENGTH)
 	var back = fixed.sign(str(data["x"])) != host.get_facing_int() or data["x"] == 0
-	squat = super_jump or (air_type == AirType.Grounded and (back) and full_hop)
+	squat = is_squat()
+	if squat and !back:
+		current_tick = 3
 
 	if back and host.combo_count <= 0:
 		host.add_penalty(10 if full_hop else 5)
@@ -133,6 +145,9 @@ func _frame_0():
 		if squat:
 			interrupt_frames[0] = 14
 			interrupt_frames[1] = 25
+			if !back:
+				interrupt_frames[0] = 13
+				interrupt_frames[1] = 24
 		elif full_hop:
 			interrupt_frames[0] = 10
 			interrupt_frames[1] = 21
@@ -178,6 +193,7 @@ func _tick():
 	if current_tick > jump_tick:
 		if host.is_grounded():
 			return "Landing"
+
 
 func is_usable():
 	if !host.is_grounded() and host.blocked_last_turn:

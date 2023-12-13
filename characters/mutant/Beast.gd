@@ -6,11 +6,11 @@ const INSTALL_TICKS = 120
 const JUKE_PIPS = 10
 const JUKE_PIPS_PER_USE = 2
 const JUKE_TICKS = 3
-const UP_JUKE_TICKS = 15
+const UP_JUKE_TICKS = 10
 const NEUTRAL_JUKE_TICKS = 6
 const SIDE_JUKE_TICKS = 4
-const UP_JUKE_DOWN_FORCE = "5"
-const UP_JUKE_GRAVITY = "-0.65"
+const UP_JUKE_DOWN_FORCE = "2"
+const UP_JUKE_GRAVITY = "-0.95"
 const GROUNDED_UP_JUKE_GRAVITY = "-0.55"
 const JUKE_SPEED = "12"
 const BACK_JUKE_SPEED = "2"
@@ -78,7 +78,7 @@ func process_extra(extra):
 				pass
 			if fixed.lt(juke_dir_y, "0"):
 #					juke_dir_type = "Up"
-				set_vel(fixed.mul(get_vel().x, "0.75"), "0")
+				set_vel(fixed.mul(get_vel().x, "0.75"), fixed.mul(get_vel().y, "0.5"))
 				up_juke_ticks = UP_JUKE_TICKS
 				use_air_movement()
 				apply_force("0", UP_JUKE_DOWN_FORCE)

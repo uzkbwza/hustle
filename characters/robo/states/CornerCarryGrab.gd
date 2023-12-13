@@ -7,10 +7,14 @@ const COMBO_DURATION = 20
 
 func _enter():
 	host.start_fly_fx()
-	can_fly = false
+#	can_fly = false
 
 func _frame_4():
-	can_fly = false
+
+	if host.flying_dir != null:
+		host.flying_dir = {"x": 0, "y": host.flying_dir.y}
+
+#	can_fly = false
 	host.has_projectile_armor = true
 
 func _frame_15():

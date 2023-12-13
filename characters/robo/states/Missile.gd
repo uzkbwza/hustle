@@ -2,7 +2,7 @@ extends RobotState
 
 onready var wind_box = $WindBox
 
-const PULL_FORCE = "0.25"
+const PULL_FORCE = "0.45"
 
 func _frame_12():
 #	host.screen_bump(Vector2(), 5, 0.25)

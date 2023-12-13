@@ -894,7 +894,7 @@ func debug_text():
 		{
 			"penalty": penalty,
 #			"initiative": initiative,
-#			"combo_proration": combo_proration,
+			"combo_proration": combo_proration,
 #			"flipped": reverse_state,
 #			"real": current_state().current_real_tick,
 #			"blocked_hitbox_plus_frames": blocked_hitbox_plus_frames,
@@ -1332,6 +1332,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				on_blocked_melee_attack()
 			else:
 				opponent.got_parried = true
+				opponent.current_state().interruptible_on_opponent_turn = false
 		
 			if !current_state() is GroundedParryState:
 				opponent.current_state().feinting = false

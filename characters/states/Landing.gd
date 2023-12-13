@@ -15,6 +15,7 @@ func set_lag(lag=null):
 #		lag = lag + Utils.int_max(MAX_EXTRA_LAG_FRAMES - host.turn_frames, 0)
 	anim_length = lag
 	iasa_at = lag - 1
+	self.lag = lag
 
 func _frame_0():
 	set_lag(null)

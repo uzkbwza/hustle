@@ -150,13 +150,11 @@ func tick():
 	if next_state_name:
 		queue_state(next_state_name)
 
-
 func deactivate():
 	state.active = false
 	state._exit_shared()
 	state._exit()
 	emit_signal("state_exited", state)
-	
 
 func integrate(st):
 	state._integrate_shared(st)

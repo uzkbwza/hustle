@@ -1,4 +1,4 @@
-[gd_scene load_steps=295 format=2]
+[gd_scene load_steps=297 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
@@ -289,6 +289,8 @@
 [ext_resource path="res://characters/mutant/sprites/wall_trick4.png" type="Texture" id=287]
 [ext_resource path="res://characters/mutant/actionuidata/pounceactionuidata.tscn" type="PackedScene" id=288]
 [ext_resource path="res://characters/mutant/states/AcidSlashH.gd" type="Script" id=289]
+[ext_resource path="res://characters/mutant/states/Roll.gd" type="Script" id=290]
+[ext_resource path="res://characters/mutant/actionuidata/MutantRollActionUIData.tscn" type="PackedScene" id=291]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -1840,7 +1842,7 @@ x = 30
 y = -23
 width = 12
 height = 9
-damage = 50
+damage = 60
 hitstun_ticks = 12
 victim_hitlag = 6
 sdi_modifier = "0.5"
@@ -1860,7 +1862,7 @@ x = 11
 y = -10
 width = 12
 height = 9
-damage = 50
+damage = 60
 hitstun_ticks = 12
 victim_hitlag = 6
 sdi_modifier = "0.5"
@@ -1879,7 +1881,7 @@ script = ExtResource( 1 )
 x = 10
 y = -26
 height = 9
-damage = 50
+damage = 60
 hitstun_ticks = 12
 victim_hitlag = 6
 sdi_modifier = "0.5"
@@ -1899,7 +1901,7 @@ x = -11
 y = -15
 width = 12
 height = 9
-damage = 50
+damage = 60
 hitstun_ticks = 12
 victim_hitlag = 6
 sdi_modifier = "0.5"
@@ -2104,13 +2106,13 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 166 ): {
 "x": -8,
@@ -3148,13 +3150,20 @@ hitstun_ticks = 11
 hitlag_ticks = 5
 cancellable = false
 plus_frames = 1
-hit_height = 2
 knockback = "7.0"
 launch_reversible = true
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 6
 start_tick = 1
 active_ticks = 1
+
+[node name="Roll" parent="StateMachine" index="41"]
+script = ExtResource( 290 )
+__meta__ = {
+"_editor_description_": ""
+}
+data_ui_scene = ExtResource( 291 )
+landing_recovery = 6
 
 [node name="Hitbox" parent="StateMachine/Burst" index="0"]
 beats_grab = false
@@ -3266,6 +3275,10 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
+},
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
@@ -3273,10 +3286,6 @@ ExtResource( 81 ): {
 ExtResource( 82 ): {
 "x": -8,
 "y": -5
-},
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
 }
 }
 land_cancel = true

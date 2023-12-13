@@ -8,6 +8,7 @@ const COMBO_PUSHBACK_COEFFICIENT = "0.4"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_GROUNDED = "1.25"
 const COMBO_SAME_MOVE_KNOCKBACK_INCREASE_AMOUNT_AERIAL = "1.05"
 const COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT = 1
+const PRORATION_HITSTUN_ADJUSTMENT_AMOUNT = 0
 const DEFAULT_HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 const MAX_KNOCKBACK = "30"
@@ -303,12 +304,16 @@ func get_real_hitstun():
 	var creator = host.get_fighter()
 	if creator:
 		var ticks = hitstun_ticks if creator.combo_count <= 0 else combo_hitstun_ticks
-		if !host.is_in_group("Fighter"):
-			return ticks
-		if not (creator.current_state().state_name in creator.combo_moves_used):
-			return ticks
-		var final_hitstun = Utils.int_max(ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (creator.combo_moves_used[creator.current_state().state_name] + 1)), ticks / 2)
-		return final_hitstun
+		var started_above_0 = ticks > 0
+		if creator.combo_proration > 1:
+			ticks -= PRORATION_HITSTUN_ADJUSTMENT_AMOUNT * (creator.combo_proration - 1)
+			
+		if host.is_in_group("Fighter"):
+			if (creator.current_state().state_name in creator.combo_moves_used):
+				ticks = Utils.int_max(ticks - (COMBO_SAME_MOVE_HITSTUN_DECREASE_AMOUNT * (creator.combo_moves_used[creator.current_state().state_name] + 1)), ticks / 2)
+		if started_above_0 and ticks <= 0:
+			ticks = 1
+		return ticks
 	else:
 		return hitstun_ticks
 
