@@ -1,0 +1,12 @@
+{
+  "name": "char_loader",
+  "friendly_name": "Custom Character Loader",
+  "description": "Adds the function addCustomChar(Name, Scene Path, ?Button Name) that\nyou can call on CharacterSelect.gd's _ready() to easily\nadd your custom character to the menu.\n",
+  "author": "srPerez\n(Contributors: Supersonic)\n",
+  "version": "3.0.2",
+  "link": "",
+  "id": "40431",
+  "requires": [""],
+  "overwrites": false,
+  "priority": -10000
+}
