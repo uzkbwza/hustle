@@ -6,6 +6,9 @@ export var click_sound = true
 export var hover_sound: AudioStream
 export var select_sound: AudioStream
 
+export var hover_db = -20
+export var select_db = -8
+
 var connected_buttons = {}
 
 func _ready():
@@ -17,6 +20,8 @@ func setup():
 		$Hover.stream = hover_sound
 	if select_sound:
 		$Select.stream = select_sound
+	$Hover.volume_db = hover_db
+	$Select.volume_db = select_db
 	for button_container in button_containers:
 		for button in get_node(button_container).get_children():
 			if button is BaseButton:

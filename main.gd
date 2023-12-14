@@ -121,15 +121,15 @@ func _on_ghost_wait_timer_timeout():
 		start_ghost()
 
 func _on_loaded_replay(match_data):
-	match_data["replay"] = true
-	_on_match_ready(match_data)
+#	match_data["replay"] = true
+#	_on_match_ready(match_data)
 	_Global.css_instance.net_loadReplayChars([match_data.selected_characters[1]["name"], match_data.selected_characters[2]["name"], match_data])
 	match_data["replay"] = true
 	_on_match_ready(match_data)
 
 func _on_received_spectator_match_data(data):
-	data["spectating"] = true
-	_on_match_ready(data)
+#	data["spectating"] = true
+#	_on_match_ready(data)
 	get_node("/root/SteamLobby/LoadingSpectator/Label").text = "Spectating...\n(Loading Characters, this may take a while)"
 	_Global.css_instance.net_loadReplayChars([data.selected_characters[1]["name"], data.selected_characters[2]["name"], data])
 	data["spectating"] = true
@@ -169,6 +169,11 @@ func save_replay():
 func hide_main_menu(all=false):
 	ui_layer.hide_main_menu(all)
 
+func _format_p2_name(p2_name: String):
+	if p2_name.begins_with("F-") and "__" in p2_name and p2_name.split("__").size() > 1:
+		return p2_name.split("__")[1]
+	return p2_name
+
 func setup_game_deferred(singleplayer, data):
 	game = preload("res://Game.tscn").instance()
 	game_layer.add_child(game)
@@ -188,7 +193,7 @@ func setup_game_deferred(singleplayer, data):
 		else:
 			data["user_data"] = {
 				"p1": Global.get_player_data().username,
-				"p2": data.selected_characters[2]["name"],
+				"p2": _format_p2_name(data.selected_characters[2]["name"]),
 			}
 	
 	if game.start_game(singleplayer, data) is bool:

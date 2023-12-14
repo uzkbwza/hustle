@@ -52,7 +52,7 @@ custom_constants/separation = 8
 [node name="LobbyName" type="Label" parent="MarginContainer/HBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 3.0
-margin_right = 309.0
+margin_right = 232.0
 margin_bottom = 14.0
 rect_clip_content = true
 size_flags_horizontal = 3
@@ -62,17 +62,28 @@ clip_text = true
 
 [node name="GameVersion" type="Label" parent="MarginContainer/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 317.0
+margin_left = 240.0
 margin_top = 3.0
-margin_right = 471.0
+margin_right = 473.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.5
 text = "GameVersion"
+clip_text = true
+
+[node name="CustomCharactersEnabled" type="Label" parent="MarginContainer/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 481.0
+margin_top = 3.0
+margin_right = 509.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.12
+text = "Yes"
+clip_text = true
 
 [node name="PlayerCount" type="Label" parent="MarginContainer/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 479.0
+margin_left = 517.0
 margin_top = 3.0
 margin_right = 634.0
 margin_bottom = 14.0

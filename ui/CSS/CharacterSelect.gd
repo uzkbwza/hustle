@@ -1,4 +1,22 @@
-extends "res://ui/CSS/CharacterSelectBase.gd"
+extends Control
+
+var buttons = []
+
+signal match_ready(data)
+signal opened()
+signal mods_loaded()
+
+var pressed_button = null
+var hovered_characters = {}
+var selected_characters = {}
+var selected_styles = {
+			1: null,
+			2: null
+		}
+	
+var singleplayer = true
+var current_player = 1
+var network_match_data = {}
 
 ### Custom Character Loader ###
 # the way this works: modders will use addCustomChar that will add their character's data to an array, queue its button creation and ONLY load the character's portrait.
@@ -24,6 +42,7 @@ var charPortrait = {} # will hold the portrait textures to be shown on unloaded 
 var errorMessage = {} # will hold a list of missing files for any characters that don't load correctly
 
 var loadThread # a thread that will be used to load characters so the game doesn't get completely stuck
+var loadThread2
 var currentlyLoading = false # remains true while a character is loading, used to prevent weird shit from happening
 
 
@@ -36,6 +55,16 @@ var maxRows = 5;
 var arrowSprites = [null, null]
 
 onready var bttContainer = self.get_node("%CharacterButtonContainer")
+onready var loading_text = $LoadingText
+onready var game_settings_panel_container = $"%GameSettingsPanelContainer"
+onready var scroll_container = $ScrollContainer
+onready var go_button = $"%GoButton"
+onready var selecting_label = $"%SelectingLabel"
+onready var h_box_container = $HBoxContainer
+onready var quit_button = $"%QuitButton"
+
+
+
 var btt_disableTimer = 0 # this is a countdown, whenever it's greater than 0 all of the buttons are disabled
 
 
@@ -43,6 +72,415 @@ var btt_disableTimer = 0 # this is a countdown, whenever it's greater than 0 all
 var name_to_folder = {}
 var name_to_index = {} # "index" refers to the index of the character in the charList array
 var hash_to_folder = {}
+
+
+# Label things #
+var loadingLabel
+var loadingText = ""
+var retract_loaded = false # whenever this is true the loading label will start to dissapear after a few seconds...
+var labelTimer = 0 # ...using this timer
+
+var loaded_mods = false
+
+var pageLabel
+var searchBar
+
+func _ready():
+	
+	bttContainer.hide()
+	loading_text.show()
+	go_button.hide()
+	
+	$"%GoButton".connect("pressed", self, "go")
+#	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
+	$"%QuitButton".connect("pressed", self, "quit")
+	Network.connect("character_selected", self, "_on_network_character_selected")
+	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
+	var dir = Directory.new()
+	
+	searchBar = load("res://cl_port/searchbar.tscn").instance()
+	searchBar.connect("text_entered", self, "on_searched")
+
+	self.add_child(searchBar)
+	# for retro compatibility reasons, copying PlayerInfo over from characters/ (5.0 onwards) to ui/ (4.10 and below)
+	if (dir.file_exists("res://characters/PlayerInfo.tscn") && !dir.file_exists("res://ui/PlayerInfo.tscn")):
+		var pi_scene = load("res://characters/PlayerInfo.tscn").instance()
+		ModLoader.saveScene(pi_scene, "res://ui/PlayerInfo.tscn")
+
+	#get headers
+	var h = File.new()
+	h.open("res://cl_port/headers/sample.header", File.READ)
+	sample_header = h.get_buffer(h.get_len())
+	h.close()
+	h.open("res://cl_port/headers/oggstr.header", File.READ)
+	oggstr_header = h.get_buffer(h.get_len())
+	h.close()
+	loadingLabel = createLabel("Character Loaded", "Loaded", 0, 345)
+	loadingLabel.percent_visible = 0
+	
+	# get all of the modsses
+	_Global.css_instance = self
+	self.visible = false
+	loadThread2 = Thread.new()
+	loadThread2.start(self, "load_mods")
+	yield(self, "mods_loaded")
+
+	loaded_mods = true
+	bttContainer.show()
+	go_button.show()
+	loading_text.hide()
+
+func load_mods():
+	var dir = Directory.new()
+	hash_to_folder = {}
+	serverMods = []
+	Network.hash_to_folder = {}
+	if (!dir.dir_exists("user://char_cache")):
+		dir.make_dir("user://char_cache")
+	charPackages = {}
+	var caches = ModLoader._get_all_files("user://char_cache", "pck") # format: [mod name]-[author name]-[mod hash]-[game version].pck
+	for zip in ModLoader._modZipFiles:
+		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
+		gdunzip.load(zip)
+		var folder = ""
+		for modEntryPath in gdunzip.files:
+			if (modEntryPath.find(".import") == -1):
+				folder = "res://" + modEntryPath.rsplit("/")[0]
+				break
+		var hashy = ModLoader._hash_file(zip)
+		hash_to_folder[hashy] = folder
+		Network.hash_to_folder[hashy] = folder
+		var md = ModLoader._readMetadata(folder + "/_metadata")
+		if (md == null):
+			continue
+		var is_serverSided = true
+		if md.has("client_side"):
+			if md["client_side"]:
+				is_serverSided = false
+		if is_serverSided:
+			serverMods.append(hashy)
+		for f in caches:
+			var fName = f.replace("user://char_cache/", "")
+			if fName.find(md.name.validate_node_name()) == 0 && fName.find(md.author.validate_node_name()) != -1:
+				if fName.find(hashy) == -1 || fName.find(clVersion.validate_node_name()) == -1:
+					dir.remove(f)
+				else:
+					charPackages[md.name] = f
+	call_deferred("on_mods_load_finished")
+	
+
+func on_mods_load_finished():
+	emit_signal("mods_loaded")
+	loadThread2.wait_to_finish()
+	
+	pass
+
+func _on_network_character_selected(player_id, character, style=null):
+	selected_characters[player_id] = character
+	selected_styles[player_id] = style
+	if Network.is_host() and player_id == Network.player_id:
+		$"%GameSettingsPanelContainer".hide()
+	if selected_characters[1] != null and selected_characters[2] != null:
+#		$"%GoButton".disabled = false
+		if Network.is_host():
+			Network.rpc_("send_match_data", get_match_data())
+
+#func _on_network_match_locked_in(match_data):
+#	network_match_data = match_data
+#	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
+#		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "character", match_data.selected_characters[SteamLobby.PLAYER_SIDE].name)
+#	go()
+	
+func _on_network_match_locked_in(match_data):
+	network_match_data = match_data
+	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
+		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "character", match_data.selected_characters[SteamLobby.PLAYER_SIDE].name)
+	if (loadThread != null):
+		loadThread.wait_to_finish()
+	loadThread = Thread.new()
+	loadThread.start(self, "net_async_loadOtherChar")
+#
+#func _on_show_settings_toggled(on):
+#	$"%GameSettingsPanelContainer".visible = on
+
+func init(singleplayer=true):
+	emit_signal("opened")
+#	if Network.steam:
+#		$"%QuitButton".hide()
+	for button in buttons:
+		button.disabled = false
+#	$"%ShowSettingsButton".show()
+#	$"%GameSettingsPanelContainer".hide()
+	$"%GoButton".disabled = true
+	$"%GoButton".show()
+	self.singleplayer = singleplayer
+	$"%GameSettingsPanelContainer".init(singleplayer)
+#	$"%GameSettingsPanelContainer".singleplayer = singleplayer
+#	$"%P2Display".set_enabled(singleplayer)
+	$"%SelectingLabel".text = "P1 SELECT YOUR CHARACTER" if singleplayer else "SELECT YOUR CHARACTER"
+	$"%SelectingLabel".modulate = Color.dodgerblue if singleplayer else Color.white
+	$"%P1Display".init()
+	$"%P2Display".init()
+	if Network.steam:
+		$"%GameSettingsPanelContainer".hide()
+
+
+	selected_styles = {
+		1: null,
+		2: null
+	}
+	
+	hovered_characters = {
+		1: null,
+		2: null,
+	}
+
+	selected_characters = {
+		1: null,
+		2: null
+	}
+	
+	current_player = 1 if singleplayer else Network.player_id
+	
+	if !singleplayer:
+		if current_player == 1:
+			$"%P2Display".set_enabled(false)
+			$"%P1Display".load_last_style()
+		else:
+			$"%P1Display".set_enabled(false)
+			$"%P2Display".load_last_style()
+		$"%GoButton".hide()
+	else:
+		$"%P2Display".load_style_button.save_style = false
+	$"%P1Display".load_last_style()
+	pressed_button = null
+	buttons = []
+	for child in $"%CharacterButtonContainer".get_children():
+		child.queue_free()
+	for name in Global.name_paths:
+#		if (name in Global.paid_characters) and !Global.full_version():
+#			continue
+		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
+		button.character_scene = Global.get_cached_character(name)
+		$"%CharacterButtonContainer".add_child(button)
+#		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+#		var character = button.character_scene.instance()
+		button.text = name
+		buttons.append(button)
+		if !button.is_connected("pressed", self, "_on_button_pressed"):
+			button.connect("pressed", self, "_on_button_pressed", [button])
+			button.connect("mouse_entered", self, "_on_button_mouse_entered", [button])
+		$ButtonSoundPlayer.add_container($"%CharacterButtonContainer")
+		$ButtonSoundPlayer.setup()
+	_on_button_mouse_entered(buttons[0])
+	
+func get_character_data(button):
+	var data = {}
+	var scene = button.character_scene.instance()
+	data["name"] = scene.name
+	scene.free()
+	return data
+#
+#func get_display_data(button):
+#	var data = {}
+#	var scene = button.character_scene.instance()
+#	data["name"] = scene.name
+#	data["portrait"] = scene.character_portrait
+#	data["extra_color_1"] = scene.extra_color_1
+#	data["extra_color_2"] = scene.extra_color_2
+#	scene.free()
+#	return data
+
+func get_display_data(button):
+	var data = {}
+	if !isCustomChar(button.name) or (button.name in loadedChars):
+		var scene = button.character_scene.instance()
+		data["name"] = scene.name
+		data["portrait"] = scene.character_portrait
+		scene.free()
+	else:
+		data["name"] = button.name
+		data["portrait"] = charPortrait[button.name]
+
+		if (button.name in errorMessage.keys()):
+			data["name"] = errorMessage[button.name]
+	return data
+
+func _on_button_mouse_entered(button):
+	var data = get_display_data(button)
+	display_character(current_player, data)
+	pass
+
+func display_character(id, data):
+	var display = $"%P1Display" if id == 1 else $"%P2Display"
+	display.load_character_data(data)
+
+#func _on_button_pressed(button):
+#	for button in buttons:
+#		button.set_pressed_no_signal(false)
+##	button.set_pressed_no_signal(true)
+#	var data = get_character_data(button)
+#	var display_data = get_display_data(button)
+#	display_character(current_player, display_data)
+#	selected_characters[current_player] = data
+#	if singleplayer and current_player == 1:
+#		current_player = 2
+#		$"%SelectingLabel".text = "P2 SELECT YOUR CHARACTER"
+#		$"%SelectingLabel".modulate = Color.red
+#	else:
+#		for button in buttons:
+#			button.disabled = true
+#		if singleplayer:
+#			$"%GoButton".disabled = false
+#	if !singleplayer:
+#		Network.select_character(data, $"%P1Display".selected_style if current_player == 1 else $"%P2Display".selected_style)
+
+func _on_button_pressed(button):
+	if btt_disableTimer > 0 or currentlyLoading:
+		button.set_pressed_no_signal(false)
+		return
+	var miss = []
+	if (isCustomChar(button.name)):
+		loadThread = Thread.new()
+		loadThread.start(self, "async_loadButtonChar", button)
+	else:
+		buffer_select(button)
+
+	for button in buttons:
+		button.set_pressed_no_signal(false)
+
+func quit():
+	if Network.multiplayer_active:
+		Network.stop_multiplayer()
+#	if SteamLobby.LOBBY_ID != 0:
+	SteamLobby.quit_match()
+	get_tree().reload_current_scene()
+
+func get_match_data():
+	if singleplayer:
+		selected_styles = {
+			1: $"%P1Display".selected_style,
+			2: $"%P2Display".selected_style
+		}
+	var data = {
+		"singleplayer": singleplayer,
+		"selected_characters": selected_characters,
+		"selected_styles": selected_styles,
+#		"selected_customs": selected_customs,
+	}
+	if singleplayer or Network.is_host():
+		randomize()
+		data.merge({"seed": randi()})
+	
+	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
+		data.merge(SteamLobby.MATCH_SETTINGS)
+	else:
+		data.merge($"%GameSettingsPanelContainer".get_data())
+	return data
+
+func go():
+	if !singleplayer:
+		emit_signal("match_ready", network_match_data)
+	else:
+		emit_signal("match_ready", get_match_data())
+	hide()
+
+func _process(delta):
+	Global.css_open = visible
+	if !loaded_mods:
+		return
+		
+	# new version code thing
+#	Global.VERSION = _Global.ogVersion.split("Modded")[0] + "CL-" + clVersion
+
+	# check if custom character buttons haven't been created yet and if they haven't then create them
+	var makeButtons = false
+	var curButtons = bttContainer.get_children()
+
+	var isThereCustoms = false
+	var bNames = []
+	for b in curButtons:
+		if isCustomChar(b.text):
+			makeButtons = true
+			break
+		elif !(b.text in Global.name_paths.keys()):
+			isThereCustoms = true
+			break
+	if (!isThereCustoms):
+		makeButtons = true
+	
+	if (makeButtons):
+		call_deferred("createButtons")
+		createdButtons = true
+
+	var btts = bttContainer.get_children()
+
+	go_button.rect_position.y = 177 + min(bttContainer.rect_size.y, scroll_container.rect_size.y)
+
+	if (btt_disableTimer > 0):
+		btt_disableTimer -= delta * 60
+		btt_disableTimer = max(btt_disableTimer, 0)
+	for j in len(btts):
+		var b = btts[j]
+		if (!b.is_visible()):
+			continue
+
+		# disable chars that opponent doesnt have
+		if (!net_isCharacterAvailable(b.name)):
+			b.disabled = true
+
+	searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
+
+	
+	$"%QuitButton".disabled = currentlyLoading
+
+	# update network lists
+	if !updatedNetworkLists:
+		net_updateModLists()
+		updatedNetworkLists = true
+
+	# loading label thing, waits like 3 seconds to start dissapearing
+	loadingLabel.text = loadingText
+
+	if (retract_loaded):
+		if labelTimer == 0:
+			loadingLabel.percent_visible += delta * 3
+		if (loadingLabel.percent_visible >= 1):
+			labelTimer += delta
+		if (labelTimer > 2):
+			loadingLabel.percent_visible -= delta * 2
+			if (loadingLabel.percent_visible - delta * 4 <= 0):
+				retract_loaded = false
+				loadingLabel.percent_visible = 0
+	
+	if _Global.isSteamGame:
+		Network.multiplayer_host = Network.steam_isHost
+
+	# this buffer go thing is done bc if the go() function is called inside of a thread the game doesn't load correctly
+	if (buffer_go):
+		if loadThread != null:
+			loadThread.wait_to_finish()
+		buffer_go = false
+		go()
+
+# managing clicks to the page arrows and click outside of the search bar
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT and event.pressed:
+			if event.position.y > 240 and event.position.y < 280:
+				var pageChange = 0
+				if event.position.x > 640 - 14:
+					pageChange = 1
+				elif event.position.x < 14:
+					pageChange = -1
+				if (pageChange != 0):
+					charPage += pageChange
+					btt_disableTimer = 20
+					searchBar.release_focus()
+
+func _on_CharacterSelect_visibility_changed():
+	pass # Replace with function body.
+
 
 func dict_findKey(_dictionary, _value):
 	for key in _dictionary.keys():
@@ -55,16 +493,6 @@ func folder_to_name(_folder): # having the names as keys and the folders as valu
 
 func folder_to_hash(_folder): # same here, there might be multiple .zip files that have the same mod folder name
 	return dict_findKey(hash_to_folder, _folder)
-
-
-# Label things #
-var loadingLabel
-var loadingText = ""
-var retract_loaded = false # whenever this is true the loading label will start to dissapear after a few seconds...
-var labelTimer = 0 # ...using this timer
-
-var pageLabel
-var searchBar
 
 func loadingLabel_start():
 	retract_loaded = false
@@ -107,6 +535,8 @@ var oggstr_header
 ## Character data functions ##
 
 func addCustomChar(_name, _charPath, _bttName = ""):
+	while !loaded_mods:
+		yield(get_tree(), "idle_frame")
 	update_fighter_vars(_name, _charPath, _bttName)
 	if !(curFighter in name_to_folder.keys()): # prevent duplicates
 		buttonsToLoad.append([_name, _charPath, _bttName])
@@ -272,7 +702,6 @@ func createButtons():
 		button.character_scene = charInfo[0]
 		$"%CharacterButtonContainer".add_child(button)
 		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
-
 		button.text = charInfo[1]
 	
 	# add custom character buttons
@@ -281,6 +710,7 @@ func createButtons():
 
 	for data in buttonsToLoad:
 		addCharButton(data[0], data[1], data[2])
+#		yield(get_tree(), "idle_frame")
 
 	# set button actions
 	for button in bttContainer.get_children():
@@ -292,87 +722,6 @@ func createButtons():
 	$ButtonSoundPlayer.setup()
 
 ## Ready and Process ##
-
-func _ready():
-	var dir = Directory.new()
-
-	# for retro compatibility reasons, copying PlayerInfo over from characters/ (5.0 onwards) to ui/ (4.10 and below)
-	if (dir.file_exists("res://characters/PlayerInfo.tscn") && !dir.file_exists("res://ui/PlayerInfo.tscn")):
-		var pi_scene = load("res://characters/PlayerInfo.tscn").instance()
-		ModLoader.saveScene(pi_scene, "res://ui/PlayerInfo.tscn")
-
-	# get all of the modsses
-	_Global.css_instance = self
-	self.visible = false
-	hash_to_folder = {}
-	serverMods = []
-	Network.hash_to_folder = {}
-	if (!dir.dir_exists("user://char_cache")):
-		dir.make_dir("user://char_cache")
-	charPackages = {}
-	var caches = ModLoader._get_all_files("user://char_cache", "pck") # format: [mod name]-[author name]-[mod hash]-[game version].pck
-	for zip in ModLoader._modZipFiles:
-		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
-		gdunzip.load(zip)
-		var folder = ""
-		for modEntryPath in gdunzip.files:
-			if (modEntryPath.find(".import") == -1):
-				folder = "res://" + modEntryPath.rsplit("/")[0]
-				break
-		var hashy = ModLoader._hash_file(zip)
-		hash_to_folder[hashy] = folder
-		Network.hash_to_folder[hashy] = folder
-		var md = ModLoader._readMetadata(folder + "/_metadata")
-		if (md == null):
-			continue
-		var is_serverSided = true
-		if md.has("client_side"):
-			if md["client_side"]:
-				is_serverSided = false
-		if is_serverSided:
-			serverMods.append(hashy)
-		for f in caches:
-			var fName = f.replace("user://char_cache/", "")
-			if fName.find(md.name.validate_node_name()) == 0 && fName.find(md.author.validate_node_name()) != -1:
-				if fName.find(hashy) == -1 || fName.find(clVersion.validate_node_name()) == -1:
-					dir.remove(f)
-				else:
-					charPackages[md.name] = f
-#
-#	var bttRow = self.get_node("%CharacterButtonContainer")
-#	bttRow.margin_left = -305
-#	bttRow.margin_right = 305
-#	rows = 1
-#	bttRow.set_h_grow_direction(2)
-
-	#get headers
-	var h = File.new()
-	h.open("res://cl_port/headers/sample.header", File.READ)
-	sample_header = h.get_buffer(h.get_len())
-	h.close()
-	h.open("res://cl_port/headers/oggstr.header", File.READ)
-	oggstr_header = h.get_buffer(h.get_len())
-	h.close()
-	loadingLabel = createLabel("Character Loaded", "Loaded", 0, 345)
-	loadingLabel.percent_visible = 0
-
-#	pageLabel = createLabel("Page ", "PageLabel", 560, 345)
-	
-	searchBar = load("res://cl_port/searchbar.tscn").instance()
-	searchBar.connect("text_entered", self, "on_searched")
-
-	self.add_child(searchBar)
-
-	# page arrows
-	var arrowName = ["left", "right"]
-	var arrowPos = [8, 640 - 8]
-#
-#	for i in 2:
-#		arrowSprites[i] = Sprite.new()
-#		arrowSprites[i].texture = textureGet("res://cl_port/visuals/arrow_" + arrowName[i] + ".png")
-#		self.add_child(arrowSprites[i])
-#		arrowSprites[i].position = Vector2(arrowPos[i], 263)
-
 
 # variables to be used on _process
 var updatedNetworkLists = false
@@ -393,140 +742,6 @@ func on_searched(text):
 		if searchFound:
 
 			b.grab_focus()
-
-func _process(delta):
-	# new version code thing
-#	Global.VERSION = _Global.ogVersion.split("Modded")[0] + "CL-" + clVersion
-
-	# check if custom character buttons haven't been created yet and if they haven't then create them
-	var makeButtons = false
-	var curButtons = bttContainer.get_children()
-
-	var isThereCustoms = false
-	var bNames = []
-	for b in curButtons:
-		if isCustomChar(b.text):
-			makeButtons = true
-			break
-		elif !(b.text in Global.name_paths.keys()):
-			isThereCustoms = true
-			break
-	if (!isThereCustoms):
-		makeButtons = true
-	
-	if (makeButtons):
-		createButtons()
-		createdButtons = true
-
-	# move "Go & Quit buttons down when theres too many rows
-#	if (rows > 2):#6):
-#		var goBtt = get_node("GoButton")
-#		var quitBtt = get_node("QuitButton")
-#
-#		goBtt.set_position(Vector2(260, 338))
-#		quitBtt.set_position(Vector2(336, 342))
-#
-#		goBtt.set_size(Vector2(58, 19))
-#		quitBtt.set_size(Vector2(30, 12))
-	
-	# character buttons
-	var btts = bttContainer.get_children()
-#	var visInd = 0
-#	var curPage = 0
-#	var pageNumber = getPageAmmount()
-
-#
-#		if searchFound:
-#			visInd += 1
-#
-#		if (visInd >= 50):
-#			visInd = 0
-#			curPage += 1
-#
-	if (btt_disableTimer > 0):
-		btt_disableTimer -= delta * 60
-		btt_disableTimer = max(btt_disableTimer, 0)
-	for j in len(btts):
-		var b = btts[j]
-		if (!b.is_visible()):
-			continue
-
-		# disable chars that opponent doesnt have
-		if (!net_isCharacterAvailable(b.name)):
-			b.disabled = true
-	# manage pages when there's more than 50 characters
-#	if (pageNumber > 1):
-#		pageNumber = curPage + 1
-#		if (!searchBar.has_focus()):
-#			if Input.is_action_just_pressed("ui_right"):
-#				charPage += 1
-#			if Input.is_action_just_pressed("ui_left"):
-#				charPage -= 1
-#		if (charPage < 0):
-#			charPage = pageNumber - 1
-#			buttons_x = -640 * pageNumber
-#		if (charPage > pageNumber - 1):
-#			charPage = 0
-#			buttons_x = 640
-#		buttons_x += (-charPage * 640 - buttons_x) / 3 * delta * 60
-#		pageLabel.text = "Page " + str(charPage + 1) + "/" + str(pageNumber)
-#
-#		arrowSprites[0].visible = true
-#		arrowSprites[1].visible = true
-#		pageLabel.visible = true
-	searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
-#	else:
-#		arrowSprites[0].visible = false
-#		arrowSprites[1].visible = false
-#		pageLabel.visible = false
-#		searchBar.visible = false
-	
-	$"%QuitButton".disabled = currentlyLoading
-
-	# update network lists
-	if !updatedNetworkLists:
-		net_updateModLists()
-		updatedNetworkLists = true
-
-	# loading label thing, waits like 3 seconds to start dissapearing
-	loadingLabel.text = loadingText
-
-	if (retract_loaded):
-		if labelTimer == 0:
-			loadingLabel.percent_visible += delta * 3
-		if (loadingLabel.percent_visible >= 1):
-			labelTimer += delta
-		if (labelTimer > 2):
-			loadingLabel.percent_visible -= delta * 2
-			if (loadingLabel.percent_visible - delta * 4 <= 0):
-				retract_loaded = false
-				loadingLabel.percent_visible = 0
-	
-	if _Global.isSteamGame:
-		Network.multiplayer_host = Network.steam_isHost
-
-	# this buffer go thing is done bc if the go() function is called inside of a thread the game doesn't load correctly
-	if (buffer_go):
-		if loadThread != null:
-			loadThread.wait_to_finish()
-		buffer_go = false
-		go()
-
-# managing clicks to the page arrows and click outside of the search bar
-func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
-			if event.position.y > 240 and event.position.y < 280:
-				var pageChange = 0
-				if event.position.x > 640 - 14:
-					pageChange = 1
-				elif event.position.x < 14:
-					pageChange = -1
-				if (pageChange != 0):
-					charPage += pageChange
-					btt_disableTimer = 20
-					searchBar.release_focus()
-
 
 ## General helper functions ##
 #
@@ -566,49 +781,6 @@ func createLabel(_text, _name, _x, _y, _from = self):
 	label.set_position(Vector2(_x, _y))
 	_from.add_child(label)
 	return label
-	
-
-## Overwrites ##
-
-func _on_button_pressed(button):
-	if btt_disableTimer > 0 or currentlyLoading:
-		button.set_pressed_no_signal(false)
-		return
-	var miss = []
-	if (isCustomChar(button.name)):
-		loadThread = Thread.new()
-		loadThread.start(self, "async_loadButtonChar", button)
-	else:
-		buffer_select(button)
-
-	for button in buttons:
-		button.set_pressed_no_signal(false)
-
-func get_display_data(button):
-	var data = {}
-	if !isCustomChar(button.name) or (button.name in loadedChars):
-		var scene = button.character_scene.instance()
-		data["name"] = scene.name
-		data["portrait"] = scene.character_portrait
-		scene.free()
-	else:
-		data["name"] = button.name
-		data["portrait"] = charPortrait[button.name]
-
-		if (button.name in errorMessage.keys()):
-			data["name"] = errorMessage[button.name]
-	return data
-
-func _on_network_match_locked_in(match_data):
-	network_match_data = match_data
-	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
-		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "character", match_data.selected_characters[SteamLobby.PLAYER_SIDE].name)
-	if (loadThread != null):
-		loadThread.wait_to_finish()
-	loadThread = Thread.new()
-	loadThread.start(self, "net_async_loadOtherChar")
-
-
 ## Custom network things ##
 
 var enable_online_go = false
@@ -659,7 +831,10 @@ func net_loadReplayChars(_replayChars):
 			loadListChar(name_to_index[retro_charName(rc[1])])
 
 func net_isCharacterAvailable(_charName):
-	if (!singleplayer and isCustomChar(_charName) and (Network.player1_chars != [] or Network.player2_chars != [])):
+	var custom = isCustomChar(_charName)
+	if custom and !SteamLobby.LOBBY_CHARLOADER_ENABLED and SteamLobby.LOBBY_ID != 0:
+		return false 
+	if (!singleplayer and custom and (Network.player1_chars != [] or Network.player2_chars != [])):
 		var foundIt1 = false
 		var foundIt2 = false
 		for m in Network.player1_chars:

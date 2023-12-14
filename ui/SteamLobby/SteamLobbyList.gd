@@ -2,6 +2,7 @@ extends Control
 
 onready var lobby_list = $"%LobbyList"
 onready var lobby_name = $"%LobbyName"
+onready var charloader_button = $"%CharloaderButton"
 
 var selected_lobby
 var lobbies = []
@@ -11,6 +12,8 @@ func _ready():
 #	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	charloader_button.disabled = !ModLoader.active
+	charloader_button.pressed = ModLoader.active
 
 func _on_create_lobby_button_pressed():
 	var availability
@@ -19,6 +22,7 @@ func _on_create_lobby_button_pressed():
 	else:
 		availability = SteamLobby.LOBBY_AVAILABILITY.FRIENDS
 	SteamLobby.LOBBY_NAME = get_lobby_name()
+	SteamLobby.LOBBY_CHARLOADER_ENABLED = charloader_button.pressed and ModLoader.active
 	SteamLobby.create_lobby(availability, $"%LobbySize".value)
 
 func _on_back_button_pressed():
@@ -65,6 +69,10 @@ func _on_lobby_match_list_received(lobbies):
 #			var lobby_status: String = Steam.getLobbyData(lobby, "status")
 		var lobby_version: String = Steam.getLobbyData(lobby, "version")
 		
+		var charloader_enabled: String = Steam.getLobbyData(lobby, "charloader")
+		if not (charloader_enabled in ["Yes", "No"]):
+			charloader_enabled  = "N/A" 
+		
 		var lobby_max_members: int = Steam.getLobbyMemberLimit(lobby)
 		
 		# Get the current number of members
@@ -79,6 +87,8 @@ func _on_lobby_match_list_received(lobbies):
 			"version": lobby_version,
 			"player_count": lobby_num_members,
 			"max_players": lobby_max_members,
+			"charloader_enabled": charloader_enabled == "Yes",
+			"charloader_enabled_text": charloader_enabled,
 			"id": lobby,
 		}
 		lobby_entry.set_data(data)
@@ -102,7 +112,7 @@ func _on_lobby_clicked(entry):
 		if lobby != entry:
 			lobby.deselect()
 	if entry.lobby_data.version != Global.VERSION:
-		error("Mismatched versions. Make sure your game is fully updated, or you both have the same mods enabled.")
+		error("Mismatched versions. Make sure your game is fully updated, or you have the same mods enabled.")
 		return
 	selected_lobby = entry.lobby_id
 	SteamLobby.join_lobby(entry.lobby_id)

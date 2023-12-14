@@ -10,6 +10,7 @@ var mods_w_depend = []
 var mods_w_overwrites = []
 var mods_w_missing_depend = {}
 var active = false
+var charLoaderModDetected = false
 
 func _init():
 #	Steam.steamInit()
@@ -24,10 +25,10 @@ func _init():
 	
 	file.close()
 
-	installScriptExtension("res://modloader/MLStateSounds.gd") 
-
 	if !mod_options.modsEnabled:
 		return
+
+	installScriptExtension("res://modloader/MLStateSounds.gd") 
 
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
@@ -39,7 +40,7 @@ func _init():
 #
 	Steam.steamInit() # needed to get workshop mods.
 	active = true
-	Global.VERSION += " Modded" 
+#	Global.VERSION += " Modded" 
 	
 	#This script has to be installed before the mods or else it doesn't get extended
 	_loadMods()
@@ -51,7 +52,7 @@ func _init():
 	call_deferred("append_hash")
 
 func append_hash():
-	return
+#	return
 	var hashes = Network._get_hashes(ModLoader.active_mods)
 	var h = ""
 	for hash_ in hashes:
@@ -118,6 +119,9 @@ func _initMods():
 				var metaRes = _checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
 				if metaRes != null:
 					var modInfo = [metaRes[0], modHash, metaRes[1]]
+					if metaRes[1].name == "char_loader" and metaRes[1].id == "12345":
+						charLoaderModDetected = true
+						continue
 					if modInfo[2].requires == [""]: #If no dependencies, initialize mod
 						modInfo[0] = ResourceLoader.load(modInfo[0])
 						if modInfo[2].overwrites: #If overwrites characters
@@ -144,6 +148,7 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
 	var missing_dependices = modInfo[2].requires.duplicate()
 	missing_dependices.erase("char_loader")
+
 	# char loader is base game now, so this dependency is no longer needed.
 	var dependices_loaded = false
 	for item in modInfo[2].requires:

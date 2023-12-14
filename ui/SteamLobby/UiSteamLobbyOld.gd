@@ -87,7 +87,7 @@ func init():
 	$"%RoomCode".modulate = Color(SteamLobby.get_lobby_code())
 	if Steam.getLobbyData(SteamLobby.LOBBY_ID, "version") != Global.VERSION:
 		$"%WrongVersionScreen".show()
-		var mismatched_version_text = "Mismatched versions. Make sure your game is fully updated, or you both have the same mods enabled.\n\nYour game: %s \nThis lobby: %s" % [Global.VERSION, Steam.getLobbyData(SteamLobby.LOBBY_ID, "version")]
+		var mismatched_version_text = "Mismatched versions. Make sure your game is fully updated, or you have the same mods enabled.\n\nYour game: %s \nThis lobby: %s" % [Global.VERSION, Steam.getLobbyData(SteamLobby.LOBBY_ID, "version")]
 		$"%WrongVersionLabel".text = mismatched_version_text
 #func _on_user_selected(index):
 #	if users[index].steam_id == SteamHustle.STEAM_ID:

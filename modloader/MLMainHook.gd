@@ -10,6 +10,9 @@ func _ready():
 		var menu = _add_modlist()
 		_populate_mod_menu(menu)
 		_addMisingList()
+		if ModLoader.charLoaderModDetected:
+			ModLoader.charLoaderModDetected = false
+			_add_char_loader_warning()
 
 #Creates mod menu and places it in the options container
 func _add_modlist():
@@ -22,6 +25,22 @@ func _add_modlist():
 	var btn:Node = addMainMenuButton("Mod List")
 	btn.connect("pressed", menu, "_mainmenu_button_pressed")
 	return menu
+
+func _add_char_loader_warning():
+	var container = addContainer("CharLoaderWarning", "Alert")
+	var close = generateButton("Close")
+	close.connect("pressed", container, "hide")
+	container.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
+	var label = Label.new()
+	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.align = Label.ALIGN_CENTER
+	label.valign = Label.VALIGN_CENTER
+	container.list_container.add_child(label)
+
+	label.text = "The Character Loader mod has been disabled, as its functionality is now present in the base game. To disable this popup, please uninstall the mod."
+	label.autowrap = true
+	container.show()
 
 #Calls function from ModLoaderMenu.gd to populate list of mods
 func _populate_mod_menu(menu):
@@ -173,7 +192,7 @@ func _addMisingList():
 	var mod_w_missing = ModLoader.mods_w_missing_depend
 	var list = addContainer("ModMissingContainer", "Mod Missing Dependecies")
 	var close = generateButton("Close")
-	close.connect("pressed", self, "_modmissing_closebutton_pressed")
+	close.connect("pressed", list, "hide")
 	list.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
 	if mod_w_missing.size() > 0:
 		for missing in mod_w_missing:
@@ -181,8 +200,4 @@ func _addMisingList():
 			label.text = missing + ": Missing Dependency: " + str(mod_w_missing.get(missing))
 			list.list_container.add_child(label)
 		$"%MainMenu".get_node("ModMissingContainer").set("visible", true)
-	
-func _modmissing_closebutton_pressed():
-	$"%MainMenu".get_node("ModMissingContainer").set("visible", false)
-
 

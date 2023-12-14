@@ -19,19 +19,6 @@ __meta__ = {
 "_edit_vertical_guides_": [ 320.0 ]
 }
 
-[node name="ShowSettingsButton" type="Button" parent="."]
-unique_name_in_owner = true
-visible = false
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -35.5
-margin_top = 29.0
-margin_right = 35.5
-margin_bottom = 41.0
-toggle_mode = true
-action_mode = 0
-text = "show settings"
-
 [node name="GameSettingsPanelContainer" parent="." instance=ExtResource( 9 )]
 unique_name_in_owner = true
 margin_bottom = -25.0
@@ -51,16 +38,12 @@ follow_focus = true
 
 [node name="CenterContainer" type="CenterContainer" parent="ScrollContainer"]
 margin_right = 618.0
-margin_bottom = 122.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="CharacterButtonContainer" type="GridContainer" parent="ScrollContainer/CenterContainer"]
 unique_name_in_owner = true
 margin_left = 309.0
-margin_top = 61.0
 margin_right = 309.0
-margin_bottom = 61.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 5
@@ -76,9 +59,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -40.0
-margin_top = -61.0
+margin_top = -69.0
 margin_right = 40.0
-margin_bottom = -27.0
+margin_bottom = -35.0
 theme = ExtResource( 2 )
 theme_type_variation = "ChallengeButton"
 disabled = true
@@ -107,14 +90,14 @@ __meta__ = {
 [node name="P1Display" parent="HBoxContainer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
 margin_right = 212.0
-margin_bottom = 209.0
+margin_bottom = 208.0
 mouse_filter = 2
 script = ExtResource( 6 )
 
 [node name="Control2" type="Control" parent="HBoxContainer"]
 margin_left = 213.0
 margin_right = 426.0
-margin_bottom = 209.0
+margin_bottom = 208.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
@@ -122,9 +105,10 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 margin_left = 427.0
 margin_right = 640.0
-margin_bottom = 209.0
+margin_bottom = 208.0
 mouse_filter = 2
 script = ExtResource( 6 )
+player_id = 2
 
 [node name="QuitButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -142,5 +126,18 @@ text = "quit"
 button_containers = [  ]
 hover_sound = ExtResource( 3 )
 select_sound = ExtResource( 4 )
+hover_db = -40
+
+[node name="LoadingText" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -69.0
+margin_top = 34.5
+margin_right = 69.0
+margin_bottom = 45.5
+text = "Loading..."
+align = 1
 
 [connection signal="visibility_changed" from="." to="." method="_on_CharacterSelect_visibility_changed"]

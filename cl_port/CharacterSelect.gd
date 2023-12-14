@@ -1,4 +1,4 @@
-extends "res://ui/CSS/CharacterSelectBase.gd"
+extends "res://ui/CSS/CharacterSelect.gd"
 
 ### Custom Character Loader ###
 # the way this works: modders will use addCustomChar that will add their character's data to an array, queue its button creation and ONLY load the character's portrait.

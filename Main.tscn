@@ -2233,7 +2233,6 @@ text = "Quit"
 
 [node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
