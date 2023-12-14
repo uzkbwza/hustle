@@ -14,12 +14,3 @@ func _get_hashes(active_mods):
 		else:
 			print("%s mod was client sided" % item[1].name)
 	return hashes
-
-#func _compare_checksum():
-#	return true
-#	player1_hashes.sort()
-#	player2_hashes.sort()
-#	print("player1_hashes: " + str(player1_hashes))
-#	print("player2_hashes: " + str(player2_hashes))
-#
-#	return player1_hashes == player2_hashes
