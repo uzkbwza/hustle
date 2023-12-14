@@ -1,0 +1,1 @@
+{"name":"Character Loader","desc":"Adds the function addCustomChar(Name, Scene Path, ?Button Name) that\nyou can call on CharacterSelect.gd's _ready() to easily\nadd your custom character to the menu.\n\nComes with full Steam multiplayer support.","id":"2931479403","tags":["Character","Tool"]}

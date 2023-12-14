@@ -1,0 +1,168 @@
+[gd_resource type="Theme" load_steps=28 format=2]
+
+[ext_resource path="res://char_loader/error_font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
+[ext_resource path="res://ui/checkbutton1.png" type="Texture" id=3]
+[ext_resource path="res://ui/checkbutton2.png" type="Texture" id=4]
+[ext_resource path="res://ui/checkbutton3.png" type="Texture" id=5]
+[ext_resource path="res://ui/checkbutton4.png" type="Texture" id=6]
+[ext_resource path="res://ui/updown.png" type="Texture" id=7]
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_bottom = 1
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.164706, 0.164706, 0.164706, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=18]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 1
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=17]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 6
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=25]
+bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
+
+[sub_resource type="StyleBoxFlat" id=23]
+bg_color = Color( 0.235294, 0.235294, 0.235294, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=22]
+bg_color = Color( 0.168627, 0.168627, 0.168627, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=24]
+bg_color = Color( 0.239216, 0.239216, 0.239216, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=21]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.776471, 0.462745, 0.462745, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color( 0.431373, 0.266667, 0.266667, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 4
+border_width_right = 2
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=20]
+bg_color = Color( 1, 0.2, 0.239216, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.2, 0.239216, 1 )
+
+[resource]
+default_font = ExtResource( 1 )
+Button/styles/disabled = SubResource( 9 )
+Button/styles/focus = SubResource( 15 )
+Button/styles/hover = SubResource( 11 )
+Button/styles/normal = SubResource( 3 )
+Button/styles/pressed = SubResource( 8 )
+CheckButton/icons/off = ExtResource( 3 )
+CheckButton/icons/off_disabled = ExtResource( 5 )
+CheckButton/icons/on = ExtResource( 4 )
+CheckButton/icons/on_disabled = ExtResource( 6 )
+ColorPicker/constants/sv_height = 60
+ColorPicker/constants/sv_width = 60
+HBoxContainer/constants/separation = 1
+HSlider/icons/grabber = ExtResource( 2 )
+HSlider/icons/grabber_disabled = ExtResource( 2 )
+HSlider/icons/grabber_highlight = ExtResource( 2 )
+HSlider/icons/tick = null
+HSlider/styles/grabber_area = SubResource( 18 )
+HSlider/styles/grabber_area_highlight = SubResource( 18 )
+HSlider/styles/slider = SubResource( 17 )
+ItemList/styles/bg = SubResource( 25 )
+ItemList/styles/bg_focus = SubResource( 25 )
+LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.752941 )
+LineEdit/styles/focus = SubResource( 23 )
+LineEdit/styles/normal = SubResource( 22 )
+LineEdit/styles/read_only = SubResource( 24 )
+Panel/styles/panel = SubResource( 4 )
+PanelContainer/styles/panel = SubResource( 21 )
+SelectButton/base_type = "Button"
+SelectButton/styles/hover = SubResource( 13 )
+SelectButton/styles/normal = SubResource( 14 )
+SpinBox/icons/updown = ExtResource( 7 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = ExtResource( 1 )
+TooltipPanel/styles/panel = SubResource( 19 )
+VBoxContainer/constants/separation = 1
+VScrollBar/styles/grabber = SubResource( 5 )
+VScrollBar/styles/grabber_highlight = SubResource( 7 )
+VScrollBar/styles/grabber_pressed = SubResource( 5 )
+VScrollBar/styles/scroll = SubResource( 6 )
+VScrollBar/styles/scroll_focus = SubResource( 6 )
+YouButton/base_type = "Button"
+YouPanel/base_type = "PanelContainer"
+YouPanel/styles/panel = SubResource( 20 )

@@ -7,6 +7,7 @@ onready var player_count = $"%PlayerCount"
 onready var select_rect = $SelectRect
 onready var hover_rect = $HoverRect
 onready var game_version = $"%GameVersion"
+onready var custom_characters_enabled = $"%CustomCharactersEnabled"
 
 var lobby_id
 var lobby_data
@@ -18,6 +19,8 @@ var selected = false
 func set_data(lobby_data):
 	lobby_name.text = ProfanityFilter.filter(lobby_data.name)
 	game_version.text = lobby_data.version
+	custom_characters_enabled.text = lobby_data.charloader_enabled_text
+	custom_characters_enabled.modulate = Color.green if lobby_data.charloader_enabled else Color.gray
 	player_count.text = str(lobby_data.player_count) + "/" + str(lobby_data.max_players)
 	lobby_id = lobby_data.id
 	self.lobby_data = lobby_data 

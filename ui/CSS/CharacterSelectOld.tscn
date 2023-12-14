@@ -8,6 +8,7 @@
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=9]
 
+
 [node name="CharacterSelect" type="Panel"]
 self_modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0

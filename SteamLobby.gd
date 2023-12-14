@@ -34,6 +34,7 @@ var CHALLENGING_STEAM_ID = 0
 var CHALLENGER_STEAM_ID = 0
 var CHALLENGER_MATCH_SETTINGS = {}
 var REQUESTING_TO_SPECTATE = 0
+var LOBBY_CHARLOADER_ENABLED = true
 
 var LOBBY_ID: int = 0
 var LOBBY_MEMBERS: Array = []
@@ -654,11 +655,12 @@ func _on_Lobby_Created(connect: int, lobby_id: int):
 
 		Steam.setLobbyJoinable(LOBBY_ID, true)
 		Steam.setLobbyData(LOBBY_ID, "name", ProfanityFilter.filter(LOBBY_NAME))
+		Steam.setLobbyData(LOBBY_ID, "charloader", "Yes" if LOBBY_CHARLOADER_ENABLED else "No")
 		Steam.setLobbyData(LOBBY_ID, "code", lobby_code)
 		print("lobby code: " + lobby_code)
 #		Steam.setLobbyData(LOBBY_ID, "status", "Waiting")
 		var lobby_version = Global.VERSION
-		if !Network.is_modded():
+		if !Network.is_modded() and !LOBBY_CHARLOADER_ENABLED:
 			lobby_version = Global.VERSION.split(" Modded")[0]
 		
 		Steam.setLobbyData(LOBBY_ID, "version", lobby_version)
@@ -680,6 +682,7 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 		Network.start_steam_mp()
 		# Set this lobby ID as your lobby ID
 		LOBBY_ID = lobby_id
+		LOBBY_CHARLOADER_ENABLED = Steam.getLobbyData(LOBBY_ID, "charloader") == "Yes"
 
 		# Get the lobby members
 		_get_Lobby_Members()

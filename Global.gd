@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.8.49-steam-unstable"
+var VERSION = "1.8.50-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -30,6 +30,7 @@ var enable_timer_sound = true
 var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
+
 var auto_fc = true
 var ghost_speed = 2
 
@@ -42,7 +43,7 @@ var name_paths = {
 	"Wizard": "res://characters/wizard/Wizard.tscn",
 	"Robot": "res://characters/robo/Robot.tscn",
 	"Mutant": "res://characters/mutant/Mutant.tscn",
-	"Alien": "res://characters/alien/Alien.tscn",
+#	"Alien": "res://characters/alien/Alien.tscn",
 }
 
 var songs = {

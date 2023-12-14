@@ -2110,21 +2110,21 @@ ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
-},
-ExtResource( 166 ): {
-"x": -8,
-"y": -17
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 },
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
 },
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 166 ): {
+"x": -8,
+"y": -17
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -3275,13 +3275,13 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
-},
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
+},
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
 },
 ExtResource( 82 ): {
 "x": -8,

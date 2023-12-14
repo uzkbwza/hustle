@@ -1,4 +1,4 @@
-extends "res://ui/SteamLobby/UiSteamLobbyOld.gd"
+extends "res://ui/SteamLobby/SteamLobby.gd"
 
 var _Global = Network
 var errorMsg = Label.new()
