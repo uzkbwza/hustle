@@ -860,5 +860,5 @@ func register_player_steam(steam_id):
 	players[steam_id] = Steam.getFriendPersonaName(steam_id)
 	emit_signal("player_list_changed")
 
-func _get_hashes(mods):
+func _get_hashes(active_mods):
 	return []

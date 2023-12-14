@@ -12,8 +12,8 @@ func _ready():
 #	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	charloader_button.disabled = !ModLoader.active
-	charloader_button.pressed = ModLoader.active
+#	charloader_button.disabled = !ModLoader.active
+#	charloader_button.pressed = ModLoader.active
 
 func _on_create_lobby_button_pressed():
 	var availability

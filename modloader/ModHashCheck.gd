@@ -7,6 +7,7 @@ func _get_hashes(active_mods):
 #	return []
 	var hashes = []
 	for item in active_mods:
+		var is_character = item[1]
 		if !item[1].has("client_side"):
 			item[1].merge({"client_side":false})
 		if item[1].client_side == false:
