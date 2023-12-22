@@ -13,6 +13,8 @@ const UP_JUKE_DOWN_FORCE = "2"
 const UP_JUKE_GRAVITY = "-0.95"
 const GROUNDED_UP_JUKE_GRAVITY = "-0.55"
 const JUKE_SPEED = "12"
+const JUKE_COMBO_MODIFIER = "1.25"
+const DOWN_JUKE_SPEED = "14"
 const BACK_JUKE_SPEED = "2"
 const MAX_BACK_SPEED_FOR_JUKE = "6"
 
@@ -31,6 +33,7 @@ var up_juke_ticks = 0
 #var juke_dir_type = ""
 var juked_this_turn = false
 var started_up_juke_from_ground = false
+var can_air_dash = false
 
 func apply_grav():
 	if up_juke_ticks > 0:
@@ -104,13 +107,13 @@ func init(pos=null):
 
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
-	if !juked_this_turn:
-		add_juke_pips(1)
+#	if !juked_this_turn:
+	add_juke_pips(1)
 
 func on_got_blocked():
 	.on_got_blocked()
-	if !juked_this_turn:
-		add_juke_pips(1)
+#	if !juked_this_turn:
+	add_juke_pips(1)
 
 func on_blocked_melee_attack():
 	.on_blocked_melee_attack()
@@ -143,8 +146,15 @@ func tick():
 	if (juke_ticks > 0 or up_juke_ticks > 0) and hitlag_ticks <= 0 and blockstun_ticks <= 0:
 		spawn_particle_effect_relative(preload("res://characters/mutant/JukeEffect.tscn"), Vector2(0, -16))
 		var juke_speed = JUKE_SPEED
+		
+		if fixed.gt(juke_dir_y, "0"):
+			juke_speed = DOWN_JUKE_SPEED
+		
 		if current_state().get("IS_FAST_SWIPE") or current_state().get("IS_GRAB"):
 			juke_speed = fixed.mul(juke_speed, "0.25")
+		
+		if combo_count > 0:
+			juke_speed = fixed.mul(juke_speed, JUKE_COMBO_MODIFIER)
 
 		if up_juke_ticks > 0:
 			up_juke_ticks -= 1
@@ -168,6 +178,10 @@ func tick():
 				move_directly("0", fixed.mul(juke_dir_y, juke_speed))
 			if juke_dir_x == "0" and juke_dir_y == "0":
 				reset_momentum()
+
+	if is_in_hurt_state(false) or "Knockdown" in current_state().state_name:
+		juke_ticks = 0
+		up_juke_ticks = 0
 
 	if infinite_resources:
 		juke_pips = JUKE_PIPS

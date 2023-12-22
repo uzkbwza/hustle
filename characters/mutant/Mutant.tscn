@@ -1,4 +1,4 @@
-[gd_scene load_steps=297 format=2]
+[gd_scene load_steps=299 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
@@ -291,6 +291,8 @@
 [ext_resource path="res://characters/mutant/states/AcidSlashH.gd" type="Script" id=289]
 [ext_resource path="res://characters/mutant/states/Roll.gd" type="Script" id=290]
 [ext_resource path="res://characters/mutant/actionuidata/MutantRollActionUIData.tscn" type="PackedScene" id=291]
+[ext_resource path="res://characters/mutant/states/SlopDash.gd" type="Script" id=292]
+[ext_resource path="res://characters/mutant/slopdash.png" type="Texture" id=293]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -652,7 +654,8 @@ juke_ticks
 up_juke_ticks
 juke_dir_type
 juked_this_turn
-started_up_juke_from_ground"
+started_up_juke_from_ground
+can_air_dash"
 num_air_movements = 3
 character_portrait = ExtResource( 144 )
 character_portrait2 = ExtResource( 203 )
@@ -698,38 +701,45 @@ script = ExtResource( 211 )
 
 [node name="Howl" type="AudioStreamPlayer2D" parent="Sounds" index="13"]
 stream = ExtResource( 142 )
-volume_db = -13.0
+volume_db = -18.0
 bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.05
 
 [node name="Howl2" type="AudioStreamPlayer2D" parent="Sounds" index="14"]
 stream = ExtResource( 210 )
-volume_db = -13.0
+volume_db = -18.0
 bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.05
 
-[node name="Walk1" type="AudioStreamPlayer2D" parent="Sounds" index="15"]
+[node name="Howl3" type="AudioStreamPlayer2D" parent="Sounds" index="15"]
+stream = ExtResource( 210 )
+volume_db = -20.0
+bus = "Fx"
+script = ExtResource( 211 )
+pitch_variation = 0.05
+
+[node name="Walk1" type="AudioStreamPlayer2D" parent="Sounds" index="16"]
 stream = ExtResource( 199 )
 volume_db = -5.0
 bus = "Fx"
 script = ExtResource( 211 )
 
-[node name="Walk2" type="AudioStreamPlayer2D" parent="Sounds" index="16"]
+[node name="Walk2" type="AudioStreamPlayer2D" parent="Sounds" index="17"]
 stream = ExtResource( 140 )
 volume_db = -5.0
 bus = "Fx"
 script = ExtResource( 211 )
 
-[node name="Juke" type="AudioStreamPlayer2D" parent="Sounds" index="17"]
+[node name="Juke" type="AudioStreamPlayer2D" parent="Sounds" index="18"]
 stream = ExtResource( 221 )
 volume_db = -6.511
 pitch_scale = 2.18
 bus = "Fx"
 script = ExtResource( 211 )
 
-[node name="Juke2" type="AudioStreamPlayer2D" parent="Sounds" index="18"]
+[node name="Juke2" type="AudioStreamPlayer2D" parent="Sounds" index="19"]
 stream = ExtResource( 222 )
 volume_db = -12.164
 pitch_scale = 2.51
@@ -737,7 +747,7 @@ bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.2
 
-[node name="Juke3" type="AudioStreamPlayer2D" parent="Sounds" index="19"]
+[node name="Juke3" type="AudioStreamPlayer2D" parent="Sounds" index="20"]
 stream = ExtResource( 232 )
 volume_db = -7.757
 pitch_scale = 1.03
@@ -745,20 +755,20 @@ bus = "Fx"
 script = ExtResource( 211 )
 pitch_variation = 0.2
 
-[node name="Bounce2" type="AudioStreamPlayer2D" parent="Sounds" index="20"]
+[node name="Bounce2" type="AudioStreamPlayer2D" parent="Sounds" index="21"]
 stream = ExtResource( 201 )
 volume_db = -13.0
 pitch_scale = 1.25
 bus = "Fx"
 script = ExtResource( 211 )
 
-[node name="ShockwavePlunge" type="AudioStreamPlayer2D" parent="Sounds" index="21"]
+[node name="ShockwavePlunge" type="AudioStreamPlayer2D" parent="Sounds" index="22"]
 stream = ExtResource( 155 )
 volume_db = -5.0
 bus = "Fx"
 script = ExtResource( 211 )
 
-[node name="ShockwaveRelease" type="AudioStreamPlayer2D" parent="Sounds" index="22"]
+[node name="ShockwaveRelease" type="AudioStreamPlayer2D" parent="Sounds" index="23"]
 stream = ExtResource( 156 )
 volume_db = -5.0
 bus = "Fx"
@@ -767,12 +777,68 @@ script = ExtResource( 211 )
 [node name="Hurtbox" parent="." index="3"]
 width = 12
 
-[node name="Swipe2" type="Node2D" parent="StateMachine" index="1"]
+[node name="CausticBarrageAir" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 202 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "ThornBarrageAir"
+anim_length = 18
+force_dir_x = "-1.0"
+force_speed = "3"
+force_tick = 7
+sfx = ExtResource( 209 )
+sfx_tick = 3
+sfx_volume = -5.0
+title = "Caustic Barrage Lo"
+type = 3
+button_texture = ExtResource( 268 )
+air_type = 1
+land_cancel = true
+min_land_cancel_frame = 12
+interrupt_from_string = "AerialSuper
+Aerial
+"
+interrupt_into_string = "Grounded
+Aerial"
+super_level_ = 1
+super_effect_ = true
+scale_combo_meter_ = true
+air = true
+
+[node name="CausticBarrage" type="Node2D" parent="StateMachine" index="2"]
+script = ExtResource( 202 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "ThornBarrage"
+anim_length = 18
+force_dir_x = "-1.0"
+force_speed = "5"
+force_tick = 7
+sfx = ExtResource( 209 )
+sfx_tick = 3
+sfx_volume = -5.0
+title = "Caustic Barrage"
+type = 3
+button_texture = ExtResource( 266 )
+air_type = 2
+interrupt_from_string = "GroundedSuper
+Grounded
+AerialSuper
+Aerial"
+interrupt_into_string = "Grounded
+Aerial"
+super_level_ = 1
+super_effect_ = true
+scale_combo_meter_ = true
+
+[node name="Swipe2" type="Node2D" parent="StateMachine" index="3"]
 script = ExtResource( 19 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 15
+anim_length = 14
 enter_force_dir_x = "1.0"
 enter_force_speed = "8.0"
 title = "Swipe"
@@ -804,7 +870,7 @@ y = -22
 width = 19
 height = 5
 damage = 40
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 3
@@ -827,7 +893,7 @@ y = -25
 width = 17
 height = 6
 damage = 40
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 3
@@ -889,7 +955,7 @@ y = -17
 width = 19
 height = 5
 damage = 48
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 2
@@ -904,13 +970,13 @@ disable_collision = false
 start_tick = 3
 active_ticks = 2
 
-[node name="Swipe" type="Node2D" parent="StateMachine" index="2"]
+[node name="Swipe" type="Node2D" parent="StateMachine" index="4"]
 script = ExtResource( 19 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Swipe"
-anim_length = 15
+anim_length = 14
 enter_force_dir_x = "1.0"
 enter_force_speed = "8.0"
 type = 1
@@ -943,7 +1009,7 @@ y = -22
 width = 19
 height = 5
 damage = 40
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 3
@@ -966,7 +1032,7 @@ y = -25
 width = 17
 height = 6
 damage = 40
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 3
@@ -1028,7 +1094,7 @@ y = -17
 width = 19
 height = 5
 damage = 48
-hitstun_ticks = 6
+hitstun_ticks = 11
 combo_hitstun_ticks = 7
 victim_hitlag = 5
 damage_proration = 2
@@ -1043,7 +1109,7 @@ disable_collision = false
 start_tick = 3
 active_ticks = 2
 
-[node name="SwipeDown" type="Node2D" parent="StateMachine" index="3"]
+[node name="SwipeDown" type="Node2D" parent="StateMachine" index="5"]
 script = ExtResource( 4 )
 apply_forces = true
 apply_fric = true
@@ -1106,7 +1172,7 @@ height = 8
 start_tick = 4
 endless = true
 
-[node name="JukeCharge" type="Node2D" parent="StateMachine" index="4"]
+[node name="JukeCharge" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 141 )
 __meta__ = {
 "_editor_description_": ""
@@ -1119,7 +1185,7 @@ anim_length = 45
 sfx_tick = 27
 sfx_volume = -8.0
 title = "Howl"
-type = 2
+type = 3
 air_type = 2
 next_state_on_hold_on_opponent_turn = true
 can_feint_if_possible = false
@@ -1129,9 +1195,11 @@ GroundedSuper
 AerialSuper"
 interrupt_into_string = "Grounded
 Aerial"
+super_level_ = 2
+super_effect_ = true
 charge = true
 
-[node name="Slash" type="Node2D" parent="StateMachine" index="5"]
+[node name="Slash" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 4 )
 apply_forces = true
 apply_fric = true
@@ -1194,7 +1262,7 @@ height = 14
 start_tick = 5
 endless = true
 
-[node name="GroundToAirSpin" type="Node2D" parent="StateMachine" index="6"]
+[node name="GroundToAirSpin" type="Node2D" parent="StateMachine" index="8"]
 script = ExtResource( 57 )
 apply_forces = true
 apply_fric = true
@@ -1242,7 +1310,6 @@ hit_sound = ExtResource( 7 )
 knockback = "5.0"
 vacuum = true
 block_pushback_modifier = "0.25"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 7
 active_ticks = 20
@@ -1271,7 +1338,6 @@ hit_sound = ExtResource( 7 )
 knockback = "5.0"
 vacuum = true
 block_pushback_modifier = "0.25"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 7
 active_ticks = 20
@@ -1300,13 +1366,12 @@ hit_sound = ExtResource( 7 )
 knockback = "5.0"
 vacuum = true
 block_pushback_modifier = "0.25"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 7
 active_ticks = 20
 looping = true
 
-[node name="Sweep" type="Node2D" parent="StateMachine" index="7"]
+[node name="Sweep" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 4 )
 apply_forces = true
 apply_fric = true
@@ -1350,7 +1415,7 @@ ground_bounce = false
 start_tick = 10
 active_ticks = 3
 
-[node name="Kick" type="Node2D" parent="StateMachine" index="8"]
+[node name="Kick" type="Node2D" parent="StateMachine" index="10"]
 script = ExtResource( 18 )
 apply_forces = true
 apply_fric = true
@@ -1390,7 +1455,7 @@ y = -14
 width = 23
 height = 10
 damage = 85
-damage_in_combo = 70
+damage_in_combo = 80
 hitstun_ticks = 22
 hitlag_ticks = 6
 victim_hitlag = 7
@@ -1417,7 +1482,7 @@ height = 10
 start_tick = 10
 active_ticks = 5
 
-[node name="OverheadClaw" type="Node2D" parent="StateMachine" index="9"]
+[node name="OverheadClaw" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 92 )
 __meta__ = {
 "_editor_description_": ""
@@ -1455,6 +1520,7 @@ damage_in_combo = 90
 hitstun_ticks = 25
 hitlag_ticks = 7
 victim_hitlag = 12
+damage_proration = -1
 cancellable = false
 guard_break = true
 plus_frames = 1
@@ -1472,7 +1538,7 @@ disable_collision = false
 start_tick = 12
 active_ticks = 3
 
-[node name="AirSpin" type="Node2D" parent="StateMachine" index="10"]
+[node name="AirSpin" type="Node2D" parent="StateMachine" index="12"]
 script = ExtResource( 57 )
 apply_forces = true
 apply_fric = true
@@ -1517,7 +1583,6 @@ knockback = "3.0"
 vacuum = true
 block_pushback_modifier = "0.25"
 pushback_x = "0.0"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 4
 active_ticks = 20
@@ -1547,7 +1612,6 @@ knockback = "3.0"
 vacuum = true
 block_pushback_modifier = "0.25"
 pushback_x = "0.0"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 4
 active_ticks = 20
@@ -1577,19 +1641,18 @@ knockback = "3.0"
 vacuum = true
 block_pushback_modifier = "0.25"
 pushback_x = "0.0"
-grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 3
 start_tick = 4
 active_ticks = 20
 looping = true
 
-[node name="SwipeUp" type="Node2D" parent="StateMachine" index="11"]
+[node name="SwipeUp" type="Node2D" parent="StateMachine" index="13"]
 script = ExtResource( 4 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "SwipeUp"
-anim_length = 16
+anim_length = 12
 animation_loop_start = 1
 force_speed = "6.0"
 enter_force_dir_x = "1.0"
@@ -1658,7 +1721,7 @@ disable_collision = false
 start_tick = 5
 active_ticks = 2
 
-[node name="AirSwipe" type="Node2D" parent="StateMachine" index="12"]
+[node name="AirSwipe" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 113 )
 apply_forces = true
 apply_fric = true
@@ -1696,7 +1759,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 5
 active_ticks = 2
 
-[node name="AirKick" type="Node2D" parent="StateMachine" index="13"]
+[node name="AirKick" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 18 )
 apply_forces = true
 apply_fric = true
@@ -1733,8 +1796,7 @@ x = 23
 y = -14
 width = 23
 height = 10
-damage = 75
-damage_in_combo = 65
+damage = 80
 hitstun_ticks = 22
 hitlag_ticks = 6
 victim_hitlag = 7
@@ -1744,7 +1806,7 @@ hit_height = 0
 screenshake_amount = 8
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
-dir_y = "0.24"
+dir_y = "1.0"
 knockback = "7.5"
 pushback_x = "2.0"
 grounded_hit_state = "HurtAerial"
@@ -1763,20 +1825,20 @@ height = 10
 start_tick = 5
 active_ticks = 5
 
-[node name="ProjectileGrab" type="Node2D" parent="StateMachine" index="14"]
+[node name="ProjectileGrab" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 188 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
 anim_length = 40
-earliest_hitbox = 8
+earliest_hitbox = 7
 title = "Vault"
 type = 2
 data_ui_scene = ExtResource( 220 )
 button_texture = ExtResource( 265 )
 air_type = 1
 land_cancel = true
-min_land_cancel_frame = 7
+min_land_cancel_frame = 6
 end_feint = false
 force_feintable = true
 interrupt_from_string = "AerialSpecial
@@ -1791,11 +1853,11 @@ x = 2
 y = -7
 height = 15
 hitbox_type = 6
-start_tick = 7
+start_tick = 6
 active_ticks = 10
 always_on = true
 
-[node name="ForwardDashFollowup" type="Node2D" parent="StateMachine" index="15"]
+[node name="ForwardDashFollowup" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 122 )
 __meta__ = {
 "_editor_description_": ""
@@ -1948,59 +2010,6 @@ height = 8
 start_tick = 0
 active_ticks = 5
 
-[node name="CausticBarrage" type="Node2D" parent="StateMachine" index="16"]
-script = ExtResource( 202 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "ThornBarrage"
-anim_length = 18
-force_dir_x = "-1.0"
-force_speed = "5"
-force_tick = 7
-sfx = ExtResource( 209 )
-sfx_tick = 3
-sfx_volume = -5.0
-title = "Caustic Barrage"
-type = 3
-button_texture = ExtResource( 266 )
-interrupt_from_string = "GroundedSuper
-Grounded"
-interrupt_into_string = "Grounded
-Aerial"
-super_level_ = 1
-super_effect_ = true
-scale_combo_meter_ = true
-
-[node name="CausticBarrageAir" type="Node2D" parent="StateMachine" index="17"]
-script = ExtResource( 202 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "ThornBarrageAir"
-anim_length = 18
-force_dir_x = "-1.0"
-force_speed = "3"
-force_tick = 7
-sfx = ExtResource( 209 )
-sfx_tick = 3
-sfx_volume = -5.0
-title = "Caustic Barrage"
-type = 3
-button_texture = ExtResource( 268 )
-air_type = 1
-land_cancel = true
-min_land_cancel_frame = 12
-interrupt_from_string = "AerialSuper
-Aerial
-"
-interrupt_into_string = "Grounded
-Aerial"
-super_level_ = 1
-super_effect_ = true
-scale_combo_meter_ = true
-air = true
-
 [node name="CausticSpike" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 108 )
 __meta__ = {
@@ -2106,13 +2115,17 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
+},
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 160 ): {
 "x": 37,
@@ -2121,10 +2134,6 @@ ExtResource( 160 ): {
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
-},
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -2191,7 +2200,7 @@ y = -6
 width = 12
 height = -15
 damage = 67
-hitstun_ticks = 25
+hitstun_ticks = 35
 cancellable = false
 di_modifier = "1.5"
 plus_frames = 2
@@ -2212,7 +2221,7 @@ y = 1
 width = 12
 height = -23
 damage = 67
-hitstun_ticks = 25
+hitstun_ticks = 35
 cancellable = false
 di_modifier = "1.5"
 plus_frames = 2
@@ -2264,13 +2273,12 @@ y = 18
 width = 5
 height = 36
 damage = 87
-damage_in_combo = 66
+damage_in_combo = 75
 minimum_damage = 10
 hitstun_ticks = 17
 hitlag_ticks = 5
 victim_hitlag = 10
 cancellable = false
-parry_meter_gain = -2
 plus_frames = 1
 screenshake_amount = 8
 screenshake_frames = 6
@@ -2290,13 +2298,12 @@ y = 8
 width = 6
 height = 24
 damage = 87
-damage_in_combo = 66
+damage_in_combo = 75
 minimum_damage = 10
 hitstun_ticks = 17
 hitlag_ticks = 5
 victim_hitlag = 10
 cancellable = false
-parry_meter_gain = -2
 plus_frames = 1
 screenshake_amount = 8
 screenshake_frames = 6
@@ -2654,7 +2661,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2679,7 +2686,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2704,7 +2711,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2765,7 +2772,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2790,7 +2797,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2815,7 +2822,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2907,13 +2914,12 @@ y = -16
 width = 89
 height = 8
 damage = 90
-damage_in_combo = 70
+damage_in_combo = 80
 minimum_damage = 10
 hitstun_ticks = 38
 combo_hitstun_ticks = 25
 hitlag_ticks = 5
 cancellable = false
-parry_meter_gain = -2
 plus_frames = 1
 screenshake_amount = 8
 screenshake_frames = 6
@@ -3034,13 +3040,14 @@ x = 17
 y = -16
 width = 17
 height = 7
-damage = 97
+damage = 110
 minimum_damage = 40
 hitstun_ticks = 25
-victim_hitlag = 7
+hitlag_ticks = 7
+victim_hitlag = 10
 cancellable = false
 guard_break = true
-block_punishable = true
+screenshake_amount = 6
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
 start_tick = 12
@@ -3053,13 +3060,14 @@ x = 30
 y = -24
 width = 12
 height = 7
-damage = 97
+damage = 110
 minimum_damage = 40
 hitstun_ticks = 25
-victim_hitlag = 7
+hitlag_ticks = 7
+victim_hitlag = 10
 cancellable = false
 guard_break = true
-block_punishable = true
+screenshake_amount = 6
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 16 )
 start_tick = 12
@@ -3146,7 +3154,7 @@ y = -4
 width = 25
 height = 4
 damage = 19
-hitstun_ticks = 11
+hitstun_ticks = 17
 hitlag_ticks = 5
 cancellable = false
 plus_frames = 1
@@ -3235,8 +3243,24 @@ speed = "10"
 x_modifier = "1.05"
 
 [node name="AirDash" parent="StateMachine" index="68"]
-interrupt_from_string = ""
-speed = "10"
+script = ExtResource( 292 )
+__meta__ = {
+"_editor_description_": ""
+}
+title = "Slop Dash"
+button_texture = ExtResource( 293 )
+air_type = 2
+interrupt_from_string = "Aerial
+Grounded
+AerialMovement
+GroundedMovement"
+interrupt_into_string = "Aerial
+Grounded
+Fall
+ForwardDashAttack"
+speed = "14"
+fric = "0.03"
+forward_dash_name = "AirDash"
 
 [node name="Grabbed" parent="StateMachine" index="75"]
 anim_length = 4
@@ -3275,23 +3299,21 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 81 ): {
-"x": -11,
-"y": -6
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
 },
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
 },
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
+ExtResource( 81 ): {
+"x": -11,
+"y": -6
 }
 }
 land_cancel = true
 min_land_cancel_frame = 20
-interrupt_into_string = "Grounded
-Aerial"
 release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
@@ -3314,8 +3336,6 @@ enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 land_cancel = true
 min_land_cancel_frame = 20
-interrupt_into_string = "Grounded
-Aerial"
 release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
@@ -3338,12 +3358,11 @@ enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 land_cancel = true
 min_land_cancel_frame = 20
-interrupt_into_string = "Grounded
-Aerial"
 release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
 dir_y = "1.0"
+hard_knockdown = true
 di_modifier = "1.5"
 
 [node name="AirBackThrow" parent="StateMachine" index="84"]
@@ -3362,12 +3381,11 @@ enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 land_cancel = true
 min_land_cancel_frame = 20
-interrupt_into_string = "Grounded
-Aerial"
 release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
 dir_y = "1.0"
+hard_knockdown = true
 di_modifier = "1.5"
 
 [node name="AirDownThrow" parent="StateMachine" index="85"]

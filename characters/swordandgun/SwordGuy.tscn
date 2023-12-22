@@ -1,4 +1,4 @@
-[gd_scene load_steps=336 format=2]
+[gd_scene load_steps=337 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -331,6 +331,7 @@
 [ext_resource path="res://sound/common/swish2.wav" type="AudioStream" id=329]
 [ext_resource path="res://characters/swordandgun/states/HurtAerial.gd" type="Script" id=330]
 [ext_resource path="res://characters/swordandgun/states/Stinger.gd" type="Script" id=331]
+[ext_resource path="res://characters/CommandAt.gd" type="Script" id=332]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -822,7 +823,8 @@ shifted_last_frame
 lasso_parried
 temporal_round
 milk_toggled
-burst_cancel_combo"
+burst_cancel_combo
+shifted_this_turn"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -1039,6 +1041,7 @@ enter_sfx = ExtResource( 241 )
 enter_sfx_volume = -10.0
 button_texture = ExtResource( 264 )
 flip_with_facing = true
+air_type = 2
 iasa_at = 12
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1156,7 +1159,7 @@ script = ExtResource( 113 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 12
+anim_length = 13
 particle_scene = ExtResource( 131 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
@@ -1761,9 +1764,6 @@ anim_length = 20
 force_dir_x = "1.0"
 force_speed = "8.0"
 force_tick = 4
-host_commands = {
-10: "try_shoot"
-}
 title = "Horiz. Slash"
 type = 1
 button_texture = ExtResource( 153 )
@@ -1775,7 +1775,12 @@ hit_cancel_into_string = "GroundedAttack
 GroundedSpecial
 GroundedSuper"
 
-[node name="Hitbox" type="Node2D" parent="StateMachine/HSlash" index="0"]
+[node name="HostCommand" type="Node" parent="StateMachine/HSlash" index="0"]
+script = ExtResource( 332 )
+tick = 10
+command = "try_shoot"
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/HSlash" index="1"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 45
@@ -1786,14 +1791,13 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 2
-plus_frames = -1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
 start_tick = 6
 active_ticks = 2
 
-[node name="Hitbox2" type="Node2D" parent="StateMachine/HSlash" index="1"]
+[node name="Hitbox2" type="Node2D" parent="StateMachine/HSlash" index="2"]
 z_index = 1000
 script = ExtResource( 83 )
 x = 81
@@ -1804,7 +1808,6 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 2
-plus_frames = -1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1821,9 +1824,6 @@ anim_length = 20
 force_dir_x = "1.0"
 force_speed = "8.0"
 force_tick = 4
-host_commands = {
-10: "try_shoot"
-}
 title = "Horiz. Slash"
 type = 1
 data_ui_scene = ExtResource( 290 )
@@ -1848,7 +1848,6 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
-plus_frames = -1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
@@ -1866,12 +1865,16 @@ damage = 100
 hitstun_ticks = 13
 victim_hitlag = 4
 damage_proration = 1
-plus_frames = -1
 hit_height = 0
 whiff_sound = ExtResource( 140 )
 hit_sound = ExtResource( 145 )
 start_tick = 8
 active_ticks = 2
+
+[node name="HostCommand" type="Node" parent="StateMachine/HSlash2" index="2"]
+script = ExtResource( 332 )
+tick = 10
+command = "try_shoot"
 
 [node name="HSlashUp" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 285 )
@@ -1883,9 +1886,6 @@ anim_length = 20
 force_dir_x = "1.0"
 force_speed = "8.0"
 force_tick = 4
-host_commands = {
-10: "try_shoot"
-}
 title = "Horiz. Slash"
 type = 1
 button_texture = ExtResource( 153 )
@@ -1976,6 +1976,11 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 2
 
+[node name="HostCommand" type="Node" parent="StateMachine/HSlashUp" index="4"]
+script = ExtResource( 332 )
+tick = 10
+command = "try_shoot"
+
 [node name="VSlash" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 59 )
 apply_forces = true
@@ -1986,9 +1991,6 @@ anim_length = 30
 force_dir_x = "1.0"
 force_speed = "10.0"
 force_tick = 2
-host_commands = {
-12: "try_shoot"
-}
 earliest_hitbox = 9
 title = "Vert. Slash"
 type = 1
@@ -2025,6 +2027,11 @@ grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
 
+[node name="HostCommand" type="Node" parent="StateMachine/VSlash" index="1"]
+script = ExtResource( 332 )
+tick = 14
+command = "try_shoot"
+
 [node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 132 )
 apply_forces = true
@@ -2032,9 +2039,6 @@ apply_fric = true
 anim_length = 32
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
-host_commands = {
-12: "try_shoot"
-}
 title = "Upward Swipe"
 type = 1
 button_texture = ExtResource( 155 )
@@ -2077,9 +2081,6 @@ sprite_animation = "UpwardSwipe"
 anim_length = 32
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
-host_commands = {
-12: "try_shoot"
-}
 throw_positions = {
 12: "try_shoot"
 }
@@ -2128,9 +2129,6 @@ anim_length = 30
 force_dir_x = "1.0"
 force_speed = "14.0"
 force_tick = 1
-host_commands = {
-13: "try_shoot"
-}
 title = "Stinger"
 type = 1
 button_texture = ExtResource( 156 )
@@ -2172,6 +2170,11 @@ knockdown_extends_hitstun = false
 wall_slam = true
 start_tick = 11
 active_ticks = 2
+
+[node name="HostCommand" type="Node" parent="StateMachine/Stinger" index="1"]
+script = ExtResource( 332 )
+tick = 13
+command = "try_shoot"
 
 [node name="Impale" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 127 )
@@ -2502,7 +2505,7 @@ script = ExtResource( 32 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 20
+anim_length = 16
 sfx = ExtResource( 174 )
 sfx_tick = 5
 sfx_volume = -8.0
@@ -2554,9 +2557,6 @@ endless = true
 force_dir_y = "1.0"
 force_speed = "6.0"
 force_tick = 8
-host_commands = {
-14: "try_shoot"
-}
 title = "Downward Cleave"
 type = 1
 button_texture = ExtResource( 261 )
@@ -2597,6 +2597,11 @@ knockdown_extends_hitstun = false
 start_tick = 9
 always_on = true
 
+[node name="HostCommand" type="Node" parent="StateMachine/DownwardCleave" index="1"]
+script = ExtResource( 332 )
+tick = 16
+command = "try_shoot"
+
 [node name="DownwardCleaveGround" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 259 )
 apply_forces = true
@@ -2607,9 +2612,6 @@ endless = true
 force_dir_y = "1.0"
 force_speed = "6.0"
 force_tick = 8
-host_commands = {
-12: "try_shoot"
-}
 earliest_hitbox = 12
 title = "Downward Cleave"
 type = 1
@@ -2649,12 +2651,14 @@ knockdown = true
 start_tick = 11
 always_on = true
 
+[node name="HostCommand" type="Node" parent="StateMachine/DownwardCleaveGround" index="1"]
+script = ExtResource( 332 )
+tick = 14
+command = "try_shoot"
+
 [node name="VAirSlash" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 95 )
 anim_length = 18
-host_commands = {
-7: "try_shoot"
-}
 title = "Vert. Slash"
 type = 1
 button_texture = ExtResource( 154 )
@@ -2688,6 +2692,11 @@ knockback = "4.0"
 start_tick = 5
 active_ticks = 2
 
+[node name="HostCommand" type="Node" parent="StateMachine/VAirSlash" index="1"]
+script = ExtResource( 332 )
+tick = 9
+command = "try_shoot"
+
 [node name="HAirSlash" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 189 )
 apply_forces = true
@@ -2695,9 +2704,6 @@ apply_fric = true
 apply_grav = true
 anim_length = 19
 force_dir_x = "1.0"
-host_commands = {
-10: "try_shoot"
-}
 title = "Horiz. Slash"
 type = 1
 button_texture = ExtResource( 153 )
@@ -2731,6 +2737,11 @@ knockback = "8"
 start_tick = 6
 active_ticks = 4
 
+[node name="HostCommand" type="Node" parent="StateMachine/HAirSlash" index="1"]
+script = ExtResource( 332 )
+tick = 12
+command = "try_shoot"
+
 [node name="PistolWhip" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 326 )
 __meta__ = {
@@ -2741,14 +2752,10 @@ apply_fric = true
 apply_grav = true
 anim_length = 22
 sfx = ExtResource( 322 )
-host_commands = {
-12: "try_shoot"
-}
 title = "Pistol Whip"
 type = 1
 button_texture = ExtResource( 323 )
 air_type = 1
-land_cancel = true
 neutral_only = true
 self_hit_cancellable = false
 self_interruptable = false
@@ -2912,9 +2919,6 @@ anim_length = 18
 force_dir_x = "1.0"
 force_speed = "6.0"
 sfx = ExtResource( 322 )
-host_commands = {
-12: "try_shoot"
-}
 title = "Pistol Whip"
 type = 1
 button_texture = ExtResource( 323 )
@@ -3076,14 +3080,10 @@ apply_grav = true
 sprite_animation = "PistolWhip"
 anim_length = 22
 sfx = ExtResource( 322 )
-host_commands = {
-12: "try_shoot"
-}
 title = "Pistol Whip"
 type = 1
 button_texture = ExtResource( 323 )
 air_type = 1
-land_cancel = true
 combo_only = true
 self_hit_cancellable = false
 self_interruptable = false
@@ -3234,9 +3234,6 @@ anim_length = 18
 force_dir_x = "1.0"
 force_speed = "6.0"
 sfx = ExtResource( 322 )
-host_commands = {
-12: "try_shoot"
-}
 title = "Pistol Whip"
 type = 1
 button_texture = ExtResource( 323 )
@@ -3412,7 +3409,7 @@ title = "Spot Dodge"
 type = 4
 button_texture = ExtResource( 305 )
 air_type = 2
-iasa_at = 9
+iasa_at = 11
 self_interruptable = false
 reversible = false
 interrupt_from_string = "Grounded
@@ -3690,6 +3687,7 @@ button_texture = ExtResource( 137 )
 air_type = 2
 uses_air_movement = true
 iasa_at = 9
+interruptible_on_opponent_turn = true
 self_interruptable = false
 reversible = false
 interrupt_from_string = "Grounded
@@ -3777,7 +3775,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Holster"
-anim_length = 10
+anim_length = 13
 title = "Holster"
 type = 2
 button_texture = ExtResource( 160 )
@@ -3848,7 +3846,7 @@ apply_fric = true
 apply_grav = true
 fallback_state = "SlowHolster"
 sprite_animation = "GunShoot2"
-anim_length = 10
+anim_length = 12
 title = "Shoot"
 type = 2
 data_ui_scene = ExtResource( 314 )
@@ -3926,10 +3924,68 @@ knockback = "6.0"
 start_tick = 4
 active_ticks = 1
 
-[node name="TimeBullet" type="Node2D" parent="StateMachine" index="61"]
+[node name="PointBlank" type="Node2D" parent="StateMachine" index="61"]
+script = ExtResource( 313 )
+__meta__ = {
+"_editor_description_": ""
+}
+apply_forces = true
+apply_fric = true
+apply_grav = true
+fallback_state = "SlowHolster"
+sprite_animation = "GunShoot2"
+anim_length = 12
+earliest_hitbox = 5
+title = "Point Blank"
+type = 2
+data_ui_scene = ExtResource( 314 )
+air_type = 2
+dynamic_iasa = false
+can_feint_if_possible = false
+interrupt_from_string = "Gun
+LassoThrow
+"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial
+Shoot
+"
+interrupt_exceptions_string = "ShootDodge2"
+release_opponent_on_startup = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/PointBlank" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+width = 10
+height = 10
+damage = 140
+damage_in_combo = 95
+hitstun_ticks = 25
+victim_hitlag = 12
+cancellable = false
+can_clash = false
+plus_frames = 2
+hit_height = 0
+hit_sound = ExtResource( 144 )
+dir_y = "-0.50"
+knockback = "2"
+start_tick = 4
+active_ticks = 1
+
+[node name="HostCommand" type="Node" parent="StateMachine/PointBlank" index="1"]
+script = ExtResource( 332 )
+tick = 2
+command = "start_throw_invulnerability"
+
+[node name="HostCommand2" type="Node" parent="StateMachine/PointBlank" index="2"]
+script = ExtResource( 332 )
+tick = 4
+command = "end_throw_invulnerability"
+
+[node name="TimeBullet" type="Node2D" parent="StateMachine" index="62"]
 script = ExtResource( 111 )
 sprite_animation = "GunShoot2"
-anim_length = 10
+anim_length = 12
 sfx = ExtResource( 70 )
 sfx_tick = 4
 sfx_volume = -6.0
@@ -3949,7 +4005,7 @@ super_level = 2
 super_freeze_ticks = 5
 temporal = true
 
-[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="62"]
+[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="63"]
 script = ExtResource( 169 )
 reset_momentum = true
 endless = true
@@ -3988,7 +4044,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 
-[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="63"]
+[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="64"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -3997,9 +4053,6 @@ anim_length = 18
 force_dir_x = "1.0"
 force_speed = "5.0"
 force_tick = 6
-host_commands = {
-9: "try_shoot"
-}
 title = "Ankle Cutter"
 type = 1
 button_texture = ExtResource( 217 )
@@ -4034,7 +4087,12 @@ knockdown_extends_hitstun = false
 start_tick = 7
 active_ticks = 2
 
-[node name="BackSlash" type="Node2D" parent="StateMachine" index="64"]
+[node name="HostCommand" type="Node" parent="StateMachine/AnkleCutter" index="1"]
+script = ExtResource( 332 )
+tick = 11
+command = "try_shoot"
+
+[node name="BackSlash" type="Node2D" parent="StateMachine" index="65"]
 script = ExtResource( 209 )
 apply_forces = true
 apply_fric = true
@@ -4116,7 +4174,7 @@ wall_slam = true
 start_tick = 8
 active_ticks = 1
 
-[node name="DashForward1k" type="Node2D" parent="StateMachine" index="86"]
+[node name="DashForward1k" type="Node2D" parent="StateMachine" index="87"]
 script = ExtResource( 311 )
 __meta__ = {
 "_editor_description_": ""
@@ -4154,7 +4212,7 @@ spawn_particle = false
 script = ExtResource( 310 )
 method = "has_1k_cuts"
 
-[node name="DashForward" parent="StateMachine" index="90"]
+[node name="DashForward" parent="StateMachine" index="91"]
 loop_animation = true
 absolute_loop = true
 enter_force_dir_x = "1.0"
@@ -4176,13 +4234,13 @@ script = ExtResource( 310 )
 method = "has_1k_cuts"
 inverse = true
 
-[node name="ChargeDashForward" parent="StateMachine" index="91"]
+[node name="ChargeDashForward" parent="StateMachine" index="92"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="92"]
+[node name="DashBackward" parent="StateMachine" index="93"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -4197,26 +4255,26 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="94"]
+[node name="DashStartup" parent="StateMachine" index="95"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="95"]
+[node name="Jump" parent="StateMachine" index="96"]
 speed = "8.5"
 
-[node name="ChargeDash" parent="StateMachine" index="96"]
+[node name="ChargeDash" parent="StateMachine" index="97"]
 fallback_state = "SuperDash"
 
-[node name="SuperJump" parent="StateMachine" index="97"]
+[node name="SuperJump" parent="StateMachine" index="98"]
 y_modifier = "0.8"
 
-[node name="DoubleJump" parent="StateMachine" index="98"]
+[node name="DoubleJump" parent="StateMachine" index="99"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="99"]
+[node name="AirDash" parent="StateMachine" index="100"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="HurtAerial" parent="StateMachine" index="104"]
+[node name="HurtAerial" parent="StateMachine" index="105"]
 script = ExtResource( 330 )
 __meta__ = {
 "_editor_description_": ""
@@ -4246,31 +4304,31 @@ _c_Grouping = 1
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 _c_Grouping = 1
 
-[node name="ForwardThrow" parent="StateMachine" index="112"]
+[node name="ForwardThrow" parent="StateMachine" index="113"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="BackThrow" parent="StateMachine" index="113"]
+[node name="BackThrow" parent="StateMachine" index="114"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirForwardThrow" parent="StateMachine" index="114"]
+[node name="AirForwardThrow" parent="StateMachine" index="115"]
 hitstun_ticks = 17
 knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirBackThrow" parent="StateMachine" index="115"]
+[node name="AirBackThrow" parent="StateMachine" index="116"]
 hitstun_ticks = 17
 knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="116"]
+[node name="AirDownThrow" parent="StateMachine" index="117"]
 hitstun_ticks = 17
 knockback = "14"
 dir_x = "1.0"
@@ -4278,7 +4336,7 @@ dir_y = "1.00"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="Taunt" parent="StateMachine" index="118"]
+[node name="Taunt" parent="StateMachine" index="119"]
 script = ExtResource( 255 )
 reset_momentum = true
 anim_length = 61
@@ -4287,6 +4345,7 @@ force_speed = "2.0"
 force_tick = 23
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
+iasa_on_hit = 25
 hit_cancel_into_string = "Grounded
 Aerial"
 
@@ -4298,10 +4357,13 @@ y = -27
 width = 7
 height = 5
 damage = 20
+hitstun_ticks = 34
+cancellable = false
+block_cancel_allowed = false
 start_tick = 22
 active_ticks = 2
 
-[node name="Guntrick" type="Node2D" parent="StateMachine" index="119"]
+[node name="Guntrick" type="Node2D" parent="StateMachine" index="120"]
 script = ExtResource( 255 )
 apply_forces = true
 apply_fric = true
@@ -4314,12 +4376,13 @@ force_speed = "2.0"
 force_tick = 23
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
-title = "Hustle"
+title = "Gun Trick"
 type = 4
 button_texture = ExtResource( 327 )
 air_type = 2
+iasa_on_hit = 25
 interruptible_on_opponent_turn = true
-next_state_on_hold = false
+next_state_on_hold_on_opponent_turn = true
 can_feint_if_possible = false
 interrupt_from_string = "Guntrick"
 interrupt_into_string = "Gun
@@ -4330,7 +4393,8 @@ Teleport"
 hit_cancel_into_string = "Grounded
 Aerial"
 interrupt_exceptions_string = "Hustle
-Guntrick"
+Guntrick
+FastTeleport"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Guntrick" index="0"]
 z_index = 1000
@@ -4340,5 +4404,9 @@ y = -27
 width = 7
 height = 5
 damage = 20
+hitstun_ticks = 34
+cancellable = false
+block_cancel_allowed = false
+plus_frames = 1
 start_tick = 22
 active_ticks = 2

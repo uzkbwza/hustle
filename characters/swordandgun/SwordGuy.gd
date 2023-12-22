@@ -48,6 +48,7 @@ var ticks_until_time_shift = 0
 var lasso_parried = false
 var default_max_air_speed = "9"
 var milk_toggled = false
+var shifted_this_turn = false
 
 func _ready():
 	shooting_arm.set_material(sprite.get_material())
@@ -63,8 +64,9 @@ func copy_to(f):
 	.copy_to(f)
 	f.bullet_cancelling = bullet_cancelling
 
-func get_barrel_location(angle):
-	var barrel_location = fixed.rotate_vec(BARREL_LOCATION_X, BARREL_LOCATION_Y, angle)
+func get_barrel_location(angle, modifier="1.0"):
+	var vec = fixed.rotate_vec(BARREL_LOCATION_X, BARREL_LOCATION_Y, angle)
+	var barrel_location = fixed.vec_mul(vec.x, vec.y, modifier)
 	barrel_location.y = fixed.sub(barrel_location.y, "24")
 	return barrel_location
 
@@ -91,13 +93,6 @@ func end_1k_cuts_buff():
 	max_air_speed = default_max_air_speed
 	chara.set_max_air_speed(default_max_air_speed)
 
-func process_continue():
-#	if previous_state() and previous_state().state_name == "Shift":
-#		queued_action = current_state().fallback_state
-#		queued_data = {}
-#		return true
-	return false
-
 func tick():
 	if after_image_object:
 		var obj = obj_from_name(after_image_object)
@@ -112,6 +107,7 @@ func tick():
 				set_grounded(obj.is_grounded())
 				if !obj.is_grounded():
 					move_directly(0, -1)
+				shifted_this_turn = true
 				change_state("Shift")
 			elif current_state().state_name == "Shift":
 				shifting = false
@@ -124,15 +120,16 @@ func tick():
 			if obj:
 				detonating = false
 				obj.detonating = true
-			if !milk_toggled:
-				milk_toggled = true
-				super_effect(10)
-				for i in range(DRIFT_SUPERS):
-					use_super_bar()
-				combo_supers += 1
-				hitlag_ticks += 4
-				set_vel(get_vel().x, "0")
-			spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
+				if !milk_toggled:
+					milk_toggled = true
+					super_effect(10)
+	#				use_air_movement()
+					for i in range(DRIFT_SUPERS):
+						use_super_bar()
+					combo_supers += 1
+					hitlag_ticks += 4
+					set_vel(get_vel().x, "0")
+				spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
 
 
 	if shifted_last_frame:
@@ -192,6 +189,8 @@ func process_extra(extra):
 		detonating = extra.detonate
 	if extra.has("shift"):
 		shifting = extra.shift
+		if shifting:
+			shifted_this_turn = true
 
 func can_bullet_cancel():
 	return bullets_left > 0 and has_gun

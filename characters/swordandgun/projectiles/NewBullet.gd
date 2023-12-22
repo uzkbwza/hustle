@@ -2,7 +2,7 @@ extends BaseProjectile
 
 class_name NewBullet
 
-const SPEED = "50" 
+const SPEED = "50"
 const NEW_BULLET = true
 
 export var color = Color("f2ff31")

@@ -860,32 +860,31 @@ ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 }
 }
 character_portrait = ExtResource( 63 )
 character_portrait2 = ExtResource( 99 )
 player_info_scene = ExtResource( 4 )
 player_extra_params_scene = ExtResource( 3 )
-di_modifier = "1.0"
 use_extra_color_1 = true
 extra_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
 use_extra_color_2 = true
@@ -964,7 +963,7 @@ script = ExtResource( 216 )
 [node name="Start" parent="StateMachine" index="0"]
 title = "Orb"
 
-[node name="Roll" parent="StateMachine" index="6"]
+[node name="Roll" parent="StateMachine" index="7"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
@@ -1944,25 +1943,25 @@ ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 }
 }
 type = 1
@@ -2071,7 +2070,6 @@ damage = 120
 minimum_damage = 10
 hitstun_ticks = 20
 hitlag_ticks = 8
-damage_proration = 1
 plus_frames = 3
 screenshake_amount = 8
 hit_sound = ExtResource( 179 )
@@ -2568,52 +2566,52 @@ knockback = "4.0"
 start_tick = 6
 active_ticks = 2
 
-[node name="Landing" parent="StateMachine" index="51"]
+[node name="Landing" parent="StateMachine" index="52"]
 __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="TechRoll" parent="StateMachine" index="55"]
+[node name="TechRoll" parent="StateMachine" index="56"]
 sprite_anim_length = -1
 ticks_per_frame = 2
 loop_animation = false
 
-[node name="DashForward" parent="StateMachine" index="57"]
+[node name="DashForward" parent="StateMachine" index="58"]
 dash_speed = 8
 
-[node name="ChargeDashForward" parent="StateMachine" index="58"]
+[node name="ChargeDashForward" parent="StateMachine" index="59"]
 dash_speed = 8
 
-[node name="DashBackward" parent="StateMachine" index="59"]
+[node name="DashBackward" parent="StateMachine" index="60"]
 dash_speed = 8
 stop_frame = 9
 
-[node name="Jump" parent="StateMachine" index="62"]
+[node name="Jump" parent="StateMachine" index="63"]
 speed = "8"
 y_modifier = "1.2"
 
-[node name="DoubleJump" parent="StateMachine" index="65"]
+[node name="DoubleJump" parent="StateMachine" index="66"]
 data_ui_scene = ExtResource( 126 )
 speed = "8"
 y_modifier = "1.1"
 
-[node name="AirDash" parent="StateMachine" index="66"]
+[node name="AirDash" parent="StateMachine" index="67"]
 interrupt_from_string = ""
 speed = "8"
 
-[node name="Hold" parent="StateMachine" index="74"]
+[node name="Hold" parent="StateMachine" index="75"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="AirHold" parent="StateMachine" index="75"]
+[node name="AirHold" parent="StateMachine" index="76"]
 start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
 
-[node name="ForwardThrow" parent="StateMachine" index="79"]
+[node name="ForwardThrow" parent="StateMachine" index="80"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2627,7 +2625,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="BackThrow" parent="StateMachine" index="80"]
+[node name="BackThrow" parent="StateMachine" index="81"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2641,7 +2639,7 @@ dir_y = "-0.10"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirForwardThrow" parent="StateMachine" index="81"]
+[node name="AirForwardThrow" parent="StateMachine" index="82"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2653,7 +2651,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirBackThrow" parent="StateMachine" index="82"]
+[node name="AirBackThrow" parent="StateMachine" index="83"]
 anim_length = 28
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2665,7 +2663,7 @@ knockback = "20.0"
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="AirDownThrow" parent="StateMachine" index="83"]
+[node name="AirDownThrow" parent="StateMachine" index="84"]
 anim_length = 24
 sfx_tick = 8
 sfx_volume = -8.0
@@ -2676,11 +2674,11 @@ release_throw_pos_y = -5
 screenshake_amount = 4
 release_sfx = ExtResource( 141 )
 
-[node name="ThrowTech" parent="StateMachine" index="84"]
+[node name="ThrowTech" parent="StateMachine" index="85"]
 particle_scene = ExtResource( 136 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true
 
-[node name="Taunt" parent="StateMachine" index="85"]
+[node name="Taunt" parent="StateMachine" index="86"]
 script = ExtResource( 257 )
 apply_fric = false

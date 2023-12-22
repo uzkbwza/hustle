@@ -9,7 +9,7 @@ var jumped = false
 func _enter():
 	jumped = false
 
-func _frame_6():
+func _frame_5():
 	host.start_projectile_invulnerability()
 
 func _frame_16():

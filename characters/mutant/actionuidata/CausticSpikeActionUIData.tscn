@@ -8,6 +8,7 @@
 [node name="Direction" parent="." index="0" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-default_value = Vector2( 1, 0 )
+margin_right = 60.0
+margin_bottom = 66.0
 snap_angles = 2
 snap_align_to_limit_center = false

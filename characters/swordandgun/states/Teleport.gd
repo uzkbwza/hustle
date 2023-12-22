@@ -49,6 +49,8 @@ func _frame_0():
 		}
 	starting_dir = host.get_opponent_dir()
 	iasa_at = 9
+	if state_name == "SpotDodge":
+		iasa_at = 12
 	backwards_stall_frames = 0
 	if !shift:
 		host.start_throw_invulnerability()
@@ -57,6 +59,7 @@ func _frame_0():
 	var scaled = xy_to_dir(data.x, data.y)
 	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
 	x_dist = fixed.abs(scaled.x)
+	next_state_on_hold_on_opponent_turn = false
 
 	if foresight:
 		iasa_at = 7
@@ -64,7 +67,7 @@ func _frame_0():
 		return
 	
 	if super_level > 0:
-		iasa_at = 8
+		iasa_at = 11 if host.combo_count <= 0 else 8
 		backwards_stall_frames = 2
 #		starting_iasa_at = iasa_at
 #		host.start_invulnerability()
@@ -138,6 +141,7 @@ func _frame_5():
 		host.use_buffer()
 	
 func _frame_6():
+	next_state_on_hold_on_opponent_turn = true
 	if starting_dir != host.get_opponent_dir() and host.combo_count <= 0 and super_level <= 0 and !foresight and !in_place:
 		iasa_at = iasa_at + CROSS_THROUGH_RECOVERY
 		var my_pos = host.get_pos()

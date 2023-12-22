@@ -153,8 +153,8 @@ func _physics_process(_delta):
 		drain_health_trail(p1_health_bar_trail, p1.trail_hp)
 		drain_health_trail(p2_health_bar_trail, p2.trail_hp)
 
-		p1_healthbar.value = max(p1.hp, 0)
-		p2_healthbar.value = max(p2.hp, 0)
+		p1_healthbar.value = max(p1.get_visual_hp(), 0)
+		p2_healthbar.value = max(p2.get_visual_hp(), 0)
 		if p2_prev_super < p2.supers_available:
 			p2_super_meter.value = p2.MAX_SUPER_METER
 			active_p2_super_meter.value = p2.MAX_SUPER_METER
@@ -180,8 +180,8 @@ func _physics_process(_delta):
 			var gg: Game = game.ghost_game
 			var p1_ghost = gg.get_player(1)
 			var p2_ghost = gg.get_player(2)
-			p1_ghost_health_bar.value = max(p1_ghost.hp, 0)
-			p2_ghost_health_bar.value = max(p2_ghost.hp, 0)
+			p1_ghost_health_bar.value = max(p1_ghost.get_visual_hp(), 0)
+			p2_ghost_health_bar.value = max(p2_ghost.get_visual_hp(), 0)
 			drain_health_trail(p1_ghost_health_bar_trail, p1_ghost.trail_hp)
 			drain_health_trail(p2_ghost_health_bar_trail, p2_ghost.trail_hp)
 		else:

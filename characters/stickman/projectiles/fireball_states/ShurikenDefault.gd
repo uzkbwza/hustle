@@ -11,6 +11,8 @@ func _tick():
 	for obj_name in host.objs_map:
 		var obj = host.objs_map[obj_name]
 		if obj and obj != host and !obj.disabled and obj.id == host.id and obj.is_in_group("NinjaShuriken") and host.hurtbox.overlaps(obj.hurtbox):
+			if !obj.can_stack:
+				continue
 			var stackriken = host.spawn_object(STACKRIKEN_SCENE, 0, 0)
 			var dir1 = fixed.vec_mul(fixed.mul(host.dir_x, str(host.get_facing_int())), host.dir_y, data.speed_modifier)
 			var dir2 = fixed.vec_mul(fixed.mul(obj.dir_x, str(obj.get_facing_int())), obj.dir_y, obj.current_state().data.speed_modifier)

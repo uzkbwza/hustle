@@ -703,7 +703,6 @@ func limit_y_speed(limit):
 		var new_vel = fixed.vec_mul(str(fixed.sign(vel.y)), limit)
 		set_vel(vel.x, new_vel)
 
-
 func get_object_dir(obj):
 	var dir = Utils.int_sign(obj.get_pos().x - get_pos().x)
 	if dir == 0:

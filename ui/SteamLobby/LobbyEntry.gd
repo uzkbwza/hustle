@@ -20,7 +20,7 @@ func set_data(lobby_data):
 	lobby_name.text = ProfanityFilter.filter(lobby_data.name)
 	game_version.text = lobby_data.version
 	custom_characters_enabled.text = lobby_data.charloader_enabled_text
-	custom_characters_enabled.modulate = Color.green if lobby_data.charloader_enabled else Color.gray
+	custom_characters_enabled.modulate = Color.green if lobby_data.charloader_enabled else Color.white
 	player_count.text = str(lobby_data.player_count) + "/" + str(lobby_data.max_players)
 	lobby_id = lobby_data.id
 	self.lobby_data = lobby_data 

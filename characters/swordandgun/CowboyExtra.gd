@@ -62,7 +62,14 @@ func update_tp_button():
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
 	if move_state:
-		$"%ShootButton".visible = ("try_shoot" in move_state.host_commands.values()) and fighter.can_bullet_cancel()
+		var state_children = move_state.get_children()
+		var has_command = false
+		for child in state_children:
+			if child is HostCommand:
+				if child.command == "try_shoot":
+					has_command = true
+					break
+		$"%ShootButton".visible = (has_command or "try_shoot" in move_state.host_commands.values()) and fighter.can_bullet_cancel()
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
 		update_tp_button()

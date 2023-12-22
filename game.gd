@@ -1456,11 +1456,15 @@ func ghost_tick():
 			p2.block_frame_label.show()
 			p2.block_frame_label.text = "Parry %s @ %sf" % [p2.ghost_wrong_block, p2.ghost_blocked_melee_attack]
 	
+		var p1_tick = ghost_simulated_ticks+(p1.hitlag_ticks if !ghost_p2_actionable else 0)
 		if (p1.state_interruptable or p1.dummy_interruptable or p1.state_hit_cancellable) and not ghost_p1_actionable:
-			p1_ghost_ready_tick = ghost_simulated_ticks+(p1.hitlag_ticks if !ghost_p2_actionable else 0)
+			p1_ghost_ready_tick = p1_tick
 #			p1_ghost_ready_tick = ghost_advantage_tick+(p1.hitlag_ticks*ghost_multiplier if !ghost_p2_actionable else 0)
 		else:
 			p1_ghost_ready_tick = null
+		if p1.ghost_got_hit and !p1.hit_frame_label.visible:
+			p1.hit_frame_label.show()
+			p1.hit_frame_label.text = "Hit @ %sf" % p1.turn_frames
 		if(ghost_simulated_ticks==p1_ghost_ready_tick):
 #		if(ghost_tick/ghost_multiplier==p1_ghost_ready_tick):
 			p1.ghost_ready_tick = p1_ghost_ready_tick
@@ -1490,11 +1494,15 @@ func ghost_tick():
 				
 #			else:
 #				ghost_actionable_freeze_ticks = 1
+		var p2_tick = ghost_simulated_ticks+(p2.hitlag_ticks if !ghost_p1_actionable else 0)
 		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
-			p2_ghost_ready_tick = ghost_simulated_ticks+(p2.hitlag_ticks if !ghost_p1_actionable else 0)
+			p2_ghost_ready_tick = p2_tick
 #			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
 		else:
 			p2_ghost_ready_tick = null
+		if p2.ghost_got_hit and !p2.hit_frame_label.visible:
+			p2.hit_frame_label.show()
+			p2.hit_frame_label.text = "Hit @ %sf" % p2.turn_frames
 		if(ghost_simulated_ticks==p2_ghost_ready_tick):
 			p2.ghost_ready_tick = p2_ghost_ready_tick
 			p2_ghost_ready_tick = null

@@ -19,6 +19,7 @@ var ground_bounce
 var air_ground_bounce
 var hits_otg
 var damage
+var parriable = true
 var reversible
 var name
 var throw
@@ -177,6 +178,8 @@ func _init(state):
 		followup_state = state.followup_state
 	if state.get("guard_break") != null:
 		guard_break = state.guard_break
+	if state.get("parriable") != null:
+		parriable = state.parriable
 	if state.get("block_punishable") != null:
 		block_punishable = state.block_punishable
 	if state.get("looping") != null:

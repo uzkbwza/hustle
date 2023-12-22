@@ -11,6 +11,7 @@ var mods_w_overwrites = []
 var mods_w_missing_depend = {}
 var active = false
 var charLoaderModDetected = false
+var charFolders = []
 
 func _init():
 #	Steam.steamInit()
@@ -450,6 +451,10 @@ func _verifyMetadata(metadataVar):
 	for key in metadataVar:
 		if key == null:
 			return key +" is empty"
+
+func add_character_folder(path):
+	if !(path in charFolders):
+		charFolders.append(path)
 
 #Valk's script for grabbing all gdscripts from a path
 func get_scripts(path):

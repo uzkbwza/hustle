@@ -52,6 +52,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 material = SubResource( 2 )
 script = ExtResource( 4 )
 max_air_speed = "20"
+extra_state_variables = "can_stack"
 fizzle_on_ceiling = true
 
 [node name="Sprite" parent="Flip" index="0"]

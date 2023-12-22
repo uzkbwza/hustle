@@ -33,7 +33,6 @@ var _Global = Network
 # Character data vars #
 var customCharNumber = 0
 
-var charFolders = []
 var charList = [] # will hold all of the data needed to load every character
 var loadedChars = [] # will hold the name of the characters that are already loaded
 var buttonsToLoad = [] # will hold the same data as charList, but is used only to load buttons. this data gets set on addCustomChar()
@@ -543,8 +542,8 @@ func addCustomChar(_name, _charPath, _bttName = ""):
 		charList.append([_name, _charPath, _bttName])
 		name_to_folder[curFighter] = curModFolder
 		name_to_index[curFighter] = len(charList) - 1
+		ModLoader.add_character_folder(curModFolder)
 
-		charFolders.append(curModFolder)
 
 func addCharButton(_name, _charPath, _bttName = ""):
 	update_fighter_vars(_name, _charPath, _bttName)
@@ -814,7 +813,7 @@ func net_updateModLists():
 	Network.char_mods = []
 	var i = 0
 	for mod in ModLoader.active_mods:
-		if hash_to_folder[mod[0]] in charFolders:
+		if hash_to_folder[mod[0]] in ModLoader.charFolders:
 			Network.char_mods.append(mod[0])
 		else:
 			if (mod[0] in serverMods):

@@ -8,6 +8,8 @@ const FLY_FORCE = "1.65"
 const FORWARD_FLY_SPEED_MODIFIER = "1.0"
 const MAX_FORWARD_FLIGHT_SPEED = "9"
 const MAX_BACKWARD_FLIGHT_SPEED = "5"
+const MAGNET_MIN_BOMB_DIST = 64
+const MAGNET_MIN_TICKS = 10
 const FLY_TICKS = 25
 const MAX_FLY_UP_SPEED = "-6"
 const MIN_FLY_UP_SPEED = "-4"
@@ -18,10 +20,12 @@ const LOIC_GAIN = 5
 const LOIC_GAIN_NO_ARMOR = 5
 const MAGNET_TICKS = 100
 const MAGNET_STRENGTH = "2"
+const MAGNET_BOMB_STRENGTH = "1.6"
 const COMBO_MAGNET_STRENGTH = "1.0"
 const MAGNET_MAX_STRENGTH = "2.0"
 const MAGNET_MIN_STRENGTH = "0.0"
 const MAGNET_CENTER_DIST = "160"
+const BOUNCE_SPEED = "10"
 const MAGNET_RADIUS_DIST = "20"
 const MAGNET_SAFE_DIST = MAGNET_CENTER_DIST
 const MAGNET_MOVEMENT_AMOUNT = "14"
@@ -190,32 +194,17 @@ func big_landing_effect():
 		camera.bump(Vector2.UP, 10, 20 / 60.0)
 
 func magnetize():
-	var my_pos_relative = opponent.obj_local_center(self)
-	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
-	if fixed.gt(dist, "32"):
-
-		var max_dist = fixed.add(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
-		var min_dist = fixed.sub(MAGNET_CENTER_DIST, MAGNET_RADIUS_DIST)
-		var magnet_strength = fixed_map(min_dist, max_dist, MAGNET_MIN_STRENGTH, MAGNET_MAX_STRENGTH, dist)
-		if fixed.lt(magnet_strength, "0"):
-			magnet_strength = "0"
-#		print(magnet_strength)
-
-
-		if combo_count == 0:
-			magnet_strength = fixed.mul(magnet_strength, NEUTRAL_MAGNET_MODIFIER)
-			
-		var dir = fixed.normalized_vec(str(my_pos_relative.x), str(my_pos_relative.y))
-		var force = fixed.vec_mul(dir.x, dir.y, magnet_strength)
-		var direct_movement_amount = fixed.mul(MAGNET_MOVEMENT_AMOUNT, magnet_strength)
-
-#		print(direct_movement_amount)
-
-		var direct_movement = fixed.vec_mul(dir.x, dir.y, direct_movement_amount)
-
-		opponent.apply_force(force.x, force.y if !opponent.is_grounded() else "0")
-		opponent.move_directly(direct_movement.x, direct_movement.y if !opponent.is_grounded() else "0")
-#		if fixed.gt(dist, "90"):
+	var obj = obj_from_name(grenade_object)
+	if obj:
+		var dir = get_object_dir_vec(obj)
+		var force = fixed.vec_mul(dir.x, dir.y, fixed.mul(MAGNET_BOMB_STRENGTH, "-1"))
+		if fixed.round(distance_to(obj)) < MAGNET_MIN_BOMB_DIST:
+			if (MAGNET_TICKS - magnet_ticks_left) > MAGNET_MIN_TICKS:
+				magnet_ticks_left = 1
+		obj.apply_force(force.x, force.y)
+		pass
+	else:
+		magnet_ticks_left = 1
 
 func add_armor_pip():
 	if armor_pips < MAX_ARMOR_PIPS:
@@ -256,10 +245,10 @@ func tick():
 		feinting = false
 
 	if magnet_ticks_left > 0:
-		start_magnet_fx()
+#		start_magnet_fx()
 		magnetize()
 		magnet_ticks_left -= 1
-	if magnet_ticks_left == 0:
+	else:
 		stop_magnet_fx()
 		pass
 	if landed_move:
@@ -382,11 +371,12 @@ func start_magnetizing():
 #		magnet_scale = true
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
-	var my_pos_relative = opponent.obj_local_center(self)
-	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
-	if fixed.gt(dist, MAGNET_CENTER_DIST):
-		opponent.reset_momentum()
-		pass
+	start_magnet_fx()
+#	var my_pos_relative = opponent.obj_local_center(self)
+#	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
+#	if fixed.gt(dist, MAGNET_CENTER_DIST):
+#		opponent.reset_momentum()
+#		pass
 	magnet_installed = false
 #	started_magnet_in_initiative = false
 
@@ -423,14 +413,14 @@ func stop_hustle_fx():
 	$"%HustleEffect".stop_emitting()
 	
 func start_magnet_fx():
-#	$"%MagnetEffect".start_emitting()
-	magnet_polygon.show()
-	magnet_polygon2.show()
+	$"%MagnetEffect".start_emitting()
+#	magnet_polygon.show()
+#	magnet_polygon2.show()
 
 func stop_magnet_fx():
-#	$"%MagnetEffect".stop_emitting()
-	magnet_polygon.hide()
-	magnet_polygon2.hide()
+	$"%MagnetEffect".stop_emitting()
+#	magnet_polygon.hide()
+#	magnet_polygon2.hide()
 	
 func process_extra(extra):
 	.process_extra(extra)
@@ -467,6 +457,15 @@ func process_extra(extra):
 			if nade:
 				if !nade.active:
 					nade.activate()
+					if extra.has("bounce"):
+						if extra.bounce.x != 0 or extra.bounce.y != 0:
+							var speed = BOUNCE_SPEED
+							var force = xy_to_dir(extra.bounce.x, extra.bounce.y, speed)
+							nade.play_sound("Bounce")
+							nade.reset_momentum()
+							nade.apply_force(force.x, force.y)
+
+					
 	if extra.has("pull_enabled") and magnet_installed and !buffer_armor:
 		if extra.pull_enabled:
 			start_magnetizing()
@@ -521,7 +520,7 @@ func on_state_interruptable(state=null):
 		super_armor_installed = false
 	armor_active = false
 
-	
-func _draw():
-	if magnet_ticks_left > 0:
-		draw_arc(Vector2(), float(MAGNET_SAFE_DIST) + Utils.wave(-2, 2, 0.5), 0, TAU, 128, Color("aad440b6"), 3.0)
+#
+#func _draw():
+#	if magnet_ticks_left > 0:
+#		draw_arc(Vector2(), float(MAGNET_SAFE_DIST) + Utils.wave(-2, 2, 0.5), 0, TAU, 128, Color("aad440b6"), 3.0)

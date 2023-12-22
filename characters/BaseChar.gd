@@ -46,6 +46,8 @@ const BURST_ON_DAMAGE_AMOUNT = 5
 const AUTO_PARRY_TICKS = 20
 const SADNESS_IMMUNITY_TICKS = 60
 
+const VISUAL_GUTS_RATIO = 1.5
+
 const MAX_WALL_SLAMS = 3
 
 const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
@@ -153,7 +155,7 @@ const NUDGE_DISTANCE = 20
 
 const PARRY_METER = 50
 
-const METER_GAIN_MODIFIER = "1.0"
+const METER_GAIN_MODIFIER = "0.85"
 
 const CLASH_MOVE_BACK = 3
 
@@ -174,6 +176,7 @@ onready var quitter_label = $"%QuitterLabel"
 onready var velocity_label_container = $VelocityLabelContainer
 onready var grounded_indicator = $GroundedIndicator
 onready var block_frame_label = $BlockFrameLabel
+onready var hit_frame_label = $HitFrameLabel
 
 var input_state = InputState.new()
 
@@ -203,6 +206,7 @@ var max_di_scaling = "6.0"
 var di_combo_limit = 15
 
 var ghost_blocked_melee_attack = -1
+var ghost_got_hit = false
 
 
 var opponent
@@ -420,6 +424,10 @@ func clash():
 	if feints < num_feints:
 		feints += 1
 	emit_signal("clashed")
+
+func get_visual_hp():
+	var ratio = float(hp) / MAX_HEALTH
+	return MAX_HEALTH * pow(ratio, VISUAL_GUTS_RATIO)
 
 func init(pos=null):
 	.init(pos)
@@ -898,7 +906,7 @@ func debug_text():
 #			"flipped": reverse_state,
 #			"real": current_state().current_real_tick,
 #			"blocked_hitbox_plus_frames": blocked_hitbox_plus_frames,
-#			"blockstun_ticks": blockstun_ticks,
+			"blockstun_ticks": blockstun_ticks,
 			"hitlag_ticks": hitlag_ticks,
 #			"feinting": feinting,
 			"proration": combo_proration,
@@ -1206,7 +1214,7 @@ func hit_by(hitbox, force_hit=false):
 	if hitbox.throw and not is_otg():
 		return thrown_by(hitbox)
 	if force_hit or (not can_parry_hitbox(hitbox)):
-		
+		ghost_got_hit = true
 		match hitbox.hitbox_type:
 			Hitbox.HitboxType.Normal:
 				launched_by(hitbox)
@@ -1257,7 +1265,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
 				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
-				var perfect_requirement_no_height =  can_perfect_parry() and (!current_state().get_whiffed_block())  and (opponent.current_state().feinting or opponent.feinting or initiative)
+				var perfect_requirement_no_height =  can_perfect_parry() and (!current_state().get_whiffed_block())  and (opponent.current_state().feinting or opponent.feinting or initiative) and hitbox.parriable
 				var perfect_requirement = perfect_requirement_no_height and current_state().matches_hitbox_height(hitbox)
 \
 #				if projectile:
@@ -1275,6 +1283,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				var in_parry_window = (parry_timing == input_timing or input_timing >= 20 and turn_frames >= 20) or (hitbox.hitbox_type == Hitbox.HitboxType.Burst and combo_count > 0)
 	#				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
+				perfect_parry = perfect_parry and hitbox.parriable
 		else:
 			perfect_parry = current_state().can_parry and !current_state().get("push") and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
 
@@ -1417,6 +1426,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
 					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
 
+	
 			blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
 
 			current_state().interruptible_on_opponent_turn = true
@@ -1479,7 +1489,7 @@ func set_block_stun(total_plus_frames, block_hitlag=null):
 		blocked_hitbox_plus_frames = total_plus_frames
 	elif total_plus_frames < 0:
 		opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
-	blockstun_ticks = block_hitlag
+	blockstun_ticks += block_hitlag
 
 
 func parry_effect(location, absolute=false):

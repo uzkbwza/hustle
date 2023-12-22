@@ -66,8 +66,11 @@ func scale_hitstun(hitstun: int):
 
 func hit_by(hitbox):
 	.hit_by(hitbox)
+	if got_hit:
+		return
 	got_hit = true
 	shoot_frame = 2
+	shot = true
 	current_state().f1()
 	var hitter = obj_from_name(hitbox.host)
 	if hitter:

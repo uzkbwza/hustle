@@ -13,6 +13,8 @@ export var dir_x = "3.0"
 export var dir_y = "-5.0"
 export var speed = "2.0"
 export var fric = "0.05"
+export var forward_dash_name = "DashForward"
+export var backward_dash_name = "DashBackward"
 
 var starting_y = 0
 var startup_lag_frames = 0
@@ -32,16 +34,16 @@ func _frame_0():
 	iasa_at = starting_iasa_at
 	if "-" in force.x:
 		if host.get_facing() == "Right" and data.x != 0:
-			anim_name = "DashBackward"
+			anim_name = backward_dash_name
 			back = true
 		else:
-			anim_name = "DashForward"
+			anim_name = forward_dash_name
 	else:
 		if host.get_facing() == "Left" and data.x != 0:
-			anim_name = "DashBackward"
+			anim_name = backward_dash_name
 			back = true
 		else:
-			anim_name = "DashForward"
+			anim_name = forward_dash_name
 	if back and host.combo_count <= 0:
 		backdash_iasa = true
 		beats_backdash = false
@@ -71,6 +73,6 @@ func _tick():
 			if host.get_opponent_dir() != fixed.sign(vel.x):
 				host.set_vel(fixed.mul(vel.x, "0.6"), vel.y)
 
-	var pos = host.get_pos()
+#	var pos = host.get_pos()
 #	if pos.y > -3:
 #		host.set_pos(pos.x, 0)

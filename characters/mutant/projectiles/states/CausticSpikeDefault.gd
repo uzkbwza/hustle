@@ -54,6 +54,8 @@ func _tick():
 
 func _frame_20():
 	host.can_cancel = false
+	custom_x_fric = "0.14"
+	custom_y_fric = "0.14"
 	pass
 
 func _frame_38():

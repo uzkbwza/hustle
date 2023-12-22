@@ -26,7 +26,7 @@ func on_opponent_hit():
 
 func tick():
 	.tick()
-	if get_fighter().opponent.combo_count > 0:
+	if get_fighter().opponent.combo_count > 0 and !("Burst") in get_opponent().current_state().state_name:
 		disable()
 		return
 	if spawn_acid_bubble_cooldown > 0:

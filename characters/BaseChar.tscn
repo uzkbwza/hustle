@@ -1914,7 +1914,24 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="EmoteLabel" type="RichTextLabel" parent="." index="11"]
+[node name="HitFrameLabel" type="Label" parent="." index="10"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -44.0
+margin_top = -49.0
+margin_right = 44.0
+margin_bottom = -38.0
+theme = ExtResource( 47 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+custom_constants/line_spacing = -2
+text = "hit @ xf "
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="EmoteLabel" type="RichTextLabel" parent="." index="12"]
 margin_left = -141.0
 margin_top = -60.0
 margin_right = 141.0
@@ -1929,7 +1946,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="VelocityLabelContainer" type="Node2D" parent="." index="12"]
+[node name="VelocityLabelContainer" type="Node2D" parent="." index="13"]
 z_index = 1024
 
 [node name="VelocityLabel" type="RichTextLabel" parent="VelocityLabelContainer" index="0"]
@@ -1940,7 +1957,7 @@ theme = ExtResource( 47 )
 scroll_active = false
 script = ExtResource( 187 )
 
-[node name="GroundedIndicator" type="Sprite" parent="." index="13"]
+[node name="GroundedIndicator" type="Sprite" parent="." index="14"]
 visible = false
 position = Vector2( 0, 8 )
 z_index = 1000

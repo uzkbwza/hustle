@@ -18,7 +18,7 @@ const SPARK_BOMB_PUSH_DISTANCE = "90"
 const SPARK_EXPLOSION_AIR_SPEED = 25
 const SPARK_EXPLOSION_GROUND_SPEED = 20
 const SPARK_EXPLOSION_DASH_SPEED = 12
-const SPARK_SPEED_FRAMES = 70
+const SPARK_SPEED_FRAMES = 70	
 const SPARK_BOMB_SELF_DAMAGE = 31 
 
 var hover_left = 0
@@ -151,7 +151,7 @@ func on_got_parried():
 func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1):
 	if !projectile:
 		if combo_count < 1:
-			if not "Geyser" in current_state().name:
+			if not "Geyser" in current_state().name and not "Burst" in current_state().name:
 				add_geyser_charge()
 	.incr_combo(scale, projectile, force, combo_scale_amount)
 	

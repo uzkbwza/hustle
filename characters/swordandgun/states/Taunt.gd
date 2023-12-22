@@ -11,6 +11,10 @@ func _ready():
 	pass # Replace with function body.
 
 
+func _frame_15():
+	if state_name == "Guntrick":
+		current_tick += 2
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

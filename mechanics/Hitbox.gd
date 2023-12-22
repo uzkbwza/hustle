@@ -79,6 +79,7 @@ export var allowed_to_hit_own_team = true
 export var _c_Block_Properties = 0
 export var guard_break = false
 export var block_punishable = false
+export var parriable = true
 export var block_cancel_allowed = true
 export(int, -1024, 1024) var plus_frames = 0
 

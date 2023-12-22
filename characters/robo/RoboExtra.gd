@@ -4,8 +4,11 @@ var current_dir = null
 
 var jump_selected
 
+onready var bounce = $"%Bounce"
+
 func _ready():
 	$"%FlyDir".connect("data_changed", self, "emit_signal", ["data_changed"])
+	$"%Bounce".connect("data_changed", self, "emit_signal", ["data_changed"])
 	$"%FlyEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%ArmorEnabled".connect("pressed", self, "emit_signal", ["data_changed"])
 	$"%NadeActive".connect("pressed", self, "emit_signal", ["data_changed"])
@@ -22,7 +25,8 @@ func get_extra():
 		"armor_enabled": $"%ArmorEnabled".pressed,
 		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
 		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
-		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed()
+		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed(),
+		"bounce": bounce.get_data()
 	}
 
 func drive_pressed():
@@ -68,6 +72,7 @@ func update_selected_move(move_state):
 
 func show_options():
 	$"%FlyDir".hide()
+	bounce.hide()
 	$"%FlyEnabled".hide()
 	$"%ArmorEnabled".hide()
 	$"%NadeActive".hide()
@@ -114,6 +119,7 @@ func reset():
 	$"%DriveCancel".set_pressed_no_signal(fighter.stance == "Drive")
 
 func on_data_changed():
+#	bounce.visible = $"%NadeActive".pressed
 #	if $"%ArmorEnabled".pressed and $"%PullEnabled".pressed:
 #		$"%PullEnabled".set_pressed_no_signal(false)
 	pass

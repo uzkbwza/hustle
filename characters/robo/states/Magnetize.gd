@@ -10,4 +10,4 @@ func _frame_0():
 #			host.armor_pips = host.MAX_ARMOR_PIPS
 
 func is_usable():
-	return host.magnet_ticks_left <= 0 and .is_usable()
+	return host.magnet_ticks_left <= 0 and .is_usable() and host.grenade_object != null
