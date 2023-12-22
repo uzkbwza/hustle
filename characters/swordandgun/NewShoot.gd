@@ -86,10 +86,6 @@ func _frame_5():
 		if temporal_round:
 			temporal_round.shoot()
 
-	
-
-
-
 func _frame_6():
 	host.shooting_arm.frame = 2
 

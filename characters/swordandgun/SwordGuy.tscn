@@ -3948,10 +3948,11 @@ LassoThrow
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial
-Shoot
+
 "
 interrupt_exceptions_string = "ShootDodge2"
 release_opponent_on_startup = true
+projectile = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/PointBlank" index="0"]
 z_index = 1000
