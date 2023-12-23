@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=2]
+[gd_scene load_steps=86 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -72,6 +72,8 @@
 [ext_resource path="res://ui/super_bar_small2.png" type="Texture" id=70]
 [ext_resource path="res://DebugContainer.gd" type="Script" id=71]
 [ext_resource path="res://ui/VelocityLabel.gd" type="Script" id=72]
+[ext_resource path="res://ui/nombg.png" type="Texture" id=73]
+[ext_resource path="res://ui/nom.png" type="Texture" id=74]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -2082,6 +2084,7 @@ underline = 1
 margin_top = 335.0
 margin_right = 639.0
 margin_bottom = 359.0
+mouse_filter = 2
 custom_constants/separation = 0
 alignment = 2
 
@@ -2185,6 +2188,34 @@ text = "Incomplete:
 - Idk other stuff
 "
 autowrap = true
+
+[node name="VoteButton" type="Button" parent="UILayer/MainMenu"]
+margin_left = 292.0
+margin_top = 328.0
+margin_right = 365.0
+margin_bottom = 349.0
+hint_tooltip = "pretty please :)"
+mouse_default_cursor_shape = 2
+custom_colors/font_color = Color( 1, 0.476945, 0.88452, 1 )
+text = "VOTE 4 HUSTLE!"
+flat = true
+
+[node name="TextureRect" type="TextureRect" parent="UILayer/MainMenu/VoteButton"]
+show_behind_parent = true
+margin_left = -3.0
+margin_top = -3.0
+margin_right = 77.0
+margin_bottom = 24.0
+mouse_filter = 2
+texture = ExtResource( 73 )
+
+[node name="TextureRect2" type="TextureRect" parent="UILayer/MainMenu/VoteButton"]
+margin_left = -24.0
+margin_top = -18.0
+margin_right = 16.0
+margin_bottom = 22.0
+mouse_filter = 2
+texture = ExtResource( 74 )
 
 [node name="PostGameButtons" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
@@ -2800,6 +2831,7 @@ script = ExtResource( 56 )
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
 [connection signal="pressed" from="UILayer/MainMenu/ButtonContainer/WorkshopUploader" to="UILayer" method="_on_WorkshopUploader_pressed"]
 [connection signal="toggled" from="UILayer/MainMenu/RoadmapContainer/RoadmapButton" to="UILayer" method="_on_RoadmapButton_toggled"]
+[connection signal="pressed" from="UILayer/MainMenu/VoteButton" to="UILayer" method="_on_VoteButton_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]
 [connection signal="pressed" from="UILayer/SoftlockResetButton" to="UILayer" method="_on_SoftlockResetButton_pressed"]

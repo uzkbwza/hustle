@@ -743,3 +743,7 @@ func _on_RoadmapButton_toggled(button_pressed):
 func _on_WorkshopUploader_pressed():
 	on_workshop_uploader_clicked()
 	pass # Replace with function body.
+
+
+func _on_VoteButton_pressed():
+	Steam.activateGameOverlayToWebPage("https://store.steampowered.com/news/app/2212330/view/3888359911081386731")
