@@ -2190,10 +2190,14 @@ text = "Incomplete:
 autowrap = true
 
 [node name="VoteButton" type="Button" parent="UILayer/MainMenu"]
-margin_left = 292.0
-margin_top = 333.0
-margin_right = 368.0
-margin_bottom = 354.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -27.0
+margin_top = 146.5
+margin_right = 49.0
+margin_bottom = 167.5
 hint_tooltip = "pretty please :)"
 mouse_default_cursor_shape = 2
 custom_colors/font_color = Color( 1, 0.476945, 0.88452, 1 )
