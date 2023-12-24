@@ -1903,9 +1903,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -45.0
-margin_top = -66.0
+margin_top = -70.0
 margin_right = 51.0
-margin_bottom = 114.0
+margin_bottom = 110.0
 grow_horizontal = 2
 custom_constants/separation = 0
 alignment = 1
@@ -2191,13 +2191,13 @@ autowrap = true
 
 [node name="VoteButton" type="Button" parent="UILayer/MainMenu"]
 margin_left = 292.0
-margin_top = 328.0
-margin_right = 365.0
-margin_bottom = 349.0
+margin_top = 333.0
+margin_right = 368.0
+margin_bottom = 354.0
 hint_tooltip = "pretty please :)"
 mouse_default_cursor_shape = 2
 custom_colors/font_color = Color( 1, 0.476945, 0.88452, 1 )
-text = "VOTE 4 HUSTLE!"
+text = "VOTE HUSTLE!"
 flat = true
 
 [node name="TextureRect" type="TextureRect" parent="UILayer/MainMenu/VoteButton"]
