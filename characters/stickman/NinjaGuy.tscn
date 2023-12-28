@@ -628,7 +628,8 @@ stored_speed_2
 stored_speed_3
 released_this_turn
 current_momentum
-boosted_during_combo"
+boosted_during_combo
+stackriken_out"
 character_portrait2 = ExtResource( 245 )
 player_info_scene = ExtResource( 243 )
 player_extra_params_scene = ExtResource( 63 )
@@ -699,7 +700,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 reset_momentum = true
-anim_length = 11
+anim_length = 13
 sfx = ExtResource( 43 )
 sfx_tick = 4
 title = "Shuriken"
@@ -3593,21 +3594,21 @@ Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
 "y": -7
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 }
 }
 button_texture = ExtResource( 223 )
@@ -3820,21 +3821,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 207 ): {
+"x": 15,
+"y": -10
+},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
 },
-ExtResource( 207 ): {
-"x": 15,
+ExtResource( 206 ): {
+"x": 13,
 "y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
-},
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
 }
 }
 burst_cancellable = false
@@ -3876,10 +3877,6 @@ active_ticks = 1
 [node name="BackThrow" parent="StateMachine" index="99"]
 sprite_animation = "GroundedThrow"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
@@ -3888,13 +3885,17 @@ ExtResource( 210 ): {
 "x": 37,
 "y": -7
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 },
 ExtResource( 206 ): {
 "x": 12,
 "y": -10
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false

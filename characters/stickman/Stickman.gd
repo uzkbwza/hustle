@@ -26,6 +26,7 @@ var will_store_momentum = false
 var boosted_during_combo = false
 var current_momentum = "0"
 var boost_frames_left = 0
+var stackriken_out = false
 
 const RELEASE_MODIFIER = "1.175"
 const HOOK_DISABLE_DIST = "32"

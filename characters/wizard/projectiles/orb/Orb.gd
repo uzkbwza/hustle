@@ -8,6 +8,7 @@ const LIGHTNING_Y = 132
 const LIGHTNING_PUSH_FORCE = "-5"
 const ATTACK_SUPER_DRAIN = 0
 const LIGHTNING_DRAIN = 0
+const HIT_FORCE_MODIFIER = "2.0"
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LOCKED_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDartLocked.tscn")
@@ -164,3 +165,12 @@ func spawn_orb_dart():
 	var dir = fixed.normalized_vec(str(local_pos.x), str(local_pos.y))
 	spawn_object(ORB_DART_SCENE if !locked else LOCKED_DART_SCENE, 0, 0, true, {"dir": dir})
 	play_sound("Shoot")
+
+func hit_by(hitbox):
+	if hitbox:
+		if hitbox.throw:
+			return
+		locked = false
+		var force = get_knockback_force(hitbox)
+		force = fixed.vec_mul(force.x, force.y, HIT_FORCE_MODIFIER)
+		apply_force(force.x, force.y)

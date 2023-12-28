@@ -2,9 +2,11 @@ extends DefaultFireball
 
 const ROTATE_AMOUNT = 22.5
 const HOMING_FORCE = "0.25"
+const BLOCK_HITS = 5
 #const ARC_FORCE = "0.15"
 onready var hitbox = $Hitbox
 
+var block_hits = BLOCK_HITS
 
 func _frame_1():
 	var fighter = host.get_fighter()
@@ -24,7 +26,11 @@ func move():
 		var force = fixed.vec_mul(dir.x, dir.y, HOMING_FORCE)
 		host.apply_force(force.x, force.y)
 
-
+func on_got_blocked():
+	block_hits -= 1
+	if block_hits == 0:
+		fizzle()
+	
 func _tick():
 	._tick()
 	host.sprite.rotation += deg2rad(ROTATE_AMOUNT) * host.get_facing_int()

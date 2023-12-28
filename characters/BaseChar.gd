@@ -10,6 +10,7 @@ signal undo()
 signal forfeit()
 signal clashed()
 #signal blocked()
+
 signal blocked_melee_attack()
 signal blocked_melee_attack_at_frame(frame)
 signal predicted()
@@ -799,7 +800,7 @@ func reset_combo():
 	burst_cancel_combo = false
 	combo_supers = 0
 	opponent.grounded_hits_taken = 0
-	opponent.trail_hp = opponent.hp
+	opponent.trail_hp = opponent.get_visual_hp()
 	opponent.wall_slams = 0
 	opponent.hit_out_of_brace = false
 	opponent.braced_attack = false
@@ -1322,6 +1323,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				parry_combo = true
 		else:
 			blocked_last_hit = true
+			blocked_last_turn = true
 
 			start_throw_invulnerability()
 			if !projectile and !perfect_parry and !last_turn_block and initiative:
@@ -1335,7 +1337,6 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 		if not projectile:
 			if !perfect_parry:
-				blocked_last_turn = true
 				opponent.feinting = false
 				opponent.got_blocked = true
 				on_blocked_melee_attack()
@@ -1515,7 +1516,7 @@ func get_penalty_damage_modifier():
 func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0", combo_scaling_offset=0, damage_taken_meter_gain_modifier = "1.0"):
 	
 	if opponent.combo_count == 0:
-		trail_hp = hp
+		trail_hp = get_visual_hp()
 
 	if damage == 0:
 		return

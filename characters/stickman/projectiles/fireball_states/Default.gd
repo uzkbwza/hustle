@@ -50,7 +50,6 @@ func _on_hit_something(obj, _hitbox):
 		if num_hits == 0:
 			fizzle()
 
-
 func move():
 	if data and data.has("speed_modifier"):
 		host.move_directly_relative((move_x + data["speed_modifier"]) if move_x != 0 else 0, (move_y + data["speed_modifier"]) if move_y != 0 else 0)

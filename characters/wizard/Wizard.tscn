@@ -856,14 +856,6 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
@@ -872,13 +864,21 @@ ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1007,6 +1007,7 @@ height = -5
 damage = 80
 hitstun_ticks = 18
 cancellable = false
+block_cancel_allowed = false
 hit_sound = ExtResource( 145 )
 dir_x = "0.0"
 dir_y = "1.0"
@@ -1446,7 +1447,7 @@ GroundedSuper
 GroundedSpecial
 Jump"
 trigger_orb_type = "OrbDart"
-trigger_orb_delay = 9
+trigger_orb_delay = 12
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/TomeSlap" index="0"]
 z_index = 1000
@@ -1556,7 +1557,7 @@ AerialSuper
 Aerial
 Jump"
 trigger_orb_type = "OrbDart"
-trigger_orb_delay = 10
+trigger_orb_delay = 16
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ManaStrike" index="0"]
 z_index = 1000
@@ -1939,14 +1940,6 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
@@ -1955,13 +1948,21 @@ ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 type = 1

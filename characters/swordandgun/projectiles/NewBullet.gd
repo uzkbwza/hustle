@@ -2,6 +2,8 @@ extends BaseProjectile
 
 class_name NewBullet
 
+signal bullet_made_contact()
+
 const SPEED = "50"
 const NEW_BULLET = true
 
@@ -44,6 +46,14 @@ func _draw():
 		draw_line(to_local(last_pos_visual), Vector2(), color, 4.0)
 		if to_local(last_pos_visual) == Vector2():
 			draw_circle(Vector2(), 6.0, color)
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if obj == get_opponent():
+		emit_signal("bullet_made_contact")
+
+func on_got_blocked():
+	emit_signal("bullet_made_contact")
 
 func hit_by(hitbox):
 	if hitbox.hitbox_type == Hitbox.HitboxType.Flip:

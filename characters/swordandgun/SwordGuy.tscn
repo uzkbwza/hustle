@@ -1174,7 +1174,6 @@ Aerial"
 interrupt_into_string = "Grounded
 Aerial"
 super_level = 3
-supers_used = 0
 
 [node name="3Combo" type="Node2D" parent="StateMachine" index="9"]
 script = ExtResource( 204 )
@@ -3409,7 +3408,7 @@ title = "Spot Dodge"
 type = 4
 button_texture = ExtResource( 305 )
 air_type = 2
-iasa_at = 11
+iasa_at = 9
 self_interruptable = false
 reversible = false
 interrupt_from_string = "Grounded
@@ -3726,7 +3725,8 @@ GroundedSuper
 Guntrick
 Teleport"
 interrupt_exceptions_string = "Hustle
-FastTeleport"
+FastTeleport
+SpotDodge"
 super_level = 0
 super_effect = false
 
@@ -3749,7 +3749,8 @@ GroundedSuper
 Teleport
 Guntrick"
 interrupt_exceptions_string = "Hustle
-FastTeleport"
+FastTeleport
+SpotDodge"
 super_level = 0
 super_effect = false
 quicker = true
@@ -3852,6 +3853,7 @@ type = 2
 data_ui_scene = ExtResource( 314 )
 button_texture = ExtResource( 161 )
 air_type = 2
+iasa_on_hit = 10
 dynamic_iasa = false
 can_feint_if_possible = false
 interrupt_from_string = "Gun
@@ -3935,7 +3937,7 @@ apply_grav = true
 fallback_state = "SlowHolster"
 sprite_animation = "GunShoot2"
 anim_length = 12
-earliest_hitbox = 5
+earliest_hitbox = 4
 title = "Point Blank"
 type = 2
 data_ui_scene = ExtResource( 314 )
@@ -3965,6 +3967,8 @@ hitstun_ticks = 25
 victim_hitlag = 12
 cancellable = false
 can_clash = false
+parriable = false
+block_cancel_allowed = false
 plus_frames = 2
 hit_height = 0
 hit_sound = ExtResource( 144 )
@@ -3972,16 +3976,6 @@ dir_y = "-0.50"
 knockback = "2"
 start_tick = 4
 active_ticks = 1
-
-[node name="HostCommand" type="Node" parent="StateMachine/PointBlank" index="1"]
-script = ExtResource( 332 )
-tick = 2
-command = "start_throw_invulnerability"
-
-[node name="HostCommand2" type="Node" parent="StateMachine/PointBlank" index="2"]
-script = ExtResource( 332 )
-tick = 4
-command = "end_throw_invulnerability"
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="62"]
 script = ExtResource( 111 )
@@ -4074,14 +4068,13 @@ height = 2
 damage = 90
 hitstun_ticks = 14
 hitlag_ticks = 6
-plus_frames = -1
 hit_height = 2
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 dir_x = "-2.0"
 dir_y = "-1.8"
 knockback = "8.5"
-block_pushback_modifier = "-1.0"
+block_pushback_modifier = "-0.2"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false

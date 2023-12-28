@@ -22,9 +22,10 @@ const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31 
 
 var hover_left = 0
-var hover_drain_amount = 19
+var hover_drain_amount = 25
 var fast_fall_drain_amount = 20
-var hover_gain_amount = 15
+var hover_gain_amount = 12
+var hover_gain_amount_depleted = 4
 var hover_gain_amount_air = 1
 var hovering = false
 var ghost_started_hovering = false
@@ -214,7 +215,7 @@ func tick():
 					hover_left = 0
 			apply_grav_fast_fall()
 #		if current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt and !hovering:
-		hover_left += hover_gain_amount if is_grounded() else hover_gain_amount_air
+		hover_left += (hover_gain_amount if hover_left >= HOVER_MIN_AMOUNT else hover_gain_amount_depleted ) if is_grounded() else hover_gain_amount_air
 		if hover_left > HOVER_AMOUNT:
 			hover_left = HOVER_AMOUNT
 	if orb_projectile:

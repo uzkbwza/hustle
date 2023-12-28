@@ -388,7 +388,7 @@ func _process(delta):
 	Global.css_open = visible
 	if !loaded_mods:
 		return
-		
+
 	# new version code thing
 #	Global.VERSION = _Global.ogVersion.split("Modded")[0] + "CL-" + clVersion
 
@@ -419,6 +419,7 @@ func _process(delta):
 	if (btt_disableTimer > 0):
 		btt_disableTimer -= delta * 60
 		btt_disableTimer = max(btt_disableTimer, 0)
+
 	for j in len(btts):
 		var b = btts[j]
 		if (!b.is_visible()):
@@ -427,6 +428,13 @@ func _process(delta):
 		# disable chars that opponent doesnt have
 		if (!net_isCharacterAvailable(b.name)):
 			b.disabled = true
+
+	var connected = SteamLobby.connected()
+	for j in len(btts):
+		var b = btts[j]
+		if isCustomChar(b.name):
+			b.visible = (connected and SteamLobby.LOBBY_CHARLOADER_ENABLED) or !connected
+			
 
 	searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
 
@@ -534,6 +542,7 @@ var oggstr_header
 ## Character data functions ##
 
 func addCustomChar(_name, _charPath, _bttName = ""):
+
 	while !loaded_mods:
 		yield(get_tree(), "idle_frame")
 	update_fighter_vars(_name, _charPath, _bttName)

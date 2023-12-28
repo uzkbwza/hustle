@@ -127,7 +127,7 @@ func tick():
 					for i in range(DRIFT_SUPERS):
 						use_super_bar()
 					combo_supers += 1
-					hitlag_ticks += 4
+#					hitlag_ticks += 4
 					set_vel(get_vel().x, "0")
 				spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
 
@@ -148,11 +148,11 @@ func tick():
 		var proj = objs_map[cut_projectile]
 		if proj == null or proj.disabled:
 			cut_projectile = null
-		else:
-			if current_tick % 2 == 0:
-				use_super_meter(CUTS_METER_DRAIN_1)
-			else:
-				use_super_meter(CUTS_METER_DRAIN_2)
+#		else:
+#			if current_tick % 2 == 0:
+#				use_super_meter(CUTS_METER_DRAIN_1)
+#			else:
+#				use_super_meter(CUTS_METER_DRAIN_2)
 	if is_grounded():
 		if used_aerial_h_slash:
 			used_aerial_h_slash = false

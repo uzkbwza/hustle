@@ -50,7 +50,7 @@ func _frame_0():
 	starting_dir = host.get_opponent_dir()
 	iasa_at = 9
 	if state_name == "SpotDodge":
-		iasa_at = 12
+		iasa_at = 10
 	backwards_stall_frames = 0
 	if !shift:
 		host.start_throw_invulnerability()

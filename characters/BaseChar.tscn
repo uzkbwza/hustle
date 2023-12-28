@@ -611,6 +611,7 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
@@ -639,6 +640,7 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
@@ -670,6 +672,7 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
+interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
@@ -751,7 +754,6 @@ reversible = false
 interrupt_from_string = "GroundedMovement
 Grounded
 Aerial
-AerialMovement
 GroundedDefense
 AerialDefense"
 interrupt_into_string = "Grounded
@@ -1028,8 +1030,7 @@ button_texture = ExtResource( 55 )
 air_type = 1
 interruptible_on_opponent_turn = true
 interrupt_from_string = "Fall
-Aerial
-AerialMovement"
+Aerial"
 interrupt_into_string = "Aerial
 Grounded"
 

@@ -14,6 +14,7 @@ onready var hitbox = $Hitbox
 
 var startup_lag = 0
 var lagged = false
+var bullet_obj = null
 
 func _enter():
 	lagged = false
@@ -24,14 +25,19 @@ func _enter():
 	}
 
 func _frame_0():
+	anim_length = 12
 	startup_lag = 0
 	if _previous_state_name() == "Shoot2":
 		startup_lag = REPEAT_STARTUP_LAG
 
-func _frame_1():
-	if !projectile and !lagged:
-		current_tick -= 1
-		lagged = true
+#func _frame_1():
+#	if !projectile and !lagged:
+#		current_tick -= 1
+#		lagged = true
+
+func on_bullet_made_contact():
+	if active:
+		anim_length = 10
 
 func _frame_3():
 	host.play_sound("Shoot")
@@ -62,29 +68,31 @@ func _frame_3():
 	host.shooting_arm.show()
 	host.shooting_arm.frame = 0
 
-func _frame_5():
-	var pos = host.get_pos()
-	var shot_dir_x = data.x
-	var shot_dir_y = data.y
-	var dir = xy_to_dir(shot_dir_x, shot_dir_y)
-	var shot_angle = fixed.vec_to_angle(fixed.mul(str(shot_dir_x), str(host.get_facing_int())), str(shot_dir_y))
-	var barrel_location = host.get_barrel_location(shot_angle)
+#func _frame_5():
+#	var pos = host.get_pos()
+#	var shot_dir_x = data.x
+#	var shot_dir_y = data.y
+#	var dir = xy_to_dir(shot_dir_x, shot_dir_y)
+#	var shot_angle = fixed.vec_to_angle(fixed.mul(str(shot_dir_x), str(host.get_facing_int())), str(shot_dir_y))
+#	var barrel_location = host.get_barrel_location(shot_angle)
 	barrel_location.x = fixed.mul(barrel_location.x, str(host.get_facing_int()))
 
 
 	if projectile:
 		var bullet = host.spawn_object(BULLET_SCENE, pos.x + fixed.round(barrel_location.x), pos.y + fixed.round(barrel_location.y), true, barrel_location, false)
-
+		bullet.connect("bullet_made_contact", self, "on_bullet_made_contact")
 		bullet.dir_x = dir.x
 		bullet.dir_y = dir.y
-
-	if dodge:
-		queue_state_change("TechRoll", {"x": host.get_facing_int()})
 	
 	if data and data.has("ActivateTemporal") and data["ActivateTemporal"]:
 		var temporal_round = host.obj_from_name(host.temporal_round)
 		if temporal_round:
 			temporal_round.shoot()
+
+func _frame_5():
+	if dodge:
+		queue_state_change("TechRoll", {"x": host.get_facing_int()})
+
 
 func _frame_6():
 	host.shooting_arm.frame = 2

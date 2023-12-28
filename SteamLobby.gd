@@ -150,6 +150,9 @@ func create_lobby(availability: int, size: int):
 	if LOBBY_ID == 0:
 		Steam.createLobby(availability, size)
 
+func connected():
+	return LOBBY_ID != 0
+
 func join_lobby(lobby_id: int):
 	print("Attempting to join lobby "+str(lobby_id)+"...")
 

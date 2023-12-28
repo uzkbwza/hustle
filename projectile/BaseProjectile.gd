@@ -64,9 +64,6 @@ func on_hit_ceiling():
 	if fizzle_on_ceiling:
 		disable()
 
-func on_got_blocked():
-	pass
-
 func can_hit_cancel(_fighter):
 	return hit_cancel_on_hit
 

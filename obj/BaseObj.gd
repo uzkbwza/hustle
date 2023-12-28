@@ -934,6 +934,9 @@ func normal_tick():
 	game_tick += 1
 	update_grounded()
 
+func get_knockback_force(hitbox):
+	return fixed.normalized_vec_times(fixed.mul(hitbox.dir_x, str(hitbox.facing_int)), hitbox.dir_y, hitbox.knockback)
+
 func compare(obj):
 	var my_properties = get_property_list()
 	var other_properties = obj.get_property_list()

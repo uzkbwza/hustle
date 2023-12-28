@@ -7,6 +7,8 @@ const STACK_FORCE_MULTIPLIER = "0.9"
 func _tick():
 	._tick()
 	host.sprite.rotation += deg2rad(ROTATE_AMOUNT) * host.get_facing_int()
+	if host.get_fighter().stackriken_out:
+		return
 
 	for obj_name in host.objs_map:
 		var obj = host.objs_map[obj_name]

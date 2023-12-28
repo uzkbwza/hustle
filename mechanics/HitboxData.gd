@@ -3,6 +3,7 @@ class_name HitboxData
 var hit_height: int
 var hitstun_ticks: int
 var facing: String
+var facing_int: int
 var knockback: String
 var dir_y: String
 var dir_x: String
@@ -65,6 +66,7 @@ var block_cancel_allowed = true
 var allowed_to_hit_own_team = true
 
 
+
 func get_damage():
 	if combo_count > 0:
 		return damage_in_combo
@@ -81,6 +83,7 @@ func _init(state):
 	else:
 		victim_hitlag = state.get_real_victim_hitlag()
 	facing = state.host.get_facing()
+	facing_int = state.host.get_facing_int()
 	if !state.has_method("get_real_knockback"):
 		knockback = state.knockback
 	else:
