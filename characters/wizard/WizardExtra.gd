@@ -32,12 +32,12 @@ func update_selected_move(move_state):
 	.update_selected_move(move_state)
 	$"%HoverButton".disabled = false
 	$"%FastFallButton".disabled = false
-	if move_state and move_state.get("IS_NEW_PARRY") and fighter.in_blockstring:
-		$"%HoverButton".set_pressed_no_signal(false)
-		$"%HoverButton".disabled = true
-		$"%FastFallButton".set_pressed_no_signal(false)
-		$"%FastFallButton".disabled = true
-	if fighter.in_blockstring and fighter.current_state().get("IS_NEW_PARRY") and move_state == null:
+#	if move_state and move_state.get("IS_NEW_PARRY") and fighter.current_state().get("disable_aerial_movement"):
+#		$"%HoverButton".set_pressed_no_signal(false)
+#		$"%HoverButton".disabled = true
+#		$"%FastFallButton".set_pressed_no_signal(false)
+#		$"%FastFallButton".disabled = true
+	if fighter.current_state().get("disable_aerial_movement"):
 		$"%HoverButton".set_pressed_no_signal(false)
 		$"%HoverButton".disabled = true
 		$"%FastFallButton".set_pressed_no_signal(false)
@@ -66,8 +66,13 @@ func reset():
 	if fighter.orb_projectile != null:
 		var orb = fighter.obj_from_name(fighter.orb_projectile)
 		lock_button.set_pressed_no_signal(orb.locked)
-
+	if fighter.current_state().get("disable_aerial_movement"):
+		$"%HoverButton".set_pressed_no_signal(false)
+		$"%HoverButton".disabled = true
+		$"%FastFallButton".set_pressed_no_signal(false)
+		$"%FastFallButton".disabled = true
 func show_options():
+
 	orb_push.hide()
 	orb_push.init()
 	lock_button.hide()
@@ -80,7 +85,9 @@ func show_options():
 	hover_button.hide()
 	fast_fall_button.hide()
 	fast_fall_button.set_pressed_no_signal(fighter.fast_falling)
-	hover_button.set_pressed_no_signal(fighter.hovering)
+	
+	if !fighter.current_state().get("disable_aerial_movement"):
+		hover_button.set_pressed_no_signal(fighter.hovering)
 	if fast_fall_button.pressed and hover_button.pressed:
 		fast_fall_button.set_pressed_no_signal(false)
 #	end_hover_button.hide()
@@ -95,7 +102,6 @@ func show_options():
 		fast_fall_button.show()
 	if fighter.spark_bombs:
 		explode_button.show()
-	
 
 func get_extra():
 	var extra = {

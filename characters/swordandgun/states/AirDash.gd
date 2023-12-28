@@ -2,6 +2,7 @@ extends CharacterState
 
 const MAX_EXTRA_LAG_FRAMES = 5
 const MIN_IASA = 7
+const IASA_BACK = 11
 const MIN_NEUTRAL_IASA = 9
 
 export var FORWARD_FORCE_X = "1.4"
@@ -37,12 +38,14 @@ func _frame_0():
 	var min_iasa = MIN_IASA if host.combo_count > 0 else MIN_NEUTRAL_IASA
 	starting_iasa_at = min_iasa
 	iasa_at = min_iasa
+	var down = data.x == 0
+	if host.combo_count <= 0 and (back or down):
+		iasa_at = IASA_BACK
 	starting_y = host.get_pos().y
 	host.move_directly(0, -1)
 	host.set_grounded(false)
 	if startup_invuln and host.initiative:
 		host.start_projectile_invulnerability()
-	var down = data.x == 0
 	var force_x = DOWNWARD_FORCE_X if down else fixed.mul(FORWARD_FORCE_X, str(data.x * host.get_facing_int()))
 	var force_y = DOWNWARD_FORCE_Y if down else FORWARD_FORCE_Y
 	var force_speed = DOWNWARD_FORCE_SPEED if down else FORWARD_FORCE_SPEED

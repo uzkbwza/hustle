@@ -21,10 +21,12 @@ func process_projectile(projectile):
 	projectile.start_y = host.get_pos().y
 
 func _tick():
-	host.apply_fric()
-	host.apply_forces()
+	if host.combo_count > 0:
+		host.apply_fric()
+		host.apply_forces()
 	if air_type == AirType.Aerial and projectile_spawned:
-		host.apply_grav()
+		if host.combo_count > 0:
+			host.apply_grav()
 		if host.is_grounded():
 			return "Landing"
 

@@ -196,6 +196,6 @@ func _tick():
 
 
 func is_usable():
-	if !host.is_grounded() and host.blocked_last_turn:
-		return false
+#	if !host.is_grounded() and host.blocked_last_turn:
+#		return false
 	return .is_usable()

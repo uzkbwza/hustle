@@ -70,6 +70,10 @@ func update_selected_move(move_state):
 		if move_state.is_grab and $"%ArmorEnabled".pressed:
 			can_feint = false
 
+	if fighter.current_state().get("disable_aerial_movement"):
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
+
 func show_options():
 	$"%FlyDir".hide()
 	bounce.hide()
@@ -105,7 +109,11 @@ func show_options():
 		$"%ArmorEnabled".show()
 #	if fighter.current_state().state_name == "WhiffInstantCancel":
 #		$"%ArmorEnabled".hide()
-	return
+	
+	if fighter.current_state().get("disable_aerial_movement"):
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
+		$"%FlyDir".hide()
 
 func reset():
 	if fighter.flying_dir:
@@ -117,6 +125,10 @@ func reset():
 	$"%NadeActive".set_pressed_no_signal(false)
 	$"%PullEnabled".set_pressed_no_signal(false)
 	$"%DriveCancel".set_pressed_no_signal(fighter.stance == "Drive")
+	
+	if fighter.current_state().get("disable_aerial_movement"):
+		$"%FlyEnabled".set_pressed_no_signal(false)
+		$"%FlyEnabled".disabled = true
 
 func on_data_changed():
 #	bounce.visible = $"%NadeActive".pressed

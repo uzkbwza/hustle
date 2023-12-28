@@ -1239,12 +1239,12 @@ func hit_by(hitbox, force_hit=false):
 				opponent.apply_hitlag(hitbox)
 				if hitbox.rumble:
 					rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
-	
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
-				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
+				increment_opponent_combo(hitbox)
+#				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
 			Hitbox.HitboxType.OffensiveBurst:
 				opponent.hitstun_decay_combo_count = 0
-				opponent.combo_proration = Utils.int_min(opponent.combo_proration, 0)
+#				opponent.combo_proration = Utils.int_min(opponent.combo_proration, 0)
 				launched_by(hitbox)
 				reset_pushback()
 				opponent.reset_pushback()

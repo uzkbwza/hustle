@@ -38,6 +38,8 @@ func _frame_0():
 func on_bullet_made_contact():
 	if active:
 		anim_length = 10
+		if current_tick >= 10:
+			enable_interrupt()
 
 func _frame_3():
 	host.play_sound("Shoot")

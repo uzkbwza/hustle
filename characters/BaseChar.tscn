@@ -611,11 +611,11 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
-interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
 parry_type = 2
+disable_aerial_movement = true
 
 [node name="ParryAfterWhiff" type="Node2D" parent="StateMachine" index="3"]
 script = ExtResource( 182 )
@@ -640,11 +640,11 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
-interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
 parry_type = 2
+disable_aerial_movement = true
 reblock = true
 
 [node name="ParryAuto" type="Node2D" parent="StateMachine" index="4"]
@@ -672,12 +672,12 @@ AerialDefense
 Parry"
 interrupt_into_string = "Grounded
 Aerial"
-interrupt_exceptions_string = "AerialMovement"
 allowed_stances_string = "Normal
 All"
 change_stance_to = "Normal"
 parry_type = 2
 autoguard = true
+disable_aerial_movement = true
 
 [node name="ParryLow" type="Node2D" parent="StateMachine" index="5"]
 script = ExtResource( 182 )

@@ -7,14 +7,19 @@ const IS_NEW_PARRY = true
 
 export var push = false
 export var autoguard = false
+export var disable_aerial_movement = false
 #export var real_parry = false
 
+var _disable_aerial_movement
 var punishable = false
 #var whiffed_block = false setget , get_whiffed_block
 export var reblock = false
 
 var extra_iasa = 0
 var parried_last = false
+
+func _ready():
+	_disable_aerial_movement = disable_aerial_movement
 
 func get_whiffed_block():
 #	print()
@@ -26,13 +31,13 @@ func get_whiffed_block():
 	if prev and prev.get("IS_NEW_PARRY"):
 		return (!prev.parried_last and !prev.autoguard and host.combo_count <= 0)
 	return false
-
-
 	
 func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
+	if disable_aerial_movement:
+		interrupt_exceptions.append("AerialMovement")
 	start()
 
 func get_hold_restart():
@@ -103,6 +108,8 @@ func matches_hitbox_height(hitbox, parry_type=null):
 func parry(perfect = true):
 	perfect = perfect and can_parry
 	if perfect:
+		disable_aerial_movement = false
+		interrupt_exceptions.erase("AerialMovement")
 		enable_interrupt()
 		host.set_block_stun(0)
 		host.blocked_hitbox_plus_frames = 0
