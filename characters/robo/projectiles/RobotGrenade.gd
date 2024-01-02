@@ -34,6 +34,8 @@ func tick():
 	.tick()
 	if hitlag_ticks <= 0:
 		ticks_left -= 1
+		if ticks_left == ACTIVATE_TIME - 3:
+			has_projectile_parry_window = false
 		if ticks_left <= 0:
 			explode()
 		elif ticks_left <= ACTIVATE_TIME:
@@ -46,7 +48,7 @@ func activate():
 	play_sound("Beep")
 	active = true
 	my_hitbox.increment_combo = false
-	has_projectile_parry_window = false
+
 
 func _process(delta):
 	if active and !disabled:

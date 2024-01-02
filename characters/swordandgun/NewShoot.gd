@@ -25,7 +25,7 @@ func _enter():
 	}
 
 func _frame_0():
-	anim_length = 12
+#	anim_length = 12
 	startup_lag = 0
 	if _previous_state_name() == "Shoot2":
 		startup_lag = REPEAT_STARTUP_LAG
@@ -35,11 +35,11 @@ func _frame_0():
 #		current_tick -= 1
 #		lagged = true
 
-func on_bullet_made_contact():
-	if active:
-		anim_length = 10
-		if current_tick >= 10:
-			enable_interrupt()
+#func on_bullet_made_contact():
+#	if active:
+#		anim_length = 10
+#		if current_tick >= 10:
+#			enable_interrupt()
 
 func _frame_3():
 	host.play_sound("Shoot")
@@ -54,11 +54,11 @@ func _frame_3():
 	host.shooting_arm.frame = 0
 	var hitbox_distance = "1.0" if projectile else POINT_BLANK_HITBOX_DISTANCE_MODIFIER
 	var barrel_location = host.get_barrel_location(shot_angle, hitbox_distance)
-	barrel_location.x = fixed.mul(barrel_location.x, str(host.get_facing_int()))
 	hitbox.x = fixed.round(barrel_location.x)  * host.get_facing_int()
 	hitbox.y = fixed.round(barrel_location.y)
 	var muzzle_flash_dir = Utils.ang2vec(float(shot_angle))
 	muzzle_flash_dir.x *= host.get_facing_int()
+	barrel_location.x = fixed.mul(barrel_location.x, str(host.get_facing_int()))
 	spawn_particle_relative(MUZZLE_FLASH_SCENE, Vector2(float(barrel_location.x), float(barrel_location.y)), muzzle_flash_dir)
 	var camera = host.get_camera()
 	if camera:
@@ -77,7 +77,7 @@ func _frame_3():
 #	var dir = xy_to_dir(shot_dir_x, shot_dir_y)
 #	var shot_angle = fixed.vec_to_angle(fixed.mul(str(shot_dir_x), str(host.get_facing_int())), str(shot_dir_y))
 #	var barrel_location = host.get_barrel_location(shot_angle)
-	barrel_location.x = fixed.mul(barrel_location.x, str(host.get_facing_int()))
+#	barrel_location.x = fixed.mul(barrel_location.x, str(host.get_facing_int()))
 
 
 	if projectile:

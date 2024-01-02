@@ -1873,7 +1873,6 @@ victim_hitlag = 6
 damage_proration = 2
 cancellable = false
 can_clash = false
-block_punishable = true
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
 dir_x = "2.0"
@@ -3593,9 +3592,13 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
-"x": 2,
-"y": -7
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
+},
+ExtResource( 219 ): {
+"x": 24,
+"y": 3
 },
 ExtResource( 218 ): {
 "x": 24,
@@ -3605,13 +3608,9 @@ ExtResource( 222 ): {
 "x": 23,
 "y": 6
 },
-ExtResource( 219 ): {
-"x": 24,
-"y": 3
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
+"x": 2,
+"y": -7
 }
 }
 button_texture = ExtResource( 223 )
@@ -3825,17 +3824,17 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
+},
 ExtResource( 207 ): {
-"x": 15,
+"x": 13,
 "y": -10
 },
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
-},
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
 },
 ExtResource( 209 ): {
 "x": 32,
@@ -3882,6 +3881,10 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
+},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
@@ -3889,10 +3892,6 @@ ExtResource( 207 ): {
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
-},
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
 },
 ExtResource( 210 ): {
 "x": 37,

@@ -1,5 +1,7 @@
 extends CharacterState
 
+onready var hitbox_2 = $Hitbox2
+
 func _frame_0():
 #	if current_tick == 0:
 	if host.initiative and host.is_grounded():
@@ -16,6 +18,10 @@ func _frame_0():
 			host.reset_momentum()
 			host.set_vel(fixed.div(vel.x, "3"), vel.y)
 #	host.start_invulnerability()
+	hitbox_2.block_punishable = false
+
+func on_got_blocked():
+	hitbox_2.block_punishable = true
 
 func _tick():
 	host.apply_grav()

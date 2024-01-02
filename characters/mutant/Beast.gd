@@ -192,3 +192,7 @@ func on_got_parried():
 		juke_ticks = 0
 		up_juke_ticks = 0
 		hitlag_ticks += 5
+
+func on_got_push_blocked():
+	if is_neutral_juke():
+		juke_ticks = 0

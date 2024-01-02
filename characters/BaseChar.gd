@@ -1240,8 +1240,8 @@ func hit_by(hitbox, force_hit=false):
 				if hitbox.rumble:
 					rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
 				take_damage(hitbox.get_damage(), hitbox.minimum_damage, hitbox.meter_gain_modifier)
-				increment_opponent_combo(hitbox)
-#				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
+#				increment_opponent_combo(hitbox)
+				opponent.incr_combo(hitbox.scale_combo, false, false, hitbox.combo_scaling_amount)
 			Hitbox.HitboxType.OffensiveBurst:
 				opponent.hitstun_decay_combo_count = 0
 #				opponent.combo_proration = Utils.int_min(opponent.combo_proration, 0)
@@ -1426,7 +1426,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if current_state().get("push"):
 	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
 					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
-
+					opponent.on_got_push_blocked()
 	
 			blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
 
@@ -1683,6 +1683,9 @@ func refresh_feints():
 #		hitlag_ticks += INCORRECT_PREDICTION_LAG
 #		opponent.gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
 #	prediction_processed = true
+
+func on_got_push_blocked():
+	pass
 
 func clean_parried_hitboxes():
 #	if is_ghost:

@@ -870,10 +870,10 @@ y = -22
 width = 19
 height = 5
 damage = 40
-hitstun_ticks = 11
+hitstun_ticks = 9
 combo_hitstun_ticks = 7
 victim_hitlag = 5
-damage_proration = 3
+damage_proration = 5
 cancellable = false
 beats_grab = false
 whiff_sound = ExtResource( 31 )
@@ -893,10 +893,10 @@ y = -25
 width = 17
 height = 6
 damage = 40
-hitstun_ticks = 11
+hitstun_ticks = 9
 combo_hitstun_ticks = 7
 victim_hitlag = 5
-damage_proration = 3
+damage_proration = 5
 cancellable = false
 beats_grab = false
 whiff_sound = ExtResource( 31 )
@@ -908,7 +908,30 @@ disable_collision = false
 start_tick = 3
 active_ticks = 2
 
-[node name="HurtboxState" type="Node2D" parent="StateMachine/Swipe2" index="2"]
+[node name="Hitbox5" type="Node2D" parent="StateMachine/Swipe2" index="2"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 25
+y = -17
+width = 19
+height = 5
+damage = 48
+hitstun_ticks = 9
+combo_hitstun_ticks = 7
+victim_hitlag = 5
+damage_proration = 5
+cancellable = false
+beats_grab = false
+whiff_sound = ExtResource( 31 )
+hit_sound = ExtResource( 7 )
+dir_y = "-0.2"
+knockback = "7.0"
+pushback_x = "1.5"
+disable_collision = false
+start_tick = 3
+active_ticks = 2
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/Swipe2" index="3"]
 z_index = 999
 script = ExtResource( 2 )
 x = 12
@@ -917,7 +940,7 @@ width = 23
 height = 16
 start_tick = 2
 
-[node name="LimbHurtbox" type="Node2D" parent="StateMachine/Swipe2" index="3"]
+[node name="LimbHurtbox" type="Node2D" parent="StateMachine/Swipe2" index="4"]
 z_index = 999
 script = ExtResource( 180 )
 x = 39
@@ -927,7 +950,7 @@ height = 9
 start_tick = 2
 active_ticks = 1
 
-[node name="LimbHurtbox2" type="Node2D" parent="StateMachine/Swipe2" index="4"]
+[node name="LimbHurtbox2" type="Node2D" parent="StateMachine/Swipe2" index="5"]
 z_index = 999
 script = ExtResource( 180 )
 x = 36
@@ -937,7 +960,7 @@ height = 9
 start_tick = 2
 active_ticks = 1
 
-[node name="LimbHurtbox3" type="Node2D" parent="StateMachine/Swipe2" index="5"]
+[node name="LimbHurtbox3" type="Node2D" parent="StateMachine/Swipe2" index="6"]
 z_index = 999
 script = ExtResource( 180 )
 x = 29
@@ -946,29 +969,6 @@ width = -14
 height = 9
 start_tick = 2
 active_ticks = 1
-
-[node name="Hitbox5" type="Node2D" parent="StateMachine/Swipe2" index="6"]
-z_index = 1000
-script = ExtResource( 1 )
-x = 25
-y = -17
-width = 19
-height = 5
-damage = 48
-hitstun_ticks = 11
-combo_hitstun_ticks = 7
-victim_hitlag = 5
-damage_proration = 2
-cancellable = false
-beats_grab = false
-whiff_sound = ExtResource( 31 )
-hit_sound = ExtResource( 7 )
-dir_y = "-0.2"
-knockback = "7.0"
-pushback_x = "1.5"
-disable_collision = false
-start_tick = 3
-active_ticks = 2
 
 [node name="Swipe" type="Node2D" parent="StateMachine" index="4"]
 script = ExtResource( 19 )
@@ -1009,10 +1009,10 @@ y = -22
 width = 19
 height = 5
 damage = 40
-hitstun_ticks = 11
+hitstun_ticks = 9
 combo_hitstun_ticks = 7
 victim_hitlag = 5
-damage_proration = 3
+damage_proration = 5
 cancellable = false
 beats_grab = false
 whiff_sound = ExtResource( 31 )
@@ -1032,10 +1032,10 @@ y = -25
 width = 17
 height = 6
 damage = 40
-hitstun_ticks = 11
+hitstun_ticks = 9
 combo_hitstun_ticks = 7
 victim_hitlag = 5
-damage_proration = 3
+damage_proration = 5
 cancellable = false
 beats_grab = false
 whiff_sound = ExtResource( 31 )
@@ -1047,7 +1047,30 @@ disable_collision = false
 start_tick = 3
 active_ticks = 2
 
-[node name="HurtboxState" type="Node2D" parent="StateMachine/Swipe" index="2"]
+[node name="Hitbox5" type="Node2D" parent="StateMachine/Swipe" index="2"]
+z_index = 1000
+script = ExtResource( 1 )
+x = 25
+y = -17
+width = 19
+height = 5
+damage = 48
+hitstun_ticks = 9
+combo_hitstun_ticks = 7
+victim_hitlag = 5
+damage_proration = 5
+cancellable = false
+beats_grab = false
+whiff_sound = ExtResource( 31 )
+hit_sound = ExtResource( 7 )
+dir_y = "-0.2"
+knockback = "7.0"
+pushback_x = "1.5"
+disable_collision = false
+start_tick = 3
+active_ticks = 2
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/Swipe" index="3"]
 z_index = 999
 script = ExtResource( 2 )
 x = 12
@@ -1056,7 +1079,7 @@ width = 23
 height = 16
 start_tick = 2
 
-[node name="LimbHurtbox" type="Node2D" parent="StateMachine/Swipe" index="3"]
+[node name="LimbHurtbox" type="Node2D" parent="StateMachine/Swipe" index="4"]
 z_index = 999
 script = ExtResource( 180 )
 x = 39
@@ -1066,7 +1089,7 @@ height = 9
 start_tick = 2
 active_ticks = 1
 
-[node name="LimbHurtbox2" type="Node2D" parent="StateMachine/Swipe" index="4"]
+[node name="LimbHurtbox2" type="Node2D" parent="StateMachine/Swipe" index="5"]
 z_index = 999
 script = ExtResource( 180 )
 x = 36
@@ -1076,7 +1099,7 @@ height = 9
 start_tick = 2
 active_ticks = 1
 
-[node name="LimbHurtbox3" type="Node2D" parent="StateMachine/Swipe" index="5"]
+[node name="LimbHurtbox3" type="Node2D" parent="StateMachine/Swipe" index="6"]
 z_index = 999
 script = ExtResource( 180 )
 x = 29
@@ -1085,29 +1108,6 @@ width = -14
 height = 9
 start_tick = 2
 active_ticks = 1
-
-[node name="Hitbox5" type="Node2D" parent="StateMachine/Swipe" index="6"]
-z_index = 1000
-script = ExtResource( 1 )
-x = 25
-y = -17
-width = 19
-height = 5
-damage = 48
-hitstun_ticks = 11
-combo_hitstun_ticks = 7
-victim_hitlag = 5
-damage_proration = 2
-cancellable = false
-beats_grab = false
-whiff_sound = ExtResource( 31 )
-hit_sound = ExtResource( 7 )
-dir_y = "-0.2"
-knockback = "7.0"
-pushback_x = "1.5"
-disable_collision = false
-start_tick = 3
-active_ticks = 2
 
 [node name="SwipeDown" type="Node2D" parent="StateMachine" index="5"]
 script = ExtResource( 4 )
@@ -1896,6 +1896,7 @@ AerialSuper
 Jump
 DoubleJump
 ForwardDashAttack"
+force_air_juke = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ForwardDashFollowup" index="0"]
 z_index = 1000
@@ -2115,17 +2116,9 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
-},
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
-},
-ExtResource( 166 ): {
-"x": -8,
-"y": -17
 },
 ExtResource( 171 ): {
 "x": 15,
@@ -2134,6 +2127,14 @@ ExtResource( 171 ): {
 ExtResource( 173 ): {
 "x": 9,
 "y": -11
+},
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
+},
+ExtResource( 166 ): {
+"x": -8,
+"y": -17
 }
 }
 interruptible_on_opponent_turn = true
@@ -2447,6 +2448,7 @@ title = "Shockwave"
 type = 2
 button_texture = ExtResource( 255 )
 iasa_on_hit = 20
+self_interruptable = false
 interrupt_from_string = "Grounded
 GroundedSpecial"
 interrupt_into_string = "Grounded
@@ -2464,7 +2466,7 @@ script = ExtResource( 1 )
 x = 17
 y = -14
 width = 10
-damage = 90
+damage = 70
 minimum_damage = 15
 hitstun_ticks = 16
 hitlag_ticks = 14
@@ -2484,7 +2486,7 @@ x = 5
 y = -33
 width = 11
 height = 5
-damage = 90
+damage = 70
 minimum_damage = 15
 hitstun_ticks = 16
 hitlag_ticks = 14
@@ -2661,7 +2663,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2686,7 +2688,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2711,7 +2713,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2772,7 +2774,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2797,7 +2799,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2822,7 +2824,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 2
+plus_frames = 1
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -2920,7 +2922,7 @@ hitstun_ticks = 38
 combo_hitstun_ticks = 25
 hitlag_ticks = 5
 cancellable = false
-plus_frames = 1
+plus_frames = 2
 screenshake_amount = 8
 screenshake_frames = 6
 whiff_sound = ExtResource( 209 )
@@ -3299,17 +3301,17 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
 },
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
 },
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
 }
 }
 land_cancel = true

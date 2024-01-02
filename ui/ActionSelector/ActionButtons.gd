@@ -102,8 +102,9 @@ func _get_opposite_buttons():
 func _on_submit_pressed():
 	lock_in_pressed = true
 	yield(get_tree(), "idle_frame")
+#	if fighter_extra:
+#		fighter_extra.update_selected_move(current_button.state)
 	yield(get_tree(), "idle_frame")
-
 	if attempting_lock_in:
 		return
 	attempting_lock_in = true
