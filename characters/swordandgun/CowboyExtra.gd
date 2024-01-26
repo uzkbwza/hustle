@@ -4,12 +4,15 @@ var can_shoot = false
 var aerial = false
 var grounded = false
 
+onready var sight_button = $"%SightButton"
+
 
 func _ready():
 	Utils.pass_signal_along($"%ShootButton", self, "pressed", "data_changed")
 	Utils.pass_signal_along($"%DetonateButton", self, "pressed", "data_changed")
 	Utils.pass_signal_along($"%TpButton", self, "pressed", "data_changed")
 	Utils.pass_signal_along($"%MilkButton", self, "pressed", "data_changed")
+	Utils.pass_signal_along(sight_button, self, "pressed", "data_changed")
 
 
 func get_extra():
@@ -17,6 +20,7 @@ func get_extra():
 		"gun_cancel": $"%ShootButton".pressed and $"%ShootButton".visible,
 		"detonate": $"%DetonateButton".pressed and $"%DetonateButton".visible,
 		"shift": $"%TpButton".pressed and $"%TpButton".visible,
+		"hindsight": sight_button.pressed and sight_button.visible,
 		"input_aerial": aerial,
 		"input_grounded": grounded,
 	}
@@ -28,9 +32,13 @@ func show_options():
 	$"%DetonateButton".pressed = false
 	$"%TpButton".hide()
 	$"%TpButton".pressed = false
+	sight_button.pressed = false
 
 func reset():
 	selected_move = null
+	sight_button.pressed = false
+	sight_button.disabled = true
+	sight_button.hide()
 	$"%ShootButton".hide()
 	$"%ShootButton".pressed = false
 	$"%DetonateButton".hide()
@@ -42,6 +50,9 @@ func reset():
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
 		update_tp_button()
+	else:
+		sight_button.show()
+		update_sight_button()
 
 func update_tp_button():
 		$"%TpButton".disabled = false
@@ -55,9 +66,12 @@ func update_tp_button():
 			$"%TpButton".set_pressed_no_signal(false)
 		var obj = fighter.obj_from_name(fighter.after_image_object)
 #		if obj:
-		if obj and !fighter.is_grounded():
-			$"%MilkButton".visible = obj.is_grounded()
+		if obj:
+			$"%MilkButton".visible = obj.is_grounded() != fighter.is_grounded()
 			$"%MilkButton".disabled =  fighter.supers_available < fighter.DRIFT_SUPERS
+
+func update_sight_button():
+	sight_button.disabled = !(fighter.supers_available > 0 or fighter.super_meter >= fighter.MAX_SUPER_METER / 2)
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
@@ -73,7 +87,8 @@ func update_selected_move(move_state):
 	if fighter.after_image_object != null:
 		$"%DetonateButton".show()
 		update_tp_button()
-
+	sight_button.visible = (!move_state or (move_state.state_name != "Foresight" and move_state.state_name != "ForesightNeutral")) and fighter.after_image_object == null
+	update_sight_button()
 
 	var obj = fighter.obj_from_name(fighter.after_image_object)
 	aerial = false
@@ -83,8 +98,8 @@ func update_selected_move(move_state):
 			aerial = obj.get_pos().y < 0
 			grounded = obj.get_pos().y == 0
 		elif $"%MilkButton".pressed:
-			aerial = false
-			grounded = true
+			aerial = fighter.is_grounded()
+			grounded = !fighter.is_grounded()
 
 func _on_DetonateButton_toggled(button_pressed):
 	$"%TpButton".set_pressed_no_signal(false)

@@ -1049,7 +1049,9 @@ drive_cancel
 buffer_drive_cancel
 super_armor_installed
 propel_friction_ticks
-fly_blocked"
+fly_blocked
+magnetize_opponent
+magnetize_opponent_blocked"
 num_air_movements = 4
 character_portrait = ExtResource( 76 )
 character_portrait2 = ExtResource( 164 )
@@ -2244,25 +2246,25 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
-},
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
 },
 ExtResource( 202 ): {
 "x": -14,
 "y": -48
 },
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
-},
 ExtResource( 200 ): {
 "x": 5,
 "y": -12
+},
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
+},
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
 },
 ExtResource( 201 ): {
 "x": -15,
@@ -2720,18 +2722,6 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
 ExtResource( 112 ): {
 "x": -40,
 "y": -44
@@ -2740,9 +2730,25 @@ ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 108 ): {
-"x": -16,
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 115 ): {
+"x": -41,
 "y": -46
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
 },
 ExtResource( 110 ): {
 "x": 65,
@@ -2752,17 +2758,13 @@ ExtResource( 111 ): {
 "x": -31,
 "y": -55
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
 },
-ExtResource( 115 ): {
-"x": -41,
+ExtResource( 108 ): {
+"x": -16,
 "y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
 }
 }
 iasa_at = 56
@@ -2821,22 +2823,6 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
-ExtResource( 260 ): {
-"x": 40,
-"y": -34
-},
-ExtResource( 263 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 254 ): {
-"x": 124,
-"y": -72
-},
 ExtResource( 258 ): {
 "x": 78,
 "y": -50
@@ -2845,9 +2831,25 @@ ExtResource( 253 ): {
 "x": 116,
 "y": -66
 },
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
+},
+ExtResource( 263 ): {
+"x": 124,
+"y": -72
+},
 ExtResource( 264 ): {
 "x": 124,
 "y": -72
+},
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
+},
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
 }
 }
 interrupt_into_string = "Grounded
@@ -3120,13 +3122,13 @@ sfx_tick = 5
 sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 287 ): {
-"x": -20,
-"y": -14
-},
 ExtResource( 286 ): {
 "x": 34,
 "y": -13
+},
+ExtResource( 287 ): {
+"x": -20,
+"y": -14
 }
 }
 interruptible_on_opponent_turn = true
@@ -3163,18 +3165,6 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
 ExtResource( 112 ): {
 "x": -40,
 "y": -44
@@ -3183,9 +3173,25 @@ ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 108 ): {
-"x": -16,
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 115 ): {
+"x": -41,
 "y": -46
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
 },
 ExtResource( 110 ): {
 "x": 65,
@@ -3195,17 +3201,13 @@ ExtResource( 111 ): {
 "x": -31,
 "y": -55
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
 },
-ExtResource( 115 ): {
-"x": -41,
+ExtResource( 108 ): {
+"x": -16,
 "y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
 }
 }
 iasa_at = 49
@@ -4016,14 +4018,6 @@ sfx_tick = 18
 sfx_volume = -8.0
 flip_frame = 11
 throw_positions = {
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
-},
-ExtResource( 432 ): {
-"x": 44,
-"y": -7
-},
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
@@ -4031,6 +4025,14 @@ ExtResource( 431 ): {
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
+},
+ExtResource( 432 ): {
+"x": 44,
+"y": -7
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 }
 }
 title = "Back Throw"
@@ -4081,14 +4083,6 @@ sfx_tick = 18
 sfx_volume = -8.0
 flip_frame = 11
 throw_positions = {
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
-},
-ExtResource( 432 ): {
-"x": 44,
-"y": -7
-},
 ExtResource( 431 ): {
 "x": 33,
 "y": 12
@@ -4096,6 +4090,14 @@ ExtResource( 431 ): {
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
+},
+ExtResource( 432 ): {
+"x": 44,
+"y": -7
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 }
 }
 title = "Back Throw"
@@ -4725,13 +4727,13 @@ ExtResource( 375 ): {
 "x": 31,
 "y": -8
 },
-ExtResource( 374 ): {
-"x": 14,
-"y": -7
-},
 ExtResource( 373 ): {
 "x": 34,
 "y": -11
+},
+ExtResource( 374 ): {
+"x": 14,
+"y": -7
 }
 }
 iasa_at = 20
@@ -5058,33 +5060,33 @@ enter_force_speed = "10"
 enter_sfx = ExtResource( 459 )
 enter_sfx_volume = -10.0
 throw_positions = {
-ExtResource( 443 ): {
-"x": -12,
+ExtResource( 450 ): {
+"x": 15,
 "y": 21
 },
 ExtResource( 445 ): {
 "x": -17,
 "y": 18
 },
-ExtResource( 450 ): {
-"x": 15,
-"y": 21
+ExtResource( 447 ): {
+"x": 52,
+"y": 49
 },
 ExtResource( 448 ): {
 "x": -16,
 "y": -2
 },
-ExtResource( 447 ): {
-"x": 52,
-"y": 49
+ExtResource( 451 ): {
+"x": -13,
+"y": -24
+},
+ExtResource( 443 ): {
+"x": -12,
+"y": 21
 },
 ExtResource( 449 ): {
 "x": 7,
 "y": -22
-},
-ExtResource( 451 ): {
-"x": -13,
-"y": -24
 }
 }
 iasa_at = 40
@@ -5220,6 +5222,10 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 62 ): {
+"x": 26,
+"y": -16
+},
 ExtResource( 304 ): {
 "x": 29,
 "y": 11
@@ -5228,17 +5234,13 @@ ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
-},
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
 },
-ExtResource( 62 ): {
-"x": 26,
-"y": -16
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 }
 }
 release_frame = 18
@@ -5313,6 +5315,10 @@ sfx = ExtResource( 312 )
 sfx_tick = 18
 sfx_volume = -8.0
 throw_positions = {
+ExtResource( 62 ): {
+"x": 27,
+"y": -19
+},
 ExtResource( 304 ): {
 "x": 34,
 "y": 7
@@ -5321,17 +5327,13 @@ ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
-},
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
 },
-ExtResource( 62 ): {
-"x": 27,
-"y": -19
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 }
 }
 release_frame = 18

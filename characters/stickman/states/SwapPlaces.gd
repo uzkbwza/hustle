@@ -2,7 +2,7 @@ extends CharacterState
 
 const MAX_X_DIST = 300
 const MAX_Y_DIST = 300
-const NEUTRAL_LAG = 2
+const NEUTRAL_LAG = 0
 const BACKWARD_PENALTY_AMOUNT_PER_PX = "0.25"
 const BACKWARD_PENALTY_MAX_AMOUNT = 15
 const BACKWARD_PENALTY_MIN_AMOUNT = 5
@@ -15,6 +15,11 @@ func _frame_0():
 	neutral_lag = 0
 	if host.combo_count <= 0:
 		neutral_lag = NEUTRAL_LAG
+		anim_length = 13
+		iasa_at = 12
+	else:
+		anim_length = 8
+		iasa_at = 7
 
 func _frame_6():
 	var projectiles = get_usable_projectiles()
@@ -30,6 +35,9 @@ func _frame_6():
 			if Utils.int_sign(obj_pos.x - my_pos.x) != host.get_opponent_dir():
 				var penalty_amount = Utils.int_clamp(fixed.round(fixed.mul(BACKWARD_PENALTY_AMOUNT_PER_PX, str(obj_dist))), BACKWARD_PENALTY_MIN_AMOUNT, BACKWARD_PENALTY_MAX_AMOUNT)
 				host.add_penalty(penalty_amount, true)
+		obj_pos.y = obj_pos.y + 18
+		if obj_pos.y > -16:
+			obj_pos.y = 0
 		host.set_pos(obj_pos.x, obj_pos.y)
 		obj.set_pos(my_pos.x, my_pos.y)
 		obj.set_facing(host.get_facing_int())

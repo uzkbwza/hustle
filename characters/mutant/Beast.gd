@@ -55,6 +55,11 @@ func stop_rebirth_fx():
 	rebirth_particle_effect.stop_emitting()
 	rebirth_particle_effect.hide()
 
+func process_action(action):
+	.process_action(action)
+	if state_machine.states_map.has(action) and state_machine.states_map[action].has_hitboxes and previous_input and previous_input.action == "AirDash":
+		can_air_dash = true
+
 func process_extra(extra):
 	juked_this_turn = false
 	.process_extra(extra)
@@ -178,6 +183,9 @@ func tick():
 				move_directly("0", fixed.mul(juke_dir_y, juke_speed))
 			if juke_dir_x == "0" and juke_dir_y == "0":
 				reset_momentum()
+
+	if penalty_ticks > 0:
+		juke_pips = 0
 
 	if is_in_hurt_state(false) or "Knockdown" in current_state().state_name:
 		juke_ticks = 0

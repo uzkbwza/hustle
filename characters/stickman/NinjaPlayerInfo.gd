@@ -37,14 +37,14 @@ func _process(_delta):
 		texture_rect_2.show()
 	if fighter.momentum_stores > 2:
 		texture_rect_3.show()
-	if ReplayManager.playback:
-		label_1.hide()
-		label_2.hide()
-		label_3.hide()
-	else:
-		label_1.show()
-		label_2.show()
-		label_3.show()
-		label_1.text = "%0.1f" % float(fighter.stored_speed_1)
-		label_2.text = "%0.1f" % float(fighter.stored_speed_2)
-		label_3.text = "%0.1f" % float(fighter.stored_speed_3)
+#	if ReplayManager.playback:
+#		label_1.hide()
+#		label_2.hide()
+#		label_3.hide()
+#	else:
+#		label_1.show()
+#		label_2.show()
+#		label_3.show()
+	label_1.text = "%0.1f" % float(fighter.stored_speed_1)
+	label_2.text = "%0.1f" % float(fighter.stored_speed_2)
+	label_3.text = "%0.1f" % float(fighter.stored_speed_3)

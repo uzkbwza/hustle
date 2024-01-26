@@ -123,9 +123,21 @@ func on_got_blocked():
 	if active:
 		ticks_left = Utils.int_min(ticks_left, ARM_TIME_ON_OPPONENT_HIT)
 	else:
-		set_vel(fixed.mul(vel.x, "-0.9"), vel.y) 
+		set_vel(fixed.mul(vel.x, "-0.9"), vel.y)
+	if creator.magnet_ticks_left > 0:
+		creator.magnetize_opponent = true
+		creator.magnetize_opponent_blocked = true
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if obj.is_in_group("Fighter"):
+		if creator.magnet_ticks_left > 0:
+			creator.magnetize_opponent = true
+			creator.magnetize_opponent_blocked = false
 
 func disable():
 	.disable()
 	active_indicator.hide()
 	creator.grenade_object = null
+	creator.magnetize_opponent = false
+	creator.magnetize_opponent_blocked = false

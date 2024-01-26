@@ -7,7 +7,7 @@ signal bullet_used()
 export(Texture) var epic_horse_moment
 
 onready var shooting_arm = $"%ShootingArm"
-
+const FORESIGHT = preload("res://characters/swordandgun/projectiles/AfterImage.tscn")
 const BARREL_LOCATION_X = "26"
 const BARREL_LOCATION_Y = "-5"
 const GUN_PICKUP_DISTANCE = "26"
@@ -19,6 +19,7 @@ const MAX_AIR_SPEED_1KCUTS = "12"
 const CUTS_METER_DRAIN_1 = 2
 const CUTS_METER_DRAIN_2 = 3
 const DRIFT_SUPERS = 1
+const GROUNDED_DRIFT_JUMP_SPEED = "-3"
 
 var bullets_left = 6
 var cut_projectile = null
@@ -114,13 +115,22 @@ func tick():
 
 	.tick()
 
-	if current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air and !is_in_hurt_state():
+#	if id == 1:
+#		print(current_state().entered_in_air)
+
+	if ((current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air) or (current_state().air_type == CharacterState.AirType.Aerial and is_grounded() and !current_state().entered_in_air)) and !is_in_hurt_state():
 		var obj = obj_from_name(after_image_object)
 		if supers_available >= DRIFT_SUPERS:
 			if obj:
 				detonating = false
 				obj.detonating = true
 				if !milk_toggled:
+					if is_grounded():
+						current_state().entered_in_air = true
+						current_state().started_in_air = true
+						apply_force("0", GROUNDED_DRIFT_JUMP_SPEED)
+						set_grounded(false)
+						move_directly(0, -1)
 					milk_toggled = true
 					super_effect(10)
 	#				use_air_movement()
@@ -191,6 +201,19 @@ func process_extra(extra):
 		shifting = extra.shift
 		if shifting:
 			shifted_this_turn = true
+	if extra.has("hindsight") and supers_available > 0 or super_meter >= MAX_SUPER_METER / 2:
+		if extra.hindsight:
+			super_effect(5)
+			drain_super_meter(MAX_SUPER_METER / 2)
+			var obj = obj_from_name(after_image_object) 
+			if obj:
+				obj.detonating = true
+			var foresight = spawn_object(FORESIGHT, 0, 0)
+			setup_foresight(foresight)
+
+func setup_foresight(projectile):
+	projectile.sprite.set_material(sprite.get_material())
+	after_image_object = projectile.obj_name
 
 func can_bullet_cancel():
 	return bullets_left > 0 and has_gun

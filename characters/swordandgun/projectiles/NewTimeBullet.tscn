@@ -33,6 +33,7 @@ last_pos_visual_ricochet
 last_hit_by
 no_draw_ticks"
 has_projectile_parry_window = false
+immunity_susceptible = false
 deletes_other_projectiles = false
 projectile_immune = true
 color = Color( 1, 0.486275, 0.121569, 1 )

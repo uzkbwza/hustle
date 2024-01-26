@@ -708,6 +708,7 @@ change_stance_to = "Normal"
 initiative_effect = true
 particle_location = Vector2( 13, -11 )
 parry_type = 1
+disable_aerial_movement = true
 
 [node name="ParryAir" type="Node2D" parent="StateMachine" index="6"]
 script = ExtResource( 68 )
@@ -1881,14 +1882,14 @@ custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 text = "QUITTER"
 align = 1
 
-[node name="ActionableLabel" type="Label" parent="." index="8"]
+[node name="ActionableLabel" type="Label" parent="." index="9"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -44.0
 margin_top = -40.0
 margin_right = 44.0
-margin_bottom = -26.0
+margin_bottom = -20.0
 theme = ExtResource( 47 )
 custom_constants/line_spacing = -2
 text = "Ready
@@ -1898,7 +1899,7 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="BlockFrameLabel" type="Label" parent="." index="9"]
+[node name="BlockFrameLabel" type="Label" parent="." index="10"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5
@@ -1911,26 +1912,20 @@ custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
 custom_constants/line_spacing = -2
 text = "parry @ xf "
 align = 1
-__meta__ = {
-"_edit_lock_": true
-}
 
-[node name="HitFrameLabel" type="Label" parent="." index="10"]
+[node name="HitFrameLabel" type="Label" parent="." index="11"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -44.0
-margin_top = -49.0
-margin_right = 44.0
-margin_bottom = -38.0
+margin_left = -43.0
+margin_top = -12.0
+margin_right = 45.0
+margin_bottom = -1.0
 theme = ExtResource( 47 )
 custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 custom_constants/line_spacing = -2
 text = "hit @ xf "
 align = 1
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="EmoteLabel" type="RichTextLabel" parent="." index="12"]
 margin_left = -141.0

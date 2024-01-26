@@ -4,8 +4,8 @@ var can_summon_kick = true
 var bomb_thrown = false
 var bomb_projectile = null
 var momentum_stores = 0
-var stored_momentum_x = ""
-var stored_momentum_y = ""
+var stored_momentum_x = "0"
+var stored_momentum_y = "0"
 var sticky_bombs_left = 3
 var quick_slash_start_pos_x = 0
 var quick_slash_start_pos_y = 0
@@ -38,11 +38,14 @@ const BACKWARD_PULL_PENALTY = 2
 const SKULL_SHAKER_BLEED_TICKS = 80
 const SKULL_SHAKER_BLEED_DAMAGE = 2
 const BOOST_MIN_FRAMES = 10
+const SPEED_LOST_ON_HIT = "3.0"
+const BOOST_REDUCTION_PER_FRAME = "0.25"
+const MIN_BOOST_REDUCTION_PER_FRAME = "0.1"
 
 func init(pos=null):
 	.init(pos)
 	if infinite_resources:
-		momentum_stores = 3
+		momentum_stores = 1
 
 func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
@@ -70,13 +73,9 @@ func process_extra(extra):
 				will_release_momentum = true
 				var dir = extra.release_dir
 				var stored_speed = "0"
-				match momentum_stores:
-					1:
-						stored_speed = stored_speed_1
-					2:
-						stored_speed = stored_speed_2
-					3:
-						stored_speed = stored_speed_3
+
+				stored_speed = stored_speed_1
+
 				var impulse = xy_to_dir(dir.x, dir.y, fixed.mul(RELEASE_MODIFIER, stored_speed))
 				stored_momentum_x = impulse.x
 				stored_momentum_y = impulse.y
@@ -96,49 +95,29 @@ func apply_forces():
 		.apply_forces()
 	pass
 
-func store_momentum():
-		var speed = current_momentum
-		var stored_speed = speed
-		if infinite_resources and fixed.lt(stored_speed, "11"):
-			stored_speed = "11"
-#		print(stored_speed)
-		reset_momentum()
-		momentum_stores += 1
-		if momentum_stores > 3:
-			momentum_stores = 3
-		match momentum_stores:
-			1:
-				stored_speed_1 = stored_speed
-			2:
-				stored_speed_2 = stored_speed
-			3:
-				stored_speed_3 = stored_speed
-
-		will_store_momentum = false
-		play_sound("Swish3")
-		spawn_particle_effect_relative(preload("res://characters/stickman/ReleaseMomentumEffect.tscn"), Vector2(0, -16))
-
 func release_momentum():
 #		reset_momentum()
-		var can_boost_vert = !is_grounded()
-		if current_state().get_node_or_null("AirBoost") != null:
-			can_boost_vert = true
-		apply_force(stored_momentum_x, stored_momentum_y if !is_grounded() else "0")
-		if !infinite_resources:
-			momentum_stores -= 1
-		if momentum_stores < 0:
-			momentum_stores = 0
+	var can_boost_vert = !is_grounded()
+	if current_state().get_node_or_null("AirBoost") != null:
+		can_boost_vert = true
+	apply_force(stored_momentum_x, stored_momentum_y if !is_grounded() else "0")
+	if !infinite_resources:
+		momentum_stores = 0
+	if momentum_stores < 0:
+		momentum_stores = 0
 
-		released_this_turn = true
-		will_release_momentum = false
-		play_sound("Swish2")
-		if combo_count > 0:
-			boosted_during_combo = true
-			combo_count += 1
-		spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
-		colliding_with_opponent = false
+	released_this_turn = true
+	will_release_momentum = false
+	play_sound("Swish2")
+	if combo_count > 0:
+		boosted_during_combo = true
+		combo_count += 1
+	spawn_particle_effect_relative(preload("res://characters/stickman/StoreMomentumEffect.tscn"), Vector2(0, -16))
+	colliding_with_opponent = false
 #		super_effect(2)
 #		use_super_bar()
+	stored_momentum_x = "0"
+	stored_momentum_y = "0"
 
 func reset_combo():
 	.reset_combo()
@@ -191,14 +170,24 @@ func tick():
 	if will_release_momentum and turn_frames == 1:
 		release_momentum()
 
-	if will_store_momentum and turn_frames == 2:
-		store_momentum()
-
 	if released_this_turn:
 #	if released_this_turn and turn_frames % 1 == 0:
 		var color = style_extra_color_2 if (style_extra_color_2 and applied_style)  else extra_color_2
 		color.a = 0.5
 		create_speed_after_image(color)
+
+	if momentum_stores > 0 and combo_count <= 0:
+		var reduction = fixed.mul(BOOST_REDUCTION_PER_FRAME, fixed.div(stored_speed_1, "10"))
+		if fixed.lt(reduction, MIN_BOOST_REDUCTION_PER_FRAME):
+			reduction = MIN_BOOST_REDUCTION_PER_FRAME
+		if fixed.lt(stored_speed_1, "10"):
+			reduction = fixed.mul(reduction, "0.5")
+#		print(reduction)
+		stored_speed_1 = fixed.sub(stored_speed_1, reduction)
+		if fixed.lt(stored_speed_1, "0.0"):
+			momentum_stores -= 1
+			stored_speed_1 = "0"
+			
 
 	if is_grounded():
 		used_grappling_hook = false
@@ -209,6 +198,9 @@ func on_got_parried():
 		hitlag_ticks +=  20
 	pass
 
+func on_blocked_something():
+	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
+
 func on_got_hit():
 	if bomb_projectile or bomb_thrown:
 		bomb_thrown = false
@@ -216,6 +208,9 @@ func on_got_hit():
 		if bomb_object:
 			bomb_object.disable()
 		bomb_projectile = null
+	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
+
+		
 
 func stack_move_in_combo(move_name):
 	.stack_move_in_combo(move_name)

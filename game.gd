@@ -492,8 +492,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	if !is_ghost:
 		if SteamLobby.is_fighting():
 			SteamLobby.on_match_started()
-#	if is_afterimage:
-#		show_state()
+
 	if match_data.has("starting_meter"):
 		var meter_amount = p1.fixed.round(p1.fixed.mul(str(Fighter.MAX_SUPER_METER), match_data.starting_meter))
 		p1.gain_super_meter(meter_amount)
@@ -879,19 +878,12 @@ func apply_hitboxes(players):
 			p1_hit = true
 		else:
 			p2_throwing = true
-#			if not p1_hit_by.hits_otg and px1.is_otg():
-#				p2_throwing = false
-#			if px1.throw_invulnerable:
-#				p2_throwing = false
+
 	if p2_hit_by:
 		if not (p2_hit_by is ThrowBox):
 			p2_hit = true
 		else:
 			p1_throwing = true
-#			if not p2_hit_by.hits_otg and px2.is_otg():
-#				p1_throwing = false
-#			if px2.throw_invulnerable:
-#				p1_throwing = false
 
 	var clash_position = Vector2()
 	var clashed = false
@@ -960,6 +952,7 @@ func apply_hitboxes(players):
 		if p2_throwing and p1_throwing and px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
+				return
 				
 		elif p2_throwing and p1_throwing and not px1.current_state().throw_techable and not px2.current_state().throw_techable:
 			return 
@@ -989,7 +982,7 @@ func apply_hitboxes(players):
 			if px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
-				return 
+				return
 			var can_hit = true
 			if px1.is_grounded() and not p1_hit_by.hits_vs_grounded:
 				can_hit = false
@@ -1034,7 +1027,6 @@ func apply_hitboxes(players):
 					continue
 				
 			var can_be_hit_by_melee = object.get("can_be_hit_by_melee")
-#			var can_be_hit_by_projectiles = bool(object.get("can_be_hit_by_projectiles"))
 		
 			if p:
 				var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
@@ -1050,19 +1042,6 @@ func apply_hitboxes(players):
 				if p_hit_by:
 					players_to_hit.append([p_hit_by, p])
 					objects_hit_player = true
-#					p_hit_by.hit(p)
-
-#			if can_be_hit_by_melee or can_be_hit_by_projectiles:
-#				for opp_object in objects:
-#					if opp_object.disabled:
-#						continue
-#					if opp_object.id == object.id and !opp_object.damages_own_team:
-#						continue
-#					if !can_be_hit_by_projectiles and bool(opp_object.get("immunity_susceptible")):
-#						continue
-#					var obj_hit_by = get_colliding_hitbox(opp_object.get_active_hitboxes(), object.hurtbox)
-#					if obj_hit_by:
-#						obj_hit_by.hit(object)
 
 			var opp_objects = []
 			var opp_id = (object.id % 2) + 1

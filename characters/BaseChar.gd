@@ -221,6 +221,7 @@ var queued_data = null
 var queued_extra = null
 var buffered_input = {}
 var last_input = {}
+var previous_input = {}
 var use_buffer = false
 
 var hit_out_of_brace = false
@@ -696,6 +697,7 @@ func meter_gain_modified(amount):
 	return amount
 
 func gain_super_meter(amount,stale_amount = "1.0"):
+	
 	if amount == null:
 		return
 
@@ -720,6 +722,19 @@ func gain_super_meter(amount,stale_amount = "1.0"):
 				unlock_achievement("ACH_ULTIMATE_POWER", true)
 			break
 
+
+func drain_super_meter(amount):
+	if infinite_resources:
+		return
+	super_meter -= amount
+	if super_meter < 0:
+		if supers_available > 0:
+			super_meter += MAX_SUPER_METER
+			supers_available -= 1
+		else:
+			super_meter = 0
+
+
 func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true, data=null, local=true):
 	var obj = .spawn_object(projectile, pos_x, pos_y, relative, data, local)
 #	if obj is BaseProjectile:
@@ -728,7 +743,7 @@ func spawn_object(projectile: PackedScene, pos_x: int, pos_y: int, relative=true
 
 func combo_stale_meter(meter: int):
 	var staling = get_combo_stale(combo_count)
-	return fixed.round(fixed.mul(fixed.mul(str(meter), staling), METER_GAIN_MODIFIER))
+	return fixed.round(fixed.mul(fixed.mul(str(meter), staling), METER_GAIN_MODIFIER if current_tick > 0 else "1.0"))
 	
 func update_data():
 	data = get_data()
@@ -1259,6 +1274,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		var input_timing = current_state().data["Melee Parry Timing"].count + (blocked_hitbox_plus_frames - opponent.blocked_hitbox_plus_frames)
 #		print(input_timing)
 		var parry_timing = 0
+		state_interruptable = false
 
 		if not projectile:
 			if current_state() is GroundedParryState:
@@ -1319,14 +1335,14 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		if perfect_parry:
 			parried_last_state = true
 			last_parry_tick = current_tick
-			if !hitbox.block_punishable:
+			if !hitbox.block_punishable and !projectile:
 				parry_combo = true
 		else:
 			blocked_last_hit = true
 			blocked_last_turn = true
 
 			start_throw_invulnerability()
-			if !projectile and !perfect_parry and !last_turn_block and initiative:
+			if !projectile and !perfect_parry and  !last_turn_block and initiative:
 				if hitbox.guard_break and !ignore_guard_break and (!current_state().get_whiffed_block()):
 					hitbox.damage_proration = Utils.int_max(GUARD_BREAK_SCALING, hitbox.damage_proration)
 					hit_by(hitbox, true)
@@ -1346,6 +1362,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		
 			if !current_state() is GroundedParryState:
 				opponent.current_state().feinting = false
+		
 		
 		parried = true
 
@@ -1461,6 +1478,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				host.on_got_blocked()
 			if host.has_method("on_got_blocked_by"):
 				host.on_got_blocked_by(self)
+			on_blocked_something()
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)
@@ -1481,6 +1499,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry")
 			emit_signal("parried")
 
+func on_blocked_something():
+	pass
 
 func set_block_stun(total_plus_frames, block_hitlag=null):
 #	blockstun_ticks = 0
@@ -1836,6 +1856,7 @@ func tick_before():
 					"data": queued_data,
 					"extra": queued_extra,
 				}
+	previous_input = last_input.duplicate(true)
 	feinted_last = feinting
 	var pressed_feint = false
 	if refresh_prediction:
@@ -1861,6 +1882,7 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
+		process_action(queued_action)
 		turn_frames = 0
 		opponent.turn_frames = 0
 		turn_start_effects()
@@ -1922,6 +1944,9 @@ func tick_before():
 	queued_extra = null
 	was_my_turn = false
 	lowest_tick = current_state().current_real_tick
+
+func process_action(queued_action):
+	pass
 
 func touching_which_wall():
 	var col_box = get_collision_box()

@@ -140,6 +140,7 @@ var was_blocked = false
 var hit_cancelled = false
 var started_during_combo = false
 
+var hit_hit_cancellable_projectile = false
 var hit_fighter = false
 
 var feinted_last = false
@@ -295,6 +296,7 @@ func _enter_shared():
 	land_cancelled = false
 	hit_anything = false
 	hit_fighter = false
+	hit_hit_cancellable_projectile = false
 	entered_in_air = !host.is_grounded()
 	was_blocked = false
 	started_in_air = false
@@ -352,6 +354,8 @@ func _on_hit_something(obj, hitbox):
 		hit_fighter = true
 		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
+	elif obj.get("hit_cancel_on_hit"):
+		hit_hit_cancellable_projectile = true
 	._on_hit_something(obj, hitbox)
 	try_hit_cancel(obj, hitbox)
 
@@ -384,7 +388,7 @@ func try_hit_cancel(obj, hitbox):
 		enable_hit_cancel(projectile)
 		if projectile:
 			host.global_hitlag(host.hitlag_ticks)
-			host.hitlag_ticks = 1
+			host.hitlag_ticks = 0
 
 func process_hitboxes():
 #	if hitbox_start_frames.has(current_tick + 1) and host.feinting:
@@ -509,7 +513,7 @@ func can_feint():
 	return (has_hitboxes or force_feintable) and (host.feints > 0 or host.get_total_super_meter() >= host.MAX_SUPER_METER) and can_feint_if_possible
 
 func can_interrupt():
-	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or (hit_anything and current_tick == iasa_on_hit) or (was_blocked and iasa_on_hit_on_block and current_tick == iasa_on_hit)
+	return current_tick == iasa_at or current_tick in interrupt_frames or current_tick == anim_length - 1 or ((hit_fighter or hit_hit_cancellable_projectile) and current_tick == iasa_on_hit) or (was_blocked and iasa_on_hit_on_block and current_tick == iasa_on_hit)
 
 func on_got_hit():
 	pass

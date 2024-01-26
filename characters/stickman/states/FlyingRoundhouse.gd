@@ -2,6 +2,7 @@ extends CharacterState
 
 var left_ground = false
 var started_on_ground = false
+var had_invuln = false
 
 onready var hitbox = $Hitbox
 
@@ -10,7 +11,10 @@ func _frame_0():
 	started_on_ground = host.is_grounded()
 	
 func _frame_1():
-	host.start_projectile_invulnerability()
+	had_invuln = false
+	if host.initiative:
+		host.start_projectile_invulnerability()
+		had_invuln = true
 	
 func _frame_7():
 	if !started_in_air:

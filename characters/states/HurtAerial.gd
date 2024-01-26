@@ -134,7 +134,7 @@ func _tick():
 		if bounce_frames == 0:
 			host.set_pos(host.get_pos().x, -1)
 	else:
-		if host.is_grounded() and fixed.ge(host.get_vel().y, "0"):
+		if host.is_grounded() and fixed.ge(vel.y, "0"):
 			if hitbox.air_ground_bounce and !ground_bounced:
 #				hitstun = hitstun + global_hitstun_modifier(hitbox.hitstun_ticks + hitstun_modifier(hitbox)) / 2
 				begin_ground_bounce()

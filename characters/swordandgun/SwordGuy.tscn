@@ -1350,6 +1350,7 @@ type = 2
 button_texture = ExtResource( 230 )
 air_type = 1
 land_cancel = true
+min_land_cancel_frame = 2
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
 Aerial
@@ -2118,6 +2119,11 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
+[node name="HostCommand" type="Node" parent="StateMachine/UpwardSwipeAir" index="1"]
+script = ExtResource( 332 )
+tick = 11
+command = "try_shoot"
+
 [node name="Stinger" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 331 )
 __meta__ = {
@@ -2561,6 +2567,7 @@ type = 1
 button_texture = ExtResource( 261 )
 air_type = 1
 land_cancel = true
+min_land_cancel_frame = 2
 self_hit_cancellable = false
 interrupt_from_string = "Aerial
 AerialAttack
@@ -3569,7 +3576,6 @@ interrupt_from_string = "Grounded
 GroundedMovement
 GroundedSpecial
 Aerial
-AerialMovement
 AerialSpecial
 Teleport"
 interrupt_into_string = "Grounded
@@ -3601,7 +3607,6 @@ interrupt_from_string = "Grounded
 GroundedMovement
 GroundedSpecial
 Aerial
-AerialMovement
 AerialSpecial
 Teleport"
 interrupt_into_string = "Grounded
@@ -4404,3 +4409,7 @@ block_cancel_allowed = false
 plus_frames = 1
 start_tick = 22
 active_ticks = 2
+
+[node name="BlockFrameLabel" parent="." index="10"]
+margin_top = -51.0
+margin_bottom = -40.0

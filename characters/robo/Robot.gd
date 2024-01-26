@@ -19,7 +19,7 @@ const START_LOIC_METER: int = 500
 const LOIC_GAIN = 5
 const LOIC_GAIN_NO_ARMOR = 5
 const MAGNET_TICKS = 100
-const MAGNET_STRENGTH = "2"
+const MAGNET_STRENGTH = "1.6"
 const MAGNET_BOMB_STRENGTH = "1.6"
 const COMBO_MAGNET_STRENGTH = "1.0"
 const MAGNET_MAX_STRENGTH = "2.0"
@@ -37,6 +37,7 @@ const NEUTRAL_MAGNET_MODIFIER_MAX = "2.75"
 const MAGNET_VISUAL_ARC_SIZE = 20000
 const ARMOR_STARTUP_TICKS = 3
 const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
+const MAGNETIZE_OPPONENT_BLOCKED_MOD = "0.75"
 
 const FLY_GRAV = "0.05"
 const FLY_MAX_FALL_SPEED = "100.0"
@@ -69,6 +70,8 @@ var armor_startup_ticks = 0
 var used_earthquake_grab = false
 var started_magnet_in_initiative = false
 var force_fly = false
+var magnetize_opponent = false
+var magnetize_opponent_blocked = false
 
 var drive_cancel = false
 var buffer_drive_cancel = false
@@ -194,6 +197,16 @@ func big_landing_effect():
 		camera.bump(Vector2.UP, 10, 20 / 60.0)
 
 func magnetize():
+	if magnetize_opponent:
+		var dir = get_opponent_dir_vec()
+		var strength = MAGNET_STRENGTH
+		if magnetize_opponent_blocked:
+			strength = fixed.mul(strength, MAGNETIZE_OPPONENT_BLOCKED_MOD)
+		var force = fixed.vec_mul(dir.x, dir.y, fixed.mul(strength, "-1"))
+		if fixed.round(distance_to(opponent)) < MAGNET_MIN_BOMB_DIST:
+			if (MAGNET_TICKS - magnet_ticks_left) > MAGNET_MIN_TICKS:
+				magnet_ticks_left = 1
+		opponent.apply_force(force.x, force.y if opponent.is_grounded() else "0")
 	var obj = obj_from_name(grenade_object)
 	if obj:
 		var dir = get_object_dir_vec(obj)
@@ -202,9 +215,9 @@ func magnetize():
 			if (MAGNET_TICKS - magnet_ticks_left) > MAGNET_MIN_TICKS:
 				magnet_ticks_left = 1
 		obj.apply_force(force.x, force.y)
-		pass
 	else:
 		magnet_ticks_left = 1
+
 
 func add_armor_pip():
 	if armor_pips < MAX_ARMOR_PIPS:
@@ -250,6 +263,8 @@ func tick():
 		magnet_ticks_left -= 1
 	else:
 		stop_magnet_fx()
+		magnetize_opponent = false
+		magnetize_opponent_blocked = false
 		pass
 	if landed_move:
 		if not (current_state() is CharacterHurtState):

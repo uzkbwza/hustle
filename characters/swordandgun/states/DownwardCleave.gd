@@ -8,11 +8,14 @@ var grounded_frames = 0
 
 func _enter():
 	grounded_frames = 0
+	if !grounded and host.is_grounded():
+		grounded = true
 
 func _frame_0():
 	if grounded:
 		grounded_frames = 2
 		return
+
 	moving_down = false
 	var vel = host.get_vel()
 	if fixed.gt(vel.y, "0"):
@@ -20,6 +23,7 @@ func _frame_0():
 	host.set_vel(vel.x, vel.y)
 	var force = fixed.normalized_vec_times("0.5", "-1", jump_speed)
 	host.move_directly(0, -8)
+	entered_in_air = !host.is_grounded()
 	host.apply_force_relative(force.x, force.y)
 
 func _frame_1():

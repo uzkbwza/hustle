@@ -5,10 +5,10 @@ onready var hitbox_2 = $Hitbox2
 func _frame_0():
 #	if current_tick == 0:
 	if host.initiative and host.is_grounded():
-		host.start_invulnerability()
+#		host.start_invulnerability()
 		host.start_aerial_attack_invulnerability()
-	if !host.is_grounded():
-		host.start_throw_invulnerability()
+#	host.start_throw_invulnerability()
+#	if !host.is_grounded():
 #		host.start_projectile_invulnerability()
 	var vel = host.get_vel()
 	if air_type != AirType.Aerial:

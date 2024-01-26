@@ -36,6 +36,7 @@ func _enter():
 	if data == null:
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
+	disable_aerial_movement = _disable_aerial_movement
 	if disable_aerial_movement:
 		interrupt_exceptions.append("AerialMovement")
 	start()
@@ -137,7 +138,7 @@ func can_parry_hitbox(hitbox):
 		return false
 
 	return true
-	
+
 func _tick():
 #	interruptible_on_opponent_turn = !started_in_combo
 	host.apply_fric()
@@ -157,7 +158,6 @@ func _exit():
 	parry_active = false
 	parried_last = parried
 	host.blocked_last_hit = false
-#	host.whiffed_block = get_whiffed_block()
 
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
 	.enable_interrupt(check_opponent, remove_hitlag)

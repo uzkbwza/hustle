@@ -2116,9 +2116,9 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 160 ): {
-"x": 37,
-"y": -1
+ExtResource( 166 ): {
+"x": -8,
+"y": -17
 },
 ExtResource( 171 ): {
 "x": 15,
@@ -2132,9 +2132,9 @@ ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 166 ): {
-"x": -8,
-"y": -17
+ExtResource( 160 ): {
+"x": 37,
+"y": -1
 }
 }
 interruptible_on_opponent_turn = true
@@ -2147,7 +2147,7 @@ release_frame = 24
 use_start_throw_pos = false
 use_release_throw_pos = false
 hitstun_ticks = 10
-knockback = "16"
+knockback = "20"
 dir_y = "0.5"
 knockdown = false
 knockdown_extends_hitstun = false
@@ -3252,6 +3252,7 @@ __meta__ = {
 title = "Slop Dash"
 button_texture = ExtResource( 293 )
 air_type = 2
+self_interruptable = false
 interrupt_from_string = "Aerial
 Grounded
 AerialMovement
