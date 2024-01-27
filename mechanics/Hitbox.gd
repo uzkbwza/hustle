@@ -81,6 +81,7 @@ export var guard_break = false
 export var block_punishable = false
 export var parriable = true
 export var block_cancel_allowed = true
+
 export(int, -1024, 1024) var plus_frames = 0
 
 export(HitHeight) var hit_height = HitHeight.Mid
@@ -121,6 +122,8 @@ export var launch_reversible = false
 export var vacuum = false
 export var send_away_from_center = false
 export var block_pushback_modifier: String = "1.0"
+export var block_pushback_reversible = false
+export var block_reverse_pushback_modifier: String = "1.0"
 export var pushback_x: String = "1.0"
 
 export var _c_Knockback_Type = 0

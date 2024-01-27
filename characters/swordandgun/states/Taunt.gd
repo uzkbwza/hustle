@@ -1,5 +1,7 @@
 extends "res://characters/states/Taunt.gd"
 
+export var guntrick = false
+
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -21,3 +23,6 @@ func _frame_15():
 
 func _frame_7():
 	host.play_sound("Block")
+
+func is_usable():
+	return .is_usable()

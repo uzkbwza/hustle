@@ -6,11 +6,14 @@ const MOVE_X_2 = "-1"
 const MOVE_Y_2 = "-1"
 const MOVE_SPEED_1 = "25"
 const MOVE_SPEED_2 = "19"
+const MOVE_SPEED_3 = "19"
 
 const JUMP_TICK = 4
 const AIR_ADVANTAGE = JUMP_TICK - 1
+const DOWN_TICK = 7
 
 var air_advantage = 0
+var down = false
 
 func _enter():
 	host.reset_momentum()
@@ -20,7 +23,8 @@ func _enter():
 			"x": 1,
 			"y": 0,
 		}
-	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2"
+	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2" if data.x == 1 else "WallTrickFollowup3"
+	down = data.y == 1 and data.x == 0
 
 func _tick():
 	if current_tick == JUMP_TICK - air_advantage:
@@ -29,7 +33,7 @@ func _tick():
 		var move = fixed.normalized_vec_times(MOVE_X_1 if data.y == 0 else MOVE_X_2, MOVE_Y_1 if data.y == 0 else MOVE_Y_2, MOVE_SPEED_1 if data.y == 0 else MOVE_SPEED_2)
 		host.set_vel(fixed.mul(move.x, str(host.get_facing_int())), move.y)
 		if current_tick > JUMP_TICK - air_advantage:
-			if host.touching_which_wall() != 0 and !host.is_grounded() or current_tick >= anim_length - 1:
+			if host.touching_which_wall() != 0 and !host.is_grounded() or current_tick >= anim_length - 1 or (down and current_tick >= DOWN_TICK):
 				return fallback_state
 func _frame_0():
 	host.start_throw_invulnerability()

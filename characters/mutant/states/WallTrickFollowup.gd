@@ -5,15 +5,19 @@ const MOVE_X_1 = "2"
 const MOVE_Y_1 = "0.5"
 const MOVE_X_2 = "1.5"
 const MOVE_Y_2 = "1"
-const MOVE_SPEED = "37"
+const MOVE_X_3 = "0"
+const MOVE_Y_3 = "1"
 
-export var downward = false
 
-var move_x
-var move_y
+export var move_x_ = "2"
+export var move_y_ = "0.5"
+export var move_speed = "37"
+
+var move_x = "0"
+var move_y = "0"
 
 func _enter():
-	var move = fixed.normalized_vec_times(MOVE_X_2 if downward else MOVE_X_1, MOVE_Y_2 if downward else MOVE_Y_1, MOVE_SPEED)
+	var move = fixed.normalized_vec_times(move_x_, move_y_, move_speed)
 	move_x = fixed.mul(move.x, str(host.get_facing_int()))
 	move_y = move.y
 

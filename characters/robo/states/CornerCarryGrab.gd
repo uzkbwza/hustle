@@ -15,7 +15,7 @@ func _frame_4():
 		host.flying_dir = {"x": 0, "y": host.flying_dir.y}
 
 #	can_fly = false
-	host.has_projectile_armor = true
+#	host.has_projectile_armor = true
 
 func _frame_15():
 	host.has_projectile_armor = false

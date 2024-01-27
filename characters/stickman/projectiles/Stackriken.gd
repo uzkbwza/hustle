@@ -19,4 +19,6 @@ func hit_by(hitbox):
 	if host:
 		if host.is_in_group("Fighter"):
 			current_state().spawn_particle_relative(current_state().particle_scene, Vector2())
-			disable()
+#			disable()
+			var force = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "1.0"))
+			set_vel(force.x, force.y)

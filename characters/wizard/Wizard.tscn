@@ -856,29 +856,29 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1421,6 +1421,7 @@ hit_sound = ExtResource( 144 )
 dir_x = "0.5"
 dir_y = "-1.5"
 knockback = "6.0"
+block_pushback_modifier = "0.5"
 pushback_x = "3.0"
 grounded_hit_state = "HurtAerial"
 ground_bounce = false
@@ -1574,6 +1575,8 @@ plus_frames = 1
 dir_y = "-0.25"
 knockback = "12.0"
 launch_reversible = true
+block_pushback_reversible = true
+block_reverse_pushback_modifier = "0.75"
 pushback_x = "-1.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 6
@@ -1940,29 +1943,29 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
-},
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
 },
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 type = 1

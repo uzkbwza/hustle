@@ -948,20 +948,23 @@ func apply_hitboxes(players):
 				else:
 					p2_hit = false
 
+	var players_hittable = true
+	
 	if not p2_hit and not p1_hit:
 		if p2_throwing and p1_throwing and px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
-				return
+				players_hittable = false
 				
 		elif p2_throwing and p1_throwing and not px1.current_state().throw_techable and not px2.current_state().throw_techable:
-			return 
+			players_hittable = false
 
 		elif p1_throwing:
 			if px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
-				return 
+				players_hittable = false
+
 			var can_hit = true
 			if px2.is_grounded() and not p2_hit_by.hits_vs_grounded:
 				can_hit = false
@@ -976,13 +979,14 @@ func apply_hitboxes(players):
 				p2_hit_by.hit(px2)
 				if p2_hit_by.throw_state:
 					px1.state_machine.queue_state(p2_hit_by.throw_state)
-				return 
+				players_hittable = false
 
 		elif p2_throwing:
 			if px1.current_state().throw_techable and px2.current_state().throw_techable:
 				px1.state_machine.queue_state("ThrowTech")
 				px2.state_machine.queue_state("ThrowTech")
-				return
+				players_hittable = false
+
 			var can_hit = true
 			if px1.is_grounded() and not p1_hit_by.hits_vs_grounded:
 				can_hit = false
@@ -997,7 +1001,7 @@ func apply_hitboxes(players):
 				p1_hit_by.hit(px1)
 				if p1_hit_by.throw_state:
 					px2.state_machine.queue_state(p1_hit_by.throw_state)
-				return 
+				players_hittable = false
 
 	var objects_to_hit = []
 	var objects_hit_each_other = false
@@ -1017,49 +1021,50 @@ func apply_hitboxes(players):
 		for hitbox in o_hitboxes:
 			hitbox.update_position(o_pos.x, o_pos.y)
 
-		for p in [px1, px2]:
-			var p_hit_by
-			if p == p1:
-				if object.id == 1 and not object.damages_own_team:
-					continue
-			if p == p2:
-				if object.id == 2 and not object.damages_own_team:
-					continue
-				
-			var can_be_hit_by_melee = object.get("can_be_hit_by_melee")
-		
-			if p:
-				var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
-				if obj_hit_by and (can_be_hit_by_melee or obj_hit_by.hitbox_type == Hitbox.HitboxType.Detect):
-					player_hit_object = true
-					objects_to_hit.append([obj_hit_by, object])
-
-				if p.projectile_invulnerable and object.get("immunity_susceptible"):
-					continue
-
-				var hitboxes = object.get_active_hitboxes()
-				p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
-				if p_hit_by:
-					players_to_hit.append([p_hit_by, p])
-					objects_hit_player = true
-
-			var opp_objects = []
-			var opp_id = (object.id % 2) + 1
-
-			for opp_object in objects:
-				if opp_object.disabled:
-					continue
-				if opp_object.id == opp_id:
-					opp_objects.append(opp_object)
-
-			if !object.projectile_immune:
-				for opp_object in opp_objects:
-					var obj_hit_by
-					var obj_hitboxes = opp_object.get_active_hitboxes()
-					obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
-					if obj_hit_by:
-						objects_hit_each_other = true
+		if players_hittable:
+			for p in [px1, px2]:
+				var p_hit_by
+				if p == p1:
+					if object.id == 1 and not object.damages_own_team:
+						continue
+				if p == p2:
+					if object.id == 2 and not object.damages_own_team:
+						continue
+					
+				var can_be_hit_by_melee = object.get("can_be_hit_by_melee")
+			
+				if p:
+					var obj_hit_by = get_colliding_hitbox(p.get_active_hitboxes(), object.hurtbox)
+					if obj_hit_by and (can_be_hit_by_melee or obj_hit_by.hitbox_type == Hitbox.HitboxType.Detect):
+						player_hit_object = true
 						objects_to_hit.append([obj_hit_by, object])
+
+					if p.projectile_invulnerable and object.get("immunity_susceptible"):
+						continue
+
+					var hitboxes = object.get_active_hitboxes()
+					p_hit_by = get_colliding_hitbox(hitboxes, p.hurtbox)
+					if p_hit_by:
+						players_to_hit.append([p_hit_by, p])
+						objects_hit_player = true
+
+		var opp_objects = []
+		var opp_id = (object.id % 2) + 1
+
+		for opp_object in objects:
+			if opp_object.disabled:
+				continue
+			if opp_object.id == opp_id:
+				opp_objects.append(opp_object)
+
+		if !object.projectile_immune:
+			for opp_object in opp_objects:
+				var obj_hit_by
+				var obj_hitboxes = opp_object.get_active_hitboxes()
+				obj_hit_by = get_colliding_hitbox(obj_hitboxes, object.hurtbox)
+				if obj_hit_by:
+					objects_hit_each_other = true
+					objects_to_hit.append([obj_hit_by, object])
 		
 	if objects_hit_each_other or player_hit_object:
 		for pair in objects_to_hit:

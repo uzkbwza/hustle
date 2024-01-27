@@ -6,7 +6,7 @@ func _frame_0():
 #	if current_tick == 0:
 	if host.initiative and host.is_grounded():
 #		host.start_invulnerability()
-		host.start_aerial_attack_invulnerability()
+		host.start_invulnerability()
 #	host.start_throw_invulnerability()
 #	if !host.is_grounded():
 #		host.start_projectile_invulnerability()
@@ -37,4 +37,4 @@ func _frame_8():
 	host.end_throw_invulnerability()
 
 func _frame_9():
-	host.end_aerial_attack_invulnerability()
+	host.end_invulnerability()

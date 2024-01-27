@@ -20,6 +20,7 @@ func _frame_0():
 	else:
 		anim_length = 8
 		iasa_at = 7
+	interruptible_on_opponent_turn = false
 
 func _frame_6():
 	var projectiles = get_usable_projectiles()
@@ -63,6 +64,9 @@ func _frame_7():
 			obj.refresh_hitboxes()
 			if obj is GrapplingHook:
 				obj.unlock()
+
+func _frame_9():
+	interruptible_on_opponent_turn = true
 
 func _tick():
 	if current_tick > 6:

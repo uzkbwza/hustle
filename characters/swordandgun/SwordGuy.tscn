@@ -838,8 +838,8 @@ epic_horse_moment = ExtResource( 308 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 6 )
-animation = "Grab"
-frame = 4
+animation = "AnkleCutter"
+frame = 5
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -4091,6 +4091,16 @@ script = ExtResource( 332 )
 tick = 11
 command = "try_shoot"
 
+[node name="HurtboxState" type="Node2D" parent="StateMachine/AnkleCutter" index="2"]
+z_index = 999
+script = ExtResource( 182 )
+x = 7
+y = -12
+width = 15
+height = 12
+start_tick = 4
+active_ticks = 5
+
 [node name="BackSlash" type="Node2D" parent="StateMachine" index="65"]
 script = ExtResource( 209 )
 apply_forces = true
@@ -4347,6 +4357,7 @@ enter_force_speed = "4.0"
 iasa_on_hit = 25
 hit_cancel_into_string = "Grounded
 Aerial"
+guntrick = false
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Taunt" index="0"]
 z_index = 1000
@@ -4393,7 +4404,10 @@ hit_cancel_into_string = "Grounded
 Aerial"
 interrupt_exceptions_string = "Hustle
 Guntrick
-FastTeleport"
+FastTeleport
+SpotDodge"
+initiative_effect = true
+guntrick = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Guntrick" index="0"]
 z_index = 1000

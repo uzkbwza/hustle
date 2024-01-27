@@ -54,8 +54,6 @@ script = ExtResource( 4 )
 max_air_speed = "20"
 extra_state_variables = "can_stack"
 fizzle_on_ceiling = true
-can_be_hit_by_melee = true
-hit_cancel_on_hit = true
 apply_hitlag_when_hit_by_melee = false
 
 [node name="Sprite" parent="Flip" index="0"]

@@ -36,7 +36,7 @@ func tick():
 		ticks_left -= 1
 		if ticks_left == ACTIVATE_TIME - 3:
 			has_projectile_parry_window = false
-		if ticks_left <= 0:
+		if ticks_left <= 0 and !creator.opponent.current_state().state_name == "Grabbed":
 			explode()
 		elif ticks_left <= ACTIVATE_TIME:
 			activate()

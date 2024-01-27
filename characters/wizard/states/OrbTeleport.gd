@@ -1,6 +1,8 @@
 extends SuperMove
 
 const SUPERS_CONSUMED = 1
+const MAX_DIST_H = 640
+const MAX_DIST_V = 200
 
 func _frame_1():
 	host.start_invulnerability()
@@ -20,4 +22,10 @@ func _frame_2():
 	spawn_particle_relative(particle_scene, Vector2(0, -16))
 
 func is_usable():
+	if host.orb_projectile:
+		var obj = host.obj_from_name(host.orb_projectile)
+		if obj:
+			var offs = host.obj_local_center(obj)
+			if Utils.int_abs(offs.x) > MAX_DIST_H or offs.y < -MAX_DIST_V:
+				return false
 	return .is_usable() and host.orb_projectile

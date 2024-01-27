@@ -158,7 +158,6 @@ func incr_combo(scale=true, projectile=false, force=false, combo_scale_amount=1)
 	
 
 func _on_hit_something(obj, hitbox):
-
 	._on_hit_something(obj, hitbox)
 
 func tick():

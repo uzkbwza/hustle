@@ -11,6 +11,7 @@ var projectiles_left = 0
 
 export var air = false
 
+
 func _frame_5():
 	projectiles_left = NUM_PROJECTILES
 	host.play_sound("HitBass")
@@ -18,7 +19,6 @@ func _frame_5():
 #		host.set_vel(host.get_vel().x, "0")
 		host.apply_force(0, JUMP_FORCE)
 #	host.add_juke_pips(-1)
-
 
 func _tick():
 	for j in range(PROJECTILES_PER_FRAME):
@@ -36,7 +36,7 @@ func _tick():
 			var projectile = PROJECTILE
 			host.spawn_object(PROJECTILE, -8, -16 if !air else -32, true, {"dir": vec, "angle": angle})
 			projectiles_left -= 1
-		
+
 #
 #func is_usable():
 #	return .is_usable() and host.juke_pips > 0

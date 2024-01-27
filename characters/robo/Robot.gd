@@ -20,7 +20,7 @@ const LOIC_GAIN = 5
 const LOIC_GAIN_NO_ARMOR = 5
 const MAGNET_TICKS = 100
 const MAGNET_STRENGTH = "1.6"
-const MAGNET_BOMB_STRENGTH = "1.6"
+const MAGNET_BOMB_STRENGTH = "1.0"
 const COMBO_MAGNET_STRENGTH = "1.0"
 const MAGNET_MAX_STRENGTH = "2.0"
 const MAGNET_MIN_STRENGTH = "0.0"
@@ -38,6 +38,7 @@ const MAGNET_VISUAL_ARC_SIZE = 20000
 const ARMOR_STARTUP_TICKS = 3
 const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
 const MAGNETIZE_OPPONENT_BLOCKED_MOD = "0.75"
+const MAGNETIZE_BOMB_STRENGTH_INCREASE = "0.1"
 
 const FLY_GRAV = "0.05"
 const FLY_MAX_FALL_SPEED = "100.0"
@@ -72,6 +73,7 @@ var started_magnet_in_initiative = false
 var force_fly = false
 var magnetize_opponent = false
 var magnetize_opponent_blocked = false
+var magnetize_bomb_strength = "0"
 
 var drive_cancel = false
 var buffer_drive_cancel = false
@@ -210,13 +212,16 @@ func magnetize():
 	var obj = obj_from_name(grenade_object)
 	if obj:
 		var dir = get_object_dir_vec(obj)
-		var force = fixed.vec_mul(dir.x, dir.y, fixed.mul(MAGNET_BOMB_STRENGTH, "-1"))
+		var force = fixed.vec_mul(dir.x, dir.y, fixed.mul(fixed.mul(MAGNET_BOMB_STRENGTH, magnetize_bomb_strength), "-1"))
 		if fixed.round(distance_to(obj)) < MAGNET_MIN_BOMB_DIST:
 			if (MAGNET_TICKS - magnet_ticks_left) > MAGNET_MIN_TICKS:
 				magnet_ticks_left = 1
 		obj.apply_force(force.x, force.y)
 	else:
 		magnet_ticks_left = 1
+	magnetize_bomb_strength = fixed.add(magnetize_bomb_strength, MAGNETIZE_BOMB_STRENGTH_INCREASE)
+	if fixed.gt(magnetize_bomb_strength, "1.0") or magnetize_opponent:
+		magnetize_bomb_strength = "1.0"
 
 
 func add_armor_pip():
@@ -382,6 +387,7 @@ func tick():
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
+	magnetize_bomb_strength = "0"
 #	if combo_count > 0:
 #		magnet_scale = true
 	play_sound("MagnetBeep")

@@ -1429,6 +1429,16 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				if fixed.sign(str(get_opponent_dir())) == fixed.sign(vel.x):
 					set_vel("0", vel.y)
 				var block_pushback_modifier = hitbox.block_pushback_modifier
+				if hitbox.block_pushback_reversible:
+					var dir = Utils.int_sign(hitbox.pos_x - get_pos().x)
+					var modifier = "1"
+					if dir == -1 and hitbox.facing == "Left":
+						modifier = "-1"
+					if dir == 1 and hitbox.facing == "Right":
+						modifier = "-1"
+					if fixed.eq(modifier, "-1"):
+						modifier = fixed.mul(hitbox.block_reverse_pushback_modifier, modifier)
+					block_pushback_modifier = fixed.mul(block_pushback_modifier, modifier)
 				if current_state().get("push") and fixed.lt(block_pushback_modifier, "0"):
 					block_pushback_modifier = fixed.mul(block_pushback_modifier, "-1")
 				var pushback_force = fixed.mul(fixed.div(hitbox.knockback, fixed.mul(str(get_opponent_dir()), fixed.mul(parry_knockback_divisor, "-1"))), block_pushback_modifier)

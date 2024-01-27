@@ -39,8 +39,8 @@ const SKULL_SHAKER_BLEED_TICKS = 80
 const SKULL_SHAKER_BLEED_DAMAGE = 2
 const BOOST_MIN_FRAMES = 10
 const SPEED_LOST_ON_HIT = "3.0"
-const BOOST_REDUCTION_PER_FRAME = "0.25"
-const MIN_BOOST_REDUCTION_PER_FRAME = "0.1"
+const BOOST_REDUCTION_PER_FRAME = "0.1"
+const MIN_BOOST_REDUCTION_PER_FRAME = "0.05"
 
 func init(pos=null):
 	.init(pos)
@@ -177,7 +177,7 @@ func tick():
 		create_speed_after_image(color)
 
 	if momentum_stores > 0 and combo_count <= 0:
-		var reduction = fixed.mul(BOOST_REDUCTION_PER_FRAME, fixed.div(stored_speed_1, "10"))
+		var reduction = fixed.mul(BOOST_REDUCTION_PER_FRAME, fixed.div(stored_speed_1, "20"))
 		if fixed.lt(reduction, MIN_BOOST_REDUCTION_PER_FRAME):
 			reduction = MIN_BOOST_REDUCTION_PER_FRAME
 		if fixed.lt(stored_speed_1, "10"):

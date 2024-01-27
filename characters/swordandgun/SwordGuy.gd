@@ -203,7 +203,7 @@ func process_extra(extra):
 			shifted_this_turn = true
 	if extra.has("hindsight") and supers_available > 0 or super_meter >= MAX_SUPER_METER / 2:
 		if extra.hindsight:
-			super_effect(5)
+#			super_effect(5)
 			drain_super_meter(MAX_SUPER_METER / 2)
 			var obj = obj_from_name(after_image_object) 
 			if obj:

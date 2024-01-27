@@ -64,6 +64,8 @@ var ignore_projectile_armor = false
 var looping = false
 var block_cancel_allowed = true
 var allowed_to_hit_own_team = true
+var block_pushback_reversible = false
+var block_reverse_pushback_modifier = "1.0"
 
 
 
@@ -193,6 +195,10 @@ func _init(state):
 		block_cancel_allowed = state.block_cancel_allowed
 	if state.get("allowed_to_hit_own_team") != null:
 		allowed_to_hit_own_team = state.allowed_to_hit_own_team
+	if state.get("block_pushback_reversible") != null:
+		block_pushback_reversible = state.block_pushback_reversible
+	if state.get("block_reverse_pushback_modifier") != null:
+		block_reverse_pushback_modifier = state.block_reverse_pushback_modifier
 	if damage_in_combo == -1:
 		damage_in_combo = damage
 
