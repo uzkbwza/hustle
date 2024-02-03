@@ -17,12 +17,8 @@ func _frame_15():
 	if state_name == "Guntrick":
 		current_tick += 2
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
 func _frame_7():
 	host.play_sound("Block")
 
 func is_usable():
-	return .is_usable()
+	return .is_usable() and !(guntrick and !host.opponent.busy_interrupt)

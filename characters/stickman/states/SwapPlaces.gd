@@ -53,9 +53,10 @@ func _frame_6():
 		host.update_data()
 		if start_dir != host.get_opponent_dir():
 			host.add_penalty(CROSS_THROUGH_PENALTY, true)
-
 	if host.combo_count == 0:
 		host.hitlag_ticks += 2
+
+	interruptible_on_opponent_turn = true
 
 func _frame_7():
 	if host.objs_map.has(obj_name):
@@ -65,8 +66,6 @@ func _frame_7():
 			if obj is GrapplingHook:
 				obj.unlock()
 
-func _frame_9():
-	interruptible_on_opponent_turn = true
 
 func _tick():
 	if current_tick > 6:

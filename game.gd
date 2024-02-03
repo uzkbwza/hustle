@@ -970,6 +970,8 @@ func apply_hitboxes(players):
 				can_hit = false
 			if not px2.is_grounded() and not p2_hit_by.hits_vs_aerial:
 				can_hit = false
+			if !players_hittable:
+				can_hit = false
 #			if px2.is_bracing() and px2.current_state().counter_type == CounterAttack.CounterType.Grab:
 #				can_hit = false
 #				px1.state_machine.queue_state("ThrowTech")
@@ -991,6 +993,8 @@ func apply_hitboxes(players):
 			if px1.is_grounded() and not p1_hit_by.hits_vs_grounded:
 				can_hit = false
 			if not px1.is_grounded() and not p1_hit_by.hits_vs_aerial:
+				can_hit = false
+			if !players_hittable:
 				can_hit = false
 #			if px1.is_bracing() and px1.current_state().counter_type == CounterAttack.CounterType.Grab:
 #				can_hit = false
