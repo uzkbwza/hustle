@@ -208,7 +208,7 @@ func process_extra(extra):
 #			super_effect(5)
 #			drain_super_meter(MAX_SUPER_METER / 2)
 			use_super_bar()
-			super_effect(1)
+#			super_effect(1)
 			var obj = obj_from_name(after_image_object) 
 			if obj:
 				obj.detonating = true
