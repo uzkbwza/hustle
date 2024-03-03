@@ -11,6 +11,7 @@ func _enter():
 	host.can_loic = false
 	self_ = data.Self
 
+
 func process_projectile(obj):
 	obj.set_pos(host.opponent.get_pos().x if !self_ else host.get_pos().x, 0)
 	var t = data.Delay.x
@@ -24,4 +25,5 @@ func process_projectile(obj):
 	obj.self_ = self_
 
 func is_usable():
+ 
 	return .is_usable() and !host.orbital_strike_out and host.can_loic

@@ -122,6 +122,10 @@ func show_options():
 		$"%FlyDir".hide()
 	if fighter.orbital_strike_out:
 		loic.show()
+#		var obj = fighter.obj_from_name(fighter.orbital_strike_projectile)
+#		if obj:
+#			if obj.active:
+#				loic.hide()
 
 func reset():
 	if fighter.flying_dir:

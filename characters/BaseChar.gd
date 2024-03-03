@@ -1406,7 +1406,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 			if not projectile:
 				if !block_used_air_movement:
-					use_air_movement()
+#					use_air_movement()
 					block_used_air_movement = true
 				if autoblock_armor:
 					opponent.hitlag_ticks = 0

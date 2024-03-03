@@ -56,7 +56,8 @@ z_index = 100
 script = ExtResource( 8 )
 extra_state_variables = "aim_ticks
 self_
-t"
+t
+active"
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 movable = false

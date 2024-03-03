@@ -40,10 +40,10 @@ const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
 const MAGNETIZE_OPPONENT_BLOCKED_MOD = "0.75"
 const MAGNETIZE_BOMB_STRENGTH_INCREASE = "0.1"
 
-const DRAIN_AIR_OPTION_BAR_AMOUNT = 18
-const GAIN_AIR_OPTION_BAR_AMOUNT = 7
+const DRAIN_AIR_OPTION_BAR_AMOUNT = 20
+const GAIN_AIR_OPTION_BAR_AMOUNT = 3
 const GAIN_AIR_OPTION_BAR_ON_HIT = 300
-const MIN_AIR_OPTION_BAR_AMOUNT = 160
+const MIN_AIR_OPTION_BAR_AMOUNT = 80
 
 const FLY_GRAV = "0.05"
 const FLY_MAX_FALL_SPEED = "100.0"
@@ -147,7 +147,7 @@ func on_got_hit():
 
 func on_launched():
 	if orbital_strike_projectile and orbital_strike_projectile in objs_map:
-		objs_map[orbital_strike_projectile].disable()
+		objs_map[orbital_strike_projectile].deactivate()
 		orbital_strike_out = false
 		orbital_strike_projectile = null
 
@@ -370,10 +370,15 @@ func tick():
 					add_penalty(1)
 
 	if (loic_meter < LOIC_METER) and !loic_draining:
-		if armor_pips > 0:
-			loic_meter += LOIC_GAIN
-		else:
-			loic_meter += LOIC_GAIN_NO_ARMOR
+		var obj = obj_from_name(orbital_strike_projectile)
+		var can_gain_loic = true
+		if obj and obj.active:
+			can_gain_loic = false
+		if can_gain_loic:
+			if armor_pips > 0:
+				loic_meter += LOIC_GAIN
+			else:
+				loic_meter += LOIC_GAIN_NO_ARMOR
 		if infinite_resources:
 			loic_meter = LOIC_METER
 			can_loic = true
@@ -483,6 +488,12 @@ func process_extra(extra):
 			flying_dir = null
 	
 	if extra.has("loic_dir"):
+#		var obj = obj_from_name(orbital_strike_projectile)
+#		var can_change = true
+#		if obj:
+#			if obj.active && obj.current_state().current_tick > 0:
+#				can_change = false
+#		if can_change:
 		loic_dir = extra.loic_dir.x
 
 	if extra.has("armor_enabled") and armor_pips > 0:

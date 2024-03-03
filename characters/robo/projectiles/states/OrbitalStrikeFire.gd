@@ -4,7 +4,16 @@ const GROUND_FIRE_DISTANCE = 64
 var last_ground_fire = 0
 const MOVE_SPEED = 3
 const ACTIVE_TIME = 60
+const NEUTRAL_PENALTY = 2
+const WIGGLE_PENALTY = 7
+const WIGGLE_PENALTY_INCREASE = 5
+const ACCEL = 1
+
 var active_time = ACTIVE_TIME
+var move_velocity = 0
+var last_dir = 0
+var wiggle_penalty = 0
+
 onready var hitbox = $Hitbox
 onready var active_2 = $"../../Sounds/Active2"
 
@@ -12,7 +21,7 @@ func _enter():
 	active_time = ACTIVE_TIME + host.aim_ticks * 2
 	hitbox.active_ticks = active_time
 	active_2.stream.loop = false
-#	print(active_time)
+#	print(active_time)r
 
 func _frame_0():
 	host.screen_bump(Vector2(), 20, 0.37)
@@ -25,12 +34,14 @@ func _frame_0():
 			host.creator.add_armor_pip()
 	last_ground_fire = host.get_pos().x
 	host.line_drawer.z_index = 1000
+	host.active = true
 
 
 func _frame_200():
 	host.disable()
 
 func _tick():
+
 	if host.creator and host.creator.opponent:
 		var target = host.creator if host.self_ else host.creator.opponent
 		var dir = host.get_object_dir(target)
@@ -47,26 +58,44 @@ func _tick():
 		if current_tick % 10 == 0:
 			spawn_enter_particle()
 #		if !active_2.playing:
-			
 	else:
 		host.stop_sound("Active2")
+	if current_tick >= active_time:
+		host.deactivating = true
 
 	if current_tick == 2:
 		host.play_sound("Active2")
 
 	if host.creator:
-		host.move_directly(host.creator.loic_dir * MOVE_SPEED, 0)
+		if host.creator.loic_dir != 0:
+			if host.creator.loic_dir != last_dir and last_dir != 0:
+				active_time -= (WIGGLE_PENALTY + wiggle_penalty)
+				wiggle_penalty += WIGGLE_PENALTY_INCREASE
+			last_dir = host.creator.loic_dir
+
+		move_velocity = Utils.approach(move_velocity, MOVE_SPEED * host.creator.loic_dir, ACCEL)
+		host.move_directly(move_velocity, 0)
+		if host.creator.loic_dir == 0:
+			active_time -= NEUTRAL_PENALTY
+			if current_tick % 2 == 0:
+				active_time -= 1
+
+
 
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
 	host.screen_bump(Vector2(), 40, 0.35)
 	if obj.is_in_group("Fighter"):
-		current_tick = active_time
-		terminate_hitboxes()
+		deactivate()
 		host.play_sound("Hit")
 
 func on_got_blocked():
 	.on_got_blocked()
+	deactivate()
+	host.play_sound("Hit")
+
+func deactivate():
 	current_tick = active_time
 	terminate_hitboxes()
-	host.play_sound("Hit")
+	host.deactivating = true
+

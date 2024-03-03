@@ -2,6 +2,8 @@ extends BaseProjectile
 
 var aim_ticks = 60
 var self_ = false
+var active = false
+var deactivating = false
 
 var t = "0"
 
@@ -23,6 +25,13 @@ func tick():
 		line_drawer.width = max(62 - (max(0, current_state().current_tick - current_state().active_time) * 5), 0)
 		if line_drawer.width <= 0:
 			disable()
+
+func deactivate():
+	deactivating = true
+	if active:
+		current_state().deactivate()
+	else:
+		disable()
 
 func _process(delta):
 	update()

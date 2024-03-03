@@ -6,6 +6,9 @@ const AIM_INCREASE = "0.01"
 const FADE_IN_TIME = 6
 const MAX_T = "0.70"
 const MOVE_SPEED = 10
+const ACCEL = 1
+
+var move_velocity = 0
 
 func _enter():
 	host.sprite.modulate.a = 0
@@ -18,10 +21,11 @@ func _tick():
 	if current_tick < FADE_IN_TIME:
 		host.sprite.modulate.a = current_tick / float(FADE_IN_TIME)
 	else:
+		move_velocity = Utils.approach(move_velocity, MOVE_SPEED * host.creator.loic_dir, ACCEL)
 		host.sprite.modulate.a = 1.0
 #		home()
 		if host.creator:
-			host.move_directly(host.creator.loic_dir * MOVE_SPEED, 0)
+			host.move_directly(move_velocity, 0)
 
 
 	var drain_ratio = fixed.sub("1.0", fixed.div(str(current_tick), str(host.aim_ticks)))

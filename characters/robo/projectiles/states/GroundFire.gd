@@ -1,8 +1,10 @@
 extends ObjectState
 
 const FIRE_TIME = 120
+const LOIC_FIRE_TIME = 60
 const DAMAGE = 2
 export var width = 100
+
 
 func _tick():
 	var fighter = host.get_fighter()
@@ -21,7 +23,7 @@ func _tick():
 			if fighter and fighter.flame_touching_opponent == host.obj_name:
 				fighter.flame_touching_opponent = null
 
-	if current_tick > FIRE_TIME:
+	if current_tick > (FIRE_TIME if !host.from_loic else LOIC_FIRE_TIME):
 		host.disable()
 		if !host.from_loic and host.creator:
 			host.creator.can_flamethrower = true
