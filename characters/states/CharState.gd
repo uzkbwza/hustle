@@ -106,6 +106,7 @@ export var tick_priority = 0
 export var velocity_forward_meter_gain_multiplier = "1.0"
 export var whiff_meter_gain_multiplier = "1.0"
 
+
 export var _c_Super = 0
 export var super_level_ = 0
 export var supers_used_ = -1
@@ -354,6 +355,7 @@ func _on_hit_something(obj, hitbox):
 		hit_fighter = true
 		host.melee_attack_combo_scaling_applied = true
 		host.add_penalty(-25)
+
 	elif obj.get("hit_cancel_on_hit"):
 		hit_hit_cancellable_projectile = true
 	._on_hit_something(obj, hitbox)

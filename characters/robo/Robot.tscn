@@ -1052,8 +1052,12 @@ propel_friction_ticks
 fly_blocked
 magnetize_opponent
 magnetize_opponent_blocked
-magnetize_bomb_strength"
-num_air_movements = 4
+magnetize_bomb_strength
+loic_dir"
+num_air_movements = 0
+use_air_option_bar = true
+air_option_bar_max = 1000
+air_option_bar = 1000
 character_portrait = ExtResource( 76 )
 character_portrait2 = ExtResource( 164 )
 player_info_scene = ExtResource( 129 )
@@ -1077,7 +1081,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -2250,14 +2253,6 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 203 ): {
-"x": -37,
-"y": -11
-},
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
-},
 ExtResource( 200 ): {
 "x": 5,
 "y": -12
@@ -2269,6 +2264,14 @@ ExtResource( 204 ): {
 ExtResource( 205 ): {
 "x": -39,
 "y": -37
+},
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
+},
+ExtResource( 203 ): {
+"x": -37,
+"y": -11
 },
 ExtResource( 201 ): {
 "x": -15,
@@ -2726,33 +2729,21 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
 },
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
 },
 ExtResource( 110 ): {
 "x": 65,
@@ -2762,13 +2753,25 @@ ExtResource( 111 ): {
 "x": -31,
 "y": -55
 },
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
 },
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 56
@@ -2827,17 +2830,25 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 254 ): {
+"x": 124,
+"y": -72
+},
 ExtResource( 258 ): {
 "x": 78,
 "y": -50
+},
+ExtResource( 260 ): {
+"x": 40,
+"y": -34
 },
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
 },
-ExtResource( 254 ): {
-"x": 124,
-"y": -72
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
 },
 ExtResource( 263 ): {
 "x": 124,
@@ -2846,14 +2857,6 @@ ExtResource( 263 ): {
 ExtResource( 264 ): {
 "x": 124,
 "y": -72
-},
-ExtResource( 260 ): {
-"x": 40,
-"y": -34
-},
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
 }
 }
 interrupt_into_string = "Grounded
@@ -3126,13 +3129,13 @@ sfx_tick = 5
 sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 286 ): {
-"x": 34,
-"y": -13
-},
 ExtResource( 287 ): {
 "x": -20,
 "y": -14
+},
+ExtResource( 286 ): {
+"x": 34,
+"y": -13
 }
 }
 interruptible_on_opponent_turn = true
@@ -3169,33 +3172,21 @@ sfx_tick = 7
 sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
+},
+ExtResource( 109 ): {
+"x": 70,
+"y": 15
 },
 ExtResource( 114 ): {
 "x": -20,
 "y": -58
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
-},
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
-},
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
-},
-ExtResource( 109 ): {
-"x": 70,
-"y": 15
 },
 ExtResource( 110 ): {
 "x": 65,
@@ -3205,13 +3196,25 @@ ExtResource( 111 ): {
 "x": -31,
 "y": -55
 },
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
 },
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
+},
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 }
 }
 iasa_at = 49
@@ -3348,6 +3351,7 @@ AerialSpecial"
 interrupt_into_string = "Aerial
 Grounded"
 hit_cancel_into_string = "GroundedSuper"
+throw_invuln_frames = 7
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/ClapJump" index="0"]
 z_index = 1000
@@ -4023,21 +4027,21 @@ sfx_volume = -8.0
 flip_frame = 11
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 431 ): {
-"x": 33,
-"y": 12
-},
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 },
 ExtResource( 432 ): {
 "x": 44,
 "y": -7
 },
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
+ExtResource( 431 ): {
+"x": 33,
+"y": 12
 }
 }
 title = "Back Throw"
@@ -4089,21 +4093,21 @@ sfx_volume = -8.0
 flip_frame = 11
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 431 ): {
-"x": 33,
-"y": 12
-},
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
+},
+ExtResource( 429 ): {
+"x": 36,
+"y": 13
 },
 ExtResource( 432 ): {
 "x": 44,
 "y": -7
 },
-ExtResource( 429 ): {
-"x": 36,
-"y": 13
+ExtResource( 431 ): {
+"x": 33,
+"y": 12
 }
 }
 title = "Back Throw"
@@ -4167,7 +4171,7 @@ y = -31
 width = 31
 height = 14
 damage = 30
-hitstun_ticks = 21
+hitstun_ticks = 26
 hitlag_ticks = 1
 victim_hitlag = 6
 damage_proration = 1
@@ -4191,7 +4195,7 @@ y = -18
 width = 16
 height = 12
 damage = 30
-hitstun_ticks = 21
+hitstun_ticks = 26
 hitlag_ticks = 1
 victim_hitlag = 6
 damage_proration = 1
@@ -4411,7 +4415,10 @@ type = 1
 button_texture = ExtResource( 383 )
 interrupt_from_string = "GroundedAttack
 Grounded"
-interrupt_into_string = "Grounded"
+interrupt_into_string = "Grounded
+Aerial"
+hit_cancel_into_string = "Grounded
+Aerial"
 allowed_stances_string = "Drive"
 change_stance_to = "Normal"
 
@@ -4431,7 +4438,6 @@ x = 18
 y = -6
 height = 6
 damage = 100
-cancellable = false
 beats_grab = false
 plus_frames = 1
 hit_height = 2
@@ -4603,8 +4609,8 @@ knockback = "6.0"
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 10
 disable_collision = false
-start_tick = 5
-active_ticks = 11
+start_tick = 6
+active_ticks = 10
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/DriveBoost" index="1"]
 z_index = 1000
@@ -4725,21 +4731,21 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 372 ): {
-"x": -24,
-"y": -6
-},
 ExtResource( 375 ): {
 "x": 31,
 "y": -8
 },
-ExtResource( 373 ): {
-"x": 34,
-"y": -11
-},
 ExtResource( 374 ): {
 "x": 14,
 "y": -7
+},
+ExtResource( 372 ): {
+"x": -24,
+"y": -6
+},
+ExtResource( 373 ): {
+"x": 34,
+"y": -11
 }
 }
 iasa_at = 20
@@ -5066,29 +5072,29 @@ enter_force_speed = "10"
 enter_sfx = ExtResource( 459 )
 enter_sfx_volume = -10.0
 throw_positions = {
+ExtResource( 448 ): {
+"x": -16,
+"y": -2
+},
 ExtResource( 450 ): {
 "x": 15,
 "y": 21
 },
-ExtResource( 445 ): {
-"x": -17,
-"y": 18
+ExtResource( 443 ): {
+"x": -12,
+"y": 21
 },
 ExtResource( 447 ): {
 "x": 52,
 "y": 49
 },
-ExtResource( 448 ): {
-"x": -16,
-"y": -2
+ExtResource( 445 ): {
+"x": -17,
+"y": 18
 },
 ExtResource( 451 ): {
 "x": -13,
 "y": -24
-},
-ExtResource( 443 ): {
-"x": -12,
-"y": 21
 },
 ExtResource( 449 ): {
 "x": 7,
@@ -5232,21 +5238,21 @@ ExtResource( 62 ): {
 "x": 26,
 "y": -16
 },
-ExtResource( 304 ): {
-"x": 29,
-"y": 11
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 },
 ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
+ExtResource( 304 ): {
+"x": 29,
+"y": 11
+},
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
 }
 }
 release_frame = 18
@@ -5322,21 +5328,21 @@ ExtResource( 62 ): {
 "x": 27,
 "y": -19
 },
-ExtResource( 304 ): {
-"x": 34,
-"y": 7
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 },
 ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
+ExtResource( 304 ): {
+"x": 34,
+"y": 7
+},
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
-},
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
 }
 }
 release_frame = 18

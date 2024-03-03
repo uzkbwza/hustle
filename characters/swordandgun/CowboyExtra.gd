@@ -71,7 +71,7 @@ func update_tp_button():
 			$"%MilkButton".disabled =  fighter.supers_available < fighter.DRIFT_SUPERS
 
 func update_sight_button():
-	sight_button.disabled = !(fighter.supers_available > 0 or fighter.super_meter >= fighter.MAX_SUPER_METER / 2)
+	sight_button.disabled = !(fighter.supers_available > 0)
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)

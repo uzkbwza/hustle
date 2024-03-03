@@ -25,6 +25,7 @@ _data = [ Vector2( 0, 0.936364 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 
 
 [node name="ParticleEffect" instance=ExtResource( 1 )]
 material = SubResource( 2 )
+z_index = 4096
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
 amount = 32

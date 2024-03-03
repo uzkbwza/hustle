@@ -8,8 +8,8 @@ const STORE_MODIFIER = "0.90"
 func _frame_1():
 #	if !release:
 		var vel = host.get_vel()
-		host.stored_momentum_x = fixed.add(host.stored_momentum_x, fixed.mul(vel.x, STORE_MODIFIER))
-		host.stored_momentum_y = fixed.add(host.stored_momentum_y, fixed.mul(vel.y, STORE_MODIFIER))
+		host.stored_momentum_x = fixed.add(host.stored_momentum_x, fixed.mul(fixed.abs(vel.x), STORE_MODIFIER))
+		host.stored_momentum_y = fixed.add(host.stored_momentum_y, fixed.mul(fixed.abs(vel.y), STORE_MODIFIER))
 		var speed = fixed.vec_len(host.stored_momentum_x, host.stored_momentum_y)
 		var stored_speed = speed
 

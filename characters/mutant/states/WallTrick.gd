@@ -23,7 +23,7 @@ func _enter():
 			"x": 1,
 			"y": 0,
 		}
-	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2" if data.x == 1 else "WallTrickFollowup3"
+	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2" if Utils.int_abs(data.x) == 1 else "WallTrickFollowup3"
 	down = data.y == 1 and data.x == 0
 
 func _tick():

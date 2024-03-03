@@ -5,6 +5,9 @@ var current_dir = null
 var jump_selected
 
 onready var bounce = $"%Bounce"
+onready var loic = $"%LOIC"
+
+
 
 func _ready():
 	$"%FlyDir".connect("data_changed", self, "emit_signal", ["data_changed"])
@@ -16,15 +19,17 @@ func _ready():
 	$"%PullEnabled".connect("pressed", $"%ArmorEnabled", "set_pressed_no_signal", [false])
 	$"%ArmorEnabled".connect("pressed", $"%PullEnabled", "set_pressed_no_signal", [false])
 	$"%DriveCancel".connect("pressed", self, "emit_signal", ["data_changed"])
+	loic.connect("data_changed", self, "emit_signal", ["data_changed"])
 	
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
 	return {
-		"fly_dir": $"%FlyDir".get_data() if visible else fighter.flying_dir,
+		"fly_dir": $"%FlyDir".get_data() if $"%FlyDir".is_visible_in_tree() else fighter.flying_dir,
 		"fly_enabled": $"%FlyEnabled".pressed,
 		"armor_enabled": $"%ArmorEnabled".pressed,
 		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
 		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
+		"loic_dir": loic.get_data(),
 		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed(),
 		"bounce": bounce.get_data()
 	}
@@ -77,6 +82,7 @@ func update_selected_move(move_state):
 func show_options():
 	$"%FlyDir".hide()
 	bounce.hide()
+	loic.hide()
 	$"%FlyEnabled".hide()
 	$"%ArmorEnabled".hide()
 	$"%NadeActive".hide()
@@ -98,7 +104,7 @@ func show_options():
 		$"%FlyDir".hide()
 		$"%FlyEnabled".hide()
 	else:
-		if fighter.air_movements_left > 0:
+		if fighter.air_option_bar > 0:
 			$"%FlyDir".show()
 			$"%FlyEnabled".show()
 			$"%FlyEnabled".set_pressed_no_signal(fighter.fly_ticks_left > 0)
@@ -114,6 +120,8 @@ func show_options():
 		$"%FlyEnabled".set_pressed_no_signal(false)
 		$"%FlyEnabled".disabled = true
 		$"%FlyDir".hide()
+	if fighter.orbital_strike_out:
+		loic.show()
 
 func reset():
 	if fighter.flying_dir:

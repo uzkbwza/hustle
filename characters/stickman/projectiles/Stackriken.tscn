@@ -104,7 +104,8 @@ fizzle_on_hit_opponent = true
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]
 z_index = 1000
 script = ExtResource( 7 )
-height = 11
+width = 21
+height = 16
 damage = 60
 minimum_damage = 15
 hitstun_ticks = 15

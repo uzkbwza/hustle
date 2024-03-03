@@ -121,6 +121,7 @@ plus_frames = 1
 group = 2
 hit_sound = ExtResource( 18 )
 knockback = "2"
+grounded_hit_state = "HurtAerial"
 ground_bounce = false
 start_tick = 18
 active_ticks = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=2]
+[gd_scene load_steps=86 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -73,6 +73,7 @@
 [ext_resource path="res://DebugContainer.gd" type="Script" id=71]
 [ext_resource path="res://ui/VelocityLabel.gd" type="Script" id=72]
 [ext_resource path="res://sound/ui/outtatime2.wav" type="AudioStream" id=73]
+[ext_resource path="res://ui/airoptionbar.png" type="Texture" id=74]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -519,6 +520,20 @@ margin_bottom = 14.0
 mouse_filter = 2
 script = ExtResource( 20 )
 
+[node name="ProgressBar" type="TextureProgress" parent="HudLayer/HudLayer/AirMovementDisplay/P1AirMovementLabel/P1AirMovementDisplay"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 2.0
+margin_bottom = -2.0
+value = 29.0
+texture_progress = ExtResource( 74 )
+fill_mode = 1
+nine_patch_stretch = true
+stretch_margin_left = 3
+stretch_margin_top = 3
+stretch_margin_right = 3
+stretch_margin_bottom = 3
+
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
 margin_left = 53.0
 margin_right = 441.0
@@ -548,6 +563,19 @@ margin_bottom = 14.0
 mouse_filter = 2
 script = ExtResource( 20 )
 player_id = 2
+
+[node name="ProgressBar" type="TextureProgress" parent="HudLayer/HudLayer/AirMovementDisplay/P2AirMovementLabel/P2AirMovementDisplay"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 2.0
+margin_bottom = -2.0
+value = 29.0
+texture_progress = ExtResource( 74 )
+nine_patch_stretch = true
+stretch_margin_left = 3
+stretch_margin_top = 3
+stretch_margin_right = 3
+stretch_margin_bottom = 3
 
 [node name="FeintDisplay" type="HBoxContainer" parent="HudLayer/HudLayer"]
 anchor_left = 0.5
@@ -2149,6 +2177,9 @@ margin_left = 2.0
 margin_top = 2.0
 margin_right = 157.0
 margin_bottom = 204.0
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="RoadmapButton" type="Button" parent="UILayer/MainMenu/RoadmapContainer"]
 unique_name_in_owner = true

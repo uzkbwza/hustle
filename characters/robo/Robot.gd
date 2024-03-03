@@ -40,6 +40,11 @@ const WC_EXTRA_ARMOR_STARTUP_TICKS = 2
 const MAGNETIZE_OPPONENT_BLOCKED_MOD = "0.75"
 const MAGNETIZE_BOMB_STRENGTH_INCREASE = "0.1"
 
+const DRAIN_AIR_OPTION_BAR_AMOUNT = 18
+const GAIN_AIR_OPTION_BAR_AMOUNT = 7
+const GAIN_AIR_OPTION_BAR_ON_HIT = 300
+const MIN_AIR_OPTION_BAR_AMOUNT = 160
+
 const FLY_GRAV = "0.05"
 const FLY_MAX_FALL_SPEED = "100.0"
 
@@ -74,6 +79,7 @@ var force_fly = false
 var magnetize_opponent = false
 var magnetize_opponent_blocked = false
 var magnetize_bomb_strength = "0"
+var loic_dir = 0
 
 var drive_cancel = false
 var buffer_drive_cancel = false
@@ -276,9 +282,13 @@ func tick():
 			add_armor_pip()
 		landed_move = false
 	if is_grounded() and !force_fly:
-			flying_dir = null
-			if fly_fx_started:
-				stop_fly_fx()
+		flying_dir = null
+		if fly_fx_started:
+			stop_fly_fx()
+		if air_option_bar < MIN_AIR_OPTION_BAR_AMOUNT:
+			air_option_bar = MIN_AIR_OPTION_BAR_AMOUNT
+		gain_air_option_bar(GAIN_AIR_OPTION_BAR_AMOUNT)
+
 	if is_in_hurt_state():
 		flying_dir = null
 		stop_fly_fx()
@@ -289,7 +299,7 @@ func tick():
 		flying_dir = null
 	if start_fly and flying_dir != null:
 		fly_ticks_left = FLY_TICKS
-		use_air_movement()
+#		use_air_movement()
 		fly_fx_started = true
 		start_fly = false
 		start_fly_fx()
@@ -310,7 +320,7 @@ func tick():
 			
 			var upward_speed = fly_force.y
 			var upward_speed_mod = "1.0"
-			var air_options_ratio = fixed.div(str(air_movements_left), str(num_air_movements))
+			var air_options_ratio = fixed.div(str(air_option_bar), str(air_option_bar_max))
 			if fixed.lt(fly_force.y, "0"):
 				upward_speed_mod = "1.0"
 				upward_speed_mod = fixed.mul(upward_speed_mod, air_options_ratio)
@@ -344,6 +354,9 @@ func tick():
 			if fixed.eq(fixed.vec_len(fly_force.x, fly_force.y), "0"):
 				var new_vel = fixed.vec_mul(vel.x, vel.y, "0.90")
 				set_vel(new_vel.x, new_vel.y)
+			
+			drain_air_option_bar(DRAIN_AIR_OPTION_BAR_AMOUNT)
+			
 
 			fly_ticks_left -= 1
 			if fly_ticks_left <= 0: 
@@ -384,6 +397,10 @@ func tick():
 	if buffer_drive_cancel:
 		buffer_drive_cancel = false
 		drive_cancel = true
+
+	if air_option_bar == 0 and flying_dir:
+		flying_dir = null
+		stop_fly_fx()
 
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
@@ -454,7 +471,7 @@ func process_extra(extra):
 #	if fly_blocked:
 #		can_fly = false
 	if extra.has("fly_dir") and (!is_grounded() or extra.get("force_fly")) and can_fly:
-		if extra.has("fly_enabled") and extra.fly_enabled and air_movements_left > 0:
+		if extra.has("fly_enabled") and extra.fly_enabled and air_option_bar > 0:
 			var same_dir = flying_dir == null or (flying_dir.x == extra.fly_dir.x and flying_dir.y == extra.fly_dir.y)
 			if flying_dir == null or !same_dir:
 				start_fly = true
@@ -464,6 +481,9 @@ func process_extra(extra):
 				force_fly = extra.force_fly
 		elif extra.has("fly_enabled") and !extra.fly_enabled:
 			flying_dir = null
+	
+	if extra.has("loic_dir"):
+		loic_dir = extra.loic_dir.x
 
 	if extra.has("armor_enabled") and armor_pips > 0:
 		buffer_armor = extra.armor_enabled
@@ -503,6 +523,7 @@ func on_attack_blocked():
 				change_state("UnDriveCancel")
 			else:
 				change_state("DriveCancel")
+	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / 2)
 
 func on_blocked_melee_attack():
 	.on_blocked_melee_attack()
@@ -540,6 +561,11 @@ func on_state_interruptable(state=null):
 	if armor_active:
 		super_armor_installed = false
 	armor_active = false
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+#	if obj.is_in_group("Fighter"):
+	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
 
 #
 #func _draw():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
@@ -19,6 +19,8 @@
 [ext_resource path="res://characters/robo/sound/laser5.wav" type="AudioStream" id=17]
 [ext_resource path="res://characters/robo/sound/lasersplosion.wav" type="AudioStream" id=18]
 [ext_resource path="res://characters/robo/projectiles/GroundFireLoic.tscn" type="PackedScene" id=19]
+[ext_resource path="res://sound/common/explosion6.wav" type="AudioStream" id=20]
+[ext_resource path="res://characters/robo/sound/laser5loop.ogg" type="AudioStream" id=21]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -56,7 +58,6 @@ extra_state_variables = "aim_ticks
 self_
 t"
 has_projectile_parry_window = false
-immunity_susceptible = false
 deletes_other_projectiles = false
 movable = false
 body_target_texture = ExtResource( 10 )
@@ -76,6 +77,25 @@ color = Color( 1, 0.2, 0.239216, 1 )
 stream = ExtResource( 15 )
 volume_db = -10.0
 pitch_scale = 1.5
+script = ExtResource( 14 )
+pitch_variation = 0.0
+
+[node name="Active1" type="AudioStreamPlayer2D" parent="Sounds" index="1"]
+stream = ExtResource( 18 )
+volume_db = -30.0
+pitch_scale = 2.0
+script = ExtResource( 14 )
+pitch_variation = 0.0
+
+[node name="Active2" type="AudioStreamPlayer2D" parent="Sounds" index="2"]
+stream = ExtResource( 21 )
+volume_db = -15.0
+script = ExtResource( 14 )
+pitch_variation = 0.0
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="Sounds" index="3"]
+stream = ExtResource( 20 )
+volume_db = -5.0
 script = ExtResource( 14 )
 pitch_variation = 0.0
 
@@ -126,6 +146,9 @@ combo_scaling_amount = 2
 hits_otg = true
 plus_frames = 1
 hit_height = 0
+screenshake_amount = 10
+screenshake_frames = 30
+bump_on_whiff = true
 whiff_sound = ExtResource( 18 )
 hit_sound = ExtResource( 16 )
 whiff_sound_volume = -5.0
@@ -138,4 +161,4 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 2
-active_ticks = 3
+active_ticks = 120

@@ -15,20 +15,31 @@ margin_right = 52.0
 margin_bottom = 360.0
 alignment = 2
 
-[node name="FlyDir" parent="VBoxContainer" index="0" instance=ExtResource( 3 )]
+[node name="LOIC" parent="VBoxContainer" index="0" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+margin_top = 232.0
+margin_bottom = 258.0
+NW = false
+N = false
+NE = false
+SW = false
+S = false
+SE = false
+
+[node name="FlyDir" parent="VBoxContainer" index="1" instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 259.0
 margin_bottom = 321.0
 alignment = 1
 
-[node name="FlyEnabled" type="CheckButton" parent="VBoxContainer" index="1"]
+[node name="FlyEnabled" type="CheckButton" parent="VBoxContainer" index="2"]
 unique_name_in_owner = true
 margin_top = 322.0
 margin_right = 52.0
 margin_bottom = 334.0
 text = "Fly"
 
-[node name="ArmorEnabled" type="CheckButton" parent="VBoxContainer" index="2"]
+[node name="ArmorEnabled" type="CheckButton" parent="VBoxContainer" index="3"]
 unique_name_in_owner = true
 margin_top = 335.0
 margin_right = 52.0
@@ -36,7 +47,7 @@ margin_bottom = 347.0
 size_flags_vertical = 0
 text = "Armor"
 
-[node name="NadeActive" type="CheckButton" parent="VBoxContainer" index="3"]
+[node name="NadeActive" type="CheckButton" parent="VBoxContainer" index="4"]
 unique_name_in_owner = true
 margin_top = 348.0
 margin_right = 52.0
@@ -44,7 +55,7 @@ margin_bottom = 360.0
 size_flags_vertical = 0
 text = "Bomb"
 
-[node name="PullEnabled" type="CheckButton" parent="VBoxContainer" index="4"]
+[node name="PullEnabled" type="CheckButton" parent="VBoxContainer" index="5"]
 unique_name_in_owner = true
 visible = false
 margin_top = 348.0
@@ -53,7 +64,7 @@ margin_bottom = 360.0
 size_flags_vertical = 0
 text = "Pull"
 
-[node name="DriveCancel" type="CheckButton" parent="VBoxContainer" index="5"]
+[node name="DriveCancel" type="CheckButton" parent="VBoxContainer" index="6"]
 unique_name_in_owner = true
 visible = false
 margin_top = 348.0
@@ -64,12 +75,13 @@ text = "Drive"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="." index="1"]
 margin_left = 53.0
-margin_right = 113.0
+margin_right = 53.0
 margin_bottom = 360.0
 alignment = 2
 
 [node name="Bounce" parent="VBoxContainer2" index="0" instance=ExtResource( 5 )]
 unique_name_in_owner = true
+visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 294.0

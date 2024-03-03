@@ -113,6 +113,8 @@ func init(pos=null):
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
 #	if !juked_this_turn:
+	if obj.is_in_group("Fighter"):
+		start_projectile_invulnerability()
 	add_juke_pips(1)
 
 func on_got_blocked():

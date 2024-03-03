@@ -131,13 +131,15 @@ func tick():
 						apply_force("0", GROUNDED_DRIFT_JUMP_SPEED)
 						set_grounded(false)
 						move_directly(0, -1)
+#						hitlag_ticks += 2
+						
 					milk_toggled = true
 					super_effect(10)
 	#				use_air_movement()
 					for i in range(DRIFT_SUPERS):
 						use_super_bar()
 					combo_supers += 1
-#					hitlag_ticks += 4
+
 					set_vel(get_vel().x, "0")
 				spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
 
@@ -201,10 +203,12 @@ func process_extra(extra):
 		shifting = extra.shift
 		if shifting:
 			shifted_this_turn = true
-	if extra.has("hindsight") and supers_available > 0 or super_meter >= MAX_SUPER_METER / 2:
+	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
 #			super_effect(5)
-			drain_super_meter(MAX_SUPER_METER / 2)
+#			drain_super_meter(MAX_SUPER_METER / 2)
+			use_super_bar()
+			super_effect(1)
 			var obj = obj_from_name(after_image_object) 
 			if obj:
 				obj.detonating = true
@@ -275,7 +279,9 @@ func can_block_cancel():
 
 func on_state_started(state):
 	.on_state_started(state)
-			
+#
+#func can_guard_break():
+#	return .can_guard_break() and !milk_toggled
 
 func _draw():
 	._draw()

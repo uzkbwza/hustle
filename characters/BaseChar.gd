@@ -167,6 +167,9 @@ const PENALTY_MIN_DISPLAY = 50
 const PENALTY_TICKS = 120
 
 export var num_air_movements = 2
+export var use_air_option_bar = false
+export var air_option_bar_max = 100
+export var air_option_bar = 0
 
 export(Texture) var character_portrait
 export(Texture) var character_portrait2
@@ -457,6 +460,7 @@ func init(pos=null):
 		supers_available = MAX_SUPERS
 		super_meter = MAX_SUPER_METER
 	last_pos = get_pos()
+	refresh_air_movements()
 
 
 func is_ivy():
@@ -567,7 +571,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "got_blocked", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "got_blocked", "air_option_bar", "air_option_bar_max", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -947,12 +951,14 @@ func increment_opponent_combo(hitbox):
 	var host = objs_map[hitbox.host]
 	var projectile = !host.is_in_group("Fighter")
 	var will_scale = hitbox.scale_combo or opponent.combo_count == 0
+	var old_count = opponent.combo_count
 
 	if hitbox.increment_combo:
 		opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
-
 		if opponent.combo_count <= 1:
 			opponent.combo_proration = hitbox.damage_proration
+			if opponent.combo_count == 1 and old_count == 0 and opponent.air_movements_left < opponent.num_air_movements:
+				opponent.air_movements_left += 1
 
 func apply_hitlag(hitbox):
 	hitlag_ticks = (hitbox.victim_hitlag) + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
@@ -1343,7 +1349,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 
 			start_throw_invulnerability()
 			if !projectile and !perfect_parry and  !last_turn_block and initiative:
-				if hitbox.guard_break and !ignore_guard_break and (!current_state().get_whiffed_block()):
+				if hitbox.guard_break and !ignore_guard_break and (!current_state().get_whiffed_block()) and opponent.can_guard_break():
 					hitbox.damage_proration = Utils.int_max(GUARD_BREAK_SCALING, hitbox.damage_proration)
 					hit_by(hitbox, true)
 					if current_state().get("guard_broken") != null:
@@ -1639,6 +1645,9 @@ func get_di_scaling(brace=true):
 	total = fixed.mul(total, di_modifier)
 	return total
 
+func can_guard_break():
+	return true
+
 func get_scaled_di(di):
 	var scaling = get_di_scaling()
 	var result = xy_to_dir(di.x, di.y, scaling)
@@ -1694,7 +1703,7 @@ func use_air_movement():
 		air_movements_left -= 1
 
 func refresh_air_movements():
-	air_movements_left = num_air_movements
+	air_movements_left = Utils.int_max(num_air_movements - 1, 1) if combo_count == 0 else num_air_movements
 
 func refresh_feints():
 	feints = num_feints
@@ -1918,7 +1927,8 @@ func tick_before():
 				queued_data = current_state().data
 			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
 				queued_action = HOLD_FORCE_STATES[current_state_name]
-			elif (was_my_turn or (current_state().interruptible_on_opponent_turn and current_state().next_state_on_hold_on_opponent_turn) or (current_state().hit_fighter and combo_count == 0)) and !feinting and current_state().next_state_on_hold:
+			elif (was_my_turn or (current_state().interruptible_on_opponent_turn and current_state().next_state_on_hold_on_opponent_turn) \
+					or (current_state().hit_fighter and combo_count == 0)) and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
 			if feinted_last:
 				feint_parriable = true
@@ -2301,6 +2311,19 @@ func on_action_selected(action, data, extra):
 		if !state.is_usable():
 			action = "Forfeit"
 	emit_signal("action_selected", action, data, extra)
+
+
+func drain_air_option_bar(amount):
+	if infinite_resources:
+		return
+	air_option_bar -= amount
+	if air_option_bar < 0:
+		air_option_bar = 0
+
+func gain_air_option_bar(amount):
+	air_option_bar += amount
+	if air_option_bar > air_option_bar_max:
+		air_option_bar = air_option_bar_max
 
 func get_state_hash():
 	var pos = get_pos()

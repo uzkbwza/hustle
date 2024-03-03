@@ -4,6 +4,7 @@ const MAX_EXTRA_LAG_FRAMES = 5
 const MIN_IASA = 7
 const IASA_BACK = 11
 const MIN_NEUTRAL_IASA = 9
+const BACK_STARTUP_LAG = 4
 
 export var FORWARD_FORCE_X = "1.4"
 export var FORWARD_FORCE_Y = "0.5"
@@ -30,6 +31,7 @@ func _enter():
 	if back:
 		beats_backdash = false
 		backdash_iasa = true
+
 	else:
 		beats_backdash = true
 		backdash_iasa = false
@@ -47,10 +49,13 @@ func _frame_0():
 	if startup_invuln and host.initiative:
 		host.start_projectile_invulnerability()
 	var force_x = DOWNWARD_FORCE_X if down else fixed.mul(FORWARD_FORCE_X, str(data.x * host.get_facing_int()))
-	var force_y = DOWNWARD_FORCE_Y if down else FORWARD_FORCE_Y
+	var force_y = DOWNWARD_FORCE_Y if down else FORWARD_FORCE_Y  
 	var force_speed = DOWNWARD_FORCE_SPEED if down else FORWARD_FORCE_SPEED
 	var force = fixed.normalized_vec_times(force_x, force_y, force_speed)
 #	if down:
+	if back:
+		host.hitlag_ticks += BACK_STARTUP_LAG
+
 	host.reset_momentum()
 	host.apply_force_relative(force.x, force.y)
 
