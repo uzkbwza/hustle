@@ -189,7 +189,7 @@
 [ext_resource path="res://characters/VelocityLabel.gd" type="Script" id=187]
 [ext_resource path="res://characters/grounded.png" type="Texture" id=188]
 [ext_resource path="res://characters/Grounded.gd" type="Script" id=189]
-[ext_resource path="res://characters/states/CharState.gd" type="Script" id=190]
+[ext_resource path="res://characters/states/SuperFallStartup.gd" type="Script" id=190]
 [ext_resource path="res://characters/states/SuperFall.gd" type="Script" id=191]
 [ext_resource path="res://ui/ActionSelector/StateIcons/super_fall.png" type="Texture" id=192]
 
@@ -1049,12 +1049,15 @@ Grounded"
 
 [node name="SuperFallStartup" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 190 )
+__meta__ = {
+"_editor_description_": ""
+}
 apply_forces = true
 apply_fric = true
 reset_y_momentum = true
 fallback_state = "SuperFall"
 sprite_animation = "InstantCancel"
-anim_length = 6
+anim_length = 8
 title = "Super Fall"
 button_texture = ExtResource( 192 )
 air_type = 1
@@ -1062,6 +1065,8 @@ land_cancel = true
 interruptible_on_opponent_turn = true
 interrupt_from_string = "Aerial
 AerialMovement"
+interrupt_into_string = "Aerial
+Grounded"
 
 [node name="SuperFall" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 191 )

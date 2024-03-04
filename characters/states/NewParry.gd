@@ -37,7 +37,7 @@ func _enter():
 		data = { "Melee Parry Timing": {"count" : 0}, "Block Height": { "x": 1, "y": 0}}
 	extra_iasa = 0
 	disable_aerial_movement = _disable_aerial_movement
-	interrupt_exceptions.erase("AerialMovement")
+
 	start()
 
 func get_hold_restart():
@@ -157,7 +157,13 @@ func _exit():
 	parried_last = parried
 	host.blocked_last_hit = false
 
+func on_interrupt():
+	interrupt_exceptions.erase("AerialMovement")
+	if disable_aerial_movement:
+		interrupt_exceptions.append("AerialMovement")
+
 func enable_interrupt(check_opponent=true, remove_hitlag=false):
+	interrupt_exceptions.erase("AerialMovement")
 	if disable_aerial_movement:
 		interrupt_exceptions.append("AerialMovement")
 	.enable_interrupt(check_opponent, remove_hitlag)

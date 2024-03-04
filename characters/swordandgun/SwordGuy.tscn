@@ -941,7 +941,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -981,7 +980,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1097,7 +1095,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1143,7 +1140,6 @@ data_ui_scene = ExtResource( 316 )
 button_texture = ExtResource( 274 )
 flip_with_facing = true
 air_type = 1
-uses_air_movement = true
 iasa_at = 7
 interruptible_on_opponent_turn = true
 next_state_on_hold_on_opponent_turn = true
@@ -1206,6 +1202,8 @@ type = 3
 button_texture = ExtResource( 338 )
 air_type = 2
 iasa_on_hit = 7
+iasa_on_hit_on_block = false
+next_state_on_hold_on_opponent_turn = true
 interrupt_from_string = "GroundedSuper
 Grounded
 AerialSuper
@@ -4376,15 +4374,10 @@ send_away_from_center = true
 always_on = true
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-block_cancel_allowed = true
 _c_Grouping = 1
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-block_cancel_allowed = true
 _c_Grouping = 1
-
-[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-block_cancel_allowed = true
 
 [node name="ForwardThrow" parent="StateMachine" index="116"]
 knockback = "11.0"
