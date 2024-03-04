@@ -825,6 +825,8 @@ func reset_combo():
 	opponent.braced_attack = false
 	opponent.brace_effect_applied_yet = false
 	parry_combo = false
+	if num_air_movements == air_movements_left:
+		refresh_air_movements()
 
 func create_speed_after_image(color: Color = Color.white, lifetime=0.2):
 	if is_ghost or ReplayManager.resimulating:

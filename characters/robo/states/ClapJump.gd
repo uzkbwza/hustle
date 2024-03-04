@@ -39,14 +39,19 @@ func _frame_0():
 func _frame_1():
 	host.move_directly_relative(-10, 0)
 
+	
 func _frame_2():
 	host.move_directly_relative(1, -3)
-
+	host.start_throw_invulnerability()
+	
 func _frame_3():
 	var force = fixed.normalized_vec_times("1.0", "-0.25", "8.0")
 	if data.Direction.x * host.get_facing_int() == -1:
 		force.x = fixed.mul(force.x, "-0.55")
 	host.apply_force_relative(force.x, force.y)
+
+func _frame_7():
+	host.end_throw_invulnerability()
 
 func _tick():
 #	host.apply_force(0, 1)

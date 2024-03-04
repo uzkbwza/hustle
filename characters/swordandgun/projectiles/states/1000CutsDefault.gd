@@ -10,8 +10,8 @@ func _tick():
 	host.total_ticks += 1
 	if host.total_ticks > LIFETIME:
 		disable()
-	if !host.creator.has_super_meter():
-		disable()
+#	if !host.creator.has_super_meter():
+#		disable()
 
 
 func disable():

@@ -47,6 +47,7 @@ extra_state_variables = "return_x
 return_y
 force_x
 force_y"
+damages_own_team = true
 has_projectile_parry_window = false
 can_be_hit_by_melee = true
 
@@ -111,6 +112,7 @@ minimum_damage = 15
 hitstun_ticks = 15
 hitlag_ticks = 5
 sdi_modifier = "0.3"
+allowed_to_hit_own_team = false
 plus_frames = 1
 screenshake_amount = 8
 whiff_sound = ExtResource( 9 )

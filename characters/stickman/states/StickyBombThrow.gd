@@ -1,7 +1,14 @@
 extends ThrowState
 
+var x = 0
+var y = 0
+
 func _enter():
 	host.z_index = 2
+	host.reset_momentum()
+	host.opponent.reset_momentum()
+	x = host.get_pos().x
+	y = host.get_pos().y
 
 func _frame_30():
 	var obj = host.spawn_object(preload("res://characters/stickman/projectiles/StickyBomb.tscn"), 0, -16)
@@ -18,3 +25,5 @@ func _tick():
 		host.apply_forces()
 	else:
 		interruptible_on_opponent_turn = false
+	if current_tick < 28:
+		host.set_pos(x, y)

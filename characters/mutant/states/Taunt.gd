@@ -12,7 +12,7 @@ func _frame_1():
 		host.add_juke_pips(host.JUKE_PIPS_PER_USE*3)
 		host.play_sound("Howl")
 		host.play_sound("Howl2")
-		host.play_sound("HitBass")
+#		host.play_sound("HitBass")
 		host.can_air_dash = true
 
 func _frame_7():
@@ -24,8 +24,7 @@ func _frame_25():
 func _frame_26():
 	host.play_sound("Howl")
 	host.play_sound("Howl2")
-
-	host.play_sound("HitBass")
+#	host.play_sound("HitBass")
 	
 func _frame_44():
 	if !charge:

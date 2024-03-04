@@ -42,6 +42,8 @@ func _frame_0():
 			hitbox.dir_y = "-1.0"
 			anim_name = "DiveKick2Up"
 			hitbox.y -= 16
+#			host.start_aerial_attack_invulnerability()
+			
 			
 	moving = false
 	move_x_modifier = abs(data.x) * x_modifier_amount
@@ -51,8 +53,8 @@ func _frame_0():
 	move_y_amount = Utils.int_sign2(data.y) * move_y + move_y_modifier
 	
 	var move_amount = "1.0"
-	if data.y < 0:
-		move_amount = "0.6"
+#	if data.y < 0:
+#		move_amount = "0.6"
 
 	move_x_amount = fixed.round(fixed.mul(str(move_x_amount), move_amount))
 	move_y_amount = fixed.round(fixed.mul(str(move_y_amount), move_amount))

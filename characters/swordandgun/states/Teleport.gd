@@ -183,4 +183,6 @@ func _exit():
 func is_usable():
 	if foresight and host.after_image_object == null:
 		return false
+	if super_level > 0 and host.cut_projectile != null:
+		return false
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"

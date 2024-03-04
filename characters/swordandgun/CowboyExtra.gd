@@ -53,6 +53,8 @@ func reset():
 	else:
 		sight_button.show()
 		update_sight_button()
+	if "Knockdown" in fighter.current_state().state_name:
+		sight_button.hide()
 
 func update_tp_button():
 		$"%TpButton".disabled = false
@@ -72,6 +74,8 @@ func update_tp_button():
 
 func update_sight_button():
 	sight_button.disabled = !(fighter.supers_available > 0)
+	if "Knockdown" in fighter.current_state().state_name:
+		sight_button.hide()
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
