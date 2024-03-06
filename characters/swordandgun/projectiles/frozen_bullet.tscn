@@ -47,6 +47,7 @@ dir_y"
 damages_own_team = true
 deletes_other_projectiles = false
 can_be_hit_by_melee = true
+free_cancel_on_hit = true
 projectile_immune = true
 frozen = true
 

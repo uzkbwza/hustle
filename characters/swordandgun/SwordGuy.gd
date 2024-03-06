@@ -20,7 +20,7 @@ const CUTS_METER_DRAIN_1 = 2
 const CUTS_METER_DRAIN_2 = 3
 const DRIFT_SUPERS = 1
 const GROUNDED_DRIFT_JUMP_SPEED = "-3"
-
+const CUTS_EFFECT = preload("res://characters/swordandgun/projectiles/1000CutsEffect.tscn")
 var bullets_left = 6
 var cut_projectile = null
 var lasso_projectile = null
@@ -92,6 +92,7 @@ func start_1k_cuts_buff():
 
 func end_1k_cuts_buff():
 	max_air_speed = default_max_air_speed
+	spawn_particle_effect_relative(CUTS_EFFECT, Vector2(0, -16))
 	chara.set_max_air_speed(default_max_air_speed)
 
 func tick():

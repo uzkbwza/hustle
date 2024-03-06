@@ -575,8 +575,8 @@ func on_state_interruptable(state=null):
 
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
-#	if obj.is_in_group("Fighter"):
-	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
+	if obj.is_in_group("Fighter"):
+		gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
 
 #
 #func _draw():

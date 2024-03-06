@@ -31,6 +31,10 @@ func _frame_0():
 	else:
 		hitbox.followup_state = "ImpaleFollowup"
 
+	var obj = host.obj_from_name(host.cut_projectile)
+	if obj:
+		obj.disable()
+
 func _frame_5():
 	if teleport:
 #		host.start_invulnerability()

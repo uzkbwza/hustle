@@ -2123,13 +2123,15 @@ uses_air_movement = true
 interrupt_from_string = "Grounded
 GroundedSpecial
 Aerial
-AerialSpecial"
+AerialSpecial
+LeapSlash"
 interrupt_into_string = "Grounded
 Aerial"
 hit_cancel_into_string = "GroundedSpecial
 AerialSpecial
 GroundedSuper
 AerialSuper"
+hit_cancel_exceptions_string = "LeapSlash"
 initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AcidSlashJ" index="0"]
@@ -2253,6 +2255,7 @@ hit_cancel_into_string = "GroundedSpecial
 AerialSpecial
 GroundedSuper
 AerialSuper"
+hit_cancel_exceptions_string = "LeapSlash"
 initiative_effect = true
 up = true
 
@@ -2468,6 +2471,7 @@ force_grounded = true
 minimum_grounded_frames = 5
 release_sfx = ExtResource( 178 )
 play_release_sfx_bass = false
+misc_properties = null
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BiteThrow" index="0"]
 z_index = 1000

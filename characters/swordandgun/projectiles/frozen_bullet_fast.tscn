@@ -37,6 +37,7 @@ animations = [ {
 material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 9 )
+free_cancel_on_hit = false
 frozen = true
 
 [node name="Sprite" parent="Flip" index="0"]

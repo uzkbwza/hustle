@@ -1083,7 +1083,6 @@ unique_name_in_owner = true
 visible = false
 position = Vector2( 0, -24 )
 frames = SubResource( 7 )
-frame = 1
 playing = true
 offset = Vector2( 0, 10 )
 
@@ -5179,6 +5178,7 @@ launch_reversible = true
 grounded_hit_state = "HurtAerial"
 start_tick = 1
 active_ticks = 2
+misc_data = "LaunchCaltrops"
 
 [node name="DashForward" parent="StateMachine" index="89"]
 interrupt_from_string = ""
@@ -5209,7 +5209,6 @@ interrupt_from_string = ""
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
 width = 11
 beats_grab = false
-block_cancel_allowed = true
 hit_height = 0
 
 [node name="AirGrab" parent="StateMachine" index="109"]
@@ -5223,12 +5222,10 @@ landing_recovery = 6
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 beats_grab = false
-block_cancel_allowed = true
 hit_height = 0
 throw_state = "AirHold"
 
 [node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-block_cancel_allowed = true
 hit_height = 0
 _c_Grouping = 1
 screenshake_amount = 0

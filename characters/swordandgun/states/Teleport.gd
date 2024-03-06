@@ -60,7 +60,13 @@ func _frame_0():
 	in_place = fixed.lt(fixed.vec_len(scaled.x, scaled.y), "0.1")
 	x_dist = fixed.abs(scaled.x)
 	next_state_on_hold_on_opponent_turn = false
+	
+	if super_level > 0:
+		var obj = host.obj_from_name(host.cut_projectile)
+		if obj:
+			obj.disable()
 
+		
 	if foresight:
 		iasa_at = 7
 		warp_stall_frames = 0
@@ -182,7 +188,5 @@ func _exit():
 
 func is_usable():
 	if foresight and host.after_image_object == null:
-		return false
-	if super_level > 0 and host.cut_projectile != null:
 		return false
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel"

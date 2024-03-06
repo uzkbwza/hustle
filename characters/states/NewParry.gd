@@ -83,7 +83,7 @@ func is_usable():
 	if current and current.get("IS_NEW_PARRY"):
 		whiffed_block_last = (!current.parried and !current.autoguard and host.combo_count <= 0)
 	return .is_usable() and host.current_state().state_name != "WhiffInstantCancel" and \
-	(whiffed_block_last if reblock else !whiffed_block_last)
+	((whiffed_block_last if reblock else !whiffed_block_last) or push)
 
 func on_continue():
 	punishable = true

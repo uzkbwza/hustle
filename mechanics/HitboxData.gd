@@ -1,5 +1,6 @@
 class_name HitboxData
 
+var id: int
 var hit_height: int
 var hitstun_ticks: int
 var facing: String
@@ -66,8 +67,7 @@ var block_cancel_allowed = true
 var allowed_to_hit_own_team = true
 var block_pushback_reversible = false
 var block_reverse_pushback_modifier = "1.0"
-
-
+var misc_data = ""
 
 func get_damage():
 	if combo_count > 0:
@@ -86,6 +86,7 @@ func _init(state):
 		victim_hitlag = state.get_real_victim_hitlag()
 	facing = state.host.get_facing()
 	facing_int = state.host.get_facing_int()
+	id = state.host.id
 	if !state.has_method("get_real_knockback"):
 		knockback = state.knockback
 	else:
@@ -199,6 +200,9 @@ func _init(state):
 		block_pushback_reversible = state.block_pushback_reversible
 	if state.get("block_reverse_pushback_modifier") != null:
 		block_reverse_pushback_modifier = state.block_reverse_pushback_modifier
+	if state.get("misc_data") != null and state.misc_data != "":
+		misc_data = state.misc_data
+
 	if damage_in_combo == -1:
 		damage_in_combo = damage
 

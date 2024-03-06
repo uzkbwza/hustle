@@ -149,6 +149,9 @@ export var looping = false
 export var loop_active_ticks: int = 2
 export var loop_inactive_ticks: int = 2
 
+export var _c_Misc = 0
+export(String, MULTILINE) var misc_data = ""
+
 var tick: int = 1
 var host
 var active = false # is the hitbox started

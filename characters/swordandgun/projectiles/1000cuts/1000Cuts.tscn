@@ -49,6 +49,7 @@ z_index = 2
 script = ExtResource( 3 )
 extra_state_variables = "total_ticks"
 immunity_susceptible = false
+free_cancel_on_hit = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )

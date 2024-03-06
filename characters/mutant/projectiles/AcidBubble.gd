@@ -11,6 +11,8 @@ func hit_by(hitbox):
 			if host.id == id:
 				var f = fixed.normalized_vec_times(fixed.mul(hitbox.dir_x, str(host.get_facing_int())), hitbox.dir_y, fixed.mul(hitbox.knockback, KNOCKBACK_MULTIPLIER))
 				apply_force(f.x, f.y)
+				if host.is_in_group("Fighter"):
+					host.feinting = true
 			else:
 				change_state("Pop")
 

@@ -9,7 +9,7 @@ func _frame_0():
 		var obj = host.obj_from_name(host.cut_projectile)
 		if obj:
 			obj.disable()
-	pass
+		host.prediction_effect()
 
 func _frame_2():
 	if end:
@@ -17,6 +17,7 @@ func _frame_2():
 	var obj = host.spawn_object(PROJECTILE_SCENE, 0, 0)
 	host.cut_projectile = obj.obj_name
 	host.start_1k_cuts_buff()
+
 
 func is_usable():
 	return .is_usable() and (host.cut_projectile == null) if !end else (host.cut_projectile != null)

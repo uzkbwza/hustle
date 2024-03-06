@@ -10,6 +10,7 @@ export var fizzle_on_ceiling = false
 export var movable = true
 export var can_be_hit_by_melee = false
 export var hit_cancel_on_hit = false
+export var free_cancel_on_hit = false
 export var apply_hitlag_when_hit_by_melee = true
 #export var can_be_hit_by_projectiles = false
 export var projectile_immune = false
@@ -78,6 +79,8 @@ func hit_by(hitbox):
 			if apply_hitlag_when_hit_by_melee:
 				if host.hitlag_ticks < host_hitlag_ticks:
 					host.hitlag_ticks = host_hitlag_ticks
+			if free_cancel_on_hit and host.is_in_group("Fighter"):
+				host.feinting = true
 		if hitbox.rumble:
 			rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
 	.hit_by(hitbox)

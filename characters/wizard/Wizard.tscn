@@ -2382,6 +2382,7 @@ bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
+misc_data = "IgnoreCaltrops"
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/Geyser" index="1"]
 z_index = 1000
@@ -2403,6 +2404,7 @@ bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
+misc_data = "IgnoreCaltrops"
 
 [node name="Hitbox3" type="Node2D" parent="StateMachine/Geyser" index="2"]
 z_index = 1000
@@ -2424,6 +2426,7 @@ bass_on_whiff = true
 grounded_hit_state = "HurtAerial"
 start_tick = 11
 active_ticks = 2
+misc_data = "IgnoreCaltrops"
 
 [node name="ConfusingTouch2" type="Node2D" parent="StateMachine" index="39"]
 script = ExtResource( 91 )
@@ -2620,15 +2623,6 @@ start_throw_pos_x = 21
 start_throw_pos_y = -5
 release_throw_pos_x = 21
 release_throw_pos_y = -5
-
-[node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-block_cancel_allowed = true
-
-[node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-block_cancel_allowed = true
-
-[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-block_cancel_allowed = true
 
 [node name="ForwardThrow" parent="StateMachine" index="82"]
 anim_length = 24

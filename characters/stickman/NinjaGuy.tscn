@@ -3822,7 +3822,6 @@ interrupt_into_string = "Aerial
 Grounded"
 
 [node name="ThrowBox" parent="StateMachine/Grab" index="0"]
-block_cancel_allowed = true
 _c_Grouping = 1
 
 [node name="AirGrab" parent="StateMachine" index="98"]
@@ -3830,15 +3829,11 @@ interrupt_into_string = "Aerial
 Grounded"
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
-block_cancel_allowed = true
 _c_Grouping = 1
 
 [node name="JumpGrab" parent="StateMachine" index="99"]
 interrupt_into_string = "Aerial
 Grounded"
-
-[node name="ThrowBox" parent="StateMachine/JumpGrab" index="0"]
-block_cancel_allowed = true
 
 [node name="ForwardThrow" parent="StateMachine" index="100"]
 sprite_animation = "GroundedThrow"

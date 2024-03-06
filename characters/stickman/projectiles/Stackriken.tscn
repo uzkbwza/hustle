@@ -50,6 +50,7 @@ force_y"
 damages_own_team = true
 has_projectile_parry_window = false
 can_be_hit_by_melee = true
+free_cancel_on_hit = true
 
 [node name="Flip" parent="." index="0"]
 scale = Vector2( 1, 0.75 )

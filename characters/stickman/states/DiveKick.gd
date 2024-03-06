@@ -17,10 +17,12 @@ var move_x_amount = "0"
 var move_y_amount = "0"
 
 var moving = false
+var can_hitcancel_on_projectiles = false
 
 onready var hitbox = $Hitbox
 
 func _frame_0():
+	can_hitcancel_on_projectiles = true
 	if !(data is Dictionary):
 		data = {
 			x = 1,
@@ -84,7 +86,8 @@ func _on_hit_something(obj, hitbox):
 		moving = false
 		if obj.is_in_group("Fighter"):
 			queue_state_change("Fall")
-	pass
+	if !obj.is_in_group("Fighter") and can_hitcancel_on_projectiles:
+		enable_interrupt()
 
 func _tick():
 	if !grounded and current_tick == 3:
@@ -93,16 +96,16 @@ func _tick():
 
 	if grounded and data.y < 0 and current_tick == 4:
 		current_tick = 8
+	
+	if host.feinting:
+		can_hitcancel_on_projectiles = false
 
 
 	if moving:
 		host.move_directly_relative(move_x_amount, move_y_amount)
 	else:
 		host.apply_forces()
-	
-#	print(move_y_amount)
-	
-	
+
 	if host.is_grounded() and current_tick > (5 if !grounded else 10):
 		host.reset_momentum()
 		host.apply_force_relative((move_x + move_x_modifier) / 2, 0)

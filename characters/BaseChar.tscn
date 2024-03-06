@@ -407,6 +407,7 @@ gravity = "0.5"
 max_air_speed = "13"
 max_fall_speed = "8"
 num_air_movements = 2
+lose_one_air_option_in_neutral = true
 use_air_option_bar = false
 air_option_bar_max = 100
 air_option_bar = 0

@@ -78,6 +78,7 @@ func hit_by(hitbox):
 			get_fighter().parry_effect((get_center_position_float() + hitter.get_center_position_float()) / 2, true)
 			disable()
 			hitter.disable()
+	.hit_by(hitbox)
 
 func get_owned_fighter():
 	if last_hit_by == "":

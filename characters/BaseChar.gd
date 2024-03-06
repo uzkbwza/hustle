@@ -65,6 +65,7 @@ const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
 const PUSH_BLOCK_DIST = "110"
+const PUSH_BLOCK_ADVANTAGE_PENALTY = 1
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
@@ -167,6 +168,7 @@ const PENALTY_MIN_DISPLAY = 50
 const PENALTY_TICKS = 120
 
 export var num_air_movements = 2
+export var lose_one_air_option_in_neutral = true
 export var use_air_option_bar = false
 export var air_option_bar_max = 100
 export var air_option_bar = 0
@@ -825,8 +827,8 @@ func reset_combo():
 	opponent.braced_attack = false
 	opponent.brace_effect_applied_yet = false
 	parry_combo = false
-	if num_air_movements == air_movements_left:
-		refresh_air_movements()
+	if lose_one_air_option_in_neutral and num_air_movements == air_movements_left:
+			refresh_air_movements()
 
 func create_speed_after_image(color: Color = Color.white, lifetime=0.2):
 	if is_ghost or ReplayManager.resimulating:
@@ -1080,6 +1082,12 @@ func can_counter_hitbox(hitbox):
 func is_bracing():
 	return current_state() is CounterAttack and current_state().bracing
 
+func prediction_effect():
+	play_sound("Predict")
+	play_sound("Predict2")
+	play_sound("Predict3")
+	emit_signal("predicted")
+
 func counter_hitbox(hitbox):
 	var pos = get_pos_visual()
 	var hitbox_pos = Vector2(hitbox.pos_x, hitbox.pos_y)
@@ -1090,10 +1098,7 @@ func counter_hitbox(hitbox):
 #		opponent.current_state().enable_interrupt()
 #	parried_hitboxes.append(hitbox.name)
 #	emit_signal("clashed")
-	play_sound("Predict")
-	play_sound("Predict2")
-	play_sound("Predict3")
-	emit_signal("predicted")
+	prediction_effect()
 
 #func hit_by(hitbox):
 #	if parried:
@@ -1471,6 +1476,9 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			
 			if !current_state().matches_hitbox_height(hitbox, parry_type):
 				total_plus_frames += WRONG_HIT_HEIGHT_ADDITIONAL_PLUS_FRAMES
+			
+			if current_state().get("push"):
+				total_plus_frames += PUSH_BLOCK_ADVANTAGE_PENALTY
 	
 			if !projectile:
 				total_plus_frames += BASE_PLUS_FRAMES
@@ -1705,6 +1713,12 @@ func use_air_movement():
 		air_movements_left -= 1
 
 func refresh_air_movements():
+	if !lose_one_air_option_in_neutral:
+		air_movements_left = num_air_movements
+		return
+	if num_air_movements == 0:
+		air_movements_left = 0
+		return
 	air_movements_left = Utils.int_max(num_air_movements - 1, 1) if combo_count == 0 else num_air_movements
 
 func refresh_feints():
