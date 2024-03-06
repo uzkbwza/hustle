@@ -190,7 +190,6 @@ func tick():
 		if fixed.lt(stored_speed_1, "0.0"):
 			momentum_stores -= 1
 			stored_speed_1 = "0"
-			
 
 	if is_grounded():
 		used_grappling_hook = false
@@ -213,8 +212,6 @@ func on_got_hit():
 		bomb_projectile = null
 	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
 
-		
-
 func stack_move_in_combo(move_name):
 	.stack_move_in_combo(move_name)
 	if combo_moves_used.has("PalmStrike") and combo_moves_used["PalmStrike"] >= 3:
@@ -224,5 +221,3 @@ func _draw():
 	var hook = obj_from_name(grappling_hook_projectile)
 	if hook:
 		draw_line(to_local(get_center_position_float()), to_local(hook.get_center_position_float()), Color("#ffffff"), 2.0)
-#	if hook_dir:
-#		draw_line(to_local(get_center_position_float()), hook_dir * 32, Color.purple)

@@ -9,7 +9,7 @@ func hit_by(hitbox):
 			disable()
 			return
 	if host.is_in_group("Fighter"):
-		host.feinting = true
+		host.projectile_free_cancel()
 	var force = fixed.vec_mul(hitbox.dir_x, hitbox.dir_y, hitbox.knockback)
 	force = fixed.vec_add(force.x, force.y, str(creator.current_di.x/5), str(creator.current_di.y/20))
 	apply_force(force.x, force.y)

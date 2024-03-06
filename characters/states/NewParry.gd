@@ -20,6 +20,7 @@ var parried_last = false
 
 func _ready():
 	_disable_aerial_movement = disable_aerial_movement
+	fallback_state = "ParryAfterWhiff"
 
 func get_whiffed_block():
 #	print()
@@ -149,8 +150,12 @@ func _tick():
 	host.apply_forces()
 #	host.parry_chip_divisor = host.PARRY_CHIP_DIVISOR / (1 + abs(current_tick - data.x + 1) * 0.2)
 	host.parry_knockback_divisor = host.PARRY_GROUNDED_KNOCKBACK_DIVISOR
-	if current_tick == 4 and host.opponent.current_state().get("IS_NEW_PARRY"):
-		enable_interrupt()
+	if host.opponent.current_state().get("IS_NEW_PARRY"):
+		var stop_early_tick = 14
+		if !push and !host.opponent.current_state().push:
+			stop_early_tick = 4
+		if current_tick == stop_early_tick:
+			enable_interrupt()
 
 func _exit():
 	parry_active = false

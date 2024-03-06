@@ -542,6 +542,10 @@ func on_blocked_melee_attack():
 	stop_fly_fx()
 	pass
 
+func use_burst():
+	.use_burst()
+	air_option_bar = air_option_bar_max
+
 func try_drive_cancel(fast=false):
 #	print("here")
 	if got_parried:

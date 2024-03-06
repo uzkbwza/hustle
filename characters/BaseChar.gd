@@ -65,7 +65,7 @@ const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
 const PUSH_BLOCK_DIST = "110"
-const PUSH_BLOCK_ADVANTAGE_PENALTY = 1
+const PUSH_BLOCK_ADVANTAGE_PENALTY = 0
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
@@ -712,6 +712,9 @@ func gain_super_meter(amount,stale_amount = "1.0"):
 	amount = meter_gain_modified(amount)
 	var super_modified_amount = fixed.round(fixed.div(str(amount), fixed.powu("2", combo_supers)))
 	amount = fixed.round(fixed.lerp_string(str(amount), str(super_modified_amount), stale_amount))
+	gain_super_meter_raw(amount)
+
+func gain_super_meter_raw(amount):
 	super_meter += amount
 	var played_sound = false
 	while super_meter >= MAX_SUPER_METER:
@@ -727,7 +730,6 @@ func gain_super_meter(amount,stale_amount = "1.0"):
 			if !infinite_resources:
 				unlock_achievement("ACH_ULTIMATE_POWER", true)
 			break
-
 
 func drain_super_meter(amount):
 	if infinite_resources:
@@ -1370,6 +1372,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				opponent.got_blocked = true
 				on_blocked_melee_attack()
 			else:
+				opponent.feinting = false
 				opponent.got_parried = true
 				opponent.current_state().interruptible_on_opponent_turn = false
 		
@@ -1524,6 +1527,15 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+
+func projectile_free_cancel():
+#	if current_state().state_name in ["Burst", "DefensiveBurst", "OffensiveBurst"]:
+#		return
+	if !current_state().can_feint_if_possible:
+		return
+	if (got_blocked or got_parried):
+		return
+	feinting = true
 
 func on_blocked_something():
 	pass

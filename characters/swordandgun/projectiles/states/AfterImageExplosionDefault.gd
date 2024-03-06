@@ -16,6 +16,7 @@ func _frame_0():
 		var obj = bullets[0]
 		var pos = host.get_pos()
 		obj.set_pos(pos.x, pos.y)
+		obj.last_hit_by = host.get_fighter().obj_name
 		obj.reset_line()
 		obj.reset_speed()
 		obj.current_state().bounce_full_control(true)

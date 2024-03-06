@@ -1,4 +1,4 @@
-[gd_scene load_steps=343 format=2]
+[gd_scene load_steps=344 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -338,6 +338,7 @@
 [ext_resource path="res://characters/swordandgun/sprites/1000cutsend4.png" type="Texture" id=336]
 [ext_resource path="res://sound/common/swish_long.wav" type="AudioStream" id=337]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/1000cuts2.png" type="Texture" id=338]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/pointblank.png" type="Texture" id=339]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -3439,472 +3440,7 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
-[node name="Teleport" type="Node2D" parent="StateMachine" index="42"]
-script = ExtResource( 99 )
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 138 )
-sfx_tick = 2
-data_ui_scene = ExtResource( 102 )
-button_texture = ExtResource( 137 )
-air_type = 2
-uses_air_movement = true
-iasa_at = 9
-combo_only = true
-self_interruptable = false
-reversible = false
-selectable = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-super_level = 0
-super_effect = false
-
-[node name="SpotDodge" type="Node2D" parent="StateMachine" index="43"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 138 )
-sfx_tick = 2
-title = "Spot Dodge"
-type = 4
-button_texture = ExtResource( 305 )
-air_type = 2
-iasa_at = 9
-self_interruptable = false
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-super_level = 0
-super_effect = false
-
-[node name="Shift" type="Node2D" parent="StateMachine" index="44"]
-script = ExtResource( 99 )
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 303 )
-sfx_tick = 2
-title = "Shift"
-button_texture = ExtResource( 300 )
-air_type = 2
-uses_air_movement = true
-iasa_at = 9
-self_interruptable = false
-reversible = false
-interrupt_into_string = "Grounded
-Aerial"
-super_level = 0
-super_effect = false
-shift = true
-
-[node name="ForesightTeleport" type="Node2D" parent="StateMachine" index="45"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 303 )
-sfx_tick = 2
-sfx_volume = -12.0
-title = "Time Shift"
-button_texture = ExtResource( 300 )
-air_type = 2
-uses_air_movement = true
-iasa_at = 9
-self_interruptable = false
-reversible = false
-selectable = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-change_stance_to = "Normal"
-super_level = 0
-super_effect = false
-foresight = true
-
-[node name="ForesightTeleportFromStance" type="Node2D" parent="StateMachine" index="46"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 303 )
-sfx_tick = 2
-sfx_volume = -12.0
-title = "Time Shift"
-button_texture = ExtResource( 300 )
-air_type = 2
-iasa_at = 9
-self_interruptable = false
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-allowed_stances_string = "TPStance"
-change_stance_to = "Normal"
-super_level = 0
-super_effect = false
-foresight = true
-
-[node name="ForesightExplosion" type="Node2D" parent="StateMachine" index="47"]
-script = ExtResource( 301 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Foresight"
-anim_length = 9
-title = "Time Rift"
-type = 2
-button_texture = ExtResource( 302 )
-air_type = 2
-selectable = false
-interrupt_from_string = "Grounded
-Aerial
-GroundedSpecial
-AerialSpecial
-TimeRift"
-interrupt_into_string = "Grounded
-Aerial"
-allowed_stances_string = "Normal
-TPStance"
-change_stance_to = "Normal"
-
-[node name="TPStance" type="Node2D" parent="StateMachine" index="48"]
-script = ExtResource( 293 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-fallback_state = "StanceTeleport"
-anim_length = 3
-title = "Warp Stance"
-data_ui_scene = ExtResource( 102 )
-button_texture = ExtResource( 295 )
-air_type = 2
-uses_air_movement = true
-selectable = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Teleport
-TimeRift"
-change_stance_to = "TPStance"
-
-[node name="Foresight" type="Node2D" parent="StateMachine" index="49"]
-script = ExtResource( 294 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Foresight"
-anim_length = 7
-sfx = ExtResource( 304 )
-sfx_tick = 2
-sfx_volume = -12.0
-projectile_scene = ExtResource( 299 )
-projectile_tick = 3
-type = 2
-data_ui_scene = ExtResource( 298 )
-button_texture = ExtResource( 297 )
-air_type = 2
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-interrupt_exceptions_string = "TimeRift"
-allowed_stances_string = "TPStance
-"
-change_stance_to = "Normal"
-
-[node name="ForesightNeutral" type="Node2D" parent="StateMachine" index="50"]
-script = ExtResource( 294 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Foresight"
-anim_length = 14
-sfx = ExtResource( 304 )
-sfx_tick = 2
-sfx_volume = -12.0
-projectile_scene = ExtResource( 299 )
-projectile_tick = 3
-title = "Foresight"
-type = 2
-data_ui_scene = ExtResource( 298 )
-button_texture = ExtResource( 297 )
-air_type = 2
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-interrupt_exceptions_string = "TimeRift"
-change_stance_to = "Normal"
-
-[node name="StanceTeleport" type="Node2D" parent="StateMachine" index="51"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 30
-enter_sfx_volume = -7.0
-sfx = ExtResource( 138 )
-sfx_tick = 2
-title = "Teleport"
-button_texture = ExtResource( 296 )
-air_type = 2
-iasa_at = 9
-self_interruptable = false
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-Aerial
-AerialMovement
-AerialSpecial
-Teleport"
-interrupt_into_string = "Grounded
-Aerial"
-interrupt_exceptions_string = "Teleport"
-allowed_stances_string = "TPStance"
-change_stance_to = "Normal"
-super_level = 0
-super_effect = false
-from_stance = true
-
-[node name="Pommel" type="Node2D" parent="StateMachine" index="52"]
-script = ExtResource( 79 )
-apply_grav = true
-anim_length = 14
-enter_force_dir_x = "1.0"
-enter_force_speed = "2.0"
-type = 1
-button_texture = ExtResource( 158 )
-interrupt_from_string = "GroundedAttack
-Grounded"
-interrupt_into_string = "Grounded"
-hit_cancel_into_string = "GroundedAttack
-GroundedSpecial
-GroundedSuper
-Jump"
-auto_fall = false
-
-[node name="Hitbox" type="Node2D" parent="StateMachine/Pommel" index="0"]
-z_index = 1000
-script = ExtResource( 83 )
-x = 15
-y = -23
-width = 13
-height = 11
-damage = 40
-hitstun_ticks = 12
-victim_hitlag = 4
-damage_proration = 2
-plus_frames = -1
-hit_height = 0
-dir_x = "0.5"
-dir_y = "1.0"
-start_tick = 4
-active_ticks = 2
-
-[node name="FastTeleport" type="Node2D" parent="StateMachine" index="53"]
-script = ExtResource( 99 )
-sprite_animation = "Teleport"
-anim_length = 20
-enter_sfx = ExtResource( 138 )
-enter_sfx_volume = -7.0
-title = "Teleport"
-type = 3
-data_ui_scene = ExtResource( 265 )
-button_texture = ExtResource( 137 )
-air_type = 2
-uses_air_movement = true
-iasa_at = 9
-interruptible_on_opponent_turn = true
-self_interruptable = false
-reversible = false
-interrupt_from_string = "Grounded
-GroundedMovement
-GroundedSpecial
-GroundedSuper
-Aerial
-AerialMovement
-AerialSpecial
-AerialSuper
-FastTeleport"
-interrupt_into_string = "Grounded
-Aerial"
-super_freeze_ticks = 0
-
-[node name="Brandish" type="Node2D" parent="StateMachine" index="54"]
-script = ExtResource( 116 )
-fallback_state = "Shoot2"
-sprite_animation = "GunTwirl"
-anim_length = 11
-enter_sfx = ExtResource( 150 )
-enter_sfx_volume = -12.0
-title = "Quick Draw"
-type = 2
-button_texture = ExtResource( 159 )
-air_type = 2
-next_state_on_hold_on_opponent_turn = true
-interrupt_from_string = "Grounded
-GroundedSpecial
-Aerial
-AerialSpecial"
-interrupt_into_string = "Gun
-SlowHolster
-AerialSuper
-GroundedSuper
-Guntrick
-Teleport"
-interrupt_exceptions_string = "Hustle
-FastTeleport
-SpotDodge"
-super_level = 0
-super_effect = false
-
-[node name="QuickerDraw" type="Node2D" parent="StateMachine" index="55"]
-script = ExtResource( 116 )
-fallback_state = "Shoot2"
-sprite_animation = "GunTwirl"
-anim_length = 4
-enter_sfx = ExtResource( 150 )
-enter_sfx_volume = -12.0
-title = "Quick Draw"
-type = 2
-button_texture = ExtResource( 159 )
-air_type = 2
-interruptible_on_opponent_turn = true
-interrupt_into_string = "Gun
-SlowHolster
-AerialSuper
-GroundedSuper
-Teleport
-Guntrick"
-interrupt_exceptions_string = "Hustle
-FastTeleport
-SpotDodge"
-super_level = 0
-super_effect = false
-quicker = true
-
-[node name="Holster" type="Node2D" parent="StateMachine" index="56"]
-script = ExtResource( 167 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Holster"
-anim_length = 4
-type = 2
-button_texture = ExtResource( 160 )
-air_type = 2
-land_cancel = true
-interrupt_from_string = "FastHolster"
-interrupt_into_string = "Grounded
-Aerial"
-
-[node name="SlowHolster" type="Node2D" parent="StateMachine" index="57"]
-script = ExtResource( 167 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "Holster"
-anim_length = 13
-title = "Holster"
-type = 2
-button_texture = ExtResource( 160 )
-air_type = 2
-interrupt_from_string = "SlowHolster"
-interrupt_into_string = "Grounded
-Aerial"
-
-[node name="Shoot" type="Node2D" parent="StateMachine" index="58"]
-script = ExtResource( 111 )
-fallback_state = "Holster"
-sprite_animation = "GunShoot2"
-anim_length = 14
-type = 2
-data_ui_scene = ExtResource( 277 )
-button_texture = ExtResource( 161 )
-air_type = 2
-iasa_at = 10
-dynamic_iasa = false
-can_feint_if_possible = false
-selectable = false
-interrupt_from_string = "Gun
-LassoThrow
-Shoot"
-interrupt_into_string = "TimeBullet
-Grounded
-Aerial
-Shoot
-"
-interrupt_exceptions_string = "Shoot"
-release_opponent_on_startup = true
-super_level = 0
-super_effect = false
-
-[node name="ShootDodge" type="Node2D" parent="StateMachine" index="59"]
-script = ExtResource( 111 )
-fallback_state = "Holster"
-sprite_animation = "GunShoot2"
-anim_length = 14
-title = "Shoot Dodge"
-type = 2
-data_ui_scene = ExtResource( 291 )
-button_texture = ExtResource( 292 )
-air_type = 2
-iasa_at = 10
-dynamic_iasa = false
-reversible = false
-selectable = false
-interrupt_from_string = "Gun
-LassoThrow
-Shoot"
-interrupt_into_string = "TimeBullet
-Grounded
-Aerial"
-interrupt_exceptions_string = "Shoot"
-release_opponent_on_startup = true
-super_level = 0
-super_effect = false
-dodge = true
-
-[node name="Shoot2" type="Node2D" parent="StateMachine" index="60"]
+[node name="Shoot2" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -3949,7 +3485,7 @@ knockback = "6.0"
 start_tick = 4
 active_ticks = 1
 
-[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="61"]
+[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -3993,7 +3529,7 @@ knockback = "6.0"
 start_tick = 4
 active_ticks = 1
 
-[node name="PointBlank" type="Node2D" parent="StateMachine" index="62"]
+[node name="PointBlank" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -4008,6 +3544,7 @@ earliest_hitbox = 4
 title = "Point Blank"
 type = 2
 data_ui_scene = ExtResource( 314 )
+button_texture = ExtResource( 339 )
 air_type = 2
 dynamic_iasa = false
 can_feint_if_possible = false
@@ -4043,6 +3580,471 @@ dir_y = "-0.50"
 knockback = "2"
 start_tick = 4
 active_ticks = 1
+
+[node name="Teleport" type="Node2D" parent="StateMachine" index="45"]
+script = ExtResource( 99 )
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 138 )
+sfx_tick = 2
+data_ui_scene = ExtResource( 102 )
+button_texture = ExtResource( 137 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+combo_only = true
+self_interruptable = false
+reversible = false
+selectable = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_level = 0
+super_effect = false
+
+[node name="SpotDodge" type="Node2D" parent="StateMachine" index="46"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 138 )
+sfx_tick = 2
+title = "Spot Dodge"
+type = 4
+button_texture = ExtResource( 305 )
+air_type = 2
+iasa_at = 9
+self_interruptable = false
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_level = 0
+super_effect = false
+
+[node name="Shift" type="Node2D" parent="StateMachine" index="47"]
+script = ExtResource( 99 )
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 303 )
+sfx_tick = 2
+title = "Shift"
+button_texture = ExtResource( 300 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+self_interruptable = false
+reversible = false
+interrupt_into_string = "Grounded
+Aerial"
+super_level = 0
+super_effect = false
+shift = true
+
+[node name="ForesightTeleport" type="Node2D" parent="StateMachine" index="48"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 303 )
+sfx_tick = 2
+sfx_volume = -12.0
+title = "Time Shift"
+button_texture = ExtResource( 300 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+self_interruptable = false
+reversible = false
+selectable = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+change_stance_to = "Normal"
+super_level = 0
+super_effect = false
+foresight = true
+
+[node name="ForesightTeleportFromStance" type="Node2D" parent="StateMachine" index="49"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 303 )
+sfx_tick = 2
+sfx_volume = -12.0
+title = "Time Shift"
+button_texture = ExtResource( 300 )
+air_type = 2
+iasa_at = 9
+self_interruptable = false
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+allowed_stances_string = "TPStance"
+change_stance_to = "Normal"
+super_level = 0
+super_effect = false
+foresight = true
+
+[node name="ForesightExplosion" type="Node2D" parent="StateMachine" index="50"]
+script = ExtResource( 301 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Foresight"
+anim_length = 9
+title = "Time Rift"
+type = 2
+button_texture = ExtResource( 302 )
+air_type = 2
+selectable = false
+interrupt_from_string = "Grounded
+Aerial
+GroundedSpecial
+AerialSpecial
+TimeRift"
+interrupt_into_string = "Grounded
+Aerial"
+allowed_stances_string = "Normal
+TPStance"
+change_stance_to = "Normal"
+
+[node name="TPStance" type="Node2D" parent="StateMachine" index="51"]
+script = ExtResource( 293 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+fallback_state = "StanceTeleport"
+anim_length = 3
+title = "Warp Stance"
+data_ui_scene = ExtResource( 102 )
+button_texture = ExtResource( 295 )
+air_type = 2
+uses_air_movement = true
+selectable = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Teleport
+TimeRift"
+change_stance_to = "TPStance"
+
+[node name="Foresight" type="Node2D" parent="StateMachine" index="52"]
+script = ExtResource( 294 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Foresight"
+anim_length = 7
+sfx = ExtResource( 304 )
+sfx_tick = 2
+sfx_volume = -12.0
+projectile_scene = ExtResource( 299 )
+projectile_tick = 3
+type = 2
+data_ui_scene = ExtResource( 298 )
+button_texture = ExtResource( 297 )
+air_type = 2
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+interrupt_exceptions_string = "TimeRift"
+allowed_stances_string = "TPStance
+"
+change_stance_to = "Normal"
+
+[node name="ForesightNeutral" type="Node2D" parent="StateMachine" index="53"]
+script = ExtResource( 294 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Foresight"
+anim_length = 14
+sfx = ExtResource( 304 )
+sfx_tick = 2
+sfx_volume = -12.0
+projectile_scene = ExtResource( 299 )
+projectile_tick = 3
+title = "Foresight"
+type = 2
+data_ui_scene = ExtResource( 298 )
+button_texture = ExtResource( 297 )
+air_type = 2
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+interrupt_exceptions_string = "TimeRift"
+change_stance_to = "Normal"
+
+[node name="StanceTeleport" type="Node2D" parent="StateMachine" index="54"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 30
+enter_sfx_volume = -7.0
+sfx = ExtResource( 138 )
+sfx_tick = 2
+title = "Teleport"
+button_texture = ExtResource( 296 )
+air_type = 2
+iasa_at = 9
+self_interruptable = false
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+Aerial
+AerialMovement
+AerialSpecial
+Teleport"
+interrupt_into_string = "Grounded
+Aerial"
+interrupt_exceptions_string = "Teleport"
+allowed_stances_string = "TPStance"
+change_stance_to = "Normal"
+super_level = 0
+super_effect = false
+from_stance = true
+
+[node name="Pommel" type="Node2D" parent="StateMachine" index="55"]
+script = ExtResource( 79 )
+apply_grav = true
+anim_length = 14
+enter_force_dir_x = "1.0"
+enter_force_speed = "2.0"
+type = 1
+button_texture = ExtResource( 158 )
+interrupt_from_string = "GroundedAttack
+Grounded"
+interrupt_into_string = "Grounded"
+hit_cancel_into_string = "GroundedAttack
+GroundedSpecial
+GroundedSuper
+Jump"
+auto_fall = false
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Pommel" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+x = 15
+y = -23
+width = 13
+height = 11
+damage = 40
+hitstun_ticks = 12
+victim_hitlag = 4
+damage_proration = 2
+plus_frames = -1
+hit_height = 0
+dir_x = "0.5"
+dir_y = "1.0"
+start_tick = 4
+active_ticks = 2
+
+[node name="FastTeleport" type="Node2D" parent="StateMachine" index="56"]
+script = ExtResource( 99 )
+sprite_animation = "Teleport"
+anim_length = 20
+enter_sfx = ExtResource( 138 )
+enter_sfx_volume = -7.0
+title = "Teleport"
+type = 3
+data_ui_scene = ExtResource( 265 )
+button_texture = ExtResource( 137 )
+air_type = 2
+uses_air_movement = true
+iasa_at = 9
+interruptible_on_opponent_turn = true
+self_interruptable = false
+reversible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+GroundedSuper
+Aerial
+AerialMovement
+AerialSpecial
+AerialSuper
+FastTeleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_freeze_ticks = 0
+
+[node name="Brandish" type="Node2D" parent="StateMachine" index="57"]
+script = ExtResource( 116 )
+fallback_state = "Shoot2"
+sprite_animation = "GunTwirl"
+anim_length = 11
+enter_sfx = ExtResource( 150 )
+enter_sfx_volume = -12.0
+title = "Quick Draw"
+type = 2
+button_texture = ExtResource( 159 )
+air_type = 2
+next_state_on_hold_on_opponent_turn = true
+interrupt_from_string = "Grounded
+GroundedSpecial
+Aerial
+AerialSpecial"
+interrupt_into_string = "Gun
+SlowHolster
+AerialSuper
+GroundedSuper
+Guntrick
+Teleport"
+interrupt_exceptions_string = "Hustle
+FastTeleport
+SpotDodge"
+super_level = 0
+super_effect = false
+
+[node name="QuickerDraw" type="Node2D" parent="StateMachine" index="58"]
+script = ExtResource( 116 )
+fallback_state = "Shoot2"
+sprite_animation = "GunTwirl"
+anim_length = 4
+enter_sfx = ExtResource( 150 )
+enter_sfx_volume = -12.0
+title = "Quick Draw"
+type = 2
+button_texture = ExtResource( 159 )
+air_type = 2
+interruptible_on_opponent_turn = true
+interrupt_into_string = "Gun
+SlowHolster
+AerialSuper
+GroundedSuper
+Teleport
+Guntrick"
+interrupt_exceptions_string = "Hustle
+FastTeleport
+SpotDodge"
+super_level = 0
+super_effect = false
+quicker = true
+
+[node name="Holster" type="Node2D" parent="StateMachine" index="59"]
+script = ExtResource( 167 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Holster"
+anim_length = 4
+type = 2
+button_texture = ExtResource( 160 )
+air_type = 2
+land_cancel = true
+interrupt_from_string = "FastHolster"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="SlowHolster" type="Node2D" parent="StateMachine" index="60"]
+script = ExtResource( 167 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "Holster"
+anim_length = 13
+title = "Holster"
+type = 2
+button_texture = ExtResource( 160 )
+air_type = 2
+interrupt_from_string = "SlowHolster"
+interrupt_into_string = "Grounded
+Aerial"
+
+[node name="Shoot" type="Node2D" parent="StateMachine" index="61"]
+script = ExtResource( 111 )
+fallback_state = "Holster"
+sprite_animation = "GunShoot2"
+anim_length = 14
+type = 2
+data_ui_scene = ExtResource( 277 )
+button_texture = ExtResource( 161 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
+can_feint_if_possible = false
+selectable = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial
+Shoot
+"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
+super_level = 0
+super_effect = false
+
+[node name="ShootDodge" type="Node2D" parent="StateMachine" index="62"]
+script = ExtResource( 111 )
+fallback_state = "Holster"
+sprite_animation = "GunShoot2"
+anim_length = 14
+title = "Shoot Dodge"
+type = 2
+data_ui_scene = ExtResource( 291 )
+button_texture = ExtResource( 292 )
+air_type = 2
+iasa_at = 10
+dynamic_iasa = false
+reversible = false
+selectable = false
+interrupt_from_string = "Gun
+LassoThrow
+Shoot"
+interrupt_into_string = "TimeBullet
+Grounded
+Aerial"
+interrupt_exceptions_string = "Shoot"
+release_opponent_on_startup = true
+super_level = 0
+super_effect = false
+dodge = true
 
 [node name="TimeBullet" type="Node2D" parent="StateMachine" index="63"]
 script = ExtResource( 111 )

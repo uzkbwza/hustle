@@ -15,6 +15,8 @@ func disable():
 
 func hit_by(hitbox):
 	.hit_by(hitbox)
+	if hitbox.throw:
+		return
 	var host = obj_from_name(hitbox.host)
 	if host:
 		if host.is_in_group("Fighter"):
@@ -23,6 +25,6 @@ func hit_by(hitbox):
 			var force = fixed.normalized_vec_times(get_hitbox_x_dir(hitbox), hitbox.dir_y, fixed.mul(hitbox.knockback, "0.85"))
 			var fighter = get_fighter()
 			if fighter and id == hitbox.id:
-				force = fixed.vec_add(force.x, force.y, str(fighter.current_di.x/15), str(fighter.current_di.y/15))
+				force = fixed.vec_add(force.x, force.y, str(fighter.current_di.x/20), str(fighter.current_di.y/20))
 			set_vel(force.x, force.y)
 			current_state().current_tick = 1

@@ -6,7 +6,7 @@ export var AERIAL_LIFT = "-7.0"
 func _frame_7():
 	var vel = host.get_vel()
 	host.set_vel(vel.x, "0")
-	if host.is_grounded() or host.up_swipe_momentum or host.combo_count > 0:
+	if host.is_grounded() or host.up_swipe_momentum:
 		host.apply_force_relative("0", GROUNDED_LIFT if host.is_grounded() else AERIAL_LIFT)
 		if !host.is_grounded():
 			host.up_swipe_momentum = false

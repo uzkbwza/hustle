@@ -57,7 +57,7 @@ func bounce_off_foresight():
 
 func bounce_full_control(force=false):
 	var creator = host.get_owned_fighter()
-	if creator.is_in_group("Fighter"):
+	if creator.is_in_group("Fighter") and creator.id == host.id:
 		var di = creator.current_di
 		var di_active = di.x != 0 or di.y != 0
 		if di_active or force:
@@ -113,7 +113,7 @@ func _tick():
 	if !host.ricochet:
 		if pos.y >= 0:
 			host.dir_y = fixed.mul(host.dir_y, "-1")
-			on_bounce(true)
+			on_bounce(host.get_owned_fighter().id == host.id)
 			if fixed.gt(host.dir_y, "0"):
 				host.dir_y = "-" + MIN_TERRAIN_RICOCHET_AMOUNT
 
@@ -125,11 +125,11 @@ func _tick():
 			if pos.x < 0:
 				if fixed.lt(host.dir_x, "0"):
 					host.dir_x = MIN_TERRAIN_RICOCHET_AMOUNT
-			on_bounce(true)
+			on_bounce(host.get_owned_fighter().id == host.id)
 		if host.has_ceiling and pos.y <= -host.ceiling_height:
 			host.set_y(-host.ceiling_height)
 			host.dir_y = fixed.mul(host.dir_y, "-1")
-			on_bounce(true)
+			on_bounce(host.get_owned_fighter().id == host.id)
 			if fixed.lt(host.dir_y, "0"):
 				host.dir_y = MIN_TERRAIN_RICOCHET_AMOUNT
 	else:

@@ -36,6 +36,7 @@ material = SubResource( 1 )
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 movable = false
+free_cancel_on_hit = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 2 )
