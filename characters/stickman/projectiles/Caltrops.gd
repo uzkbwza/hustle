@@ -1,5 +1,7 @@
 extends BaseProjectile
 
+const DIVEKICK_BOUNCE = true
+
 func hit_by(hitbox):
 	var host = obj_from_name(hitbox.host)
 	if host and host.is_in_group("Fighter") and host.id != id:

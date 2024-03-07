@@ -13,3 +13,8 @@ func set_fighter(fighter):
 
 func on_position_changed(under_healthbar):
 	self.under_healthbar = under_healthbar
+
+func _process(delta):
+	if fighter and !is_instance_valid(fighter):
+		queue_free()
+		return

@@ -52,7 +52,6 @@ z_index = 3
 __meta__ = {
 "_edit_group_": true
 }
-free_cancel_on_hit = false
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )

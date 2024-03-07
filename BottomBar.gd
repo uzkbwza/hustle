@@ -28,7 +28,7 @@ func _on_action_buttons_visibility_changed():
 			$"%PredictionSettingsOpenButton".hide()
 #		$"%ActivePlayerSuperContainer".show()
 	
-	if p1_info_scene:
+	if is_instance_valid(p1_info_scene):
 		p1_info_scene.get_parent().remove_child(p1_info_scene)
 		p2_info_scene.get_parent().remove_child(p2_info_scene)
 
@@ -41,7 +41,7 @@ func _on_action_buttons_visibility_changed():
 		$"%P1SuperContainer".show()
 		$"%P2SuperContainer".show()
 		$"%ActivePlayer".hide()
-		if p1_info_scene:
+		if is_instance_valid(p1_info_scene):
 			p1_info_scene.on_position_changed(false)
 			p2_info_scene.on_position_changed(false)
 	else:
@@ -49,7 +49,7 @@ func _on_action_buttons_visibility_changed():
 		$"%P2SuperContainer".hide()
 		$"%ActivePlayer".show()
 		$"%ActivePlayerSuperContainer".show()
-		if p1_info_scene:
+		if is_instance_valid(p1_info_scene):
 			active_player_info_container.add_child(p1_info_scene)
 			active_player_info_container.add_child(p2_info_scene)
 			p1_info_scene.on_position_changed(true)

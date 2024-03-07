@@ -71,6 +71,7 @@ homing = true
 homing_turn_speed = "0.35"
 homing_accel = "0.25"
 start_homing = true
+lifetime = 240
 relative_data_dir = false
 fizzle_on_ground = false
 bounce_on_ground = true

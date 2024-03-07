@@ -57,13 +57,14 @@ func reset():
 		sight_button.hide()
 
 func update_tp_button():
+		var move = fighter.current_state()
 		$"%TpButton".disabled = false
 		$"%TpButton".show()
 		if fighter.is_grounded() or fighter.air_movements_left > 0:
 			$"%TpButton".show()
 		else:
 			$"%TpButton".hide()
-		if selected_move and selected_move.type == CharacterState.ActionType.Defense:
+		if (selected_move and selected_move.type == CharacterState.ActionType.Defense):
 			$"%TpButton".disabled = true
 			$"%TpButton".set_pressed_no_signal(false)
 		var obj = fighter.obj_from_name(fighter.after_image_object)

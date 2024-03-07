@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://characters/swordandgun/ActionUIData/Shoot2ActionUIData.gd" type="Script" id=1]
+[ext_resource path="res://characters/swordandgun/ActionUIData/ShootDodge2ActionUIData.gd" type="Script" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/temporal_round.png" type="Texture" id=2]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 [ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIDataCheckButton.gd" type="Script" id=5]
-[ext_resource path="res://characters/swordandgun/sprites/action_buttons/holster.png" type="Texture" id=6]
 
 [node name="ActionUIData" type="VBoxContainer"]
 margin_right = 60.0
@@ -26,22 +25,11 @@ text = "temp"
 icon = ExtResource( 2 )
 script = ExtResource( 5 )
 
-[node name="Holster" type="CheckButton" parent="."]
-margin_right = 71.0
-margin_bottom = 17.0
-size_flags_horizontal = 0
-custom_constants/hseparation = 1
-pressed = true
-text = "holster"
-icon = ExtResource( 6 )
-script = ExtResource( 5 )
-
 [node name="Direction" parent="." instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 18.0
 margin_right = 60.0
-margin_bottom = 84.0
+margin_bottom = 66.0
 always_max = true
 default_value = Vector2( 0, -1 )
 

@@ -13,6 +13,8 @@ func set_fighter(fighter):
 		$"%LOICMeter".fill_mode = TextureProgress.FILL_RIGHT_TO_LEFT
 
 func _process(delta):
+	if !is_instance_valid(fighter):
+		return
 	$"%LandingIndicator".modulate.a = 0.15
 	if fighter.can_ground_pound:
 		$"%LandingIndicator".modulate.a = 1.0 if Utils.pulse(0.3, 0.65) else 0.75
@@ -22,4 +24,3 @@ func _process(delta):
 		$"%ArmorIndicator".modulate.a = 1.0 if Utils.pulse(0.3, 0.65) else 0.75
 	$"%LOICMeter".texture_progress = LOIC_READY_BAR if fighter.can_loic else LOIC_CHARGING_BAR
 	$"%LOICMeter".value = (fighter.loic_meter / float(fighter.LOIC_METER)) * $"%LOICMeter".max_value
-	

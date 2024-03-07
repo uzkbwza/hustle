@@ -31,6 +31,8 @@ func update_p2_children():
 			$HBoxContainer.call_deferred("add_child", child)
 	
 func _process(delta):
+	if !is_instance_valid(fighter):
+		return
 	for i in range(fighter.JUKE_PIPS):
 		if player_id == 2:
 			i = fighter.JUKE_PIPS - i - 1
@@ -41,4 +43,3 @@ func _process(delta):
 		separator_4.visible = fighter.juke_pips > 8
 		child.visible = fighter.juke_pips > i
 		child.texture = preload("res://characters/mutant/ActivePip.tres") if (fighter.juke_pips / 2) > i / 2 else preload("res://characters/mutant/pip3.png")
- 

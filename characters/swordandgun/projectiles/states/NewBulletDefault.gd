@@ -13,6 +13,8 @@ const TERRAIN_DI_AMOUNT = "0.35"
 const DAMAGE_MODIFIER_PER_HIT = "0.8"
 const MIN_TERRAIN_RICOCHET_AMOUNT = "0.1"
 const DI_INFLUENCE = "0.125"
+const BOUNCE_DAMAGE_SCALE = "0.85"
+const BOUNCE_HITSTUN_SCALE = "0.85"
 const BOUNCED_OFF_FORESIGHT_TIMER = 5
 
 export var temporal = false
@@ -153,7 +155,6 @@ func _tick():
 		host.no_draw_ticks -= 1
 
 func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
-
 	if bounce_lag_ticks > 0:
 		return
 	if !temporal:
@@ -168,6 +169,9 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 	host.rng.randomize()
 	host.play_sound("Ricochet" + str(host.rng.randi_range(1, NUM_RICOCHET_SOUNDS + 1)))
 	host.play_sound("RicochetNoise")
+
+	if bounce_lag_ticks <= 0:
+		bounce_scale()
 
 	for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
 		hitbox.chip_damage_modifier = "0.37"
@@ -186,3 +190,10 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 				var bounce_dir_y = fixed.lerp_string(host.dir_y, str(dir.y), lerp_amount)
 				host.dir_x = bounce_dir_x
 				host.dir_y = bounce_dir_y
+
+func bounce_scale():
+	for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
+		hitbox.damage = fixed.round(fixed.mul(str(hitbox.damage), BOUNCE_DAMAGE_SCALE))
+		hitbox.damage_in_combo = fixed.round(fixed.mul(str(hitbox.damage_in_combo), BOUNCE_DAMAGE_SCALE))
+		hitbox.minimum_damage = fixed.round(fixed.mul(str(hitbox.minimum_damage), BOUNCE_DAMAGE_SCALE))
+		hitbox.hitstun_ticks = fixed.round(fixed.mul(str(hitbox.hitstun_ticks), BOUNCE_HITSTUN_SCALE))

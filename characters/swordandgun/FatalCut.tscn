@@ -1,0 +1,424 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
+[ext_resource path="res://sound/common/explosion3.wav" type="AudioStream" id=2]
+[ext_resource path="res://characters/swordandgun/ActionUIData/TeleportActionUIData2.tscn" type="PackedScene" id=3]
+[ext_resource path="res://characters/swordandgun/sounds/swing3.wav" type="AudioStream" id=4]
+[ext_resource path="res://characters/swordandgun/sounds/teleport.wav" type="AudioStream" id=5]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/1000cuts.png" type="Texture" id=6]
+[ext_resource path="res://characters/swordandgun/states/WeebCut.gd" type="Script" id=7]
+
+[node name="FatalCut" type="Node2D"]
+script = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": ""
+}
+reset_momentum = true
+sprite_animation = "Teleport"
+anim_length = 41
+enter_sfx = ExtResource( 5 )
+enter_sfx_volume = -7.0
+title = "FatalCut"
+type = 3
+data_ui_scene = ExtResource( 3 )
+button_texture = ExtResource( 6 )
+air_type = 2
+uses_air_movement = true
+self_interruptable = false
+can_feint_if_possible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+GroundedSuper
+Aerial
+AerialMovement
+AerialSpecial
+AerialSuper
+FastTeleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_freeze_ticks = 0
+
+[node name="H1" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H2" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H3" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H4" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H5" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H6" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H7" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H8" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H9" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H10" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H11" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4
+
+[node name="H12" type="Node2D" parent="."]
+z_index = 1000
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 25
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_punishable = true
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+rumble = false
+whiff_sound = ExtResource( 4 )
+hit_sound = ExtResource( 2 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+start_tick = 18
+active_ticks = 4

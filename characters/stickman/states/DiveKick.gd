@@ -73,6 +73,12 @@ func _frame_12():
 	moving = true
 	
 func _on_hit_something(obj, hitbox):
+	if host.can_divekick_hop and !obj.is_in_group("Fighter") and obj.id == host.id:
+		queue_state_change("DiveKickHop")
+		host.feinting = false
+		host.hitlag_ticks = 0
+		host.can_divekick_hop = false
+#		return
 	._on_hit_something(obj, hitbox)
 	if grounded:
 #		host.reset_momentum()
@@ -85,8 +91,6 @@ func _on_hit_something(obj, hitbox):
 		moving = false
 		if obj.is_in_group("Fighter"):
 			queue_state_change("Fall")
-	if !obj.is_in_group("Fighter"):
-		queue_state_change("DiveKickHop")
 
 func _tick():
 	if !grounded and current_tick == 3:

@@ -46,8 +46,6 @@ func _enter():
 			"y": fixed.round(fixed.mul(dir.y, "100"))
 		}
 
-
-
 	squat = is_squat()
 	if !squat:
 		host.start_throw_invulnerability()
@@ -146,7 +144,7 @@ func _frame_0():
 			interrupt_frames[0] = 14
 			interrupt_frames[1] = 25
 			if !back:
-				interrupt_frames[0] = 13
+				interrupt_frames[0] = 14
 				interrupt_frames[1] = 24
 		elif full_hop:
 			interrupt_frames[0] = 10

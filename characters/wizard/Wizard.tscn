@@ -257,8 +257,8 @@
 [ext_resource path="res://characters/wizard/SandstormParticle.tscn" type="PackedScene" id=255]
 [ext_resource path="res://characters/wizard/sprites/actionbuttons/sandstorm.png" type="Texture" id=256]
 [ext_resource path="res://characters/wizard/states/Taunt.gd" type="Script" id=257]
-[ext_resource path="res://characters/wizard/sprites/shield1.png" type="Texture" id=258]
-[ext_resource path="res://characters/wizard/sprites/shield2.png" type="Texture" id=259]
+[ext_resource path="res://characters/wizard/sprites/shieldbetter1.png" type="Texture" id=258]
+[ext_resource path="res://characters/wizard/sprites/shieldbetter2.png" type="Texture" id=259]
 [ext_resource path="res://characters/wizard/states/ConjureWeapon.gd" type="Script" id=260]
 [ext_resource path="res://characters/wizard/sprites/OrbTether2.png" type="Texture" id=261]
 [ext_resource path="res://characters/wizard/states/OrbTether.gd" type="Script" id=262]
@@ -856,10 +856,6 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 323 ): {
-"x": 62,
-"y": -128
-},
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
@@ -868,17 +864,21 @@ ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
+},
+ExtResource( 323 ): {
+"x": 62,
+"y": -128
 },
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 character_portrait = ExtResource( 63 )
@@ -895,6 +895,10 @@ material = SubResource( 3 )
 frames = SubResource( 13 )
 animation = "Telekinesis"
 frame = 6
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="WindParticle" parent="Flip/Particles" index="0" instance=ExtResource( 160 )]
 unique_name_in_owner = true
@@ -962,6 +966,9 @@ script = ExtResource( 216 )
 
 [node name="Start" parent="StateMachine" index="0"]
 title = "Orb"
+
+[node name="ParrySuper" parent="StateMachine" index="1"]
+use_guard_sprites = true
 
 [node name="Roll" parent="StateMachine" index="7"]
 sprite_anim_length = -1
@@ -1942,10 +1949,6 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 323 ): {
-"x": 62,
-"y": -128
-},
 ExtResource( 321 ): {
 "x": 60,
 "y": -124
@@ -1954,17 +1957,21 @@ ExtResource( 322 ): {
 "x": 40,
 "y": -28
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 320 ): {
+"x": 62,
+"y": -126
+},
+ExtResource( 323 ): {
+"x": 62,
+"y": -128
 },
 ExtResource( 326 ): {
 "x": 40,
 "y": -10
 },
-ExtResource( 320 ): {
-"x": 62,
-"y": -126
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 }
 }
 type = 1

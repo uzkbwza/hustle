@@ -28,6 +28,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	if !is_instance_valid(fighter):
+		return
 	texture_rect_1.hide()
 	texture_rect_2.hide()
 	texture_rect_3.hide()

@@ -15,10 +15,3 @@ func _ready():
 func on_got_parried():
 	.on_got_parried()
 	can_stack = false
-#
-#func hit_by(hitbox):
-#	.hit_by(hitbox)
-#	var host = obj_from_name(hitbox.host)
-#	if host:
-#		if host.is_in_group("Fighter"):
-#			disable()

@@ -711,6 +711,10 @@ frames = SubResource( 7 )
 animation = "BiteGrab"
 frame = 12
 offset = Vector2( 0, -16 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="TwistAttackSprite" type="AnimatedSprite" parent="Flip" index="1"]
 unique_name_in_owner = true

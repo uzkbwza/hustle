@@ -1,4 +1,4 @@
-[gd_scene load_steps=344 format=2]
+[gd_scene load_steps=348 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -339,6 +339,10 @@
 [ext_resource path="res://sound/common/swish_long.wav" type="AudioStream" id=337]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/1000cuts2.png" type="Texture" id=338]
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/pointblank.png" type="Texture" id=339]
+[ext_resource path="res://characters/swordandgun/states/WeebCut.gd" type="Script" id=340]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/time splitter.png" type="Texture" id=341]
+[ext_resource path="res://characters/swordandgun/ActionUIData/ShootDodge2ActionUIData.tscn" type="PackedScene" id=342]
+[ext_resource path="res://characters/swordandgun/projectiles/TimeSplitterEffect.tscn" type="PackedScene" id=343]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -836,7 +840,11 @@ lasso_parried
 temporal_round
 milk_toggled
 burst_cancel_combo
-shifted_this_turn"
+shifted_this_turn
+fatal_cut_move_dir_x
+fatal_cut_move_dir_y
+fatal_cut_start_pos_x
+fatal_cut_start_pos_y"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -852,6 +860,10 @@ material = SubResource( 3 )
 frames = SubResource( 6 )
 animation = "1000CutsEnd"
 frame = 5
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="ShootingArm" type="AnimatedSprite" parent="Flip" index="2"]
 unique_name_in_owner = true
@@ -1188,7 +1200,436 @@ interrupt_into_string = "Grounded
 Aerial"
 super_level = 3
 
-[node name="1000CutsEnd" type="Node2D" parent="StateMachine" index="9"]
+[node name="TimeSplitter" type="Node2D" parent="StateMachine" index="9"]
+script = ExtResource( 340 )
+__meta__ = {
+"_editor_description_": ""
+}
+reset_momentum = true
+sprite_animation = "Teleport"
+anim_length = 76
+enter_sfx = ExtResource( 138 )
+enter_sfx_volume = -7.0
+earliest_hitbox = 15
+title = "Time Splitter"
+type = 3
+data_ui_scene = ExtResource( 265 )
+button_texture = ExtResource( 341 )
+air_type = 2
+uses_air_movement = true
+self_interruptable = false
+can_feint_if_possible = false
+interrupt_from_string = "Grounded
+GroundedMovement
+GroundedSpecial
+GroundedSuper
+Aerial
+AerialMovement
+AerialSpecial
+AerialSuper
+FastTeleport"
+interrupt_into_string = "Grounded
+Aerial"
+super_freeze_ticks = 0
+super_effect = false
+
+[node name="H1" type="Node2D" parent="StateMachine/TimeSplitter" index="0"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H2" type="Node2D" parent="StateMachine/TimeSplitter" index="1"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H3" type="Node2D" parent="StateMachine/TimeSplitter" index="2"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H4" type="Node2D" parent="StateMachine/TimeSplitter" index="3"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H5" type="Node2D" parent="StateMachine/TimeSplitter" index="4"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H6" type="Node2D" parent="StateMachine/TimeSplitter" index="5"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H7" type="Node2D" parent="StateMachine/TimeSplitter" index="6"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H8" type="Node2D" parent="StateMachine/TimeSplitter" index="7"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H9" type="Node2D" parent="StateMachine/TimeSplitter" index="8"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H10" type="Node2D" parent="StateMachine/TimeSplitter" index="9"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H11" type="Node2D" parent="StateMachine/TimeSplitter" index="10"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="H12" type="Node2D" parent="StateMachine/TimeSplitter" index="11"]
+z_index = 1000
+script = ExtResource( 83 )
+__meta__ = {
+"_editor_description_": ""
+}
+damage = 145
+minimum_damage = 60
+hitstun_ticks = 50
+hitlag_ticks = 0
+victim_hitlag = 35
+cancellable = false
+hits_projectiles = false
+block_cancel_allowed = false
+plus_frames = 2
+group = 1
+screenshake_amount = 8
+screenshake_frames = 40
+whiff_particle = ExtResource( 343 )
+bump_on_whiff = true
+whiff_sound = ExtResource( 152 )
+hit_sound = ExtResource( 143 )
+dir_x = "-1.0"
+dir_y = "2"
+knockback = "40"
+block_pushback_modifier = "0"
+pushback_x = "-10.0"
+grounded_hit_state = "HurtAerial"
+knockdown = true
+hard_knockdown = true
+ground_bounce = false
+active_ticks = 2
+
+[node name="1000CutsEnd" type="Node2D" parent="StateMachine" index="10"]
 script = ExtResource( 113 )
 apply_forces = true
 apply_fric = true
@@ -1226,7 +1667,7 @@ hitstun_ticks = 25
 hitlag_ticks = 14
 victim_hitlag = 16
 cancellable = false
-plus_frames = -1
+plus_frames = -2
 whiff_sound = ExtResource( 337 )
 hit_sound = ExtResource( 148 )
 dir_y = "-0.2"
@@ -1237,7 +1678,7 @@ wall_slam = true
 start_tick = 5
 active_ticks = 2
 
-[node name="3Combo" type="Node2D" parent="StateMachine" index="10"]
+[node name="3Combo" type="Node2D" parent="StateMachine" index="11"]
 script = ExtResource( 204 )
 apply_forces = true
 apply_fric = true
@@ -1400,7 +1841,7 @@ knockback = "12.0"
 start_tick = 25
 active_ticks = 3
 
-[node name="3ComboDown" type="Node2D" parent="StateMachine" index="11"]
+[node name="3ComboDown" type="Node2D" parent="StateMachine" index="12"]
 script = ExtResource( 204 )
 apply_forces = true
 apply_fric = true
@@ -1574,7 +2015,7 @@ knockback = "12.0"
 start_tick = 25
 active_ticks = 3
 
-[node name="LightningSlice" type="Node2D" parent="StateMachine" index="12"]
+[node name="LightningSlice" type="Node2D" parent="StateMachine" index="13"]
 script = ExtResource( 191 )
 apply_forces = true
 apply_fric = true
@@ -1625,7 +2066,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="LightningSliceNeutral" type="Node2D" parent="StateMachine" index="13"]
+[node name="LightningSliceNeutral" type="Node2D" parent="StateMachine" index="14"]
 script = ExtResource( 191 )
 apply_forces = true
 apply_fric = true
@@ -1678,7 +2119,7 @@ knockdown_extends_hitstun = false
 start_tick = 9
 active_ticks = 1
 
-[node name="LightningSliceCancel" type="Node2D" parent="StateMachine" index="14"]
+[node name="LightningSliceCancel" type="Node2D" parent="StateMachine" index="15"]
 script = ExtResource( 191 )
 apply_forces = true
 apply_fric = true
@@ -1726,7 +2167,7 @@ knockdown_extends_hitstun = false
 start_tick = 7
 active_ticks = 1
 
-[node name="Lasso" type="Node2D" parent="StateMachine" index="15"]
+[node name="Lasso" type="Node2D" parent="StateMachine" index="16"]
 script = ExtResource( 162 )
 anim_length = 45
 sfx = ExtResource( 172 )
@@ -1748,7 +2189,7 @@ interrupt_into_string = "Grounded
 Aerial
 "
 
-[node name="LassoHold" type="Node2D" parent="StateMachine" index="16"]
+[node name="LassoHold" type="Node2D" parent="StateMachine" index="17"]
 script = ExtResource( 168 )
 apply_forces = true
 apply_fric = true
@@ -1761,7 +2202,7 @@ interrupt_into_string = "LassoThrow
 "
 start_throw_pos_x = 16
 
-[node name="LassoPull" type="Node2D" parent="StateMachine" index="17"]
+[node name="LassoPull" type="Node2D" parent="StateMachine" index="18"]
 script = ExtResource( 177 )
 anim_length = 20
 title = "Pull"
@@ -1788,7 +2229,7 @@ knockdown = true
 knockdown_extends_hitstun = false
 active_ticks = 1
 
-[node name="LassoHit" type="Node2D" parent="StateMachine" index="18"]
+[node name="LassoHit" type="Node2D" parent="StateMachine" index="19"]
 script = ExtResource( 167 )
 reset_momentum = true
 fallback_state = "LassoReel"
@@ -1798,7 +2239,7 @@ type = 3
 air_type = 2
 interrupt_into_string = "Lasso"
 
-[node name="LassoReel" type="Node2D" parent="StateMachine" index="19"]
+[node name="LassoReel" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 175 )
 reset_momentum = true
 endless = true
@@ -1818,7 +2259,7 @@ script = ExtResource( 166 )
 increment_combo = false
 _c_Grouping = 1
 
-[node name="HSlash" type="Node2D" parent="StateMachine" index="20"]
+[node name="HSlash" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 79 )
 sprite_animation = "HSlash"
 anim_length = 20
@@ -1875,7 +2316,7 @@ hit_sound = ExtResource( 145 )
 start_tick = 8
 active_ticks = 2
 
-[node name="HSlash2" type="Node2D" parent="StateMachine" index="21"]
+[node name="HSlash2" type="Node2D" parent="StateMachine" index="22"]
 script = ExtResource( 285 )
 apply_forces = true
 apply_fric = true
@@ -1937,7 +2378,7 @@ script = ExtResource( 332 )
 tick = 10
 command = "try_shoot"
 
-[node name="HSlashUp" type="Node2D" parent="StateMachine" index="22"]
+[node name="HSlashUp" type="Node2D" parent="StateMachine" index="23"]
 script = ExtResource( 285 )
 apply_forces = true
 apply_fric = true
@@ -2042,7 +2483,7 @@ script = ExtResource( 332 )
 tick = 10
 command = "try_shoot"
 
-[node name="VSlash" type="Node2D" parent="StateMachine" index="23"]
+[node name="VSlash" type="Node2D" parent="StateMachine" index="24"]
 script = ExtResource( 59 )
 apply_forces = true
 apply_fric = true
@@ -2093,7 +2534,7 @@ script = ExtResource( 332 )
 tick = 14
 command = "try_shoot"
 
-[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="24"]
+[node name="UpwardSwipe" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -2134,7 +2575,7 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="25"]
+[node name="UpwardSwipeAir" type="Node2D" parent="StateMachine" index="26"]
 script = ExtResource( 132 )
 apply_forces = true
 apply_fric = true
@@ -2185,7 +2626,7 @@ script = ExtResource( 332 )
 tick = 11
 command = "try_shoot"
 
-[node name="Stinger" type="Node2D" parent="StateMachine" index="26"]
+[node name="Stinger" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 331 )
 __meta__ = {
 "_editor_description_": ""
@@ -2242,7 +2683,7 @@ script = ExtResource( 332 )
 tick = 13
 command = "try_shoot"
 
-[node name="Impale" type="Node2D" parent="StateMachine" index="27"]
+[node name="Impale" type="Node2D" parent="StateMachine" index="28"]
 script = ExtResource( 127 )
 anim_length = 45
 force_dir_x = "-1.0"
@@ -2307,7 +2748,7 @@ ground_bounce = false
 start_tick = 23
 active_ticks = 4
 
-[node name="ImpaleTeleport" type="Node2D" parent="StateMachine" index="28"]
+[node name="ImpaleTeleport" type="Node2D" parent="StateMachine" index="29"]
 script = ExtResource( 127 )
 sprite_animation = "ImpaleTeleport"
 anim_length = 41
@@ -2336,6 +2777,7 @@ height = 8
 damage = 30
 hitlag_ticks = 3
 victim_hitlag = 3
+damage_proration = 2
 cancellable = false
 sdi_modifier = "0.5"
 ignore_armor = true
@@ -2367,7 +2809,7 @@ height = 16
 start_tick = 7
 endless = true
 
-[node name="ImpaleFollowup" type="Node2D" parent="StateMachine" index="29"]
+[node name="ImpaleFollowup" type="Node2D" parent="StateMachine" index="30"]
 script = ExtResource( 279 )
 apply_forces = true
 apply_fric = true
@@ -2417,6 +2859,7 @@ damage = 160
 damage_in_combo = 145
 minimum_damage = 60
 victim_hitlag = 4
+damage_proration = 2
 scale_combo = false
 hits_projectiles = false
 group = 1
@@ -2435,7 +2878,7 @@ ground_bounce = false
 start_tick = 28
 active_ticks = 4
 
-[node name="ImpaleFollowupCombo" type="Node2D" parent="StateMachine" index="30"]
+[node name="ImpaleFollowupCombo" type="Node2D" parent="StateMachine" index="31"]
 script = ExtResource( 279 )
 apply_forces = true
 apply_fric = true
@@ -2484,6 +2927,7 @@ height = 82
 damage = 145
 minimum_damage = 60
 victim_hitlag = 4
+damage_proration = 2
 scale_combo = false
 hits_projectiles = false
 group = 1
@@ -2502,7 +2946,7 @@ ground_bounce = false
 start_tick = 28
 active_ticks = 4
 
-[node name="ImpaleFollowupHKD" type="Node2D" parent="StateMachine" index="31"]
+[node name="ImpaleFollowupHKD" type="Node2D" parent="StateMachine" index="32"]
 script = ExtResource( 279 )
 apply_forces = true
 apply_fric = true
@@ -2550,6 +2994,7 @@ height = 82
 damage = 145
 minimum_damage = 60
 victim_hitlag = 4
+damage_proration = 2
 hits_projectiles = false
 group = 1
 screenshake_amount = 6
@@ -2568,7 +3013,7 @@ ground_bounce = false
 start_tick = 28
 active_ticks = 4
 
-[node name="GunThrow" type="Node2D" parent="StateMachine" index="32"]
+[node name="GunThrow" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 32 )
 apply_forces = true
 apply_fric = true
@@ -2592,7 +3037,7 @@ Gun"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="GunReel" type="Node2D" parent="StateMachine" index="33"]
+[node name="GunReel" type="Node2D" parent="StateMachine" index="34"]
 script = ExtResource( 328 )
 __meta__ = {
 "_editor_description_": ""
@@ -2616,7 +3061,7 @@ AerialSpecial"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="DownwardCleave" type="Node2D" parent="StateMachine" index="34"]
+[node name="DownwardCleave" type="Node2D" parent="StateMachine" index="35"]
 script = ExtResource( 259 )
 apply_forces = true
 apply_fric = true
@@ -2671,7 +3116,7 @@ script = ExtResource( 332 )
 tick = 16
 command = "try_shoot"
 
-[node name="DownwardCleaveGround" type="Node2D" parent="StateMachine" index="35"]
+[node name="DownwardCleaveGround" type="Node2D" parent="StateMachine" index="36"]
 script = ExtResource( 259 )
 apply_forces = true
 apply_fric = true
@@ -2725,7 +3170,7 @@ script = ExtResource( 332 )
 tick = 14
 command = "try_shoot"
 
-[node name="VAirSlash" type="Node2D" parent="StateMachine" index="36"]
+[node name="VAirSlash" type="Node2D" parent="StateMachine" index="37"]
 script = ExtResource( 95 )
 anim_length = 18
 title = "Vert. Slash"
@@ -2766,7 +3211,7 @@ script = ExtResource( 332 )
 tick = 9
 command = "try_shoot"
 
-[node name="HAirSlash" type="Node2D" parent="StateMachine" index="37"]
+[node name="HAirSlash" type="Node2D" parent="StateMachine" index="38"]
 script = ExtResource( 189 )
 apply_forces = true
 apply_fric = true
@@ -2811,7 +3256,7 @@ script = ExtResource( 332 )
 tick = 12
 command = "try_shoot"
 
-[node name="PistolWhip" type="Node2D" parent="StateMachine" index="38"]
+[node name="PistolWhip" type="Node2D" parent="StateMachine" index="39"]
 script = ExtResource( 326 )
 __meta__ = {
 "_editor_description_": ""
@@ -2975,7 +3420,7 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
-[node name="PistolWhipGround" type="Node2D" parent="StateMachine" index="39"]
+[node name="PistolWhipGround" type="Node2D" parent="StateMachine" index="40"]
 script = ExtResource( 326 )
 __meta__ = {
 "_editor_description_": ""
@@ -3138,7 +3583,7 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
-[node name="PistolWhipCombo" type="Node2D" parent="StateMachine" index="40"]
+[node name="PistolWhipCombo" type="Node2D" parent="StateMachine" index="41"]
 script = ExtResource( 326 )
 __meta__ = {
 "_editor_description_": ""
@@ -3290,7 +3735,7 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
-[node name="PistolWhipGroundCombo" type="Node2D" parent="StateMachine" index="41"]
+[node name="PistolWhipGroundCombo" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 326 )
 __meta__ = {
 "_editor_description_": ""
@@ -3440,7 +3885,7 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
-[node name="Shoot2" type="Node2D" parent="StateMachine" index="42"]
+[node name="Shoot2" type="Node2D" parent="StateMachine" index="43"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -3465,9 +3910,7 @@ Shoot"
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial
-Shoot
 "
-interrupt_exceptions_string = "ShootDodge2"
 release_opponent_on_startup = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Shoot2" index="0"]
@@ -3480,12 +3923,13 @@ damage_in_combo = 82
 hitstun_ticks = 25
 cancellable = false
 hits_projectiles = false
+hit_height = 0
 hit_sound = ExtResource( 144 )
 knockback = "6.0"
 start_tick = 4
 active_ticks = 1
 
-[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="43"]
+[node name="ShootDodge2" type="Node2D" parent="StateMachine" index="44"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -3498,7 +3942,7 @@ sprite_animation = "GunShoot2"
 anim_length = 10
 title = "Shoot Dodge"
 type = 2
-data_ui_scene = ExtResource( 314 )
+data_ui_scene = ExtResource( 342 )
 button_texture = ExtResource( 292 )
 air_type = 2
 dynamic_iasa = false
@@ -3510,7 +3954,6 @@ Shoot"
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial"
-interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 dodge = true
 
@@ -3524,12 +3967,13 @@ damage_in_combo = 82
 hitstun_ticks = 25
 cancellable = false
 hits_projectiles = false
+hit_height = 0
 hit_sound = ExtResource( 144 )
 knockback = "6.0"
 start_tick = 4
 active_ticks = 1
 
-[node name="PointBlank" type="Node2D" parent="StateMachine" index="44"]
+[node name="PointBlank" type="Node2D" parent="StateMachine" index="45"]
 script = ExtResource( 313 )
 __meta__ = {
 "_editor_description_": ""
@@ -3581,7 +4025,7 @@ knockback = "2"
 start_tick = 4
 active_ticks = 1
 
-[node name="Teleport" type="Node2D" parent="StateMachine" index="45"]
+[node name="Teleport" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 99 )
 anim_length = 30
 enter_sfx_volume = -7.0
@@ -3608,7 +4052,7 @@ Aerial"
 super_level = 0
 super_effect = false
 
-[node name="SpotDodge" type="Node2D" parent="StateMachine" index="46"]
+[node name="SpotDodge" type="Node2D" parent="StateMachine" index="47"]
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
@@ -3634,7 +4078,7 @@ Aerial"
 super_level = 0
 super_effect = false
 
-[node name="Shift" type="Node2D" parent="StateMachine" index="47"]
+[node name="Shift" type="Node2D" parent="StateMachine" index="48"]
 script = ExtResource( 99 )
 anim_length = 30
 enter_sfx_volume = -7.0
@@ -3653,7 +4097,7 @@ super_level = 0
 super_effect = false
 shift = true
 
-[node name="ForesightTeleport" type="Node2D" parent="StateMachine" index="48"]
+[node name="ForesightTeleport" type="Node2D" parent="StateMachine" index="49"]
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
@@ -3683,7 +4127,7 @@ super_level = 0
 super_effect = false
 foresight = true
 
-[node name="ForesightTeleportFromStance" type="Node2D" parent="StateMachine" index="49"]
+[node name="ForesightTeleportFromStance" type="Node2D" parent="StateMachine" index="50"]
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
@@ -3712,7 +4156,7 @@ super_level = 0
 super_effect = false
 foresight = true
 
-[node name="ForesightExplosion" type="Node2D" parent="StateMachine" index="50"]
+[node name="ForesightExplosion" type="Node2D" parent="StateMachine" index="51"]
 script = ExtResource( 301 )
 apply_forces = true
 apply_fric = true
@@ -3735,7 +4179,7 @@ allowed_stances_string = "Normal
 TPStance"
 change_stance_to = "Normal"
 
-[node name="TPStance" type="Node2D" parent="StateMachine" index="51"]
+[node name="TPStance" type="Node2D" parent="StateMachine" index="52"]
 script = ExtResource( 293 )
 apply_forces = true
 apply_fric = true
@@ -3759,7 +4203,7 @@ interrupt_into_string = "Teleport
 TimeRift"
 change_stance_to = "TPStance"
 
-[node name="Foresight" type="Node2D" parent="StateMachine" index="52"]
+[node name="Foresight" type="Node2D" parent="StateMachine" index="53"]
 script = ExtResource( 294 )
 apply_forces = true
 apply_fric = true
@@ -3789,7 +4233,7 @@ allowed_stances_string = "TPStance
 "
 change_stance_to = "Normal"
 
-[node name="ForesightNeutral" type="Node2D" parent="StateMachine" index="53"]
+[node name="ForesightNeutral" type="Node2D" parent="StateMachine" index="54"]
 script = ExtResource( 294 )
 apply_forces = true
 apply_fric = true
@@ -3818,7 +4262,7 @@ Aerial"
 interrupt_exceptions_string = "TimeRift"
 change_stance_to = "Normal"
 
-[node name="StanceTeleport" type="Node2D" parent="StateMachine" index="54"]
+[node name="StanceTeleport" type="Node2D" parent="StateMachine" index="55"]
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 30
@@ -3847,7 +4291,7 @@ super_level = 0
 super_effect = false
 from_stance = true
 
-[node name="Pommel" type="Node2D" parent="StateMachine" index="55"]
+[node name="Pommel" type="Node2D" parent="StateMachine" index="56"]
 script = ExtResource( 79 )
 apply_grav = true
 anim_length = 14
@@ -3882,7 +4326,7 @@ dir_y = "1.0"
 start_tick = 4
 active_ticks = 2
 
-[node name="FastTeleport" type="Node2D" parent="StateMachine" index="56"]
+[node name="FastTeleport" type="Node2D" parent="StateMachine" index="57"]
 script = ExtResource( 99 )
 sprite_animation = "Teleport"
 anim_length = 20
@@ -3911,7 +4355,7 @@ interrupt_into_string = "Grounded
 Aerial"
 super_freeze_ticks = 0
 
-[node name="Brandish" type="Node2D" parent="StateMachine" index="57"]
+[node name="Brandish" type="Node2D" parent="StateMachine" index="58"]
 script = ExtResource( 116 )
 fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
@@ -3939,7 +4383,7 @@ SpotDodge"
 super_level = 0
 super_effect = false
 
-[node name="QuickerDraw" type="Node2D" parent="StateMachine" index="58"]
+[node name="QuickerDraw" type="Node2D" parent="StateMachine" index="59"]
 script = ExtResource( 116 )
 fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
@@ -3964,7 +4408,7 @@ super_level = 0
 super_effect = false
 quicker = true
 
-[node name="Holster" type="Node2D" parent="StateMachine" index="59"]
+[node name="Holster" type="Node2D" parent="StateMachine" index="60"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -3979,7 +4423,7 @@ interrupt_from_string = "FastHolster"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="SlowHolster" type="Node2D" parent="StateMachine" index="60"]
+[node name="SlowHolster" type="Node2D" parent="StateMachine" index="61"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -3994,7 +4438,7 @@ interrupt_from_string = "SlowHolster"
 interrupt_into_string = "Grounded
 Aerial"
 
-[node name="Shoot" type="Node2D" parent="StateMachine" index="61"]
+[node name="Shoot" type="Node2D" parent="StateMachine" index="62"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
@@ -4015,12 +4459,11 @@ Grounded
 Aerial
 Shoot
 "
-interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 super_level = 0
 super_effect = false
 
-[node name="ShootDodge" type="Node2D" parent="StateMachine" index="62"]
+[node name="ShootDodge" type="Node2D" parent="StateMachine" index="63"]
 script = ExtResource( 111 )
 fallback_state = "Holster"
 sprite_animation = "GunShoot2"
@@ -4040,16 +4483,15 @@ Shoot"
 interrupt_into_string = "TimeBullet
 Grounded
 Aerial"
-interrupt_exceptions_string = "Shoot"
 release_opponent_on_startup = true
 super_level = 0
 super_effect = false
 dodge = true
 
-[node name="TimeBullet" type="Node2D" parent="StateMachine" index="63"]
+[node name="TimeBullet" type="Node2D" parent="StateMachine" index="64"]
 script = ExtResource( 111 )
 sprite_animation = "GunShoot2"
-anim_length = 12
+anim_length = 13
 sfx = ExtResource( 70 )
 sfx_tick = 4
 sfx_volume = -6.0
@@ -4069,7 +4511,7 @@ super_level = 2
 super_freeze_ticks = 5
 temporal = true
 
-[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="64"]
+[node name="IzunaDrop" type="Node2D" parent="StateMachine" index="65"]
 script = ExtResource( 169 )
 reset_momentum = true
 endless = true
@@ -4108,7 +4550,7 @@ grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 
-[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="65"]
+[node name="AnkleCutter" type="Node2D" parent="StateMachine" index="66"]
 script = ExtResource( 167 )
 apply_forces = true
 apply_fric = true
@@ -4165,7 +4607,7 @@ height = 12
 start_tick = 4
 active_ticks = 5
 
-[node name="BackSlash" type="Node2D" parent="StateMachine" index="66"]
+[node name="BackSlash" type="Node2D" parent="StateMachine" index="67"]
 script = ExtResource( 209 )
 apply_forces = true
 apply_fric = true
@@ -4247,10 +4689,10 @@ wall_slam = true
 start_tick = 8
 active_ticks = 1
 
-[node name="SuperFallStartup" parent="StateMachine" index="85"]
+[node name="SuperFallStartup" parent="StateMachine" index="86"]
 selectable = false
 
-[node name="DashForward1k" type="Node2D" parent="StateMachine" index="88"]
+[node name="DashForward1k" type="Node2D" parent="StateMachine" index="89"]
 script = ExtResource( 311 )
 __meta__ = {
 "_editor_description_": ""
@@ -4288,7 +4730,7 @@ spawn_particle = false
 script = ExtResource( 310 )
 method = "has_1k_cuts"
 
-[node name="DashForward" parent="StateMachine" index="94"]
+[node name="DashForward" parent="StateMachine" index="95"]
 loop_animation = true
 absolute_loop = true
 enter_force_dir_x = "1.0"
@@ -4310,13 +4752,13 @@ script = ExtResource( 310 )
 method = "has_1k_cuts"
 inverse = true
 
-[node name="ChargeDashForward" parent="StateMachine" index="95"]
+[node name="ChargeDashForward" parent="StateMachine" index="96"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="96"]
+[node name="DashBackward" parent="StateMachine" index="97"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -4331,26 +4773,26 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="98"]
+[node name="DashStartup" parent="StateMachine" index="99"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="99"]
+[node name="Jump" parent="StateMachine" index="100"]
 speed = "8.5"
 
-[node name="ChargeDash" parent="StateMachine" index="100"]
+[node name="ChargeDash" parent="StateMachine" index="101"]
 fallback_state = "SuperDash"
 
-[node name="SuperJump" parent="StateMachine" index="101"]
+[node name="SuperJump" parent="StateMachine" index="102"]
 y_modifier = "0.8"
 
-[node name="DoubleJump" parent="StateMachine" index="102"]
+[node name="DoubleJump" parent="StateMachine" index="103"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="103"]
+[node name="AirDash" parent="StateMachine" index="104"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="HurtAerial" parent="StateMachine" index="108"]
+[node name="HurtAerial" parent="StateMachine" index="109"]
 script = ExtResource( 330 )
 __meta__ = {
 "_editor_description_": ""
@@ -4380,31 +4822,31 @@ _c_Grouping = 1
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 _c_Grouping = 1
 
-[node name="ForwardThrow" parent="StateMachine" index="116"]
+[node name="ForwardThrow" parent="StateMachine" index="117"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="BackThrow" parent="StateMachine" index="117"]
+[node name="BackThrow" parent="StateMachine" index="118"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirForwardThrow" parent="StateMachine" index="118"]
+[node name="AirForwardThrow" parent="StateMachine" index="119"]
 hitstun_ticks = 17
 knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirBackThrow" parent="StateMachine" index="119"]
+[node name="AirBackThrow" parent="StateMachine" index="120"]
 hitstun_ticks = 17
 knockback = "14"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="120"]
+[node name="AirDownThrow" parent="StateMachine" index="121"]
 hitstun_ticks = 17
 knockback = "14"
 dir_x = "1.0"
@@ -4412,7 +4854,7 @@ dir_y = "1.00"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="Guntrick" type="Node2D" parent="StateMachine" index="121"]
+[node name="Guntrick" type="Node2D" parent="StateMachine" index="122"]
 script = ExtResource( 255 )
 apply_forces = true
 apply_fric = true
@@ -4463,7 +4905,7 @@ plus_frames = 1
 start_tick = 22
 active_ticks = 2
 
-[node name="Taunt" parent="StateMachine" index="123"]
+[node name="Taunt" parent="StateMachine" index="124"]
 script = ExtResource( 255 )
 reset_momentum = true
 anim_length = 61

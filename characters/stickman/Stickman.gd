@@ -27,6 +27,7 @@ var boosted_during_combo = false
 var current_momentum = "0"
 var boost_frames_left = 0
 var stackriken_out = false
+var can_divekick_hop = true
 
 const RELEASE_MODIFIER = "1.175"
 const HOOK_DISABLE_DIST = "32"
@@ -193,6 +194,7 @@ func tick():
 
 	if is_grounded():
 		used_grappling_hook = false
+		can_divekick_hop = true
 
 func on_got_parried():
 	.on_got_parried()

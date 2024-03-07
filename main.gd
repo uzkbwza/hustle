@@ -110,6 +110,12 @@ func _on_game_started(singleplayer):
 	self.singleplayer = singleplayer
 	Network.replay_saved = false
 	hide_main_menu(true)
+
+	if $"%P1InfoContainer".get_child(0) is PlayerInfo:
+		$"%P1InfoContainer".get_child(0).queue_free()
+	if $"%P2InfoContainer".get_child(0) is PlayerInfo:
+		$"%P2InfoContainer".get_child(0).queue_free()
+
 	$"%CharacterSelect".show()
 	$"%CharacterSelect".init(singleplayer)
 	$"%DirectConnectLobby".hide()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=194 format=2]
+[gd_scene load_steps=195 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -192,6 +192,7 @@
 [ext_resource path="res://characters/states/SuperFallStartup.gd" type="Script" id=190]
 [ext_resource path="res://characters/states/SuperFall.gd" type="Script" id=191]
 [ext_resource path="res://ui/ActionSelector/StateIcons/super_fall.png" type="Texture" id=192]
+[ext_resource path="res://fx/PushblockFreezeEffect.tscn" type="PackedScene" id=193]
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -430,7 +431,6 @@ frames = SubResource( 3 )
 animation = "Wait"
 offset = Vector2( 0, -18 )
 __meta__ = {
-"_edit_group_": true,
 "_edit_lock_": true
 }
 
@@ -572,6 +572,7 @@ __meta__ = {
 sprite_animation = "ParryHigh"
 anim_length = 20
 endless = true
+particle_scene = ExtResource( 193 )
 title = "Push Block"
 type = 4
 button_texture = ExtResource( 184 )
@@ -595,6 +596,16 @@ super_freeze_ticks_ = 2
 super_effect_ = true
 parry_type = 2
 push = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/ParrySuper" index="0"]
+z_index = 1000
+script = ExtResource( 7 )
+y = -16
+width = 150
+height = 150
+hitbox_type = 6
+start_tick = 1
+active_ticks = 20
 
 [node name="ParryHigh" type="Node2D" parent="StateMachine" index="2"]
 script = ExtResource( 182 )

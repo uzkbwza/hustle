@@ -630,7 +630,8 @@ stored_speed_3
 released_this_turn
 current_momentum
 boosted_during_combo
-stackriken_out"
+stackriken_out
+can_divekick_hop"
 character_portrait2 = ExtResource( 245 )
 player_info_scene = ExtResource( 243 )
 player_extra_params_scene = ExtResource( 63 )
@@ -644,6 +645,10 @@ material = SubResource( 2 )
 frames = SubResource( 4 )
 animation = "DiveKick2Up"
 frame = 11
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="Super2" parent="Sounds" index="6"]
 pitch_variation = 0.1
@@ -3753,6 +3758,7 @@ title = "Substitution"
 type = 2
 button_texture = ExtResource( 78 )
 air_type = 2
+uses_air_movement = true
 next_state_on_hold_on_opponent_turn = true
 self_interruptable = false
 interrupt_from_string = "Grounded

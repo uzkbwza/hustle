@@ -41,6 +41,10 @@ var stance_teleport_x = 0
 var detonating = false
 var shifting = false
 var temporal_round = null
+var fatal_cut_move_dir_x = 0
+var fatal_cut_move_dir_y = 0
+var fatal_cut_start_pos_x = 0
+var fatal_cut_start_pos_y = 0
 
 var shifted_this_frame = false
 var shifted_last_frame = false
@@ -75,9 +79,10 @@ func shift():
 	if opponent.combo_count > 0:
 		return
 	var obj = obj_from_name(after_image_object)
+	
 	if obj:
 		set_pos(obj.get_pos().x, obj.get_pos().y)
-#					hitlag_ticks += 2
+
 		obj.disable()
 		after_image_object = null
 		shifted_this_frame = true
@@ -204,6 +209,8 @@ func process_extra(extra):
 		shifting = extra.shift
 		if shifting:
 			shifted_this_turn = true
+		if current_state().get("IS_NEW_PARRY"):
+			change_state("Wait")
 	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
 #			super_effect(5)

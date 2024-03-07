@@ -977,6 +977,7 @@ func launched_by(hitbox):
 	
 #		if hitlag_ticks < hitbox.victim_hitlag:
 	apply_hitlag(hitbox)
+	feinting = false
 	
 	if objs_map.has(hitbox.host):
 		var host = objs_map[hitbox.host]
@@ -1227,21 +1228,6 @@ func hit_by(hitbox, force_hit=false):
 	elif current_state() is CounterAttack:
 		hit_out_of_brace = true
 
-#	if brace_on and brace_available:
-#		hitlag_ticks = 4
-#		opponent.hitlag_ticks = 4
-#		if opponent.current_state().current_tick == brace_value - 1:
-#			play_sound("Parry")
-#			play_sound("Parry2")
-#			spawn_particle_effect(preload("res://fx/ParryEffect.tscn"), get_pos_visual() + particle_position)
-#			opponent.incr_combo(true, false, false, 1)
-#		else:
-#			play_sound("Block")
-#			play_sound("Parry")
-#			spawn_particle_effect(preload("res://characters/stickman/HeavyWhipWaveHitEffect.tscn"), get_pos_visual() + particle_position)
-#			opponent.incr_combo(true, false, false, -1)
-#		brace_available = false
-	
 	if hitbox.throw and not is_otg():
 		return thrown_by(hitbox)
 	if force_hit or (not can_parry_hitbox(hitbox)):
@@ -1388,7 +1374,9 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		particle_location.x *= get_facing_int()
 		
 		if current_state() is GroundedParryState:
-			current_state().anim_name = "ParryLow" if (hitbox.hit_height == Hitbox.HitHeight.Low or !is_grounded()) else "ParryHigh"
+			var high_anim = "ParryHigh" if !current_state().use_guard_sprites else "ShieldHigh"
+			var low_anim = "ParryLow" if !current_state().use_guard_sprites else "ShieldLow"
+			current_state().anim_name = low_anim if (hitbox.hit_height == Hitbox.HitHeight.Low or !is_grounded()) else high_anim
 			current_state().update_sprite_frame()
 
 		if not particle_location:

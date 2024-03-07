@@ -3,9 +3,11 @@ extends ParryState
 class_name GroundedParryState
 
 const IS_NEW_PARRY = true
+const PUSHBLOCK_PROJECTILE_FREEZE_FRAMES = 9
 
 
 export var push = false
+export var use_guard_sprites = false
 export var autoguard = false
 export var disable_aerial_movement = false
 #export var real_parry = false
@@ -23,11 +25,7 @@ func _ready():
 	fallback_state = "ParryAfterWhiff"
 
 func get_whiffed_block():
-#	print()
-#	print(parried)
-#	print(autoguard)
-#	print(host.combo_count <= 0)
-#	print(_previous_state().state_name if _previous_state() else "no previous")
+
 	var prev = _previous_state()
 	if prev and prev.get("IS_NEW_PARRY"):
 		return (!prev.parried_last and !prev.autoguard and host.combo_count <= 0)
@@ -66,10 +64,12 @@ func start():
 	iasa_at = -1
 	host.blocked_hitbox_plus_frames = 0
 #	host.add_penalty(10, true)
+	var high_anim = "ParryHigh" if !use_guard_sprites else "ShieldHigh"
+	var low_anim = "ParryLow" if !use_guard_sprites else "ShieldLow"
 	if host.is_grounded():
-		anim_name = "ParryHigh" if data["Block Height"].y == 0 else "ParryLow"
+		anim_name = high_anim if data["Block Height"].y == 0 else low_anim
 	else:
-		anim_name = "ParryLow"
+		anim_name = low_anim
 #	host.blockstun_ticks = 0
 
 func _frame_0():
@@ -156,6 +156,13 @@ func _tick():
 			stop_early_tick = 4
 		if current_tick == stop_early_tick:
 			enable_interrupt()
+	if host.hp <= 0:
+		return "Wait"
+
+func detect(obj):
+	if obj and !obj.is_in_group("Fighter") and obj.hitlag_ticks <= 0:
+		host.spawn_particle_effect(particle_scene, obj.get_hurtbox_center_float())
+		obj.hitlag_ticks += PUSHBLOCK_PROJECTILE_FREEZE_FRAMES
 
 func _exit():
 	parry_active = false

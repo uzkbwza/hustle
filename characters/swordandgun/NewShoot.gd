@@ -21,7 +21,8 @@ func _enter():
 	if data == null:
 		data = {
 			x = 100 * host.get_facing_int(),
-			y = 0
+			y = 0,
+			holster = true,
 	}
 
 func _frame_0():
@@ -29,6 +30,40 @@ func _frame_0():
 	startup_lag = 0
 	if _previous_state_name() == "Shoot2":
 		startup_lag = REPEAT_STARTUP_LAG
+
+	interrupt_into.erase("Gun")
+	interrupt_into.erase("Grounded")
+	interrupt_into.erase("Aerial")
+	interrupt_into.erase("SlowHolster")
+	interrupt_into.erase("AerialSuper")
+	interrupt_into.erase("GroundedSuper")
+	interrupt_into.erase("Guntrick")
+#	interrupt_into.erase("Shoot")
+	interrupt_into.erase("ShootDodge")
+	interrupt_into.erase("Teleport")
+	
+	interrupt_exceptions.erase("Hustle")
+	interrupt_exceptions.erase("FastTeleport")
+	interrupt_exceptions.erase("SpotDodge")
+	interrupt_exceptions.erase("Shoot")
+	
+	if !data["holster"]:
+		interrupt_into.append("Gun")
+		interrupt_into.append("SlowHolster")
+		interrupt_into.append("AerialSuper")
+		interrupt_into.append("GroundedSuper")
+		interrupt_into.append("Guntrick")
+		interrupt_into.append("Shoot")
+		interrupt_into.append("ShootDodge")
+		interrupt_into.append("Teleport")
+		interrupt_exceptions.append("Hustle")
+		interrupt_exceptions.append("FastTeleport")
+		interrupt_exceptions.append("SpotDodge")
+	else:
+		interrupt_into.append("Grounded")
+		interrupt_into.append("Aerial")
+#		interrupt_exceptions.append("Shoot")
+
 
 #func _frame_1():
 #	if !projectile and !lagged:
@@ -54,7 +89,8 @@ func _frame_3():
 	host.shooting_arm.frame = 0
 	var hitbox_distance = "1.0" if projectile else POINT_BLANK_HITBOX_DISTANCE_MODIFIER
 	var barrel_location = host.get_barrel_location(shot_angle, hitbox_distance)
-	hitbox.x = fixed.round(barrel_location.x)  * host.get_facing_int()
+	hitbox.dir_x = "-1.0" if fixed.sign(str(shot_dir_x)) != host.get_facing_int() else "1.0"
+	hitbox.x = fixed.round(barrel_location.x)
 	hitbox.y = fixed.round(barrel_location.y)
 	var muzzle_flash_dir = Utils.ang2vec(float(shot_angle))
 	muzzle_flash_dir.x *= host.get_facing_int()

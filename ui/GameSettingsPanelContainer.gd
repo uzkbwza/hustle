@@ -192,7 +192,12 @@ func init(singleplayer=true):
 		init = true
 		pass
 	$"%P2Dummy".visible = singleplayer
+	if singleplayer:
+		update_singleplayer()
 	update_menu()
+
+func update_singleplayer():
+	$"%SadnessEnabled".pressed = false
 
 func load_formats_to_menu():
 	loaded_formats = load_all_formats()

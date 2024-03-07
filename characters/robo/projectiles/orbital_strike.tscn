@@ -101,12 +101,12 @@ script = ExtResource( 14 )
 pitch_variation = 0.0
 
 [node name="CollisionBox" parent="." index="2"]
-y = 100
+y = 1000
 width = 1
 height = 1
 
 [node name="Hurtbox" parent="." index="3"]
-y = 100
+y = 1000
 width = 1
 height = 1
 
