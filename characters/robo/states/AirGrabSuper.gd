@@ -17,7 +17,8 @@ func _frame_0():
 	host.fly_ticks_left = 0
 
 func _frame_1():
-	host.start_invulnerability()
+	if host.initiative:
+		host.start_invulnerability()
 	host.start_projectile_invulnerability()
 
 func _frame_9():

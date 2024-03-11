@@ -9,6 +9,8 @@ signal data_changed()
 var action_name = ""
 var action_title = ""
 
+onready var initiative_texture = $"%InitiativeTexture"
+
 var data_node = null
 var container = null
 var custom_texture = false
@@ -16,6 +18,7 @@ var reversible = false
 var flip_icon = true
 var state = null
 var is_guard_break = false
+var has_initiative_effect = false
 
 var earliest_hitbox = 0
 
@@ -26,8 +29,8 @@ func setup(name, title, texture=null):
 		$"%TextureRect".texture = texture
 		custom_texture = true
 #	$"%Button".text = title
-	hint_tooltip = title
-	$"%Button".hint_tooltip = title
+#	hint_tooltip = title
+#	$"%Button".hint_tooltip = title
 
 func end_setup():
 	$"%GuardBreakTexture".visible = is_guard_break
@@ -45,6 +48,13 @@ func is_pressed():
 
 func get_disabled():
 	return $"%Button".disabled
+
+func set_initiative(init):
+	initiative_texture.hide()
+	has_initiative_effect = false
+	if init and state.initiative_effect:
+		initiative_texture.show()
+		has_initiative_effect = true
 
 func set_data_node(node):
 	data_node = node

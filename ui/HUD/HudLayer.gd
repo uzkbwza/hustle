@@ -44,6 +44,12 @@ onready var p2_brace_label = $"%P2BraceLabel"
 onready var extra_info_container = $"%ExtraInfoContainer"
 onready var extra_info_label_1 = $"%ExtraInfoLabel1"
 onready var extra_info_label_2 = $"%ExtraInfoLabel2"
+onready var active_p1_initiative = $"%ActiveP1Initiative"
+onready var active_p2_initiative = $"%ActiveP2Initiative"
+
+onready var action_buttons = $"%ActionButtons"
+onready var p1_action_buttons = $"%P1ActionButtons"
+onready var p2_action_buttons = $"%P2ActionButtons"
 
 
 const TRAIL_DRAIN_RATE = 25
@@ -231,10 +237,16 @@ func _physics_process(_delta):
 		$"%P2GuardBreakLabel".visible = p1.guard_broken_this_turn and (game.game_paused or (game.real_tick / 2) % 2 == 0)
 		p1_brace_label.visible = p1.current_state() is CounterAttack and p1.current_state().bracing and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
 		p2_brace_label.visible = p2.current_state() is CounterAttack and p2.current_state().bracing  and (game.game_paused or ((game.real_tick / 2) + 1) % 2 == 0)
-		$"%P1AdvantageLabel".visible = p1.initiative and p1.current_state().initiative_effect
-		$"%P2AdvantageLabel".visible = p2.initiative and p2.current_state().initiative_effect
+
+		var p1_paused_initiative = game.game_paused and !p1.check_initiative() and !p1.busy_interrupt
+		var p2_paused_initiative = game.game_paused and !p2.check_initiative() and !p2.busy_interrupt
+		$"%P1AdvantageLabel".visible = (p1.initiative and p1.current_state().initiative_effect)
+		$"%P2AdvantageLabel".visible = (p2.initiative and p2.current_state().initiative_effect)
 		$"%P1AdvantageLabel".modulate.a = 1.0 - p1.current_state().current_tick * 0.1
 		$"%P2AdvantageLabel".modulate.a = 1.0 - p2.current_state().current_tick * 0.1
+		active_p1_initiative.visible = p1_paused_initiative and action_buttons.visible and p1_action_buttons.visible
+		active_p2_initiative.visible = p2_paused_initiative and action_buttons.visible and p2_action_buttons.visible
+
 		p1_sadness_label.visible = p1.penalty > p1.PENALTY_MIN_DISPLAY
 		p2_sadness_label.visible = p2.penalty > p2.PENALTY_MIN_DISPLAY
 		

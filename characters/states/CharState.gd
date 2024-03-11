@@ -40,6 +40,7 @@ export var flip_with_facing = false
 export var _c_Air_Data = 0
 export(AirType) var air_type = AirType.Grounded
 export var uses_air_movement = false
+export var ignore_air_option_use_in_combos = false
 export var land_cancel = false
 export var landing_recovery = -1
 export var min_land_cancel_frame = -1
@@ -258,9 +259,9 @@ func is_usable():
 			return false
 		if !usable_from_whiff_cancel_if_possible:
 			return false
-	if uses_air_movement:
-		if host.air_movements_left <= 0:
-			return false
+	if uses_air_movement and !(ignore_air_option_use_in_combos and host.combo_count > 0):
+			if host.air_movements_left <= 0:
+				return false
 	if type == ActionType.Defense and host.penalty_ticks > 0:
 		return false
 	if combo_only and host.combo_count < 1:
@@ -306,7 +307,7 @@ func _enter_shared():
 		host.change_stance_to(change_stance_to)
 	if !host.is_grounded() or air_type == AirType.Aerial:
 		started_in_air = true
-	if uses_air_movement:
+	if uses_air_movement and !(ignore_air_option_use_in_combos and host.combo_count > 0):
 		if !host.infinite_resources and host.gravity_enabled:
 			host.air_movements_left -= 1
 #	if host.hitlag_ticks == 0 and host.blockstun_ticks == 0:

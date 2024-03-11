@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/ActionSelector/ActionButtons.gd" type="Script" id=1]
 [ext_resource path="res://ui/XYPlot/XYPlot.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/ActionSelector/ContinueButton.tscn" type="PackedScene" id=3]
 [ext_resource path="res://theme.tres" type="Theme" id=4]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/DIWheel.gd" type="Script" id=6]
 [ext_resource path="res://sound/ui/button_hover2.wav" type="AudioStream" id=7]
 
 [node name="ActionButtons" type="VBoxContainer"]
@@ -72,9 +73,11 @@ self_modulate = Color( 0.396078, 0.901961, 1, 1 )
 show_behind_parent = true
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 60.0
-margin_bottom = 66.0
 size_flags_horizontal = 1
+script = ExtResource( 6 )
+
+[node name="Label" parent="TopRow/Panel/TopRowDataContainer/DIContainer/DI" index="2"]
+text = "DI"
 
 [node name="Padding2" type="Control" parent="TopRow"]
 margin_left = 72.0
@@ -249,3 +252,7 @@ hover_sound = ExtResource( 7 )
 [node name="ButtonSoundPlayer2" parent="." instance=ExtResource( 5 )]
 unique_name_in_owner = true
 button_containers = [ NodePath("../BottomRow/PanelContainer/CategoryContainer/TurnButtons") ]
+
+[connection signal="mouse_entered" from="TopRow/Panel/TopRowDataContainer/DIContainer" to="." method="_on_DIContainer_mouse_entered"]
+
+[editable path="TopRow/Panel/TopRowDataContainer/DIContainer/DI"]

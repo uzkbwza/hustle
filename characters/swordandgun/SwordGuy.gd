@@ -17,6 +17,7 @@ const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterI
 const AFTER_IMAGE_MAX_DIST = "410"
 const MAX_AIR_SPEED_1KCUTS = "12"
 const CUTS_METER_DRAIN_1 = 2
+const DRIFT_JUMP_TIMER = 3
 const CUTS_METER_DRAIN_2 = 3
 const DRIFT_SUPERS = 1
 const GROUNDED_DRIFT_JUMP_SPEED = "-3"
@@ -45,6 +46,7 @@ var fatal_cut_move_dir_x = 0
 var fatal_cut_move_dir_y = 0
 var fatal_cut_start_pos_x = 0
 var fatal_cut_start_pos_y = 0
+var drift_jump_timer = 0
 
 var shifted_this_frame = false
 var shifted_last_frame = false
@@ -121,6 +123,13 @@ func tick():
 
 	.tick()
 
+	if drift_jump_timer > 0:
+		drift_jump_timer -= 1
+		if drift_jump_timer == 0:
+			apply_force("0", GROUNDED_DRIFT_JUMP_SPEED)
+			move_directly(0, -1)
+			set_grounded(false)
+
 #	if id == 1:
 #		print(current_state().entered_in_air)
 
@@ -134,9 +143,7 @@ func tick():
 					if is_grounded():
 						current_state().entered_in_air = true
 						current_state().started_in_air = true
-						apply_force("0", GROUNDED_DRIFT_JUMP_SPEED)
-						set_grounded(false)
-						move_directly(0, -1)
+						drift_jump_timer = DRIFT_JUMP_TIMER
 #						hitlag_ticks += 2
 						
 					milk_toggled = true
@@ -209,8 +216,8 @@ func process_extra(extra):
 		shifting = extra.shift
 		if shifting:
 			shifted_this_turn = true
-		if current_state().get("IS_NEW_PARRY"):
-			change_state("Wait")
+			if current_state().get("IS_NEW_PARRY"):
+				change_state("Wait")
 	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
 #			super_effect(5)

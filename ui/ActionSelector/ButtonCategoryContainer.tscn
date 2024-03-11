@@ -79,6 +79,22 @@ custom_colors/font_color = Color( 1, 0.486275, 0.121569, 1 )
 text = "Guard Break"
 align = 1
 
+[node name="InitiativeLabel" type="Label" parent="VBoxContainer/CenterContainer"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 1, 1, 1, 0.509804 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -30.0
+margin_top = -29.0
+margin_right = 30.0
+margin_bottom = -18.0
+custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
+text = "Initiative"
+align = 1
+
 [node name="FrameLabel" type="Label" parent="VBoxContainer/CenterContainer"]
 unique_name_in_owner = true
 modulate = Color( 1, 1, 1, 0.509804 )
@@ -205,9 +221,13 @@ mouse_filter = 2
 texture = ExtResource( 4 )
 stretch_mode = 4
 
+[node name="CycleTimer" type="Timer" parent="."]
+autostart = true
+
 [connection signal="mouse_entered" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_exited"]
 [connection signal="pressed" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer/ButtonContainer" to="." method="_on_ButtonContainer_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer/ButtonContainer" to="." method="_on_ButtonContainer_mouse_exited"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
+[connection signal="timeout" from="CycleTimer" to="." method="_on_CycleTimer_timeout"]

@@ -1,6 +1,6 @@
 extends BaseProjectile
 
-const REFRESH_AMOUNT = 12
+const REFRESH_AMOUNT = 24
 
 var return_x
 var return_y
@@ -42,7 +42,7 @@ func hit_by(hitbox):
 				refresh_amount = 0
 
 func refresh():
-	current_state().current_tick -= current_state().lifetime / 2
+	current_state().current_tick -= current_state().lifetime
 	if current_state().current_tick <= 0:
 		current_state().current_tick = 1
 	current_state().spawn_particle_relative(current_state().particle_scene, Vector2())

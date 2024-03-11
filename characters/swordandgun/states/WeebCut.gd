@@ -6,7 +6,7 @@ const IASA = 20
 const WHIFF_LANDING_LAG = 4
 const WHIFF_IASA = 20
 const EXPLOSION = preload("res://characters/swordandgun/projectiles/AfterImageExplosionEffect.tscn")
-const HITBOX_START_FRAME = 15
+const HITBOX_START_FRAME = 13
 
 var hitboxes = []
 
@@ -89,7 +89,7 @@ func _frame_5():
 	host.update_data()
 
 
-func _frame_13():
+func _frame_11():
 	var start_pos_x = host.fatal_cut_start_pos_x
 	var start_pos_y = host.fatal_cut_start_pos_y
 	

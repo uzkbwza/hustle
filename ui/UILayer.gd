@@ -40,6 +40,7 @@ onready var direct_connect_lobby = $DirectConnectLobby
 onready var p1_turn_timer = $"%P1TurnTimer"
 onready var p2_turn_timer = $"%P2TurnTimer"
 onready var block_advantage_label = $"%BlockAdvantageLabel"
+onready var neutral_label = $"%NeutralLabel"
 
 var p1_synced_time = null
 var p2_synced_time = null
@@ -677,39 +678,53 @@ func _process(delta):
 	var advantage_label = $"%AdvantageLabel"
 #	advantage_label.text = ""
 	var ghost_game = get_parent().ghost_game
-	if is_instance_valid(ghost_game) and is_instance_valid(game):
+	if is_instance_valid(game):
 		if game.game_paused:
+			if is_instance_valid(ghost_game):
+				var you = ghost_game.get_player(you_id)
+				var opponent = ghost_game.get_player(opponent_id)
+				
+				var advantage = 0
+				var block_advantage = 0
+				
+				block_advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
+				if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
+					advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
 
-			var you = ghost_game.get_player(you_id)
-			var opponent = ghost_game.get_player(opponent_id)
-			var advantage = 0
-			var block_advantage = 0
-			
-			block_advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
-			if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
-				advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
+				if advantage >= 0:
+					advantage_label.set("custom_colors/font_color", Color("1d8df5"))
+					advantage_label.text = "frame advantage: +" + str(advantage)
+				else:
+					advantage_label.set("custom_colors/font_color", Color("ff333d"))
+					advantage_label.text = "frame advantage: " + str(advantage)
+				if advantage == 0:
+					advantage_label.text = ""
 
-			if advantage >= 0:
-				advantage_label.set("custom_colors/font_color", Color("1d8df5"))
-				advantage_label.text = "frame advantage: +" + str(advantage)
-			else:
-				advantage_label.set("custom_colors/font_color", Color("ff333d"))
-				advantage_label.text = "frame advantage: " + str(advantage)
-			if advantage == 0:
-				advantage_label.text = ""
-
-			if block_advantage > 0:
-				block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
-				block_advantage_label.text = "block advantage: +" + str(block_advantage)
-			elif block_advantage < 0:
-				block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
-				block_advantage_label.text = "block advantage: " + str(block_advantage)
-			else:
-				block_advantage_label.text = ""
+				if block_advantage > 0:
+					block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
+					block_advantage_label.text = "block advantage: +" + str(block_advantage)
+				elif block_advantage < 0:
+					block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
+					block_advantage_label.text = "block advantage: " + str(block_advantage)
+				else:
+					block_advantage_label.text = ""
 
 		else:
 			advantage_label.text = ""
-			block_advantage_label.text == ""
+			block_advantage_label.text = ""
+	
+		if !ReplayManager.playback:
+			var p1 = game.get_player(1)
+			var p2 = game.get_player(2)
+			var combo = p1.combo_count > 0 or p2.combo_count > 0
+			var trade = p1.combo_count > 0 and p2.combo_count > 0
+			var initiative = !combo and p1.state_interruptable and p2.state_interruptable and !p1.busy_interrupt and !p2.busy_interrupt
+			neutral_label.text = (("<-COMBO" if game.get_player(1).combo_count > 0 else " COMBO->") if combo else ("BUSY" if !initiative else "NEUTRAL")) if !trade else "TRADE"
+			neutral_label.rect_position.x = 0 if combo else 1
+			neutral_label.set("custom_colors/font_color", ((Color("1d8df5") if p1.combo_count > 0 else Color("ff333d")) if combo else Color.darkgray) if !trade else Color("c735d4"))
+			neutral_label.modulate.a = 1.0 if combo else 0.5 if !initiative else 1.0
+		else:
+			neutral_label.text = ""
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
 	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
 	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu

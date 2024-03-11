@@ -57,7 +57,7 @@ func _input(event):
 			_on_submit_pressed()
 
 func _ready():
-	hint_tooltip = name
+
 	$"%SelectButton".connect("pressed", self, "_on_submit_pressed")
 #	$"%ContinueButton".connect("pressed", self, "on_action_selected", [$"%ContinueButton"])
 	buttons.append($"%ContinueButton")
@@ -315,6 +315,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 
 func create_category(category, category_int=-1):
 	var scene = BUTTON_CATEGORY_CONTAINER_SCENE.instance()
+	scene.fighter = fighter
 	button_category_containers[category] = scene
 	scene.category_int = category_int
 	scene.show_behind_parent = true
@@ -569,6 +570,8 @@ func update_buttons(refresh = true):
 		force_aerial = extra.input_aerial
 	update_cancel_category_air_type(cancel_into, force_grounded, force_aerial)
 
+	var initiative = fighter.check_initiative()
+
 	for button in buttons:
 		var found = false
 		if fighter.extremely_turbo_mode and !fighter.busy_interrupt:
@@ -614,6 +617,7 @@ func update_buttons(refresh = true):
 					
 					button.set_disabled(false)
 					button.show()
+					button.set_initiative(initiative)
 					break
 	continue_button.show()
 	if refresh or (current_button and !current_button.visible):
@@ -764,3 +768,7 @@ func activate(refresh=true):
 			var input = Network.p2_undo_action
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
+
+
+func _on_DIContainer_mouse_entered():
+	pass # Replace with function body.

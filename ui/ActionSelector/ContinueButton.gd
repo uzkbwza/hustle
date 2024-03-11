@@ -29,6 +29,9 @@ func is_pressed():
 func set_player_id(_player_id):
 	pass
 
+func set_initiative(init):
+	pass
+
 func get_disabled():
 	return disabled
 

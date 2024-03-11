@@ -16,7 +16,7 @@ func _frame_0():
 	land_cancel = false
 	if host.fast_falling:
 		host.hover_left -= FAST_FALL_REDUCTION
-	hitbox2.plus_frames = 1
+	hitbox2.plus_frames = 2
 	landing_recovery = 6
 	
 func _frame_6():
@@ -51,7 +51,7 @@ func _frame_6():
 
 func _tick():
 	if host.spark_speed_frames > 0:
-		hitbox2.plus_frames = 2
+		hitbox2.plus_frames = 3
 #	if host.spark_speed_frames <= 0:
 #		var vel = host.get_vel()
 #		if fixed.gt(vel.y, MAX_DOWN_SPEED):

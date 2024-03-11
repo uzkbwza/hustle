@@ -55,7 +55,7 @@ func bounce_off_foresight():
 			if fixed.lt(dist, FORESIGHT_DIST):
 #				after_image.disable()
 				bounce_full_control()
-				host.reset_speed()
+
 
 func bounce_full_control(force=false):
 	var creator = host.get_owned_fighter()
@@ -63,6 +63,7 @@ func bounce_full_control(force=false):
 		var di = creator.current_di
 		var di_active = di.x != 0 or di.y != 0
 		if di_active or force:
+			host.reset_speed()
 			var dir = fixed.normalized_vec(str(di.x), str(di.y))
 			if force and !di_active:
 				dir = fixed.normalized_vec(host.dir_x, host.dir_y)

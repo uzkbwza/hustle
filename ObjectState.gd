@@ -496,7 +496,9 @@ func setup_hitboxes():
 	for hitbox in all_hitbox_nodes:
 		hitbox.host = host
 		hitbox.init()
-		has_hitboxes = true
+		var detect = hitbox.hitbox_type == Hitbox.HitboxType.Detect
+		if !detect:
+			has_hitboxes = true
 		if !host.is_ghost:
 			hitbox.property_list = get_script().get_property_list()
 		if hitbox.start_tick > 0:
@@ -504,9 +506,10 @@ func setup_hitboxes():
 				hitbox_start_frames[hitbox.start_tick].append(hitbox)
 			else:
 				hitbox_start_frames[hitbox.start_tick] = [hitbox]
-			if hitbox.start_tick < earliest:
-				earliest = hitbox.start_tick
-				earliest_hitbox_node = hitbox
+			if !detect:
+				if hitbox.start_tick < earliest:
+					earliest = hitbox.start_tick
+					earliest_hitbox_node = hitbox
 		hitbox.connect("hit_something", self, "__on_hit_something")
 		hitbox.connect("got_parried", self, "__on_got_parried")
 		for hitbox2 in all_hitbox_nodes:

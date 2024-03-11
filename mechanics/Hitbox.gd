@@ -269,6 +269,8 @@ func init():
 		width *= -1
 	if combo_hitstun_ticks == -1:
 		combo_hitstun_ticks = hitstun_ticks
+	if hitbox_type == HitboxType.Detect:
+		can_clash = false
 	update_property_list()
 	call_deferred("setup_audio")
 

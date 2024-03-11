@@ -761,6 +761,11 @@ animations = [ {
 "name": "TimeShift",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 100 ), ExtResource( 101 ), null, null, null, ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 100 ) ],
+"loop": true,
+"name": "TimeSplitter",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 73 ), ExtResource( 73 ), ExtResource( 78 ), ExtResource( 78 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 75 ), ExtResource( 42 ), ExtResource( 34 ) ],
 "loop": true,
 "name": "Uppercut",
@@ -844,7 +849,8 @@ shifted_this_turn
 fatal_cut_move_dir_x
 fatal_cut_move_dir_y
 fatal_cut_start_pos_x
-fatal_cut_start_pos_y"
+fatal_cut_start_pos_y
+drift_jump_timer = 0"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -858,8 +864,7 @@ epic_horse_moment = ExtResource( 308 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 3 )
 frames = SubResource( 6 )
-animation = "1000CutsEnd"
-frame = 5
+animation = "TimeSplitter"
 __meta__ = {
 "_edit_group_": true,
 "_edit_lock_": true
@@ -1206,11 +1211,11 @@ __meta__ = {
 "_editor_description_": ""
 }
 reset_momentum = true
-sprite_animation = "Teleport"
+sprite_animation = "TimeSplitter"
 anim_length = 76
 enter_sfx = ExtResource( 138 )
 enter_sfx_volume = -7.0
-earliest_hitbox = 15
+earliest_hitbox = 13
 title = "Time Splitter"
 type = 3
 data_ui_scene = ExtResource( 265 )
@@ -1853,7 +1858,7 @@ type = 2
 button_texture = ExtResource( 230 )
 air_type = 1
 land_cancel = true
-min_land_cancel_frame = 2
+min_land_cancel_frame = 3
 self_hit_cancellable = false
 interrupt_from_string = "Grounded
 Aerial
@@ -4624,7 +4629,6 @@ interrupt_into_string = "Grounded"
 hit_cancel_into_string = "GroundedSpecial
 GroundedSuper"
 hit_cancel_exceptions_string = "Teleport"
-initiative_effect = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/BackSlash" index="0"]
 z_index = 1000

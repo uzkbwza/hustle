@@ -1820,6 +1820,17 @@ func get_advantage():
 		if current_state() is GroundedParryState:
 			advantage = true
 	return advantage
+	
+func check_initiative():
+	if combo_count > 0:
+		return true
+	if busy_interrupt:
+		return false
+	if opponent.busy_interrupt:
+		return false
+	if current_state().state_name == "WhiffInstantCancel":
+		return false
+	return true
 
 func was_moving_forward():
 	return moved_forward and current_state().has_hitboxes

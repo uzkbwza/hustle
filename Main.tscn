@@ -1,4 +1,4 @@
-[gd_scene load_steps=86 format=2]
+[gd_scene load_steps=87 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -96,6 +96,8 @@ size = 18
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 69 )
+
+[sub_resource type="CanvasItemMaterial" id=25]
 
 [sub_resource type="DynamicFont" id=24]
 size = 36
@@ -1016,6 +1018,31 @@ theme = ExtResource( 4 )
 text = "GUARD BREAK"
 align = 2
 
+[node name="ActiveP1Initiative" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.427451 )
+material = SubResource( 25 )
+margin_left = 275.0
+margin_top = 267.0
+margin_right = 319.0
+margin_bottom = 278.0
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 0.372549 )
+text = "-initiative"
+
+[node name="ActiveP2Initiative" type="Label" parent="HudLayer/HudLayer"]
+unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0.427451 )
+material = SubResource( 25 )
+margin_left = 323.0
+margin_top = 267.0
+margin_right = 367.0
+margin_bottom = 278.0
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 0.372549 )
+text = "-initiative"
+align = 2
+
 [node name="WinLabel" type="Label" parent="HudLayer"]
 unique_name_in_owner = true
 visible = false
@@ -1633,6 +1660,19 @@ mouse_default_cursor_shape = 2
 icon = ExtResource( 64 )
 icon_align = 1
 
+[node name="NeutralLabel" type="Label" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -148.0
+margin_bottom = -123.0
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+custom_constants/shadow_offset_x = 0
+custom_constants/line_spacing = -2
+align = 1
+
 [node name="ActivePlayer" type="Control" parent="UILayer/GameUI"]
 unique_name_in_owner = true
 margin_left = 310.5
@@ -1923,6 +1963,7 @@ margin_bottom = 23.0
 
 [node name="MainMenu" type="Control" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
@@ -2264,6 +2305,7 @@ text = "Quit"
 
 [node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5

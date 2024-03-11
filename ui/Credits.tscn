@@ -21,12 +21,12 @@ script = ExtResource( 2 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 189.0
-margin_bottom = 302.0
+margin_bottom = 316.0
 size_flags_horizontal = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2"]
 margin_right = 188.0
-margin_bottom = 288.0
+margin_bottom = 302.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
@@ -34,7 +34,7 @@ scroll_vertical_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer"]
 margin_right = 188.0
-margin_bottom = 288.0
+margin_bottom = 302.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
@@ -92,7 +92,7 @@ align = 1
 [node name="HBoxContainer2" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
 margin_top = 87.0
 margin_right = 188.0
-margin_bottom = 138.0
+margin_bottom = 152.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer2"]
 modulate = Color( 1, 1, 1, 0.576471 )
@@ -107,16 +107,16 @@ autowrap = true
 [node name="Label" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer2"]
 margin_top = 12.0
 margin_right = 188.0
-margin_bottom = 51.0
+margin_bottom = 65.0
 size_flags_horizontal = 3
-text = "zt2wo, ted, degritone, wuffie, dime, vineraio, steven4547466, welt, perez, TriMay, Supersonic, Snazzah"
+text = "zt2wo, ted, degritone, wuffie, dime, vineraio, steven4547466, welt, perez, TriMay, Supersonic, Snazzah, ZXavier97"
 align = 1
 autowrap = true
 
 [node name="HBoxContainer3" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 148.0
+margin_top = 162.0
 margin_right = 188.0
-margin_bottom = 185.0
+margin_bottom = 199.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer3"]
 modulate = Color( 1, 1, 1, 0.576471 )
@@ -138,9 +138,9 @@ align = 1
 autowrap = true
 
 [node name="HBoxContainer4" type="VBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 195.0
+margin_top = 209.0
 margin_right = 188.0
-margin_bottom = 246.0
+margin_bottom = 260.0
 
 [node name="Label2" type="Label" parent="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer4"]
 modulate = Color( 1, 1, 1, 0.576471 )
@@ -162,9 +162,9 @@ align = 1
 autowrap = true
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
-margin_top = 256.0
+margin_top = 270.0
 margin_right = 188.0
-margin_bottom = 288.0
+margin_bottom = 302.0
 custom_constants/separation = 5
 alignment = 1
 
@@ -206,9 +206,9 @@ autowrap = true
 
 [node name="Button" type="Button" parent="VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 289.0
+margin_top = 303.0
 margin_right = 188.0
-margin_bottom = 301.0
+margin_bottom = 315.0
 text = "back"
 
 [connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5/TextureButton" to="." method="_on_TextureButton_pressed"]

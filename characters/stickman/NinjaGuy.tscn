@@ -3759,6 +3759,7 @@ type = 2
 button_texture = ExtResource( 78 )
 air_type = 2
 uses_air_movement = true
+ignore_air_option_use_in_combos = true
 next_state_on_hold_on_opponent_turn = true
 self_interruptable = false
 interrupt_from_string = "Grounded
