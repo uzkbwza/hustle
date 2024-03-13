@@ -75,6 +75,7 @@ fallback_state = "Default"
 loop_animation = true
 endless = true
 move_x = 0
+clash = false
 flying = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Flying" index="0"]
