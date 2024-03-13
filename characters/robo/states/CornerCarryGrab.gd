@@ -9,13 +9,14 @@ func _enter():
 	host.start_fly_fx()
 #	can_fly = false
 
-func _frame_4():
-
+func _frame_0():
+#
 	if host.flying_dir != null:
 		host.flying_dir = {"x": 0, "y": host.flying_dir.y}
 
 #	can_fly = false
 #	host.has_projectile_armor = true
+	pass
 
 func _frame_15():
 	host.has_projectile_armor = false

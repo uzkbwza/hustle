@@ -51,6 +51,9 @@ onready var action_buttons = $"%ActionButtons"
 onready var p1_action_buttons = $"%P1ActionButtons"
 onready var p2_action_buttons = $"%P2ActionButtons"
 
+onready var p1_air_movement_label = $"%P1AirMovementLabel"
+onready var p2_air_movement_label = $"%P2AirMovementLabel"
+
 
 const TRAIL_DRAIN_RATE = 25
 
@@ -106,6 +109,11 @@ func init(game):
 	
 	p1_burst_meter.fighter = p1
 	p2_burst_meter.fighter = p2
+	
+	p1_air_movement_label.text = p1.air_option_bar_name
+	p2_air_movement_label.text = p2.air_option_bar_name
+	
+	
 
 	if Network.multiplayer_active and !SteamLobby.SPECTATING:
 		$"%P1Username".text = Network.pid_to_username(1)

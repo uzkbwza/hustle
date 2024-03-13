@@ -190,6 +190,9 @@ frame_9/delay_sec = 0.0
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_vertical_guides_": [ 932.0 ]
+}
 
 [node name="BGLayer" type="CanvasLayer" parent="."]
 
@@ -503,31 +506,26 @@ margin_bottom = 47.0
 alignment = 1
 
 [node name="P1AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
+unique_name_in_owner = true
 margin_top = 4.0
-margin_right = 52.0
+margin_right = 20.0
 margin_bottom = 15.0
-text = "Air Options"
-align = 1
+text = "Fuel"
 
 [node name="P1AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P1AirMovementLabel"]
 unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -24.0
-margin_top = -2.0
-margin_right = 26.0
-margin_bottom = 14.0
+margin_left = 3.0
+margin_top = 10.0
+margin_right = 53.0
+margin_bottom = 26.0
 mouse_filter = 2
 script = ExtResource( 20 )
 
 [node name="ProgressBar" type="TextureProgress" parent="HudLayer/HudLayer/AirMovementDisplay/P1AirMovementLabel/P1AirMovementDisplay"]
-anchor_right = 1.0
-anchor_bottom = 1.0
 margin_top = 2.0
-margin_bottom = -2.0
-value = 29.0
+margin_right = 50.0
+margin_bottom = 14.0
+value = 100.0
 texture_progress = ExtResource( 74 )
 fill_mode = 1
 nine_patch_stretch = true
@@ -537,41 +535,41 @@ stretch_margin_right = 3
 stretch_margin_bottom = 3
 
 [node name="Padding" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_left = 53.0
-margin_right = 441.0
+margin_left = 21.0
+margin_right = 473.0
 margin_bottom = 20.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="P2AirMovementLabel" type="Label" parent="HudLayer/HudLayer/AirMovementDisplay"]
-margin_left = 442.0
+unique_name_in_owner = true
+margin_left = 474.0
 margin_top = 4.0
 margin_right = 494.0
 margin_bottom = 15.0
-text = "Air Options"
-align = 1
+text = "Fuel"
+align = 2
 
 [node name="P2AirMovementDisplay" type="Control" parent="HudLayer/HudLayer/AirMovementDisplay/P2AirMovementLabel"]
 unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -27.0
-margin_top = -2.0
-margin_right = 23.0
-margin_bottom = 14.0
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -53.0
+margin_top = 10.0
+margin_right = -3.0
+margin_bottom = 26.0
 mouse_filter = 2
 script = ExtResource( 20 )
 player_id = 2
 
 [node name="ProgressBar" type="TextureProgress" parent="HudLayer/HudLayer/AirMovementDisplay/P2AirMovementLabel/P2AirMovementDisplay"]
+anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
+margin_left = -50.0
 margin_top = 2.0
-margin_bottom = -2.0
-value = 29.0
+margin_bottom = 14.0
+value = 100.0
 texture_progress = ExtResource( 74 )
 nine_patch_stretch = true
 stretch_margin_left = 3
@@ -1020,6 +1018,7 @@ align = 2
 
 [node name="ActiveP1Initiative" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
+visible = false
 self_modulate = Color( 1, 1, 1, 0.427451 )
 material = SubResource( 25 )
 margin_left = 275.0
@@ -1032,6 +1031,7 @@ text = "-initiative"
 
 [node name="ActiveP2Initiative" type="Label" parent="HudLayer/HudLayer"]
 unique_name_in_owner = true
+visible = false
 self_modulate = Color( 1, 1, 1, 0.427451 )
 material = SubResource( 25 )
 margin_left = 323.0
@@ -1672,6 +1672,9 @@ custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
 custom_constants/shadow_offset_x = 0
 custom_constants/line_spacing = -2
 align = 1
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="ActivePlayer" type="Control" parent="UILayer/GameUI"]
 unique_name_in_owner = true

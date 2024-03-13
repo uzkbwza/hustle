@@ -64,7 +64,7 @@ const PARRY_KNOCKBACK_DIVISOR = "3"
 const PARRY_COMBO_SCALING = "0.85"
 const PARRY_GROUNDED_KNOCKBACK_DIVISOR = "1.5"
 const PUSH_BLOCK_FORCE = "-10"
-const PUSH_BLOCK_DIST = "110"
+const PUSH_BLOCK_DIST = "220"
 const PUSH_BLOCK_ADVANTAGE_PENALTY = 0
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
@@ -172,6 +172,7 @@ export var lose_one_air_option_in_neutral = true
 export var use_air_option_bar = false
 export var air_option_bar_max = 100
 export var air_option_bar = 0
+export var air_option_bar_name = "Air Options"
 
 export(Texture) var character_portrait
 export(Texture) var character_portrait2
@@ -203,6 +204,8 @@ export var use_extra_color_1 = false
 export var extra_color_1 = Color("ff00ff")
 export var use_extra_color_2 = false
 export var extra_color_2 = Color("ff00ff")
+
+
 
 var global_damage_modifier = "1.0"
 var global_hitstun_modifier = "1.0"
@@ -379,6 +382,8 @@ var nudge_distance_left = 0
 
 var can_nudge = false
 var parried = false
+
+var busy = false
 
 var initiative = false
 var aura_particle = null
@@ -573,7 +578,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "got_blocked", "air_option_bar", "air_option_bar_max", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
+		["current_di", "current_nudge", "got_blocked", "busy", "air_option_bar", "air_option_bar_max", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -941,6 +946,8 @@ func debug_text():
 			"whiffed_block": current_state().get_whiffed_block() if current_state().has_method("get_whiffed_block") else false,
 			"parried": current_state().get("parried"),
 			"state_interruptable": state_interruptable,
+			"initiative": initiative,
+			"busy_interrupt": busy_interrupt,
 		}
 	)
 
@@ -1453,11 +1460,13 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 					apply_force(pushback_force, "0")
 				opponent.apply_force_relative(fixed.mul(fixed.div(hitbox.knockback, fixed.mul(parry_knockback_divisor, "-2")), block_pushback_modifier), "0")
 
-			if !projectile or fixed.le(get_opponent_distance(), PUSH_BLOCK_DIST):
-				if current_state().get("push"):
+			if current_state().get("push"):
+				if !projectile or fixed.le(get_opponent_distance(), PUSH_BLOCK_DIST):
 	#				apply_force(fixed.mul(str(get_opponent_dir()), fixed.mul(fixed.div(hitbox.knockback, fixed.mul(PARRY_KNOCKBACK_DIVISOR, "-0.1")), hitbox.block_pushback_modifier)), "0")
 					opponent.apply_force(fixed.mul(str(opponent.get_opponent_dir()), PUSH_BLOCK_FORCE), "0")
 					opponent.on_got_push_blocked()
+				if projectile:
+					host.on_got_push_blocked()
 	
 			blocked_hitbox_plus_frames = BASE_PLUS_FRAMES
 
@@ -1739,9 +1748,6 @@ func refresh_feints():
 #		opponent.gain_super_meter(PREDICTION_CORRECT_SUPER_GAIN)
 #	prediction_processed = true
 
-func on_got_push_blocked():
-	pass
-
 func clean_parried_hitboxes():
 #	if is_ghost:
 #		return
@@ -1872,6 +1878,7 @@ func tick_before():
 	dummy_interruptable = false
 	clean_parried_hitboxes()
 	busy_interrupt = false
+
 	update_grounded()
 	if ReplayManager.playback:
 		var input = get_playback_input()
@@ -2346,6 +2353,11 @@ func drain_air_option_bar(amount):
 	air_option_bar -= amount
 	if air_option_bar < 0:
 		air_option_bar = 0
+
+func gain_free_cancel(amount=1):
+	feints += amount
+	if feints > num_feints:
+		feints = num_feints
 
 func gain_air_option_bar(amount):
 	air_option_bar += amount

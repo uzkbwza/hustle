@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://projectile/DirProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://characters/wizard/projectiles/DartParticle.tscn" type="PackedScene" id=4]
 [ext_resource path="res://sound/common/slash1.wav" type="AudioStream" id=5]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=6]
+[ext_resource path="res://characters/wizard/projectiles/states/MagicDartDefault.gd" type="Script" id=7]
 
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
@@ -66,6 +67,10 @@ width = 7
 height = 7
 
 [node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": ""
+}
 move_speed = "10.0"
 homing = true
 homing_turn_speed = "0.35"

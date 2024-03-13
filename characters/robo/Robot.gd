@@ -57,6 +57,7 @@ var fly_fx_started = false
 var kill_process_super_level = 0
 var start_fly = false
 var can_ground_pound = false
+var can_gain_ground_pound = true
 var buffer_reset_ground_pound = false
 var orbital_strike_out = false
 var orbital_strike_projectile = null
@@ -393,11 +394,14 @@ func tick():
 	if buffer_reset_ground_pound:
 		buffer_reset_ground_pound = false
 		can_ground_pound = false
-	if is_grounded():
+		
+	if is_grounded() and !current_state().started_in_air:
 		buffer_reset_ground_pound = true
+		can_gain_ground_pound = true
 
-	if !can_ground_pound and get_pos().y < GROUND_POUND_MIN_HEIGHT and !is_in_hurt_state():
+	if !can_ground_pound and can_gain_ground_pound and get_pos().y < GROUND_POUND_MIN_HEIGHT and !is_in_hurt_state():
 		can_ground_pound = true
+		can_gain_ground_pound = false
 		ground_pound_active_effect()
 	if buffer_drive_cancel:
 		buffer_drive_cancel = false
@@ -534,7 +538,8 @@ func on_attack_blocked():
 				change_state("UnDriveCancel")
 			else:
 				change_state("DriveCancel")
-	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / 2)
+	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / 4)
+	can_ground_pound = false
 
 func on_blocked_melee_attack():
 	.on_blocked_melee_attack()
@@ -561,6 +566,14 @@ func try_drive_cancel(fast=false):
 func on_state_ended(state):
 	drive_cancel = false
 
+func debug_text():
+	.debug_text()
+	debug_info(
+		{
+			"flying_dir": flying_dir
+		}
+	)
+
 func _on_state_exited(state):
 	._on_state_exited(state)
 	if buffer_armor:
@@ -581,8 +594,4 @@ func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
 	if obj.is_in_group("Fighter"):
 		gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
-
-#
-#func _draw():
-#	if magnet_ticks_left > 0:
-#		draw_arc(Vector2(), float(MAGNET_SAFE_DIST) + Utils.wave(-2, 2, 0.5), 0, TAU, 128, Color("aad440b6"), 3.0)
+		

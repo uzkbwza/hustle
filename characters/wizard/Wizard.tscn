@@ -856,14 +856,6 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
@@ -879,6 +871,14 @@ ExtResource( 326 ): {
 ExtResource( 325 ): {
 "x": 58,
 "y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 }
 }
 character_portrait = ExtResource( 63 )
@@ -1168,8 +1168,8 @@ x = 7
 y = 13
 width = 11
 height = 13
-damage = 80
-hitstun_ticks = 20
+damage = 95
+hitstun_ticks = 17
 victim_hitlag = 4
 sdi_modifier = "0.25"
 plus_frames = 2
@@ -1180,6 +1180,7 @@ dir_y = "1.0"
 knockback = "7.2"
 pushback_x = "0.0"
 grounded_hit_state = "HurtAerial"
+air_ground_bounce = true
 start_tick = 8
 
 [node name="IceSpikeAir" type="Node2D" parent="StateMachine" index="14"]
@@ -1531,8 +1532,8 @@ active_ticks = 13
 [node name="HurtboxState" type="Node2D" parent="StateMachine/Kick" index="1"]
 z_index = 999
 script = ExtResource( 228 )
-y = -8
-height = 8
+y = -12
+height = 12
 start_tick = 7
 endless = true
 
@@ -1951,14 +1952,6 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
@@ -1974,6 +1967,14 @@ ExtResource( 326 ): {
 ExtResource( 325 ): {
 "x": 58,
 "y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
+},
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 }
 }
 type = 1

@@ -412,6 +412,7 @@ lose_one_air_option_in_neutral = true
 use_air_option_bar = false
 air_option_bar_max = 100
 air_option_bar = 0
+air_option_bar_name = "Air Options"
 character_portrait = ExtResource( 2 )
 character_portrait2 = null
 player_info_scene = ExtResource( 39 )
@@ -604,7 +605,6 @@ y = -16
 width = 150
 height = 150
 hitbox_type = 6
-start_tick = 1
 active_ticks = 20
 
 [node name="ParryHigh" type="Node2D" parent="StateMachine" index="2"]

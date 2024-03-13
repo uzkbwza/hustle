@@ -4,6 +4,7 @@ extends "res://characters/states/Dash.gd"
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
+onready var hurtbox_state = $HurtboxState
 
 func spawn_dash_particle():
 	if !same_as_last_state:
@@ -20,8 +21,13 @@ func play_enter_sfx():
 # Called when the node enters the scene tree for the first time.
 func _enter():
 	._enter()
+	if _previous_state_name() == "DashForward":
+		hurtbox_state.start_tick = 0
+	else:
+		hurtbox_state.start_tick = 3
 	if !host.sprite.is_connected("frame_changed", self, "on_sprite_frame_changed"):
 		host.sprite.connect("frame_changed", self, "on_sprite_frame_changed")
+	setup_hurtboxes()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

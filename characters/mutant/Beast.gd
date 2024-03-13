@@ -17,6 +17,7 @@ const JUKE_COMBO_MODIFIER = "1.25"
 const DOWN_JUKE_SPEED = "14"
 const BACK_JUKE_SPEED = "2"
 const MAX_BACK_SPEED_FOR_JUKE = "6"
+const JUKE_STARTUP_TICKS_NO_INITIATIVE = 2
 
 onready var twist_attack_sprite = $"%TwistAttackSprite"
 onready var rebirth_particle_effect = $"%RebirthParticleEffect"
@@ -25,6 +26,8 @@ var install_ticks = 0
 var shockwave_projectile = null
 var spike_projectile = null
 
+
+var juke_startup_ticks = 0
 var juke_pips = JUKE_PIPS_PER_USE * 2
 var juke_dir_x = "0"
 var juke_dir_y = "0"
@@ -61,6 +64,7 @@ func process_action(action):
 		can_air_dash = true
 
 func process_extra(extra):
+	juke_startup_ticks = 0
 	juked_this_turn = false
 	.process_extra(extra)
 	if extra.has("spike_enabled"):
@@ -148,9 +152,12 @@ func copy_to(f):
 	f.up_juke_ticks = up_juke_ticks
 
 func tick():
+	if !initiative and turn_frames == 0:
+		juke_startup_ticks = JUKE_STARTUP_TICKS_NO_INITIATIVE
+
 	if twist_attack_sprite.visible: 
 		twist_attack_sprite.frame = (twist_attack_sprite.frame + 1) % twist_attack_sprite.frames.get_frame_count("default")
-	if (juke_ticks > 0 or up_juke_ticks > 0) and hitlag_ticks <= 0 and blockstun_ticks <= 0:
+	if (juke_ticks > 0 or up_juke_ticks > 0) and hitlag_ticks <= 0 and blockstun_ticks <= 0 and juke_startup_ticks <= 0:
 		spawn_particle_effect_relative(preload("res://characters/mutant/JukeEffect.tscn"), Vector2(0, -16))
 		var juke_speed = JUKE_SPEED
 		
@@ -185,6 +192,8 @@ func tick():
 				move_directly("0", fixed.mul(juke_dir_y, juke_speed))
 			if juke_dir_x == "0" and juke_dir_y == "0":
 				reset_momentum()
+	elif juke_startup_ticks > 0:
+		juke_startup_ticks -= 1
 
 	if penalty_ticks > 0:
 		juke_pips = 0

@@ -9,6 +9,7 @@ const LIGHTNING_PUSH_FORCE = "-5"
 const ATTACK_SUPER_DRAIN = 0
 const LIGHTNING_DRAIN = 0
 const HIT_FORCE_MODIFIER = "2.0"
+const PUSH_BACK_FORCE = "10"
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LOCKED_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDartLocked.tscn")
@@ -56,6 +57,12 @@ func get_travel_dir():
 	if creator:
 		var local_pos = get_target_pos()
 		return fixed.normalized_vec(str(local_pos.x), str(local_pos.y))
+
+func on_got_push_blocked():
+	unlock()
+	reset_momentum()
+	var dir_sign = get_fighter().opponent.get_opponent_dir()
+	apply_force(fixed.mul(str(dir_sign), PUSH_BACK_FORCE), "0")
 
 func travel_towards_creator():
 	var travel_dir = get_travel_dir()

@@ -173,6 +173,9 @@ func _on_state_exited(state):
 	for hitbox in hitboxes:
 		hitbox.deactivate()
 
+func on_got_push_blocked():
+	pass
+
 func get_owner():
 	if creator:
 		return creator.get_owner()

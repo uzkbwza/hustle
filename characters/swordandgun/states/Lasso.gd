@@ -32,9 +32,10 @@ func on_lasso_hit(_opponent):
 	lasso_hit = true
 	lasso_hit_frame = current_tick
 	var opp_pos = host.opponent.get_hurtbox_center()
-	var obj = host.objs_map[host.lasso_projectile]
-	obj.set_pos(opp_pos.x, opp_pos.y)
-	host.change_state("LassoHit")
+	var obj = host.obj_from_name(host.lasso_projectile)
+	if obj:
+		obj.set_pos(opp_pos.x, opp_pos.y)
+		host.change_state("LassoHit")
 #	endless = true
 
 func _tick():

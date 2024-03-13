@@ -29,50 +29,27 @@ colors = PoolColorArray( 1, 1, 1, 1, 0.485352, 0.485352, 0.485352, 1, 0.364258, 
 
 [node name="ParticleEffect" instance=ExtResource( 1 )]
 material = SubResource( 3 )
-lifetime = 2.0
+free = false
+one_shot = false
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." index="1"]
 z_index = 4
-amount = 32
+amount = 16
 lifetime = 0.68
 speed_scale = 1.45
-explosiveness = 1.0
 randomness = 1.0
 lifetime_randomness = 1.0
+local_coords = false
 texture = ExtResource( 2 )
 emission_shape = 2
-emission_rect_extents = Vector2( 32, 1 )
+emission_rect_extents = Vector2( 16, 1 )
 direction = Vector2( 0, -1 )
 spread = 11.62
 gravity = Vector2( 0, 500 )
-initial_velocity = 764.17
-initial_velocity_random = 1.0
+initial_velocity = 329.17
+initial_velocity_random = 0.36
 damping = 146.03
-scale_amount = 3.87
+scale_amount = 3.21
 scale_amount_random = 1.0
 scale_amount_curve = SubResource( 1 )
-color_ramp = SubResource( 2 )
-
-[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="2"]
-z_index = 4
-amount = 32
-lifetime = 0.68
-preprocess = 0.03
-speed_scale = 1.45
-explosiveness = 1.0
-randomness = 1.0
-lifetime_randomness = 1.0
-texture = ExtResource( 2 )
-emission_shape = 2
-emission_rect_extents = Vector2( 100, 1 )
-direction = Vector2( 0, -1 )
-spread = 11.62
-gravity = Vector2( 0, 500 )
-initial_velocity = 393.8
-initial_velocity_random = 1.0
-damping = 146.03
-scale_amount = 3.42
-scale_amount_random = 1.0
-scale_amount_curve = SubResource( 1 )
-color = Color( 0.831373, 0.831373, 0.831373, 1 )
 color_ramp = SubResource( 2 )

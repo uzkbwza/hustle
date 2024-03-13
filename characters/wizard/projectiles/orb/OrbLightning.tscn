@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/wizard/projectiles/orb/sprites/OrbLightning3.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://sound/common/slash2.wav" type="AudioStream" id=7]
 [ext_resource path="res://characters/wizard/LightningEffect.tscn" type="PackedScene" id=8]
 [ext_resource path="res://characters/wizard/projectiles/orb/states/LightningDefault.gd" type="Script" id=9]
+[ext_resource path="res://characters/wizard/projectiles/orb/OrbLightning.gd" type="Script" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -50,6 +51,10 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [node name="BaseProjectile" instance=ExtResource( 1 )]
 material = SubResource( 1 )
+script = ExtResource( 10 )
+__meta__ = {
+"_editor_description_": ""
+}
 has_projectile_parry_window = false
 deletes_other_projectiles = false
 

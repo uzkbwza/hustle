@@ -1,0 +1,96 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://projectile/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=2]
+[ext_resource path="res://characters/robo/projectiles/states/MissileDefault.gd" type="Script" id=3]
+[ext_resource path="res://characters/robo/projectiles/Missile.gd" type="Script" id=4]
+[ext_resource path="res://characters/robo/projectiles/sprites/missile3.png" type="Texture" id=5]
+[ext_resource path="res://characters/robo/projectiles/sprites/missile2.png" type="Texture" id=6]
+[ext_resource path="res://characters/robo/projectiles/sprites/missile1.png" type="Texture" id=7]
+[ext_resource path="res://sound/common/explosion1.wav" type="AudioStream" id=8]
+[ext_resource path="res://framework/VariableSound2D.gd" type="Script" id=9]
+[ext_resource path="res://characters/robo/sound/mechanical13.wav" type="AudioStream" id=10]
+[ext_resource path="res://sound/common/rocket2.wav" type="AudioStream" id=11]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "Default",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "Flying",
+"speed": 5.0
+} ]
+
+[node name="BaseProjectile" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
+gravity = "0.2"
+max_air_speed = "40"
+max_fall_speed = "15"
+extra_state_variables = "detected_friends"
+deletes_other_projectiles = false
+
+[node name="Sprite" parent="Flip" index="0"]
+frames = SubResource( 1 )
+animation = "Default"
+
+[node name="FlySound" type="AudioStreamPlayer2D" parent="Sounds" index="0"]
+stream = ExtResource( 11 )
+volume_db = -18.0
+script = ExtResource( 9 )
+
+[node name="CollisionBox" parent="." index="2"]
+width = 10
+height = 5
+
+[node name="Hurtbox" parent="." index="3"]
+width = 10
+height = 5
+
+[node name="Default" parent="StateMachine" index="0"]
+script = ExtResource( 3 )
+apply_forces = true
+apply_grav = true
+fallback_state = "Flying"
+anim_length = 6
+loop_animation = true
+endless = false
+enter_force_dir_x = "1.0"
+enter_force_speed = "0.25"
+enter_sfx = ExtResource( 10 )
+enter_sfx_volume = -5.0
+sfx = ExtResource( 8 )
+sfx_volume = -7.0
+move_x = 0
+flying = false
+
+[node name="Flying" type="Node2D" parent="StateMachine" index="1"]
+script = ExtResource( 3 )
+apply_forces = true
+apply_grav = true
+fallback_state = "Default"
+loop_animation = true
+endless = true
+move_x = 0
+flying = true
+
+[node name="Hitbox" type="Node2D" parent="StateMachine/Flying" index="0"]
+z_index = 1000
+script = ExtResource( 2 )
+width = 9
+height = 4
+damage = 65
+chip_damage_modifier = "0.8"
+hitstun_ticks = 17
+hitlag_ticks = 7
+allowed_to_hit_own_team = false
+hit_sound = null
+hit_bass_sound = null
+dir_y = "-0.25"
+knockback = "12.0"
+grounded_hit_state = "HurtAerial"
+start_tick = 1
+always_on = true

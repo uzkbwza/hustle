@@ -1,7 +1,7 @@
 extends "res://characters/states/Landing.gd"
 
 onready var hitbox = $Hitbox
-
+const LANDING_SHOCKWAVE = preload("res://characters/robo/projectiles/LandingShockwave.tscn")
 const SPEED_HITBOX_ACTIVATION = "5.0"
 const SPEED_HITBOX_RATIO = "1.0"
 const BASE_DAMAGE = 10
@@ -20,28 +20,40 @@ func _frame_0():
 	var speed = host.last_aerial_vel.y
 	has_hitbox = prev.busy_interrupt_type != BusyInterrupt.Hurt and !(prev is CharacterHurtState)
 	hitbox.hits_vs_grounded = host.can_ground_pound and fixed.gt(speed, SPEED_HITBOX_ACTIVATION) and has_hitbox
+
 	set_lag(null if !hitbox.hits_vs_grounded else GROUND_POUND_LAG)
 #	hitbox.x = host.obj_local_pos(host.opponent).x * host.get_facing_int()
 #	hitbox.start_tick = -1 if !has_hitbox else 1
 	var ratio = fixed.div(speed, SPEED_HITBOX_RATIO)
 	var damage = fixed.round(fixed.mul(ratio, str(BASE_DAMAGE)))
-	var dist = Utils.int_abs(host.obj_local_pos(host.opponent).x)
+#	var dist = Utils.int_abs(host.obj_local_pos(host.opponent).x)
 
-	damage = fixed.round(fixed.sub(str(damage), fixed.mul(str(dist), LESS_DAMAGE_PER_PIXEL)))
+#	damage = fixed.round(fixed.sub(str(damage), fixed.mul(str(dist), LESS_DAMAGE_PER_PIXEL)))
 	if damage < BASE_DAMAGE:
 		damage = BASE_DAMAGE
-	
+
 	damage = fixed.round(fixed.mul(DAMAGE_MODIFIER, str(damage)))
-	
+		
+	if hitbox.hits_vs_grounded:
+		var left = host.spawn_object(LANDING_SHOCKWAVE, -16, -1)
+		var right = host.spawn_object(LANDING_SHOCKWAVE, 16, -1)
+
+		right.facing = 1
+		left.facing = -1
+		left.damage = damage
+		right.damage = damage
+		left.speed = speed
+		right.speed = speed
+
 	hitbox.damage = damage
-	
-	var hitstun = BASE_HITSTUN - fixed.round(fixed.mul(str(dist), LESS_HITSTUN_PER_PIXEL))
-	if hitstun < MIN_HITSTUN:
-		hitstun = MIN_HITSTUN
-	
-	hitbox.hitstun_ticks = hitstun
-	hitbox.combo_hitstun_ticks = hitstun - 5
-	
+
+#	var hitstun = BASE_HITSTUN - fixed.round(fixed.mul(str(dist), LESS_HITSTUN_PER_PIXEL))
+#	if hitstun < MIN_HITSTUN:
+#		hitstun = MIN_HITSTUN
+
+#	hitbox.hitstun_ticks = hitstun
+#	hitbox.combo_hitstun_ticks = hitstun - 5
+
 #	if hitbox.hits_vs_grounded:
 #		var nade = host.obj_from_name(host.grenade_object)
 #		if nade and nade.is_grounded():

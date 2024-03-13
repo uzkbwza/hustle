@@ -1,5 +1,7 @@
 extends ObjectState
 
+class_name DirProjectileDefault
+
 export var _c_Projectile_Dir = 0
 export var move_speed = "15.0"
 

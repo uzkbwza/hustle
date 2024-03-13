@@ -55,6 +55,9 @@ func _on_hit_something(obj, hitbox):
 func on_got_blocked():
 	emit_signal("bullet_made_contact")
 
+func on_got_push_blocked():
+	hitlag_ticks += 10
+
 func hit_by(hitbox):
 	if hitbox.hitbox_type == Hitbox.HitboxType.Flip:
 		dir_x = fixed.mul(dir_x, "-1")

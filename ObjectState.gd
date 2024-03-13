@@ -520,6 +520,8 @@ func setup_hitboxes():
 		
 
 func setup_hurtboxes():
+	hurtbox_state_change_frames.clear()
+	limb_hurtboxes.clear()
 	for child in get_children():
 		if child is HurtboxState:
 			hurtbox_state_change_frames[child.start_tick] = child
