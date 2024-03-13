@@ -6,6 +6,7 @@ const MAX_FALL_SPEED = "3.0"
 const STARTED_IN_AIR_MAX_FALL_SPEED = "8.0"
 const EXTRA_VICTIM_HITLAG = 15
 const AUTO_LAG = 4
+const BASE_HITLAG = 12
 
 onready var hitbox = $Hitbox
 
@@ -31,6 +32,7 @@ func _frame_0():
 		hitbox.victim_hitlag = hitbox.hitlag_ticks
 		hitbox.ground_bounce = true
 		hitbox.grounded_hit_state = "HurtAerial"
+	hitbox.combo_victim_hitlag = hitbox.victim_hitlag
 	if data.Auto:
 		hitbox.combo_scaling_amount = 2
 	else:
