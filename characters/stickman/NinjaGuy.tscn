@@ -461,7 +461,7 @@ animations = [ {
 "name": "Landing",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 86 ) ],
+"frames": [ ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 101 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 171 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 117 ), ExtResource( 86 ) ],
 "loop": true,
 "name": "NunChukHeavy",
 "speed": 60.0
@@ -2209,7 +2209,7 @@ plus_frames = 3
 hit_sound = ExtResource( 42 )
 knockback = "2.5"
 pushback_x = "0.0"
-start_tick = 7
+start_tick = 6
 active_ticks = 6
 looping = true
 loop_inactive_ticks = 1
@@ -2229,7 +2229,7 @@ group = 1
 hit_sound = ExtResource( 42 )
 knockback = "4.0"
 pushback_x = "0.0"
-start_tick = 13
+start_tick = 12
 active_ticks = 2
 
 [node name="NunChukHeavyQS" type="Node2D" parent="StateMachine" index="46"]
@@ -2284,7 +2284,7 @@ plus_frames = 3
 hit_sound = ExtResource( 42 )
 knockback = "2.5"
 pushback_x = "0.0"
-start_tick = 7
+start_tick = 6
 active_ticks = 6
 looping = true
 loop_inactive_ticks = 1
@@ -2305,7 +2305,7 @@ group = 1
 hit_sound = ExtResource( 42 )
 knockback = "4.0"
 pushback_x = "0.0"
-start_tick = 13
+start_tick = 12
 active_ticks = 2
 
 [node name="NunChukJump" type="Node2D" parent="StateMachine" index="47"]
@@ -3734,6 +3734,7 @@ victim_hitlag = 10
 hits_otg = true
 hits_vs_aerial = false
 guard_break = true
+guard_break_proration = 3
 hit_height = 2
 screenshake_amount = 6
 whiff_sound = ExtResource( 44 )

@@ -9,6 +9,7 @@ const MIN_HITSTUN = 10
 const LESS_DAMAGE_PER_PIXEL = "0.025"
 const MIN_SPEED = "6"
 const LESS_HITSTUN_PER_PIXEL = "0.05"
+const SPEED_MULTIPLIER = "1.25"
 
 var start_x = 0
 
@@ -18,7 +19,7 @@ func _enter():
 
 func _tick():
 	if current_tick <= 1:
-		move_x_string = host.speed
+		move_x_string = fixed.mul(host.speed, SPEED_MULTIPLIER)
 		if fixed.lt(move_x_string, MIN_SPEED):
 			move_x_string = MIN_SPEED
 		host.set_facing(host.facing)

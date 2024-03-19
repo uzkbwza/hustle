@@ -8,6 +8,9 @@ var pos
 
 export var fast = false
 
+func f0():
+	host.start_invulnerability()
+
 func f1():
 	if host.shot:
 		return
@@ -53,6 +56,11 @@ func f2():
 func f3():
 	host.disable()
 	
+func _frame_16():
+	if !fast:
+		return
+	f0()
+	
 func _frame_17():
 	if !fast:
 		return
@@ -70,6 +78,10 @@ func _frame_19():
 		return
 	f3()
 
+func _frame_49():
+	if fast:
+		return
+	f0()
 
 func _frame_50():
 	if fast:

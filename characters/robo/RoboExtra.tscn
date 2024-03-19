@@ -19,6 +19,7 @@ alignment = 2
 unique_name_in_owner = true
 margin_top = 232.0
 margin_bottom = 258.0
+force_neutral_when_invisible = false
 NW = false
 N = false
 NE = false
@@ -85,7 +86,6 @@ visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 294.0
-margin_right = 60.0
 margin_bottom = 360.0
 
 [connection signal="data_changed" from="VBoxContainer/FlyDir" to="." method="_on_FlyDir_data_changed"]

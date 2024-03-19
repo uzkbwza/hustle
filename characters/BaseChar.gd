@@ -76,7 +76,7 @@ const WRONG_HIT_HEIGHT_ADDITIONAL_PLUS_FRAMES = 2
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
-const GUARD_BREAK_SCALING = 1
+#const GUARD_BREAK_SCALING = 1
 
 const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.0"
 const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
@@ -941,7 +941,7 @@ func debug_text():
 			"hitlag_ticks": hitlag_ticks,
 #			"feinting": feinting,
 			"proration": combo_proration,
-#			"parry_combo": parry_combo,
+			"parry_combo": parry_combo,
 			"turn_frames": turn_frames,
 			"whiffed_block": current_state().get_whiffed_block() if current_state().has_method("get_whiffed_block") else false,
 			"parried": current_state().get("parried"),
@@ -1352,7 +1352,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			start_throw_invulnerability()
 			if !projectile and !perfect_parry and  !last_turn_block and initiative:
 				if hitbox.guard_break and !ignore_guard_break and (!current_state().get_whiffed_block()) and opponent.can_guard_break():
-					hitbox.damage_proration = Utils.int_max(GUARD_BREAK_SCALING, hitbox.damage_proration)
+					hitbox.damage_proration = Utils.int_max(hitbox.guard_break_proration, hitbox.damage_proration)
 					hit_by(hitbox, true)
 					if current_state().get("guard_broken") != null:
 						current_state().guard_broken = true
@@ -2314,7 +2314,6 @@ func on_state_interruptable(state=null):
 	else:
 		dummy_interruptable = true
 		refresh_prediction = true
-	opponent.parry_combo = false
 
 func on_state_hit_cancellable(projectile=false, state=null):
 	if !dummy:

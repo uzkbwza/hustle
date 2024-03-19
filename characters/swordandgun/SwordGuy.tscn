@@ -4027,7 +4027,6 @@ hit_sound = ExtResource( 144 )
 dir_y = "-0.50"
 knockback = "2"
 start_tick = 4
-active_ticks = 1
 
 [node name="Teleport" type="Node2D" parent="StateMachine" index="46"]
 script = ExtResource( 99 )

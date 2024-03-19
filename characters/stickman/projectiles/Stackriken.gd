@@ -13,7 +13,9 @@ onready var hitbox = $Hitbox
 
 func init(pos=null):
 	.init(pos)
-	get_fighter().stackriken_out = true
+	var fighter = get_fighter()
+	if fighter:
+		get_fighter().stackriken_out = true
 	refresh_amount = REFRESH_AMOUNT
 
 func disable():

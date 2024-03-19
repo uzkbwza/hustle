@@ -1,8 +1,7 @@
-[gd_scene load_steps=322 format=2]
+[gd_scene load_steps=321 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
-[ext_resource path="res://characters/CommandAt.gd" type="Script" id=3]
 [ext_resource path="res://characters/mutant/states/BeastState.gd" type="Script" id=4]
 [ext_resource path="res://characters/mutant/Beast.gd" type="Script" id=5]
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=6]
@@ -3594,16 +3593,6 @@ width = 17
 height = 10
 start_tick = 0
 endless = true
-
-[node name="HostCommand" type="Node" parent="StateMachine/DashForward" index="1"]
-script = ExtResource( 3 )
-tick = 2
-command = "start_projectile_invulnerability"
-
-[node name="HostCommand2" type="Node" parent="StateMachine/DashForward" index="2"]
-script = ExtResource( 3 )
-tick = 7
-command = "end_projectile_invulnerability"
 
 [node name="ChargeDashForward" parent="StateMachine" index="65"]
 ticks_per_frame = 3

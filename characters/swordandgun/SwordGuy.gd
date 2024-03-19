@@ -218,6 +218,14 @@ func process_extra(extra):
 			shifted_this_turn = true
 			if current_state().get("IS_NEW_PARRY"):
 				change_state("Wait")
+	if extra.has("drift"):
+		if extra.drift:
+			milk_toggled = true
+			super_effect(10)
+#				use_air_movement()
+			for i in range(DRIFT_SUPERS):
+				use_super_bar()
+			combo_supers += 1
 	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
 #			super_effect(5)

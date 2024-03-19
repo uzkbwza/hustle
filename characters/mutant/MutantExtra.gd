@@ -20,6 +20,10 @@ func show_options():
 		juke_button.hide()
 		juke_dir.hide()
 		return
+	
+	if fighter.current_state().get("disable_aerial_movement"):
+		juke_button.hide()
+		juke_dir.hide()
 
 	var spike = fighter.obj_from_name(fighter.spike_projectile)
 	if spike:
@@ -53,7 +57,11 @@ func update_selected_move(move_state):
 	
 	juke_button.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE and fighter.opponent.combo_count <= 0
 	juke_dir.visible = fighter.juke_pips >= fighter.JUKE_PIPS_PER_USE and fighter.opponent.combo_count <= 0
-
+	
+	if fighter.current_state().get("disable_aerial_movement"):
+		juke_button.hide()
+		juke_dir.hide()
+	
 	var current = juke_dir.pressed_button.name
 
 	if different and fighter.is_grounded():

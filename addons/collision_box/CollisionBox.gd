@@ -97,6 +97,9 @@ func overlaps(box: CollisionBox):
 		return false
 	if box.width == 0 and box.height == 0:
 		return false
+	if get("IS_SWEPT") or box.get("IS_SWEPT"):
+		return false
+
 	var aabb1 = get_aabb()
 	var aabb2 = box.get_aabb()
 	return !(aabb1.x1 > aabb2.x2 or aabb1.x2 < aabb2.x1 or aabb1.y1 > aabb2.y2 or aabb1.y2 < aabb2.y1)

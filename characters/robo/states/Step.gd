@@ -19,12 +19,12 @@ func _enter():
 	if host.combo_count <= 0:
 		startup_lag += STARTUP_LAG
 	if host.reverse_state:
-		backdash_iasa = true
+#		backdash_iasa = true
 		beats_backdash = false
 		startup_lag += FLIP_LAG
 		host.add_penalty(10)
 	else:
-		backdash_iasa = false
+#		backdash_iasa = false
 		beats_backdash = true
 
 func _frame_0():

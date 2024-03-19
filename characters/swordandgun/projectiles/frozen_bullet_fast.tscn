@@ -37,7 +37,11 @@ animations = [ {
 material = SubResource( 2 )
 z_index = -2
 script = ExtResource( 9 )
-free_cancel_on_hit = false
+damages_own_team = true
+deletes_other_projectiles = false
+can_be_hit_by_melee = true
+free_cancel_on_hit = true
+projectile_immune = true
 frozen = true
 
 [node name="Sprite" parent="Flip" index="0"]

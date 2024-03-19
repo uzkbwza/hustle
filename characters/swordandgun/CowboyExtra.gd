@@ -20,6 +20,7 @@ func get_extra():
 		"gun_cancel": $"%ShootButton".pressed and $"%ShootButton".visible,
 		"detonate": $"%DetonateButton".pressed and $"%DetonateButton".visible,
 		"shift": $"%TpButton".pressed and $"%TpButton".visible,
+		"drift": $"%MilkButton".pressed and $"%MilkButton".visible,
 		"hindsight": sight_button.pressed and sight_button.visible,
 		"input_aerial": aerial,
 		"input_grounded": grounded,

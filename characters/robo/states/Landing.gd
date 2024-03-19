@@ -21,7 +21,8 @@ func _frame_0():
 	has_hitbox = prev.busy_interrupt_type != BusyInterrupt.Hurt and !(prev is CharacterHurtState)
 	hitbox.hits_vs_grounded = host.can_ground_pound and fixed.gt(speed, SPEED_HITBOX_ACTIVATION) and has_hitbox
 
-	set_lag(null if !hitbox.hits_vs_grounded else GROUND_POUND_LAG)
+#	set_lag(null if !hitbox.hits_vs_grounded else GROUND_POUND_LAG)
+
 #	hitbox.x = host.obj_local_pos(host.opponent).x * host.get_facing_int()
 #	hitbox.start_tick = -1 if !has_hitbox else 1
 	var ratio = fixed.div(speed, SPEED_HITBOX_RATIO)

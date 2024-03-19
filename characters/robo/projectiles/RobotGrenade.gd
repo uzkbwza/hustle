@@ -118,6 +118,10 @@ func hit_by(hitbox):
 					if ticks_left < 0:
 						ticks_left = 0
 
+func refresh():
+	hitbox_out = false
+	change_state(current_state().state_name)
+	
 func on_got_blocked():
 	var vel = get_vel()
 	if active:

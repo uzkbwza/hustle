@@ -4,6 +4,8 @@ extends Hitbox
 
 class_name SweptHitbox
 
+const IS_SWEPT = true
+
 export  var _c_Raycast = 0
 export  var to_x = 0
 export  var to_y = 0
@@ -188,7 +190,9 @@ func get_aabb():
 	# given how everything is implemented, this will only happen when trying to
 	#  test for CollisionBox.overlaps(SweptHitbox), which only occurs when
 	#  a SweptHitbox is used as a hurtbox
-	assert(false, "calling get_aabb() on a SweptHitbox")
+#	assert(false, "calling get_aabb() on a SweptHitbox")
+	
+	pass
 
 func overlaps(box: CollisionBox):
 	if box.width == 0 and box.height == 0:

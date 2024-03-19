@@ -144,8 +144,8 @@ func on_got_parried():
 	flying_dir = null
 
 func on_got_hit():
-	pass
-
+	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
+	
 func on_launched():
 	if orbital_strike_projectile and orbital_strike_projectile in objs_map:
 		objs_map[orbital_strike_projectile].deactivate()
@@ -414,6 +414,9 @@ func tick():
 func start_magnetizing():
 	magnet_ticks_left = MAGNET_TICKS
 	magnetize_bomb_strength = "0"
+	var obj = obj_from_name(grenade_object)
+	if obj:
+		obj.refresh()
 #	if combo_count > 0:
 #		magnet_scale = true
 	play_sound("MagnetBeep")

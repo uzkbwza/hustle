@@ -4,6 +4,7 @@ extends Control
 signal data_changed()
 
 export  var consider_facing = true
+export var force_neutral_when_invisible = true
 
 var facing = 1 setget set_facing
 var pressed_button = null
@@ -158,7 +159,7 @@ func get_value(dir):
 func get_data():
 	if not pressed_button: return "Neutral"
 
-	if !pressed_button.is_visible_in_tree():
+	if force_neutral_when_invisible and !pressed_button.is_visible_in_tree():
 		return get_value("Neutral")
 	# if consider_facing:
 	# 	return get_value(dir_to_facing(pressed_button.name))

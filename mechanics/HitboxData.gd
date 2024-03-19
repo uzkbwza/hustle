@@ -61,6 +61,7 @@ var cancellable = false
 var followup_state = ""
 var guard_break = false
 var block_punishable = false
+var guard_break_proration = 0
 var ignore_projectile_armor = false
 var looping = false
 var block_cancel_allowed = true
@@ -202,6 +203,8 @@ func _init(state):
 		block_reverse_pushback_modifier = state.block_reverse_pushback_modifier
 	if state.get("misc_data") != null and state.misc_data != "":
 		misc_data = state.misc_data
+	if state.get("guard_break_proration") != null:
+		guard_break_proration = state.guard_break_proration
 
 	if damage_in_combo == -1:
 		damage_in_combo = damage
