@@ -678,6 +678,9 @@ func _on_Lobby_Message(lobby_id: int, user: int, message: String, chat_type: int
 
 func request_match_settings():
 	_send_P2P_Packet(LOBBY_OWNER, {"request_match_settings": SteamHustle.STEAM_ID})
+	
+func am_i_lobby_owner() -> bool:
+	return LOBBY_OWNER == SteamHustle.STEAM_ID
 
 func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response: int) -> void:
 	# If joining was successful

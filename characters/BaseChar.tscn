@@ -763,7 +763,13 @@ parry_type = 2
 
 [node name="Roll" type="Node2D" parent="StateMachine" index="7"]
 script = ExtResource( 54 )
+apply_forces = true
+apply_grav = true
 reset_momentum = true
+apply_custom_x_fric = true
+custom_x_fric = "1.5"
+apply_custom_limits = true
+custom_max_air_speed = "12.0"
 sprite_animation = "RollForward"
 anim_length = 18
 sprite_anim_length = 4
@@ -1187,7 +1193,13 @@ allowed_stances_string = "All"
 
 [node name="TechRoll" type="Node2D" parent="StateMachine" index="25"]
 script = ExtResource( 54 )
+apply_forces = true
+apply_grav = true
 reset_momentum = true
+apply_custom_x_fric = true
+custom_x_fric = "1.5"
+apply_custom_limits = true
+custom_max_air_speed = "12.0"
 sprite_animation = "RollForward"
 anim_length = 18
 sprite_anim_length = 4

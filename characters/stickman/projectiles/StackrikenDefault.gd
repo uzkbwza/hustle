@@ -5,6 +5,7 @@ const HOMING_FORCE = "0.25"
 const BLOCK_HITS = 5
 const MIN_RATIO = "0.5"
 const FRAMES_PER_DAMAGE_LOSS = 5
+const GRACE_PERIOD = 20
 #const ARC_FORCE = "0.15"
 onready var hitbox = $Hitbox
 onready var hitbox_width = hitbox.width
@@ -47,13 +48,15 @@ func _tick():
 	var vel = host.get_vel()
 	var dir = fixed.normalized_vec(vel.x, vel.y)
 	
-	var size_ratio = fixed.add(MIN_RATIO, fixed.mul(fixed.sub("1", fixed.div(str(current_tick), str(lifetime))), fixed.sub("1", MIN_RATIO)))
+	var tick = Utils.int_max(current_tick - GRACE_PERIOD, 0)
+	
+	var size_ratio = fixed.add(MIN_RATIO, fixed.mul(fixed.sub("1", fixed.div(str(tick), str(lifetime - GRACE_PERIOD))), fixed.sub("1", MIN_RATIO)))
 	if fixed.lt(size_ratio, MIN_RATIO):
 		size_ratio = MIN_RATIO
 
 	host.sprite.scale.x = float(size_ratio)
 	host.sprite.scale.y = float(size_ratio)
-	
+
 	if hitbox:
 		hitbox.dir_x = dir.x
 		hitbox.dir_y = dir.y
@@ -61,7 +64,7 @@ func _tick():
 		hitbox.height = fixed.round(fixed.mul(str(hitbox_height), size_ratio))
 		hitbox.knockback = fixed.vec_len(vel.x, vel.y)
 		hitbox.knockback = fixed.mul(hitbox.knockback, "0.5")
-		hitbox.damage = hitbox_damage - current_tick / FRAMES_PER_DAMAGE_LOSS
+		hitbox.damage = hitbox_damage - tick / FRAMES_PER_DAMAGE_LOSS
 
 	if hurtbox:
 		hurtbox.width = fixed.round(fixed.mul(str(hurtbox_width), size_ratio))

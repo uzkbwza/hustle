@@ -2428,21 +2428,21 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
-},
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
+},
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 },
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 160 ): {
 "x": 37,
@@ -3676,6 +3676,10 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
+},
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
@@ -3683,10 +3687,6 @@ ExtResource( 79 ): {
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
-},
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
 }
 }
 land_cancel = true

@@ -2165,7 +2165,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "NunChukHeavy"
-anim_length = 16
+anim_length = 19
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 particle_scene = ExtResource( 241 )
@@ -3635,6 +3635,10 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
+},
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
@@ -3642,10 +3646,6 @@ ExtResource( 218 ): {
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
-},
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
 },
 ExtResource( 222 ): {
 "x": 23,
@@ -3871,21 +3871,21 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
+},
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 13,
 "y": -10
 },
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 }
 }
 burst_cancellable = false
@@ -3928,25 +3928,25 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 }
 }
 burst_cancellable = false

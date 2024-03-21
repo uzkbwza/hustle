@@ -2,8 +2,11 @@ extends CharacterState
 
 class_name RollDodge
 
-export var speed = "8.5"
-export var accel_speed = "0.7"
+const GROUND_FRIC = "0.115"
+const AIR_FRIC = "0.1"
+
+const speed = "8.5"
+const accel_speed = "0.7"
 export var tech = false
 
 var force
@@ -70,12 +73,15 @@ func _frame_10():
 		host.end_projectile_invulnerability()
 
 func _tick():
+	custom_x_fric = GROUND_FRIC 
+	if !host.is_grounded():
+		 custom_x_fric = AIR_FRIC
 	host.colliding_with_opponent = false
 	if accel:
 		host.apply_force(accel.x, str(0))
-	host.apply_fric()
-	host.apply_forces()
-	host.apply_grav()
+#	host.apply_fric()
+#	host.apply_forces()
+#	host.apply_grav()
 
 func is_usable():
 	if !host.is_grounded():

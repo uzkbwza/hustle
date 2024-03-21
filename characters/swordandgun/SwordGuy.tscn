@@ -2827,13 +2827,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2
@@ -2896,13 +2896,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2
@@ -2963,13 +2963,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2

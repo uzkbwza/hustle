@@ -664,7 +664,6 @@ remotesync func end_turn_simulation(tick, player_id):
 #		if is_host():
 #			host_start_turn()
 
-
 func host_start_turn():
 	while !game.is_waiting_on_player():
 		yield(get_tree(), "idle_frame")

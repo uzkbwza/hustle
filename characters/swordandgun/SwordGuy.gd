@@ -17,7 +17,7 @@ const RIFT_PROJECTILE = preload("res://characters/swordandgun/projectiles/AfterI
 const AFTER_IMAGE_MAX_DIST = "410"
 const MAX_AIR_SPEED_1KCUTS = "12"
 const CUTS_METER_DRAIN_1 = 2
-const DRIFT_JUMP_TIMER = 3
+const DRIFT_JUMP_TIMER = 4
 const CUTS_METER_DRAIN_2 = 3
 const DRIFT_SUPERS = 1
 const GROUNDED_DRIFT_JUMP_SPEED = "-3"
@@ -133,28 +133,8 @@ func tick():
 #	if id == 1:
 #		print(current_state().entered_in_air)
 
-	if ((current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air) or (current_state().air_type == CharacterState.AirType.Aerial and is_grounded() and !current_state().entered_in_air)) and !is_in_hurt_state():
-		var obj = obj_from_name(after_image_object)
-		if supers_available >= DRIFT_SUPERS:
-			if obj:
-				detonating = false
-				obj.detonating = true
-				if !milk_toggled:
-					if is_grounded():
-						current_state().entered_in_air = true
-						current_state().started_in_air = true
-						drift_jump_timer = DRIFT_JUMP_TIMER
-#						hitlag_ticks += 2
-						
-					milk_toggled = true
-					super_effect(10)
-	#				use_air_movement()
-					for i in range(DRIFT_SUPERS):
-						use_super_bar()
-					combo_supers += 1
-
-					set_vel(get_vel().x, "0")
-				spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
+#	if ((current_state().air_type == CharacterState.AirType.Grounded and !is_grounded() and current_state().entered_in_air) or (current_state().air_type == CharacterState.AirType.Aerial and is_grounded() and !current_state().entered_in_air)) and !is_in_hurt_state():
+#		drift()
 
 
 	if shifted_last_frame:
@@ -206,6 +186,29 @@ func tick():
 #	if bullet_cancelling and !("try_shoot" in current_state().host_commands.values()):
 #		bullet_cancelling = false
 
+func drift():
+	var obj = obj_from_name(after_image_object)
+	if supers_available >= DRIFT_SUPERS:
+		if obj:
+			detonating = false
+			obj.detonating = true
+			if !milk_toggled:
+				if is_grounded():
+					current_state().entered_in_air = true
+					current_state().started_in_air = true
+					drift_jump_timer = DRIFT_JUMP_TIMER
+#						hitlag_ticks += 2
+					
+				milk_toggled = true
+				super_effect(10)
+#				use_air_movement()
+				for i in range(DRIFT_SUPERS):
+					use_super_bar()
+				combo_supers += 1
+
+				set_vel(get_vel().x, "0")
+			spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
+
 func process_extra(extra):
 	.process_extra(extra)
 	if extra.has("gun_cancel"):
@@ -218,14 +221,9 @@ func process_extra(extra):
 			shifted_this_turn = true
 			if current_state().get("IS_NEW_PARRY"):
 				change_state("Wait")
-	if extra.has("drift"):
-		if extra.drift:
-			milk_toggled = true
-			super_effect(10)
-#				use_air_movement()
-			for i in range(DRIFT_SUPERS):
-				use_super_bar()
-			combo_supers += 1
+	if extra.has("drift") and extra.drift:
+		drift()
+
 	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
 #			super_effect(5)

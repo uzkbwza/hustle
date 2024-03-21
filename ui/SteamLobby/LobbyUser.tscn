@@ -1,8 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/SteamLobby/LobbyUser.gd" type="Script" id=2]
 [ext_resource path="res://ui/SteamLobby/king_icon.png" type="Texture" id=3]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.580392, 0.894118, 1, 0.258824 )
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.258824, 0.321569, 0.360784, 0.415686 )
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
 
 [node name="LobbyUser" type="Panel"]
 margin_right = 116.0
@@ -67,18 +77,33 @@ margin_left = 1.0
 margin_top = 1.0
 margin_right = 29.0
 margin_bottom = 29.0
-rect_min_size = Vector2( 20, 20 )
+rect_min_size = Vector2( 28, 28 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 0
 expand = true
 
 [node name="ChallengeButton" type="Button" parent="."]
 unique_name_in_owner = true
+margin_left = 1.0
 margin_top = 16.0
 margin_right = 97.0
-margin_bottom = 28.0
+margin_bottom = 29.0
+mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
 theme = ExtResource( 1 )
 theme_type_variation = "SelectButton"
 text = "challenge"
 clip_text = true
+
+[node name="OwnerActions" type="MenuButton" parent="."]
+visible = false
+margin_left = 114.0
+margin_top = 17.0
+margin_right = 128.0
+margin_bottom = 30.0
+custom_styles/hover = SubResource( 2 )
+custom_styles/normal = SubResource( 1 )
+icon = ExtResource( 3 )
+flat = false
+icon_align = 1
+items = [ "Kick", null, 0, false, false, 0, 0, null, "", false, "Ban", null, 0, false, false, 1, 0, null, "", false, "Make Owner", null, 0, false, false, 2, 0, null, "", false ]

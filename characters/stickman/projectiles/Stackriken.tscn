@@ -104,7 +104,7 @@ sfx_tick = 2
 move_x = 0
 clash = false
 num_hits = 3
-lifetime = 90
+lifetime = 110
 fizzle_on_hit_opponent = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Default" index="0"]

@@ -260,7 +260,10 @@ func init(singleplayer=true):
 #		if (name in Global.paid_characters) and !Global.full_version():
 #			continue
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
-		button.character_scene = Global.get_cached_character(name)
+		if name in Global.characters_cache:
+			button.character_scene = Global.get_cached_character(name)
+		else:
+			continue
 		$"%CharacterButtonContainer".add_child(button)
 #		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 #		var character = button.character_scene.instance()
