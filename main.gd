@@ -85,6 +85,7 @@ func _delete_char_cache(btt):
 	for f in ModLoader._get_all_files("user://char_cache", "pck"):
 		dir.remove(f)
 	get_tree().quit()
+
 func _on_show_style_toggled(on, player_id):
 	if is_instance_valid(game):
 		var player = game.get_player(player_id)

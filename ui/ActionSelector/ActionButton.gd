@@ -10,6 +10,7 @@ var action_name = ""
 var action_title = ""
 
 onready var initiative_texture = $"%InitiativeTexture"
+onready var guard_break_texture = $"%GuardBreakTexture"
 
 var data_node = null
 var container = null
@@ -33,7 +34,8 @@ func setup(name, title, texture=null):
 #	$"%Button".hint_tooltip = title
 
 func end_setup():
-	$"%GuardBreakTexture".visible = is_guard_break
+	if guard_break_texture:
+		guard_break_texture.visible = is_guard_break
 	pass
 
 func set_player_id(player_id):
@@ -50,6 +52,8 @@ func get_disabled():
 	return $"%Button".disabled
 
 func set_initiative(init):
+	if initiative_texture == null:
+		return
 	initiative_texture.hide()
 	has_initiative_effect = false
 	if init and state.initiative_effect:

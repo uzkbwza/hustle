@@ -226,6 +226,12 @@ func quit_match():
 		Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "game_started", "false")
 
+func exit_match_from_button():
+	if !SPECTATING:
+		quit_match()
+	Network.stop_multiplayer()
+	get_tree().reload_current_scene()
+
 func has_supporter_pack(steam_id):
 	# TODO: fix this
 #	return steam_id in CLIENT_TICKETS and CLIENT_TICKETS[steam_id].authenticated and Steam.userHasLicenseForApp(steam_id, Custom.SUPPORTER_PACK)

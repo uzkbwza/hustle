@@ -765,7 +765,9 @@ remotesync func send_rematch_request(player_id):
 			ReplayManager.init()
 			if steam:
 				SteamLobby.REMATCHING_ID = SteamLobby.OPPONENT_ID
-				get_tree().reload_current_scene()
+#				get_tree().reload_current_scene()
+#				begin_game()
+				SteamLobby.exit_match_from_button()
 			else:
 				begin_game()
 
