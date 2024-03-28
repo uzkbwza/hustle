@@ -56,7 +56,6 @@ chip_damage_modifier = "0.8"
 hitstun_ticks = 14
 hitlag_ticks = 0
 victim_hitlag = 4
-sdi_modifier = "0.35"
 hit_sound = ExtResource( 5 )
 dir_y = "-0.120"
 start_tick = 1

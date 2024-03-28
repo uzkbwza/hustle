@@ -62,19 +62,7 @@ func _frame_0():
 	else:
 		interrupt_into.append("Grounded")
 		interrupt_into.append("Aerial")
-#		interrupt_exceptions.append("Shoot")
-
-
-#func _frame_1():
-#	if !projectile and !lagged:
-#		current_tick -= 1
-#		lagged = true
-
-#func on_bullet_made_contact():
-#	if active:
-#		anim_length = 10
-#		if current_tick >= 10:
-#			enable_interrupt()
+		interrupt_exceptions.append("Shoot")
 
 func _frame_3():
 	host.play_sound("Shoot")
@@ -126,6 +114,9 @@ func _frame_3():
 		var temporal_round = host.obj_from_name(host.temporal_round)
 		if temporal_round:
 			temporal_round.shoot()
+
+func on_bullet_made_contact():
+	pass
 
 func _frame_5():
 	if dodge:

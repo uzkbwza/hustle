@@ -137,7 +137,8 @@ func _on_loaded_replay(match_data):
 func _on_received_spectator_match_data(data):
 #	data["spectating"] = true
 #	_on_match_ready(data)
-	get_node("/root/SteamLobby/LoadingSpectator/Label").text = "Spectating...\n(Loading Characters, this may take a while)"
+	if get_node("/root/SteamLobby/LoadingSpectator/Label"):
+		get_node("/root/SteamLobby/LoadingSpectator/Label").text = "Spectating...\n(Loading Characters, this may take a while)"
 	_Global.css_instance.net_loadReplayChars([data.selected_characters[1]["name"], data.selected_characters[2]["name"], data])
 	data["spectating"] = true
 	_on_match_ready(data)

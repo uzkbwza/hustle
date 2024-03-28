@@ -2371,6 +2371,9 @@ func get_state_hash():
 func start_sadness_immunity():
 	sadness_immunity_ticks = SADNESS_IMMUNITY_TICKS
 
+func should_free_cancel_allow_grounded_and_aerial_states():
+	return true
+
 func start_wakeup_throw_immunity():
 	wakeup_throw_immunity_ticks = WAKEUP_THROW_IMMUNITY_TICKS
 

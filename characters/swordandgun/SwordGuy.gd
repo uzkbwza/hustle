@@ -304,6 +304,9 @@ func on_state_started(state):
 #func can_guard_break():
 #	return .can_guard_break() and !milk_toggled
 
+func should_free_cancel_allow_grounded_and_aerial_states():
+	return current_state().state_name != "QuickerDraw" and .should_free_cancel_allow_grounded_and_aerial_states()
+
 func _draw():
 	._draw()
 	var draw_target = Vector2()

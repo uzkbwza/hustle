@@ -10,6 +10,7 @@ func _ready():
 	_Global.steam_errorMsg = ""
 
 func _process(delta):
+
 	errorMsg.text = _Global.steam_errorMsg
 	
 	var css = _Global.css_instance

@@ -553,7 +553,7 @@ func update_buttons(refresh = true):
 				cancel_into.append("Grounded")
 			else:
 				cancel_into.append("Aerial")
-		if fighter.feinting and fighter.opponent.current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
+		if fighter.feinting and fighter.should_free_cancel_allow_grounded_and_aerial_states() and fighter.opponent.current_state().busy_interrupt_type != CharacterState.BusyInterrupt.Hurt:
 			cancel_into.append("Grounded")
 			cancel_into.append("Aerial")
 	else:

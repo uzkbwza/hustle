@@ -184,12 +184,6 @@ func _on_network_character_selected(player_id, character, style=null):
 		if Network.is_host():
 			Network.rpc_("send_match_data", get_match_data())
 
-#func _on_network_match_locked_in(match_data):
-#	network_match_data = match_data
-#	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
-#		Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "character", match_data.selected_characters[SteamLobby.PLAYER_SIDE].name)
-#	go()
-	
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
@@ -198,9 +192,6 @@ func _on_network_match_locked_in(match_data):
 		loadThread.wait_to_finish()
 	loadThread = Thread.new()
 	loadThread.start(self, "net_async_loadOtherChar")
-#
-#func _on_show_settings_toggled(on):
-#	$"%GameSettingsPanelContainer".visible = on
 
 func init(singleplayer=true):
 	emit_signal("opened")

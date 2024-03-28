@@ -221,10 +221,11 @@ func quit_match():
 				"match_quit": true
 			})
 		Steam.setLobbyMemberData(LOBBY_ID, "status", "idle")
-		Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "character", "")
-		Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
 		Steam.setLobbyMemberData(LOBBY_ID, "game_started", "false")
+		if REMATCHING_ID == 0:
+			Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
+			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 
 func exit_match_from_button():
 	if !SPECTATING:

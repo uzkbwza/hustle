@@ -10,8 +10,11 @@ func _ready():
 	_Global.steam_errorMsg = ""
 
 func _process(delta):
+	if !is_visible_in_tree():
+		return
+
 	errorMsg.text = _Global.steam_errorMsg
-	
+
 	var css = _Global.css_instance
 	if css != null:
 		for game in $"%MatchList".get_children():

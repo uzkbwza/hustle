@@ -145,13 +145,12 @@ func box_draw():
 		draw_rect(rect, stroke, false)
 
 func can_draw_box():
-	if editor_selected:
-		return true
-#	if Network.get("multiplayer_active"):
-#		return false
 	if !can_draw:
 		return false
-	if Global.get("show_hitboxes") != null:
+	if Engine.editor_hint:
+		if editor_selected:
+			return true
+	else:
 		return Global.show_hitboxes
 
 func _ready():
@@ -165,4 +164,5 @@ func _process(delta):
 func _draw():
 	if !can_draw_box():
 		return
+	
 	box_draw()
