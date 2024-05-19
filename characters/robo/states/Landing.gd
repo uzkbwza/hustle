@@ -16,9 +16,9 @@ var has_hitbox = false
 
 func _frame_0():
 	set_lag(null)
-	var prev: CharacterState = _previous_state()
+	var prev = _previous_state()
 	var speed = host.last_aerial_vel.y
-	has_hitbox = prev.busy_interrupt_type != BusyInterrupt.Hurt and !(prev is CharacterHurtState)
+	has_hitbox = prev.busy_interrupt_type != BusyInterrupt.Hurt and !(prev and prev.get("IS_HURT_STATE"))
 	hitbox.hits_vs_grounded = host.can_ground_pound and fixed.gt(speed, SPEED_HITBOX_ACTIVATION) and has_hitbox
 
 #	set_lag(null if !hitbox.hits_vs_grounded else GROUND_POUND_LAG)

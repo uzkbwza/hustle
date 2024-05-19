@@ -54,7 +54,9 @@ max_fall_speed = "15"
 extra_state_variables = "damage
 speed
 facing"
+has_projectile_parry_window = false
 immunity_susceptible = false
+movable = false
 apply_hitlag_when_hit_by_melee = false
 projectile_immune = true
 

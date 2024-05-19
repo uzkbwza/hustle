@@ -49,6 +49,7 @@ force_x
 force_y"
 damages_own_team = true
 has_projectile_parry_window = false
+movable = false
 can_be_hit_by_melee = true
 free_cancel_on_hit = true
 

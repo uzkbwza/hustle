@@ -42,6 +42,7 @@ var stance_teleport_x = 0
 var detonating = false
 var shifting = false
 var temporal_round = null
+var drift_effect = false
 var fatal_cut_move_dir_x = 0
 var fatal_cut_move_dir_y = 0
 var fatal_cut_start_pos_x = 0
@@ -55,6 +56,8 @@ var ticks_until_time_shift = 0
 var lasso_parried = false
 var default_max_air_speed = "9"
 var milk_toggled = false
+var milk_toggle_tick = 0
+
 var shifted_this_turn = false
 
 func _ready():
@@ -122,6 +125,9 @@ func tick():
 				shifting = false
 
 	.tick()
+
+	if drift_effect:
+		spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
 
 	if drift_jump_timer > 0:
 		drift_jump_timer -= 1
@@ -200,6 +206,7 @@ func drift():
 #						hitlag_ticks += 2
 					
 				milk_toggled = true
+				milk_toggle_tick = current_tick
 				super_effect(10)
 #				use_air_movement()
 				for i in range(DRIFT_SUPERS):
@@ -207,7 +214,7 @@ func drift():
 				combo_supers += 1
 
 				set_vel(get_vel().x, "0")
-			spawn_particle_effect_relative(preload("res://characters/swordandgun/freshmilkparticle.tscn"), Vector2(0, 0))
+				drift_effect = true
 
 func process_extra(extra):
 	.process_extra(extra)
@@ -226,7 +233,7 @@ func process_extra(extra):
 
 	if extra.has("hindsight") and supers_available > 0:
 		if extra.hindsight:
-#			super_effect(5)
+			ex_effect(0)
 #			drain_super_meter(MAX_SUPER_METER / 2)
 			use_super_bar()
 #			super_effect(1)
@@ -261,6 +268,9 @@ func on_state_ended(state):
 	if state.state_name == "Roll":
 		lasso_parried = false
 	bullet_cancelling = false
+
+	if milk_toggle_tick < current_tick:
+		drift_effect = false
 	milk_toggled = false
 
 func use_bullet():

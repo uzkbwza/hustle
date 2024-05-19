@@ -50,8 +50,6 @@ unique_name_in_owner = true
 visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 60.0
-margin_bottom = 66.0
 always_max = true
 default_value = Vector2( 1, 0 )
 

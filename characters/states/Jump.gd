@@ -12,6 +12,8 @@ export var super_jump_speed_override = ""
 
 export var fall_anim = false
 export var fall_anim_speed = "1"
+export var back_full_hop_sadness = 10
+export var back_short_hop_sadness = 5
 
 const SHORT_HOP_IASA = 9
 const SHORT_HOP_COMBO_IASA = 7
@@ -124,7 +126,7 @@ func _frame_0():
 		current_tick = 3
 
 	if back and host.combo_count <= 0:
-		host.add_penalty(10 if full_hop else 5)
+		host.add_penalty(back_full_hop_sadness if full_hop else back_short_hop_sadness)
 		backdash_iasa = true
 		beats_backdash = false
 	else:

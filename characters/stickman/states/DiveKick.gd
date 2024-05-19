@@ -36,10 +36,12 @@ func _frame_0():
 		
 		hitbox.y = -9
 		hitbox.hits_vs_grounded = true
+		hitbox.block_cancel_allowed = false
 		hitbox.dir_y = "1.0"
 		
 		if data.y < 0:
 			hitbox.hits_vs_grounded = false
+			hitbox.block_cancel_allowed = true
 			hitbox.dir_y = "-1.0"
 			anim_name = "DiveKick2Up"
 			hitbox.y -= 16

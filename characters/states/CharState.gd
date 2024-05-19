@@ -114,11 +114,15 @@ export var supers_used_ = -1
 export var super_freeze_ticks_ = 15
 export var super_effect_ = false
 export var scale_combo_meter_ = false
+export var force_super_effect = false
 
 func _frame_0_shared():
-	if scale_combo_meter_ and (super_level_ if supers_used_ == -1 else supers_used_) > 0:
+	var levels = super_level_ if supers_used_ == -1 else supers_used_
+	if scale_combo_meter_ and levels > 0:
 		host.combo_supers += 1
-	if super_effect_:
+	if !force_super_effect and (super_effect_ and levels <= 1):
+		host.ex_effect(super_freeze_ticks_)
+	elif force_super_effect or super_effect_:
 		host.super_effect(super_freeze_ticks_)
 	for i in range(super_level_ if supers_used_ == -1 else supers_used_):
 		host.use_super_bar()
@@ -390,7 +394,7 @@ func try_hit_cancel(obj, hitbox):
 		var projectile = !obj.is_in_group("Fighter")
 		enable_hit_cancel(projectile)
 		if projectile:
-			host.global_hitlag(host.hitlag_ticks)
+			host.global_hitlag(host.hitlag_ticks, true)
 			host.hitlag_ticks = 0
 
 func process_hitboxes():
@@ -558,6 +562,9 @@ func _exit_shared():
 #	host.sprite.rotation = 0
 	emit_signal("state_ended")
 	host.z_index = 0
+
+func flip_allowed():
+	return true
 
 func on_interrupt():
 	pass

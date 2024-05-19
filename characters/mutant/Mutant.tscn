@@ -1,7 +1,8 @@
-[gd_scene load_steps=321 format=2]
+[gd_scene load_steps=323 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://HurtboxState.gd" type="Script" id=2]
+[ext_resource path="res://characters/mutant/states/PounceFailRoll.gd" type="Script" id=3]
 [ext_resource path="res://characters/mutant/states/BeastState.gd" type="Script" id=4]
 [ext_resource path="res://characters/mutant/Beast.gd" type="Script" id=5]
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=6]
@@ -315,6 +316,7 @@
 [ext_resource path="res://characters/mutant/sprites/anti_air_up4.png" type="Texture" id=314]
 [ext_resource path="res://characters/mutant/sprites/actionicons/howl.png" type="Texture" id=315]
 [ext_resource path="res://characters/mutant/sprites/actionicons/leap slash.png" type="Texture" id=316]
+[ext_resource path="res://characters/CommandAt.gd" type="Script" id=317]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -707,8 +709,8 @@ extra_color_2 = Color( 0.392157, 0.823529, 0.419608, 1 )
 [node name="Sprite" parent="Flip" index="0"]
 material = SubResource( 2 )
 frames = SubResource( 7 )
-animation = "BiteGrab"
-frame = 12
+animation = "SwipeDown"
+frame = 4
 offset = Vector2( 0, -16 )
 __meta__ = {
 "_edit_group_": true,
@@ -1207,9 +1209,9 @@ active_ticks = 2
 z_index = 999
 script = ExtResource( 2 )
 x = 13
-y = -8
+y = -12
 width = 19
-height = 8
+height = 12
 start_tick = 4
 endless = true
 
@@ -1328,6 +1330,7 @@ GroundedAttack"
 interrupt_into_string = "Aerial
 Grounded"
 force_air_juke = true
+grounded = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/GroundToAirSpin" index="0"]
 z_index = 1000
@@ -1362,7 +1365,7 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 4
 y = -16
-width = 12
+width = 16
 height = 19
 damage = 19
 chip_damage_modifier = "1.75"
@@ -1390,8 +1393,8 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 2
 y = -14
-width = 17
-height = 5
+width = 22
+height = 8
 damage = 19
 chip_damage_modifier = "1.75"
 hitstun_ticks = 10
@@ -1448,7 +1451,6 @@ plus_frames = -3
 hit_height = 2
 hit_sound = ExtResource( 105 )
 dir_y = "1.0"
-knockback = "10"
 grounded_hit_state = "HurtAerial"
 minimum_grounded_frames = 8
 knockdown = true
@@ -1635,7 +1637,7 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 4
 y = -16
-width = 12
+width = 16
 height = 19
 damage = 19
 chip_damage_modifier = "1.75"
@@ -1664,8 +1666,8 @@ z_index = 1000
 script = ExtResource( 1 )
 x = 2
 y = -14
-width = 17
-height = 5
+width = 22
+height = 8
 damage = 19
 chip_damage_modifier = "1.75"
 hitstun_ticks = 15
@@ -2148,6 +2150,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2168,6 +2171,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2188,6 +2192,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2208,6 +2213,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2228,6 +2234,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2235,6 +2242,56 @@ knockback = "9.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 10
 active_ticks = 6
+
+[node name="LimbHurtbox" type="Node2D" parent="StateMachine/AcidSlashJ" index="5"]
+z_index = 999
+script = ExtResource( 180 )
+x = 17
+y = -33
+width = 12
+height = 12
+start_tick = 9
+active_ticks = 5
+
+[node name="LimbHurtbox5" type="Node2D" parent="StateMachine/AcidSlashJ" index="6"]
+z_index = 999
+script = ExtResource( 180 )
+x = 8
+y = -28
+width = 12
+height = 12
+start_tick = 9
+active_ticks = 5
+
+[node name="LimbHurtbox3" type="Node2D" parent="StateMachine/AcidSlashJ" index="7"]
+z_index = 999
+script = ExtResource( 180 )
+x = 25
+y = -39
+width = 11
+height = 11
+start_tick = 9
+active_ticks = 5
+
+[node name="LimbHurtbox4" type="Node2D" parent="StateMachine/AcidSlashJ" index="8"]
+z_index = 999
+script = ExtResource( 180 )
+x = -12
+y = -20
+width = 10
+height = 10
+start_tick = 9
+active_ticks = 5
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/AcidSlashJ" index="9"]
+z_index = 999
+script = ExtResource( 2 )
+x = -1
+y = -20
+width = 12
+height = 15
+start_tick = 9
+active_ticks = 5
 
 [node name="AcidSlashJUp" type="Node2D" parent="StateMachine" index="20"]
 script = ExtResource( 295 )
@@ -2272,6 +2329,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2292,6 +2350,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2312,6 +2371,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2332,6 +2392,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2352,6 +2413,7 @@ hitstun_ticks = 16
 hitlag_ticks = 9
 victim_hitlag = 12
 hits_vs_grounded = false
+can_clash = false
 plus_frames = -4
 whiff_sound = ExtResource( 209 )
 hit_sound = ExtResource( 16 )
@@ -2359,6 +2421,25 @@ knockback = "9.0"
 grounded_hit_state = "HurtAerial"
 start_tick = 10
 active_ticks = 6
+
+[node name="LimbHurtbox" type="Node2D" parent="StateMachine/AcidSlashJUp" index="5"]
+z_index = 999
+script = ExtResource( 180 )
+x = 6
+y = -39
+width = 14
+height = 18
+start_tick = 9
+active_ticks = 5
+
+[node name="HurtboxState" type="Node2D" parent="StateMachine/AcidSlashJUp" index="6"]
+z_index = 999
+script = ExtResource( 2 )
+y = -20
+width = 12
+height = 12
+start_tick = 9
+active_ticks = 5
 
 [node name="GroundSpike" type="Node2D" parent="StateMachine" index="21"]
 script = ExtResource( 143 )
@@ -2428,25 +2509,25 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 166 ): {
-"x": -8,
-"y": -17
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
 },
 ExtResource( 173 ): {
 "x": 9,
 "y": -11
 },
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
-},
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
+ExtResource( 166 ): {
+"x": -8,
+"y": -17
 },
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -2481,7 +2562,7 @@ damage_in_combo = 40
 minimum_damage = 10
 hitbox_type = 2
 hitlag_ticks = 13
-scale_combo = false
+damage_proration = 3
 cancellable = false
 hit_sound = ExtResource( 20 )
 start_tick = 14
@@ -2842,6 +2923,8 @@ x = 18
 y = -21
 width = 18
 height = 21
+scale_combo = false
+increment_combo = false
 hits_vs_aerial = false
 hit_sound = ExtResource( 174 )
 start_tick = 13
@@ -2975,7 +3058,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3000,7 +3083,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3025,7 +3108,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3087,7 +3170,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3112,7 +3195,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3137,7 +3220,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_y = "1.0"
@@ -3231,7 +3314,7 @@ hitlag_ticks = 7
 damage_proration = 1
 can_clash = false
 block_cancel_allowed = false
-plus_frames = 1
+plus_frames = 2
 whiff_sound = ExtResource( 31 )
 hit_sound = ExtResource( 20 )
 dir_x = "0.25"
@@ -3553,7 +3636,24 @@ minimum_grounded_frames = 6
 start_tick = 1
 active_ticks = 1
 
-[node name="Roll" parent="StateMachine" index="44"]
+[node name="PounceFailRoll" type="Node2D" parent="StateMachine" index="44"]
+script = ExtResource( 3 )
+__meta__ = {
+"_editor_description_": ""
+}
+apply_forces = true
+apply_grav = true
+apply_custom_x_fric = true
+apply_forces_no_limit = true
+custom_x_fric = "0.05"
+fallback_state = "Knockdown"
+sprite_animation = "RollForward"
+anim_length = 4
+loop_animation = true
+endless = true
+busy_interrupt_type = 1
+
+[node name="Roll" parent="StateMachine" index="45"]
 script = ExtResource( 290 )
 __meta__ = {
 "_editor_description_": ""
@@ -3567,13 +3667,13 @@ beats_grab = false
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
 
-[node name="Fall" parent="StateMachine" index="55"]
+[node name="Fall" parent="StateMachine" index="56"]
 sprite_animation = ""
 
-[node name="SuperFall" parent="StateMachine" index="57"]
+[node name="SuperFall" parent="StateMachine" index="58"]
 sprite_animation = "Fall"
 
-[node name="DashForward" parent="StateMachine" index="64"]
+[node name="DashForward" parent="StateMachine" index="65"]
 script = ExtResource( 197 )
 __meta__ = {
 "_editor_description_": ""
@@ -3594,7 +3694,7 @@ height = 10
 start_tick = 0
 endless = true
 
-[node name="ChargeDashForward" parent="StateMachine" index="65"]
+[node name="ChargeDashForward" parent="StateMachine" index="66"]
 ticks_per_frame = 3
 loop_animation = true
 refresh_loop = false
@@ -3610,20 +3710,37 @@ height = 8
 start_tick = 0
 endless = true
 
-[node name="Jump" parent="StateMachine" index="69"]
+[node name="HostCommand" type="Node" parent="StateMachine/ChargeDashForward" index="1"]
+script = ExtResource( 317 )
+tick = 1
+command = "add_juke_pip"
+
+[node name="HostCommand2" type="Node" parent="StateMachine/ChargeDashForward" index="2"]
+script = ExtResource( 317 )
+tick = 10
+command = "add_juke_pip"
+
+[node name="DashBackward" parent="StateMachine" index="67"]
+back_penalty = 8
+
+[node name="Jump" parent="StateMachine" index="70"]
 data_ui_scene = ExtResource( 84 )
 speed = "11"
 x_modifier = "1.05"
 fall_anim = true
+back_full_hop_sadness = 12
+back_short_hop_sadness = 8
 
-[node name="SuperJump" parent="StateMachine" index="71"]
+[node name="SuperJump" parent="StateMachine" index="72"]
 speed = "11"
 
-[node name="DoubleJump" parent="StateMachine" index="72"]
+[node name="DoubleJump" parent="StateMachine" index="73"]
 speed = "10"
 x_modifier = "1.05"
+back_full_hop_sadness = 12
+back_short_hop_sadness = 8
 
-[node name="AirDash" parent="StateMachine" index="73"]
+[node name="AirDash" parent="StateMachine" index="74"]
 script = ExtResource( 292 )
 __meta__ = {
 "_editor_description_": ""
@@ -3644,7 +3761,7 @@ speed = "14"
 fric = "0.03"
 forward_dash_name = "AirDash"
 
-[node name="Grabbed" parent="StateMachine" index="80"]
+[node name="Grabbed" parent="StateMachine" index="81"]
 anim_length = 4
 ticks_per_frame = 2
 loop_animation = true
@@ -3654,14 +3771,14 @@ beats_grab = false
 pushback_x = "0.0"
 loop_active_ticks = 0
 
-[node name="AirGrab" parent="StateMachine" index="84"]
+[node name="AirGrab" parent="StateMachine" index="85"]
 data_ui_scene = ExtResource( 124 )
 
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 beats_grab = false
 pushback_x = "0.0"
 
-[node name="ForwardThrow" parent="StateMachine" index="86"]
+[node name="ForwardThrow" parent="StateMachine" index="87"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -3676,17 +3793,17 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
+ExtResource( 81 ): {
+"x": -11,
+"y": -6
 },
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
 },
-ExtResource( 81 ): {
-"x": -11,
-"y": -6
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
 }
 }
 land_cancel = true
@@ -3697,7 +3814,7 @@ release_throw_pos_y = 16
 dir_y = "1.0"
 di_modifier = "1.5"
 
-[node name="BackThrow" parent="StateMachine" index="87"]
+[node name="BackThrow" parent="StateMachine" index="88"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -3719,7 +3836,7 @@ release_throw_pos_y = 16
 dir_y = "1.0"
 di_modifier = "1.5"
 
-[node name="AirForwardThrow" parent="StateMachine" index="88"]
+[node name="AirForwardThrow" parent="StateMachine" index="89"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -3742,7 +3859,7 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="AirBackThrow" parent="StateMachine" index="89"]
+[node name="AirBackThrow" parent="StateMachine" index="90"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
@@ -3765,14 +3882,14 @@ dir_y = "1.0"
 hard_knockdown = true
 di_modifier = "1.5"
 
-[node name="AirDownThrow" parent="StateMachine" index="90"]
+[node name="AirDownThrow" parent="StateMachine" index="91"]
 custom_grav = "0.25"
 min_land_cancel_frame = 20
 interrupt_from_string = ""
 dir_x = "1.0"
 di_modifier = "1.5"
 
-[node name="Taunt" parent="StateMachine" index="92"]
+[node name="Taunt" parent="StateMachine" index="93"]
 script = ExtResource( 141 )
 __meta__ = {
 "_editor_description_": ""

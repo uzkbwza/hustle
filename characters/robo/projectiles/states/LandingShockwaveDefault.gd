@@ -31,3 +31,6 @@ func _tick():
 	if hitbox.damage < 0:
 		host.disable()
 	._tick()
+
+func _frame_5():
+	host.has_projectile_parry_window = true

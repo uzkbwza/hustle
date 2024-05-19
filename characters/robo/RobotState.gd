@@ -26,13 +26,14 @@ func _frame_0_shared():
 	._frame_0_shared()
 	if !is_super:
 		return
-	if super_effect:
-		if super_scale_combo_meter and (super_level if supers_used == -1 else supers_used) > 0:
-			host.combo_supers += 1
-		host.start_super(super_freeze_ticks)
-		host.play_sound("Super")
-		host.play_sound("Super2")
-		host.play_sound("Super3")
+
+	var levels = super_level if supers_used == -1 else supers_used
+	if super_scale_combo_meter and levels > 0:
+		host.combo_supers += 1
+	if !force_super_effect and (super_effect and levels <= 1):
+		host.ex_effect(super_freeze_ticks)
+	elif force_super_effect or super_effect:
+		host.super_effect(super_freeze_ticks)
 	for i in range(super_level if supers_used == -1 else supers_used):
 		host.use_super_bar()
 

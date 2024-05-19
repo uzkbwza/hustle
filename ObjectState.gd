@@ -147,6 +147,12 @@ func apply_enter_force():
 #		force.y = host.fixed.mul(force.y, "2.0")
 		host.apply_force_relative(force.x, force.y)
 
+func apply_timed_force():
+	if force_speed != "0.0":
+		var force = xy_to_dir(force_dir_x, force_dir_y, force_speed, "1.0")
+#		force.y = host.fixed.mul(force.y, "2.0")
+		host.apply_force_relative(force.x, force.y)
+
 func _on_hit_something(obj, hitbox):
 	if hitbox.followup_state != "" and obj.is_in_group("Fighter"):
 		queue_state_change(hitbox.followup_state)
@@ -235,10 +241,7 @@ func _tick_shared():
 		if current_tick == sfx_tick and sfx_player and !ReplayManager.resimulating:
 			sfx_player.play()
 		if current_tick == force_tick:
-			if force_speed != "0.0":
-				var force = xy_to_dir(force_dir_x, force_dir_y, force_speed, "1.0")
-		#		force.y = host.fixed.mul(force.y, "2.0")
-				host.apply_force_relative(force.x, force.y)
+			apply_timed_force()
 
 		if current_tick == projectile_tick:
 			spawn_exported_projectile()

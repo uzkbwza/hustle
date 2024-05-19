@@ -1763,9 +1763,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -85.0
-margin_top = -13.0
+margin_top = -15.0
 margin_right = -64.0
-margin_bottom = -7.0
+margin_bottom = -9.0
 mouse_filter = 2
 texture = ExtResource( 35 )
 
@@ -2308,16 +2308,16 @@ text = "Quit"
 
 [node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -80.5
-margin_top = -96.0
-margin_right = 80.5
-margin_bottom = 111.0
+margin_left = -81.0
+margin_top = -123.0
+margin_right = 81.0
+margin_bottom = 123.0
 grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 12
 size_flags_vertical = 12
 theme = ExtResource( 4 )
@@ -2326,11 +2326,11 @@ script = ExtResource( 53 )
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 160.0
-margin_bottom = 232.0
+margin_right = 161.0
+margin_bottom = 245.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
-margin_right = 159.0
+margin_right = 160.0
 margin_bottom = 9.0
 rect_min_size = Vector2( 0, 9 )
 mouse_filter = 1
@@ -2347,8 +2347,8 @@ align = 1
 
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
-margin_right = 159.0
-margin_bottom = 231.0
+margin_right = 160.0
+margin_bottom = 244.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2356,29 +2356,29 @@ size_flags_vertical = 3
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 158.0
-margin_bottom = 220.0
+margin_right = 159.0
+margin_bottom = 233.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
-margin_right = 157.0
-margin_bottom = 219.0
+margin_right = 158.0
+margin_bottom = 232.0
 size_flags_vertical = 3
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_right = 157.0
+margin_right = 158.0
 
 [node name="FullscreenButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 1.0
-margin_right = 157.0
+margin_right = 158.0
 margin_bottom = 13.0
 text = "fullscreen"
 
 [node name="MusicButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 14.0
-margin_right = 157.0
+margin_right = 158.0
 margin_bottom = 26.0
 pressed = true
 text = "enable music"
@@ -2386,122 +2386,129 @@ text = "enable music"
 [node name="HitboxesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 27.0
-margin_right = 157.0
+margin_right = 158.0
 margin_bottom = 39.0
 text = "show hitboxes"
 
-[node name="ExtraInfoButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="ExtraFreezeFrames" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
-margin_right = 157.0
+margin_right = 158.0
 margin_bottom = 52.0
+text = "enable hit freeze frames"
+
+[node name="ExtraInfoButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 53.0
+margin_right = 158.0
+margin_bottom = 65.0
 text = "show extra game info"
 
 [node name="AutoFCButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 53.0
-margin_right = 157.0
-margin_bottom = 65.0
+margin_top = 66.0
+margin_right = 158.0
+margin_bottom = 78.0
 pressed = true
 text = "enable auto free cancel"
 
 [node name="LastMoveIndicatorButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 66.0
-margin_right = 157.0
-margin_bottom = 78.0
+margin_top = 79.0
+margin_right = 158.0
+margin_bottom = 91.0
 pressed = true
 text = "show last moves played"
 
 [node name="ProjectileOwnersButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 79.0
-margin_right = 157.0
-margin_bottom = 91.0
+margin_top = 92.0
+margin_right = 158.0
+margin_bottom = 104.0
 pressed = true
 text = "show projectile owners"
 
 [node name="SpeedLinesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 92.0
-margin_right = 157.0
-margin_bottom = 104.0
+margin_top = 105.0
+margin_right = 158.0
+margin_bottom = 117.0
 pressed = true
 text = "show speed lines"
 
 [node name="TimerSoundButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
-margin_right = 157.0
-margin_bottom = 117.0
+margin_top = 118.0
+margin_right = 158.0
+margin_bottom = 130.0
 pressed = true
 text = "enable low timer sound"
 
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 118.0
-margin_right = 157.0
-margin_bottom = 130.0
+margin_top = 131.0
+margin_right = 158.0
+margin_bottom = 143.0
 text = "show playback controls"
 
 [node name="HSeparator" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 131.0
-margin_right = 157.0
-margin_bottom = 135.0
+margin_top = 144.0
+margin_right = 158.0
+margin_bottom = 148.0
 
 [node name="EnableEmotes" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 136.0
-margin_right = 157.0
-margin_bottom = 148.0
+margin_top = 149.0
+margin_right = 158.0
+margin_bottom = 161.0
 pressed = true
 text = "show emotes"
 
 [node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 149.0
-margin_right = 157.0
-margin_bottom = 161.0
+margin_top = 162.0
+margin_right = 158.0
+margin_bottom = 174.0
 text = "enable style colors"
 
 [node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 162.0
-margin_right = 157.0
-margin_bottom = 174.0
+margin_top = 175.0
+margin_right = 158.0
+margin_bottom = 187.0
 text = "enable particle auras"
 
 [node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 175.0
-margin_right = 157.0
-margin_bottom = 187.0
+margin_top = 188.0
+margin_right = 158.0
+margin_bottom = 200.0
 text = "enable custom hitsparks"
 
 [node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 188.0
-margin_right = 157.0
-margin_bottom = 192.0
+margin_top = 201.0
+margin_right = 158.0
+margin_bottom = 205.0
 
 [node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 193.0
-margin_right = 157.0
-margin_bottom = 205.0
+margin_top = 206.0
+margin_right = 158.0
+margin_bottom = 218.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-margin_top = 206.0
-margin_right = 157.0
-margin_bottom = 206.0
+margin_top = 219.0
+margin_right = 158.0
+margin_bottom = 219.0
 size_flags_vertical = 3
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 207.0
-margin_right = 157.0
-margin_bottom = 219.0
+margin_top = 220.0
+margin_right = 158.0
+margin_bottom = 232.0
 text = "done"
 
 [node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]

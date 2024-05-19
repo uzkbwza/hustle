@@ -41,4 +41,4 @@ func _tick():
 	host.apply_grav()
 	host.apply_forces()
 	if left_ground and host.is_grounded():
-		queue_state_change("JumpKickLanding", 15)
+		queue_state_change("JumpKickLanding", 8)

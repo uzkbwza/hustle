@@ -365,7 +365,9 @@ func hit(obj):
 					host.current_state().feinting = false
 			if !host.is_ghost:
 				if !bump_on_whiff:
-					camera.bump(camera_bump_dir, screenshake_amount, Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier))
+					var length = Utils.frames(victim_hitlag if screenshake_frames < 0 else screenshake_frames) * float(obj.global_hitstop_modifier)
+#					length = length + (length * (Fighter.GLOBAL_HITLAG_MODIIFER if (Global.replay_extra_freeze_frames and !obj.is_ghost) else 0))
+					camera.bump(camera_bump_dir, screenshake_amount, length)
 			if obj.can_parry_hitbox(self) or name in obj.parried_hitboxes:
 				can_hit = false
 				emit_signal("got_parried")

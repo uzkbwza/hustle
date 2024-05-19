@@ -384,7 +384,7 @@ func _send_ui_action(action=null):
 	update_buttons(false)
 
 	if current_button:
-		$"%ReverseButton".set_disabled(!current_button.reversible)
+		$"%ReverseButton".set_disabled(!current_button.is_reversible() if current_button.has_method("is_reversible") else !current_button.reversible)
 		if current_button.state:
 			$"%FeintButton".set_disabled(!current_button.state.can_feint())
 		else:
@@ -395,8 +395,6 @@ func _send_ui_action(action=null):
 			if $"%FeintButton".disabled:
 				$"%FeintButton".pressed = false
 
-
-				
 func extra_updated():
 	if fighter_extra:
 		fighter_extra.update_selected_move(current_button.state)
@@ -435,7 +433,7 @@ func on_action_selected(action, button):
 	if current_button and current_button.data_node:
 		current_button.data_node.on_button_selected()
 	
-	$"%ReverseButton".set_disabled(!button.reversible)
+	$"%ReverseButton".set_disabled(!button.is_reversible() if button.has_method("is_reversible") else !button.reversible)
 	if button.state:
 		$"%FeintButton".set_disabled(!(button.state.can_feint() and fighter_extra.can_feint))
 	else:
@@ -611,10 +609,11 @@ func update_buttons(refresh = true):
 					if excepted:
 						continue
 					found = true
+					
 					$"%ReverseButton".set_disabled(false)
 	#							$"%SelectButton".disabled = false
-					any_available_actions = true
 					
+					any_available_actions = true
 					button.set_disabled(false)
 					button.show()
 					button.set_initiative(initiative)
@@ -645,6 +644,7 @@ func activate(refresh=true):
 #	print("activating")
 	active = true
 	locked_in = false
+
 #	reset_prediction()
 #	_get_opposite_buttons().reset_prediction()
 	if is_instance_valid(fighter):
@@ -690,7 +690,6 @@ func activate(refresh=true):
 	current_action = null
 	current_button = null
 	
-	
 	Network.turns_ready = {
 		1: false,
 		2: false
@@ -714,6 +713,7 @@ func activate(refresh=true):
 		$"%SelectButton".disabled = game.spectating
 		
 	fighter_extra.hide()
+	
 	update_buttons(refresh)
 
 	

@@ -29,8 +29,8 @@ var draw_bg_circle = false
 var lock_in_tick = -INF
 
 const DISCORD_URL = "https://discord.gg/YourOnlyMoveIsHUSTLE"
-const TWITTER_URL = "https://twitter.com/YourMoveHUSTLE"
-const IVY_SLY_URL = "https://twitter.com/ivy_sly_"
+const TWITTER_URL = "https://x.com/YourMoveHUSTLE"
+const IVY_SLY_URL = "https://www.ivysly.com"
 const STEAM_URL = "https://store.steampowered.com/app/2212330"
 const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
 var MIN_TURN_TIME = 5.0
@@ -74,7 +74,7 @@ onready var global_option_check_buttons = {
 	$"%AutoFCButton": "auto_fc",
 	$"%ExtraInfoButton": "show_extra_info",
 	$"%TimerSoundButton": "enable_timer_sound",
-
+	$"%ExtraFreezeFrames": "replay_extra_freeze_frames",
 }
 
 func _ready():
@@ -95,11 +95,11 @@ func _ready():
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
 	$"%ShowAutosavedReplays".connect("pressed", self, "_on_view_replays_button_pressed")
-	$"%DiscordButton".connect("pressed", OS, "shell_open", [DISCORD_URL])
-	$"%IvySlyLinkButton".connect("pressed", OS, "shell_open", [IVY_SLY_URL])
-	$"%WishlistButton".connect("pressed", OS, "shell_open", [STEAM_URL])
-	$"%TwitterButton".connect("pressed", OS, "shell_open", [TWITTER_URL])
-	$"%ItchButton".connect("pressed", OS, "shell_open", [ITCH_URL])
+	$"%DiscordButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [DISCORD_URL])
+	$"%IvySlyLinkButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [IVY_SLY_URL])
+	$"%WishlistButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [STEAM_URL])
+	$"%TwitterButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [TWITTER_URL])
+	$"%ItchButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [ITCH_URL])
 	$"%ResetZoomButton".connect("pressed", self, "_on_reset_zoom_pressed")
 	Network.connect("player_turns_synced", self, "on_player_actionable")
 	Network.connect("player_turn_ready", self, "_on_player_turn_ready")

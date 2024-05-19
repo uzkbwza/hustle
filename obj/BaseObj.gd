@@ -142,8 +142,14 @@ func _ready():
 		sounds[sound.name] = sound
 		sound.bus = "Fx"
 
-func global_hitlag(amount):
-	emit_signal("global_hitlag", amount)
+func global_hitlag(amount, force=false):
+#	if !ReplayManager.playback:
+#		return
+	if !force and !Global.replay_extra_freeze_frames:
+		return
+	if amount > 0 and amount < 1:
+		amount == 1
+	emit_signal("global_hitlag", round(amount))
 
 func play_sound(sound_name):
 	if is_ghost or ReplayManager.resimulating:
@@ -874,6 +880,9 @@ func state_tick():
 		if (!state_machine.state.endless) and state_machine.state.current_tick >= state_machine.state.anim_length and state_machine.queued_states == []:
 			state_machine.queue_state(state_machine.state.fallback_state)
 			state_machine.tick()
+
+func get_states():
+	return state_machine.states_map.values()
 
 func fixed_deg_to_rad(n):
 	assert(n is int or n is String)

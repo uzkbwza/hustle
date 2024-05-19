@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.9.0-steam"
+var VERSION = "1.9.5-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -30,6 +30,7 @@ var enable_timer_sound = true
 var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
+var replay_extra_freeze_frames = true
 
 var auto_fc = true
 var ghost_speed = 2
@@ -209,6 +210,7 @@ func save_options():
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
 			"speed_lines_enabled": speed_lines_enabled,
 			"auto_fc": auto_fc,
+			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 		}
 	})
 
@@ -235,7 +237,8 @@ func get_default_player_data():
 			"show_projectile_owners": true,
 			"speed_lines_enabled": true,
 			"auto_fc": true,
-			"show_extra_info": false
+			"show_extra_info": false,
+			"replay_extra_freeze_frames": true,
 		}
 	}
 

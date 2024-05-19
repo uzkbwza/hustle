@@ -6,7 +6,7 @@ const IASA = 20
 const WHIFF_LANDING_LAG = 4
 const WHIFF_IASA = 20
 const EXPLOSION = preload("res://characters/swordandgun/projectiles/AfterImageExplosionEffect.tscn")
-const HITBOX_START_FRAME = 11
+const HITBOX_START_FRAME = 6
 
 var hitboxes = []
 
@@ -52,7 +52,6 @@ func _enter():
 	host.apply_force(move_vec.x, fixed.div(move_vec.y, "2"))
 	host.fatal_cut_move_dir_x = move_dir.x
 	host.fatal_cut_move_dir_y = move_dir.y
-	host.prediction_effect()
 
 func _frame_0():
 	host.set_grounded(false)
@@ -68,8 +67,6 @@ func _frame_4():
 	if host.initiative:
 		host.start_invulnerability()
 
-
-func _frame_5():
 	var move_dir_x = host.fatal_cut_move_dir_x
 	var move_dir_y = host.fatal_cut_move_dir_y
 
@@ -87,9 +84,9 @@ func _frame_5():
 	var particle_dir = Vector2(float(move_vec.x), float(move_vec.y)).normalized()
 	host.spawn_particle_effect(preload("res://characters/stickman/QuickSlashEffect.tscn"), Vector2(start_pos_x, start_pos_y - 13), particle_dir)
 	host.update_data()
+	host.prediction_effect()
 
-
-func _frame_9():
+func _frame_5():
 	var start_pos_x = host.fatal_cut_start_pos_x
 	var start_pos_y = host.fatal_cut_start_pos_y
 	
@@ -106,6 +103,7 @@ func _frame_9():
 	var move_dir_x = host.fatal_cut_move_dir_x
 	var move_dir_y = host.fatal_cut_move_dir_y
 	host.end_invulnerability()
+
 
 func on_got_blocked():
 	.on_got_blocked()

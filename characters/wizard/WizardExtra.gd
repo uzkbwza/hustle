@@ -71,6 +71,7 @@ func reset():
 		$"%HoverButton".disabled = true
 		$"%FastFallButton".set_pressed_no_signal(false)
 		$"%FastFallButton".disabled = true
+
 func show_options():
 
 	orb_push.hide()

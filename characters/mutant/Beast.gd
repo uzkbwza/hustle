@@ -145,6 +145,9 @@ func add_juke_pips(amount: int):
 	juke_pips += amount
 	juke_pips = Utils.int_clamp(juke_pips, 0, JUKE_PIPS)
 
+func add_juke_pip():
+	add_juke_pips(1)
+
 func copy_to(f):
 	.copy_to(f)
 #	f.juke_dir_type = juke_dir_type
@@ -211,6 +214,13 @@ func on_got_parried():
 		juke_ticks = 0
 		up_juke_ticks = 0
 		hitlag_ticks += 5
+
+func passive_sadness_gain():
+	.passive_sadness_gain()
+	var dir = fixed.sign(last_vel.x)
+	var opp_dir = get_opponent_dir()
+	if dir != 0 and dir != opp_dir and current_tick % 6 == 0:
+		add_penalty(1)
 
 func on_got_push_blocked():
 	if is_neutral_juke():

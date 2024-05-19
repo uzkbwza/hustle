@@ -25,6 +25,7 @@ func _enter():
 		hurtbox_state.start_tick = 0
 	else:
 		hurtbox_state.start_tick = 3
+
 	if !host.sprite.is_connected("frame_changed", self, "on_sprite_frame_changed"):
 		host.sprite.connect("frame_changed", self, "on_sprite_frame_changed")
 	setup_hurtboxes()
@@ -32,6 +33,12 @@ func _enter():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+func _frame_4():
+	if _previous_state_name() != "DashForward":
+		if data:
+			if data.get("x") == 100:
+				host.add_juke_pip()
 
 func on_sprite_frame_changed():
 	if !active:

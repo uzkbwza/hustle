@@ -120,6 +120,7 @@ var super_active = false
 var prediction_effect = false
 var p1_super = false
 var p2_super = false
+var hit_freeze = false
 var ghost_freeze = false
 var player_actionable = true
 var network_sync_tick = -100
@@ -305,6 +306,7 @@ func on_block():
 func on_global_hitlag(amount):
 	super_freeze_ticks = amount
 	parry_freeze = true
+	hit_freeze = true
 
 func forfeit(id):
 	if forfeit:
@@ -498,8 +500,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		p1.gain_super_meter(meter_amount)
 		p2.gain_super_meter(meter_amount)
 
-func on_prediction(player):
-	_on_super_started(7, player)
+func on_prediction(ticks=7, player=null):
+	_on_super_started(ticks, player)
 	prediction_effect = true
 	pass
 
@@ -537,6 +539,11 @@ func initialize_objects():
 		if !object.initialized:
 			object.init()
 
+func process_fx():
+	for fx in effects:
+		if is_instance_valid(fx):
+			fx.tick()
+
 func tick():
 	if is_ghost and not prediction_enabled:
 		return 
@@ -572,9 +579,7 @@ func tick():
 			object.set_y( - ceiling_height)
 			object.on_hit_ceiling()
 
-	for fx in effects:
-		if is_instance_valid(fx):
-			fx.tick()
+	process_fx()
 	current_tick += 1
 	
 	p1.current_tick = current_tick
@@ -1200,6 +1205,8 @@ func negative_on_hit(player):
 func process_tick():
 #	super_active = super_freeze_ticks > 0
 	if super_freeze_ticks > 0:
+		if hit_freeze:
+			process_fx()
 #		super_freeze_ticks -= 1
 #		if super_freeze_ticks == 0:
 #			super_active = false
@@ -1374,7 +1381,7 @@ func _physics_process(_delta):
 			call_deferred("ghost_tick")
 
 	super_active = super_freeze_ticks > 0
-	if super_freeze_ticks > 0:
+	if super_active:
 		super_freeze_ticks -= 1
 		if super_freeze_ticks == 0:
 			super_active = false
@@ -1382,6 +1389,8 @@ func _physics_process(_delta):
 			p2_super = false
 			parry_freeze = false
 			prediction_effect = false
+			hit_freeze = false
+
 
 	if !is_waiting_on_player():
 		emit_signal("simulation_continue")

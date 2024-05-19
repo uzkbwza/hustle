@@ -49,3 +49,6 @@ func _frame_8():
 
 func _exit():
 	host.reset_momentum()
+#
+#func flip_allowed():
+#	return host.combo_count > 0

@@ -850,7 +850,9 @@ fatal_cut_move_dir_x
 fatal_cut_move_dir_y
 fatal_cut_start_pos_x
 fatal_cut_start_pos_y
-drift_jump_timer = 0"
+drift_jump_timer
+milk_toggle_tick
+drift_effect"
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -1234,7 +1236,7 @@ AerialSuper
 FastTeleport"
 interrupt_into_string = "Grounded
 Aerial"
-super_freeze_ticks = 0
+super_freeze_ticks = 20
 super_effect = false
 
 [node name="H1" type="Node2D" parent="StateMachine/TimeSplitter" index="0"]
@@ -2065,6 +2067,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -2118,6 +2121,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "8.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 9
@@ -2166,6 +2170,7 @@ whiff_particle = ExtResource( 273 )
 whiff_sound = ExtResource( 152 )
 hit_sound = ExtResource( 179 )
 knockback = "4.0"
+grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
 start_tick = 7
@@ -2625,11 +2630,6 @@ grounded_hit_state = "HurtAerial"
 start_tick = 8
 active_ticks = 4
 
-[node name="HostCommand" type="Node" parent="StateMachine/UpwardSwipeAir" index="1"]
-script = ExtResource( 332 )
-tick = 11
-command = "try_shoot"
-
 [node name="Stinger" type="Node2D" parent="StateMachine" index="27"]
 script = ExtResource( 331 )
 __meta__ = {
@@ -2827,13 +2827,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 air_type = 2
@@ -2896,13 +2896,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 air_type = 2
@@ -2963,13 +2963,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 121 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 124 ): {
 "x": 27,
 "y": -2
+},
+ExtResource( 121 ): {
+"x": 27,
+"y": 1
 }
 }
 air_type = 2
@@ -3424,6 +3424,11 @@ ground_bounce = false
 start_tick = 11
 active_ticks = 3
 
+[node name="HostCommand" type="Node" parent="StateMachine/PistolWhip" index="5"]
+script = ExtResource( 332 )
+tick = 14
+command = "try_shoot"
+
 [node name="PistolWhipGround" type="Node2D" parent="StateMachine" index="40"]
 script = ExtResource( 326 )
 __meta__ = {
@@ -3609,7 +3614,8 @@ interrupt_from_string = "Aerial
 AerialAttack
 Grounded
 GroundedAttack
-Gun"
+Gun
+"
 interrupt_into_string = "Aerial
 Grounded"
 hit_cancel_into_string = "AerialSpecial
@@ -3738,6 +3744,11 @@ knockdown_extends_hitstun = false
 ground_bounce = false
 start_tick = 11
 active_ticks = 3
+
+[node name="HostCommand" type="Node" parent="StateMachine/PistolWhipCombo" index="5"]
+script = ExtResource( 332 )
+tick = 14
+command = "try_shoot"
 
 [node name="PistolWhipGroundCombo" type="Node2D" parent="StateMachine" index="42"]
 script = ExtResource( 326 )
@@ -4356,12 +4367,13 @@ FastTeleport"
 interrupt_into_string = "Grounded
 Aerial"
 super_freeze_ticks = 0
+super_effect = false
 
 [node name="Brandish" type="Node2D" parent="StateMachine" index="58"]
 script = ExtResource( 116 )
 fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
-anim_length = 11
+anim_length = 12
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"
@@ -4389,7 +4401,7 @@ super_effect = false
 script = ExtResource( 116 )
 fallback_state = "Shoot2"
 sprite_animation = "GunTwirl"
-anim_length = 4
+anim_length = 5
 enter_sfx = ExtResource( 150 )
 enter_sfx_volume = -12.0
 title = "Quick Draw"

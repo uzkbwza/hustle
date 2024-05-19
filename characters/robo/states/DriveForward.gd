@@ -53,7 +53,7 @@ func _frame_1():
 func _frame_5():
 	host.has_projectile_armor = false
 
-func _got_parried():
+func on_got_perfect_parried():
 	interruptible_on_opponent_turn = false
 	host.hitlag_ticks += 3
 	pass

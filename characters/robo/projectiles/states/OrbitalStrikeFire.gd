@@ -3,7 +3,7 @@ extends ObjectState
 const GROUND_FIRE_DISTANCE = 64
 var last_ground_fire = 0
 const MOVE_SPEED = 3
-const ACTIVE_TIME = 10
+const ACTIVE_TIME = 20
 const NEUTRAL_PENALTY = 2
 const WIGGLE_PENALTY = 7
 const WIGGLE_PENALTY_INCREASE = 5
@@ -18,7 +18,7 @@ onready var hitbox = $Hitbox
 onready var active_2 = $"../../Sounds/Active2"
 
 func _enter():
-	active_time = ACTIVE_TIME + (host.aim_ticks - 14) * 2
+	active_time = ACTIVE_TIME + Utils.int_max(host.aim_ticks - 14, 0) * 3
 	hitbox.active_ticks = active_time
 	active_2.stream.loop = false
 #	print(active_time)

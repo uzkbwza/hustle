@@ -42,6 +42,11 @@ func set_player_id(player_id):
 	if player_id != 1 and custom_texture and flip_icon:
 		$"%TextureRect".flip_h = true
 
+func is_reversible():
+	if state == null:
+		return reversible
+	return state.flip_allowed() and state.reversible
+
 func set_pressed(on):
 	$"%Button".pressed = on
 

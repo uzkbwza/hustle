@@ -161,6 +161,9 @@ func integrate(st):
 	state._integrate(st)
 
 func _change_state(state_name: String, data=null, enter=true, exit=true) -> void:
+	assert(states_map.has(state_name), "you tried to enter a state that doesn't exist, CHUMP")
+	if !states_map.has(state_name):
+		return
 	var next_state = states_map[state_name]
 	queued_states = []
 	queued_data = []

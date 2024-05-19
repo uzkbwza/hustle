@@ -34,3 +34,6 @@ func _tick():
 
 #func is_usable():
 #	return .is_usable() and host.get_pos().y < MIN_HEIGHT
+
+func on_got_perfect_parried():
+	host.hitlag_ticks += 4

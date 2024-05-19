@@ -2,6 +2,7 @@ extends SuperMove
 
 func _enter():
 	spawn_particle_relative(preload("res://fx/InstantCancelEffect.tscn"), host.hurtbox_pos_relative_float())
+	host.prediction_effect()
 	pass
 
 func _tick():

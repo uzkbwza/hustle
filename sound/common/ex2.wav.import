@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ex2.wav-2afc2587b2154be878335c7d5f9a3924.sample"
+
+[deps]
+
+source_file="res://sound/common/ex2.wav"
+dest_files=[ "res://.import/ex2.wav-2afc2587b2154be878335c7d5f9a3924.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

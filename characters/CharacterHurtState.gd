@@ -7,6 +7,7 @@ const SMOKE_FREQUENCY = 1
 const COUNTER_HIT_ADDITIONAL_HITSTUN_FRAMES = 5
 const HITSTUN_DECAY_PER_HIT = 1
 const DI_BRACE_RATIO = "-0.25"
+const IS_HURT_STATE = true
 
 var brace = false
 var guard_broken = false

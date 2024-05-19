@@ -13,7 +13,7 @@ signal clashed()
 
 signal blocked_melee_attack()
 signal blocked_melee_attack_at_frame(frame)
-signal predicted()
+signal predicted(freeze_ticks)
 
 #signal got_counter_hit()
 
@@ -69,6 +69,10 @@ const PUSH_BLOCK_ADVANTAGE_PENALTY = 0
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
+const GLOBAL_HITLAG_MODIIFER = 0.5
+const GLOBAL_BLOCKLAG_MODIFIER = 0.25
+const MAX_GLOBAL_HITLAG = 10
+
 const BASE_PLUS_FRAMES = 0
 const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
 const WRONG_HIT_HEIGHT_ADDITIONAL_PLUS_FRAMES = 2
@@ -76,7 +80,7 @@ const WRONG_HIT_HEIGHT_ADDITIONAL_PLUS_FRAMES = 2
 const DISTANCE_EXTRA_SADNESS = "180"
 const MIN_DIST_SADNESS = "128"
 
-#const GUARD_BREAK_SCALING = 1
+const GUARD_BREAK_SCALING = 1
 
 const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.0"
 const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
@@ -223,6 +227,7 @@ var opponent
 var actions = 0
 
 var visible_combo_count = 0
+var buffered_global_hitlag = 0
 
 var queued_action = null
 var queued_data = null
@@ -810,7 +815,7 @@ func emit_hit_by_signal(hitbox):
 			emit_signal("got_hit_by_projectile")
 
 func reset_combo():
-	if combo_damage >= 500:
+	if combo_damage >= 750:
 		unlock_achievement("ACH_5000_DAMAGE")
 	if touch_of_death and combo_damage >= MAX_HEALTH:
 		if !one_hit_ko and !turbo_mode and !extremely_turbo_mode and !infinite_resources and fixed.eq(global_damage_modifier, "1") and fixed.eq(global_hitstop_modifier, "1") and fixed.eq(global_hitstun_modifier, "1"):
@@ -968,22 +973,24 @@ func increment_opponent_combo(hitbox):
 
 	if hitbox.increment_combo:
 		opponent.incr_combo(will_scale, projectile, projectile and hitbox.scale_combo, hitbox.combo_scaling_amount)
-		if opponent.combo_count <= 1:
+		if opponent.combo_count <= 1 and hitbox.scale_combo:
 			opponent.combo_proration = hitbox.damage_proration
 			if opponent.combo_count == 1 and old_count == 0 and opponent.air_movements_left < opponent.num_air_movements:
 				opponent.air_movements_left += 1
 
-func apply_hitlag(hitbox):
+func apply_hitlag(hitbox, global=true):
 	hitlag_ticks = (hitbox.victim_hitlag) + (COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES if hitbox.counter_hit else 0)
 	if braced_attack:
 		hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), SUCCESSFUL_BRACE_HITSTUN_MODIFIER))
 	hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), global_hitstop_modifier))
 	hitlag_applied = hitlag_ticks
+	if global:
+		buffered_global_hitlag = min(hitbox.hitlag_ticks * GLOBAL_HITLAG_MODIIFER, MAX_GLOBAL_HITLAG) 
 
 func launched_by(hitbox):
 	
 #		if hitlag_ticks < hitbox.victim_hitlag:
-	apply_hitlag(hitbox)
+	apply_hitlag(hitbox, hitbox.followup_state == "")
 	feinting = false
 	
 	if objs_map.has(hitbox.host):
@@ -993,7 +1000,8 @@ func launched_by(hitbox):
 			host.hitlag_ticks = host_hitlag_ticks
 	
 	if hitbox.rumble:
-		rumble(hitbox.screenshake_amount, hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames)
+		var length = hitbox.victim_hitlag if hitbox.screenshake_frames < 0 else hitbox.screenshake_frames
+		rumble(hitbox.screenshake_amount, length + (length * GLOBAL_HITLAG_MODIIFER))
 	
 	nudge_amount = hitbox.sdi_modifier
 	
@@ -1092,11 +1100,11 @@ func can_counter_hitbox(hitbox):
 func is_bracing():
 	return current_state() is CounterAttack and current_state().bracing
 
-func prediction_effect():
+func prediction_effect(ticks=7):
 	play_sound("Predict")
 	play_sound("Predict2")
 	play_sound("Predict3")
-	emit_signal("predicted")
+	emit_signal("predicted", ticks)
 
 func counter_hitbox(hitbox):
 	var pos = get_pos_visual()
@@ -1285,7 +1293,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		state_interruptable = false
 
 		if not projectile:
-			if current_state() is GroundedParryState:
+			if current_state().get("IS_NEW_PARRY"):
 	#				perfect_parry = current_state().can_parry and (always_perfect_parry or (current_state().current_tick == current_state().data.x - 1) and (opponent.current_state().feinting or opponent.feinting or initiative))
 				parry_timing = turn_frames + (opponent.hitlag_ticks if !projectile else 0)
 				
@@ -1369,7 +1377,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				opponent.got_parried = true
 				opponent.current_state().interruptible_on_opponent_turn = false
 		
-			if !current_state() is GroundedParryState:
+			if !current_state().get("IS_NEW_PARRY"):
 				opponent.current_state().feinting = false
 		
 		
@@ -1380,7 +1388,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		var particle_location = current_state().get("particle_location")
 		particle_location.x *= get_facing_int()
 		
-		if current_state() is GroundedParryState:
+		if current_state().get("IS_NEW_PARRY"):
 			var high_anim = "ParryHigh" if !current_state().use_guard_sprites else "ShieldHigh"
 			var low_anim = "ParryLow" if !current_state().use_guard_sprites else "ShieldLow"
 			current_state().anim_name = low_anim if (hitbox.hit_height == Hitbox.HitHeight.Low or !is_grounded()) else high_anim
@@ -1505,6 +1513,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			if host.has_method("on_got_blocked_by"):
 				host.on_got_blocked_by(self)
 			on_blocked_something()
+			global_hitlag(min(block_hitlag * GLOBAL_BLOCKLAG_MODIFIER, 20))
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)
@@ -1594,7 +1603,7 @@ func take_damage(damage:int, minimum=0, meter_gain_modifier="1.0", combo_scaling
 	add_penalty(-25)
 	if hp < 0:
 		hp = 0
-	if current_state() is GroundedParryState and current_state().push:
+	if current_state().get("IS_NEW_PARRY") and current_state().push:
 		if hp <= 0:
 			hp = 1
 
@@ -1715,6 +1724,13 @@ func super_effect(freeze_ticks=0):
 	play_sound("Super2")
 	play_sound("Super3")
 
+func ex_effect(freeze_ticks=0):
+	start_super(freeze_ticks)
+	play_sound("Ex1")
+	play_sound("Ex2")
+	play_sound("Ex3")
+	play_sound("Ex4")
+
 func use_air_movement():
 	if infinite_resources:
 		return
@@ -1823,7 +1839,7 @@ func get_advantage():
 		advantage = false
 		whiff_cancel_advantage = true
 	if whiff_cancel_advantage and prev_advantage:
-		if current_state() is GroundedParryState:
+		if current_state().get("IS_NEW_PARRY"):
 			advantage = true
 	return advantage
 	
@@ -2157,15 +2173,7 @@ func tick():
 
 	if !is_in_hurt_state() and !opponent.is_in_hurt_state() and combo_count <= 0 and penalty_ticks <= 0:
 #		var dir = Utils.int_sign(last_pos.x - pos.x)
-		var dir = fixed.sign(last_vel.x)
-		var opp_dir = get_opponent_dir()
-		if dir != 0 and dir != opp_dir and current_tick % 3 == 0:
-			add_penalty(1)
-		if dir != 0 and dir == opp_dir and current_tick % 4 == 0:
-			if fixed.gt(fixed.abs(last_vel.x), "0.01"):
-				add_penalty(-1)
-		if current_tick % 7 == 0:
-			add_penalty(get_sadness_distance_penalty())
+		passive_sadness_gain()
 	
 #	var penalty_add_amount = 0
 #	if penalty_buffer > 0:
@@ -2205,10 +2213,26 @@ func tick():
 	if forfeit and forfeit_ticks > 2:
 		change_state("ForfeitExplosion")
 		forfeit = false
+	
+	if buffered_global_hitlag:
+		global_hitlag(buffered_global_hitlag)
+		buffered_global_hitlag = 0
+
 	if ReplayManager.playback:
 		if "emotes" in ReplayManager.frames:
 			if current_tick in ReplayManager.frames.emotes[id]:
 				emote(ReplayManager.frames.emotes[id][current_tick])
+
+func passive_sadness_gain():
+	var dir = fixed.sign(last_vel.x)
+	var opp_dir = get_opponent_dir()
+	if dir != 0 and dir != opp_dir and current_tick % 3 == 0:
+		add_penalty(1)
+	if dir != 0 and dir == opp_dir and current_tick % 4 == 0:
+		if fixed.gt(fixed.abs(last_vel.x), "0.01"):
+			add_penalty(-1)
+	if current_tick % 7 == 0:
+		add_penalty(get_sadness_distance_penalty())
 
 func landing_effect():
 	spawn_particle_effect_relative(preload("res://fx/LandingParticle.tscn"))

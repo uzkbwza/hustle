@@ -16,7 +16,10 @@ export var move_speed = "37"
 var move_x = "0"
 var move_y = "0"
 
+var hit_opponent = false
+
 func _enter():
+	hit_opponent = false
 	var move = fixed.normalized_vec_times(move_x_, move_y_, move_speed)
 	move_x = fixed.mul(move.x, str(host.get_facing_int()))
 	move_y = move.y
@@ -34,13 +37,26 @@ func _tick():
 		host.set_vel(move_x, move_y)
 		if host.is_grounded() or host.get_pos().y > -2:
 			host.set_pos(host.get_pos().x, 0)
-			return "Landing"
+			return "Landing" if (hit_opponent or fixed.eq(move_x, "0")) else "PounceFailRoll"
 
-#func _on_hit_something(obj, hitbox):
-#	._on_hit_something(obj, hitbox)
+	if !hit_opponent and !fixed.eq(move_x, "0"):
+		var wall = host.touching_which_wall()
+		if wall != 0:
+			if wall == host.get_facing_int():
+				queue_state_change("WallSlam", CharacterHurtState.BOUNCE.LEFT_WALL if wall == -1 else CharacterHurtState.BOUNCE.RIGHT_WALL)
+		else:
+			if current_tick > 11:
+				queue_state_change("PounceFailRoll")
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if obj.is_in_group("Fighter"):
+		hit_opponent = true
 #	var move = fixed.normalized_vec_times(MOVE_X, MOVE_Y, MOVE_SPEED)
 #	host.set_vel(move.x, move.y)
-	
+
+func on_got_blocked():
+	hit_opponent = true
 
 func _exit():
 	host.set_vel(move_x, move_y)

@@ -47,6 +47,7 @@ func activate():
 	ticks_left = Utils.int_min(ticks_left, ACTIVATE_TIME)
 	play_sound("Beep")
 	active = true
+	current_state().hitbox.sdi_modifier = "0.0"
 	my_hitbox.increment_combo = false
 
 

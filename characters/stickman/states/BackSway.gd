@@ -7,7 +7,7 @@ func _enter():
 		host.reset_momentum()
 
 
-func _frame_0():
+func _frame_2():
 	if host.initiative:
 		host.start_invulnerability()
 

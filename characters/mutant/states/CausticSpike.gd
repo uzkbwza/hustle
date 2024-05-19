@@ -12,10 +12,11 @@ func process_projectile(obj):
 	host.spike_projectile = obj.obj_name
 
 func _enter():
-	initiative_effect = (host.combo_count == 0 or started_in_air)
+#	initiative_effect = (host.combo_count == 0 or started_in_air)
+	pass
 
 func _tick():
-	if host.initiative and (host.combo_count == 0 or started_in_air):
+	if (host.combo_count > 0 and started_in_air):
 		if current_tick == 1:
 			current_tick = 7
 		if current_tick == 20:

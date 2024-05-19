@@ -665,23 +665,32 @@ volume_db = -7.0
 bus = "Fx"
 script = ExtResource( 202 )
 
-[node name="Swish3" type="AudioStreamPlayer2D" parent="Sounds" index="9"]
+[node name="Swish4" type="AudioStreamPlayer2D" parent="Sounds" index="9"]
+stream = ExtResource( 82 )
+volume_db = -14.174
+pitch_scale = 1.58
+bus = "Fx"
+script = ExtResource( 202 )
+
+[node name="Swish3" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
 stream = ExtResource( 55 )
 volume_db = -7.0
 bus = "Fx"
 script = ExtResource( 202 )
 
-[node name="GrapplingHook" type="AudioStreamPlayer2D" parent="Sounds" index="10"]
+[node name="GrapplingHook" type="AudioStreamPlayer2D" parent="Sounds" index="11"]
 stream = ExtResource( 238 )
 volume_db = -14.0
 pitch_scale = 3.0
 bus = "Fx"
 script = ExtResource( 202 )
 
-[node name="Super3" parent="Sounds" index="11"]
+[node name="Super3" parent="Sounds" index="12"]
 pitch_variation = 0.03
 
 [node name="Wait" parent="StateMachine" index="11"]
+allowed_stances_string = "Normal
+BackSway"
 change_stance_to = "Normal"
 
 [node name="Burst" parent="StateMachine" index="12"]
@@ -692,6 +701,10 @@ beats_grab = false
 
 [node name="Hitbox" parent="StateMachine/OffensiveBurst" index="0"]
 beats_grab = false
+
+[node name="Fall" parent="StateMachine" index="18"]
+allowed_stances_string = "Normal
+BackSway"
 
 [node name="DashForward" parent="StateMachine" index="27"]
 dash_speed = 14
@@ -1731,7 +1744,9 @@ interrupt_from_string = "GroundedSpecial
 Grounded
 Reversal
 Uppercut"
-interrupt_into_string = "AerialSpecial
+interrupt_into_string = "Grounded
+Aerial
+AerialSpecial
 AerialAttack
 AerialSuper
 GroundedSpecial
@@ -1823,7 +1838,9 @@ Aerial
 AerialSpecial
 Reversal
 Uppercut"
-interrupt_into_string = "AerialSpecial
+interrupt_into_string = "Grounded
+Aerial
+AerialSpecial
 AerialAttack
 AerialSuper
 GroundedSpecial
@@ -1850,7 +1867,6 @@ victim_hitlag = 10
 damage_proration = 2
 cancellable = false
 can_clash = false
-block_punishable = true
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
 dir_y = "-2.0"
@@ -2165,7 +2181,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "NunChukHeavy"
-anim_length = 19
+anim_length = 16
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 particle_scene = ExtResource( 241 )
@@ -2190,6 +2206,7 @@ AerialSuper
 Jump"
 allowed_stances_string = "NunChuk"
 change_stance_to = "NunChuk"
+heavy = true
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/NunChukHeavy" index="0"]
 z_index = 1000
@@ -3064,7 +3081,8 @@ interrupt_from_string = "AerialAttack
 Aerial"
 interrupt_into_string = "Grounded
 Aerial"
-hit_cancel_into_string = "Aerial"
+hit_cancel_into_string = "Aerial
+Grounded"
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/AirAttack" index="0"]
 z_index = 1000
@@ -3202,6 +3220,7 @@ script = ExtResource( 72 )
 apply_forces = true
 apply_fric = true
 apply_grav = true
+fallback_state = "PalmStrike"
 anim_length = 12
 force_dir_x = "1.0"
 force_speed = "2.0"
@@ -3227,7 +3246,9 @@ GroundedMovement
 AerialAttack
 AerialSpecial
 AerialSuper
-AerialMovement"
+AerialMovement
+Wait
+Fall"
 allowed_stances_string = "Normal
 BackSway
 NunChuk
@@ -3635,21 +3656,21 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3871,6 +3892,14 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
+},
+ExtResource( 207 ): {
+"x": 13,
+"y": -10
+},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
@@ -3878,14 +3907,6 @@ ExtResource( 208 ): {
 ExtResource( 206 ): {
 "x": 13,
 "y": -10
-},
-ExtResource( 207 ): {
-"x": 13,
-"y": -10
-},
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
 }
 }
 burst_cancellable = false
@@ -3928,25 +3949,25 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 }
 }
 burst_cancellable = false

@@ -84,7 +84,7 @@ func process_extra(extra):
 					if fixed.lt(fixed.add(get_vel().y, stored_momentum_y), MAX_MOMENTUM_UPWARD_SPEED):
 						set_vel(vel.x, "0")
 						stored_momentum_y = MAX_MOMENTUM_UPWARD_SPEED
-				super_effect(2)
+				prediction_effect(2)
 				use_super_bar()
 	if extra.has("store"):
 		will_store_momentum = extra.store
@@ -109,7 +109,7 @@ func release_momentum():
 
 	released_this_turn = true
 	will_release_momentum = false
-	play_sound("Swish2")
+	play_sound("Swish4")
 	if combo_count > 0:
 		boosted_during_combo = true
 		combo_count += 1
@@ -199,7 +199,7 @@ func tick():
 func on_got_parried():
 	.on_got_parried()
 	if released_this_turn:
-		hitlag_ticks +=  20
+		hitlag_ticks +=  10
 	pass
 
 func on_blocked_something():

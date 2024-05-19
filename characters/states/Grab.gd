@@ -14,8 +14,10 @@ export var back_throw_state = "BackThrow"
 export var down_throw_state = "AirDownThrow"
 
 var dash_lag = 0
+var dash_momentum_applied = false
 
 func _enter():
+	dash_momentum_applied = false
 	if data == null:
 		if _previous_state().get("IS_GRAB"):
 			data = _previous_state().data
@@ -25,7 +27,7 @@ func _enter():
 		var jump = data.get("Jump")
 		if dash and !jump:
 			dash_lag = DASH_LAG
-			host.apply_force_relative(DASH_SPEED, "0")
+#			host.apply_force_relative(DASH_SPEED, "0")
 		if jump:
 			if air_type == AirType.Grounded:
 				return "JumpGrab"
@@ -59,3 +61,13 @@ func _tick():
 	if current_tick == 4:
 		if data and data.get("Dash"):
 			throw_box.deactivate()
+	if current_tick == 0:
+			
+		if data is Dictionary:
+			var dash = data.get("Dash")
+			var jump = data.get("Jump")
+			if dash and !jump and !dash_momentum_applied:
+				host.apply_force_relative(DASH_SPEED, "0")
+			if !dash_momentum_applied:
+				dash_momentum_applied = true
+				
