@@ -95,6 +95,7 @@ func init():
 #	selected_user = users[index]
 #	$"%StartButton".disabled = false
 
+
 func _on_spectate_declined():
 	$"%LoadingSpectatorRect".hide()
 	pass

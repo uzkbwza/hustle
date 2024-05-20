@@ -1,5 +1,8 @@
 extends "res://ui/SteamLobby/UiSteamLobbyOld.gd"
 
+onready var loading_mods_rect = $"%LoadingModsRect"
+onready var loading_lobby_rect = $"%LoadingLobbyRect"
+
 var _Global = Network
 var errorMsg = Label.new()
 
@@ -27,3 +30,4 @@ func _process(delta):
 			
 			if (!(game.p1.character in cNames) and css.isCustomChar(game.p1.character)) or (!(game.p2.character in cNames) and css.isCustomChar(game.p2.character)):
 				game.get_node("%SpectateButton").disabled = true
+	loading_mods_rect.visible = !Global.mods_loaded and !loading_lobby_rect.visible

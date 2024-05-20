@@ -1691,7 +1691,7 @@ func consume_feint():
 		feints -= 1
 	else:
 		use_super_meter(MAX_SUPER_METER)
-		super_effect(2)
+		ex_effect(0)
 
 func process_extra(extra):
 	if "DI" in extra:

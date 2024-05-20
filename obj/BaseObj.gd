@@ -143,6 +143,8 @@ func _ready():
 		sound.bus = "Fx"
 
 func global_hitlag(amount, force=false):
+#	if is_ghost:
+#		return
 #	if !ReplayManager.playback:
 #		return
 	if !force and !Global.replay_extra_freeze_frames:

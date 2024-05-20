@@ -122,8 +122,10 @@ func _ready():
 	self.visible = false
 	loadThread2 = Thread.new()
 	loadThread2.start(self, "load_mods")
+	Global.mods_loaded = false
 	yield(self, "mods_loaded")
-
+	
+	Global.mods_loaded = true
 	loaded_mods = true
 	bttContainer.show()
 	go_button.show()
@@ -814,6 +816,7 @@ func net_startMatch():
 func net_updateModLists():
 	Network.normal_mods = []
 	Network.char_mods = []
+#	Network.generated_modlist = true
 	var i = 0
 	for mod in ModLoader.active_mods:
 		if hash_to_folder[mod[0]] in ModLoader.charFolders:

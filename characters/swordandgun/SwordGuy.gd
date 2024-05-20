@@ -207,7 +207,7 @@ func drift():
 					
 				milk_toggled = true
 				milk_toggle_tick = current_tick
-				super_effect(10)
+				prediction_effect(10)
 #				use_air_movement()
 				for i in range(DRIFT_SUPERS):
 					use_super_bar()

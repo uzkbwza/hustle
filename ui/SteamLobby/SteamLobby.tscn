@@ -314,6 +314,23 @@ text = "Requesting lobby data..."
 align = 1
 valign = 1
 
+[node name="LoadingModsRect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = 20.0
+margin_right = -50.0
+margin_bottom = -20.0
+color = Color( 0, 0, 0, 0.780392 )
+
+[node name="Label" type="Label" parent="LoadingModsRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Loading mods..."
+align = 1
+valign = 1
+
 [node name="ChallengeDialogScreen" type="ColorRect" parent="."]
 unique_name_in_owner = true
 visible = false

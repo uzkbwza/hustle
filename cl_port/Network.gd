@@ -26,6 +26,8 @@ var steam_oppChars = []
 
 var normal_mods = []
 var char_mods = []
+#var generated_modlist = false
+
 var hash_to_folder = {}
 
 var diff = ""

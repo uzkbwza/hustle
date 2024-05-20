@@ -304,6 +304,8 @@ func on_block():
 	parry_freeze = true
 
 func on_global_hitlag(amount):
+	if is_ghost:
+		return
 	super_freeze_ticks = amount
 	parry_freeze = true
 	hit_freeze = true

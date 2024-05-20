@@ -31,10 +31,10 @@ var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
 var replay_extra_freeze_frames = true
-
 var auto_fc = true
 var ghost_speed = 2
 
+var mods_loaded = false
 var mouse_world_position = Vector2()
 var rng = BetterRng.new()
 
