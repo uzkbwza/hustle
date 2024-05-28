@@ -695,6 +695,7 @@ juke_dir_type
 juked_this_turn
 started_up_juke_from_ground
 can_air_dash"
+enable_extra_aesthetic_hitstop = true
 num_air_movements = 3
 character_portrait = ExtResource( 144 )
 character_portrait2 = ExtResource( 203 )
@@ -2509,9 +2510,9 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
+ExtResource( 160 ): {
+"x": 37,
+"y": -1
 },
 ExtResource( 173 ): {
 "x": 9,
@@ -2521,9 +2522,9 @@ ExtResource( 166 ): {
 "x": -8,
 "y": -17
 },
-ExtResource( 160 ): {
-"x": 37,
-"y": -1
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
 },
 ExtResource( 171 ): {
 "x": 15,
@@ -3793,13 +3794,13 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 81 ): {
-"x": -11,
-"y": -6
-},
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
+},
+ExtResource( 81 ): {
+"x": -11,
+"y": -6
 },
 ExtResource( 82 ): {
 "x": -8,

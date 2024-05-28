@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/ActionSelector/ActionUIData/ActionUIData.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/SuperJumpActionUIData.gd" type="Script" id=2]
+[ext_resource path="res://ui/XYPlot/SemicirclePlot.tscn" type="PackedScene" id=3]
+
+[node name="ActionUIData" instance=ExtResource( 1 )]
+margin_right = 50.0
+margin_bottom = 62.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 33.0 ],
+"_edit_vertical_guides_": [ 41.0 ]
+}
+
+[node name="JumpArc" parent="." index="0" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+always_max = true
+limit_range_degrees = 138.0
+default_value = Vector2( 1, 0 )

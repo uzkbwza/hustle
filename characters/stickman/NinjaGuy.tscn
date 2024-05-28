@@ -1,4 +1,4 @@
-[gd_scene load_steps=257 format=2]
+[gd_scene load_steps=258 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -253,6 +253,7 @@
 [ext_resource path="res://characters/stickman/states/JumpKickLanding.gd" type="Script" id=251]
 [ext_resource path="res://characters/stickman/sounds/jk.wav" type="AudioStream" id=252]
 [ext_resource path="res://characters/stickman/states/DiveKickHop.gd" type="Script" id=253]
+[ext_resource path="res://characters/stickman/ActionUIData/NinjaSuperJumpActionUIData.tscn" type="PackedScene" id=254]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -632,6 +633,7 @@ current_momentum
 boosted_during_combo
 stackriken_out
 can_divekick_hop"
+enable_extra_aesthetic_hitstop = true
 character_portrait2 = ExtResource( 245 )
 player_info_scene = ExtResource( 243 )
 player_extra_params_scene = ExtResource( 63 )
@@ -3656,21 +3658,21 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3856,6 +3858,7 @@ dash_speed = 10
 y_modifier = "1.33"
 
 [node name="SuperJump" parent="StateMachine" index="86"]
+data_ui_scene = ExtResource( 254 )
 interrupt_exceptions_string = "StoreMomentum"
 
 [node name="DoubleJump" parent="StateMachine" index="87"]
@@ -3892,6 +3895,10 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
@@ -3899,10 +3906,6 @@ ExtResource( 209 ): {
 ExtResource( 207 ): {
 "x": 13,
 "y": -10
-},
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
 },
 ExtResource( 206 ): {
 "x": 13,
@@ -3949,6 +3952,10 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
+},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
@@ -3960,10 +3967,6 @@ ExtResource( 207 ): {
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
-},
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
 },
 ExtResource( 206 ): {
 "x": 12,

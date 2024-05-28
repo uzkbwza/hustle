@@ -2308,6 +2308,7 @@ text = "Quit"
 
 [node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -2390,59 +2391,60 @@ margin_right = 158.0
 margin_bottom = 39.0
 text = "show hitboxes"
 
-[node name="ExtraFreezeFrames" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+[node name="ExtraInfoButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
 margin_right = 158.0
 margin_bottom = 52.0
-text = "enable hit freeze frames"
-
-[node name="ExtraInfoButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 53.0
-margin_right = 158.0
-margin_bottom = 65.0
 text = "show extra game info"
 
 [node name="AutoFCButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 66.0
+margin_top = 53.0
 margin_right = 158.0
-margin_bottom = 78.0
+margin_bottom = 65.0
 pressed = true
 text = "enable auto free cancel"
 
 [node name="LastMoveIndicatorButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 79.0
+margin_top = 66.0
 margin_right = 158.0
-margin_bottom = 91.0
+margin_bottom = 78.0
 pressed = true
 text = "show last moves played"
 
 [node name="ProjectileOwnersButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 92.0
+margin_top = 79.0
 margin_right = 158.0
-margin_bottom = 104.0
+margin_bottom = 91.0
 pressed = true
 text = "show projectile owners"
 
 [node name="SpeedLinesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 105.0
+margin_top = 92.0
 margin_right = 158.0
-margin_bottom = 117.0
+margin_bottom = 104.0
 pressed = true
 text = "show speed lines"
 
 [node name="TimerSoundButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
+margin_top = 105.0
+margin_right = 158.0
+margin_bottom = 117.0
+pressed = true
+text = "enable low timer sound"
+
+[node name="ExtraFreezeFrames" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 118.0
 margin_right = 158.0
 margin_bottom = 130.0
 pressed = true
-text = "enable low timer sound"
+text = "enable hit freeze frames"
 
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true

@@ -853,6 +853,7 @@ fatal_cut_start_pos_y
 drift_jump_timer
 milk_toggle_tick
 drift_effect"
+enable_extra_aesthetic_hitstop = true
 character_portrait = ExtResource( 58 )
 character_portrait2 = ExtResource( 94 )
 player_info_scene = ExtResource( 115 )
@@ -2827,13 +2828,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2
@@ -2896,13 +2897,13 @@ enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2
@@ -2963,13 +2964,13 @@ force_tick = 25
 enter_force_dir_x = "1.0"
 enter_force_speed = "5.0"
 throw_positions = {
-ExtResource( 124 ): {
-"x": 27,
-"y": -2
-},
 ExtResource( 121 ): {
 "x": 27,
 "y": 1
+},
+ExtResource( 124 ): {
+"x": 27,
+"y": -2
 }
 }
 air_type = 2

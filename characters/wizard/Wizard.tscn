@@ -856,13 +856,9 @@ default_dash_speed
 boulder_projectile"
 damages_own_team = true
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 320 ): {
 "x": 62,
@@ -872,15 +868,23 @@ ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
 }
 }
+_c_NEW_MODDED_CHARACTERS_IMPORTANT = 0
+_c_ENABLE_THIS_SETTING_IF_YOU_WANT_CONSISTENCY_WITH_THE_BASE_CAST = 0
+enable_extra_aesthetic_hitstop = true
+_c_THANK_YOU = 0
 character_portrait = ExtResource( 63 )
 character_portrait2 = ExtResource( 99 )
 player_info_scene = ExtResource( 4 )
@@ -1952,13 +1956,9 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 320 ): {
 "x": 62,
@@ -1968,9 +1968,13 @@ ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
+},
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
 },
 ExtResource( 322 ): {
 "x": 40,

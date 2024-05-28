@@ -71,7 +71,7 @@ const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
 const GLOBAL_HITLAG_MODIIFER = 0.5
 const GLOBAL_BLOCKLAG_MODIFIER = 0.25
-const MAX_GLOBAL_HITLAG = 10
+const MAX_GLOBAL_HITLAG = 7
 
 const BASE_PLUS_FRAMES = 0
 const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
@@ -170,6 +170,11 @@ const MAX_PENALTY = 75
 const PENALTY_MIN_DISPLAY = 50
 
 const PENALTY_TICKS = 120
+
+export var _c_NEW_MODDED_CHARACTERS_IMPORTANT = 0
+export var _c_ENABLE_THIS_SETTING_IF_YOU_WANT_CONSISTENCY_WITH_THE_BASE_CAST = 0
+export var enable_extra_aesthetic_hitstop = false
+export var _c_THANK_YOU = 0
 
 export var num_air_movements = 2
 export var lose_one_air_option_in_neutral = true
@@ -984,7 +989,8 @@ func apply_hitlag(hitbox, global=true):
 		hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), SUCCESSFUL_BRACE_HITSTUN_MODIFIER))
 	hitlag_ticks = fixed.round(fixed.mul(str(hitlag_ticks), global_hitstop_modifier))
 	hitlag_applied = hitlag_ticks
-	if global:
+	var host = obj_from_name(hitbox.host)
+	if global and host and host.get("enable_extra_aesthetic_hitstop"):
 		buffered_global_hitlag = min(hitbox.hitlag_ticks * GLOBAL_HITLAG_MODIIFER, MAX_GLOBAL_HITLAG) 
 
 func launched_by(hitbox):
@@ -1513,7 +1519,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			if host.has_method("on_got_blocked_by"):
 				host.on_got_blocked_by(self)
 			on_blocked_something()
-			global_hitlag(min(block_hitlag * GLOBAL_BLOCKLAG_MODIFIER, 20))
+			if host.get("enable_extra_aesthetic_hitstop"):
+				global_hitlag(min(block_hitlag * GLOBAL_BLOCKLAG_MODIFIER, 20))
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)
