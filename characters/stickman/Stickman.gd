@@ -90,11 +90,10 @@ func process_extra(extra):
 		will_store_momentum = extra.store
 
 func apply_forces():
-	if released_this_turn:
+	if released_this_turn or pulling:
 		apply_forces_no_limit()
 	else:
 		.apply_forces()
-	pass
 
 func release_momentum():
 #		reset_momentum()
@@ -185,9 +184,13 @@ func tick():
 		if fixed.lt(reduction, MIN_BOOST_REDUCTION_PER_FRAME):
 			reduction = MIN_BOOST_REDUCTION_PER_FRAME
 		if fixed.lt(stored_speed_1, "10"):
-			reduction = fixed.mul(reduction, "0.5")
+#			reduction = fixed.mul(reduction, "0.5")
+			reduction = "0"
 #		print(reduction)
 		stored_speed_1 = fixed.sub(stored_speed_1, reduction)
+		var stored_dir = fixed.normalized_vec_times(stored_momentum_x, stored_momentum_y, stored_speed_1)
+		stored_momentum_x = stored_dir.x
+		stored_momentum_y = stored_dir.y
 		if fixed.lt(stored_speed_1, "0.0"):
 			momentum_stores -= 1
 			stored_speed_1 = "0"

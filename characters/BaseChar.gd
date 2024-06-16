@@ -69,9 +69,9 @@ const PUSH_BLOCK_ADVANTAGE_PENALTY = 0
 const AIR_BLOCK_PUSHBACK_MODIFIER = "0.35"
 const WAKEUP_THROW_IMMUNITY_TICKS = 3
 
-const GLOBAL_HITLAG_MODIIFER = 0.5
+const GLOBAL_HITLAG_MODIIFER = 0.6
 const GLOBAL_BLOCKLAG_MODIFIER = 0.25
-const MAX_GLOBAL_HITLAG = 7
+const MAX_GLOBAL_HITLAG = 10
 
 const BASE_PLUS_FRAMES = 0
 const VS_AERIAL_ADDITIONAL_PLUS_FRAMES = 2
@@ -1540,6 +1540,10 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			play_sound("Parry2")
 			play_sound("Parry")
 			emit_signal("parried")
+			on_parried()
+
+func on_parried():
+	pass
 
 func projectile_free_cancel():
 #	if current_state().state_name in ["Burst", "DefensiveBurst", "OffensiveBurst"]:

@@ -31,6 +31,7 @@ var lock_in_tick = -INF
 const DISCORD_URL = "https://discord.gg/YourOnlyMoveIsHUSTLE"
 const TWITTER_URL = "https://x.com/YourMoveHUSTLE"
 const IVY_SLY_URL = "https://www.ivysly.com"
+const TIKTOK_URL = "https://www.tiktok.com/@youronlymoveishustle"
 const STEAM_URL = "https://store.steampowered.com/app/2212330"
 const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
 var MIN_TURN_TIME = 5.0
@@ -99,6 +100,7 @@ func _ready():
 	$"%IvySlyLinkButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [IVY_SLY_URL])
 	$"%WishlistButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [STEAM_URL])
 	$"%TwitterButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [TWITTER_URL])
+	$"%TikTokButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [TIKTOK_URL])
 	$"%ItchButton".connect("pressed", Steam, "activateGameOverlayToWebPage", [ITCH_URL])
 	$"%ResetZoomButton".connect("pressed", self, "_on_reset_zoom_pressed")
 	Network.connect("player_turns_synced", self, "on_player_actionable")
@@ -685,6 +687,7 @@ func _process(delta):
 				var block_advantage = 0
 				
 				block_advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
+
 				if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
 					advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
 
@@ -700,11 +703,13 @@ func _process(delta):
 				if block_advantage > 0:
 					block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
 					block_advantage_label.text = "block advantage: +" + str(block_advantage)
+					
 				elif block_advantage < 0:
 					block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
 					block_advantage_label.text = "block advantage: " + str(block_advantage)
 				else:
 					block_advantage_label.text = ""
+					pass
 
 		else:
 			advantage_label.text = ""

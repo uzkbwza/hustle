@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://characters/wizard/grav_bar2.png" type="Texture" id=1]
 [ext_resource path="res://characters/wizard/WizardPlayerInfo.gd" type="Script" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://characters/wizard/sprites/spark_speed.png" type="Texture" id=5]
 [ext_resource path="res://characters/wizard/grav_bar3.png" type="Texture" id=6]
 [ext_resource path="res://characters/wizard/grav_bar5.png" type="Texture" id=7]
+[ext_resource path="res://characters/wizard/sprites/flamewave_charge.png" type="Texture" id=8]
+[ext_resource path="res://characters/wizard/sprites/flamewave_charge_empty.png" type="Texture" id=9]
 
 [node name="PlayerInfo" type="MarginContainer"]
 anchor_right = 0.498
@@ -54,48 +56,66 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -29.5
+margin_left = -19.5
 margin_top = -3.0
-margin_right = 31.5
+margin_right = 20.5
 margin_bottom = 15.0
 custom_constants/separation = -4
 alignment = 2
 
 [node name="1" type="TextureRect" parent="HBoxContainer/VBoxContainer/HoverBar/Control/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 21.0
-margin_right = 37.0
+margin_right = 16.0
 margin_bottom = 18.0
 texture = ExtResource( 4 )
 
 [node name="2" type="TextureRect" parent="HBoxContainer/VBoxContainer/HoverBar/Control/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 33.0
-margin_right = 49.0
+margin_left = 12.0
+margin_right = 28.0
 margin_bottom = 18.0
 texture = ExtResource( 4 )
 
 [node name="3" type="TextureRect" parent="HBoxContainer/VBoxContainer/HoverBar/Control/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 45.0
-margin_right = 61.0
+margin_left = 24.0
+margin_right = 40.0
 margin_bottom = 18.0
 texture = ExtResource( 4 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HoverBar/Control"]
 unique_name_in_owner = true
-margin_left = 1.0
+margin_left = -2.0
 margin_top = 3.0
-margin_right = 84.0
+margin_right = 86.0
 margin_bottom = 19.0
 alignment = 2
 
 [node name="SparkSpeed" type="TextureRect" parent="HBoxContainer/VBoxContainer/HoverBar/Control/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 67.0
-margin_right = 83.0
+margin_left = 72.0
+margin_right = 88.0
 margin_bottom = 16.0
 texture = ExtResource( 5 )
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HoverBar/Control"]
+unique_name_in_owner = true
+margin_left = 10.0
+margin_top = 3.0
+margin_right = 74.0
+margin_bottom = 40.0
+alignment = 2
+
+[node name="FlameCharge" type="TextureProgress" parent="HBoxContainer/VBoxContainer/HoverBar/Control/HBoxContainer3"]
+unique_name_in_owner = true
+margin_left = 48.0
+margin_right = 64.0
+margin_bottom = 16.0
+size_flags_vertical = 0
+rounded = true
+texture_under = ExtResource( 9 )
+texture_progress = ExtResource( 8 )
+fill_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HoverBar"]
 unique_name_in_owner = true

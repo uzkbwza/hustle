@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=2]
+[gd_scene load_steps=88 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -74,6 +74,7 @@
 [ext_resource path="res://ui/VelocityLabel.gd" type="Script" id=72]
 [ext_resource path="res://sound/ui/outtatime2.wav" type="AudioStream" id=73]
 [ext_resource path="res://ui/airoptionbar.png" type="Texture" id=74]
+[ext_resource path="res://ui/tiktok.png" type="Texture" id=75]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -1966,7 +1967,6 @@ margin_bottom = 23.0
 
 [node name="MainMenu" type="Control" parent="UILayer"]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
@@ -2179,8 +2179,8 @@ icon_align = 1
 
 [node name="DiscordButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
 unique_name_in_owner = true
-margin_left = 595.0
-margin_right = 617.0
+margin_left = 573.0
+margin_right = 595.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 20, 20 )
 mouse_default_cursor_shape = 2
@@ -2190,12 +2190,23 @@ icon_align = 1
 
 [node name="TwitterButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
 unique_name_in_owner = true
+margin_left = 595.0
+margin_right = 617.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 20 )
+mouse_default_cursor_shape = 2
+icon = ExtResource( 17 )
+flat = true
+icon_align = 1
+
+[node name="TikTokButton" type="Button" parent="UILayer/MainMenu/SocialLinks"]
+unique_name_in_owner = true
 margin_left = 617.0
 margin_right = 639.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 20, 20 )
 mouse_default_cursor_shape = 2
-icon = ExtResource( 17 )
+icon = ExtResource( 75 )
 flat = true
 icon_align = 1
 

@@ -87,6 +87,10 @@ export var projectile_pos_y = 0
 export var projectile_local_pos = true
 export var projectile_match_facing = false
 
+export var _c_Other = 0
+export var extra_parry_hitlag = 0
+
+
 export var _c_Flip = 0
 export var flip_frame = -1
 export var force_same_direction_as_previous_state = false

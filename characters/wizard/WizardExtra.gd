@@ -79,7 +79,11 @@ func show_options():
 	lock_button.hide()
 	explode_button.hide()
 	orb_push.visible = fighter.orb_projectile != null
-	lock_button.visible = fighter.orb_projectile != null
+	
+	var orb = fighter.obj_from_name(fighter.orb_projectile)
+	lock_button.visible = orb != null and orb.lock_cooldown == 0
+	lock_button.set_pressed_no_signal(orb != null and orb.locked)
+	
 	if lock_button.pressed:
 		orb_push.visible = false
 #	launch_container.visible = fighter.boulder_projectile != null

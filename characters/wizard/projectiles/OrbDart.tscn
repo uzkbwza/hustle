@@ -87,6 +87,7 @@ damage = 60
 hitstun_ticks = 15
 hitlag_ticks = 6
 victim_hitlag = 6
+damage_proration = 2
 sdi_modifier = "0.2"
 parry_meter_gain = 20
 hit_sound = ExtResource( 6 )

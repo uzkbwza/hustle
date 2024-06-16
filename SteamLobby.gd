@@ -287,7 +287,7 @@ func spectate_forfeit(player_id):
 	for spectator in SPECTATORS:
 		_send_P2P_Packet(spectator, {"spectator_player_forfeit": player_id})
 
-func request_lobby_list(code: String="", version: String=""):
+func request_lobby_list(code: String="", version: String="", allow_modded=true, allow_vanilla=true):
 	if LOBBY_ID == 0:
 			# Set distance to worldwide
 		Steam.addRequestLobbyListDistanceFilter(3)
@@ -297,6 +297,12 @@ func request_lobby_list(code: String="", version: String=""):
 		
 		if version != "":
 			Steam.addRequestLobbyListStringFilter("version", version, 0)
+		
+		if allow_modded != allow_vanilla:
+			if allow_modded:
+				Steam.addRequestLobbyListStringFilter("charloader", "Yes", 0)
+			else:
+				Steam.addRequestLobbyListStringFilter("charloader", "No", 0)
 		#	Before requesting the lobby list with requestLobbyList you can add more search queries like:
 		#	addRequestLobbyListStringFilter - which allows you to look for specific works in the lobby metadata
 		#	addRequestLobbyListNumericalFilter - which adds a numerical comparions filter (<=, <, =, >, >=, !=)

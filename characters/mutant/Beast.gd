@@ -121,6 +121,10 @@ func _on_hit_something(obj, hitbox):
 		start_projectile_invulnerability()
 	add_juke_pips(1)
 
+
+func on_parried():
+	add_juke_pips(JUKE_PIPS_PER_USE)
+
 func on_got_blocked():
 	.on_got_blocked()
 #	if !juked_this_turn:

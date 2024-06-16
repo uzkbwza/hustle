@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.9.6-steam"
+var VERSION = "1.9.9-steam-unstable"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -31,6 +31,7 @@ var steam_demo_version = false
 var show_last_move_indicators = true
 var speed_lines_enabled = true
 var replay_extra_freeze_frames = true
+var seen_custom_character_nag = false
 var auto_fc = true
 var ghost_speed = 2
 
@@ -90,6 +91,8 @@ func _enter_tree():
 	audio_player = AudioStreamPlayer.new()
 	call_deferred("add_child", audio_player)
 	audio_player.bus = "Music"
+	
+	
 	var data = get_player_data()
 	for key in data.options:
 		set(key, data.options[key])
@@ -211,6 +214,7 @@ func save_options():
 			"speed_lines_enabled": speed_lines_enabled,
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
+			"seen_custom_character_nag": seen_custom_character_nag,
 		}
 	})
 
@@ -239,6 +243,7 @@ func get_default_player_data():
 			"auto_fc": true,
 			"show_extra_info": false,
 			"replay_extra_freeze_frames": true,
+			"seen_custom_character_nag": false,
 		}
 	}
 

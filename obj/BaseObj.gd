@@ -791,6 +791,7 @@ func update_grounded():
 	chara.update_grounded()
 
 func on_got_parried():
+	hitlag_ticks += current_state().extra_parry_hitlag
 	current_state().on_got_perfect_parried()
 
 func on_got_blocked():

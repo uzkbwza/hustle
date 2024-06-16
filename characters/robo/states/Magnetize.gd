@@ -9,5 +9,9 @@ func _frame_0():
 #	if host.armor_pips > host.MAX_ARMOR_PIPS:
 #			host.armor_pips = host.MAX_ARMOR_PIPS
 
+func _tick():
+	if current_tick == 7 and host.combo_count > 0:
+		enable_interrupt()
+
 func is_usable():
 	return host.magnet_ticks_left <= 0 and .is_usable() and host.grenade_object != null

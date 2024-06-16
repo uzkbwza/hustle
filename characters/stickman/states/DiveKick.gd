@@ -94,13 +94,24 @@ func _on_hit_something(obj, hitbox):
 		if obj.is_in_group("Fighter"):
 			queue_state_change("Fall")
 
+
+func on_got_perfect_parried():
+	if data.y < 0:
+		host.hitlag_ticks += 8
+		
+
 func _tick():
 	if !grounded and current_tick == 3:
 		if host.initiative:
 			current_tick = 9
+		else:
+			current_tick = 6
 
 	if grounded and data.y < 0 and current_tick == 4:
 		current_tick = 8
+	
+	if data.y < 0 and current_tick > 20:
+		return "DiveKickHopLong"
 
 	if moving:
 		host.move_directly_relative(move_x_amount, move_y_amount)

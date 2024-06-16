@@ -3,7 +3,7 @@ extends BeastState
 export var grounded = false
 
 func _tick():
-	if current_tick < (2 if !grounded else 5):
+	if (current_tick < (2 if !grounded else 5)) and host.combo_count <= 0:
 		land_cancel_state = "Landing"
 	else:
 		land_cancel_state = "ShredLandCancel"

@@ -13,7 +13,8 @@ func _frame_4():
 #	host.update_facing()
 	var pos = host.get_pos()
 	if data.x != 0:
-		var object = host.spawn_object(KUNAI_SUMMON_SCENE, SPAWN_X, SPAWN_Y, true, data.duplicate())
+		var spawn_y_offset = 0 if data.y != 0 else -1
+		var object = host.spawn_object(KUNAI_SUMMON_SCENE, SPAWN_X, SPAWN_Y + spawn_y_offset, true, data.duplicate())
 		object.set_facing(host.get_facing_int())
 		host.can_summon_kunai = false
 	else:

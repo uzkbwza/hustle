@@ -678,7 +678,7 @@ animations = [ {
 "name": "Taunt",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 298 ), ExtResource( 298 ), ExtResource( 298 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 299 ), ExtResource( 299 ), ExtResource( 300 ), ExtResource( 300 ), ExtResource( 301 ), ExtResource( 301 ), ExtResource( 296 ), ExtResource( 296 ) ],
+"frames": [ ExtResource( 298 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 297 ), ExtResource( 299 ), ExtResource( 299 ), ExtResource( 300 ), ExtResource( 300 ), ExtResource( 301 ), ExtResource( 301 ), ExtResource( 296 ), ExtResource( 296 ) ],
 "loop": true,
 "name": "Telekinesis",
 "speed": 5.0
@@ -840,6 +840,7 @@ extra_state_variables = "hover_ticks_left
 hovering
 fast_falling
 hover_left
+flame_wave_cooldown
 orb_projectile
 can_flame_wave
 can_vile_clutch
@@ -881,10 +882,7 @@ ExtResource( 322 ): {
 "y": -28
 }
 }
-_c_NEW_MODDED_CHARACTERS_IMPORTANT = 0
-_c_ENABLE_THIS_SETTING_IF_YOU_WANT_CONSISTENCY_WITH_THE_BASE_CAST = 0
 enable_extra_aesthetic_hitstop = true
-_c_THANK_YOU = 0
 character_portrait = ExtResource( 63 )
 character_portrait2 = ExtResource( 99 )
 player_info_scene = ExtResource( 4 )
@@ -991,7 +989,7 @@ timed_particle_scene = ExtResource( 95 )
 timed_spawn_particle_tick = 6
 enter_sfx_volume = -12.0
 sfx = ExtResource( 303 )
-sfx_tick = 6
+sfx_tick = 5
 sfx_volume = -5.0
 projectile_scene = ExtResource( 302 )
 projectile_tick = 6
@@ -1018,6 +1016,7 @@ height = -5
 damage = 80
 hitstun_ticks = 18
 cancellable = false
+hits_otg = true
 block_cancel_allowed = false
 plus_frames = -1
 hit_height = 2

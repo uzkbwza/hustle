@@ -10,6 +10,7 @@ const ATTACK_SUPER_DRAIN = 0
 const LIGHTNING_DRAIN = 0
 const HIT_FORCE_MODIFIER = "2.0"
 const PUSH_BACK_FORCE = "10"
+const PUSH_BLOCK_LOCK_COOLDOWN = 20
 
 const ORB_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDart.tscn")
 const LOCKED_DART_SCENE = preload("res://characters/wizard/projectiles/OrbDartLocked.tscn")
@@ -23,6 +24,8 @@ var triggered_attacks = {}
 
 var frozen = false
 var locked = false
+
+var lock_cooldown = 0
 
 var push_ticks = 0
 
@@ -61,6 +64,7 @@ func get_travel_dir():
 func on_got_push_blocked():
 	unlock()
 	reset_momentum()
+	lock_cooldown = PUSH_BLOCK_LOCK_COOLDOWN
 	var dir_sign = get_fighter().opponent.get_opponent_dir()
 	apply_force(fixed.mul(str(dir_sign), PUSH_BACK_FORCE), "0")
 
@@ -131,6 +135,8 @@ func tick():
 		strike_ticks_left -= 1
 		if strike_ticks_left == 0:
 			spawn_lightning()
+	if lock_cooldown > 0:
+		lock_cooldown -= 1
 
 func push(fx, fy):
 	if fixed.eq(fx,"0") and fixed.eq(fy,"0"):

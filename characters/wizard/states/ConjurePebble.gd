@@ -25,8 +25,11 @@ func _frame_1():
 	if host.should_hide_rng():
 		projectile_scene = preload("res://characters/wizard/projectiles/telekinesis/TelekinesisBoulderGhost.tscn")
 
-func process_projectile(obj):
+func _frame_4():
 	host.play_sound("HitBass")
+
+func process_projectile(obj):
+
 	host.boulder_projectile = obj.obj_name
 
 func is_usable():

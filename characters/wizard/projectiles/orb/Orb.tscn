@@ -83,7 +83,9 @@ push_ticks
 triggered_attacks
 push_dir
 strikes_left
-strike_ticks_left"
+strike_ticks_left
+lock_cooldown
+"
 damages_own_team = true
 has_projectile_parry_window = false
 can_be_hit_by_melee = true
@@ -164,6 +166,7 @@ chip_damage_modifier = "0.8"
 hitstun_ticks = 18
 hitlag_ticks = 2
 victim_hitlag = 5
+damage_proration = 1
 sdi_modifier = "0.35"
 allowed_to_hit_own_team = false
 plus_frames = 1
@@ -185,6 +188,7 @@ chip_damage_modifier = "0.8"
 hitstun_ticks = 18
 hitlag_ticks = 7
 victim_hitlag = 8
+damage_proration = 1
 sdi_modifier = "0.85"
 allowed_to_hit_own_team = false
 plus_frames = 1
@@ -206,6 +210,7 @@ chip_damage_modifier = "0.8"
 hitstun_ticks = 18
 hitlag_ticks = 7
 victim_hitlag = 8
+damage_proration = 1
 allowed_to_hit_own_team = false
 plus_frames = 1
 hit_sound = ExtResource( 29 )

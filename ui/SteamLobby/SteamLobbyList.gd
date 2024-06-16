@@ -3,15 +3,27 @@ extends Control
 onready var lobby_list = $"%LobbyList"
 onready var lobby_name = $"%LobbyName"
 onready var charloader_button = $"%CharloaderButton"
+onready var exclamation_button = $"%ExclamationButton"
+onready var exclamation_button_y = exclamation_button.rect_position.y
+onready var custom_char_on = $"%CustomCharOn"
+onready var custom_char_off = $"%CustomCharOff"
 
 var selected_lobby
 var lobbies = []
+
+
+var show_custom_character_lobbies = true
+var show_vanilla_lobbies = true
+
+var t = 0
 
 func _ready():
 	$"%CreateLobbyButton".connect("pressed", self, "_on_create_lobby_button_pressed")
 #	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	if Global.seen_custom_character_nag and !OS.is_debug_build():
+		exclamation_button.hide()
 #	charloader_button.disabled = !ModLoader.active
 #	charloader_button.pressed = ModLoader.active
 
@@ -31,6 +43,7 @@ func _on_back_button_pressed():
 
 func show():
 	.show()
+
 	_on_LobbySize_value_changed($"%LobbySize".value)
 	$"%ConnectingLabel".show()
 	clear_lobby_list()
@@ -38,8 +51,8 @@ func show():
 #	_on_refresh_timer_timeout()
 
 func request_lobby_list(code=""):
-	SteamLobby.request_lobby_list(code, Global.VERSION if $"%FilterIncompatibleButton".pressed else "")
-
+	SteamLobby.request_lobby_list(code, Global.VERSION if $"%FilterIncompatibleButton".pressed else "", show_custom_character_lobbies, show_vanilla_lobbies)
+ 
 func get_lobby_name():
 	var lobby_text = lobby_name.text.strip_edges()
 	if lobby_text == "":
@@ -49,6 +62,22 @@ func get_lobby_name():
 func clear_lobby_list():
 	for child in lobby_list.get_children():
 		child.free()
+
+func _process(delta):
+	if !is_visible_in_tree():
+		return
+	t += delta
+	var color = Color("ffd519").linear_interpolate(Color("65e6ff"), sin(t * 10))
+	$"%CharloaderButton".set("custom_colors/font_color", color)
+	$"%CharloaderButton".set("custom_colors/font_color_hover", color)
+	$"%CharloaderButton".set("custom_colors/font_color_pressed", color)
+	if exclamation_button.visible:
+		exclamation_button.rect_position.y = exclamation_button_y + sin(t * 30) * 3
+	
+
+	
+	
+		
 
 func _on_lobby_match_list_received(lobbies):
 	self.lobbies = lobbies
@@ -154,4 +183,34 @@ func _on_CodeSearch_text_entered(new_text):
 
 func _on_LobbySize_value_changed(value):
 	$"%LobbySizeLabelCount".text = str(value)
+	pass # Replace with function body.
+
+
+func _on_LobbySettingsChangeWindowButton_pressed():
+	$"%LobbySettingsChangedWindow".hide()
+	pass # Replace with function body.
+
+
+func _on_ExclamationButton_pressed():
+	$"%LobbySettingsChangedWindow".show()
+	exclamation_button.hide()
+	Global.seen_custom_character_nag = true
+	pass # Replace with function body.
+
+func _on_CustomCharOff_toggled(button_pressed):
+	show_vanilla_lobbies = button_pressed
+	if !show_vanilla_lobbies and !show_custom_character_lobbies:
+		custom_char_on.pressed = false
+		custom_char_off.pressed = true
+		return
+	request_lobby_list()
+	pass # Replace with function body.
+
+func _on_CustomCharOn_toggled(button_pressed):
+	show_custom_character_lobbies = button_pressed
+	if !show_vanilla_lobbies and !show_custom_character_lobbies:
+		custom_char_on.pressed = false
+		custom_char_off.pressed = true
+		return
+	request_lobby_list()
 	pass # Replace with function body.

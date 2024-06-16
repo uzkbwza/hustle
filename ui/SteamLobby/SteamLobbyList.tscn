@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/SteamLobby/SteamLobbyList.gd" type="Script" id=2]
 [ext_resource path="res://ui/SteamLobby/LobbyEntry.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/Window/Window.gd" type="Script" id=4]
+[ext_resource path="res://ui/exclamationmarks.png" type="Texture" id=5]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.0431373, 0.0431373, 0.0431373, 1 )
 
 [node name="SteamLobbyList" type="Panel"]
 anchor_left = 0.5
@@ -286,9 +291,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -19.0
-margin_right = 225.0
-margin_bottom = 51.0
+margin_left = -18.0
+margin_top = 1.0
+margin_right = 226.0
+margin_bottom = 52.0
 align = 1
 valign = 1
 autowrap = true
@@ -395,7 +401,6 @@ hint_tooltip = "Requires mods to be enabled."
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 custom_colors/font_color_hover = Color( 0.396078, 0.901961, 1, 1 )
 custom_colors/font_color_pressed = Color( 0.396078, 0.901961, 1, 1 )
-pressed = true
 text = "allow custom characters"
 
 [node name="Panel" type="Panel" parent="CreateLobbyDialog"]
@@ -405,6 +410,17 @@ margin_top = 266.0
 margin_right = 304.0
 margin_bottom = 314.0
 mouse_filter = 2
+
+[node name="ExclamationButton" type="Button" parent="CreateLobbyDialog"]
+unique_name_in_owner = true
+margin_left = 205.0
+margin_top = 295.0
+margin_right = 217.0
+margin_bottom = 313.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 5 )
+flat = true
 
 [node name="CodeSearch" type="LineEdit" parent="."]
 unique_name_in_owner = true
@@ -450,6 +466,36 @@ clip_text = true
 items = [ "sort by player count", null, false, 0, null, "sort by name", null, false, 1, null ]
 selected = 0
 
+[node name="CustomCharLabel" type="Label" parent="."]
+unique_name_in_owner = true
+margin_left = 189.0
+margin_top = -19.0
+margin_right = 285.0
+margin_bottom = -2.0
+text = "custom characters"
+valign = 1
+clip_text = true
+
+[node name="CustomCharOn" type="CheckBox" parent="."]
+unique_name_in_owner = true
+margin_left = 286.0
+margin_top = -19.0
+margin_right = 328.0
+margin_bottom = -2.0
+pressed = true
+text = "on"
+clip_text = true
+
+[node name="CustomCharOff" type="CheckBox" parent="."]
+unique_name_in_owner = true
+margin_left = 329.0
+margin_top = -19.0
+margin_right = 371.0
+margin_bottom = -2.0
+pressed = true
+text = "off"
+clip_text = true
+
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
 anchor_left = 1.0
@@ -471,10 +517,93 @@ margin_bottom = -269.0
 size_flags_horizontal = 0
 text = "refresh"
 
+[node name="Label" type="Label" parent="."]
+margin_left = 251.0
+margin_top = 276.0
+margin_right = 613.0
+margin_bottom = 329.0
+autowrap = true
+
+[node name="LobbySettingsChangedWindow" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -126.0
+margin_top = -58.0
+margin_right = 126.0
+margin_bottom = 58.0
+size_flags_horizontal = 12
+size_flags_vertical = 12
+theme = ExtResource( 1 )
+script = ExtResource( 4 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LobbySettingsChangedWindow"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 251.0
+margin_bottom = 115.0
+
+[node name="TitleBar" type="Panel" parent="LobbySettingsChangedWindow/VBoxContainer"]
+margin_right = 250.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 0, 9 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="LobbySettingsChangedWindow/VBoxContainer/TitleBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = 2.0
+mouse_filter = 1
+text = "Hello! "
+align = 1
+
+[node name="Contents" type="PanelContainer" parent="LobbySettingsChangedWindow/VBoxContainer"]
+margin_top = 10.0
+margin_right = 250.0
+margin_bottom = 114.0
+rect_min_size = Vector2( 0, 10 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LobbySettingsChangedWindow/VBoxContainer/Contents"]
+margin_right = 250.0
+margin_bottom = 104.0
+
+[node name="Label" type="Label" parent="LobbySettingsChangedWindow/VBoxContainer/Contents/VBoxContainer"]
+margin_top = 12.0
+margin_right = 250.0
+margin_bottom = 79.0
+rect_min_size = Vector2( 250, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Custom characters are now disabled on new lobbies by default.
+
+Don't forget to enable the option if you want to make a lobby with modded characters!"
+align = 1
+autowrap = true
+
+[node name="LobbySettingsChangeWindowButton" type="Button" parent="LobbySettingsChangedWindow/VBoxContainer/Contents/VBoxContainer"]
+margin_left = 96.0
+margin_top = 92.0
+margin_right = 153.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 40, 0 )
+size_flags_horizontal = 4
+text = "okey dokey"
+
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]
 [connection signal="value_changed" from="CreateLobbyDialog/LobbySize" to="." method="_on_LobbySize_value_changed"]
+[connection signal="pressed" from="CreateLobbyDialog/ExclamationButton" to="." method="_on_ExclamationButton_pressed"]
 [connection signal="text_entered" from="CodeSearch" to="." method="_on_CodeSearch_text_entered"]
 [connection signal="pressed" from="SearchButton" to="." method="_on_SearchButton_pressed"]
 [connection signal="toggled" from="FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]
 [connection signal="item_selected" from="SortButton" to="." method="_on_SortButton_item_selected"]
+[connection signal="toggled" from="CustomCharOn" to="." method="_on_CustomCharOn_toggled"]
+[connection signal="toggled" from="CustomCharOff" to="." method="_on_CustomCharOff_toggled"]
 [connection signal="pressed" from="RefreshButton" to="." method="_on_RefreshButton_pressed"]
+[connection signal="pressed" from="LobbySettingsChangedWindow/VBoxContainer/Contents/VBoxContainer/LobbySettingsChangeWindowButton" to="." method="_on_LobbySettingsChangeWindowButton_pressed"]

@@ -8,4 +8,4 @@ func _frame_9():
 	host.can_flame_wave = false
 
 func is_usable():
-	return .is_usable() and host.can_flame_wave
+	return .is_usable() and host.can_flame_wave and host.flame_wave_cooldown <= 0

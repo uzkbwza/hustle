@@ -20,6 +20,7 @@ const SPARK_EXPLOSION_GROUND_SPEED = 20
 const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31 
+const FLAME_WAVE_COOLDOWN = 30
 
 var hover_left = 0
 var hover_drain_amount = 25
@@ -41,6 +42,7 @@ var can_vile_clutch = true
 var current_orb_push = null
 var detonating_bombs = false
 var boulder_projectile = null
+var flame_wave_cooldown = 0
 
 var spark_bombs = []
 var nearby_spark_bombs = []
@@ -64,8 +66,7 @@ func init(pos=null):
 	if infinite_resources:
 		geyser_charge = 3
 	default_dash_speed = $StateMachine/DashForward.dash_speed
-	if !is_connected("parried",self, "on_parried"):
-		connect("parried", self, "on_parried")
+
 
 func on_blocked_melee_attack():
 	.on_blocked_melee_attack()
@@ -234,6 +235,9 @@ func tick():
 			if bomb:
 				bomb.explode(true)
 				take_damage(SPARK_BOMB_SELF_DAMAGE)
+
+	if flame_wave_cooldown > 0:
+		flame_wave_cooldown -= 1
 
 	if nearby_spark_bombs:
 		nearby_spark_bombs = []
