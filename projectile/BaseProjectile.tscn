@@ -14,6 +14,7 @@ deletes_other_projectiles = true
 fizzle_on_ceiling = false
 movable = true
 can_be_hit_by_melee = false
+hit_by_self_projectiles = false
 hit_cancel_on_hit = false
 free_cancel_on_hit = false
 apply_hitlag_when_hit_by_melee = true

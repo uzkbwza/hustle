@@ -1065,7 +1065,7 @@ func apply_hitboxes(players):
 		for opp_object in objects:
 			if opp_object.disabled:
 				continue
-			if opp_object.id == opp_id:
+			if opp_object.id==opp_id or (object.hit_by_self_projectiles and opp_object!=object):
 				opp_objects.append(opp_object)
 
 		if !object.projectile_immune:

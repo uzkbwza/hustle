@@ -442,7 +442,7 @@ animations = [ {
 "name": "ForwardDashBackFollowup",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 51 ), ExtResource( 51 ), ExtResource( 51 ), ExtResource( 13 ), ExtResource( 13 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ) ],
+"frames": [ ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 14 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 50 ), ExtResource( 51 ), ExtResource( 51 ), ExtResource( 51 ), ExtResource( 13 ), ExtResource( 13 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ), ExtResource( 10 ) ],
 "loop": true,
 "name": "ForwardDashFollowup",
 "speed": 5.0
@@ -2196,7 +2196,7 @@ knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
 start_tick = 7
-active_ticks = 2
+active_ticks = 3
 
 [node name="Hitbox4" type="Node2D" parent="StateMachine/ForwardDashFollowup" index="3"]
 z_index = 1000
@@ -2216,7 +2216,7 @@ knockback = "5.0"
 grounded_hit_state = "HurtAerial"
 disable_collision = false
 start_tick = 7
-active_ticks = 2
+active_ticks = 3
 
 [node name="Hitbox5" type="Node2D" parent="StateMachine/ForwardDashFollowup" index="4"]
 z_index = 1000
@@ -2689,25 +2689,25 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 160 ): {
-"x": 37,
-"y": -1
-},
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
 },
+ExtResource( 160 ): {
+"x": 37,
+"y": -1
+},
 ExtResource( 169 ): {
 "x": 16,
 "y": -7
 },
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 }
 }
 interruptible_on_opponent_turn = true
@@ -2853,6 +2853,7 @@ hitstun_ticks = 17
 hitlag_ticks = 5
 victim_hitlag = 10
 cancellable = false
+guard_break = true
 plus_frames = 1
 screenshake_amount = 8
 screenshake_frames = 6
@@ -2878,6 +2879,7 @@ hitstun_ticks = 17
 hitlag_ticks = 5
 victim_hitlag = 10
 cancellable = false
+guard_break = true
 plus_frames = 1
 screenshake_amount = 8
 screenshake_frames = 6
@@ -3567,7 +3569,7 @@ height = 8
 damage = 90
 damage_in_combo = 80
 minimum_damage = 10
-hitstun_ticks = 38
+hitstun_ticks = 46
 combo_hitstun_ticks = 25
 hitlag_ticks = 5
 cancellable = false
@@ -3971,7 +3973,7 @@ pushback_x = "0.0"
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
-custom_grav = "0.5"
+custom_grav = "0.6"
 custom_grav_max_fall_speed = "7.0"
 anim_length = 34
 force_dir_x = "-1.0"
@@ -3982,6 +3984,10 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
+},
 ExtResource( 79 ): {
 "x": 23,
 "y": 16
@@ -3989,10 +3995,6 @@ ExtResource( 79 ): {
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
-},
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
 }
 }
 land_cancel = true
@@ -4001,13 +4003,14 @@ release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
 dir_y = "1.0"
+hard_knockdown = true
 di_modifier = "1.5"
 
 [node name="BackThrow" parent="StateMachine" index="88"]
 apply_grav = false
 reset_y_momentum = true
 apply_custom_grav = true
-custom_grav = "0.5"
+custom_grav = "0.6"
 custom_grav_max_fall_speed = "7.0"
 anim_length = 34
 force_dir_x = "-1.0"
@@ -4023,6 +4026,7 @@ release_frame = 18
 release_throw_pos_x = 23
 release_throw_pos_y = 16
 dir_y = "1.0"
+hard_knockdown = true
 di_modifier = "1.5"
 
 [node name="AirForwardThrow" parent="StateMachine" index="89"]

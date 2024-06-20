@@ -526,6 +526,7 @@ autowrap = true
 
 [node name="LobbySettingsChangedWindow" type="PanelContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -575,13 +576,13 @@ margin_right = 250.0
 margin_bottom = 104.0
 
 [node name="Label" type="Label" parent="LobbySettingsChangedWindow/VBoxContainer/Contents/VBoxContainer"]
-margin_top = 12.0
+margin_top = 5.0
 margin_right = 250.0
-margin_bottom = 79.0
+margin_bottom = 86.0
 rect_min_size = Vector2( 250, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 6
-text = "Custom characters are now disabled on new lobbies by default.
+text = "Custom characters are now disabled on new lobbies by default, to balance out the modded-to-vanilla lobby ratio.
 
 Don't forget to enable the option if you want to make a lobby with modded characters!"
 align = 1

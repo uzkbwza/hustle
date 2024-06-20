@@ -51,7 +51,7 @@ const VISUAL_GUTS_RATIO = 1.5
 
 const MAX_WALL_SLAMS = 3
 
-const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 3
+const COUNTER_HIT_ADDITIONAL_HITLAG_FRAMES = 0
 
 const MAX_GROUNDED_HITS = 7
 const PREDICTION_CORRECT_SUPER_GAIN = 30
@@ -85,6 +85,7 @@ const GUARD_BREAK_SCALING = 1
 const MISSED_BRACE_DAMAGE_MULTIPLIER = "1.0"
 const SUCCESSFUL_BRACE_HITSTUN_MODIFIER = "0.35"
 const SUCCESSFUL_BRACE_DI_MODIFIER = "1.5"
+const COUNTER_HIT_DAMAGE_MODIFIER = "1.1"
 
 var HOLD_RESTARTS = [
 	"Wait",
@@ -1074,6 +1075,8 @@ func launched_by(hitbox):
 	var damage = hitbox.get_damage()
 	if will_block:
 		damage = fixed.round(fixed.mul(str(damage), "0.5"))
+	if hitbox.counter_hit:
+		damage = fixed.round(fixed.mul(str(damage), COUNTER_HIT_DAMAGE_MODIFIER))
 	take_damage(damage, hitbox.minimum_damage, hitbox.meter_gain_modifier, scaling_offset)
 
 	if will_launch:

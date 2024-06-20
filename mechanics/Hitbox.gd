@@ -13,6 +13,7 @@ const DEFAULT_HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 const MAX_KNOCKBACK = "30"
 
+
 var HIT_PARTICLE = preload("res://fx/HitEffect1.tscn")
 
 enum HitboxType {

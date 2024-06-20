@@ -64,6 +64,7 @@ func show_options():
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
 	release_button.disabled = false
+	pull_button.disabled = false
 	if move_state is CharacterState:
 		if move_state.type == CharacterState.ActionType.Defense \
 		or move_state.type == CharacterState.ActionType.Movement:
@@ -74,6 +75,9 @@ func update_selected_move(move_state):
 		boost_dir.hide()
 		release_button.set_pressed_no_signal(false)
 		release_button.disabled = true
+	if move_state and move_state.get("disable_aerial_movement"):
+		pull_button.set_pressed_no_signal(false)
+		pull_button.disabled = true
 
 
 func get_extra():

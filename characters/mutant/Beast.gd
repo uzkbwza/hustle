@@ -86,13 +86,15 @@ func process_extra(extra):
 			create_speed_after_image_from_style()
 
 			if fixed.gt(juke_dir_y, "0"):
-#					juke_dir_type = "Down"
+#					juke_dir_type = "Down" 
 				pass
 			if fixed.lt(juke_dir_y, "0"):
 #					juke_dir_type = "Up"
 				set_vel(fixed.mul(get_vel().x, "0.75"), fixed.mul(get_vel().y, "0.5"))
 				up_juke_ticks = UP_JUKE_TICKS
-				use_air_movement()
+				var next_state = get_state(queued_action)
+				if !(next_state and next_state.get("uses_air_movement")):
+					use_air_movement()
 				apply_force("0", UP_JUKE_DOWN_FORCE)
 				started_up_juke_from_ground = is_grounded()
 			if fixed.eq(juke_dir_y, "0") and fixed.eq(juke_dir.x, "0"):

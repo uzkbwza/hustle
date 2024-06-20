@@ -9,6 +9,7 @@ export var deletes_other_projectiles = true
 export var fizzle_on_ceiling = false
 export var movable = true
 export var can_be_hit_by_melee = false
+export var hit_by_self_projectiles = false
 export var hit_cancel_on_hit = false
 export var free_cancel_on_hit = false
 export var apply_hitlag_when_hit_by_melee = true
@@ -22,7 +23,7 @@ var stopped = false
 
 func _ready():
 	state_variables.append_array(
-		["got_parried", "immunity_susceptible", "deletes_other_projectiles", "fizzle_on_ceiling", "movable", "can_be_hit_by_melee", "hit_cancel_on_hit", "projectile_immune", "hitlag_modifier", "stopped"]
+		["got_parried", "immunity_susceptible", "hit_by_self_projectiles", "deletes_other_projectiles", "fizzle_on_ceiling", "movable", "can_be_hit_by_melee", "hit_cancel_on_hit", "projectile_immune", "hitlag_modifier", "stopped"]
 	)
 
 func get_opponent():

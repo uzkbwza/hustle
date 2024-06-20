@@ -20,10 +20,10 @@ alignment = 2
 
 [node name="PullButton" type="CheckButton" parent="VBoxContainer2" index="0"]
 unique_name_in_owner = true
-margin_top = 298.0
+margin_top = 322.0
 margin_right = 66.0
-margin_bottom = 318.0
-rect_min_size = Vector2( 34, 20 )
+margin_bottom = 334.0
+rect_min_size = Vector2( 34, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
@@ -31,10 +31,10 @@ text = "Pull"
 
 [node name="DetachButton" type="CheckButton" parent="VBoxContainer2" index="1"]
 unique_name_in_owner = true
-margin_top = 319.0
+margin_top = 335.0
 margin_right = 66.0
-margin_bottom = 339.0
-rect_min_size = Vector2( 34, 20 )
+margin_bottom = 347.0
+rect_min_size = Vector2( 34, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
@@ -42,10 +42,10 @@ text = "Detach"
 
 [node name="BombButton" type="CheckButton" parent="VBoxContainer2" index="2"]
 unique_name_in_owner = true
-margin_top = 340.0
+margin_top = 348.0
 margin_right = 66.0
 margin_bottom = 360.0
-rect_min_size = Vector2( 34, 20 )
+rect_min_size = Vector2( 34, 0 )
 size_flags_vertical = 0
 theme = ExtResource( 3 )
 custom_colors/font_color = Color( 0.392157, 0.823529, 0.419608, 1 )
@@ -62,7 +62,6 @@ unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 273.0
-margin_right = 60.0
 margin_bottom = 339.0
 grow_horizontal = 2
 grow_vertical = 2

@@ -794,6 +794,9 @@ func on_got_parried():
 	hitlag_ticks += current_state().extra_parry_hitlag
 	current_state().on_got_perfect_parried()
 
+func get_state(state_name):
+	return state_machine.get_state(state_name)
+
 func on_got_blocked():
 	current_state().on_got_blocked()
 

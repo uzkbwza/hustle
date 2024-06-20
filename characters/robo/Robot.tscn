@@ -1508,7 +1508,8 @@ y = -26
 width = 45
 height = 5
 damage = 95
-hitstun_ticks = 12
+hitstun_ticks = 14
+combo_hitstun_ticks = 12
 hitlag_ticks = 6
 cancellable = false
 beats_grab = false
@@ -2265,29 +2266,29 @@ enter_sfx = ExtResource( 208 )
 enter_sfx_volume = -8.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 202 ): {
-"x": -14,
-"y": -48
+ExtResource( 205 ): {
+"x": -39,
+"y": -37
 },
 ExtResource( 203 ): {
 "x": -37,
 "y": -11
 },
-ExtResource( 204 ): {
-"x": 8,
-"y": -32
-},
-ExtResource( 205 ): {
-"x": -39,
-"y": -37
-},
 ExtResource( 201 ): {
 "x": -15,
 "y": 0
 },
+ExtResource( 202 ): {
+"x": -14,
+"y": -48
+},
 ExtResource( 200 ): {
 "x": 5,
 "y": -12
+},
+ExtResource( 204 ): {
+"x": 8,
+"y": -32
 }
 }
 update_facing_on_exit = false
@@ -2746,45 +2747,45 @@ ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 },
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
 },
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
 },
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
 }
 }
 iasa_at = 56
@@ -2843,11 +2844,7 @@ enter_sfx = ExtResource( 155 )
 enter_sfx_volume = -10.0
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 262 ): {
-"x": 40,
-"y": -33
-},
-ExtResource( 263 ): {
+ExtResource( 254 ): {
 "x": 124,
 "y": -72
 },
@@ -2855,21 +2852,25 @@ ExtResource( 264 ): {
 "x": 124,
 "y": -72
 },
+ExtResource( 258 ): {
+"x": 78,
+"y": -50
+},
+ExtResource( 263 ): {
+"x": 124,
+"y": -72
+},
 ExtResource( 260 ): {
 "x": 40,
 "y": -34
 },
+ExtResource( 262 ): {
+"x": 40,
+"y": -33
+},
 ExtResource( 253 ): {
 "x": 116,
 "y": -66
-},
-ExtResource( 254 ): {
-"x": 124,
-"y": -72
-},
-ExtResource( 258 ): {
-"x": 78,
-"y": -50
 }
 }
 interrupt_into_string = "Grounded
@@ -3187,45 +3188,45 @@ ExtResource( 109 ): {
 "x": 70,
 "y": 15
 },
-ExtResource( 113 ): {
-"x": 62,
-"y": -13
-},
-ExtResource( 116 ): {
-"x": 33,
-"y": -38
-},
-ExtResource( 112 ): {
-"x": -40,
-"y": -44
+ExtResource( 118 ): {
+"x": 67,
+"y": 15
 },
 ExtResource( 108 ): {
 "x": -16,
 "y": -46
 },
-ExtResource( 114 ): {
-"x": -20,
-"y": -58
+ExtResource( 111 ): {
+"x": -31,
+"y": -55
 },
-ExtResource( 117 ): {
-"x": 69,
-"y": 14
+ExtResource( 113 ): {
+"x": 62,
+"y": -13
 },
 ExtResource( 115 ): {
 "x": -41,
 "y": -46
 },
-ExtResource( 118 ): {
-"x": 67,
-"y": 15
+ExtResource( 116 ): {
+"x": 33,
+"y": -38
+},
+ExtResource( 117 ): {
+"x": 69,
+"y": 14
+},
+ExtResource( 114 ): {
+"x": -20,
+"y": -58
+},
+ExtResource( 112 ): {
+"x": -40,
+"y": -44
 },
 ExtResource( 110 ): {
 "x": 65,
 "y": -12
-},
-ExtResource( 111 ): {
-"x": -31,
-"y": -55
 }
 }
 iasa_at = 49
@@ -3490,6 +3491,7 @@ hitstun_ticks = 25
 beats_grab = false
 block_cancel_allowed = false
 plus_frames = 1
+hit_height = 2
 start_tick = 10
 active_ticks = 2
 
@@ -3926,6 +3928,14 @@ sfx_volume = -8.0
 flip_frame = 11
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 431 ): {
+"x": 33,
+"y": 12
+},
+ExtResource( 432 ): {
+"x": 44,
+"y": -7
+},
 ExtResource( 429 ): {
 "x": 36,
 "y": 13
@@ -3933,14 +3943,6 @@ ExtResource( 429 ): {
 ExtResource( 427 ): {
 "x": -19,
 "y": -12
-},
-ExtResource( 432 ): {
-"x": 44,
-"y": -7
-},
-ExtResource( 431 ): {
-"x": 33,
-"y": 12
 }
 }
 title = "Back Throw"
@@ -4564,10 +4566,6 @@ sfx_tick = 14
 sfx_volume = -8.0
 flip_frame = 8
 throw_positions = {
-ExtResource( 375 ): {
-"x": 31,
-"y": -8
-},
 ExtResource( 372 ): {
 "x": -24,
 "y": -6
@@ -4575,6 +4573,10 @@ ExtResource( 372 ): {
 ExtResource( 374 ): {
 "x": 14,
 "y": -7
+},
+ExtResource( 375 ): {
+"x": 31,
+"y": -8
 },
 ExtResource( 373 ): {
 "x": 34,
@@ -4909,9 +4911,13 @@ ExtResource( 443 ): {
 "x": -12,
 "y": 21
 },
-ExtResource( 448 ): {
-"x": -16,
-"y": -2
+ExtResource( 450 ): {
+"x": 15,
+"y": 21
+},
+ExtResource( 451 ): {
+"x": -13,
+"y": -24
 },
 ExtResource( 447 ): {
 "x": 52,
@@ -4921,13 +4927,9 @@ ExtResource( 449 ): {
 "x": 7,
 "y": -22
 },
-ExtResource( 451 ): {
-"x": -13,
-"y": -24
-},
-ExtResource( 450 ): {
-"x": 15,
-"y": 21
+ExtResource( 448 ): {
+"x": -16,
+"y": -2
 },
 ExtResource( 445 ): {
 "x": -17,
@@ -5116,13 +5118,13 @@ ExtResource( 308 ): {
 "x": -21,
 "y": -8
 },
-ExtResource( 309 ): {
-"x": -21,
-"y": -9
-},
 ExtResource( 310 ): {
 "x": -21,
 "y": -15
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -9
 }
 }
 release_frame = 18
@@ -5209,13 +5211,13 @@ ExtResource( 308 ): {
 "x": -22,
 "y": -12
 },
-ExtResource( 309 ): {
-"x": -21,
-"y": -11
-},
 ExtResource( 310 ): {
 "x": -20,
 "y": -16
+},
+ExtResource( 309 ): {
+"x": -21,
+"y": -11
 }
 }
 release_frame = 18

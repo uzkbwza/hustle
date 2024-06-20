@@ -43,6 +43,7 @@ const SPEED_LOST_ON_HIT = "3.0"
 const BOOST_REDUCTION_PER_FRAME = "0.1"
 const MIN_BOOST_REDUCTION_PER_FRAME = "0.05"
 
+
 func init(pos=null):
 	.init(pos)
 	if infinite_resources:
@@ -181,12 +182,14 @@ func tick():
 
 	if momentum_stores > 0 and combo_count <= 0:
 		var reduction = fixed.mul(BOOST_REDUCTION_PER_FRAME, fixed.div(stored_speed_1, "20"))
-		if fixed.lt(reduction, MIN_BOOST_REDUCTION_PER_FRAME):
-			reduction = MIN_BOOST_REDUCTION_PER_FRAME
-		if fixed.lt(stored_speed_1, "10"):
-#			reduction = fixed.mul(reduction, "0.5")
+		if fixed.lt(stored_speed_1, "8"):
 			reduction = "0"
 #		print(reduction)
+		else:
+			if fixed.lt(reduction, MIN_BOOST_REDUCTION_PER_FRAME):
+				reduction = MIN_BOOST_REDUCTION_PER_FRAME
+			if fixed.lt(stored_speed_1, "10"):
+				reduction = fixed.mul(reduction, "0.5")
 		stored_speed_1 = fixed.sub(stored_speed_1, reduction)
 		var stored_dir = fixed.normalized_vec_times(stored_momentum_x, stored_momentum_y, stored_speed_1)
 		stored_momentum_x = stored_dir.x
