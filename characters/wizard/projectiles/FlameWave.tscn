@@ -36,6 +36,8 @@ material = SubResource( 2 )
 script = ExtResource( 7 )
 max_fall_speed = "15"
 has_projectile_parry_window = false
+deletes_other_projectiles = false
+projectile_immune = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 1 )

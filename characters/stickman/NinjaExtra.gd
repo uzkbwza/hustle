@@ -75,7 +75,8 @@ func update_selected_move(move_state):
 		boost_dir.hide()
 		release_button.set_pressed_no_signal(false)
 		release_button.disabled = true
-	if move_state and move_state.get("disable_aerial_movement"):
+
+	if (move_state and move_state is GroundedParryState) or (move_state == null and fighter.current_state() is GroundedParryState):
 		pull_button.set_pressed_no_signal(false)
 		pull_button.disabled = true
 

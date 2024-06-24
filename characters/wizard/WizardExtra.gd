@@ -26,7 +26,6 @@ func on_data_changed():
 		orb_push.visible = true
 		if lock_button.pressed:
 			orb_push.visible = false
-	
 
 func update_selected_move(move_state):
 	.update_selected_move(move_state)
@@ -42,10 +41,10 @@ func update_selected_move(move_state):
 		$"%HoverButton".disabled = true
 		$"%FastFallButton".set_pressed_no_signal(false)
 		$"%FastFallButton".disabled = true
-	if move_state and move_state.get("disable_aerial_movement"):
+	if (move_state and move_state is GroundedParryState) or (move_state == null and fighter.current_state() is GroundedParryState):
 		$"%FastFallButton".set_pressed_no_signal(false)
 		$"%FastFallButton".disabled = true
-		
+
 func _on_hover_button_toggled(on):
 	if on:
 		fast_fall_button.set_pressed_no_signal(false)
