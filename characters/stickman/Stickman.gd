@@ -129,6 +129,9 @@ func detach():
 	if hook:
 		hook.disable()
 
+func super_fall_detach():
+	pulling = false
+
 func apply_grav():
 	if previous_state() and previous_state().name == "AirDash":
 		if !(current_state() is CharacterHurtState):

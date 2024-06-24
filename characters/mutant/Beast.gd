@@ -26,7 +26,6 @@ var install_ticks = 0
 var shockwave_projectile = null
 var spike_projectile = null
 
-
 var juke_startup_ticks = 0
 var juke_pips = JUKE_PIPS_PER_USE * 2
 var juke_dir_x = "0"

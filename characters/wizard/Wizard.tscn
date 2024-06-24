@@ -2611,7 +2611,6 @@ dash_speed = 8
 dash_speed = 8
 
 [node name="DashBackward" parent="StateMachine" index="62"]
-dash_speed = 8
 stop_frame = 9
 
 [node name="Jump" parent="StateMachine" index="65"]

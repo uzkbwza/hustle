@@ -1,4 +1,4 @@
-[gd_scene load_steps=259 format=2]
+[gd_scene load_steps=260 format=2]
 
 [ext_resource path="res://mechanics/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/stickman30.png" type="Texture" id=2]
@@ -255,6 +255,7 @@
 [ext_resource path="res://characters/stickman/states/DiveKickHop.gd" type="Script" id=253]
 [ext_resource path="res://characters/stickman/ActionUIData/NinjaSuperJumpActionUIData.tscn" type="PackedScene" id=254]
 [ext_resource path="res://characters/stickman/states/GroundedSweep.gd" type="Script" id=255]
+[ext_resource path="res://characters/CommandAt.gd" type="Script" id=256]
 
 [sub_resource type="ShaderMaterial" id=3]
 resource_local_to_scene = true
@@ -708,6 +709,10 @@ beats_grab = false
 allowed_stances_string = "Normal
 BackSway"
 change_stance_to = "Normal"
+
+[node name="HostCommand" type="Node" parent="StateMachine/SuperFallStartup" index="0"]
+script = ExtResource( 256 )
+command = "super_fall_detach"
 
 [node name="DashForward" parent="StateMachine" index="27"]
 dash_speed = 14
@@ -3684,21 +3689,21 @@ anim_length = 33
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
 throw_positions = {
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
+},
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3923,14 +3928,6 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
-},
-ExtResource( 207 ): {
-"x": 13,
-"y": -10
-},
 ExtResource( 208 ): {
 "x": 14,
 "y": -11
@@ -3938,6 +3935,14 @@ ExtResource( 208 ): {
 ExtResource( 209 ): {
 "x": 32,
 "y": -6
+},
+ExtResource( 207 ): {
+"x": 13,
+"y": -10
+},
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 }
 }
 burst_cancellable = false
@@ -3980,18 +3985,6 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
-},
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
-ExtResource( 207 ): {
-"x": 14,
-"y": -9
-},
 ExtResource( 208 ): {
 "x": 13,
 "y": -12
@@ -3999,6 +3992,18 @@ ExtResource( 208 ): {
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
+},
+ExtResource( 207 ): {
+"x": 14,
+"y": -9
+},
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 }
 }
 burst_cancellable = false
