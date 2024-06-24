@@ -4,7 +4,6 @@ export var defensive = false
 
 var started_falling = false
 
-
 func _enter():
 	host.start_invulnerability()
 	host.start_projectile_invulnerability()
@@ -25,7 +24,7 @@ func _tick():
 		host.end_invulnerability()
 	else:
 		host.start_invulnerability()
-	
+
 func _exit():
 	host.end_projectile_invulnerability()
 

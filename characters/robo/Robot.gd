@@ -431,6 +431,10 @@ func start_magnetizing():
 #	started_magnet_in_initiative = false
 
 
+func stop_flying():
+	flying_dir = null
+	stop_fly_fx()
+
 #func on_state_initiative_start():
 #	started_magnet_in_initiative = true
 #	if magnet_ticks_left > 0:

@@ -8,11 +8,14 @@ const COMBO_DURATION = 20
 func _enter():
 	host.start_fly_fx()
 #	can_fly = false
+	
+	if host.reverse_state and host.combo_count <= 0:
+		host.add_penalty(25, true)
 
 func _frame_0():
-#
 	if host.flying_dir != null:
 		host.flying_dir = {"x": 0, "y": host.flying_dir.y}
+
 
 #	can_fly = false
 #	host.has_projectile_armor = true

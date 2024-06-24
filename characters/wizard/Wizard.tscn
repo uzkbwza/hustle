@@ -861,21 +861,21 @@ ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 326 ): {
 "x": 40,
@@ -1959,21 +1959,21 @@ ExtResource( 320 ): {
 "x": 62,
 "y": -126
 },
-ExtResource( 321 ): {
-"x": 60,
-"y": -124
-},
 ExtResource( 322 ): {
 "x": 40,
 "y": -28
+},
+ExtResource( 325 ): {
+"x": 58,
+"y": -78
 },
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 325 ): {
-"x": 58,
-"y": -78
+ExtResource( 321 ): {
+"x": 60,
+"y": -124
 },
 ExtResource( 326 ): {
 "x": 40,
@@ -2041,6 +2041,7 @@ Aerial"
 hit_cancel_into_string = "Grounded
 Aerial"
 super_level = 0
+scale_combo_meter = false
 
 [node name="ConjureWeapon" type="Node2D" parent="StateMachine" index="33"]
 script = ExtResource( 260 )

@@ -41,13 +41,14 @@ func _enter():
 
 	var knockback_force = fixed.normalized_vec_times(x, y, hitbox.knockback)
 	knockback_force.y = "0"
-	knockback_force = fixed.vec_mul(knockback_force.x, knockback_force.y, host.knockback_taken_modifier)
+
 	var di_force = fixed.vec_mul(host.get_scaled_di(host.current_di).x, "0", fixed.mul(DI_STRENGTH, hitbox.di_modifier))
 	if hitbox.hitbox_type == Hitbox.HitboxType.Burst:
 		di_force.x = "0"
 		di_force.y = "0"
 	else:
 		hitstun = di_shave_hitstun(hitstun, x, "0")
+		knockback_force = fixed.vec_mul(knockback_force.x, knockback_force.y, host.knockback_taken_modifier)
 	if host.braced_attack:
 		hitstun = brace_shave_hitstun(hitstun)
 	if host.touching_wall and !wall_slam:
