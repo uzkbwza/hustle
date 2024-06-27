@@ -43,6 +43,16 @@ func _enter():
 	hitbox.vacuum = false
 	hitbox_2.vacuum = false
 
+func _frame_0():
+	allow_framecheat = true
+	next_state_on_hold_on_opponent_turn = false
+	next_state_on_hold = false
+
+func _frame_25():
+	allow_framecheat = false
+	next_state_on_hold_on_opponent_turn = true
+	next_state_on_hold = true
+
 func _frame_6():
 	moving = true
 

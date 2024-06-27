@@ -212,7 +212,8 @@ func on_got_parried():
 	pass
 
 func on_blocked_something():
-	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
+#	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
+	pass
 
 func on_got_hit():
 	if bomb_projectile or bomb_thrown:
@@ -221,7 +222,7 @@ func on_got_hit():
 		if bomb_object:
 			bomb_object.disable()
 		bomb_projectile = null
-	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
+#	stored_speed_1 = fixed.sub(stored_speed_1, SPEED_LOST_ON_HIT)
 
 func stack_move_in_combo(move_name):
 	.stack_move_in_combo(move_name)

@@ -110,7 +110,7 @@ var enter_sfx_player
 var sfx_player
 
 var is_grab = false
-var current_tick = -1
+var current_tick = -1 
 var current_real_tick = -1
 var start_tick = -1
 var last_facing = 1

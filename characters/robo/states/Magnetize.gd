@@ -14,4 +14,4 @@ func _tick():
 		enable_interrupt()
 
 func is_usable():
-	return host.magnet_ticks_left <= 0 and .is_usable() and host.grenade_object != null
+	return .is_usable() and (host.magnet_ticks_left <= 0 and host.grenade_object != null)

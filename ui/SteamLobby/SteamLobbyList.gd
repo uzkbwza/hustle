@@ -67,13 +67,13 @@ func _process(delta):
 	if !is_visible_in_tree():
 		return
 	t += delta
-	var color = Color("ffd519").linear_interpolate(Color("65e6ff"), sin(t * 10))
-	$"%CharloaderButton".set("custom_colors/font_color", color)
-	$"%CharloaderButton".set("custom_colors/font_color_hover", color)
-	$"%CharloaderButton".set("custom_colors/font_color_pressed", color)
+#	var color = Color("ffd519").linear_interpolate(Color("65e6ff"), sin(t * 3))
+#	$"%CharloaderButton".set("custom_colors/font_color", color)
+#	$"%CharloaderButton".set("custom_colors/font_color_hover", color)
+#	$"%CharloaderButton".set("custom_colors/font_color_pressed", color)
 	if exclamation_button.visible:
 		exclamation_button.rect_position.y = exclamation_button_y + sin(t * 30) * 3
-	
+#
 
 	
 	

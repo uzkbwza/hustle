@@ -100,32 +100,30 @@ func _ready():
 	drive_jump_sprite.set_material(sprite.get_material())
 	for ghost in chainsaw_arm_ghosts:
 		ghost.set_material(sprite.get_material())
-	setup_magnet_circle()
 
-func setup_magnet_circle():
-	if is_ghost:
-		return
+#	setup_magnet_circle()
 
-	var magnet_poly_size = 2000
-	
-	magnet_polygon.polygon = PoolVector2Array()
-	magnet_polygon2.polygon = PoolVector2Array()
-
-	for mp in [magnet_polygon, magnet_polygon2]:
-		var outer = []
-		var hole = []
-		for i in range(65):
-			var t = ((PI / 64.0) * i)
-			var vec1 = Utils.ang2vec(t) * float(MAGNET_CENTER_DIST)
-			var vec2 = Utils.ang2vec(t) * float(magnet_poly_size)
-			if mp == magnet_polygon2:
-				vec1 *= -1
-				vec2 *= -1
-			outer.append(vec1)
-			hole.append(vec2)
-
-		var clipped = Geometry.clip_polygons_2d(PoolVector2Array(hole), PoolVector2Array(outer))
-		mp.polygon = clipped[0]
+#func setup_magnet_circle():
+#	if is_ghost:
+#		return
+#	var magnet_poly_size = 2000
+#	magnet_polygon.polygon = PoolVector2Array()
+#	magnet_polygon2.polygon = PoolVector2Array()
+#	for mp in [magnet_polygon, magnet_polygon2]:
+#		var outer = []
+#		var hole = []
+#		for i in range(65):
+#			var t = ((PI / 64.0) * i)
+#			var vec1 = Utils.ang2vec(t) * float(MAGNET_CENTER_DIST)
+#			var vec2 = Utils.ang2vec(t) * float(magnet_poly_size)
+#			if mp == magnet_polygon2:
+#				vec1 *= -1
+#				vec2 *= -1
+#			outer.append(vec1)
+#			hole.append(vec2)
+#
+#		var clipped = Geometry.clip_polygons_2d(PoolVector2Array(hole), PoolVector2Array(outer))
+#		mp.polygon = clipped[0]
 
 func init(pos=null):
 	.init(pos)
@@ -154,6 +152,12 @@ func on_launched():
 
 func on_grabbed():
 	on_launched()
+
+func are_missiles_active():
+	for object in get_active_projectiles():
+		if object and object.get("IS_ROBOT_MISSILE"):
+			return true
+	return false
 
 func copy_to(f: BaseObj):
 	.copy_to(f)
@@ -422,13 +426,7 @@ func start_magnetizing():
 	play_sound("MagnetBeep")
 	stop_hustle_fx()
 	start_magnet_fx()
-#	var my_pos_relative = opponent.obj_local_center(self)
-#	var dist = fixed.vec_len(str(my_pos_relative.x), str(my_pos_relative.y))
-#	if fixed.gt(dist, MAGNET_CENTER_DIST):
-#		opponent.reset_momentum()
-#		pass
 	magnet_installed = false
-#	started_magnet_in_initiative = false
 
 
 func stop_flying():

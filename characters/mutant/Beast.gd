@@ -25,6 +25,7 @@ onready var rebirth_particle_effect = $"%RebirthParticleEffect"
 var install_ticks = 0
 var shockwave_projectile = null
 var spike_projectile = null
+var bc_charge = false
 
 var juke_startup_ticks = 0
 var juke_pips = JUKE_PIPS_PER_USE * 2
@@ -63,6 +64,7 @@ func process_action(action):
 		can_air_dash = true
 
 func process_extra(extra):
+	bc_charge = false
 	juke_startup_ticks = 0
 	juked_this_turn = false
 	.process_extra(extra)
@@ -121,6 +123,7 @@ func _on_hit_something(obj, hitbox):
 	if obj.is_in_group("Fighter"):
 		start_projectile_invulnerability()
 	add_juke_pips(1)
+	bc_charge = true
 
 
 func on_parried():
@@ -142,6 +145,9 @@ func launched_by(hitbox):
 	var obj = obj_from_name(spike_projectile)
 	if obj:
 		obj.disable()
+		
+	if juked_this_turn and opponent.current_state().state_name == "Burst":
+		add_juke_pips(JUKE_PIPS_PER_USE / 2)
 
 func on_blocked_something():
 	pass
@@ -213,6 +219,8 @@ func tick():
 	if infinite_resources:
 		juke_pips = JUKE_PIPS
 	.tick()
+
+
 
 func on_got_parried():
 	if juked_this_turn:

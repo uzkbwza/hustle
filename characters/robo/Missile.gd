@@ -5,6 +5,7 @@ var missiles_left = MISSILES
 
 func _enter():
 	missiles_left = MISSILES
+
 func process_projectile(obj):
 	.process_projectile(obj)
 #	var vel = host.get_vel()

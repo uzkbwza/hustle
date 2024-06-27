@@ -30,7 +30,8 @@ script = ExtResource( 4 )
 gravity = "0.2"
 max_air_speed = "40"
 max_fall_speed = "15"
-extra_state_variables = "detected_friends"
+extra_state_variables = "detected_friends
+"
 deletes_other_projectiles = false
 
 [node name="Sprite" parent="Flip" index="0"]

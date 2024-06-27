@@ -12,7 +12,7 @@ export var can_fly = true
 export var throw_invuln_frames = 0
 export var super_scale_combo_meter = true
 
-func is_usable():
+func is_usable(): 
 	if !is_super:
 		return .is_usable()
 	return .is_usable() and host.supers_available >= super_level
