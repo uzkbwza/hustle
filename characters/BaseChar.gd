@@ -1406,6 +1406,8 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 			on_blocked_something()
 			if host.get("enable_extra_aesthetic_hitstop"):
 				global_hitlag(min(block_hitlag * GLOBAL_BLOCKLAG_MODIFIER, 20))
+			if hitbox.hitbox_type == Hitbox.HitboxType.Flip:
+				set_facing(get_facing_int() * - 1, true)
 		else:
 			if not projectile:
 				gain_super_meter(parry_meter)

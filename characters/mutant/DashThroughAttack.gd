@@ -31,6 +31,7 @@ func _tick():
 		if host.get_opponent_dir() != starting_dir and opp_dist >= MIN_TRACKING_SPEED:
 			tracking = true
 			tracked_yet = true
+			host.set_vel(host.get_vel().x, "0")
 	if tracking and opp_dist >= MIN_TRACKING_SPEED:
 #		host.move_directly(host.get_opponent_dir() * TRACKING_SPEED, 0)
 		host.set_vel(str(-starting_dir * TRACKING_SPEED), host.get_vel().y)
@@ -40,6 +41,7 @@ func _tick():
 func _frame_10():
 	host.colliding_with_opponent = true
 	pass
+
 
 func _frame_13():
 	apply_grav = true

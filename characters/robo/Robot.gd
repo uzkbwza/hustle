@@ -140,6 +140,7 @@ func on_got_hit_by_fighter():
 func on_got_parried():
 	.on_got_parried()
 	flying_dir = null
+	can_ground_pound = false
 
 func on_got_hit():
 	gain_air_option_bar(GAIN_AIR_OPTION_BAR_ON_HIT / Utils.int_max(combo_count, 1))
