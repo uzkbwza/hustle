@@ -2294,6 +2294,7 @@ whiff_sound = ExtResource( 230 )
 hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
+block_pushback_modifier = "0.0"
 active_ticks = 4
 
 [node name="Hitbox2" type="Node2D" parent="StateMachine/ConfusingTouch" index="1"]
@@ -2320,6 +2321,7 @@ whiff_sound = ExtResource( 230 )
 hit_sound = ExtResource( 146 )
 whiff_sound_volume = -15.0
 hit_sound_volume = -10.0
+block_pushback_modifier = "0.0"
 start_tick = 3
 active_ticks = 3
 
