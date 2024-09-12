@@ -108,7 +108,6 @@ remote func player_connected_relay():
 	rpc_("register_player", [player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "version":Global.VERSION}])
 
 func player_connected(id):
-
 	if direct_connect:
 		rpc_("register_player", [player_name, id, {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "version":Global.VERSION}])
 

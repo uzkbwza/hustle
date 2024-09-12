@@ -90,7 +90,7 @@ func _ready() -> void:
 func _on_game_error(error):
 	print(error)
 #	quit_match()
-#	get_tree().reload_current_scene()
+#	Global.reload()
 
 func _on_spectator_update_timer_timeout():
 	SteamLobby.update_spectators(ReplayManager.frames)
@@ -231,7 +231,7 @@ func exit_match_from_button():
 	if !SPECTATING:
 		quit_match()
 	Network.stop_multiplayer()
-	get_tree().reload_current_scene()
+	Global.reload()
 
 func has_supporter_pack(steam_id):
 	# TODO: fix this
@@ -424,9 +424,6 @@ func _read_P2P_Packet():
 		var PACKET_CODE:PoolByteArray = PACKET["data"]
 		var readable:Dictionary = bytes2var(PACKET_CODE)
 
-		
-
-
 
 		if readable.has("rpc_data"):
 			print("received rpc")
@@ -442,7 +439,7 @@ func _read_P2P_Packet():
 					emit_signal("quit_on_rematch")
 					Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
 				if not is_instance_valid(Global.current_game):
-					get_tree().reload_current_scene()
+					Global.reload()
 				Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 				Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 				Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
@@ -570,7 +567,7 @@ func _validate_Auth_Session(ticket: Dictionary, steam_id: int) -> void:
 		if steam_id == OPPONENT_ID and OPPONENT_ID != 0: 
 			quit_match()
 			if is_instance_valid(Global.current_game):
-				get_tree().reload_current_scene()
+				Global.reload()
 
 func _on_received_spectate_request(steam_id):
 	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") == "fighting" and is_instance_valid(Network.game):
@@ -857,7 +854,7 @@ func _on_P2P_Session_Connect_Fail(steamID: int, session_error: int) -> void:
 	# Else no known error
 	else:
 		print("WARNING: Session failure with "+str(steamID)+" [unknown error "+str(session_error)+"].")
-#	get_tree().reload_current_scene()
+#	Global.reload()
 
 func get_status():
 	return Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status")
@@ -949,7 +946,9 @@ func _receive_rpc(data):
 		args = []
 	elif not args is Array:
 		args = [args]
-	Network.callv(data.rpc_data.func , args)
+	var func_ = data.rpc_data.func
+	if Network.check_valid_rpc(func_):
+		Network.callv(func_, args)
 
 func request_spectate(steam_id):
 	REQUESTING_TO_SPECTATE = steam_id

@@ -587,6 +587,7 @@ func update_buttons(refresh = true):
 					if !(cancel_state.state_name == button.action_name and \
 					cancel_state.is_usable_with_grounded_check(force_aerial, force_grounded) and (cancel_state.allowed_in_stance())):
 						continue
+
 					
 					if cancel_state.state_name == state.state_name:
 						if fighter.state_hit_cancellable and !state.self_hit_cancellable and !turbo_mode:
@@ -618,6 +619,7 @@ func update_buttons(refresh = true):
 					button.show()
 					button.set_initiative(initiative)
 					break
+
 	continue_button.show()
 	if refresh or (current_button and !current_button.visible):
 		continue_button.set_pressed(true)

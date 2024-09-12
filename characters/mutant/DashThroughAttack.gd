@@ -26,15 +26,18 @@ func _frame_6():
 	host.turn_around()
 
 func _tick():
+	var vel = host.get_vel()
 	var opp_dist = Utils.int_abs(host.obj_local_pos(host.opponent).x)
 	if current_tick > 3 and current_tick < 12 and !tracked_yet:
 		if host.get_opponent_dir() != starting_dir and opp_dist >= MIN_TRACKING_SPEED:
 			tracking = true
 			tracked_yet = true
-			host.set_vel(host.get_vel().x, "0")
+			host.set_vel(vel.x, "0")
+			host.update_data()
+			vel = host.get_vel()
 	if tracking and opp_dist >= MIN_TRACKING_SPEED:
 #		host.move_directly(host.get_opponent_dir() * TRACKING_SPEED, 0)
-		host.set_vel(str(-starting_dir * TRACKING_SPEED), host.get_vel().y)
+		host.set_vel(str(-starting_dir * TRACKING_SPEED), vel.y)
 		if host.get_opponent_dir() == starting_dir:
 			tracking = false
 

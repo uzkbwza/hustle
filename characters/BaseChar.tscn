@@ -1945,6 +1945,8 @@ Aerial"
 
 [node name="ForfeitExplosion" type="Node2D" parent="StateMachine" index="56"]
 script = ExtResource( 153 )
+reset_momentum = true
+endless = true
 particle_scene = ExtResource( 154 )
 particle_position = Vector2( 0, -16 )
 spawn_particle_on_enter = true

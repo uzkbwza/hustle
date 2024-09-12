@@ -2559,6 +2559,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 7 )
 
+[node name="CharacterSelect" parent="UILayer" instance=ExtResource( 12 )]
+unique_name_in_owner = true
+visible = false
+
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
 visible = false
 anchor_top = 1.0
@@ -2573,10 +2577,6 @@ margin_bottom = 50.0
 rect_min_size = Vector2( 50, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="CharacterSelect" parent="UILayer" instance=ExtResource( 12 )]
-unique_name_in_owner = true
-visible = false
 
 [node name="P1TurnTimer" type="Timer" parent="UILayer"]
 unique_name_in_owner = true
@@ -2923,6 +2923,43 @@ pitch_variation = 0.05
 
 [node name="MLMainHook" type="Node" parent="ModLoaderHooks"]
 script = ExtResource( 56 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="LoadingCharactersLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.5
+margin_top = -103.0
+margin_right = 65.5
+margin_bottom = -89.0
+theme = ExtResource( 4 )
+text = "loading mod:"
+align = 1
+
+[node name="LoadingCharactersLabel2" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.5
+margin_top = -93.0
+margin_right = 65.5
+margin_bottom = -79.0
+grow_horizontal = 2
+theme = ExtResource( 4 )
+align = 1
+
+[node name="InputBlocker" type="Control" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
 
 [connection signal="pressed" from="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]

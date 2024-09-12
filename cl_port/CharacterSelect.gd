@@ -368,7 +368,6 @@ func _ready():
 		self.add_child(arrowSprites[i])
 		arrowSprites[i].position = Vector2(arrowPos[i], 263)
 
-
 # variables to be used on _process
 var updatedNetworkLists = false
 var createdButtons = false
@@ -1021,3 +1020,4 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		_import_copy("user://char_cache/" + modName.validate_node_name() + "-" + md.author.validate_node_name() + "-" + folder_to_hash(folder) + "-" + clVersion.validate_node_name() + ".pck") # will cache the asset package for faster load times on subsequent sessions
 
 	return missingFiles
+

@@ -152,6 +152,7 @@ func get_ticks_left():
 	return time - Utils.int_min(current_tick, time)
 
 func _ready():
+	
 	if is_ghost:
 		hide()
 		for object in objects_node.get_children():
@@ -1290,6 +1291,7 @@ func process_tick():
 						network_simulate_ready = false
 						Network.sync_unlock_turn()
 						Network.on_turn_started()
+
 #						SteamLobby.update_spectator_tick(current_tick)
 	else:
 		if ReplayManager.resimulating:

@@ -10,7 +10,7 @@ const INVALID_FILE_CHARS = "<>:/\\|?*"
 #func _input(event):
 #	if event is InputEventKey:
 #		if event.is_action_pressed("debug_reload"):
-#			get_tree().reload_current_scene()
+#			Global.reload()
 #
 #func play_fx_in_level(scene: PackedScene, position: Vector2, rotation=0, flipped=false):
 #	var fx = scene.instantiate()

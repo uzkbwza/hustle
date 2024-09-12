@@ -3693,17 +3693,17 @@ ExtResource( 219 ): {
 "x": 24,
 "y": 3
 },
-ExtResource( 222 ): {
-"x": 23,
-"y": 6
+ExtResource( 221 ): {
+"x": 27,
+"y": 1
 },
 ExtResource( 218 ): {
 "x": 24,
 "y": 2
 },
-ExtResource( 221 ): {
-"x": 27,
-"y": 1
+ExtResource( 222 ): {
+"x": 23,
+"y": 6
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3932,13 +3932,13 @@ ExtResource( 208 ): {
 "x": 14,
 "y": -11
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -6
-},
 ExtResource( 207 ): {
 "x": 13,
 "y": -10
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -6
 },
 ExtResource( 206 ): {
 "x": 13,
@@ -3989,10 +3989,6 @@ ExtResource( 208 ): {
 "x": 13,
 "y": -12
 },
-ExtResource( 209 ): {
-"x": 32,
-"y": -5
-},
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
@@ -4000,6 +3996,10 @@ ExtResource( 207 ): {
 ExtResource( 210 ): {
 "x": 37,
 "y": -7
+},
+ExtResource( 209 ): {
+"x": 32,
+"y": -5
 },
 ExtResource( 206 ): {
 "x": 12,
@@ -4064,5 +4064,5 @@ script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
 
-[node name="ForfeitExplosion" parent="StateMachine" index="109"]
+[node name="ForfeitExplosion" parent="StateMachine" index="110"]
 endless = true

@@ -78,6 +78,22 @@ func _ready():
 		container.add_child(btt)
 		container.move_child(btt, len(container.get_children()) - 4)
 		btt.connect("pressed", self, "_delete_char_cache", [btt])
+#
+	var loaded_mods = false
+	while !Global.mods_loaded:
+		loaded_mods = true
+		hide_main_menu(true)
+		$"%LoadingCharactersLabel".show()
+		$InputBlocker.show()
+		$"%LoadingCharactersLabel2".show()
+		$"%LoadingCharactersLabel2".text = Global.loading_character
+		yield(get_tree(), "idle_frame")
+
+	if loaded_mods:
+		$"%MainMenu".show()
+		$InputBlocker.hide()
+		$"%LoadingCharactersLabel2".hide()
+		$"%LoadingCharactersLabel".hide()
 
 func _delete_char_cache(btt):
 	var dir = Directory.new()
@@ -100,7 +116,7 @@ func _on_player_disconnected():
 	ui_layer._on_opponent_disconnected()
 	
 	if !is_instance_valid(game):
-		get_tree().reload_current_scene()
+		Global.reload()
 
 func _on_game_started(singleplayer):
 	ui_layer.reset_ui()

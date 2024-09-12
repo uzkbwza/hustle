@@ -172,9 +172,9 @@ func _on_spectate_requested(player):
 
 func _on_back_button_pressed():
 	Network.stop_multiplayer(true)
-	get_tree().reload_current_scene()
+	Global.reload()
 
 
 func _on_IncompatibleQuitButton_pressed():
 	Network.stop_multiplayer(true)
-	get_tree().reload_current_scene()
+	Global.reload()

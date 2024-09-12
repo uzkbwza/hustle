@@ -2,7 +2,7 @@ extends Node
 
 signal nag_window()
 
-var VERSION = "1.9.18-steam-unstable"
+var VERSION = "1.9.20-steam"
 const RESOLUTION = Vector2(640, 360)
 
 var audio_player
@@ -32,10 +32,13 @@ var show_last_move_indicators = true
 var speed_lines_enabled = true
 var replay_extra_freeze_frames = true
 var seen_custom_character_nag = false
+var forfeit_buttons_enabled = false
 var auto_fc = true
 var ghost_speed = 2
 
 var mods_loaded = false
+var loading_character = ""
+
 var mouse_world_position = Vector2()
 var rng = BetterRng.new()
 
@@ -51,6 +54,8 @@ var name_paths = {
 var songs = {
 	"bg1": preload("res://sound/music/bg1.mp3")
 }
+
+var character_select_node = null
 
 var characters_cache = {}
 
@@ -215,6 +220,7 @@ func save_options():
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 			"seen_custom_character_nag": seen_custom_character_nag,
+#			"forfeit_buttons_enabled": forfeit_buttons_enabled,
 		}
 	})
 
@@ -244,6 +250,7 @@ func get_default_player_data():
 			"show_extra_info": false,
 			"replay_extra_freeze_frames": true,
 			"seen_custom_character_nag": false,
+#			"forfeit_buttons_enabled": false,
 		}
 	}
 
@@ -287,3 +294,8 @@ func save_player_data(data: Dictionary):
 	file.store_string(JSON.print(existing_data, "  "))
 	file.close()
 	return
+
+func reload():
+	if character_select_node:
+		character_select_node.get_parent().remove_child(character_select_node)
+	get_tree().reload_current_scene()

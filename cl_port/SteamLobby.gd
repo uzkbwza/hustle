@@ -27,8 +27,8 @@ func _read_P2P_Packet_custom(readable):
 		Network.steam_oppChars = readable.character_list
 	elif readable.has("character_difference"):
 		Network.diff = readable.character_difference
-#		_Global.steam_errorMsg = "Can't challenge, you don't share these server-side mods: " + Network.diff
-		_Global.steam_errorMsg = "Can't challenge, mod mismatch. Try deleting character cache in options."
+		_Global.steam_errorMsg = "Can't challenge, you don't share these server-side mods: " + Network.diff
+#		_Global.steam_errorMsg = "Can't challenge, mod mismatch. Try deleting character cache in options."
 	elif readable.has("_packetName"):
 		print("hasta aca esta bien")
 		match readable._packetName:
@@ -50,8 +50,8 @@ func _receive_challenge(fromData, match_settings):
 	Network.player2_hash_to_folder = fromData[3]
 	if (!Network._compare_checksum()):
 		Network.update_diffList()
-#		_Global.steam_errorMsg = "You got challenged, but you don't share these server-side mods: " + Network.diff
-		_Global.steam_errorMsg = "Can't receive challenge, mod mismatch. Try deleting character cache in options."
+		_Global.steam_errorMsg = "You got challenged, but you don't share these server-side mods: " + Network.diff
+#		_Global.steam_errorMsg = "Can't receive challenge, mod mismatch. Try deleting character cache in options."
 		_send_P2P_Packet(steam_id, {"character_difference" : Network.diff})
 		decline_challenge()
 		return

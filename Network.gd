@@ -85,6 +85,12 @@ var second_register = false
 var player1_hashes
 var player2_hashes
 
+var rpc_whitelist = {}
+var rpc_blacklist = {
+	"_whitelist_rpc_method": true,
+	"_blacklist_rpc_method": true,
+}
+
 onready var timer = Timer.new()
 
 # Signals to let lobby GUI know what's going on.
@@ -133,7 +139,10 @@ func _ready():
 	timer.connect("timeout", self, "_on_network_timer_timeout")
 	add_child(timer)
 	timer.start(NETWORK_TIMER_CYCLE)
+
 	randomize()
+	_setup_rpc_whitelist()
+
 
 func get_multiplayer_active():
 	return multiplayer_active and !SteamLobby.SPECTATING
@@ -144,12 +153,13 @@ func rpc_(function_name: String, arg=null, type="remotesync"):
 	
 	if !multiplayer_active:
 		return
-#	yield(get_tree().create_timer(rng.randf_range(0.5, 2.0)), "timeout")
+
 	if direct_connect:
 		if arg is Array:
 			var all_args = [function_name]
 			all_args.append_array(arg)
-			callv("rpc", all_args)
+			if check_valid_rpc(function_name):
+				callv("rpc", all_args)
 		elif arg != null:
 			rpc(function_name, arg)
 		else:
@@ -168,11 +178,38 @@ func rpc_(function_name: String, arg=null, type="remotesync"):
 			else:
 				rpc_id(1, "relay", function_name, arg)
 			if arg is Array:
-				callv(function_name, arg)
+				if check_valid_rpc(function_name):
+					callv(function_name, arg)
 			elif arg != null:
-				call(function_name, arg)
+				if check_valid_rpc(function_name):
+					call(function_name, arg)
 			else:
-				call(function_name)
+				if check_valid_rpc(function_name):
+					call(function_name)
+
+func _whitelist_rpc_method(function_name):
+	rpc_blacklist.erase(function_name)
+	rpc_whitelist[function_name] = true
+
+func _blacklist_rpc_method(function_name):
+	rpc_whitelist.erase(function_name)
+	rpc_blacklist[function_name] = true
+
+func _setup_rpc_whitelist():
+	var script: Script = get_script()
+	if script != null:
+		var method_list = script.get_script_method_list()
+		for method in method_list:
+			var name = method.name
+			if (name in rpc_blacklist):
+				continue
+			_whitelist_rpc_method(name)
+
+func check_valid_rpc(function_name):
+	if !(function_name in rpc_whitelist):
+		print("unrecognized method %s for RPC call. modders please use _whitelist_rpc_method() to fix this." % function_name)
+		return false
+	return true
 
 remotesync func send_match_data(match_data):
 	emit_signal("match_locked_in", match_data)
@@ -392,7 +429,7 @@ remote func player_disconnected(id):
 	if !(id in players):
 		return
 	if Global.css_open:
-		get_tree().reload_current_scene()
+		Global.reload()
 		if steam:
 			SteamLobby.quit_match()
 	emit_signal("player_disconnected")
@@ -523,6 +560,7 @@ func select_character(character, style=null):
 	rpc_("sync_character_selection", [player_id, character, style])
 
 func forfeit(opponent=false):
+	print("forfeiting")
 	if !opponent:
 		rpc_("player_forfeit", player_id)
 	else:
@@ -765,7 +803,7 @@ remotesync func send_rematch_request(player_id):
 			ReplayManager.init()
 			if steam:
 				SteamLobby.REMATCHING_ID = SteamLobby.OPPONENT_ID
-#				get_tree().reload_current_scene()
+#				Global.reload()
 #				begin_game()
 				SteamLobby.exit_match_from_button()
 			else:

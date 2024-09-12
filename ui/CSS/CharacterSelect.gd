@@ -85,7 +85,6 @@ var pageLabel
 var searchBar
 
 func _ready():
-	
 	bttContainer.hide()
 	loading_text.show()
 	go_button.hide()
@@ -96,7 +95,7 @@ func _ready():
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	var dir = Directory.new()
-	
+
 	searchBar = load("res://cl_port/searchbar.tscn").instance()
 	searchBar.connect("text_entered", self, "on_searched")
 
@@ -120,13 +119,20 @@ func _ready():
 	# get all of the modsses
 	_Global.css_instance = self
 	self.visible = false
+
+	Global.mods_loaded = false
 	loadThread2 = Thread.new()
 	loadThread2.start(self, "load_mods")
-	Global.mods_loaded = false
+#	load_mods()
+
 	yield(self, "mods_loaded")
+
 	
-	Global.mods_loaded = true
 	loaded_mods = true
+	yield(get_tree(), "idle_frame")
+	net_updateModLists()
+	yield(get_tree(), "idle_frame")
+	Global.mods_loaded = true
 	bttContainer.show()
 	go_button.show()
 	loading_text.hide()
@@ -140,7 +146,9 @@ func load_mods():
 		dir.make_dir("user://char_cache")
 	charPackages = {}
 	var caches = ModLoader._get_all_files("user://char_cache", "pck") # format: [mod name]-[author name]-[mod hash]-[game version].pck
+	var time = Time.get_ticks_msec()
 	for zip in ModLoader._modZipFiles:
+		Global.loading_character = str(zip).split("/")[-1]
 		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
 		gdunzip.load(zip)
 		var folder = ""
@@ -167,13 +175,16 @@ func load_mods():
 					dir.remove(f)
 				else:
 					charPackages[md.name] = f
+		var new_time = Time.get_ticks_msec()
+#		if new_time - time >= 16:
+#		yield(get_tree(), "idle_frame")
 	call_deferred("on_mods_load_finished")
 	
 
 func on_mods_load_finished():
 	emit_signal("mods_loaded")
+#	if is_instance_valid(loadThread2):
 	loadThread2.wait_to_finish()
-	
 	pass
 
 func _on_network_character_selected(player_id, character, style=null):
@@ -195,7 +206,11 @@ func _on_network_match_locked_in(match_data):
 	loadThread = Thread.new()
 	loadThread.start(self, "net_async_loadOtherChar")
 
+func reset():
+	hide()
+
 func init(singleplayer=true):
+	show()
 	emit_signal("opened")
 #	if Network.steam:
 #		$"%QuitButton".hide()
@@ -349,7 +364,7 @@ func quit():
 		Network.stop_multiplayer()
 #	if SteamLobby.LOBBY_ID != 0:
 	SteamLobby.quit_match()
-	get_tree().reload_current_scene()
+	Global.reload()
 
 func get_match_data():
 	if singleplayer:
@@ -481,10 +496,6 @@ func _input(event):
 					btt_disableTimer = 20
 					searchBar.release_focus()
 
-func _on_CharacterSelect_visibility_changed():
-	pass # Replace with function body.
-
-
 func dict_findKey(_dictionary, _value):
 	for key in _dictionary.keys():
 		if (_dictionary[key] == _value):
@@ -538,7 +549,6 @@ var oggstr_header
 ## Character data functions ##
 
 func addCustomChar(_name, _charPath, _bttName = ""):
-
 	while !loaded_mods:
 		yield(get_tree(), "idle_frame")
 	update_fighter_vars(_name, _charPath, _bttName)

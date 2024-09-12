@@ -76,7 +76,21 @@ onready var global_option_check_buttons = {
 	$"%ExtraInfoButton": "show_extra_info",
 	$"%TimerSoundButton": "enable_timer_sound",
 	$"%ExtraFreezeFrames": "replay_extra_freeze_frames",
+#	$"%SingleplayerForfeitButton": "forfeit_buttons_enabled",
 }
+
+func _enter_tree():
+	if Global.character_select_node == null:
+		Global.character_select_node = $"%CharacterSelect"
+	else:
+		$"%CharacterSelect".free()
+		var css: Node = Global.character_select_node
+		add_child(css)
+		move_child(css, 15)
+		css.name = "CharacterSelect"
+		css.owner = owner
+		css.unique_name_in_owner = true
+		css.reset()
 
 func _ready():
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
@@ -158,13 +172,16 @@ func _ready():
 	for node in global_option_check_buttons:
 		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
 		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
+	
 	$"%HelpScreen".hide()
 	if SteamLobby.LOBBY_ID != 0:
 		yield(get_tree(), "idle_frame") 
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
 	$"%CharacterSelect".connect("opened", self, "reset_ui")
+#	$"CharacterSelect".connect("opened", self, "reset_ui")
 	yield(get_tree(), "idle_frame")
+	
 
 
 func _on_global_option_toggled(toggled, param):
@@ -242,7 +259,7 @@ func _on_opponent_disconnected():
 	if is_instance_valid(game) and !game.game_finished:
 		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
 		Network.forfeit(true)
-		
+		print("opponent disconnected")
 		forfeit_pressed = true
 		actionable = false
 	$"%PausePanel".hide()
@@ -302,7 +319,7 @@ func _on_replay_button_pressed(path):
 	$"%ReplayWindow".hide()
 
 func _on_replay_cancel_pressed():
-	get_tree().reload_current_scene()
+	Global.reload()
 
 #func _notification(what):
 #	if (what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
@@ -344,7 +361,7 @@ func _on_quit_button_pressed():
 		if can_quit():
 			if !Network.steam:
 				Network.stop_multiplayer()
-				get_tree().reload_current_scene()
+				Global.reload()
 			else:
 				SteamLobby.exit_match_from_button()
 

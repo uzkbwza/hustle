@@ -413,6 +413,7 @@ mouse_filter = 2
 
 [node name="ExclamationButton" type="Button" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
+visible = false
 margin_left = 205.0
 margin_top = 295.0
 margin_right = 217.0

@@ -182,6 +182,7 @@ func get_data_overrides():
 	}
 
 func init(singleplayer=true):
+	show()
 	$"%TurnLengthContainer".visible = !singleplayer
 	$"%ChessTimer".visible = !singleplayer
 	if !steam:
@@ -194,10 +195,15 @@ func init(singleplayer=true):
 	$"%P2Dummy".visible = singleplayer
 	if singleplayer:
 		update_singleplayer()
+	else:
+		update_multiplayer()
 	update_menu()
 
 func update_singleplayer():
 	$"%SadnessEnabled".pressed = false
+
+func update_multiplayer():
+	$"%SadnessEnabled".pressed = true
 
 func load_formats_to_menu():
 	loaded_formats = load_all_formats()
@@ -232,7 +238,7 @@ func load_all_formats():
 	dir.open("user://gameformats")
 	dir.list_dir_begin(false, true)
 #	print(dir.get_current_dir())
-	Global.add_dir_contents(dir, files, _directories, false)
+	Global.add_dir_contents(dir, files, _directories, false, ".gameformat")
 	for path in files:
 		var file = File.new()
 		file.open(path, File.READ)

@@ -154,7 +154,7 @@ func get_tags():
 	return tags
 
 func _on_BackButton_pressed():
-	get_tree().reload_current_scene()
+	Global.reload()
 	pass # Replace with function body.
 
 func _on_OpenFolderButton_pressed():

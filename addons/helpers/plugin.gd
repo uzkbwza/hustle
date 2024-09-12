@@ -38,7 +38,7 @@ func make_visible(visible):
 	pass
 
 func get_plugin_name():
-	return "Hi"
+	return """1738 ayy im like hey whats up hello"""
 
 func get_plugin_icon():
 	return get_editor_interface().get_base_control().get_icon("Node", "EditorIcons")

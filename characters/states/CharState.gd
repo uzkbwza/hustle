@@ -88,6 +88,7 @@ export(String, MULTILINE) var interrupt_into_string
 export(String, MULTILINE) var hit_cancel_into_string
 export(String, MULTILINE) var interrupt_exceptions_string
 export(String, MULTILINE) var hit_cancel_exceptions_string
+export var always_usable = false
 
 export var _c_Stances = 0
 export(String, MULTILINE) var allowed_stances_string = "Normal"
@@ -207,6 +208,7 @@ func init():
 	allowed_stances.append_array(get_categories(allowed_stances_string))
 	interrupt_exceptions.append_array(get_categories(interrupt_exceptions_string))
 	start_interruptible_on_opponent_turn = interruptible_on_opponent_turn
+
 	for node in get_children():
 		if node is UsableRequirement:
 			usable_requirement_nodes.append(node)
@@ -220,6 +222,7 @@ func init():
 	hit_cancel_into.append("AerialGrab")
 	hit_cancel_into.append("Wait")
 	hit_cancel_into.append("Fall")
+
 	if title == "":
 		title = state_name
 	match busy_interrupt_type:

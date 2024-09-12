@@ -165,7 +165,7 @@ func create_aura(trail_settings):
 		particle.load_settings(trail_settings)
 
 func _on_back_button_pressed():
-	get_tree().reload_current_scene()
+	Global.reload()
 
 func _on_reset_color_pressed():
 	character_color = null

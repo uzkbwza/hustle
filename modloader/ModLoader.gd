@@ -203,7 +203,7 @@ func _compareScriptPriority(a, b):
 func installScriptExtension(childScriptPath:String):
 	var childScript = ResourceLoader.load(childScriptPath)
 	# Force Godot to compile the script now.
-	# We need to do this here to ensure that the inheritance chain is
+	# We need to do this here to ensure that the inheritance chain isz
 	# properly set up, and multiple mods can chain-extend the same
 	# class multiple times.
 	# This is also needed to make Godot instantiate the extended class

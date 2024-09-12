@@ -237,7 +237,7 @@ func _on_match_list_received(list):
 			
 func _on_back_button_pressed():
 	Network.stop_multiplayer()
-	get_tree().reload_current_scene()
+	Global.reload()
 
 func _on_connection_success():
 	refresh_lobby()
@@ -286,9 +286,9 @@ func _on_game_error(what):
 		join_button.disabled = false
 		host_button.disabled = false
 		if !Network.game and !visible:
-			get_tree().reload_current_scene()
+			Global.reload()
 #		show()
-#		get_tree().reload_current_scene()
+#		Global.reload()
 	else:
 		emit_signal("quit_on_rematch")
 #func _on_find_public_ip_pressed():

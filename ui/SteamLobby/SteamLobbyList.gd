@@ -22,9 +22,13 @@ func _ready():
 #	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	
+	charloader_button.disabled = !ModLoader.active
+#	exclamation_button.visible = ModLoader.active
+
 	if Global.seen_custom_character_nag and !OS.is_debug_build():
 		exclamation_button.hide()
-#	charloader_button.disabled = !ModLoader.active
+
 #	charloader_button.pressed = ModLoader.active
 
 func _on_create_lobby_button_pressed():
@@ -39,7 +43,7 @@ func _on_create_lobby_button_pressed():
 
 func _on_back_button_pressed():
 	Network.stop_multiplayer()
-	get_tree().reload_current_scene()
+	Global.reload()
 
 func show():
 	.show()
@@ -62,18 +66,17 @@ func get_lobby_name():
 func clear_lobby_list():
 	for child in lobby_list.get_children():
 		child.free()
-
-func _process(delta):
-	if !is_visible_in_tree():
-		return
-	t += delta
-#	var color = Color("ffd519").linear_interpolate(Color("65e6ff"), sin(t * 3))
-#	$"%CharloaderButton".set("custom_colors/font_color", color)
-#	$"%CharloaderButton".set("custom_colors/font_color_hover", color)
-#	$"%CharloaderButton".set("custom_colors/font_color_pressed", color)
-	if exclamation_button.visible:
-		exclamation_button.rect_position.y = exclamation_button_y + sin(t * 30) * 3
 #
+#func _process(delta):
+#	if !is_visible_in_tree():
+#		return
+#	t += delta
+##	var color = Color("ffd519").linear_interpolate(Color("65e6ff"), sin(t * 3))
+##	$"%CharloaderButton".set("custom_colors/font_color", color)
+##	$"%CharloaderButton".set("custom_colors/font_color_hover", color)
+##	$"%CharloaderButton".set("custom_colors/font_color_pressed", color)
+#	if exclamation_button.visible:
+#		exclamation_button.rect_position.y = exclamation_button_y + sin(t * 30) * 3
 
 	
 	
