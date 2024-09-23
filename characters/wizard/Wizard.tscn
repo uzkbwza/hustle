@@ -854,13 +854,11 @@ nearby_spark_bombs
 detonating_bombs
 spark_speed_frames
 default_dash_speed
-boulder_projectile"
+boulder_projectile
+orb_duration
+orb_accumulator"
 damages_own_team = true
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
@@ -869,17 +867,21 @@ ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 325 ): {
 "x": 58,
 "y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
 }
 }
 enable_extra_aesthetic_hitstop = true
@@ -1638,7 +1640,6 @@ Grounded"
 hit_cancel_into_string = "Grounded
 Aerial"
 velocity_forward_meter_gain_multiplier = "0.5"
-trigger_orb_type = "OrbDart"
 trigger_orb_delay = 18
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/Liftoff" index="0"]
@@ -1955,10 +1956,6 @@ anim_length = 70
 sfx = ExtResource( 217 )
 sfx_tick = 10
 throw_positions = {
-ExtResource( 326 ): {
-"x": 40,
-"y": -10
-},
 ExtResource( 320 ): {
 "x": 62,
 "y": -126
@@ -1967,17 +1964,21 @@ ExtResource( 321 ): {
 "x": 60,
 "y": -124
 },
+ExtResource( 326 ): {
+"x": 40,
+"y": -10
+},
 ExtResource( 323 ): {
 "x": 62,
 "y": -128
 },
-ExtResource( 322 ): {
-"x": 40,
-"y": -28
-},
 ExtResource( 325 ): {
 "x": 58,
 "y": -78
+},
+ExtResource( 322 ): {
+"x": 40,
+"y": -28
 }
 }
 type = 1
@@ -2235,7 +2236,7 @@ type = 2
 data_ui_scene = ExtResource( 291 )
 button_texture = ExtResource( 199 )
 air_type = 2
-iasa_at = 11
+iasa_at = 13
 interrupt_from_string = "Grounded
 Aerial
 GroundedSpecial
@@ -2512,7 +2513,7 @@ sfx_tick = 4
 title = "Bolt of Magma"
 type = 1
 button_texture = ExtResource( 225 )
-iasa_at = 12
+self_hit_cancellable = false
 interrupt_from_string = "Grounded
 GroundedAttack"
 interrupt_into_string = "Grounded"
@@ -2531,7 +2532,6 @@ y = -40
 width = 17
 height = 16
 damage = 100
-hitstun_ticks = 40
 hitlag_ticks = 10
 hits_vs_grounded = false
 block_cancel_allowed = false
@@ -2550,7 +2550,7 @@ y = -58
 width = 6
 height = -4
 damage = 60
-hitstun_ticks = 25
+hitstun_ticks = 20
 hitlag_ticks = 6
 hits_vs_grounded = false
 block_cancel_allowed = false
@@ -2568,7 +2568,7 @@ y = -49
 width = 6
 height = -4
 damage = 60
-hitstun_ticks = 25
+hitstun_ticks = 20
 hitlag_ticks = 6
 hits_vs_grounded = false
 block_cancel_allowed = false
@@ -2586,7 +2586,7 @@ y = -25
 width = 6
 height = -4
 damage = 60
-hitstun_ticks = 25
+hitstun_ticks = 20
 hitlag_ticks = 6
 hits_vs_grounded = false
 block_cancel_allowed = false

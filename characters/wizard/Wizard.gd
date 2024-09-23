@@ -21,6 +21,7 @@ const SPARK_EXPLOSION_DASH_SPEED = 12
 const SPARK_SPEED_FRAMES = 70
 const SPARK_BOMB_SELF_DAMAGE = 31 
 const FLAME_WAVE_COOLDOWN = 30
+const ORB_DRAIN_INCREASE_FREQUENCY = 70
 
 var hover_left = 0
 var hover_drain_amount = 25
@@ -35,6 +36,9 @@ var fast_fall_landing = false
 var gusts_in_combo = 0
 var tether_ticks = 0
 var geyser_charge = 0
+
+var orb_duration = 0
+var orb_accumulator = 0
 
 var orb_projectile = null
 var can_flame_wave = true
@@ -130,6 +134,7 @@ func on_state_started(state):
 	if state is CharacterHurtState:
 		hovering = false
 		detonating_bombs = false
+
 func gain_super_meter(amount,stale_amount = "1.0"):
 	if orb_projectile:
 		amount = fixed.round(fixed.mul(str(amount), "0.5"))
@@ -218,10 +223,18 @@ func tick():
 		hover_left += (hover_gain_amount if hover_left >= HOVER_MIN_AMOUNT else hover_gain_amount_depleted ) if is_grounded() else hover_gain_amount_air
 		if hover_left > HOVER_AMOUNT:
 			hover_left = HOVER_AMOUNT
+
 	if orb_projectile:
-		use_super_meter(ORB_SUPER_DRAIN)
+		use_super_meter(ORB_SUPER_DRAIN + orb_accumulator)
 		if super_meter == 0 and supers_available == 0:
 			objs_map[orb_projectile].disable()
+		orb_duration += 1
+		if orb_duration > 0 and orb_duration % ORB_DRAIN_INCREASE_FREQUENCY == 0:
+			orb_accumulator += 1
+	else:
+		orb_duration = 0
+		orb_accumulator = 0
+
 	if current_orb_push != null:
 		if orb_projectile:
 			if !(current_orb_push.x == 0 and current_orb_push.y == 0):

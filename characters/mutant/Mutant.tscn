@@ -825,36 +825,7 @@ script = ExtResource( 211 )
 [node name="Hurtbox" parent="." index="3"]
 width = 12
 
-[node name="CausticBarrageAir" type="Node2D" parent="StateMachine" index="1"]
-script = ExtResource( 202 )
-apply_forces = true
-apply_fric = true
-apply_grav = true
-sprite_animation = "ThornBarrageAir"
-anim_length = 18
-force_dir_x = "-1.0"
-force_speed = "3"
-force_tick = 7
-sfx = ExtResource( 209 )
-sfx_tick = 3
-sfx_volume = -5.0
-title = "Caustic Barrage Lo"
-type = 3
-button_texture = ExtResource( 268 )
-air_type = 1
-land_cancel = true
-min_land_cancel_frame = 12
-interrupt_from_string = "AerialSuper
-Aerial
-"
-interrupt_into_string = "Grounded
-Aerial"
-super_level_ = 1
-super_effect_ = true
-scale_combo_meter_ = true
-air = true
-
-[node name="CausticBarrage" type="Node2D" parent="StateMachine" index="2"]
+[node name="CausticBarrage" type="Node2D" parent="StateMachine" index="1"]
 script = ExtResource( 202 )
 apply_forces = true
 apply_fric = true
@@ -880,6 +851,38 @@ Aerial"
 super_level_ = 1
 super_effect_ = true
 scale_combo_meter_ = true
+
+[node name="CausticBarrageAir" type="Node2D" parent="StateMachine" index="2"]
+script = ExtResource( 202 )
+apply_forces = true
+apply_fric = true
+apply_grav = true
+sprite_animation = "ThornBarrageAir"
+anim_length = 18
+force_dir_x = "-1.0"
+force_speed = "3"
+force_tick = 7
+sfx = ExtResource( 209 )
+sfx_tick = 3
+sfx_volume = -5.0
+title = "Caustic Barrage Lo"
+type = 3
+button_texture = ExtResource( 268 )
+air_type = 2
+land_cancel = true
+min_land_cancel_frame = 12
+interrupt_from_string = "AerialSuper
+Aerial
+Grounded
+GroundedSuper
+"
+interrupt_into_string = "Grounded
+Aerial"
+super_level_ = 1
+super_effect_ = true
+scale_combo_meter_ = true
+force_air_juke = true
+air = true
 
 [node name="Swipe2" type="Node2D" parent="StateMachine" index="3"]
 script = ExtResource( 19 )
@@ -1260,7 +1263,7 @@ apply_forces = true
 apply_fric = true
 apply_grav = true
 sprite_animation = "Slash"
-anim_length = 18
+anim_length = 16
 force_dir_x = "1.0"
 force_speed = "13.0"
 force_tick = 5
@@ -2796,7 +2799,7 @@ __meta__ = {
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 39
+anim_length = 31
 force_dir_x = "1"
 force_speed = "10"
 force_tick = 24
@@ -2806,6 +2809,10 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
+},
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
@@ -2814,17 +2821,13 @@ ExtResource( 173 ): {
 "x": 9,
 "y": -11
 },
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 },
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
-},
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -2837,7 +2840,7 @@ release_frame = 24
 use_start_throw_pos = false
 use_release_throw_pos = false
 hitstun_ticks = 10
-knockback = "20"
+knockback = "10"
 dir_y = "0.5"
 knockdown = false
 knockdown_extends_hitstun = false
@@ -4118,17 +4121,17 @@ enter_force_dir_x = "1.0"
 enter_force_dir_y = "-2.0"
 enter_force_speed = "4"
 throw_positions = {
-ExtResource( 79 ): {
-"x": 23,
-"y": 16
+ExtResource( 82 ): {
+"x": -8,
+"y": -5
 },
 ExtResource( 81 ): {
 "x": -11,
 "y": -6
 },
-ExtResource( 82 ): {
-"x": -8,
-"y": -5
+ExtResource( 79 ): {
+"x": 23,
+"y": 16
 }
 }
 land_cancel = true

@@ -31,7 +31,7 @@ func shoot(fighter: Fighter):
 	shot = true
 
 func on_got_blocked():
-	if current_state().name == "Spin":
+	if current_state().name == "Spin" and !reeled:
 		current_state().pop_up()
 
 func reset_hitbox():

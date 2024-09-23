@@ -6,6 +6,8 @@ const NUM_PROJECTILES = 6
 const PROJECTILES_PER_FRAME = 1
 const PROJECTILE = preload("res://characters/mutant/projectiles/CausticThorn.tscn")
 const JUMP_FORCE = -3
+const GROUND_JUMP_FORCE = -6
+const GROUND_JUMP_FORCE_HORIZ = -1
 
 var projectiles_left = 0
 
@@ -16,8 +18,11 @@ func _frame_5():
 	projectiles_left = NUM_PROJECTILES
 	host.play_sound("HitBass")
 	if air:
+		if host.is_grounded():
+			host.apply_force(GROUND_JUMP_FORCE_HORIZ, GROUND_JUMP_FORCE)
 #		host.set_vel(host.get_vel().x, "0")
-		host.apply_force(0, JUMP_FORCE)
+		else:
+			host.apply_force(0, JUMP_FORCE)
 #	host.add_juke_pips(-1)
 
 func _tick():

@@ -84,12 +84,14 @@ func get_vacuum_dir(hitbox):
 	var pos_x = "0"
 	var pos_y = "0"
 	var hitbox_host = host.obj_from_name(hitbox.host)
+
 	if hitbox_host:
-		var my_pos = host.get_pos()
-		var diff = {x = hitbox.pos_x - my_pos.x, y = hitbox.pos_x - my_pos.y}
+		var my_pos = host.get_hurtbox_center()
+		var diff = {x = hitbox.pos_x - my_pos.x, y = hitbox.pos_y - my_pos.y}
 		var dir = fixed.normalized_vec(str(diff.x), str(diff.y))
 		pos_x = dir.x
 		pos_y = dir.y
+#	pos_x = fixed.mul(pos_x, str(host.get_facing_int()))
 	return {x = pos_x, y = pos_y}
 
 func get_x_dir(hitbox):

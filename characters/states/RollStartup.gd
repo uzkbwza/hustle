@@ -40,11 +40,11 @@ func _enter():
 		else:
 			anim_name = "RollForward"
 	if back:
-		anim_length = 20
-		iasa_at = 20
-	else:
 		anim_length = 19
 		iasa_at = 19
+	else:
+		anim_length = 20
+		iasa_at = 20
 	host.apply_force(force.x, str(0))
 	host.start_throw_invulnerability()
 	host.start_projectile_invulnerability()

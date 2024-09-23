@@ -94,7 +94,7 @@ func apply_forces():
 	if released_this_turn or pulling:
 		apply_forces_no_limit()
 	else:
-		.apply_forces()
+		.apply_forces() 
 
 func release_momentum():
 #		reset_momentum()

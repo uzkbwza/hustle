@@ -11,7 +11,7 @@ func _tick():
 	host.apply_grav_custom(host.gravity, "1000000000000")
 	host.apply_forces_no_limit()
 	if host.is_grounded():
-		lock()
+		host.disable()
 	if Utils.int_abs(Utils.int_abs(host.get_pos().x) - host.stage_width) < 2:
 		lock()
 	for obj_name in host.objs_map:

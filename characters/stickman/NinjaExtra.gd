@@ -11,7 +11,9 @@ onready var store_button = $"%StoreButton"
 func _ready():
 	bomb_button.connect("toggled", self, "_on_bomb_button_toggled")
 	pull_button.connect("toggled", self, "_on_bomb_button_toggled")
+	pull_button.connect("toggled", self, "_on_pull_button_pressed")
 	detach_button.connect("toggled", self, "_on_bomb_button_toggled")
+	detach_button.connect("toggled", self, "_on_detach_button_toggled")
 	release_button.connect("toggled", self, "_on_bomb_button_toggled")
 	store_button.connect("toggled", self, "_on_bomb_button_toggled")
 	store_button.connect("toggled", self, "_on_store_button_toggled")
@@ -21,6 +23,14 @@ func _ready():
 
 func _on_bomb_button_toggled(_on):
 	emit_signal("data_changed")
+
+func _on_detach_button_toggled(on):
+	if on:
+		pull_button.set_pressed_no_signal(false)
+		
+func _on_pull_button_pressed(on):
+	if on:
+		detach_button.set_pressed_no_signal(false)
 
 func _on_release_button_toggled(on):
 	boost_dir.visible = on

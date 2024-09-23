@@ -25,7 +25,6 @@ func _enter():
 	apply_grav = true
 	hit_someone = false
 
-
 func _tick():
 	if !host.is_grounded():
 		host.sprite.rotation += deg2rad(45)
@@ -65,6 +64,7 @@ func _tick():
 func _exit():
 	host.sprite.rotation = 0
 	host.can_be_picked_up = true
+#	hitbox.start_tick = 2
 
 func pop_up():
 	host.set_facing(host.get_facing_int() * -1)
@@ -75,4 +75,7 @@ func pop_up():
 
 func _on_hit_something(obj, _hitbox):
 	if obj.is_in_group("Fighter"):
-		pop_up()
+		if !host.reeled:
+			hit_frame = current_tick
+			pop_up()
+	._on_hit_something(obj, _hitbox)

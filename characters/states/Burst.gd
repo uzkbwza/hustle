@@ -33,7 +33,8 @@ func is_usable():
 
 func _on_hit_something(obj, hitbox):
 	._on_hit_something(obj, hitbox)
-	if defensive and obj.is_in_group("Fighter"):
-		host.opponent.start_invulnerability()
-		if host.initiative:
-			host.gain_super_meter((host.MAX_SUPER_METER * 5) / 3)
+	if obj.is_in_group("Fighter"):
+		if defensive:
+			host.opponent.start_invulnerability()
+			if host.initiative:
+				host.gain_super_meter((host.MAX_SUPER_METER * 5) / 3)

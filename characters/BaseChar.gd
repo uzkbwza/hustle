@@ -40,7 +40,7 @@ const WALL_SLAM_DAMAGE = "0.75"
 const DI_SNAP_DISTANCE = "0.01"
 
 const DAMAGE_SUPER_GAIN_DIVISOR = 1
-const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 3
+const DAMAGE_TAKEN_SUPER_GAIN_DIVISOR = 5
 const HITLAG_COLLISION_TICKS = 4
 const PROJECTILE_PERFECT_PARRY_WINDOW = 3
 const BURST_ON_DAMAGE_AMOUNT = 5
@@ -58,6 +58,7 @@ const PREDICTION_CORRECT_SUPER_GAIN = 30
 const INCORRECT_PREDICTION_LAG = 7
 
 const PARRY_CHIP_DIVISOR = 3
+const PARRY_CHIP_PROJECILE_DIVISOR = 4
 const PUSH_BLOCK_CHIP_MODIFIER = "0.33"
 const PARRY_KNOCKBACK_DIVISOR = "3"
 
@@ -314,6 +315,7 @@ var refresh_prediction = false
 var burst_cancel_combo = false
 
 var parry_chip_divisor = PARRY_CHIP_DIVISOR
+var parry_chip_projectile_divisor = PARRY_CHIP_PROJECILE_DIVISOR
 var parry_knockback_divisor = PARRY_KNOCKBACK_DIVISOR
 
 var moved_forward = false
@@ -949,6 +951,7 @@ func debug_text():
 	.debug_text()
 	debug_info(
 		{
+			"hp": hp,
 			"penalty": penalty,
 #			"initiative": initiative,
 			"combo_proration": combo_proration,
@@ -1066,6 +1069,13 @@ func launched_by(hitbox):
 					state = "HurtAerial"
 					grounded_hits_taken = 0
 
+		if !projectile:
+			refresh_feints()
+			opponent.refresh_feints()
+		else:
+			if opponent.combo_count == 0:
+				opponent.gain_free_cancel()
+
 		increment_opponent_combo(hitbox)
 		
 		
@@ -1076,9 +1086,7 @@ func launched_by(hitbox):
 		busy_interrupt = true
 		can_nudge = true
 
-		if !projectile:
-			refresh_feints()
-			opponent.refresh_feints()
+
 #			reset_penalty()
 #			opponent.reset_penalty()
 		
@@ -1293,7 +1301,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 		if not perfect_parry:
 			last_turn_block = true
 
-			var chip = fixed.round(fixed.mul(str(hitbox.damage / parry_chip_divisor), hitbox.chip_damage_modifier))
+			var chip = fixed.round(fixed.mul(str(hitbox.damage / (parry_chip_divisor if !projectile else parry_chip_projectile_divisor)), hitbox.chip_damage_modifier))
 			var push_block = current_state().get("push")
 			if push_block:
 				chip = fixed.round(fixed.mul(str(chip), PUSH_BLOCK_CHIP_MODIFIER))
@@ -1302,10 +1310,10 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				chip += fixed.round(fixed.mul(fixed.mul(str(hitbox.damage / parry_chip_divisor), "0.5"), hitbox.chip_damage_modifier))
 
 			if !autoblock_armor:
-				take_damage(chip, 0, "0.6", 0, "2.0")
+				take_damage(chip, 0, "0.4", 0, "2.0")
 
 #			gain_super_meter(parry_meter / 6)
-			opponent.gain_super_meter(parry_meter / 6)
+			opponent.gain_super_meter(parry_meter / 10)
 			var block_hitlag = hitbox.hitlag_ticks + 1
 
 			if not projectile:

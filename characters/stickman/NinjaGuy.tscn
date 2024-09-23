@@ -1776,17 +1776,19 @@ y = -14
 width = 12
 height = 13
 damage = 120
-hitstun_ticks = 48
+hitstun_ticks = 18
 hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
 cancellable = false
+sdi_modifier = "0.5"
 can_clash = false
 block_punishable = true
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
-dir_y = "-2.0"
-knockback = "11"
+dir_x = "1"
+dir_y = "-1"
+knockback = "16"
 pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -1802,7 +1804,7 @@ y = -28
 width = 14
 height = 19
 damage = 60
-hitstun_ticks = 48
+hitstun_ticks = 18
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = 2
@@ -1811,9 +1813,9 @@ can_clash = false
 group = 1
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
-dir_x = "2.0"
-dir_y = "-2.5"
-knockback = "11"
+dir_x = "1"
+dir_y = "-1"
+knockback = "12"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -1829,7 +1831,7 @@ fallback_state = "Fall"
 anim_length = 90
 force_dir_x = "0.76"
 force_dir_y = "-1.45"
-force_speed = "5.0"
+force_speed = "5"
 force_tick = 3
 enter_force_dir_x = "1.0"
 enter_force_speed = "7.0"
@@ -1869,16 +1871,18 @@ y = -14
 width = 12
 height = 13
 damage = 150
-hitstun_ticks = 48
+hitstun_ticks = 18
 hitlag_ticks = 10
 victim_hitlag = 10
 damage_proration = 2
 cancellable = false
+sdi_modifier = "0.5"
 can_clash = false
 screenshake_amount = 8
 hit_sound = ExtResource( 42 )
-dir_y = "-2.0"
-knockback = "11"
+dir_x = "1"
+dir_y = "-1"
+knockback = "16"
 pushback_x = "-5.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
@@ -1894,7 +1898,7 @@ y = -28
 width = 14
 height = 19
 damage = 90
-hitstun_ticks = 48
+hitstun_ticks = 18
 hitlag_ticks = 6
 victim_hitlag = 6
 damage_proration = 2
@@ -1902,9 +1906,9 @@ cancellable = false
 can_clash = false
 screenshake_amount = 5
 hit_sound = ExtResource( 42 )
-dir_x = "2.0"
-dir_y = "-2.5"
-knockback = "11"
+dir_x = "1"
+dir_y = "-1"
+knockback = "12"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
@@ -3339,7 +3343,7 @@ start_tick = 3
 script = ExtResource( 183 )
 apply_grav = true
 sprite_animation = "SlideKick"
-anim_length = 17
+anim_length = 25
 force_dir_x = "1.0"
 force_speed = "12.0"
 particle_scene = ExtResource( 225 )
@@ -3697,13 +3701,13 @@ ExtResource( 221 ): {
 "x": 27,
 "y": 1
 },
-ExtResource( 218 ): {
-"x": 24,
-"y": 2
-},
 ExtResource( 222 ): {
 "x": 23,
 "y": 6
+},
+ExtResource( 218 ): {
+"x": 24,
+"y": 2
 },
 Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 "x": 2,
@@ -3713,22 +3717,23 @@ Resource( "res://characters/stickman/sprites/hitgrab_followup6.png" ): {
 button_texture = ExtResource( 223 )
 interrupt_into_string = "Aerial
 Grounded"
+interrupt_exceptions_string = "HitGrab"
 release = true
 release_frame = 14
 start_throw_pos_x = 3
-release_throw_pos_x = 8
-release_throw_pos_y = 1
+release_throw_pos_x = 16
+release_throw_pos_y = -1
 hitstun_ticks = 32
-knockback = "2.0"
+knockback = "2.7"
+dir_y = "-1.0"
 knockdown = false
-aerial_hit_state = "HurtDizzy"
-grounded_hit_state = "HurtDizzy"
+grounded_hit_state = "HurtAerial"
 damage = 0
 increment_combo = false
 hard_knockdown = true
 force_grounded = true
 wall_slam = true
-di_modifier = "0.5"
+minimum_grounded_frames = 28
 hit_height = 0
 
 [node name="Hitbox" type="Node2D" parent="StateMachine/HitGrabFollowup" index="0"]
@@ -3928,9 +3933,9 @@ force_tick = 10
 enter_force_dir_x = "1.0"
 enter_force_speed = "4.0"
 throw_positions = {
-ExtResource( 208 ): {
-"x": 14,
-"y": -11
+ExtResource( 206 ): {
+"x": 13,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 13,
@@ -3940,9 +3945,9 @@ ExtResource( 209 ): {
 "x": 32,
 "y": -6
 },
-ExtResource( 206 ): {
-"x": 13,
-"y": -10
+ExtResource( 208 ): {
+"x": 14,
+"y": -11
 }
 }
 burst_cancellable = false
@@ -3985,25 +3990,25 @@ active_ticks = 1
 sprite_animation = "GroundedThrow"
 anim_length = 19
 throw_positions = {
-ExtResource( 208 ): {
-"x": 13,
-"y": -12
+ExtResource( 210 ): {
+"x": 37,
+"y": -7
+},
+ExtResource( 206 ): {
+"x": 12,
+"y": -10
 },
 ExtResource( 207 ): {
 "x": 14,
 "y": -9
 },
-ExtResource( 210 ): {
-"x": 37,
-"y": -7
-},
 ExtResource( 209 ): {
 "x": 32,
 "y": -5
 },
-ExtResource( 206 ): {
-"x": 12,
-"y": -10
+ExtResource( 208 ): {
+"x": 13,
+"y": -12
 }
 }
 burst_cancellable = false
@@ -4063,6 +4068,3 @@ knockback = "14"
 script = ExtResource( 201 )
 iasa_at = 12
 change_stance_to = "NunChuk"
-
-[node name="ForfeitExplosion" parent="StateMachine" index="110"]
-endless = true
