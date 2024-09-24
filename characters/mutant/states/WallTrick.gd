@@ -25,6 +25,11 @@ func _enter():
 		}
 	fallback_state = "WallTrickFollowup" if data.y == 0 else "WallTrickFollowup2" if Utils.int_abs(data.x) == 1 else "WallTrickFollowup3"
 	down = data.y == 1 and data.x == 0
+	if host.combo_count > 0:
+		host.feinting = true
+
+func can_feint():
+	return .can_feint() and host.combo_count == 0
 
 func _tick():
 	if current_tick == JUMP_TICK - air_advantage:

@@ -2809,25 +2809,25 @@ projectile_pos_x = 16
 projectile_pos_y = -24
 force_same_direction_as_previous_state = true
 throw_positions = {
-ExtResource( 169 ): {
-"x": 16,
-"y": -7
+ExtResource( 173 ): {
+"x": 9,
+"y": -11
 },
 ExtResource( 160 ): {
 "x": 37,
 "y": -1
 },
-ExtResource( 173 ): {
-"x": 9,
-"y": -11
-},
-ExtResource( 171 ): {
-"x": 15,
-"y": -10
+ExtResource( 169 ): {
+"x": 16,
+"y": -7
 },
 ExtResource( 166 ): {
 "x": -8,
 "y": -17
+},
+ExtResource( 171 ): {
+"x": 15,
+"y": -10
 }
 }
 interruptible_on_opponent_turn = true
@@ -3124,7 +3124,7 @@ __meta__ = {
 apply_forces = true
 apply_fric = true
 apply_grav = true
-anim_length = 22
+anim_length = 21
 force_dir_x = "1.0"
 force_speed = "6.0"
 force_tick = 12
@@ -3743,7 +3743,7 @@ minimum_damage = 50
 hitstun_ticks = 20
 hitlag_ticks = 10
 victim_hitlag = 12
-plus_frames = -1
+plus_frames = 1
 screenshake_amount = 10
 screenshake_frames = 10
 whiff_particle = ExtResource( 264 )

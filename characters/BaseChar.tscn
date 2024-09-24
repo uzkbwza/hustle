@@ -1219,7 +1219,6 @@ apply_fric = true
 apply_custom_x_fric = true
 custom_x_fric = "0.125"
 anim_length = 8
-force_same_direction_as_previous_state = true
 title = "Getup"
 type = 4
 button_texture = ExtResource( 121 )

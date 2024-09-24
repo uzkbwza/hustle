@@ -1,4 +1,4 @@
-[gd_scene load_steps=348 format=2]
+[gd_scene load_steps=351 format=2]
 
 [ext_resource path="res://characters/BaseChar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/swordandgun/sprites/throw2.png" type="Texture" id=2]
@@ -343,6 +343,9 @@
 [ext_resource path="res://characters/swordandgun/sprites/action_buttons/time splitter.png" type="Texture" id=341]
 [ext_resource path="res://characters/swordandgun/ActionUIData/ShootDodge2ActionUIData.tscn" type="PackedScene" id=342]
 [ext_resource path="res://characters/swordandgun/projectiles/TimeSplitterEffect.tscn" type="PackedScene" id=343]
+[ext_resource path="res://ui/ActionSelector/ActionUIData/DashActionUIData.tscn" type="PackedScene" id=344]
+[ext_resource path="res://characters/states/RollStartup.gd" type="Script" id=345]
+[ext_resource path="res://ui/ActionSelector/StateIcons/roll.png" type="Texture" id=346]
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -2071,6 +2074,7 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
+air_ground_bounce = true
 start_tick = 9
 active_ticks = 1
 
@@ -2125,6 +2129,7 @@ knockback = "8.0"
 grounded_hit_state = "HurtAerial"
 knockdown = true
 knockdown_extends_hitstun = false
+air_ground_bounce = true
 start_tick = 9
 active_ticks = 1
 
@@ -4685,7 +4690,8 @@ x = -37
 y = -58
 width = 11
 height = 11
-damage = 130
+damage = 160
+minimum_damage = 50
 hitstun_ticks = 33
 hitlag_ticks = 13
 victim_hitlag = 18
@@ -4703,10 +4709,42 @@ wall_slam = true
 start_tick = 8
 active_ticks = 1
 
-[node name="SuperFallStartup" parent="StateMachine" index="86"]
+[node name="ShootDodgeRoll" type="Node2D" parent="StateMachine" index="75"]
+script = ExtResource( 345 )
+apply_forces = true
+apply_grav = true
+reset_momentum = true
+apply_custom_x_fric = true
+custom_x_fric = "1.5"
+apply_custom_limits = true
+custom_max_air_speed = "12.0"
+sprite_animation = "RollForward"
+anim_length = 18
+sprite_anim_length = 4
+loop_animation = true
+enter_sfx = ExtResource( 241 )
+enter_sfx_volume = -10.0
+title = "Dodge"
+type = 4
+data_ui_scene = ExtResource( 344 )
+button_texture = ExtResource( 346 )
+air_type = 2
+reversible = false
+selectable = false
+interrupt_from_string = "GroundedMovement
+Grounded
+Aerial
+GroundedDefense
+AerialDefense"
+interrupt_into_string = "Grounded
+Aerial"
+tech = true
+force_anim_length = 19
+
+[node name="SuperFallStartup" parent="StateMachine" index="87"]
 selectable = false
 
-[node name="DashForward1k" type="Node2D" parent="StateMachine" index="89"]
+[node name="DashForward1k" type="Node2D" parent="StateMachine" index="90"]
 script = ExtResource( 311 )
 __meta__ = {
 "_editor_description_": ""
@@ -4744,7 +4782,7 @@ spawn_particle = false
 script = ExtResource( 310 )
 method = "has_1k_cuts"
 
-[node name="DashForward" parent="StateMachine" index="95"]
+[node name="DashForward" parent="StateMachine" index="96"]
 loop_animation = true
 absolute_loop = true
 enter_force_dir_x = "1.0"
@@ -4766,13 +4804,13 @@ script = ExtResource( 310 )
 method = "has_1k_cuts"
 inverse = true
 
-[node name="ChargeDashForward" parent="StateMachine" index="96"]
+[node name="ChargeDashForward" parent="StateMachine" index="97"]
 anim_length = 25
 loop_animation = true
 absolute_loop = true
 dash_speed = 5
 
-[node name="DashBackward" parent="StateMachine" index="97"]
+[node name="DashBackward" parent="StateMachine" index="98"]
 loop_animation = true
 absolute_loop = true
 spawn_particle_on_enter = false
@@ -4787,26 +4825,26 @@ fric = "0.02"
 spawn_particle = false
 back_penalty = 0
 
-[node name="DashStartup" parent="StateMachine" index="99"]
+[node name="DashStartup" parent="StateMachine" index="100"]
 title = "Walk"
 
-[node name="Jump" parent="StateMachine" index="100"]
+[node name="Jump" parent="StateMachine" index="101"]
 speed = "8.5"
 
-[node name="ChargeDash" parent="StateMachine" index="101"]
+[node name="ChargeDash" parent="StateMachine" index="102"]
 fallback_state = "SuperDash"
 
-[node name="SuperJump" parent="StateMachine" index="102"]
+[node name="SuperJump" parent="StateMachine" index="103"]
 y_modifier = "0.8"
 
-[node name="DoubleJump" parent="StateMachine" index="103"]
+[node name="DoubleJump" parent="StateMachine" index="104"]
 speed = "7"
 
-[node name="AirDash" parent="StateMachine" index="104"]
+[node name="AirDash" parent="StateMachine" index="105"]
 interrupt_from_string = ""
 interrupt_into_string = ""
 
-[node name="HurtAerial" parent="StateMachine" index="109"]
+[node name="HurtAerial" parent="StateMachine" index="110"]
 script = ExtResource( 330 )
 __meta__ = {
 "_editor_description_": ""
@@ -4836,33 +4874,33 @@ _c_Grouping = 1
 [node name="ThrowBox" parent="StateMachine/AirGrab" index="0"]
 _c_Grouping = 1
 
-[node name="ForwardThrow" parent="StateMachine" index="117"]
+[node name="ForwardThrow" parent="StateMachine" index="118"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="BackThrow" parent="StateMachine" index="118"]
+[node name="BackThrow" parent="StateMachine" index="119"]
 knockback = "11.0"
 dir_y = "0.0"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirForwardThrow" parent="StateMachine" index="119"]
+[node name="AirForwardThrow" parent="StateMachine" index="120"]
 hitstun_ticks = 17
 knockback = "14"
 dir_y = "1"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirBackThrow" parent="StateMachine" index="120"]
+[node name="AirBackThrow" parent="StateMachine" index="121"]
 hitstun_ticks = 17
 knockback = "14"
 dir_y = "1"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="AirDownThrow" parent="StateMachine" index="121"]
+[node name="AirDownThrow" parent="StateMachine" index="122"]
 hitstun_ticks = 17
 knockback = "14"
 dir_x = "1.0"
@@ -4870,7 +4908,7 @@ dir_y = "1.00"
 screenshake_amount = 0
 screenshake_frames = 0
 
-[node name="Guntrick" type="Node2D" parent="StateMachine" index="122"]
+[node name="Guntrick" type="Node2D" parent="StateMachine" index="123"]
 script = ExtResource( 255 )
 apply_forces = true
 apply_fric = true
@@ -4921,7 +4959,7 @@ plus_frames = 1
 start_tick = 22
 active_ticks = 2
 
-[node name="Taunt" parent="StateMachine" index="124"]
+[node name="Taunt" parent="StateMachine" index="125"]
 script = ExtResource( 255 )
 reset_momentum = true
 anim_length = 61

@@ -49,9 +49,18 @@ func init(pos=null):
 	if infinite_resources:
 		momentum_stores = 1
 
+
 func explode_sticky_bomb():
 	if bomb_thrown and obj_from_name(bomb_projectile):
 		objs_map[bomb_projectile].explode()
+
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if obj and obj.is_in_group("Fighter"):
+		var hook = obj_from_name(grappling_hook_projectile)
+		if hook:
+			if hook.attached_to == opponent.obj_name:
+				hook.disable()
 
 func on_roll_started():
 	detach()

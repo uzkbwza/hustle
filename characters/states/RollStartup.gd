@@ -8,6 +8,7 @@ const AIR_FRIC = "0.1"
 const speed = "8.5"
 const accel_speed = "0.7"
 export var tech = false
+export var force_anim_length = -1
 
 var force
 var accel
@@ -45,6 +46,10 @@ func _enter():
 	else:
 		anim_length = 20
 		iasa_at = 20
+	if force_anim_length > -1:
+		anim_length = force_anim_length
+		iasa_at = force_anim_length
+		
 	host.apply_force(force.x, str(0))
 	host.start_throw_invulnerability()
 	host.start_projectile_invulnerability()

@@ -12,6 +12,7 @@ func _tick():
 	host.apply_forces_no_limit()
 	if host.is_grounded():
 		host.disable()
+#		lock()
 	if Utils.int_abs(Utils.int_abs(host.get_pos().x) - host.stage_width) < 2:
 		lock()
 	for obj_name in host.objs_map:

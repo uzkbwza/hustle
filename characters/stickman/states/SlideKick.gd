@@ -18,6 +18,8 @@ func _tick():
 	host.apply_forces_no_limit()
 	host.apply_x_fric(X_FRIC)
 	host.limit_speed(SPEED_LIMIT)
+	if current_tick > 24 and !hit and host.is_grounded():
+		return "Knockdown"
 
 func _frame_13():
 	host.end_projectile_invulnerability()
@@ -26,10 +28,6 @@ func _frame_16():
 	if hit:
 		enable_interrupt()
 #		queue_state_change("Wait")
-
-func _frame_24():
-	if !hit:
-		return "Knockdown"
 
 func on_got_blocked():
 	.on_got_blocked()

@@ -175,7 +175,7 @@ func on_bounce(di_influence=true, lerp_amount=TERRAIN_DI_AMOUNT):
 		bounce_scale()
 
 	for hitbox in [front_hitbox, middle_hitbox, trail_hitbox]:
-		hitbox.chip_damage_modifier = "0.37"
+		hitbox.chip_damage_modifier = "0.60"
 		hitbox.reset_hit_objects()
 		host.get_opponent().parried_hitboxes.erase(hitbox.name)
 	

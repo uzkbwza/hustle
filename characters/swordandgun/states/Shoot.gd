@@ -142,7 +142,7 @@ func _frame_8():
 
 func _frame_5():
 	if dodge:
-		queue_state_change("TechRoll", {"x": host.get_facing_int()})
+		queue_state_change("ShootDodgeRoll", {"x": host.get_facing_int()})
 	if !temporal:
 		host.shooting_arm.frame = 1
 

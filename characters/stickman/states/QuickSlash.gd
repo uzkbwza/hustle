@@ -22,13 +22,18 @@ var started_in_neutral = false
 func _enter():
 	dist = MOVE_DISTANCE
 	hitboxes = []
+	attack = data.Attack.id
 	for child in get_children():
 		if child is Hitbox:
 			hitboxes.append(child)
 			child.x = 0
 			child.y = 0
+			if attack == 0:
+				child.damage_in_combo = 90
+			else:
+				child.damage_in_combo = 40
 	var move_dir
-	attack = data.Attack.id
+		
 	if data:
 		move_dir = xy_to_dir(data.Direction.x, data.Direction.y)
 #		move_dir = fixed.normalized_vec_times(move_dir.x, move_dir.y, "1.0")

@@ -115,8 +115,10 @@ func _tick():
 		host.chainsaw_arm.global_rotation = arm_angle
 	pass
 #
-#func _on_hit_something(obj, hitbox):
-#	._on_hit_something(obj, hitbox)
+func _on_hit_something(obj, hitbox):
+	._on_hit_something(obj, hitbox)
+	if obj.is_in_group("Fighter"):
+		host.colliding_with_opponent = false
 #	iasa_at = chainsaw_end_tick
 
 func _exit():
