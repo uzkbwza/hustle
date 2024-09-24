@@ -804,6 +804,7 @@ hit_cancel_into_string = "AerialSuper
 GroundedSuper"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 super_freeze_ticks = 2
 
@@ -1028,6 +1029,7 @@ hit_cancel_into_string = "AerialSuper
 GroundedSuper"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 super_freeze_ticks = 2
 
@@ -1251,6 +1253,7 @@ hit_cancel_into_string = "AerialSuper
 GroundedSuper"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 super_freeze_ticks = 2
 
@@ -1500,6 +1503,7 @@ hit_cancel_into_string = "AerialSuper
 GroundedSuper"
 allowed_stances_string = "Normal
 All"
+change_stance_to = "Normal"
 initiative_effect = true
 super_freeze_ticks = 2
 
