@@ -22,8 +22,8 @@ func _on_style_selected(style):
 	var material = $"%CharacterPortrait".get_material()
 	material.set_shader_param("color", Color.white)
 	material.set_shader_param("use_outline", false)
-	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", false)
-	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", false)
+#	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", false)
+#	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", false)
 	if style:
 		Custom.apply_style_to_material(style, $"%CharacterPortrait".get_material(), true)
 
@@ -54,8 +54,10 @@ func init():
 func load_character_data(data):
 	$"%CharacterPortrait".texture = data["portrait"]
 	$"%CharacterLabel".text = data["name"]
-	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_1", data.get("extra_color_1"))
-	$"%CharacterPortrait".get_material().set_shader_param("extra_replace_color_2", data.get("extra_color_2"))
+	var material = $"%CharacterPortrait".get_material()
+	material.set_shader_param("extra_replace_color_1", data.get("extra_color_1"))
+	material.set_shader_param("extra_replace_color_2", data.get("extra_color_2"))
+	_on_style_selected(selected_style)
 
 func set_enabled(on):
 	for child in get_children():

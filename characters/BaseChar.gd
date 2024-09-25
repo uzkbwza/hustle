@@ -539,9 +539,10 @@ func apply_style(style):
 			if aura_particle.show_behind_parent:
 				aura_particle.z_index = -1
 		if style.has("hitspark"):
-			custom_hitspark = load(Custom.hitsparks[style.hitspark])
-			for hitbox in hitboxes:
-				hitbox.HIT_PARTICLE = custom_hitspark
+			if Custom.hitsparks.has(style.hitspark):
+				custom_hitspark = load(Custom.hitsparks[style.hitspark])
+				for hitbox in hitboxes:
+					hitbox.HIT_PARTICLE = custom_hitspark
 
 
 func reset_color():

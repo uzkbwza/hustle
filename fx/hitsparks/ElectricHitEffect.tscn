@@ -1,0 +1,123 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/hitsparks/elechit1.png" type="Texture" id=2]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=3]
+[ext_resource path="res://fx/elec.png" type="Texture" id=4]
+[ext_resource path="res://fx/hitsparks/elechit2.png" type="Texture" id=5]
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 5 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Curve" id=8]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=5]
+interpolation_mode = 1
+offsets = PoolRealArray( 0.0914127, 0.204986, 0.310249, 0.432133, 0.567867, 0.717452, 0.836565, 0.925208 )
+colors = PoolColorArray( 0.94902, 1, 0.192157, 1, 0.94902, 1, 0.192157, 0, 0.94902, 1, 0.192157, 1, 0.94902, 1, 0.192157, 0, 0.94902, 1, 0.192157, 1, 0.94902, 1, 0.192157, 0, 0.94902, 1, 0.192157, 1, 0.976471, 1, 0.631373, 0 )
+
+[sub_resource type="Gradient" id=6]
+interpolation_mode = 1
+offsets = PoolRealArray( 0, 0.432133, 0.567867, 0.717452, 0.836565, 0.925208 )
+colors = PoolColorArray( 1, 1, 1, 1, 0.94902, 1, 0.192157, 0, 1, 1, 1, 1, 0.94902, 1, 0.192157, 0, 1, 1, 1, 1, 0.976471, 1, 0.631373, 0 )
+
+[sub_resource type="Curve" id=9]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="1"]
+scale = Vector2( 1.36, 0.68 )
+frames = SubResource( 7 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
+scale = Vector2( 0.808, 0.152 )
+lifetime = 1.4
+speed_scale = 2.82
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 4 )
+spread = 0.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 301.83
+initial_velocity_random = 0.75
+angular_velocity = 720.0
+angular_velocity_random = 1.0
+linear_accel = -100.0
+radial_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 10.0
+scale_amount_random = 0.27
+scale_amount_curve = SubResource( 8 )
+color = Color( 0.94902, 1, 0.192157, 1 )
+color_ramp = SubResource( 5 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="3"]
+scale = Vector2( 0.436, 0.411 )
+amount = 16
+lifetime = 1.4
+speed_scale = 2.82
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 4 )
+spread = 180.0
+gravity = Vector2( 0, -200 )
+initial_velocity = 226.83
+initial_velocity_random = 0.74
+angular_velocity = 720.0
+angular_velocity_random = 1.0
+linear_accel = -100.0
+radial_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 3.0
+scale_amount_random = 0.27
+scale_amount_curve = SubResource( 8 )
+color = Color( 0.92549, 1, 0.643137, 1 )
+color_ramp = SubResource( 6 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="4"]
+scale = Vector2( 0.436, 0.411 )
+amount = 16
+lifetime = 1.4
+speed_scale = 2.82
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 4 )
+spread = 180.0
+gravity = Vector2( 0, -200 )
+initial_velocity = 371.83
+initial_velocity_random = 0.74
+angular_velocity = 720.0
+angular_velocity_random = 1.0
+linear_accel = -100.0
+radial_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 3.0
+scale_amount_random = 0.27
+scale_amount_curve = SubResource( 9 )
+color_ramp = SubResource( 5 )

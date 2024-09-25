@@ -5,10 +5,14 @@ const SUPPORTER_PACK = 2232850
 var hitsparks = {
 	"bash": "res://fx/HitEffect1.tscn",
 	"bash2": "res://fx/hitsparks/HitEffect1Alt.tscn",
+	"bash3": "res://fx/hitsparks/HitEffect2Alt.tscn",
 	"fire": "res://fx/hitsparks/FireHitEffect.tscn",
 	"hearts": "res://fx/hitsparks/HeartHitEffect.tscn",
 	"petals": "res://fx/hitsparks/PetalHitEffect.tscn",
 	"coins": "res://fx/hitsparks/CoinHitEffect.tscn",
+	"dust": "res://fx/hitsparks/DustHitEffect.tscn",
+	"acid": "res://fx/hitsparks/AcidHitEffect.tscn",
+	"elec": "res://fx/hitsparks/ElectricHitEffect.tscn",
 }
 
 #var hitspark_dlc = {

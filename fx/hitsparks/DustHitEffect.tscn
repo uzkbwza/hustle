@@ -1,0 +1,188 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://fx/ParticleEffect.tscn" type="PackedScene" id=1]
+[ext_resource path="res://fx/checkerboard_2.png" type="Texture" id=2]
+[ext_resource path="res://fx/hit4.png" type="Texture" id=3]
+[ext_resource path="res://fx/hit1.png" type="Texture" id=4]
+[ext_resource path="res://fx/hit2.png" type="Texture" id=5]
+[ext_resource path="res://fx/hit3.png" type="Texture" id=6]
+[ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=7]
+
+[sub_resource type="ShaderMaterial" id=6]
+resource_local_to_scene = true
+shader = ExtResource( 7 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Curve" id=8]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.705729, 0.981818 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=7]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.0598958, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.583333, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.666667, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="ParticleEffect" instance=ExtResource( 1 )]
+material = SubResource( 6 )
+z_index = 100
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="0"]
+visible = false
+frames = SubResource( 5 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." index="2"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+spread = 80.15
+gravity = Vector2( 0, 30 )
+initial_velocity = 179.37
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 8 )
+
+[node name="CPUParticles2D7" type="CPUParticles2D" parent="." index="3"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+spread = 80.15
+gravity = Vector2( 0, 30 )
+initial_velocity = 179.37
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 8 )
+color = Color( 0.403922, 0.403922, 0.403922, 1 )
+
+[node name="CPUParticles2D3" type="CPUParticles2D" parent="." index="4"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+spread = 180.0
+gravity = Vector2( 0, 30 )
+initial_velocity = 69.13
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+
+[node name="CPUParticles2D8" type="CPUParticles2D" parent="." index="5"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+spread = 180.0
+gravity = Vector2( 0, 30 )
+initial_velocity = 69.13
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+color = Color( 0.694118, 0.694118, 0.694118, 1 )
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="." index="6"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+spread = 3.26
+gravity = Vector2( 0, 30 )
+initial_velocity = 122.52
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+
+[node name="CPUParticles2D4" type="CPUParticles2D" parent="." index="7"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 2 )
+spread = 180.0
+gravity = Vector2( 0, 30 )
+initial_velocity = 107.67
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.05
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 7 )
+
+[node name="CPUParticles2D5" type="CPUParticles2D" parent="." index="8"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 2 )
+emission_shape = 1
+emission_sphere_radius = 8.04
+spread = 180.0
+gravity = Vector2( 0, 30 )
+initial_velocity = 24.0
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 2.0
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 7 )
+
+[node name="CPUParticles2D6" type="CPUParticles2D" parent="." index="9"]
+scale = Vector2( 2, 2 )
+lifetime = 0.77
+speed_scale = 2.25
+explosiveness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource( 2 )
+emission_shape = 1
+emission_sphere_radius = 0.01
+spread = 180.0
+gravity = Vector2( 0, 30 )
+initial_velocity = 159.92
+initial_velocity_random = 1.0
+linear_accel = -100.0
+angle = 720.0
+angle_random = 1.0
+scale_amount = 0.5
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 7 )

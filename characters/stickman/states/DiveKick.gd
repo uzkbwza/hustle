@@ -61,8 +61,11 @@ func _frame_0():
 
 	move_x_amount = fixed.round(fixed.mul(str(move_x_amount), move_amount))
 	move_y_amount = fixed.round(fixed.mul(str(move_y_amount), move_amount))
-	if host.combo_count > 0:
-		host.feinting = true
+#	if host.combo_count > 0:
+#		host.feinting = true
+#
+#func can_feint():
+#	return .can_feint() and host.combo_count == 0
 
 func _frame_4():
 	if grounded:
@@ -102,8 +105,6 @@ func on_got_perfect_parried():
 		host.hitlag_ticks += 8
 		
 
-func can_feint():
-	return .can_feint() and host.combo_count == 0
 
 func _tick():
 	if !grounded and current_tick == 3:

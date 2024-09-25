@@ -1,6 +1,7 @@
 extends "res://ui/CSS/CharacterDisplay.gd"
 
 func load_character_data(data):
+	.load_character_data(data)
 	$"%CharacterPortrait".texture = data["portrait"]
 	var n = data["name"]
 	if (n[0] == "F" and n[1] == "-"):

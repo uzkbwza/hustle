@@ -11,7 +11,13 @@
 [sub_resource type="ShaderMaterial" id=6]
 resource_local_to_scene = true
 shader = ExtResource( 7 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
 shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
 shader_param/max_color_distance = 0.01
 shader_param/super_dim = false
 shader_param/use_outline = false

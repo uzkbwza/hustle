@@ -2,11 +2,11 @@
 
 [ext_resource path="res://fx/HitEffect1.tscn" type="PackedScene" id=1]
 [ext_resource path="res://characters/BaseChar.gdshader" type="Shader" id=2]
-[ext_resource path="res://fx/hit_smoke_alt.png" type="Texture" id=3]
-[ext_resource path="res://fx/hit_alt4.png" type="Texture" id=4]
-[ext_resource path="res://fx/hit_alt1.png" type="Texture" id=5]
-[ext_resource path="res://fx/hit_alt3.png" type="Texture" id=6]
-[ext_resource path="res://fx/hit_alt2.png" type="Texture" id=7]
+[ext_resource path="res://fx/hit_smoke_green.png" type="Texture" id=3]
+[ext_resource path="res://fx/hit_green1.png" type="Texture" id=4]
+[ext_resource path="res://fx/hit_green2.png" type="Texture" id=5]
+[ext_resource path="res://fx/hit_green3.png" type="Texture" id=6]
+[ext_resource path="res://fx/hit_green4.png" type="Texture" id=7]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -25,7 +25,7 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 5 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
+"frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ) ],
 "loop": true,
 "name": "default",
 "speed": 5.0

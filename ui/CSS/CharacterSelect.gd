@@ -307,6 +307,8 @@ func get_display_data(button):
 		var scene = button.character_scene.instance()
 		data["name"] = scene.name
 		data["portrait"] = scene.character_portrait
+		data["extra_color_1"] = scene.extra_color_1
+		data["extra_color_2"] = scene.extra_color_2
 		scene.free()
 	else:
 		data["name"] = button.name

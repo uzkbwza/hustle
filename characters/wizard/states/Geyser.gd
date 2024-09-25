@@ -44,6 +44,12 @@ const PLUS = [
 	4,
 ]
 
+const PRORATION = [
+	6,
+	5,
+	4,
+]
+
 onready var hitbox1 = $Hitbox1
 onready var hitbox2 = $Hitbox2
 onready var hitbox3 = $Hitbox3
@@ -76,6 +82,7 @@ func _frame_0():
 	hitbox.minimum_damage = MINDAMAGE[level]
 	hitbox.start_tick = TIMING[level]
 	hitbox.plus_frames = PLUS[level]
+	hitbox.damage_proration = PRORATION[level]
 	var to = fixed.vec_mul(dir.x, dir.y, dist)
 	hitbox.to_x = fixed.round(to.x) * host.get_facing_int()
 	hitbox.to_y = fixed.round(to.y)
