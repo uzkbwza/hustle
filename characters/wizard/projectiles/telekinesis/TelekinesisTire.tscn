@@ -68,7 +68,7 @@ anim_length = 10
 ticks_per_frame = 5
 loop_animation = true
 disable_when_this_far_from_terrain = 16
-speed = "9"
+speed = "14"
 bounces = 6
 
 [node name="Hitbox" parent="StateMachine/Launch" index="0"]

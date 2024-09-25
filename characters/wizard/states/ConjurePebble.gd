@@ -24,6 +24,7 @@ func _frame_1():
 		projectile_scene = host.randi_weighted_choice(SILLY_ITEM_CHANCES.keys(), SILLY_ITEM_CHANCES.values())
 	if host.should_hide_rng():
 		projectile_scene = preload("res://characters/wizard/projectiles/telekinesis/TelekinesisBoulderGhost.tscn")
+	projectile_scene = preload("res://characters/wizard/projectiles/telekinesis/TelekinesisTire.tscn")
 
 func _frame_4():
 	host.play_sound("HitBass")
