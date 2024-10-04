@@ -580,8 +580,8 @@ func set_facing(facing: int):
 	if facing != 1 and facing != -1:
 		facing = 1
 	chara.set_facing(facing)
-	if is_instance_valid(flip):
-		flip.scale.x = -1 if facing < 0 else 1
+	if is_instance_valid($Flip):
+		$Flip.scale.x = -1 if facing < 0 else 1
 	if initialized:
 		update_data()
 
