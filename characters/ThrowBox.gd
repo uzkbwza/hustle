@@ -1,4 +1,4 @@
-
+tool
 extends Hitbox
 
 class_name ThrowBox, "res://addons/collision_box/throw_box.png"
