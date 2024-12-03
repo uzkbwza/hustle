@@ -105,6 +105,12 @@ func _ready():
 		var pi_scene = load("res://characters/PlayerInfo.tscn").instance()
 		ModLoader.saveScene(pi_scene, "res://ui/PlayerInfo.tscn")
 
+		# TriMay) Nodes are not ref-counted
+		# by default, nodes are cleaned up when their parents are
+		# instances not placed in scene tree must be cleaned up manually
+		# ALSO, as far as I can tell, ModLoader.saveScene packs the scene into a PackedScene, which I don't believe needs the original nodes to exist anywhere
+		pi_scene.queue_free()
+
 	#get headers
 	var h = File.new()
 	h.open("res://cl_port/headers/sample.header", File.READ)
@@ -622,6 +628,13 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	
 	ModLoader.saveScene(char_scene, _charPath)
 
+	# TriMay) Nodes are not ref-counted
+	# by default, nodes are cleaned up when their parents are
+	# instances not placed in scene tree must be cleaned up manually
+	# ALSO, as far as I can tell, ModLoader.saveScene packs the scene into a PackedScene, which I don't believe needs the original nodes to exist anywhere
+	if miss == []:
+		char_scene.queue_free()
+
 	# update the button's character scene
 	bttContainer.get_node(curFighter).character_scene = load(_charPath)
 	
@@ -1077,6 +1090,12 @@ func _importHolderPortrait(folder, scenePath, charName):
 				sc = load("res://characters/BaseChar.tscn").instance()
 				sc.name = "Error\ncharacter scene must be unedited"
 				ModLoader.saveScene(sc, scenePath)
+
+				# TriMay) Nodes are not ref-counted
+				# by default, nodes are cleaned up when their parents are
+				# instances not placed in scene tree must be cleaned up manually
+				# ALSO, as far as I can tell, ModLoader.saveScene packs the scene into a PackedScene, which I don't believe needs the original nodes to exist anywhere
+				sc.queue_free()
 
 				return scenePath
 				break
