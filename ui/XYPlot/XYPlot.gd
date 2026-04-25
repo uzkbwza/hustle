@@ -688,3 +688,20 @@ func as_percentage_int_vec(vec2: Vector2):
 
 func get_value_float():
 	return value_float
+
+var fix_stick = false
+
+func _physics_process(delta):
+    var game = Global.current_game
+    if is_instance_valid(game):
+        if not game.game_paused:
+            if not fix_stick:
+                __reset()
+        else:
+            fix_stick = false
+    
+    
+
+func __reset():
+    fix_stick = true
+    _on_plot_mouse_exited()

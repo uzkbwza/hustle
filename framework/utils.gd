@@ -5,7 +5,7 @@ class_name Utils
 const cardinal_dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1)]
 const diagonal_dirs = [Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1), Vector2(-1, 1)]
 const dirs = [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0), Vector2(0, -1), Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1), Vector2(-1, 1)]
-const INVALID_FILE_CHARS = "<>:/\\|?*"
+const INVALID_FILE_CHARS = '<>:/\\|?*"'
 
 #func _input(event):
 #	if event is InputEventKey:

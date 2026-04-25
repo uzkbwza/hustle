@@ -320,6 +320,11 @@ func forfeit(id):
 	emit_signal("forfeit_started", id)
 	quitter_focus = true
 	forfeit_player = get_player(id)
+	
+	   if started_multiplayer:
+        if not ReplayManager.playback:
+            Network.autosave_match_replay(match_data, p1_username, p2_username)
+	
 	quitter_focus_ticks = QUITTER_FOCUS_TICKS
 
 func start_game(singleplayer: bool, match_data: Dictionary):

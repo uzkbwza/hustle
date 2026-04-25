@@ -54,6 +54,14 @@ func disable():
 	for hitbox in get_active_hitboxes():
 		hitbox.deactivate()
 	stop_particles()
+	if !is_ghost:
+        for objs in creator.objs_map:
+            var obj = creator.objs_map[obj_name]
+            if obj.obj_name == self.obj_name:
+                objs_map.erase(obj)
+                for key in objs_map.keys():
+                    if objs_map[key] == null:
+                        objs_map.erase(key)
 
 
 func on_got_parried():

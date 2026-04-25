@@ -210,6 +210,11 @@ func reset():
 	hide()
 
 func init(singleplayer=true):
+	
+	loadingLabel_vanish()
+    loadingLabel.text = ""
+    currentlyLoading = false
+	
 	show()
 	emit_signal("opened")
 #	if Network.steam:
