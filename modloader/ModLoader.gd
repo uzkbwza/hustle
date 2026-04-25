@@ -276,29 +276,32 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			instCharAnim = instCharTS.get_node("Flip/Sprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
-		#Changes the sprite for the in air sprite because it's a seperate node like coboys arm. -Valkarin
+		#Changes the sprite for the in air sprite because it's a seperate node like cowboys arm. -Valkarin
 		elif charName == "Wizard" and media.split("/")[ - 3 ] == "LiftoffAir":
-			
 			instCharAnim = instCharTS.get_node("Flip/LiftoffSprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			instCharAnim = instCharTS.get_node("Flip/Sprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
-		
 		elif charName == "Robot" and media.split("/")[ - 3 ] == "ChainsawArm":
 			instCharAnim = instCharTS.get_node("Flip/ChainsawArm")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			instCharAnim = instCharTS.get_node("Flip/Sprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
-			
 		elif charName == "Robot" and media.split("/")[ - 3 ] == "DriveJumpSprite":
 			instCharAnim = instCharTS.get_node("Flip/DriveJumpSprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			instCharAnim = instCharTS.get_node("Flip/Sprite")
 			instCharFrames = instCharAnim.get_sprite_frames()
-		
+			# after 2 years mutant is now fixed for overwrites :P -Fleig
+		elif charName == "Mutant" and media.split("/")[ - 3 ] == "TwistAttackSprite":
+			instCharAnim = instCharTS.get_node("Flip/TwistAttackSprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
+			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
+			instCharAnim = instCharTS.get_node("Flip/Sprite")
+			instCharFrames = instCharAnim.get_sprite_frames()
 		else :
 			instCharFrames.set_frame(media.split("/")[ - 2], int(media.get_file()), newFrameTex)
 			
@@ -306,14 +309,8 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 	for charSound in instCharSounds:
 		for media in mediaSounds:
 			if media.get_file().split('.')[0] == charSound.name:
-				var file = File.new()
-				file.open(media, File.READ)
-				var buffer = file.get_buffer(file.get_len())
-				var stream = AudioStreamSample.new()
-				stream.format = AudioStreamSample.FORMAT_16_BITS
-				stream.data = buffer
-				file.close()
-				charSound.set_stream(stream)
+				var mediaStream = loadSound(media)
+				charSound.set_stream(mediaStream)
 				
 				charSound.pitch_scale = 2
 				
@@ -325,21 +322,16 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 			#".' is there because get_extnsion don't include it
 			var media_name = media.get_file().trim_suffix("."+media.get_extension()) 
 			if media_name.split('_')[0] == state.name:
-				var file = File.new()
-				file.open(media, File.READ)
-				var buffer = file.get_buffer(file.get_len())
-				var stream = AudioStreamSample.new()
-				stream.format = AudioStreamSample.FORMAT_16_BITS
-				stream.data = buffer
-				file.close()
+				var mediaStream = loadSound(media)
+				
 				#This checks to see if the name has enter stating that it's a on enter sfx
 				if media_name.split('_')[-1] != 'enter':
 					#if it isn't then it will set enter_sfx to null incase there isn't one
-					state.sfx = stream
+					state.sfx = mediaStream
 					state.enter_sfx = null
 				else:
 					#sets the enter_sfx if it's in the name
-					state.enter_sfx = stream
+					state.enter_sfx = mediaStream
 				#state.pitch_var = 0.0 #Sets the current state pitch_variation to 0
 				state.pitch_scale = 2
 		#Replace button textures
@@ -383,7 +375,17 @@ func textureGet(imagePath): #Snippet by:
 	var tex = ImageTexture.new()
 	tex.create_from_image(image, 0)
 	return tex
-		
+	
+func loadSound(soundPath): # Just moved it over here so that it can be used by other people, even tho this only supports wav -Fleig
+	var file = File.new()
+	file.open(soundPath, File.READ)
+	var buffer = file.get_buffer(file.get_len())
+	var stream = AudioStreamSample.new()
+	stream.format = AudioStreamSample.FORMAT_16_BITS
+	stream.data = buffer
+	file.close()
+	return stream
+
 func _hash_file(path):
 	var file = File.new()
 	var modZIPHash = file.get_md5(path)
