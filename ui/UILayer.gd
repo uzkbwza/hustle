@@ -139,6 +139,18 @@ func _ready():
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
+	$"%MasterSlider".set_value(Global.master_value)
+	AudioServer.set_bus_volume_db(0, linear2db(Global.master_value))
+	$"%MasterSlider".connect("value_changed", self, "_on_master_slider_changed")
+	$"%FXSlider".set_value(Global.fx_value)
+	AudioServer.set_bus_volume_db(1, linear2db(Global.fx_value))
+	$"%FXSlider".connect("value_changed", self, "_on_fx_slider_changed")
+	$"%UISlider".set_value(Global.ui_value)
+	AudioServer.set_bus_volume_db(2, linear2db(Global.ui_value))
+	$"%UISlider".connect("value_changed", self, "_on_ui_slider_changed")
+	$"%MusicSlider".set_value(Global.music_value)
+	AudioServer.set_bus_volume_db(3, linear2db(Global.music_value))
+	$"%MusicSlider".connect("value_changed", self, "_on_music_slider_changed")
 #	$"%LightModeButton".set_pressed_no_signal(Global.light_mode)
 #	$"%LightModeButton".connect("toggled", self, "_on_light_mode_toggled")
 	$"%FullscreenButton".set_pressed_no_signal(Global.fullscreen)
@@ -202,6 +214,42 @@ func on_workshop_uploader_clicked():
 	
 func _on_music_button_toggled(on):
 	Global.set_music_enabled(on)
+	Global.save_options()
+
+func _on_master_slider_changed(value):
+	AudioServer.set_bus_volume_db(0, linear2db(value))
+	$"%OptionsSoundPlayer".bus = "Master"
+	$"%OptionsSoundPlayer".pitch_variation = 0
+	$"%OptionsSoundPlayer".streams = [load("res://sound/ui/button_hover3.wav")]
+	$"%OptionsSoundPlayer".play()
+	Global.master_value = value
+	Global.save_options()
+
+func _on_fx_slider_changed(value):
+	AudioServer.set_bus_volume_db(1, linear2db(value))
+	$"%OptionsSoundPlayer".bus = "Fx"
+	$"%OptionsSoundPlayer".pitch_variation = 0.1
+	$"%OptionsSoundPlayer".streams = [load("res://sound/common/explosion2.wav")]
+	$"%OptionsSoundPlayer".play()
+	Global.fx_value = value
+	Global.save_options()
+
+func _on_ui_slider_changed(value):
+	AudioServer.set_bus_volume_db(2, linear2db(value))
+	$"%OptionsSoundPlayer".bus = "UI"
+	$"%OptionsSoundPlayer".pitch_variation = 0
+	$"%OptionsSoundPlayer".streams = [load("res://sound/ui/button_hover3.wav")]
+	$"%OptionsSoundPlayer".play()
+	Global.ui_value = value
+	Global.save_options()
+
+func _on_music_slider_changed(value):
+	AudioServer.set_bus_volume_db(3, linear2db(value))
+	$"%OptionsSoundPlayer".bus = "UI"
+	$"%OptionsSoundPlayer".pitch_variation = 0
+	$"%OptionsSoundPlayer".streams = [load("res://sound/ui/button_hover3.wav")]
+	$"%OptionsSoundPlayer".play()
+	Global.music_value = value
 	Global.save_options()
 
 func _on_fullscreen_button_toggled(on):

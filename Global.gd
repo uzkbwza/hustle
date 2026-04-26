@@ -7,6 +7,10 @@ const RESOLUTION = Vector2(640, 360)
 
 var audio_player
 var music_enabled = true
+var master_value = 1.0
+var fx_value = 1.0
+var ui_value = 1.0
+var music_value = 1.0
 var freeze_ghost_prediction = true
 var freeze_ghost_sound = true
 var ghost_afterimages = true
@@ -221,6 +225,10 @@ func save_options():
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 			"seen_custom_character_nag": seen_custom_character_nag,
 #			"forfeit_buttons_enabled": forfeit_buttons_enabled,
+			"master_value" : master_value,
+			"fx_value" : fx_value,
+			"ui_value" : ui_value,
+			"music_value" : music_value,
 		}
 	})
 
@@ -251,6 +259,10 @@ func get_default_player_data():
 			"replay_extra_freeze_frames": true,
 			"seen_custom_character_nag": false,
 #			"forfeit_buttons_enabled": false,
+			"master_value" : 1.0,
+			"fx_value" : 1.0,
+			"ui_value" : 1.0,
+			"music_value" : 1.0,
 		}
 	}
 
