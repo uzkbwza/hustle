@@ -7,6 +7,7 @@ const RESOLUTION = Vector2(640, 360)
 
 var audio_player
 var music_enabled = true
+var will_auto_delete = true
 var particle_opacity = 1.0
 var master_value = 1.0
 var fx_value = 1.0
@@ -271,6 +272,7 @@ func save_options():
 			"seen_custom_character_nag":seen_custom_character_nag, 
 
 			"particle_opacity":particle_opacity, 
+			"will_auto_delete":will_auto_delete,
 			"master_value":master_value, 
 			"fx_value":fx_value, 
 			"ui_value":ui_value, 
@@ -308,6 +310,7 @@ func get_default_player_data():
 			"enable_replay_backups":true, 
 			"seen_custom_character_nag":false, 
 
+			"will_auto_delete":true,
 			"particle_opacity":1.0,
 			"master_value":1.0, 
 			"fx_value":1.0, 

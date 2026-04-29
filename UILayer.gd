@@ -80,7 +80,8 @@ onready var global_option_check_buttons = {
 	$"%TimerSoundButton":"enable_timer_sound", 
 	$"%ExtraFreezeFrames":"replay_extra_freeze_frames", 
 	$"%EnableReplayBackups":"enable_replay_backups", 
-	$"%XYPlotInvertSnapButton":"xyplot_invert_snap", 
+	$"%XYPlotInvertSnapButton":"xyplot_invert_snap",
+	$"%DeleteCacheAuto":"will_auto_delete",
 
 }
 
@@ -147,6 +148,7 @@ func _ready():
 	$"%OptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%CreditsButton".connect("pressed", $"%Credits", "show")
 	$"%CreditsButton".connect("pressed", $"%MainMenu", "hide")
+	$"%DeleteCacheAuto".connect("toggled", self, "_on_auto_delete")
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
 	$"%ParticleOpacitySlider".connect("value_changed", self, "_on_particle_opacity_changed")
 	$"%ParticleOpacitySlider".set_value(Global.particle_opacity)
@@ -226,6 +228,28 @@ func on_workshop_uploader_clicked():
 	hide_main_menu()
 	$"%WorkshopMenu".init()
 	$"%WorkshopMenu".show()
+
+func _delete_char_cache():
+	var dir = Directory.new()
+	Network.css_instance.charPackages = {}
+	for f in ModLoader._get_all_files("user://char_cache", "pck"):
+		dir.remove(f)
+	print("removing cache")
+	get_tree().quit()
+
+func _notification(what):
+	if what == NOTIFICATION_WM_QUIT_REQUEST:
+		print("quitting")
+		if Global.will_auto_delete:
+			_delete_char_cache()
+		else:
+			print("just quitting")
+			get_tree().quit()
+
+func _on_auto_delete(pressed):
+	Global.will_auto_delete = pressed
+	Global.save_options()
+#	print(Global.will_auto_delete)
 
 var opacity = 100
 func _on_particle_opacity_changed(value):
@@ -467,6 +491,8 @@ func _on_quit_button_pressed():
 				SteamLobby.exit_match_from_button()
 
 func _on_quit_program_button_pressed():
+	if Global.will_auto_delete:
+		_delete_char_cache()
 	get_tree().quit()
 
 func _on_sync_timer_request(id, time):
