@@ -2351,11 +2351,11 @@ script = ExtResource( 53 )
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 304.0
-margin_bottom = 216.0
+margin_right = 313.0
+margin_bottom = 223.0
 
 [node name="TitleBar" type="Panel" parent="UILayer/OptionsContainer/VBoxContainer"]
-margin_right = 303.0
+margin_right = 312.0
 margin_bottom = 9.0
 rect_min_size = Vector2( 0, 9 )
 mouse_filter = 1
@@ -2372,8 +2372,8 @@ align = 1
 
 [node name="Contents" type="PanelContainer" parent="UILayer/OptionsContainer/VBoxContainer"]
 margin_top = 10.0
-margin_right = 303.0
-margin_bottom = 215.0
+margin_right = 312.0
+margin_bottom = 222.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2381,17 +2381,17 @@ size_flags_vertical = 3
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 302.0
-margin_bottom = 204.0
+margin_right = 311.0
+margin_bottom = 211.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
-margin_right = 301.0
-margin_bottom = 171.0
+margin_right = 310.0
+margin_bottom = 178.0
 custom_constants/separation = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer"]
 margin_right = 143.0
-margin_bottom = 171.0
+margin_bottom = 178.0
 
 [node name="FullscreenButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -2506,12 +2506,12 @@ align = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer"]
 margin_left = 147.0
-margin_right = 296.0
-margin_bottom = 171.0
+margin_right = 310.0
+margin_bottom = 178.0
 
 [node name="EnableEmotes" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 12.0
 pressed = true
 text = "show emotes"
@@ -2519,52 +2519,52 @@ text = "show emotes"
 [node name="EnableStyleColorsButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 13.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 25.0
 text = "enable style colors"
 
 [node name="EnableAurasButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 26.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 38.0
 text = "enable particle auras"
 
 [node name="EnableHitsparksButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 39.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 51.0
 text = "enable custom hitsparks"
 
 [node name="HSeparator2" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 52.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 56.0
 
 [node name="MusicButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 57.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 69.0
 pressed = true
 text = "enable music"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 70.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 82.0
 
 [node name="Label" type="Label" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
-margin_right = 75.0
+margin_right = 81.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "master volume "
 
 [node name="MasterSlider" type="HSlider" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 76.0
-margin_right = 149.0
+margin_left = 82.0
+margin_right = 163.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -2573,19 +2573,19 @@ value = 1.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 83.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 95.0
 
 [node name="Label" type="Label" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
-margin_right = 74.0
+margin_right = 81.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "fx volume "
 
 [node name="FXSlider" type="HSlider" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
 unique_name_in_owner = true
-margin_left = 75.0
-margin_right = 149.0
+margin_left = 82.0
+margin_right = 163.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -2594,19 +2594,19 @@ value = 1.0
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 96.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 108.0
 
 [node name="Label" type="Label" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
-margin_right = 74.0
+margin_right = 81.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "ui volume "
 
 [node name="UISlider" type="HSlider" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
 unique_name_in_owner = true
-margin_left = 75.0
-margin_right = 149.0
+margin_left = 82.0
+margin_right = 163.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -2615,19 +2615,19 @@ value = 1.0
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 109.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 121.0
 
 [node name="Label" type="Label" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer4"]
-margin_right = 74.0
+margin_right = 81.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
 text = "music volume "
 
 [node name="MusicSlider" type="HSlider" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer4"]
 unique_name_in_owner = true
-margin_left = 75.0
-margin_right = 149.0
+margin_left = 82.0
+margin_right = 163.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -2636,13 +2636,13 @@ value = 1.0
 
 [node name="HSeparator4" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 122.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 126.0
 
 [node name="EnableReplayBackups" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 127.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 139.0
 hint_tooltip = "Save a backup replay every turn (max 10), so you can recover unfinished matches."
 pressed = true
@@ -2651,7 +2651,7 @@ text = "enable per-turn backups"
 [node name="AutoFCButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 140.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 152.0
 pressed = true
 text = "enable auto free cancel"
@@ -2659,41 +2659,43 @@ text = "enable auto free cancel"
 [node name="XYPlotInvertSnapButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 153.0
-margin_right = 149.0
+margin_right = 163.0
 margin_bottom = 165.0
 hint_tooltip = "When enabled, XY plots (DI, juke, etc) don't snap by default. Hold Shift to enable snapping."
 text = "hold shift to snap xy plots"
 
-[node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="DeleteCacheAuto" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
 margin_top = 166.0
-margin_right = 149.0
-margin_bottom = 171.0
-size_flags_vertical = 3
+margin_right = 163.0
+margin_bottom = 178.0
+pressed = true
+text = "auto delete character cache"
 
 [node name="Padding" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
-margin_top = 172.0
-margin_right = 301.0
-margin_bottom = 172.0
+margin_top = 179.0
+margin_right = 310.0
+margin_bottom = 179.0
 size_flags_vertical = 3
 
 [node name="HSeparator" type="HSeparator" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
-margin_top = 173.0
-margin_right = 301.0
-margin_bottom = 177.0
+margin_top = 180.0
+margin_right = 310.0
+margin_bottom = 184.0
 
 [node name="ModToggle" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 178.0
-margin_right = 301.0
-margin_bottom = 190.0
+margin_top = 185.0
+margin_right = 310.0
+margin_bottom = 197.0
 custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
 text = "enable mods (must restart)"
 
 [node name="OptionsBackButton" type="Button" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 191.0
-margin_right = 301.0
-margin_bottom = 203.0
+margin_top = 198.0
+margin_right = 310.0
+margin_bottom = 210.0
 text = "done"
 
 [node name="OptionsSoundPlayer" type="AudioStreamPlayer2D" parent="UILayer/OptionsContainer"]
