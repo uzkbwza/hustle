@@ -250,7 +250,10 @@ func copy_to(game: Game):
 			object.copy_to(new_obj)
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
-
+	game.p1.set_vel(p1.get_vel().x, p1.get_vel().y)
+	game.p2.set_vel(p2.get_vel().x, p2.get_vel().y)
+	game.p1.update_data()
+	game.p2.update_data()
 
 func _on_super_started(ticks, player):
 	if is_ghost:
