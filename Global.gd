@@ -1,6 +1,7 @@
 extends Node
 
 signal nag_window()
+signal mobile_ui_changed(mobile)
 
 var VERSION = "1.10.0-steam"
 const RESOLUTION = Vector2(640, 360)
@@ -115,6 +116,8 @@ var winws_detected = false
 # while it's set, in addition to the layers F1 directly toggles.
 var ui_hidden = false
 
+var mobile_ui = OS.has_feature("desktop") setget set_mobile_ui
+
 var active_sfx_overrides = {}
 
 var mods_loaded = false
@@ -210,6 +213,17 @@ func _enter_tree():
 #	load_supporter_pack()
 #	var test = PoolByteArray()
 #	var test2 = bytes2var(test)
+
+
+func _input(event):
+	if event.is_action_pressed("swap_mobile_ui") and OS.is_debug_build():
+		set_mobile_ui(not mobile_ui)
+		# as opposed to `mobile_ui = !mobile_ui` so the signal triggers
+
+
+func set_mobile_ui(value):
+	mobile_ui = value
+	emit_signal("mobile_ui_changed", mobile_ui)
 
 
 func get_ghost_speed_modifier():
