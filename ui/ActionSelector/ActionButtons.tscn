@@ -106,7 +106,7 @@ alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="BottomRow"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 273.0
+margin_left = 244.0
 margin_right = 320.0
 margin_bottom = 62.0
 size_flags_horizontal = 0
@@ -116,7 +116,7 @@ size_flags_vertical = 0
 unique_name_in_owner = true
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 46.0
+margin_right = 75.0
 margin_bottom = 61.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
@@ -137,6 +137,7 @@ margin_right = 45.0
 margin_bottom = 19.0
 hint_tooltip = "Submit the selected action and end your turn."
 mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 4 )
 theme_type_variation = "SelectButton"
@@ -217,9 +218,9 @@ expand_icon = true
 
 [node name="ContinueButton" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons" instance=ExtResource( 3 )]
 visible = false
-margin_top = 20.0
-margin_right = 38.0
-margin_bottom = 39.0
+margin_top = 30.0
+margin_right = 45.0
+margin_bottom = 44.0
 
 [node name="UndoButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
 unique_name_in_owner = true
@@ -236,13 +237,31 @@ text = "Undo"
 unique_name_in_owner = true
 visible = false
 margin_top = 45.0
-margin_right = 38.0
+margin_right = 45.0
 margin_bottom = 60.0
 size_flags_vertical = 3
 action_mode = 0
 text = "Auto"
 clip_text = true
 align = 2
+
+[node name="HUDSwitchButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
+unique_name_in_owner = true
+margin_left = 44.0
+margin_right = 74.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+
+[node name="HUDSwitchButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/HUDSwitchButtons"]
+unique_name_in_owner = true
+margin_right = 30.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 30, 0 )
+hint_tooltip = "Resimulate the match until the previous turn."
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "P2"
 
 [node name="ButtonSoundPlayer" parent="." instance=ExtResource( 5 )]
 unique_name_in_owner = true

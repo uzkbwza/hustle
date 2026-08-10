@@ -125,7 +125,6 @@ margin_top = 1.0
 margin_right = 55.0
 margin_bottom = 64.0
 mouse_filter = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Panel" type="PanelContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]

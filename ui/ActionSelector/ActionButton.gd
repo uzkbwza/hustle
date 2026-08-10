@@ -80,6 +80,10 @@ func _ready():
 	$"%Button".connect("mouse_exited", self, "emit_signal", ["mouse_exited"])
 	$"%Button".connect("toggled", self, "on_toggled")
 	connect("visibility_changed", self, "on_visibility_changed")
+	
+	if Global.mobile_ui:
+		rect_min_size.x = 24
+		rect_min_size.y = 24
 
 func on_visibility_changed():
 	if state and state.flip_with_facing:

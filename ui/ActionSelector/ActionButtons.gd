@@ -48,6 +48,9 @@ var buffered_ui_actions = []
 export var opponent_action_buttons_path: NodePath
 onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_buttons_path)
 
+onready var action_container_1: VBoxContainer = $"../../VBoxContainer"
+onready var action_container_2: VBoxContainer = $"../../VBoxContainer2"
+
 var button_category_containers = {
 }
 
@@ -57,7 +60,8 @@ func _input(event):
 			_on_submit_pressed()
 
 func _ready():
-
+	Global.mobile_ui = true
+		
 	$"%SelectButton".connect("pressed", self, "_on_submit_pressed")
 	_rebuild_select_button_shortcut()
 	# Track rebinds so the tooltip's key prefix updates live when the user
@@ -82,6 +86,7 @@ func _ready():
 	$"%DI".connect("data_changed", self, "send_ui_action")
 	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
 	$"%FeintButton".connect("pressed", self, "send_ui_action", [null])
+	$"%HUDSwitchButton".connect("pressed", self, "_on_hud_switch_pressed")
 
 	if !player_id == 1:
 		var top_row_items = $"%TopRow".get_children()
@@ -278,6 +283,16 @@ func init(game, id):
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
 	$"%TurnButtons".move_child(continue_button, 1)
+	
+	if Global.mobile_ui:
+		var is_p1 = player_id == 1
+		action_container_1.visible = !is_p1
+		action_container_2.visible = is_p1
+		
+		$"%TurnButtons".rect_min_size.x = 60
+		
+		$"%HUDSwitchButton".text = "P2" if is_p1 else "P1"
+		$"%CategoryContainer".move_child($"%HUDSwitchButtons", $"%CategoryContainer".get_children().size() - 1 if is_p1 else 0)
 #	$"%ReverseButton".show()
 
 func _on_fighter_action_selected(_action, _data, _extra):
@@ -839,6 +854,11 @@ func activate(refresh=true):
 			var input = Network.p2_undo_action
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
+
+
+func _on_hud_switch_pressed():
+	action_container_1.visible = !action_container_1.visible
+	action_container_2.visible = !action_container_2.visible
 
 
 func _on_DIContainer_mouse_entered():

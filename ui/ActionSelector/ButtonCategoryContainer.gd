@@ -63,6 +63,12 @@ func _ready():
 	hidden_buttons_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hidden_buttons_node.rect_position = Vector2(-9999999, -9999999)
 	add_child(hidden_buttons_node)
+	
+	if Global.mobile_ui:
+		rect_min_size.x = 90
+		$"%ScrollContainer".rect_min_size.x = 90
+		$"%ButtonContainer".rect_min_size.x = 90
+		$"%ButtonContainer".columns = 3 #should be 5
 
 func _on_visibility_changed():
 	if visible and !visibility_update:
