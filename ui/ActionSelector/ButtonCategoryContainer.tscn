@@ -7,7 +7,7 @@
 
 [node name="Control" type="Control"]
 show_behind_parent = true
-margin_right = 55.0
+margin_right = 56.0
 margin_bottom = 1000.0
 rect_min_size = Vector2( 55, 60 )
 size_flags_horizontal = 3
@@ -15,10 +15,13 @@ size_flags_vertical = 3
 theme = ExtResource( 1 )
 theme_type_variation = "InvisScrollbar"
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_vertical_guides_": [ 56.0 ]
+}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
-margin_right = 56.0
+anchor_right = 1.0
 margin_bottom = 77.0
 rect_min_size = Vector2( 55, 77 )
 custom_constants/separation = -10
@@ -115,7 +118,7 @@ margin_bottom = 67.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource( 1 )
 
@@ -125,6 +128,7 @@ margin_top = 1.0
 margin_right = 55.0
 margin_bottom = 64.0
 mouse_filter = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Panel" type="PanelContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
@@ -140,16 +144,17 @@ unique_name_in_owner = true
 margin_top = 11.0
 margin_right = 54.0
 margin_bottom = 63.0
-rect_min_size = Vector2( 54, 52 )
+rect_min_size = Vector2( 0, 52 )
+size_flags_horizontal = 3
 theme = ExtResource( 3 )
 theme_type_variation = "InvisScrollbar"
 
 [node name="ButtonContainer" type="GridContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -52.0
-margin_right = 54.0
 margin_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -212,9 +217,7 @@ one_shot = true
 unique_name_in_owner = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -1.0
 margin_top = 9.0
-margin_right = -1.0
 margin_bottom = -939.0
 mouse_filter = 2
 texture = ExtResource( 4 )

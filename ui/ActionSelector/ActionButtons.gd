@@ -8,6 +8,8 @@ signal action_clicked(action, data, extra)
 
 signal opponent_ready()
 
+signal switch_hud_side()
+
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
 const NUDGE_SCENE = preload("res://ui/ActionSelector/ActionUIData/NudgeActionUIData.tscn")
 const BUTTON_CATEGORY_CONTAINER_SCENE = preload("res://ui/ActionSelector/ButtonCategoryContainer.tscn")
@@ -48,9 +50,6 @@ var buffered_ui_actions = []
 export var opponent_action_buttons_path: NodePath
 onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_buttons_path)
 
-onready var action_container_1: VBoxContainer = $"../../VBoxContainer"
-onready var action_container_2: VBoxContainer = $"../../VBoxContainer2"
-
 var button_category_containers = {
 }
 
@@ -60,8 +59,6 @@ func _input(event):
 			_on_submit_pressed()
 
 func _ready():
-	Global.mobile_ui = true
-		
 	$"%SelectButton".connect("pressed", self, "_on_submit_pressed")
 	_rebuild_select_button_shortcut()
 	# Track rebinds so the tooltip's key prefix updates live when the user
@@ -243,6 +240,17 @@ func reset():
 	last_button = null
 	forfeit = false
 	buttons = []
+	Global.connect("mobile_ui_changed", self, "adjust_ui")
+	adjust_ui(Global.mobile_ui)
+
+
+
+func adjust_ui(is_mobile):
+	$"%SwitchButtons".visible = is_mobile
+	$"%TurnButtons".rect_min_size.x = 60 if is_mobile else 45
+	rect_size.x = Global.RESOLUTION.x / 2 if is_mobile else 1
+
+
 
 func init(game, id):
 	reset()
@@ -274,26 +282,22 @@ func init(game, id):
 	if player_id == 1:
 #		for i in range(button_category_containers.size()):
 #			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
-		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
 		$"%TopRowDataContainer".move_child(fighter_extra, 2)
+		$"%HUDSwitchButton".text = "P2"
+		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
+		$"%CategoryContainer".move_child($"%SwitchButtons", $"%CategoryContainer".get_children().size() - 1)
 	else:
 		$"%TopRowDataContainer".move_child(fighter_extra, 0)
+		$"%HUDSwitchButton".text = "P1"
+		$"%CategoryContainer".move_child($"%TurnButtons", 0)
+		$"%CategoryContainer".move_child($"%SwitchButtons", 0)
 	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"), null, false)
 	continue_button.get_parent().remove_child(continue_button)
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
 	$"%TurnButtons".move_child(continue_button, 1)
-	
-	if Global.mobile_ui:
-		var is_p1 = player_id == 1
-		action_container_1.visible = !is_p1
-		action_container_2.visible = is_p1
-		
-		$"%TurnButtons".rect_min_size.x = 60
-		
-		$"%HUDSwitchButton".text = "P2" if is_p1 else "P1"
-		$"%CategoryContainer".move_child($"%HUDSwitchButtons", $"%CategoryContainer".get_children().size() - 1 if is_p1 else 0)
-#	$"%ReverseButton".show()
+
+
 
 func _on_fighter_action_selected(_action, _data, _extra):
 	pass
@@ -857,8 +861,7 @@ func activate(refresh=true):
 
 
 func _on_hud_switch_pressed():
-	action_container_1.visible = !action_container_1.visible
-	action_container_2.visible = !action_container_2.visible
+	emit_signal("switch_hud_side")
 
 
 func _on_DIContainer_mouse_entered():

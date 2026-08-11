@@ -16,6 +16,9 @@ margin_right = -320.0
 theme = ExtResource( 4 )
 theme_type_variation = "YouPanel"
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_vertical_guides_": [ 320.0 ]
+}
 
 [node name="TopRow" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -106,7 +109,7 @@ alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="BottomRow"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 244.0
+margin_left = 273.0
 margin_right = 320.0
 margin_bottom = 62.0
 size_flags_horizontal = 0
@@ -116,7 +119,7 @@ size_flags_vertical = 0
 unique_name_in_owner = true
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 75.0
+margin_right = 46.0
 margin_bottom = 61.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
@@ -245,14 +248,15 @@ text = "Auto"
 clip_text = true
 align = 2
 
-[node name="HUDSwitchButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
+[node name="SwitchButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 44.0
 margin_right = 74.0
 margin_bottom = 60.0
 size_flags_horizontal = 3
 
-[node name="HUDSwitchButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/HUDSwitchButtons"]
+[node name="HUDSwitchButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/SwitchButtons"]
 unique_name_in_owner = true
 margin_right = 30.0
 margin_bottom = 60.0

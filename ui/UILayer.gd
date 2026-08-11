@@ -1,7 +1,10 @@
 extends CanvasLayer
 
+onready var action_buttons = $"%ActionButtons"
 onready var p1_action_buttons = $"%P1ActionButtons"
 onready var p2_action_buttons = $"%P2ActionButtons"
+onready var p1_side_container = $"%ActionButtons/VBoxContainer"
+onready var p2_side_container = $"%ActionButtons/VBoxContainer2"
 var _name_color_publish_timer: Timer
 
 signal singleplayer_started()
@@ -292,6 +295,11 @@ func _ready():
 		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
 		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
 	
+	p1_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
+	p2_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
+	Global.connect("mobile_ui_changed", self, "adjust_ui")
+	adjust_ui(Global.mobile_ui)
+	
 	$"%HelpScreen".hide()
 	if SteamLobby.LOBBY_ID != 0:
 		yield(get_tree(), "idle_frame") 
@@ -300,7 +308,28 @@ func _ready():
 	$"%CharacterSelect".connect("opened", self, "reset_ui")
 #	$"CharacterSelect".connect("opened", self, "reset_ui")
 	yield(get_tree(), "idle_frame")
-	
+
+
+
+func adjust_ui(is_mobile):
+	if is_mobile:
+		p2_side_container.visible = false
+		p1_side_container.visible = true
+	else:
+		p1_side_container.visible = true
+		p2_side_container.visible = true
+
+
+
+func switch_hud_side():
+	if Global.mobile_ui:
+		p2_side_container.visible = false
+		# above is to not overflow outside of the hud and cause everything to break
+		p1_side_container.visible = not p1_side_container.visible
+		p2_side_container.visible = not p1_side_container.visible # not a typo
+
+
+
 func should_open_mod_warning_window():
 	# Only show the warning when ModLoader._init force-disabled mods this
 	# session because of a MOD_DISABLE_VERSIONS transition (first launch on

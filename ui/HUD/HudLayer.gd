@@ -85,6 +85,8 @@ func _ready():
 	hide()
 	$"%WinLabel".hide()
 
+
+
 func init(game):
 	show()
 	self.game = game
