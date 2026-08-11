@@ -116,7 +116,7 @@ var winws_detected = false
 # while it's set, in addition to the layers F1 directly toggles.
 var ui_hidden = false
 
-var mobile_ui = OS.has_feature("desktop") setget set_mobile_ui
+var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
 
 var active_sfx_overrides = {}
 
