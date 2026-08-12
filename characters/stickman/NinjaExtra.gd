@@ -116,4 +116,4 @@ func reset():
 	bomb_button.set_pressed_no_signal(false)
 	release_button.set_pressed_no_signal(false)
 	store_button.set_pressed_no_signal(false)
-	pull_button.set_pressed_no_signal(false)
+	pull_button.set_pressed_no_signal(fighter.pulling if fighter else false)
