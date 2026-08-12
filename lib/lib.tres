@@ -1,7 +1,15 @@
 [gd_resource type="GDNativeLibrary" format=2]
 
 [resource]
-entry/Windows.64 = "res://lib/tbfg.dll"
+entry/Android.armeabi-v7a = "res://lib/lib_armv7_a_tbfg.so"
+entry/Android.arm64-v8a = "res://lib/lib_aarch64_a_tbfg.so"
+entry/Android.x86 = "res://lib/lib_i686_a_tbfg.so"
+entry/Android.x86_64 = "res://lib/lib_x86_64_a_tbfg.so"
+entry/Windows.64 = "res://lib/new_tbfg.dll"
 entry/X11.64 = "res://lib/tbfg.so"
+dependency/Android.armeabi-v7a = [  ]
+dependency/Android.arm64-v8a = [  ]
+dependency/Android.x86 = [  ]
+dependency/Android.x86_64 = [  ]
 dependency/Windows.64 = [ "res://lib/vcruntime140.dll" ]
 dependency/X11.64 = [  ]
