@@ -117,6 +117,7 @@ var winws_detected = false
 var ui_hidden = false
 
 var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
+var is_mobile_device = OS.has_feature("mobile")
 
 var active_sfx_overrides = {}
 
