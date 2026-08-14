@@ -1253,13 +1253,13 @@ script = ExtResource( 11 )
 
 [node name="BottomSuperBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 visible = false
-margin_right = 641.0
+margin_right = 640.0
 margin_bottom = 15.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 
 [node name="Timer" type="Control" parent="UILayer/GameUI/BottomBar/BottomSuperBar"]
-margin_right = 641.0
+margin_right = 640.0
 margin_bottom = 15.0
 rect_min_size = Vector2( 40, 15 )
 mouse_filter = 2
@@ -1268,7 +1268,7 @@ size_flags_stretch_ratio = 4.79
 
 [node name="ActionButtons" type="HBoxContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
-margin_right = 641.0
+margin_right = 640.0
 margin_bottom = 140.0
 rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
@@ -1277,7 +1277,7 @@ size_flags_vertical = 3
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 140.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -1286,20 +1286,20 @@ alignment = 2
 
 [node name="Control" type="Control" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
 margin_top = 35.0
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 35.0
 
 [node name="P1InfoContainer" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 36.0
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 56.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="P1SuperContainer" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons/VBoxContainer/P1InfoContainer"]
 unique_name_in_owner = true
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 20.0
 mouse_filter = 2
 
@@ -1355,15 +1355,14 @@ unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 57.0
-margin_right = 320.0
+margin_right = 319.0
 margin_bottom = 140.0
 rect_min_size = Vector2( 0, 73 )
-size_flags_horizontal = 3
 opponent_action_buttons_path = NodePath("../../VBoxContainer2/P2ActionButtons")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/GameUI/BottomBar/ActionButtons"]
-margin_left = 321.0
-margin_right = 641.0
+margin_left = 320.0
+margin_right = 640.0
 margin_bottom = 140.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -1438,14 +1437,13 @@ margin_top = 57.0
 margin_right = 320.0
 margin_bottom = 140.0
 rect_min_size = Vector2( 0, 73 )
-size_flags_horizontal = 3
 player_id = 2
 opponent_action_buttons_path = NodePath("../../VBoxContainer/P1ActionButtons")
 
 [node name="OptionsBarContainer" type="MarginContainer" parent="UILayer/GameUI/BottomBar"]
 unique_name_in_owner = true
 margin_top = 140.0
-margin_right = 641.0
+margin_right = 640.0
 margin_bottom = 152.0
 rect_min_size = Vector2( 0, 12 )
 mouse_filter = 2
@@ -1456,7 +1454,7 @@ custom_constants/margin_left = 5
 unique_name_in_owner = true
 visible = false
 margin_left = 5.0
-margin_right = 636.0
+margin_right = 635.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1570,150 +1568,6 @@ margin_left = 605.0
 margin_right = 619.0
 margin_bottom = 12.0
 icon = ExtResource( 66 )
-
-[node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-visible = false
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -70.5
-margin_right = 70.5
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/PausePanel"]
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 140.0
-margin_bottom = 65.0
-alignment = 1
-
-[node name="ResumeButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_right = 139.0
-margin_bottom = 12.0
-size_flags_vertical = 0
-text = "resume"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-visible = false
-margin_top = 13.0
-margin_right = 139.0
-margin_bottom = 13.0
-
-[node name="ReplayName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 13.0
-margin_right = 139.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-size_flags_vertical = 0
-align = 1
-placeholder_text = "replay name"
-caret_blink = true
-
-[node name="SaveReplayButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 25.0
-margin_right = 139.0
-margin_bottom = 37.0
-rect_min_size = Vector2( 60, 0 )
-text = "save replay"
-
-[node name="SaveStylesButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 38.0
-margin_right = 139.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 60, 0 )
-text = "save styles"
-
-[node name="StyleName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 38.0
-margin_right = 139.0
-margin_bottom = 49.0
-size_flags_horizontal = 3
-size_flags_vertical = 0
-align = 1
-placeholder_text = "style name"
-caret_blink = true
-
-[node name="SaveP1StyleButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 50.0
-margin_right = 139.0
-margin_bottom = 62.0
-rect_min_size = Vector2( 60, 0 )
-text = "save p1 style"
-
-[node name="SaveP2StyleButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 63.0
-margin_right = 139.0
-margin_bottom = 75.0
-rect_min_size = Vector2( 60, 0 )
-text = "save p2 style"
-
-[node name="StyleBackButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 76.0
-margin_right = 139.0
-margin_bottom = 88.0
-rect_min_size = Vector2( 60, 0 )
-text = "back"
-
-[node name="PauseOptionsButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 38.0
-margin_right = 139.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 60, 0 )
-text = "options"
-
-[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 51.0
-margin_right = 139.0
-margin_bottom = 63.0
-size_flags_vertical = 0
-text = "quit"
-
-[node name="ForfeitButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 64.0
-margin_right = 139.0
-margin_bottom = 76.0
-size_flags_vertical = 0
-text = "forfeit"
-
-[node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
-margin_top = 64.0
-margin_right = 139.0
-margin_bottom = 64.0
-
-[node name="SaveReplayLabel" type="Label" parent="UILayer/GameUI/PausePanel/VBoxContainer/Control"]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -274.0
-margin_top = 3.0
-margin_right = 274.0
-margin_bottom = 14.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
-align = 1
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -2071,6 +1925,172 @@ action_mode = 0
 icon = ExtResource( 65 )
 flat = true
 icon_align = 1
+
+[node name="MobileMatchButtons" type="HBoxContainer" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -20.0
+margin_right = 20.0
+margin_bottom = 12.0
+grow_horizontal = 2
+rect_min_size = Vector2( 100, 20 )
+
+[node name="OpenMenuButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+unique_name_in_owner = true
+margin_right = 100.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 16 )
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "Menu"
+flat = true
+
+[node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -70.5
+margin_top = -39.5
+margin_right = 70.5
+margin_bottom = 39.5
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/GameUI/PausePanel"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 140.0
+margin_bottom = 78.0
+alignment = 1
+
+[node name="ResumeButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 139.0
+margin_bottom = 12.0
+size_flags_vertical = 0
+text = "resume"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+visible = false
+margin_top = 13.0
+margin_right = 139.0
+margin_bottom = 13.0
+
+[node name="ReplayName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 13.0
+margin_right = 139.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+align = 1
+placeholder_text = "replay name"
+caret_blink = true
+
+[node name="SaveReplayButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 25.0
+margin_right = 139.0
+margin_bottom = 37.0
+rect_min_size = Vector2( 60, 0 )
+text = "save replay"
+
+[node name="SaveStylesButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 38.0
+margin_right = 139.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 60, 0 )
+text = "save styles"
+
+[node name="StyleName" type="LineEdit" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 38.0
+margin_right = 139.0
+margin_bottom = 49.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+align = 1
+placeholder_text = "style name"
+caret_blink = true
+
+[node name="SaveP1StyleButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 50.0
+margin_right = 139.0
+margin_bottom = 62.0
+rect_min_size = Vector2( 60, 0 )
+text = "save p1 style"
+
+[node name="SaveP2StyleButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 63.0
+margin_right = 139.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 60, 0 )
+text = "save p2 style"
+
+[node name="StyleBackButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 76.0
+margin_right = 139.0
+margin_bottom = 88.0
+rect_min_size = Vector2( 60, 0 )
+text = "back"
+
+[node name="PauseOptionsButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 51.0
+margin_right = 139.0
+margin_bottom = 63.0
+rect_min_size = Vector2( 60, 0 )
+text = "options"
+
+[node name="QuitToMainMenuButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 64.0
+margin_right = 139.0
+margin_bottom = 76.0
+size_flags_vertical = 0
+text = "quit"
+
+[node name="ForfeitButton" type="Button" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 64.0
+margin_right = 139.0
+margin_bottom = 76.0
+size_flags_vertical = 0
+text = "forfeit"
+
+[node name="Control" type="Control" parent="UILayer/GameUI/PausePanel/VBoxContainer"]
+margin_top = 77.0
+margin_right = 139.0
+margin_bottom = 77.0
+
+[node name="SaveReplayLabel" type="Label" parent="UILayer/GameUI/PausePanel/VBoxContainer/Control"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -274.0
+margin_top = 3.0
+margin_right = 274.0
+margin_bottom = 14.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+align = 1
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="ChatWindow" parent="UILayer" instance=ExtResource( 30 )]
 unique_name_in_owner = true

@@ -248,7 +248,6 @@ func reset():
 func adjust_ui(is_mobile):
 	$"%SwitchButtons".visible = is_mobile
 	$"%TurnButtons".rect_min_size.x = 60 if is_mobile else 45
-	rect_size.x = Global.RESOLUTION.x / 2 if is_mobile else 1
 
 
 
@@ -284,11 +283,13 @@ func init(game, id):
 #			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
 		$"%TopRowDataContainer".move_child(fighter_extra, 2)
 		$"%HUDSwitchButton".text = "P2"
+		$"%CategoryContainer".size_flags_horizontal = SIZE_SHRINK_END
 		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
 		$"%CategoryContainer".move_child($"%SwitchButtons", $"%CategoryContainer".get_children().size() - 1)
 	else:
 		$"%TopRowDataContainer".move_child(fighter_extra, 0)
 		$"%HUDSwitchButton".text = "P1"
+		$"%CategoryContainer".size_flags_horizontal = 0
 		$"%CategoryContainer".move_child($"%TurnButtons", 0)
 		$"%CategoryContainer".move_child($"%SwitchButtons", 0)
 	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"), null, false)

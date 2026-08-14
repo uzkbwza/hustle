@@ -69,10 +69,10 @@ func _ready():
 
 func adjust_ui(is_mobile):
 	if is_mobile:
-		rect_min_size = Vector2(98, 60)
+		rect_min_size = Vector2(98, 76)
 		$"%ButtonContainer".columns = 3 #should be 5
 	else:
-		rect_min_size = Vector2(56, 60)
+		rect_min_size = Vector2(52, 60)
 		$"%ButtonContainer".columns = 3
 	rect_size = rect_min_size
 	

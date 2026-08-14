@@ -12,7 +12,8 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 277.0
-margin_right = -320.0
+margin_right = -549.0
+size_flags_horizontal = 3
 theme = ExtResource( 4 )
 theme_type_variation = "YouPanel"
 script = ExtResource( 1 )
@@ -22,9 +23,8 @@ __meta__ = {
 
 [node name="TopRow" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
-margin_right = 320.0
+margin_right = 91.0
 margin_bottom = 20.0
-rect_min_size = Vector2( 320, 0 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -84,23 +84,23 @@ text = "DI"
 
 [node name="Padding2" type="Control" parent="TopRow"]
 margin_left = 72.0
-margin_right = 301.0
+margin_right = 72.0
 margin_bottom = 20.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="YouLabel" type="Label" parent="TopRow"]
 unique_name_in_owner = true
-margin_left = 302.0
+margin_left = 73.0
 margin_top = 4.0
-margin_right = 320.0
+margin_right = 91.0
 margin_bottom = 15.0
 text = "You"
 
 [node name="BottomRow" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
 margin_top = 21.0
-margin_right = 320.0
+margin_right = 91.0
 margin_bottom = 83.0
 size_flags_horizontal = 15
 size_flags_vertical = 13
@@ -109,29 +109,28 @@ alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="BottomRow"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 273.0
-margin_right = 320.0
+margin_right = 91.0
 margin_bottom = 62.0
-size_flags_horizontal = 0
+size_flags_horizontal = 3
 size_flags_vertical = 0
 
 [node name="CategoryContainer" type="HBoxContainer" parent="BottomRow/PanelContainer"]
 unique_name_in_owner = true
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 46.0
+margin_right = 90.0
 margin_bottom = 61.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = -1
+custom_constants/separation = 1
 alignment = 2
 
 [node name="TurnButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
 unique_name_in_owner = true
-margin_right = 45.0
+margin_left = 44.0
+margin_right = 89.0
 margin_bottom = 60.0
-size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SelectButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/TurnButtons"]
@@ -254,13 +253,12 @@ visible = false
 margin_left = 44.0
 margin_right = 74.0
 margin_bottom = 60.0
-size_flags_horizontal = 3
 
 [node name="HUDSwitchButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/SwitchButtons"]
 unique_name_in_owner = true
 margin_right = 30.0
 margin_bottom = 60.0
-rect_min_size = Vector2( 30, 0 )
+rect_min_size = Vector2( 32, 0 )
 hint_tooltip = "Resimulate the match until the previous turn."
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3

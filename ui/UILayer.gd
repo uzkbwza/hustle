@@ -297,6 +297,9 @@ func _ready():
 	
 	p1_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
 	p2_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
+	
+	$"%OpenMenuButton".connect("pressed", self, "pause")
+	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
 	
@@ -1537,9 +1540,13 @@ func _process(delta):
 			neutral_label.text = ""
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
 	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
-	$"%TopInfo".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and !Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
-	$"%TopInfoMP".visible = is_instance_valid(game) and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active and !game.game_finished and !Network.rematch_menu
-	$"%TopInfoReplay".visible = is_instance_valid(game) and ReplayManager.playback and !game.game_finished and !Network.rematch_menu
+
+	var show_control_info = not Global.mobile_ui and is_instance_valid(game) and not game.game_finished and not Network.rematch_menu
+	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
+	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
+	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
+	$"%MobileMatchButtons".visible = Global.mobile_ui and is_instance_valid(game) and not game.game_finished 
+	
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused
 	if is_instance_valid(game) and !Network.multiplayer_active:
