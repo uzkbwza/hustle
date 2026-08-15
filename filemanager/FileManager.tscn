@@ -1,0 +1,127 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://filemanager/FileManager.gd" type="Script" id=2]
+
+[node name="FileManager" type="VBoxContainer"]
+margin_right = 126.0
+margin_bottom = 143.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 126.0
+margin_bottom = 49.0
+alignment = 2
+
+[node name="Lists" type="OptionButton" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 126.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = "ChallengeButton"
+
+[node name="ListEdit" type="LineEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 25.0
+margin_right = 126.0
+margin_bottom = 49.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "List Name"
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="Printer" type="Label" parent="VBoxContainer/ListEdit"]
+unique_name_in_owner = true
+margin_left = -3.0
+margin_top = 119.0
+margin_right = 128.0
+margin_bottom = 269.0
+size_flags_vertical = 5
+text = "asdadasd"
+autowrap = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 50.0
+margin_right = 126.0
+margin_bottom = 143.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 62.0
+margin_bottom = 93.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SaveList" type="Button" parent="HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_right = 62.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Save List"
+
+[node name="DeleteList" type="Button" parent="HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 31.0
+margin_right = 62.0
+margin_bottom = 61.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete List"
+
+[node name="ExportPack" type="Button" parent="HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 62.0
+margin_right = 62.0
+margin_bottom = 93.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export Pack"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 63.0
+margin_right = 126.0
+margin_bottom = 93.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Import" type="Button" parent="HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_right = 63.0
+margin_bottom = 46.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Import"
+
+[node name="Export" type="Button" parent="HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 47.0
+margin_right = 63.0
+margin_bottom = 93.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export "
+
+[node name="OpenFolder" type="Button" parent="HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+visible = false
+margin_top = 62.0
+margin_right = 63.0
+margin_bottom = 93.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete"

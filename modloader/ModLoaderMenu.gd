@@ -13,6 +13,7 @@ var userdata := {}
 var late_inited = false
 var needs_to_save = false
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	hint_tooltip=""
@@ -24,7 +25,16 @@ func _ready():
 	$"%ModCredits".connect("pressed", self, "_credits_clicked")
 	$"%WorkshopUploader".connect("pressed", self, "_uploader_clicked")
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
+	
+	Global.connect("mobile_ui_changed", self, "adjust_ui")
+	adjust_ui(Global.mobile_ui)
+	
 	hide()
+
+
+func adjust_ui(is_mobile):
+	$"%WorkshopUploader".visible = not is_mobile
+	$"%WorkshopButton".visible = not is_mobile
 
 
 func _open_mods_folder():
@@ -83,15 +93,29 @@ func generate_mod_menu(_name):
 #TODO make look better and add toggle for each mod
 func add_mod(mod):
 	#Generate button
+	var _container = HBoxContainer.new()
+	_container.set_h_size_flags(3)
+	_container.set_v_size_flags(1)
+	
 	var btn = generateButton(mod[1].friendly_name)
-	#Add button to $mods
-	self.list_container.add_child(btn)
+	var toggle = generateButton("", false, 1)
+	
+	_container.name = mod[1].friendly_name
+	_container.add_child(btn, true)
+	_container.add_child(toggle, true)
+	
+	var is_mod_active =  mod in ModLoader.active_mods
+	toggle.pressed = is_mod_active
+	
+	#Add button container to $mods
+	self.list_container.add_child(_container)
 	# Generate tab container
 	var info = generate_mod_menu(mod[1].friendly_name)
 	self.info_container.add_child(info)
 
 	#Connect button
 	btn.connect("pressed", self, "_tab_clicked", [info])
+	toggle.connect("toggled", self, "_toggle_clicked", [mod, toggle, btn])
 
 	#Populate mod info tab
 	var name = "Name: " + mod[1].friendly_name
@@ -125,13 +149,25 @@ func show_menu(node:Node):
 func _tab_clicked(node:Node):
 	if current_mod != node:
 		show_menu(node)
+
+
+func _toggle_clicked(_button_pressed: bool, _mod, _toggle, _button):
+	var is_mod_active =  _mod in ModLoader.active_mods
 	
-func generateButton(text_gen):
-	var _button = Button.new()
+	$"%FileManager".current_list[_mod] = [_button_pressed, is_mod_active]
+	
+	_button.add_color_override("font_color", Color("ff333b" if _button_pressed != is_mod_active else "ffffff"))
+	
+
+func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag:int = 1 ):
+	var _button = Button.new() if _is_button else CheckButton.new()
 	_button.text = text_gen
 	_button.flat = true
 	_button.set("mouse_default_cursor_shape", 2) #CURSOR_POINTING_HAND
 	_button.set("custom_colors/font_color_hover", Color(100.0, 0.2, 0.23, 1.0))
+	_button.set_h_size_flags(_h_size_flag)
+	_button.set_v_size_flags(_v_size_flag)
+	_button.add_color_override("font_color", Color("ffffff"))
 	return _button
 
 func generateLabel(text_gen, align):

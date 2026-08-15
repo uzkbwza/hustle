@@ -1,14 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
 [ext_resource path="res://modloader/ModLoaderMenu.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=4]
+[ext_resource path="res://filemanager/FileManager.tscn" type="PackedScene" id=5]
 
 [node name="Window" instance=ExtResource( 1 )]
-margin_left = -200.0
+margin_left = -259.0
 margin_top = -100.0
-margin_right = 200.0
+margin_right = 141.0
 margin_bottom = 120.0
 script = ExtResource( 2 )
 
@@ -24,20 +25,31 @@ text = "Mod List"
 
 [node name="Close" type="Button" parent="VBoxContainer/TitleBar" index="1"]
 unique_name_in_owner = true
-margin_right = 40.0
-margin_bottom = 12.0
+margin_top = -1.0
+margin_right = 48.0
+margin_bottom = 11.0
+rect_min_size = Vector2( 48, 0 )
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Close"
 flat = true
 
 [node name="ModsLocation" type="Button" parent="VBoxContainer/TitleBar" index="2"]
 unique_name_in_owner = true
-margin_left = 305.0
-margin_right = 394.0
-margin_bottom = 12.0
+margin_left = 310.0
+margin_top = -2.0
+margin_right = 399.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 72, 0 )
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Open Mods Folder"
 flat = true
+
+[node name="FileManager" parent="VBoxContainer/TitleBar" index="3" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 410.0
+margin_top = 38.0
+margin_right = 536.0
+margin_bottom = 181.0
 
 [node name="Contents" parent="VBoxContainer" index="1"]
 margin_right = 398.0

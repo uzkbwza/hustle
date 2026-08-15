@@ -100,6 +100,10 @@ func _loadMods():
 		info = workshop.get_item_install_info(item)
 		if info.ret:
 			_load_mods_in_folder(info.folder, true)
+	
+	# surely this is just a simple addition! later i shall make it work for pc too - vineraio
+	if Global.is_mobile_device:
+		_load_mods_in_folder("user://mods", true)
 
 func _load_mods_in_folder(modPathPrefix, zip_only=false):
 	print("loading mods in folder: " + modPathPrefix)
