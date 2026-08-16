@@ -139,5 +139,3 @@ margin_right = 69.0
 margin_bottom = 45.5
 text = "Loading..."
 align = 1
-
-[connection signal="visibility_changed" from="." to="." method="_on_CharacterSelect_visibility_changed"]
