@@ -44,12 +44,23 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Open Mods Folder"
 flat = true
 
-[node name="FileManager" parent="VBoxContainer/TitleBar" index="3" instance=ExtResource( 5 )]
+[node name="ApplyChanges" type="Button" parent="VBoxContainer/TitleBar" index="3"]
 unique_name_in_owner = true
-margin_left = 410.0
-margin_top = 38.0
-margin_right = 536.0
-margin_bottom = 181.0
+margin_left = -1.0
+margin_top = -37.0
+margin_right = 101.0
+margin_bottom = -5.0
+rect_min_size = Vector2( 72, 32 )
+custom_colors/font_color = Color( 1, 0.2, 0.231373, 1 )
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Apply Changes (Quit)"
+
+[node name="FileManager" parent="VBoxContainer/TitleBar" index="4" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 408.0
+margin_top = -42.0
+margin_right = 563.0
+margin_bottom = 205.0
 
 [node name="Contents" parent="VBoxContainer" index="1"]
 margin_right = 398.0

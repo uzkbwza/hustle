@@ -1,17 +1,19 @@
 extends Window
 
+
 signal uploader_clicked()
 
 var ModOptions
 var current_mod = null
 var mod_tabs:Dictionary = {}
-
-onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
-onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
-
+var mods: Dictionary = {}
 var userdata := {}
 var late_inited = false
 var needs_to_save = false
+
+onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
+onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
+onready var file_manager = $"%FileManager"
 
 
 # Called when the node enters the scene tree for the first time.
@@ -25,11 +27,39 @@ func _ready():
 	$"%ModCredits".connect("pressed", self, "_credits_clicked")
 	$"%WorkshopUploader".connect("pressed", self, "_uploader_clicked")
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
+	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
+	
+	file_manager.setup_lists(self, "get_current_list", "apply_new_list")
+	file_manager.connect("file_saved", self, "_on_mod_imported")
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
 	
 	hide()
+
+
+func _on_mod_imported(_path: String):
+	var modGlobalPath = ProjectSettings.globalize_path(_path)
+	if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+		return
+
+	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
+	gdunzip.load(_path)
+	var modHash = ModLoader._hash_file(_path)
+	for modEntryPath in gdunzip.files:
+		var modSubFolder = modEntryPath.rsplit('/')[0]
+		var modEntryName = modEntryPath.get_file().to_lower()
+		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
+			var metaRes = ModLoader._checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
+			if metaRes != null:
+				var modInfo = [metaRes[0], modHash, metaRes[1]]
+				ModLoader.disabled_mod_names[modInfo[2].name] = true
+				ModLoader.all_mods.append(modInfo)
+				ModLoader.inactive_mods.append(modInfo)
+				modInfo.remove(0)
+				add_mod(modInfo)
+				refresh_list()
+				continue
 
 
 func adjust_ui(is_mobile):
@@ -104,9 +134,6 @@ func add_mod(mod):
 	_container.add_child(btn, true)
 	_container.add_child(toggle, true)
 	
-	var is_mod_active =  mod in ModLoader.active_mods
-	toggle.pressed = is_mod_active
-	
 	#Add button container to $mods
 	self.list_container.add_child(_container)
 	# Generate tab container
@@ -115,7 +142,8 @@ func add_mod(mod):
 
 	#Connect button
 	btn.connect("pressed", self, "_tab_clicked", [info])
-	toggle.connect("toggled", self, "_toggle_clicked", [mod, toggle, btn])
+	toggle.connect("toggled", self, "_toggle_update", [mod, toggle, btn])
+	_toggle_update(true, mod, toggle, btn)
 
 	#Populate mod info tab
 	var name = "Name: " + mod[1].friendly_name
@@ -138,6 +166,11 @@ func add_mod(mod):
 	#Populate mod options tab
 	#info.get_node("ScrollContainer/VBoxContainer").add_child()
 
+
+func refresh_list():
+	file_manager.refresh_applied_list()
+
+
 func show_menu(node:Node):
 	if current_mod != null:
 		current_mod.hide()
@@ -151,13 +184,22 @@ func _tab_clicked(node:Node):
 		show_menu(node)
 
 
-func _toggle_clicked(_button_pressed: bool, _mod, _toggle, _button):
-	var is_mod_active =  _mod in ModLoader.active_mods
+func _toggle_update(_button_pressed: bool, _mod, _toggle, _button):
+	var mod_name = _mod[1].name
+	mods[mod_name] = {
+		"active": _button_pressed,
+		"mod": _mod,
+		"toggle": _toggle,
+		"button": _button,
+	}
 	
-	$"%FileManager".current_list[_mod] = [_button_pressed, is_mod_active]
-	
+	var is_mod_active = _mod in ModLoader.active_mods
 	_button.add_color_override("font_color", Color("ff333b" if _button_pressed != is_mod_active else "ffffff"))
 	
+	_toggle.set_pressed_no_signal(_button_pressed)
+	
+	file_manager.save_list(get_current_list(), "_current_state")
+
 
 func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag:int = 1 ):
 	var _button = Button.new() if _is_button else CheckButton.new()
@@ -170,12 +212,14 @@ func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_
 	_button.add_color_override("font_color", Color("ffffff"))
 	return _button
 
+
 func generateLabel(text_gen, align):
 	var _label = Label.new()
 	_label.text = text_gen
 	_label.align = align
 	_label.autowrap = true
 	return _label
+
 
 func generateRichLabel(text_gen):
 	var _richLabel = load("res://modloader/ModdedRichText.gd").new()
@@ -188,6 +232,7 @@ func generateRichLabel(text_gen):
 	_richLabel.install_effect(rainFX)
 	_richLabel.install_effect(ghostFX)
 	return _richLabel
+
 
 func add_menu_from_node(menuNode):
 	var menuButton = load("res://SoupModOptions/MOTabBtn.gd").new()
@@ -204,3 +249,30 @@ func add_menu_from_node(menuNode):
 	$"%Tabs".add_child(menuButton)
 	menuButton.set_theme_type_variation("TabButton")
 	$"%MenuContainer".add_child(menuNode)
+
+
+func get_current_list() -> Dictionary:
+	var _saved_active_list := []
+	var _saved_inactive_list := []
+	
+	for mod_name in mods:
+		if mods[mod_name].active:
+			_saved_active_list.append(mod_name)
+		else:
+			_saved_inactive_list.append(mod_name)
+	
+	var _current_list = {"active": _saved_active_list, "inactive": _saved_inactive_list}
+	return _current_list
+
+
+func apply_new_list(list: Dictionary):
+	for mod_name in mods:
+		var entry = mods[mod_name]
+		if mod_name in list.active:
+			_toggle_update(true, entry.mod, entry.toggle, entry.button)
+		elif mod_name in list.inactive:
+			_toggle_update(false, entry.mod, entry.toggle, entry.button)
+
+
+func _on_apply_changes_pressed():
+	get_tree().quit()

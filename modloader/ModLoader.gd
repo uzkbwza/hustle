@@ -5,6 +5,9 @@ const CL_VERSION = "4.0.0"
 
 var _modZipFiles = []
 var active_mods = []
+var inactive_mods = []
+var all_mods = [] 
+var disabled_mod_names := {}
 var _savedObjects = [] # Things to keep to ensure they are not garbage collected
 var mods_w_depend = []
 var mods_w_overwrites = []
@@ -64,6 +67,7 @@ func _init():
 	active = true
 #	Global.VERSION += " Modded" 
 	
+	_load_disabled_mods()
 	#This script has to be installed before the mods or else it doesn't get extended
 	_loadMods()
 	print("----------------mods------loaded--------------------")
@@ -72,6 +76,19 @@ func _init():
 	
 	installScriptExtension("res://modloader/ModHashCheck.gd")
 	call_deferred("append_hash")
+
+
+func _load_disabled_mods():
+	disabled_mod_names = {}
+	var f = File.new()
+	if not f.file_exists("user://lists/mods/_current_state.ymdlist"):
+		return
+	f.open("user://lists/mods/_current_state.ymdlist", File.READ)
+	var data = f.get_var()
+	f.close()
+	for mod_name in data.get("inactive", []):
+		disabled_mod_names[mod_name] = true
+
 
 func append_hash():
 #	return
@@ -84,6 +101,7 @@ func append_hash():
 			Global.VERSION += "-" + ("%10x" % hash(h)).strip_edges()
 		else:
 			Global.VERSION = Global.VERSION.split(" Modded")[0]
+
 
 func _loadMods():
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
@@ -153,6 +171,13 @@ func _initMods():
 					if metaRes[1].name == "char_loader" and metaRes[1].id == "12345":
 						charLoaderModDetected = true
 						continue
+					
+					all_mods.append(modInfo)
+					if modInfo[2].name in disabled_mod_names:
+						inactive_mods.append(modInfo)
+						modInfo.remove(0)                   
+						continue
+					
 					if modInfo[2].requires == [""]: #If no dependencies, initialize mod
 						modInfo[0] = ResourceLoader.load(modInfo[0])
 						if modInfo[2].overwrites: #If overwrites characters
@@ -419,6 +444,7 @@ func loadSound(soundPath): # Just moved it over here so that it can be used by o
 func _hash_file(path):
 	var file = File.new()
 	var modZIPHash = file.get_md5(path)
+	file.close() # closing this, maybe causing leaks - vineraio
 	return modZIPHash
 	
 # Parses metadata

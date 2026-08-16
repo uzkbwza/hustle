@@ -4,32 +4,46 @@
 [ext_resource path="res://filemanager/FileManager.gd" type="Script" id=2]
 
 [node name="FileManager" type="VBoxContainer"]
-margin_right = 126.0
-margin_bottom = 143.0
+margin_right = 155.0
+margin_bottom = 211.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
+[node name="ImportFiles" type="Button" parent="."]
+unique_name_in_owner = true
+margin_right = 155.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Import Files"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 126.0
-margin_bottom = 49.0
+margin_top = 33.0
+margin_right = 155.0
+margin_bottom = 98.0
 alignment = 2
 
-[node name="Lists" type="OptionButton" parent="VBoxContainer"]
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 126.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
+margin_right = 155.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 32 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_type_variation = "ChallengeButton"
 
-[node name="ListEdit" type="LineEdit" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 33.0
+margin_right = 155.0
+margin_bottom = 65.0
+
+[node name="ListEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_top = 25.0
-margin_right = 126.0
-margin_bottom = 49.0
+margin_right = 122.0
+margin_bottom = 32.0
 rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -37,91 +51,133 @@ placeholder_text = "List Name"
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="Printer" type="Label" parent="VBoxContainer/ListEdit"]
+[node name="Printer" type="Label" parent="VBoxContainer/HBoxContainer/ListEdit"]
 unique_name_in_owner = true
-margin_left = -3.0
-margin_top = 119.0
-margin_right = 128.0
-margin_bottom = 269.0
+margin_top = 182.0
+margin_right = 155.0
+margin_bottom = 426.0
 size_flags_vertical = 5
-text = "asdadasd"
 autowrap = true
 
+[node name="SaveList" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 123.0
+margin_right = 155.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_vertical = 3
+text = "Save"
+
+[node name="Label" type="Label" parent="."]
+margin_top = 99.0
+margin_right = 155.0
+margin_bottom = 115.0
+rect_min_size = Vector2( 0, 16 )
+text = "Manage Selected"
+align = 1
+valign = 1
+
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 50.0
-margin_right = 126.0
-margin_bottom = 143.0
+margin_top = 116.0
+margin_right = 155.0
+margin_bottom = 247.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 62.0
-margin_bottom = 93.0
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 77.0
+margin_bottom = 131.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SaveList" type="Button" parent="HBoxContainer/VBoxContainer2"]
+[node name="ExportFile" type="Button" parent="HBoxContainer/VBoxContainer3"]
 unique_name_in_owner = true
-margin_right = 62.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 48, 0 )
+margin_right = 77.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Save List"
+disabled = true
+text = "Export File"
 
-[node name="DeleteList" type="Button" parent="HBoxContainer/VBoxContainer2"]
+[node name="ExportList" type="Button" parent="HBoxContainer/VBoxContainer3"]
 unique_name_in_owner = true
-margin_top = 31.0
-margin_right = 62.0
-margin_bottom = 61.0
-rect_min_size = Vector2( 48, 0 )
+margin_top = 33.0
+margin_right = 77.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+text = "Export List"
+
+[node name="ExportListed" type="Button" parent="HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 66.0
+margin_right = 77.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+text = "Export Listed"
+
+[node name="ExportFolder" type="Button" parent="HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 99.0
+margin_right = 77.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+text = "Export Folder"
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 78.0
+margin_right = 155.0
+margin_bottom = 131.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DeleteFile" type="Button" parent="HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_right = 77.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+text = "Delete File"
+
+[node name="DeleteList" type="Button" parent="HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_top = 33.0
+margin_right = 77.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 32, 32 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Delete List"
 
-[node name="ExportPack" type="Button" parent="HBoxContainer/VBoxContainer2"]
+[node name="DeleteListed" type="Button" parent="HBoxContainer/VBoxContainer4"]
 unique_name_in_owner = true
-margin_top = 62.0
-margin_right = 62.0
-margin_bottom = 93.0
-rect_min_size = Vector2( 48, 0 )
+margin_top = 66.0
+margin_right = 77.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 32, 32 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Export Pack"
+disabled = true
+text = "Delete Listed"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 63.0
-margin_right = 126.0
-margin_bottom = 93.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Import" type="Button" parent="HBoxContainer/VBoxContainer3"]
+[node name="DeleteFolder" type="Button" parent="HBoxContainer/VBoxContainer4"]
 unique_name_in_owner = true
-margin_right = 63.0
-margin_bottom = 46.0
-rect_min_size = Vector2( 48, 0 )
+margin_top = 99.0
+margin_right = 77.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 32, 32 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Import"
-
-[node name="Export" type="Button" parent="HBoxContainer/VBoxContainer3"]
-unique_name_in_owner = true
-margin_top = 47.0
-margin_right = 63.0
-margin_bottom = 93.0
-rect_min_size = Vector2( 48, 0 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "Export "
-
-[node name="OpenFolder" type="Button" parent="HBoxContainer/VBoxContainer3"]
-unique_name_in_owner = true
-visible = false
-margin_top = 62.0
-margin_right = 63.0
-margin_bottom = 93.0
-rect_min_size = Vector2( 48, 0 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "Delete"
+disabled = true
+text = "Delete Folder"

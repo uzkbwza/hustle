@@ -44,9 +44,10 @@ func _add_char_loader_warning():
 
 #Calls function from ModLoaderMenu.gd to populate list of mods
 func _populate_mod_menu(menu):
-	for mod in ModLoader.active_mods:
+	for mod in ModLoader.all_mods:
 		menu.add_mod(mod)
-	
+	menu.refresh_list()
+
 func _addModList():
 	# add the mod list container
 	var list = addContainer("ModListContainer", "Mod List")
