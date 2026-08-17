@@ -509,6 +509,7 @@ SteamLobby="*res://cl_port/SteamLobby.gd"
 Custom="*res://Custom.gd"
 Hotkeys="*res://Hotkeys.gd"
 ModOverride="*res://ModOverride.gd"
+BorderManager="*res://bordermanager/BorderManager.tscn"
 
 [debug]
 

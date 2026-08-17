@@ -7,7 +7,7 @@ func _ready():
 	$"%ForceAltUIButton".connect("toggled", self, "set_global_setting", ["force_alt_ui"])
 	$"%ForceAltUIButton".set_pressed_no_signal(Global.force_alt_ui)
 	
-	Global.connect("setting_changed", self, "on_setting_changed")
+	Global.connect("option_changed", self, "on_option_changed")
 
 
 func show():
