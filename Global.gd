@@ -3,7 +3,11 @@ extends Node
 signal nag_window()
 signal mobile_ui_changed(mobile)
 
-var VERSION = "1.10.0-steam"
+signal option_changed(option, value)
+
+
+var VERSION = "1.11.0"
+var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
 const STYLE_SAVE_FEATURE_ENABLED = true
@@ -118,6 +122,8 @@ var ui_hidden = false
 
 var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
 var is_mobile_device = OS.has_feature("mobile")
+var force_alt_ui = false setget set_force_alt_ui
+
 
 var active_sfx_overrides = {}
 
@@ -222,9 +228,17 @@ func _input(event):
 		# as opposed to `mobile_ui = !mobile_ui` so the signal triggers
 
 
-func set_mobile_ui(value):
+func set_mobile_ui(value :bool):
 	mobile_ui = value
-	emit_signal("mobile_ui_changed", mobile_ui)
+	emit_signal("mobile_ui_changed", value)
+
+
+func set_force_alt_ui(value :bool):
+	force_alt_ui = value
+	emit_signal("option_changed", "force_alt_ui", value)
+	set_mobile_ui(is_mobile_device != force_alt_ui)
+	# my genuine reaction when gdscript doesn't have an xor keyword
+
 
 
 func get_ghost_speed_modifier():
@@ -247,6 +261,7 @@ func get_playback_speed_factor() -> float:
 	return 1.0
 
 func _ready():
+	connect("option_changed", self, "save_options_after_change")
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
@@ -394,6 +409,11 @@ func set_light_mode(on):
 	light_mode = on
 	save_options()
 
+
+func save_options_after_change(_option, _value):
+	call_deferred("save_options")
+
+
 func save_options():
 	save_player_data({
 		"options": {
@@ -421,6 +441,7 @@ func save_options():
 			"enable_custom_particles": enable_custom_particles,
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
 			"speed_lines_enabled": speed_lines_enabled,
+			"force_alt_ui": force_alt_ui,
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 			"enable_replay_backups": enable_replay_backups,
