@@ -123,6 +123,7 @@ var ui_hidden = false
 var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
 var is_mobile_device = OS.has_feature("mobile")
 var force_alt_ui = false setget set_force_alt_ui
+var show_border_art = true setget set_show_border_art
 
 
 var active_sfx_overrides = {}
@@ -238,6 +239,11 @@ func set_force_alt_ui(value :bool):
 	emit_signal("option_changed", "force_alt_ui", value)
 	set_mobile_ui(is_mobile_device != force_alt_ui)
 	# my genuine reaction when gdscript doesn't have an xor keyword
+
+
+func set_show_border_art(value :bool):
+	show_border_art = value
+	emit_signal("option_changed", "show_border_art", value)
 
 
 
@@ -441,6 +447,7 @@ func save_options():
 			"enable_custom_particles": enable_custom_particles,
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
 			"speed_lines_enabled": speed_lines_enabled,
+			"show_border_art": show_border_art,
 			"force_alt_ui": force_alt_ui,
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,

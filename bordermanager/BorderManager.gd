@@ -4,15 +4,27 @@ extends Viewport
 
 func _ready():
 	get_tree().connect("screen_resized", self, "_on_screen_resized")
+	Global.connect("option_changed", self, "_on_option_changed")
 	_on_screen_resized()
+	_on_option_changed("show_border_art", Global.show_border_art)
 
+
+
+func _on_option_changed(option, value):
+	if option == "show_border_art":
+		$BorderArt.visible = value
 
 
 
 func _on_screen_resized():
-	size = OS.window_size
-	
+	var win_size = OS.window_size
+	var target_aspect = Global.RESOLUTION.x / Global.RESOLUTION.y
+	var current_aspect = win_size.x / win_size.y
+	if current_aspect > target_aspect:
+		size = Vector2(Global.RESOLUTION.y * current_aspect, Global.RESOLUTION.y)
+	else:
+		size = Vector2(Global.RESOLUTION.x, Global.RESOLUTION.x * (1/current_aspect))
 	VisualServer.viewport_set_size(get_viewport_rid(), size.x, size.y)
-	VisualServer.viewport_attach_to_screen(get_viewport_rid(), Rect2(Vector2.ZERO, size))
+	VisualServer.viewport_attach_to_screen(get_viewport_rid(), Rect2(Vector2.ZERO, win_size))
 	VisualServer.black_bars_set_margins(0, 0, 0, 0)
 

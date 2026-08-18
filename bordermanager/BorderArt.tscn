@@ -1,0 +1,90 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://bordermanager/images/border_portrait_bg_transparent.png" type="Texture" id=1]
+[ext_resource path="res://bordermanager/images/border_ninja.png" type="Texture" id=2]
+[ext_resource path="res://bordermanager/images/border_cowboy.png" type="Texture" id=3]
+[ext_resource path="res://bordermanager/border_portrait_shader.gdshader" type="Shader" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 4 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 4 )
+shader_param/use_extra_color_1 = false
+shader_param/use_extra_color_2 = false
+shader_param/extra_replace_color_1 = Color( 1, 0, 1, 1 )
+shader_param/extra_replace_color_2 = Color( 1, 0, 1, 1 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/extra_color_1 = Color( 1, 1, 1, 1 )
+shader_param/extra_color_2 = Color( 1, 1, 1, 1 )
+shader_param/max_color_distance = 0.01
+shader_param/super_dim = false
+shader_param/use_outline = false
+shader_param/outline_color = Color( 0, 0, 0, 1 )
+
+[node name="BorderArt" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="LeftSide" type="Control" parent="."]
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_right = -320.0
+
+[node name="Background" type="TextureRect" parent="LeftSide"]
+modulate = Color( 0.152941, 0.133333, 0.290196, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = 1.0
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 7
+
+[node name="Character" type="TextureRect" parent="LeftSide"]
+material = SubResource( 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = 1.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 4
+
+[node name="RightSide" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 320.0
+
+[node name="Background" type="TextureRect" parent="RightSide"]
+modulate = Color( 0.294118, 0.0823529, 0.0901961, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = 1.0
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 7
+
+[node name="Character" type="TextureRect" parent="RightSide"]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = 1.0
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 4
+flip_h = true
