@@ -1,7 +1,6 @@
 extends Viewport
 
 
-
 func _ready():
 	get_tree().connect("screen_resized", self, "_on_screen_resized")
 	Global.connect("option_changed", self, "_on_option_changed")
@@ -27,4 +26,27 @@ func _on_screen_resized():
 	VisualServer.viewport_set_size(get_viewport_rid(), size.x, size.y)
 	VisualServer.viewport_attach_to_screen(get_viewport_rid(), Rect2(Vector2.ZERO, win_size))
 	VisualServer.black_bars_set_margins(0, 0, 0, 0)
+
+
+
+func show_character_art():
+	$BorderArt.show_character_art()
+
+func show_menu_art():
+	$BorderArt.show_menu_art()
+
+
+
+func style_params(right_side, params):
+	$BorderArt.style_params(right_side, params)
+
+func apply_style(right_side, style):
+	$BorderArt.apply_style(right_side, style)
+
+func set_border_background(right_side, tex):
+	$BorderArt.set_border_background(right_side, tex)
+	
+func set_border_art(right_side, tex):
+	$BorderArt.set_border_art(right_side, tex)
+
 

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://bordermanager/images/border_portrait_bg_transparent.png" type="Texture" id=1]
 [ext_resource path="res://bordermanager/images/border_ninja.png" type="Texture" id=2]
 [ext_resource path="res://bordermanager/images/border_cowboy.png" type="Texture" id=3]
 [ext_resource path="res://bordermanager/border_portrait_shader.gdshader" type="Shader" id=4]
+[ext_resource path="res://bordermanager/BorderArt.gd" type="Script" id=5]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
@@ -36,13 +37,16 @@ shader_param/outline_color = Color( 0, 0, 0, 1 )
 [node name="BorderArt" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 5 )
 
-[node name="LeftSide" type="Control" parent="."]
+[node name="LeftChar" type="Control" parent="."]
+visible = false
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_right = -320.0
 
-[node name="Background" type="TextureRect" parent="LeftSide"]
+[node name="BackgroundLeft" type="TextureRect" parent="LeftChar"]
+unique_name_in_owner = true
 modulate = Color( 0.152941, 0.133333, 0.290196, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -52,7 +56,8 @@ texture = ExtResource( 1 )
 expand = true
 stretch_mode = 7
 
-[node name="Character" type="TextureRect" parent="LeftSide"]
+[node name="CharacterLeft" type="TextureRect" parent="LeftChar"]
+unique_name_in_owner = true
 material = SubResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -62,13 +67,15 @@ texture = ExtResource( 3 )
 expand = true
 stretch_mode = 4
 
-[node name="RightSide" type="Control" parent="."]
+[node name="RightChar" type="Control" parent="."]
+visible = false
 anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 320.0
 
-[node name="Background" type="TextureRect" parent="RightSide"]
+[node name="BackgroundRight" type="TextureRect" parent="RightChar"]
+unique_name_in_owner = true
 modulate = Color( 0.294118, 0.0823529, 0.0901961, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -78,7 +85,8 @@ texture = ExtResource( 1 )
 expand = true
 stretch_mode = 7
 
-[node name="Character" type="TextureRect" parent="RightSide"]
+[node name="CharacterRight" type="TextureRect" parent="RightChar"]
+unique_name_in_owner = true
 material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -88,3 +96,12 @@ texture = ExtResource( 2 )
 expand = true
 stretch_mode = 4
 flip_h = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -8.0
+margin_top = -8.0
+margin_right = 8.0
+margin_bottom = 8.0
+color = Color( 0.0392157, 0.113725, 0.227451, 1 )

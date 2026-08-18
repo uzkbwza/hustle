@@ -83,7 +83,11 @@ func get_current_limb_sprite_node_for(limb_name: String):
 		return shooting_arm
 	return .get_current_limb_sprite_node_for(limb_name)
 
+
+
 func init(pos=null):
+	if randi() % 65536 == 0:
+		border_portrait = epic_horse_moment
 	.init(pos)
 	bullets_left = 6
 	HOLD_FORCE_STATES["QuickerDraw"] = "SlowHolster"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=201 format=2]
+[gd_scene load_steps=202 format=2]
 
 [ext_resource path="res://characters/BaseChar.gd" type="Script" id=1]
 [ext_resource path="res://characters/stickman/sprites/idle.png" type="Texture" id=2]
@@ -199,6 +199,7 @@
 [ext_resource path="res://sound/common/ex2.wav" type="AudioStream" id=197]
 [ext_resource path="res://characters/states/Frozen.gd" type="Script" id=198]
 [ext_resource path="res://characters/FighterHooks.gd" type="Script" id=199]
+[ext_resource path="res://bordermanager/images/border_portrait_bg_transparent.png" type="Texture" id=200]
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -435,6 +436,8 @@ use_extra_color_1 = false
 extra_color_1 = Color( 1, 0, 1, 1 )
 use_extra_color_2 = false
 extra_color_2 = Color( 1, 0, 1, 1 )
+border_portrait = null
+border_background = ExtResource( 200 )
 
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )

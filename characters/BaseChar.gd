@@ -224,6 +224,8 @@ export var extra_color_1 = Color("ff00ff")
 export var use_extra_color_2 = false
 export var extra_color_2 = Color("ff00ff")
 
+export (Texture) var border_portrait
+export (Texture) var border_background
 
 
 var global_damage_modifier = "1.0"

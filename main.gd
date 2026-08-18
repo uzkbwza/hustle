@@ -42,6 +42,8 @@ func _enter_tree():
 	pass
 
 func _ready():
+	BorderManager.show_menu_art()
+	
 	# Modding hook surface (app/match lifecycle). Scene-embedded in Main.tscn;
 	# gated on ModLoader.active — stays null when mods are off (fire-sites skip).
 	# See MainHooks.gd.
