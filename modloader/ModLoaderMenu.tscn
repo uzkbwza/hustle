@@ -1,103 +1,130 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
 [ext_resource path="res://modloader/ModLoaderMenu.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=4]
-[ext_resource path="res://filemanager/FileManager.tscn" type="PackedScene" id=5]
 
 [node name="Window" instance=ExtResource( 1 )]
-margin_left = -259.0
-margin_top = -100.0
-margin_right = 141.0
-margin_bottom = 120.0
+margin_left = -237.5
+margin_top = -130.0
+margin_right = 237.5
+margin_bottom = 130.0
 script = ExtResource( 2 )
 
 [node name="VBoxContainer" parent="." index="0"]
-margin_right = 399.0
-margin_bottom = 219.0
+margin_right = 474.0
+margin_bottom = 259.0
 
 [node name="TitleBar" parent="VBoxContainer" index="0"]
-margin_right = 398.0
+margin_right = 473.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 32 )
+size_flags_vertical = 3
 
 [node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 49.0
+margin_top = 0.0
+margin_right = 151.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Mod List"
+valign = 1
 
 [node name="Close" type="Button" parent="VBoxContainer/TitleBar" index="1"]
 unique_name_in_owner = true
-margin_top = -1.0
 margin_right = 48.0
-margin_bottom = 11.0
+margin_bottom = 32.0
 rect_min_size = Vector2( 48, 0 )
+size_flags_vertical = 3
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Close"
-flat = true
 
-[node name="ModsLocation" type="Button" parent="VBoxContainer/TitleBar" index="2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar" index="2"]
+margin_left = 49.0
+margin_right = 473.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="ApplyChanges" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer" index="0"]
 unique_name_in_owner = true
-margin_left = 310.0
-margin_top = -2.0
-margin_right = 399.0
-margin_bottom = 10.0
-rect_min_size = Vector2( 72, 0 )
+margin_left = 103.0
+margin_right = 205.0
+margin_bottom = 32.0
+size_flags_vertical = 3
+custom_colors/font_color = Color( 1, 0.2, 0.231373, 1 )
+custom_colors/font_color_hover = Color( 1, 1, 1, 1 )
+text = "Apply Changes (Quit)"
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="OpenFileManager" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer" index="1"]
+unique_name_in_owner = true
+margin_left = 206.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Open Importer & Manager"
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="ModsLocation" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer" index="2"]
+unique_name_in_owner = true
+margin_left = 335.0
+margin_right = 424.0
+margin_bottom = 32.0
+size_flags_vertical = 3
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Open Mods Folder"
-flat = true
-
-[node name="ApplyChanges" type="Button" parent="VBoxContainer/TitleBar" index="3"]
-unique_name_in_owner = true
-margin_left = -1.0
-margin_top = -37.0
-margin_right = 101.0
-margin_bottom = -5.0
-rect_min_size = Vector2( 72, 32 )
-custom_colors/font_color = Color( 1, 0.2, 0.231373, 1 )
-custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
-text = "Apply Changes (Quit)"
-
-[node name="FileManager" parent="VBoxContainer/TitleBar" index="4" instance=ExtResource( 5 )]
-unique_name_in_owner = true
-margin_left = 408.0
-margin_top = -42.0
-margin_right = 563.0
-margin_bottom = 205.0
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="Contents" parent="VBoxContainer" index="1"]
-margin_right = 398.0
-margin_bottom = 205.0
+margin_top = 33.0
+margin_right = 473.0
+margin_bottom = 225.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents" index="0"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 397.0
-margin_bottom = 194.0
+margin_right = 472.0
+margin_bottom = 191.0
 size_flags_horizontal = 3
 theme = ExtResource( 3 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/Contents/HBoxContainer" index="0"]
-margin_right = 120.0
-margin_bottom = 193.0
-rect_min_size = Vector2( 120, 0 )
+margin_right = 150.0
+margin_bottom = 190.0
+rect_min_size = Vector2( 150, 0 )
 size_flags_stretch_ratio = 0.4
 theme = ExtResource( 3 )
 scroll_horizontal_enabled = false
 
 [node name="Mods" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/ScrollContainer" index="0"]
 unique_name_in_owner = true
-margin_right = 120.0
+margin_right = 150.0
 rect_clip_content = true
 size_flags_horizontal = 3
 
 [node name="VScrollBar" type="VSeparator" parent="VBoxContainer/Contents/HBoxContainer" index="1"]
-margin_left = 121.0
-margin_right = 125.0
-margin_bottom = 193.0
+margin_left = 151.0
+margin_right = 155.0
+margin_bottom = 190.0
 
 [node name="ModInfoContainer" type="PanelContainer" parent="VBoxContainer/Contents/HBoxContainer" index="2"]
 unique_name_in_owner = true
-margin_left = 126.0
-margin_right = 396.0
-margin_bottom = 193.0
+margin_left = 156.0
+margin_right = 471.0
+margin_bottom = 190.0
 rect_min_size = Vector2( 0, 190 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -105,8 +132,8 @@ size_flags_vertical = 3
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/Contents/HBoxContainer/ModInfoContainer" index="0"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 269.0
-margin_bottom = 192.0
+margin_right = 314.0
+margin_bottom = 189.0
 size_flags_horizontal = 3
 tab_align = 0
 
@@ -117,36 +144,49 @@ margin_top = 11.0
 size_flags_horizontal = 3
 
 [node name="Panel" type="Panel" parent="VBoxContainer" index="2"]
-margin_top = 206.0
-margin_right = 398.0
-margin_bottom = 218.0
-rect_min_size = Vector2( 0, 12 )
+margin_top = 226.0
+margin_right = 473.0
+margin_bottom = 258.0
+rect_min_size = Vector2( 0, 32 )
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Panel" index="0"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="0"]
+[node name="Sorter" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="0"]
 unique_name_in_owner = true
-margin_right = 132.0
-margin_bottom = 12.0
+margin_right = 64.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "SORT: ALL"
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
+unique_name_in_owner = true
+margin_left = 65.0
+margin_right = 200.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "ModLoader Credits"
 
-[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
+[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
 unique_name_in_owner = true
-margin_left = 133.0
-margin_right = 265.0
-margin_bottom = 12.0
+margin_left = 201.0
+margin_right = 336.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Visit Steam Workshop"
 
-[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
+[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="3"]
 unique_name_in_owner = true
-margin_left = 266.0
-margin_right = 398.0
-margin_bottom = 12.0
+margin_left = 337.0
+margin_right = 473.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Upload to Steam Workshop"
 

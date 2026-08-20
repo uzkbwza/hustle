@@ -125,7 +125,6 @@ var is_mobile_device = OS.has_feature("mobile")
 var force_alt_ui = false setget set_force_alt_ui
 var show_border_art = true setget set_show_border_art
 
-
 var active_sfx_overrides = {}
 
 var mods_loaded = false

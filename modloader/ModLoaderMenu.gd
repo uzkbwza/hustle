@@ -11,9 +11,12 @@ var userdata := {}
 var late_inited = false
 var needs_to_save = false
 
+enum Sort { ALL, ON, OFF }
+var cur_sort = Sort.ALL
+
+onready var file_manager := get_tree().current_scene.get_node("%FileManager")
 onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
 onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
-onready var file_manager = $"%FileManager"
 
 
 # Called when the node enters the scene tree for the first time.
@@ -28,9 +31,20 @@ func _ready():
 	$"%WorkshopUploader".connect("pressed", self, "_uploader_clicked")
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
+	$"%Sorter".connect("pressed", self, "_on_sorter_pressed")
 	
-	file_manager.setup_lists(self, "get_current_list", "apply_new_list")
-	file_manager.connect("file_saved", self, "_on_mod_imported")
+	file_manager.setup(
+		"mods", 
+		[".zip", ".ymd"], 
+		self, 
+		"get_current_list", 
+		"apply_new_list", 
+		"on_mod_folder_updated", 
+		"_sort_mod_entries",
+		$"%Close", 
+		$"%OpenFileManager", 
+		true
+		)
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
@@ -38,7 +52,23 @@ func _ready():
 	hide()
 
 
-func _on_mod_imported(_path: String):
+func _on_sorter_pressed():
+	var sorter_text
+	match cur_sort:
+		Sort.ALL: 
+			cur_sort = Sort.ON
+			sorter_text = "Sort: ON"
+		Sort.ON: 
+			cur_sort = Sort.OFF
+			sorter_text = "Sort: OFF"
+		Sort.OFF: 
+			cur_sort = Sort.ALL
+			sorter_text = "Sort: ALL"
+	$"%Sorter".text = sorter_text
+	_sort_mod_buttons()
+
+
+func on_mod_folder_updated(_path: String, _deleted: bool):
 	var modGlobalPath = ProjectSettings.globalize_path(_path)
 	if !ProjectSettings.load_resource_pack(modGlobalPath, true):
 		return
@@ -53,12 +83,15 @@ func _on_mod_imported(_path: String):
 			var metaRes = ModLoader._checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
 			if metaRes != null:
 				var modInfo = [metaRes[0], modHash, metaRes[1]]
+				modInfo[2].zip_path = _path
+				ModLoader.zips_by_name[modInfo[2].name] = _path
 				ModLoader.disabled_mod_names[modInfo[2].name] = true
 				ModLoader.all_mods.append(modInfo)
 				ModLoader.inactive_mods.append(modInfo)
 				modInfo.remove(0)
 				add_mod(modInfo)
-				refresh_list()
+				file_manager._refresh_lists_menu()
+				_sort_mod_buttons()
 				continue
 
 
@@ -141,9 +174,9 @@ func add_mod(mod):
 	self.info_container.add_child(info)
 
 	#Connect button
-	btn.connect("pressed", self, "_tab_clicked", [info])
-	toggle.connect("toggled", self, "_toggle_update", [mod, toggle, btn])
-	_toggle_update(true, mod, toggle, btn)
+	btn.connect("pressed", self, "_tab_clicked", [info, mod[1].zip_path])
+	toggle.connect("toggled", self, "_on_toggle_pressed", [mod, toggle, btn])
+	_set_toggle_state(true, mod, toggle, btn)
 
 	#Populate mod info tab
 	var name = "Name: " + mod[1].friendly_name
@@ -167,10 +200,6 @@ func add_mod(mod):
 	#info.get_node("ScrollContainer/VBoxContainer").add_child()
 
 
-func refresh_list():
-	file_manager.refresh_applied_list()
-
-
 func show_menu(node:Node):
 	if current_mod != null:
 		current_mod.hide()
@@ -179,26 +208,67 @@ func show_menu(node:Node):
 	#node.tab_btn.pressed = true
 	current_mod = node
 
-func _tab_clicked(node:Node):
+func _tab_clicked(node:Node, _zip_path:String):
 	if current_mod != node:
+		file_manager.cur_item_path = _zip_path
 		show_menu(node)
 
 
-func _toggle_update(_button_pressed: bool, _mod, _toggle, _button):
+# Signal handler for a human actually clicking a toggle. This is the
+# only path that should persist anything — it updates the UI/mods dict
+# AND saves the change to the currently selected list (or "unnamed" if
+# none is selected).
+func _on_toggle_pressed(_button_pressed: bool, _mod, _toggle, _button):
+	_set_toggle_state(_button_pressed, _mod, _toggle, _button)
+	var idx = file_manager.option_button.selected
+	if idx >= 0 and idx < file_manager.loaded_lists.size():
+		file_manager.save_current_list(file_manager.loaded_lists[idx].list_name)
+	else:
+		file_manager.save_current_list("")
+
+
+# Pure UI/state sync — no saving, no calling back into file_manager.
+# Safe to call from add_mod() (initial setup) and apply_new_list()
+# (restoring saved state) without risk of feeding back into a save
+# that re-triggers a restore that re-triggers apply_new_list again.
+func _set_toggle_state(_button_pressed: bool, _mod, _toggle, _button):
 	var mod_name = _mod[1].name
 	mods[mod_name] = {
 		"active": _button_pressed,
 		"mod": _mod,
 		"toggle": _toggle,
 		"button": _button,
+		"parent": _button.get_parent()
 	}
 	
 	var is_mod_active = _mod in ModLoader.active_mods
 	_button.add_color_override("font_color", Color("ff333b" if _button_pressed != is_mod_active else "ffffff"))
 	
 	_toggle.set_pressed_no_signal(_button_pressed)
+
+
+func _sort_mod_buttons():
+	var entries = mods.values()
+	entries = file_manager.sort_data(entries)
+	for i in range(entries.size()):
+		var button_parent = entries[i].parent
+		button_parent.get_parent().move_child(button_parent, i)
+
+
+func _sort_mod_entries(a, b):
+	var a_name = a.mod[1].name.to_lower()
+	var b_name = b.mod[1].name.to_lower()
 	
-	file_manager.save_list(get_current_list(), "_current_state")
+	if cur_sort == Sort.ALL:
+		return a_name < b_name
+	
+	if a.active != b.active:
+		if cur_sort == Sort.ON:
+			return a.active
+		if cur_sort == Sort.OFF:
+			return not a.active
+	
+	return a_name < b_name
 
 
 func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag:int = 1 ):
@@ -269,9 +339,9 @@ func apply_new_list(list: Dictionary):
 	for mod_name in mods:
 		var entry = mods[mod_name]
 		if mod_name in list.active:
-			_toggle_update(true, entry.mod, entry.toggle, entry.button)
+			_set_toggle_state(true, entry.mod, entry.toggle, entry.button)
 		elif mod_name in list.inactive:
-			_toggle_update(false, entry.mod, entry.toggle, entry.button)
+			_set_toggle_state(false, entry.mod, entry.toggle, entry.button)
 
 
 func _on_apply_changes_pressed():

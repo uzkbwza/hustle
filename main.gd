@@ -106,6 +106,7 @@ func _ready():
 	$"%P1ShowStyle".connect("toggled", self, "_on_show_style_toggled", [1])
 	$"%P2ShowStyle".connect("toggled", self, "_on_show_style_toggled", [2])
 	ReplayManager.replaying_ingame = false
+	
 #	SteamHustle.print_all_achievements()
 
 	########################### charloader
@@ -874,6 +875,7 @@ func _on_ghost_speed_changed(_value):
 func _on_playback_requested():
 	ReplayManager.playback = true
 	setup_game(singleplayer, match_data)
+
 
 func _on_ReplayName_text_entered(_new_text):
 	save_replay()

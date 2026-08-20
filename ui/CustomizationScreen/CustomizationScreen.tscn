@@ -60,25 +60,37 @@ text = "save"
 unique_name_in_owner = true
 margin_left = 220.0
 margin_top = 1.0
-margin_right = 393.0
+margin_right = 264.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 clip_text = true
 
 [node name="WorkshopButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 394.0
-margin_right = 492.0
+margin_left = 265.0
+margin_right = 363.0
 margin_bottom = 13.0
 disabled = true
 text = "upload to workshop"
 
 [node name="WorkshopButton2" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 493.0
-margin_right = 566.0
+margin_left = 364.0
+margin_right = 437.0
 margin_bottom = 13.0
 text = "visit workshop"
+
+[node name="OpenFileManager" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 438.0
+margin_right = 566.0
+margin_bottom = 13.0
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Open Importer & Manager"
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
@@ -98,7 +110,7 @@ scroll_horizontal_enabled = false
 
 [node name="StyleCreditsList" type="VBoxContainer" parent="StyleCreditsScroll"]
 unique_name_in_owner = true
-margin_right = 103.0
+margin_right = 109.0
 size_flags_horizontal = 3
 custom_constants/separation = 4
 
@@ -120,6 +132,8 @@ margin_bottom = 175.0
 
 [node name="CharacterButtonContainer" type="HBoxContainer" parent="ScrollContainer"]
 unique_name_in_owner = true
+margin_right = 365.0
+margin_bottom = 61.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -140,7 +154,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/ScrollContainer2"]
 margin_right = 201.0
-margin_bottom = 1419.0
+margin_bottom = 1687.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 5
@@ -297,19 +311,19 @@ margin_bottom = 0.0
 [node name="HitsparkSection" type="VBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
 margin_top = 47.0
 margin_right = 201.0
-margin_bottom = 107.0
+margin_bottom = 108.0
 script = ExtResource( 8 )
 section_title = "Hit Spark"
 
 [node name="HitsparkConfigCopyPasteRow" type="HBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer/HitsparkSection"]
 unique_name_in_owner = true
 margin_right = 201.0
-margin_bottom = 0.0
 
 [node name="HitsparkTabs" type="TabContainer" parent="Panel/ScrollContainer2/VBoxContainer/HitsparkSection"]
 unique_name_in_owner = true
+margin_top = 1.0
 margin_right = 201.0
-margin_bottom = 60.0
+margin_bottom = 61.0
 rect_min_size = Vector2( 0, 60 )
 tab_align = 0
 
@@ -388,9 +402,9 @@ margin_right = 201.0
 margin_bottom = 1389.0
 
 [node name="AuraSection" type="VBoxContainer" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 112.0
+margin_top = 113.0
 margin_right = 201.0
-margin_bottom = 1488.0
+margin_bottom = 1662.0
 script = ExtResource( 8 )
 section_title = "Aura"
 
@@ -431,12 +445,12 @@ margin_bottom = 41.0
 unique_name_in_owner = true
 margin_top = 42.0
 margin_right = 201.0
-margin_bottom = 1376.0
+margin_bottom = 1549.0
 
 [node name="BottomSpacer" type="Control" parent="Panel/ScrollContainer2/VBoxContainer"]
-margin_top = 1493.0
+margin_top = 1667.0
 margin_right = 201.0
-margin_bottom = 1513.0
+margin_bottom = 1687.0
 rect_min_size = Vector2( 0, 20 )
 
 [node name="MovingSprite" type="Sprite" parent="."]

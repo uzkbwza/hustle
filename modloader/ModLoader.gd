@@ -67,6 +67,7 @@ func _init():
 	active = true
 #	Global.VERSION += " Modded" 
 	
+	_delete_pending_files()
 	_load_disabled_mods()
 	#This script has to be installed before the mods or else it doesn't get extended
 	_loadMods()
@@ -76,6 +77,23 @@ func _init():
 	
 	installScriptExtension("res://modloader/ModHashCheck.gd")
 	call_deferred("append_hash")
+
+
+func _delete_pending_files():
+	var dir = Directory.new()
+	var file = File.new()
+	var save_path = "user://lists/files_to_delete.ymdlist"
+	if file.file_exists(save_path):
+		file.open(save_path, File.READ)
+		var data = file.get_var()
+		for path in data:
+			var err = dir.remove(path)
+	file.close()
+	
+	var file2 = File.new()
+	file2.open("user://lists/files_to_delete.ymdlist",File.WRITE)
+	file2.store_var([], true)
+	file2.close()
 
 
 func _load_disabled_mods():
