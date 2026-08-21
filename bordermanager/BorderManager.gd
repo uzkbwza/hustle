@@ -37,8 +37,8 @@ func show_menu_art():
 
 
 
-func style_params(id, params):
-	$BorderArt.style_params(id, params)
+func set_style_params(id, params):
+	$BorderArt.set_style_params(id, params)
 
 func apply_style(id, style):
 	$BorderArt.apply_style(id, style)

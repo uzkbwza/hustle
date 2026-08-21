@@ -12,9 +12,16 @@ onready var bg_texture_rects = {
 
 
 
-func style_params(id, params):
-	
-	pass
+func set_style_params(id, params):
+	if char_texture_rects.has(id):
+		if not (params is Dictionary):
+			params = {}
+		var material :ShaderMaterial = char_texture_rects[id].get_material()
+		material.set_shader_param("use_extra_color_1", params.get("use_extra_color_1", false))
+		material.set_shader_param("use_extra_color_2", params.get("use_extra_color_2", false))
+		material.set_shader_param("extra_replace_color_1", params.get("extra_replace_color_1", Color.magenta))
+		material.set_shader_param("extra_replace_color_2", params.get("extra_replace_color_2", Color.magenta))
+
 
 
 func apply_style(id, style):

@@ -478,6 +478,18 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2._fire_init_hook()
 	
 	if not is_ghost:
+		BorderManager.set_style_params(1, {
+			"extra_replace_color_1": p1.extra_color_1,
+			"extra_replace_color_2": p1.extra_color_2,
+			"use_extra_color_1": p1.use_extra_color_1,
+			"use_extra_color_2": p1.use_extra_color_2,
+			})
+		BorderManager.set_style_params(2, {
+			"extra_replace_color_1": p2.extra_color_1,
+			"extra_replace_color_2": p2.extra_color_2,
+			"use_extra_color_1": p2.use_extra_color_1,
+			"use_extra_color_2": p2.use_extra_color_2,
+			})
 		BorderManager.set_border_background(1, p1.border_background)
 		BorderManager.set_border_background(2, p2.border_background)
 		BorderManager.set_border_art(1, p1.border_portrait)
