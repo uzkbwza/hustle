@@ -251,7 +251,6 @@ func copy_to(game: Game):
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
 
-
 func _on_super_started(ticks, player):
 	if is_ghost:
 		return

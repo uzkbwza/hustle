@@ -179,6 +179,7 @@ func are_missiles_active():
 func copy_to(f: BaseObj):
 	.copy_to(f)
 	f.armor_active = armor_active
+	f.super_armor_installed = super_armor_installed
 	f.magnet_ticks_left = magnet_ticks_left
 	f.flying_dir = flying_dir
 	if flying_dir != null:
