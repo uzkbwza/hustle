@@ -59,6 +59,7 @@ func _input(event):
 			_on_submit_pressed()
 
 func _ready():
+	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	$"%SelectButton".connect("pressed", self, "_on_submit_pressed")
 	_rebuild_select_button_shortcut()
 	# Track rebinds so the tooltip's key prefix updates live when the user
@@ -240,7 +241,6 @@ func reset():
 	last_button = null
 	forfeit = false
 	buttons = []
-	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
 
 

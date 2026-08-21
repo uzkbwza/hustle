@@ -37,16 +37,16 @@ func show_menu_art():
 
 
 
-func style_params(right_side, params):
-	$BorderArt.style_params(right_side, params)
+func style_params(id, params):
+	$BorderArt.style_params(id, params)
 
-func apply_style(right_side, style):
-	$BorderArt.apply_style(right_side, style)
+func apply_style(id, style):
+	$BorderArt.apply_style(id, style)
 
-func set_border_background(right_side, tex):
-	$BorderArt.set_border_background(right_side, tex)
+func set_border_background(id, tex):
+	$BorderArt.set_border_background(id, tex)
 	
-func set_border_art(right_side, tex):
-	$BorderArt.set_border_art(right_side, tex)
+func set_border_art(id, tex):
+	$BorderArt.set_border_art(id, tex)
 
 

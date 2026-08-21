@@ -18,7 +18,7 @@ var STARTED = false
 var WORKSHOP_ENABLED = true
 
 func _enter_tree():
-	if "steam" in Global.VERSION and !Global.winws_detected:
+	if !Global.winws_detected:
 		_initialize_steam()
 	
 func _initialize_steam():

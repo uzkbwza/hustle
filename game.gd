@@ -478,10 +478,10 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2._fire_init_hook()
 	
 	if not is_ghost:
-		BorderManager.set_border_background(false, p1.border_background)
-		BorderManager.set_border_background(true, p2.border_background)
-		BorderManager.set_border_art(false, p1.border_portrait)
-		BorderManager.set_border_art(true, p2.border_portrait)
+		BorderManager.set_border_background(1, p1.border_background)
+		BorderManager.set_border_background(2, p2.border_background)
+		BorderManager.set_border_art(1, p1.border_portrait)
+		BorderManager.set_border_art(2, p2.border_portrait)
 		BorderManager.show_character_art()
 
 	if match_data.has("selected_styles"):
@@ -496,8 +496,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			p2.apply_style(style2)
 		
 		if not is_ghost:
-			BorderManager.apply_style(false, style1)
-			BorderManager.apply_style(true, style2)
+			BorderManager.apply_style(1, style1)
+			BorderManager.apply_style(2, style2)
 
 	if match_data.has("gravity_enabled"):
 		gravity_enabled = match_data.gravity_enabled
