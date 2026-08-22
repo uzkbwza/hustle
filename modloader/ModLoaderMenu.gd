@@ -14,7 +14,6 @@ var needs_to_save = false
 enum Sort { ALL, ON, OFF }
 var cur_sort = Sort.ALL
 
-onready var file_manager := get_tree().current_scene.get_node("%FileManager")
 onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
 onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
 
@@ -32,24 +31,28 @@ func _ready():
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
 	$"%Sorter".connect("pressed", self, "_on_sorter_pressed")
-	
-	file_manager.setup(
-		"mods", 
-		[".zip", ".ymd"], 
-		self, 
-		"get_current_list", 
-		"apply_new_list", 
-		"on_mod_folder_updated", 
-		"_sort_mod_entries",
-		$"%Close", 
-		$"%OpenFileManager", 
-		true
-		)
+	$"%OpenFileManager".connect("pressed", self, "_open_file_manager")
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
 	
 	hide()
+
+
+func _open_file_manager():
+	FileManager.setup(
+		"mods", 
+		[".zip", ".ymhpack"], 
+		self, 
+		"get_current_list", 
+		"apply_new_list", 
+		"on_mod_folder_updated", 
+		"get_listed",
+		"_sort_mod_entries",
+		$"%Close", 
+		$"%OpenFileManager", 
+		true
+		)
 
 
 func _on_sorter_pressed():
@@ -90,7 +93,7 @@ func on_mod_folder_updated(_path: String, _deleted: bool):
 				ModLoader.inactive_mods.append(modInfo)
 				modInfo.remove(0)
 				add_mod(modInfo)
-				file_manager._refresh_lists_menu()
+				FileManager._refresh_lists_menu()
 				_sort_mod_buttons()
 				continue
 
@@ -210,7 +213,7 @@ func show_menu(node:Node):
 
 func _tab_clicked(node:Node, _zip_path:String):
 	if current_mod != node:
-		file_manager.cur_item_path = _zip_path
+		FileManager.cur_item_path = _zip_path
 		show_menu(node)
 
 
@@ -220,14 +223,14 @@ func _tab_clicked(node:Node, _zip_path:String):
 # none is selected).
 func _on_toggle_pressed(_button_pressed: bool, _mod, _toggle, _button):
 	_set_toggle_state(_button_pressed, _mod, _toggle, _button)
-	var idx = file_manager.option_button.selected
-	if idx >= 0 and idx < file_manager.loaded_lists.size():
-		file_manager.save_current_list(file_manager.loaded_lists[idx].list_name)
+	var idx = FileManager.option_button.selected
+	if idx >= 0 and idx < FileManager.loaded_lists.size():
+		FileManager.save_current_list(FileManager.loaded_lists[idx].list_name)
 	else:
-		file_manager.save_current_list("")
+		FileManager.save_current_list("")
 
 
-# Pure UI/state sync — no saving, no calling back into file_manager.
+# Pure UI/state sync — no saving, no calling back into FileManager.
 # Safe to call from add_mod() (initial setup) and apply_new_list()
 # (restoring saved state) without risk of feeding back into a save
 # that re-triggers a restore that re-triggers apply_new_list again.
@@ -249,7 +252,7 @@ func _set_toggle_state(_button_pressed: bool, _mod, _toggle, _button):
 
 func _sort_mod_buttons():
 	var entries = mods.values()
-	entries = file_manager.sort_data(entries)
+	entries = FileManager.sort_data(entries)
 	for i in range(entries.size()):
 		var button_parent = entries[i].parent
 		button_parent.get_parent().move_child(button_parent, i)
@@ -321,12 +324,14 @@ func add_menu_from_node(menuNode):
 	$"%MenuContainer".add_child(menuNode)
 
 
-func get_current_list() -> Dictionary:
+func get_current_list(_default = false) -> Dictionary:
 	var _saved_active_list := []
 	var _saved_inactive_list := []
 	
 	for mod_name in mods:
-		if mods[mod_name].active:
+		if _default:
+			_saved_active_list.append(mod_name)
+		elif mods[mod_name].active:
 			_saved_active_list.append(mod_name)
 		else:
 			_saved_inactive_list.append(mod_name)
@@ -342,6 +347,17 @@ func apply_new_list(list: Dictionary):
 			_set_toggle_state(true, entry.mod, entry.toggle, entry.button)
 		elif mod_name in list.inactive:
 			_set_toggle_state(false, entry.mod, entry.toggle, entry.button)
+
+
+func get_listed(list: Dictionary) -> Dictionary:
+	var _items = []
+	
+	for mod_name in mods:
+		var entry = mods[mod_name]
+		if mod_name in list.active:
+			_items.append(entry.mod[1].zip_path)
+	
+	return _items
 
 
 func _on_apply_changes_pressed():

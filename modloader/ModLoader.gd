@@ -82,7 +82,7 @@ func _init():
 func _delete_pending_files():
 	var dir = Directory.new()
 	var file = File.new()
-	var save_path = "user://lists/files_to_delete.ymdlist"
+	var save_path = "user://lists/files_to_delete.ymhlist"
 	if file.file_exists(save_path):
 		file.open(save_path, File.READ)
 		var data = file.get_var()
@@ -91,7 +91,7 @@ func _delete_pending_files():
 	file.close()
 	
 	var file2 = File.new()
-	file2.open("user://lists/files_to_delete.ymdlist",File.WRITE)
+	file2.open("user://lists/files_to_delete.ymhlist",File.WRITE)
 	file2.store_var([], true)
 	file2.close()
 
@@ -99,9 +99,9 @@ func _delete_pending_files():
 func _load_disabled_mods():
 	disabled_mod_names = {}
 	var f = File.new()
-	if not f.file_exists("user://lists/mods/_current_state.ymdlist"):
+	if not f.file_exists("user://lists/mods/_current_state.ymhlist"):
 		return
-	f.open("user://lists/mods/_current_state.ymdlist", File.READ)
+	f.open("user://lists/mods/_current_state.ymhlist", File.READ)
 	var data = f.get_var()
 	f.close()
 	for mod_name in data.get("inactive", []):

@@ -53,7 +53,6 @@ var paste_aura_button: Button = null
 var swap_aura_button: MenuButton = null
 var aura_clipboard = null
 var loading_aura_slot = false
-onready var file_manager := get_tree().current_scene.get_node("%FileManager")
 
 # limb_data dict from the currently-previewed character (for attaching auras
 # to limbs on the portrait sprites in the customization preview).
@@ -296,7 +295,6 @@ func init():
 	call_deferred("_on_color_tab_changed", $"%ColorTabs".current_tab)
 	$"%AllowSaveButton".connect("toggled", self, "_on_allow_save_toggled")
 	
-	file_manager.setup("custom", [".style", ".ymd"], self, "get_current_list", "apply_new_list", "on_folder_updated", $"%Close", $"%OpenFileManager", true)
 	
 	if !Global.STYLE_SAVE_FEATURE_ENABLED:
 		$"%AllowSaveButton".hide()

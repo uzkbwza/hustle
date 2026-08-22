@@ -1545,7 +1545,8 @@ func _process(delta):
 	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
 	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
 	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
-	$"%MobileMatchButtons".visible = Global.mobile_ui and is_instance_valid(game) and not game.game_finished 
+	#quick fix for now
+	$"%MobileMatchButtons".visible = (Global.mobile_ui or Global.is_mobile_device)  and is_instance_valid(game) and not game.game_finished 
 	
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused

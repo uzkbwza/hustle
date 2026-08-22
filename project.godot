@@ -119,8 +119,8 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/BaseChar.gd"
 }, {
-"base": "Window",
-"class": "FileManager",
+"base": "CanvasLayer",
+"class": "FileManagement",
 "language": "GDScript",
 "path": "res://filemanager/FileManager.gd"
 }, {
@@ -432,7 +432,7 @@ _global_script_class_icons={
 "FGCharacter": "",
 "FGObject": "",
 "Fighter": "",
-"FileManager": "",
+"FileManagement": "",
 "FixedMath": "",
 "FixedVec2String": "",
 "ForesightAfterImage": "",
@@ -516,6 +516,7 @@ Custom="*res://Custom.gd"
 Hotkeys="*res://Hotkeys.gd"
 ModOverride="*res://ModOverride.gd"
 BorderManager="*res://bordermanager/BorderManager.tscn"
+FileManager="*res://filemanager/FileManager.tscn"
 
 [debug]
 

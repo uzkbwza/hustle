@@ -125,6 +125,8 @@ var is_mobile_device = OS.has_feature("mobile")
 var force_alt_ui = false setget set_force_alt_ui
 var show_border_art = true setget set_show_border_art
 
+var registered_ymhpack = false
+
 var active_sfx_overrides = {}
 
 var mods_loaded = false
@@ -467,6 +469,7 @@ func save_options():
 			"show_health_count": show_health_count,
 			"show_next_turn_info_hud": show_next_turn_info_hud,
 			"show_next_turn_info_on_chars": show_next_turn_info_on_chars,
+			"registered_ymhpack": registered_ymhpack,
 		}
 	})
 

@@ -47,7 +47,7 @@ func _populate_mod_menu(menu):
 	for mod in ModLoader.all_mods:
 		menu.add_mod(mod)
 	menu._sort_mod_buttons()
-	menu.file_manager._refresh_lists_menu()
+	FileManager._refresh_lists_menu()
 
 func _addModList():
 	# add the mod list container
