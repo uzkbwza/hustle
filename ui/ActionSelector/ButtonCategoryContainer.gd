@@ -109,35 +109,29 @@ func get_num_available_moves():
 			count += 1
 	return count
 
-func update_mouse_over():
-		$"%ScrollContainer".rect_clip_content = true
-		$"%ScrollContainer".rect_min_size.y = BOX_SIZE
-		rect_size.y = DEFAULT_HEIGHT
-		call_deferred("set_pos_y", 0)
-		mouse_over = false
-		can_update = false
 
+func update_mouse_elsewhere():
+		$"%ScrollContainer".rect_min_size.y = 0
+		
 		shown_labels = []
-		$UpdateTimer.start()
 		guard_break_label.hide()
 		initiative_label.hide()
 		
+		mouse_over = false
+		can_update = false
+		$UpdateTimer.start()
 
-func update_mouse_elsewhere():
-		$"%ScrollContainer".rect_clip_content = false
-		# +1 to compensate for bc's margin_bottom=-1 (bc.bottom = SC.size - 1).
-		# Otherwise bc.top would land at -1 in SC.local for overflow categories
-		# on hover and clip the top row's first pixel. Also clamped to BOX_SIZE
-		# so ≤9 categories don't pick up an unwanted positive set_pos_y offset.
-		$"%ScrollContainer".rect_min_size.y = max($"%ButtonContainer".rect_size.y + 1, BOX_SIZE)
-#		guard_break_label.hide()
-		rect_size.y = 1000
+
+func update_mouse_over():
+		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
+		
+		guard_break_label.hide()
+		
 		mouse_over = true
 		can_update = false
 		$UpdateTimer.start()
-#		rect_position.y = -$"%ScrollContainer".rect_min_size.y + BOX_SIZE
-		call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
-			
+
+
 func _process(_delta):
 #	if visible:
 #		snap_to_boundaries()
@@ -146,15 +140,13 @@ func _process(_delta):
 #		action_data_panel_container.rect_global_position
 #		pass
 
-	if !mouse_over and can_update and Utils.is_mouse_in_control(self):
-		update_mouse_elsewhere()
+	if can_update:
+		if !mouse_over and Utils.is_mouse_in_control(self):
+			update_mouse_over()
+		elif mouse_over and !Utils.is_mouse_in_control(self) and !Utils.is_mouse_in_control($"%ButtonContainer"):
+			update_mouse_elsewhere()
 
-	elif mouse_over and can_update and !Utils.is_mouse_in_control(self) and !Utils.is_mouse_in_control($"%ButtonContainer"):
-		update_mouse_over()
-
-	update_button_layout()
-	call_deferred("set_pos_y", -$"%ScrollContainer".rect_min_size.y + BOX_SIZE)
-	$"VBoxContainer/CenterContainer".rect_position.y = 0
+	#$"VBoxContainer/CenterContainer".rect_position.y = 0
 	$"%TooManyMoves".visible = get_num_available_moves() > 9
 	if mouse_over:
 		$"%TooManyMoves".visible = false
@@ -165,16 +157,12 @@ func _process(_delta):
 	if shown_labels and (mouse_over):
 		shown_labels[shown_label_index % len(shown_labels)].show()
 
+
 func set_pos_y(y):
 	rect_position.y = y
+	# This was once needed for previous iterations of this menu
+	# still exists in case mods still use it, I dunno
 
-#func snap_action_data_to_player():
-#	var screen_pos = game.get_screen_position(player_id)
-#	var center_pos = get_viewport_rect().size/2 - action_data_panel_container.rect_size/2
-#	action_data_panel_container.rect_global_position = screen_pos + center_pos
-#	if active_button and active_button.data_node:
-#		action_data_panel_container.rect_global_position += active_button.data_node.display_offset
-#	action_data_panel_container.raise()
 
 func enable_predict_button():
 	$"%PredictButton".show()
@@ -184,92 +172,28 @@ func disable_predict_button():
 #	$"%PredictButton".modulate.a = 0.25
 	$"%PredictButton".hide()
 
+
 func add_button(button):
 	category_buttons.append(button)
 	$"%ButtonContainer".add_child(button)
 	button.connect("mouse_entered", self, "on_button_mouse_entered", [button])
 	button.connect("mouse_exited", self, "on_button_mouse_exited")
-	update_button_layout()
+
 
 func update_button_layout():
-	var bc = $"%ButtonContainer"
-	var cols = bc.columns
-
-	# Walk category_buttons (canonical order). Visible ones get a slot index
-	# in the post-filler grid. The grid is anchored to the bottom and grows
-	# upward, so the visible 52px window shows the BOTTOM 3 rows (last
-	# VISIBLE_LIMIT slots). Anything in earlier rows belongs in
-	# `hidden_buttons_node` while collapsed.
-	# Skip buttons reparented externally (e.g. continue_button moved to
-	# TurnButtons by ActionButtons.init) — their parent is neither bc nor
-	# hidden_buttons_node, so we shouldn't yank them back.
-	var visible_count = 0
-	for btn in category_buttons:
-		if !_owns(btn, bc):
-			continue
-		if btn.visible:
-			visible_count += 1
-
-	var hide_overflow = !mouse_over and visible_count > VISIBLE_LIMIT
-	var hidden_count = (visible_count - VISIBLE_LIMIT) if hide_overflow else 0
-	# Total grid slot count must stay constant across collapsed/hovered so the
-	# bc rect doesn't change size between states (which would cause a vertical
-	# pixel jump in the label/parent layout). For the visible_count-aligned
-	# layout, we add `hidden_count` extra fillers when collapsed to replace
-	# the buttons we reparented out — keeping bc.rect_size.y identical.
-	var needed = 0
-	if visible_count > VISIBLE_LIMIT:
-		needed = (cols - (visible_count % cols)) % cols + hidden_count
-
-	var visible_idx = 0
-	for btn in category_buttons:
-		if !_owns(btn, bc):
-			continue
-		var should_be_hidden = false
-		if btn.visible:
-			should_be_hidden = hide_overflow and visible_idx < hidden_count
-			visible_idx += 1
-		var current_parent = btn.get_parent()
-		var target_parent = hidden_buttons_node if should_be_hidden else bc
-		if current_parent != target_parent:
-			current_parent.remove_child(btn)
-			target_parent.add_child(btn)
-
-	# Restore canonical order in the GridContainer: fillers first, then
-	# category_buttons (the ones currently parented to bc) in add-order.
-	var fillers = []
-	for child in bc.get_children():
-		if child.has_meta("is_filler"):
-			fillers.append(child)
-	var index = fillers.size()
-	for btn in category_buttons:
-		if btn.get_parent() == bc:
-			bc.move_child(btn, index)
-			index += 1
-
-	if fillers.size() == needed:
-		return
-
-	while fillers.size() > needed:
-		var f = fillers.pop_back()
-		bc.remove_child(f)
-		f.queue_free()
-
-	while fillers.size() < needed:
-		var f = Control.new()
-		f.set_meta("is_filler", true)
-		f.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		# Match ActionButton's min height so a row of pure fillers still takes
-		# up a button-row's worth of vertical space — otherwise GridContainer
-		# collapses the row to 0px (rows size to max child height) and
-		# bc.rect_size.y differs between collapsed/hovered, causing the layout
-		# to jump by a row when overflow buttons get reparented.
-		f.rect_min_size = Vector2(0, 16)
-		bc.add_child(f)
-		fillers.append(f)
-
-	for i in range(needed):
-		bc.move_child(fillers[i], i)
+	# Note By TriMay:
+	
+	# This was once a 90 line function
+	# One that would add and remove filler nodes
+	# and reparent existing button nodes
+	# all in the name of making sure the grid had exactly 9 nodes at default
+	# and all of the buttons on mouse over
+	
+	# None of that was required :)
+	
+	# The function name itself remains for rare mod compatibility
+	# or something
+	pass
 
 
 func get_prediction():
