@@ -21,19 +21,48 @@ var active = false
 var charLoaderModDetected = false
 var charFolders = []
 
+func _read_modded_json_text() -> String:
+	var file = File.new()
+	if file.open("user://modded.json", File.READ) != OK:
+		return ""
+	var text = file.get_as_text()
+	file.close()
+	return text
+
+
+func _write_modded_json(data: Dictionary) -> void:
+	var tmp_path = "user://modded.json.tmp"
+	var file = File.new()
+	if file.open(tmp_path, File.WRITE) != OK:
+		push_warning("ModLoader: failed to write user://modded.json")
+		return
+	file.store_string(JSON.print(data, "  "))
+	file.close()
+	
+	var dir = Directory.new()
+	if dir.rename(tmp_path, "user://modded.json") != OK:
+		push_warning("ModLoader: failed to commit user://modded.json")
+
+
 func _init():
 #	Steam.steamInit()
-	var file = File.new()
-	if !file.file_exists("user://modded.json"):
-		file.open("user://modded.json", File.WRITE)
-		file.store_string(JSON.print({"modsEnabled":true}, "  "))
-		file.close()
-		
-	file.open("user://modded.json", File.READ)
-	var mod_options = JSON.parse(file.get_as_text()).result
-
-	file.close()
-
+	if not File.new().file_exists("user://modded.json"):
+		_write_modded_json({"modsEnabled": true, "lastLaunchOk": true})
+	
+	var _modded_file = _parse_json_dict(_read_modded_json_text())
+	
+	# If modded.json is corrupted (bad JSON, wrong type, or missing/wrong-typed
+	# keys), fall back to safe defaults and rewrite the file. We treat a
+	# corrupted file the same as a crashed last launch: don't load mods,
+	# and let the UI warn the user.
+	var was_corrupted = false
+	if _modded_file == null \
+	or !_modded_file.has("modsEnabled") or typeof(_modded_file.modsEnabled) != TYPE_BOOL \
+	or !_modded_file.has("lastLaunchOk") or typeof(_modded_file.lastLaunchOk) != TYPE_BOOL:
+		was_corrupted = true
+		_modded_file = {"modsEnabled": false, "lastLaunchOk": false}
+		_write_modded_json(_modded_file)
+	
 	# Version-transition gate: first launch on a MOD_DISABLE_VERSIONS entry
 	# (with an existing save) skips mod loading this session and flips
 	# modsEnabled off in modded.json so the user has to deliberately
@@ -44,17 +73,36 @@ func _init():
 	if Global.should_disable_mods_for_version_transition():
 		Global.mods_disabled_by_version_transition = true
 		Global.mark_mod_sensitive_version_opened(Global.current_base_version())
-		mod_options.modsEnabled = false
-		file.open("user://modded.json", File.WRITE)
-		file.store_string(JSON.print(mod_options, "  "))
-		file.close()
+		_modded_file.modsEnabled = false
+		_modded_file.lastLaunchOk = true
+		_write_modded_json(_modded_file)
 		return
-
-	if !mod_options.modsEnabled:
+	
+	# Crash gate: last session never reached the "finished loading mods"
+	# checkpoint (or the file itself was corrupted, which is its own sign
+	# of a crash mid-write). Skip mod loading this session, flag it for
+	# the UI to show a warning, and let the options screen lock the
+	# toggle so the user has to consciously re-enable mods. We mark
+	# lastLaunchOk true here even though we're skipping mods, since THIS
+	# boot didn't crash, without that, every future boot would keep
+	# seeing lastLaunchOk == false and re-trip this gate forever.
+	if was_corrupted or !_modded_file.lastLaunchOk:
+		Global.mods_disabled_by_crash = true
+		_modded_file.modsEnabled = false
+		_modded_file.lastLaunchOk = true
+		_write_modded_json(_modded_file)
 		return
-
+	
+	if !_modded_file.modsEnabled:
+		return
+	
+	# From this point on we're actually attempting to load mods.
+	# Mark the flag dirty on disk BEFORE doing anything risky, so a
+	# crash during loading leaves "lastLaunchOk": false behind.
+	_modded_file.lastLaunchOk = false
+	_write_modded_json(_modded_file)
+	
 	installScriptExtension("res://modloader/MLStateSounds.gd") 
-
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
 		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
@@ -66,44 +114,51 @@ func _init():
 	Steam.steamInit() # needed to get workshop mods.
 	active = true
 #	Global.VERSION += " Modded" 
-	
-	_delete_pending_files()
 	_load_disabled_mods()
 	#This script has to be installed before the mods or else it doesn't get extended
 	_loadMods()
 	print("----------------mods------loaded--------------------")
 	_initMods()
 	print("----------------mods initialized--------------------")
-	
 	installScriptExtension("res://modloader/ModHashCheck.gd")
 	call_deferred("append_hash")
+	# Reached the end without crashing — clear the flag so next launch
+	# is treated as clean.
+	_modded_file.lastLaunchOk = true
+	_write_modded_json(_modded_file)
 
 
-func _delete_pending_files():
-	var dir = Directory.new()
-	var file = File.new()
-	var save_path = "user://lists/files_to_delete.ymhlist"
-	if file.file_exists(save_path):
-		file.open(save_path, File.READ)
-		var data = file.get_var()
-		for path in data:
-			var err = dir.remove(path)
-	file.close()
-	
-	var file2 = File.new()
-	file2.open("user://lists/files_to_delete.ymhlist",File.WRITE)
-	file2.store_var([], true)
-	file2.close()
+# Parses a JSON string and returns it only if it's a valid Dictionary.
+# Returns null on parse errors or unexpected top-level types (e.g. a
+# truncated/corrupted file), so callers can treat that as "no usable data"
+# instead of accessing a null result and crashing.
+func _parse_json_dict(text: String):
+	var parsed = JSON.parse(text)
+	if parsed.error != OK:
+		return null
+	if typeof(parsed.result) != TYPE_DICTIONARY:
+		return null
+	return parsed.result
 
 
 func _load_disabled_mods():
 	disabled_mod_names = {}
+	var path = "user://lists/mods/_current_state.ymhlist"
 	var f = File.new()
-	if not f.file_exists("user://lists/mods/_current_state.ymhlist"):
+	if not f.file_exists(path):
 		return
-	f.open("user://lists/mods/_current_state.ymhlist", File.READ)
-	var data = f.get_var()
+	f.open(path, File.READ)
+	var text = f.get_as_text()
 	f.close()
+	
+	var state = _parse_json_dict(text)
+	if state == null:
+		return
+	
+	var data = state.get("data", {})
+	if typeof(data) != TYPE_DICTIONARY:
+		return
+	
 	for mod_name in data.get("inactive", []):
 		disabled_mod_names[mod_name] = true
 
