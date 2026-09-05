@@ -75,10 +75,6 @@ static func load_list_by_name(list_name: String) -> Dictionary:
 			return list
 	return {}
 
-# Deterministic random pick from a list's active pool. The result depends only
-# on (list_data, player_id, seed) - it never touches the global RNG, so the
-# same seed yields the same style for both players with no desync risk.
-# Returns null when the pool is empty or no style is usable.
 static func pick_from_list(list_data: Dictionary, player_id: int, seed_value: int):
 	var active = list_data.get("active", [])
 	if typeof(active) != TYPE_ARRAY or active.empty():
@@ -99,9 +95,6 @@ static func pick_from_list(list_data: Dictionary, player_id: int, seed_value: in
 	rng.seed = seed_value
 	return pool[rng.randi_range(0, pool.size() - 1)]
 
-# The randomized style chosen from the currently selected list, seeded so both
-# players pick the same one. Returns null when no list is selected or the list
-# matches no usable styles.
 func get_random_style(seed_value: int):
 	if cur_list_data.empty():
 		return null

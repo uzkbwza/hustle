@@ -13,10 +13,6 @@ var selected_styles = {
 			1: null,
 			2: null
 		}
-var selected_list_names = {
-			1: "",
-			2: ""
-		}
 	
 var singleplayer = true
 var current_player = 1
@@ -100,7 +96,6 @@ func _ready():
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
-	Network.connect("character_list_selected", self, "_on_network_list_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	var dir = Directory.new()
 
@@ -209,14 +204,6 @@ func _on_network_character_selected(player_id, character, style=null):
 		if Network.is_host():
 			Network.rpc_("send_match_data", get_match_data())
 
-func _on_network_list_selected(player_id, list_name=""):
-	selected_list_names[player_id] = list_name
-	# A list can arrive after its owning character was confirmed (separate RPC
-	# channels), so if both characters are already locked re-send the match
-	# data so the resolved style uses the latest list.
-	if Network.is_host() and selected_characters[1] != null and selected_characters[2] != null:
-		Network.rpc_("send_match_data", get_match_data())
-
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
@@ -259,10 +246,6 @@ func init(singleplayer=true):
 	selected_styles = {
 		1: null,
 		2: null
-	}
-	selected_list_names = {
-		1: "",
-		2: ""
 	}
 	
 	hovered_characters = {
@@ -418,6 +401,11 @@ func quit():
 	Global.reload()
 
 func get_match_data():
+	if singleplayer:
+		selected_styles = {
+			1: $"%P1Display".get_style_for_match(randi()),
+			2: $"%P2Display".get_style_for_match(randi())
+		}
 	var data = {
 		"singleplayer": singleplayer,
 		"selected_characters": selected_characters,
@@ -426,25 +414,7 @@ func get_match_data():
 	}
 	if singleplayer or Network.is_host():
 		randomize()
-		var seed_value = randi()
-		data.merge({"seed": seed_value})
-		# Resolve each player's style deterministically from the shared seed so
-		# both players see the exact same random pick (no desync). Random picks
-		# come from a player's chosen list; manual styles are kept as-is.
-		selected_styles = {}
-		for p in [1, 2]:
-			var display = $"%P1Display" if p == 1 else $"%P2Display"
-			if singleplayer:
-				selected_styles[p] = display.get_style_for_match(seed_value)
-			elif selected_list_names[p] != "":
-				var btn = display.style_list_button
-				var list_data = btn.load_list_by_name(selected_list_names[p])
-				var picked = btn.pick_from_list(list_data, p, seed_value)
-				if picked != null:
-					selected_styles[p] = picked
-		data["selected_styles"] = selected_styles
-	else:
-		data["selected_styles"] = selected_styles
+		data.merge({"seed": randi()})
 	
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
 		data.merge(SteamLobby.MATCH_SETTINGS)
@@ -781,8 +751,8 @@ func buffer_select(button):
 		if singleplayer:
 			$"%GoButton".disabled = false
 	if not singleplayer:
-		Network.select_character(data, $"%P1Display".selected_style if current_player == 1 else $"%P2Display".selected_style)
-		Network.select_list($"%P1Display".style_list_button.cur_list_data.get("list_name", "") if current_player == 1 else $"%P2Display".style_list_button.cur_list_data.get("list_name", ""))
+		var match_style = $"%P1Display".get_style_for_match(randi()) if current_player == 1 else $"%P2Display".get_style_for_match(randi())
+		Network.select_character(data, match_style)
 
 # as of update 3.3, this function gets called on _process. hopefully in the future this can be added onto another init function
 func createButtons():

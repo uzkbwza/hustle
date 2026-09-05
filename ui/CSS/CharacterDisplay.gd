@@ -227,9 +227,6 @@ func set_enabled(on):
 		$"%LoadStyleButton".save_style = on
 
 
-# The style this player fights with: a random pick from the selected list if
-# one is chosen, otherwise the manually selected style. The random pick is
-# NOT shown anywhere on the select screen. Seeded so both players agree.
 func get_style_for_match(seed_value: int):
 	if style_list_button.cur_list_data != {}:
 		var picked = style_list_button.get_random_style(seed_value)

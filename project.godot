@@ -505,7 +505,7 @@ config/icon="res://icon2.png"
 
 [autoload]
 
-Steam="*res://Steam.gd"
+Steam="res://Steam.gd"
 Global="*res://Global.gd"
 FileManager="*res://filemanager/FileManager.gd"
 SteamHustle="*res://SteamY.gd"
