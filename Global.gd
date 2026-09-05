@@ -23,6 +23,8 @@ const MOD_DISABLE_VERSIONS = ["1.10.0"]
 # session — drives the mod warning window (UILayer.should_open_mod_warning
 # _window) and is read by MLMainHook to disable the toggle button.
 var mods_disabled_by_version_transition = false
+# Do the same as above after a crash.
+var mods_disabled_by_crash = false
 
 var audio_player
 var music_enabled = true

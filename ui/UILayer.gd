@@ -200,6 +200,12 @@ func _ready():
 		# it, but UILayer._ready re-runs on each Global.reload(), so without this
 		# the window reappears every time the main scene reloads.
 		Global.mods_disabled_by_version_transition = false
+		# Do the same for crashes, but adjust the warning.
+		if Global.mods_disabled_by_crash:
+			$"%ModWarningWindow".get_node("%Label").hide()
+			$"%ModWarningWindow".get_node("%Crash").show()
+			Global.mods_disabled_by_crash = false
+		
 		$"%ModWarningWindow".start()
 
 	SteamLobby.connect("join_lobby_success", self, "_on_join_lobby_success")
@@ -338,7 +344,7 @@ func should_open_mod_warning_window():
 	# session because of a MOD_DISABLE_VERSIONS transition (first launch on
 	# the version with an existing save). Used to inform the user that
 	# their `Enable Mods` setting was flipped off.
-	return Global.mods_disabled_by_version_transition
+	return Global.mods_disabled_by_version_transition or Global.mods_disabled_by_crash
 
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)

@@ -1,18 +1,19 @@
 extends Node
 
+
 func _ready():
 	_addModToggle(ModLoader.active)
-	if ModLoader.active:
-		#old
-		#_addModList()
-		#_addMisingList()
+#	if ModLoader.active:
+#		#old
+#		#_addModList()
+#		#_addMisingList()
+	var menu = _add_modlist()
+	_populate_mod_menu(menu)
+	_addMisingList()
+	if ModLoader.charLoaderModDetected:
+		ModLoader.charLoaderModDetected = false
+		_add_char_loader_warning()
 
-		var menu = _add_modlist()
-		_populate_mod_menu(menu)
-		_addMisingList()
-		if ModLoader.charLoaderModDetected:
-			ModLoader.charLoaderModDetected = false
-			_add_char_loader_warning()
 
 #Creates mod menu and places it in the options container
 func _add_modlist():
@@ -44,10 +45,13 @@ func _add_char_loader_warning():
 
 #Calls function from ModLoaderMenu.gd to populate list of mods
 func _populate_mod_menu(menu):
-	for mod in ModLoader.all_mods:
-		menu.add_mod(mod)
-	menu._sort_mod_buttons()
-	FileManager._refresh_lists_menu()
+	if ModLoader.active:
+		for mod in ModLoader.all_mods:
+			menu.add_mod(mod)
+	else:
+		menu._loadMods()
+	menu.file_manager._restore_current_state()
+
 
 func _addModList():
 	# add the mod list container
@@ -141,11 +145,22 @@ func _addModToggle(moddedState):
 	
 #needed
 func _toggle_mods_active(btn):
+	var modded_state := {"modsEnabled": true, "lastLaunchOk": true}
+	
 	var file = File.new()
-	var moddedState = {"modsEnabled":btn.pressed}
-	file.open("user://modded.json", File.WRITE)
-	file.store_string(JSON.print(moddedState, "  "))
-	file.close()
+	if file.file_exists("user://modded.json"):
+		if file.open("user://modded.json", File.READ) == OK:
+			var parsed = JSON.parse(file.get_as_text())
+			file.close()
+			if parsed.error == OK and typeof(parsed.result) == TYPE_DICTIONARY:
+				modded_state = parsed.result
+	
+	modded_state["modsEnabled"] = btn.pressed
+	
+	var out = File.new()
+	if out.open("user://modded.json", File.WRITE) == OK:
+		out.store_string(JSON.print(modded_state, "  "))
+		out.close()
 
 func generateContainer(name_gen):
 	var _container = preload("res://modloader/ModLoaderWindow.tscn").instance()

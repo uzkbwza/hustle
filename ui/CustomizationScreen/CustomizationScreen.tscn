@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://ui/CustomizationScreen/CustomizationScreen.gd" type="Script" id=1]
 [ext_resource path="res://ui/ColorPicker/CustomColorPicker.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://ui/CustomizationScreen/TrailSettings.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/CustomizationScreen/LoadStyleButton.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/CustomizationScreen/CollapsibleSection.gd" type="Script" id=8]
+[ext_resource path="res://filemanager/FileManagerInterface.tscn" type="PackedScene" id=9]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.0392157, 0.0392157, 0.0392157, 1 )
@@ -37,13 +38,39 @@ margin_top = 8.0
 margin_right = 632.0
 margin_bottom = 21.0
 
+[node name="ManageStylesButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 73.0
+margin_bottom = 13.0
+toggle_mode = true
+text = "Manage Styles"
+
+[node name="Sorter" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 74.0
+margin_right = 138.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 64, 0 )
+text = "Sort: Name"
+
+[node name="SortInvert" type="CheckButton" parent="HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 74.0
+margin_right = 138.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 64, 0 )
+text = "Invert"
+
 [node name="LoadStyleButton" parent="HBoxContainer" instance=ExtResource( 7 )]
+visible = false
 text = "load"
 
 [node name="StyleName" type="LineEdit" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 92.0
-margin_right = 192.0
+margin_left = 74.0
+margin_right = 174.0
 margin_bottom = 13.0
 rect_min_size = Vector2( 100, 0 )
 max_length = 64
@@ -51,46 +78,34 @@ placeholder_text = "style name"
 
 [node name="SaveButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 193.0
-margin_right = 219.0
+margin_left = 175.0
+margin_right = 201.0
 margin_bottom = 13.0
 text = "save"
 
 [node name="SavedLabel" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 220.0
+margin_left = 202.0
 margin_top = 1.0
-margin_right = 264.0
+margin_right = 393.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 clip_text = true
 
 [node name="WorkshopButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 265.0
-margin_right = 363.0
+margin_left = 394.0
+margin_right = 492.0
 margin_bottom = 13.0
 disabled = true
 text = "upload to workshop"
 
 [node name="WorkshopButton2" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 364.0
-margin_right = 437.0
-margin_bottom = 13.0
-text = "visit workshop"
-
-[node name="OpenFileManager" type="Button" parent="HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 438.0
+margin_left = 493.0
 margin_right = 566.0
 margin_bottom = 13.0
-size_flags_vertical = 3
-custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
-text = "Open Importer & Manager"
-__meta__ = {
-"_editor_description_": ""
-}
+text = "visit workshop"
 
 [node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
@@ -138,7 +153,262 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="ListPanel" type="Panel" parent="."]
+unique_name_in_owner = true
+margin_left = 7.0
+margin_top = 27.0
+margin_right = 214.0
+margin_bottom = 355.0
+
+[node name="ListScrollContainer" type="ScrollContainer" parent="ListPanel"]
+margin_top = -1.0
+margin_right = 207.0
+margin_bottom = 328.0
+
+[node name="StyleListContainer" type="VBoxContainer" parent="ListPanel/ListScrollContainer"]
+unique_name_in_owner = true
+margin_right = 207.0
+margin_bottom = 329.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="FileManagerInterface" parent="ListPanel" instance=ExtResource( 9 )]
+unique_name_in_owner = true
+
+[node name="Window" parent="ListPanel/FileManagerInterface" index="0"]
+margin_left = 150.0
+margin_right = 290.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="ListPanel/FileManagerInterface/Window" index="1"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 139.0
+margin_bottom = 272.0
+
+[node name="TitleBar" type="Panel" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2"]
+margin_right = 138.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 0, 9 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/TitleBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = 2.0
+mouse_filter = 1
+text = "File Manager"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Contents" type="PanelContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2"]
+margin_top = 10.0
+margin_right = 138.0
+margin_bottom = 271.0
+rect_min_size = Vector2( 0, 10 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Control" type="VBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 137.0
+margin_bottom = 260.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+margin_right = 136.0
+margin_bottom = 32.0
+
+[node name="Close" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer2"]
+unique_name_in_owner = true
+margin_right = 48.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 48, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Close"
+
+[node name="ImportFiles" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 49.0
+margin_right = 136.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Import Files"
+
+[node name="ExportFileCustom" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+unique_name_in_owner = true
+visible = false
+margin_top = 33.0
+margin_right = 136.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export Custom"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+margin_top = 33.0
+margin_right = 136.0
+margin_bottom = 98.0
+alignment = 2
+
+[node name="OptionButton" type="OptionButton" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 136.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = "ChallengeButton"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/VBoxContainer"]
+margin_top = 33.0
+margin_right = 136.0
+margin_bottom = 65.0
+
+[node name="ListEdit" type="LineEdit" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 103.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "List Name"
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="SaveList" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 104.0
+margin_right = 136.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_vertical = 3
+text = "Save"
+
+[node name="Label" type="Label" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+margin_top = 99.0
+margin_right = 136.0
+margin_bottom = 115.0
+rect_min_size = Vector2( 0, 16 )
+text = "Manage Selected"
+align = 1
+valign = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+margin_top = 116.0
+margin_right = 136.0
+margin_bottom = 247.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer"]
+margin_right = 69.0
+margin_bottom = 131.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ExportFile" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_right = 69.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export File"
+
+[node name="ExportList" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 33.0
+margin_right = 69.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export List"
+
+[node name="ExportListed" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 66.0
+margin_right = 69.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export Listed"
+
+[node name="ExportFolder" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+margin_top = 99.0
+margin_right = 69.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Export Folder"
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer"]
+margin_left = 70.0
+margin_right = 136.0
+margin_bottom = 131.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DeleteFile" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_right = 66.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete File"
+
+[node name="DeleteList" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_top = 33.0
+margin_right = 66.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete List"
+
+[node name="DeleteListed" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_top = 66.0
+margin_right = 66.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete Listed"
+
+[node name="DeleteFolder" type="Button" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
+unique_name_in_owner = true
+margin_top = 99.0
+margin_right = 66.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Delete Folder"
+
+[node name="Printer" type="Label" parent="ListPanel/FileManagerInterface/Window/VBoxContainer2/Contents/Control"]
+unique_name_in_owner = true
+margin_top = 248.0
+margin_right = 136.0
+margin_bottom = 259.0
+size_flags_vertical = 5
+autowrap = true
+
 [node name="Panel" type="Panel" parent="."]
+unique_name_in_owner = true
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -633.0
@@ -522,3 +792,5 @@ align = 2
 [connection signal="pressed" from="HBoxContainer/WorkshopButton2" to="." method="_on_WorkshopButton2_pressed"]
 [connection signal="pressed" from="HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]
 [connection signal="meta_clicked" from="WorkshopUpdatedLabel" to="." method="_on_WorkshopUpdatedLabel_meta_clicked"]
+
+[editable path="ListPanel/FileManagerInterface"]

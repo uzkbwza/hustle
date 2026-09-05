@@ -41,6 +41,30 @@ var loading_hitspark_particles := false
 
 var workshop_preview_image: Image = null
 
+# FileManagerInterface node already on the scene — same class the mod loader
+# uses. Here it manages named LISTS of which styles are toggled on/off for
+# the character-select randomizer (exactly like mod on/off lists), NOT the
+# single-style save/load, which now goes exclusively through
+# %StyleListContainer below.
+onready var file_manager: FileManagerInterface = $"%FileManagerInterface"
+
+# One entry per discovered ".style" file on disk:
+# style_name -> { "active": bool, "path": String, "toggle": CheckButton,
+#                 "button": Button, "parent": Control }
+var styles: Dictionary = {}
+
+# Name of whichever style entry is currently loaded into the editor, so the
+# %StyleListContainer button for it can be highlighted. "" when nothing
+# loaded from the list yet (e.g. a brand-new unsaved style).
+var current_style_name := ""
+
+# Style list sort mode - mirrors ModLoaderMenu's sorter. Cycles
+# NAME -> DATE -> ACTIVE -> NAME and reorders the %StyleListContainer
+# entries. The %SortInvert toggle flips the order. Comparison logic lives
+# in the shared FileManager.sort_items().
+var cur_style_sort = FileManager.SortMode.NAME
+var cur_style_inverted := false
+
 var hitspark_scene = null
 
 const AURA_SLOT_COUNT = 3
@@ -176,6 +200,9 @@ func init():
 		button.text = name
 	buttons[0].pressed = true
 	moving_sprite_start = $"%MovingSprite".position
+	$"%ManageStylesButton".connect("toggled", self, "_on_manage_styles_pressed")
+	$"%Sorter".connect("pressed", self, "_on_style_sorter_pressed")
+	$"%SortInvert".connect("toggled", self, "_on_style_sort_invert_toggled")
 	$"%Character".connect("color_changed", self, "_on_character_color_changed")
 	$"%Extra1".connect("color_changed", self, "_on_extra_color_1_changed")
 	$"%Extra2".connect("color_changed", self, "_on_extra_color_2_changed")
@@ -285,7 +312,8 @@ func init():
 	$"%AuraCopyPasteRow".add_child(swap_aura_button)
 	_refresh_swap_aura_menu()
 	$"%SaveButton".connect("pressed", self, "save_style")
-	$"%LoadStyleButton".connect("style_selected", self, "load_style")
+	_load_styles()
+	_setup_file_manager()
 	$"%ExpandAllButton".connect("pressed", self, "_on_expand_all_pressed")
 	$"%CollapseAllButton".connect("pressed", self, "_on_collapse_all_pressed")
 	$"%FlatViewButton".connect("toggled", self, "_on_flat_view_toggled")
@@ -306,8 +334,21 @@ func init():
 	_on_reset_color_pressed()
 	update_warning()
 
+
+func _on_manage_styles_pressed(_toggled):
+	if _toggled:
+		$"%ListPanel".show()
+		$"%Panel".hide()
+		$"%Sorter".show()
+		$"%SortInvert".show()
+	else:
+		$"%ListPanel".hide()
+		$"%Panel".show()
+		$"%Sorter".hide()
+		$"%SortInvert".hide()
+
+
 func show():
-	$"%LoadStyleButton".update_styles()
 	update_warning()
 	.show()
 	_on_reset_color_pressed()
@@ -362,7 +403,11 @@ func save_style(clear_text = false):
 	if data.character_color == Color("0b0c0f"):
 		if !data.use_outline or data.outline_color == Color("0b0c0f"):
 			SteamHustle.unlock_achievement("ACH_SNEAKY")
-	$"%LoadStyleButton".update_styles()
+	# Pick up a brand-new style file in the toggle list too (no-op if this
+	# save just overwrote an existing, already-listed style), and keep the
+	# highlight on whichever entry now matches what's loaded.
+	_load_styles()
+	_set_current_style_selection(data.style_name)
 	if clear_text:
 		$"%StyleName".clear()
 	_set_label_with_ellipsis($"%SavedLabel", "saved as " + data.style_name + ".style")
@@ -518,6 +563,248 @@ func load_style(style):
 					child.pressed = true
 					select_hitspark(hs)
 	$"%WorkshopButton".disabled = false
+
+# ---------------------------------------------------------------------------
+# Style toggle list - same "named list of on/off items" pattern the mod
+# loader uses, applied to ".style" files. Each discovered style gets a
+# toggle; whichever ones are ON make up the pool the character-select
+# randomizer draws from. FileManagerInterface saves/loads that on/off state
+# as named lists, exactly like ModLoaderMenu does for mod lists.
+#
+# %StyleListContainer is ALSO the only way to pick and load an individual
+# style into the editor now (clicking its name button) - there is no
+# dropdown involved anywhere in this flow.
+# ---------------------------------------------------------------------------
+
+func _setup_file_manager() -> void:
+	file_manager.connect("get_data_requested", self, "_on_fm_get_data_requested")
+	file_manager.connect("apply_data_requested", self, "_on_fm_apply_data_requested")
+	file_manager.connect("get_listed_requested", self, "_on_fm_get_listed_requested")
+	file_manager.connect("folder_updated", self, "_on_fm_folder_updated")
+	
+	# use_game_folder = false: styles live in user://custom, the same
+	# folder _on_OpenFolderButton_pressed() already opens - not next to
+	# the executable like mods.
+	file_manager.setup("custom", PoolStringArray([".style"]), false)
+	file_manager.get_node("%Close").hide()
+	
+	$"%ManageStylesButton".connect("toggled", self, "_open_file_manager")
+
+
+func _open_file_manager(_toggled) -> void:
+	if _toggled:
+		file_manager._on_open_pressed()
+	else:
+		file_manager._on_close_pressed()
+
+
+# Scans user://custom for ".style" files and adds a toggle entry for each
+# one not already known. Safe to call repeatedly - existing entries are
+# left untouched.
+func _load_styles() -> void:
+	var dir = Directory.new()
+	if dir.open("user://custom") != OK:
+		return
+	if dir.list_dir_begin(true, true) != OK:
+		return
+	while true:
+		var file_name = dir.get_next()
+		if file_name == "":
+			break
+		if dir.current_is_dir():
+			continue
+		if file_name.get_extension() != "style":
+			continue
+		add_style_entry("user://custom".plus_file(file_name))
+	dir.list_dir_end()
+
+
+# Cycles the sort mode NAME -> DATE -> ACTIVE -> NAME and reorders the style
+# list, mirroring ModLoaderMenu's _on_sorter_pressed.
+func _on_style_sorter_pressed() -> void:
+	match cur_style_sort:
+		FileManager.SortMode.NAME:
+			cur_style_sort = FileManager.SortMode.DATE
+			$"%Sorter".text = "Sort: Date"
+		FileManager.SortMode.DATE:
+			cur_style_sort = FileManager.SortMode.ACTIVE
+			$"%Sorter".text = "Sort: Active"
+		FileManager.SortMode.ACTIVE:
+			cur_style_sort = FileManager.SortMode.NAME
+			$"%Sorter".text = "Sort: Name"
+	_sort_style_buttons()
+
+
+func _on_style_sort_invert_toggled(toggled: bool) -> void:
+	cur_style_inverted = toggled
+	_sort_style_buttons()
+
+
+func _sort_style_buttons() -> void:
+	var items := []
+	for style_entry in styles.values():
+		items.append({
+			"name": style_entry.button.text,
+			"active": style_entry.active,
+			"path": style_entry.path,
+			"parent": style_entry.parent,
+		})
+	items = FileManager.sort_items(items, cur_style_sort, cur_style_inverted)
+	for i in range(items.size()):
+		$"%StyleListContainer".move_child(items[i].parent, i)
+
+
+# Creates the name button + on/off toggle for one style file, mirroring
+# add_mod()'s button/toggle pair but without any zip/info-tab machinery -
+# a style is just a name and a path.
+func add_style_entry(path: String) -> void:
+	var style_name = path.get_file().get_basename()
+	if styles.has(style_name):
+		return
+
+	var _container = HBoxContainer.new()
+	_container.set_h_size_flags(3)
+	_container.set_v_size_flags(1)
+	_container.name = style_name
+
+	var btn = generateButton(style_name)
+	var toggle = generateButton("", false, 1)
+
+	_container.add_child(btn, true)
+	_container.add_child(toggle, true)
+	$"%StyleListContainer".add_child(_container)
+
+	btn.connect("pressed", self, "_on_style_button_pressed", [path])
+	toggle.connect("toggled", self, "_on_style_toggle_pressed", [style_name, toggle, btn])
+
+	styles[style_name] = {
+		"active": true,
+		"path": path,
+		"toggle": toggle,
+		"button": btn,
+		"parent": _container,
+	}
+	_set_style_toggle_state(true, style_name, toggle, btn)
+
+
+func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag: int = 1):
+	var _button = Button.new() if _is_button else CheckButton.new()
+	_button.text = text_gen
+	_button.flat = true
+	_button.set("mouse_default_cursor_shape", 2) #CURSOR_POINTING_HAND
+	_button.set("custom_colors/font_color_hover", Color(100.0, 0.2, 0.23, 1.0))
+	_button.set_h_size_flags(_h_size_flag)
+	_button.set_v_size_flags(_v_size_flag)
+	_button.add_color_override("font_color", Color("ffffff"))
+	return _button
+
+# Clicking a style's name loads its full contents into the editor - this is
+# now the ONLY place style selection/loading happens from.
+func _on_style_button_pressed(path: String) -> void:
+	var data = _read_style_file(path)
+	if data.empty():
+		return
+	load_style(data)
+	_set_current_style_selection(path.get_file().get_basename())
+
+
+# Highlights whichever %StyleListContainer entry is currently loaded into
+# the editor, clearing the highlight off the previous one. Purely visual -
+# doesn't touch the on/off toggle state.
+func _set_current_style_selection(style_name: String) -> void:
+	if styles.has(current_style_name):
+		styles[current_style_name].button.add_color_override("font_color", Color("ffffff"))
+	current_style_name = style_name
+	if styles.has(current_style_name):
+		styles[current_style_name].button.add_color_override("font_color", Color("55ff55"))
+
+
+# Signal handler for a human clicking a toggle - the only path that should
+# persist anything. Saves the change to whichever named list is currently
+# selected in the file manager (or "unnamed" if none is selected), same
+# as the mod loader's _on_toggle_pressed.
+func _on_style_toggle_pressed(_button_pressed: bool, style_name: String, toggle: CheckButton, button: Button) -> void:
+	_set_style_toggle_state(_button_pressed, style_name, toggle, button)
+	var idx = file_manager.option_button.selected
+	if idx >= 0 and idx < file_manager.loaded_lists.size():
+		file_manager.save_current_list(file_manager.loaded_lists[idx].list_name)
+	else:
+		file_manager.save_current_list("")
+
+
+# Pure UI/state sync - no saving. Safe to call from add_style_entry()
+# (initial setup) and apply_new_style_list() (restoring saved state).
+func _set_style_toggle_state(_button_pressed: bool, style_name: String, toggle: CheckButton, button: Button) -> void:
+	if !styles.has(style_name):
+		return
+	styles[style_name].active = _button_pressed
+	toggle.set_pressed_no_signal(_button_pressed)
+
+
+func get_current_style_list(_default: bool = false) -> Dictionary:
+	var _saved_active_list := []
+	var _saved_inactive_list := []
+
+	for style_name in styles:
+		if _default:
+			_saved_active_list.append(style_name)
+		elif styles[style_name].active:
+			_saved_active_list.append(style_name)
+		else:
+			_saved_inactive_list.append(style_name)
+
+	return {"active": _saved_active_list, "inactive": _saved_inactive_list}
+
+
+func apply_new_style_list(list: Dictionary) -> void:
+	for style_name in styles:
+		var entry = styles[style_name]
+		if style_name in list.active:
+			_set_style_toggle_state(true, style_name, entry.toggle, entry.button)
+		elif style_name in list.inactive:
+			_set_style_toggle_state(false, style_name, entry.toggle, entry.button)
+
+
+# Resolves a saved list's "active" names into actual ".style" file paths -
+# this is what the character-select randomizer should read (via
+# get_listed_requested) to know which files it can pick from.
+func get_listed_styles(list: Dictionary) -> Array:
+	var _items = []
+	for style_name in styles:
+		if style_name in list.active:
+			_items.append(styles[style_name].path)
+	return _items
+
+
+# Reads a ".style" file straight off disk. Styles are saved with
+# store_var (see Custom.save_style) rather than JSON, and allow_objects
+# is left at its default false - never load arbitrary Objects from a
+# style file.
+func _read_style_file(path: String) -> Dictionary:
+	var f = File.new()
+	if f.open(path, File.READ) != OK:
+		return {}
+	var data = f.get_var()
+	f.close()
+	if data is Dictionary:
+		return data
+	return {}
+
+
+func _on_fm_get_data_requested(use_default: bool, result: Dictionary) -> void:
+	result["data"] = get_current_style_list(use_default)
+
+
+func _on_fm_apply_data_requested(data: Dictionary) -> void:
+	apply_new_style_list(data)
+
+
+func _on_fm_get_listed_requested(list_data: Dictionary, result: Dictionary) -> void:
+	result["paths"] = PoolStringArray(get_listed_styles(list_data))
+
+
+func _on_fm_folder_updated(path: String) -> void:
+	add_style_entry(path)
 
 func select_hitspark(hitspark_name):
 	if selected_hitspark != hitspark_name:

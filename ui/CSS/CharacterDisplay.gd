@@ -8,6 +8,7 @@ var selected_style = null
 var aura_particles := []
 var character_limb_data := {}
 onready var load_style_button = $"%LoadStyleButton"
+onready var style_list_button = $"%StyleListButton"
 
 func _ready():
 	$"%PlayerLabel".text = "P1" if player_id == 1 else "P2"
@@ -204,8 +205,12 @@ func init():
 	$"%LoadStyleButton".save_style = true
 	$"%LoadStyleButton".update_styles()
 	$"%LoadStyleButton".hide()
+	style_list_button.player_id = player_id
+	style_list_button.update_lists()
+	style_list_button.hide()
 	if SteamHustle.STARTED and (!Network.multiplayer_active or player_id == Network.player_id):
 		$"%LoadStyleButton".show()
+		style_list_button.show()
 
 func load_character_data(data):
 	$"%CharacterPortrait".texture = data["portrait"]
@@ -220,4 +225,15 @@ func set_enabled(on):
 	for child in get_children():
 		child.visible = on
 		$"%LoadStyleButton".save_style = on
+
+
+# The style this player fights with: a random pick from the selected list if
+# one is chosen, otherwise the manually selected style. The random pick is
+# NOT shown anywhere on the select screen. Seeded so both players agree.
+func get_style_for_match(seed_value: int):
+	if style_list_button.cur_list_data != {}:
+		var picked = style_list_button.get_random_style(seed_value)
+		if picked != null:
+			return picked
+	return selected_style
 

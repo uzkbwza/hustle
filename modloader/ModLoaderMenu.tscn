@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
 [ext_resource path="res://modloader/ModLoaderMenu.gd" type="Script" id=2]
 [ext_resource path="res://theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=4]
+[ext_resource path="res://filemanager/FileManagerInterface.tscn" type="PackedScene" id=5]
 
 [node name="Window" instance=ExtResource( 1 )]
 margin_left = -237.5
@@ -12,7 +13,13 @@ margin_right = 237.5
 margin_bottom = 130.0
 script = ExtResource( 2 )
 
-[node name="VBoxContainer" parent="." index="0"]
+[node name="FileManagerInterface" parent="." index="0" instance=ExtResource( 5 )]
+
+[node name="Window" parent="FileManagerInterface" index="0"]
+margin_left = 150.0
+margin_right = 290.0
+
+[node name="VBoxContainer" parent="." index="1"]
 margin_right = 474.0
 margin_bottom = 259.0
 
@@ -161,12 +168,22 @@ margin_bottom = 32.0
 rect_min_size = Vector2( 64, 0 )
 size_flags_vertical = 3
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
-text = "SORT: ALL"
+text = "SORT: NAME"
 __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
+[node name="SortInvert" type="CheckButton" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
+unique_name_in_owner = true
+margin_left = 65.0
+margin_right = 145.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 80, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Invert"
+
+[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
 unique_name_in_owner = true
 margin_left = 65.0
 margin_right = 200.0
@@ -174,21 +191,23 @@ margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "ModLoader Credits"
 
-[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
+[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="3"]
 unique_name_in_owner = true
-margin_left = 201.0
-margin_right = 336.0
+margin_left = 146.0
+margin_right = 281.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Visit Steam Workshop"
 
-[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="3"]
+[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="4"]
 unique_name_in_owner = true
-margin_left = 337.0
-margin_right = 473.0
+margin_left = 282.0
+margin_right = 418.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Upload to Steam Workshop"
 
-[node name="ButtonSoundPlayer" parent="." index="1" instance=ExtResource( 4 )]
+[node name="ButtonSoundPlayer" parent="." index="2" instance=ExtResource( 4 )]
 button_containers = [ NodePath("../VBoxContainer/TitleBar"), NodePath("../VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods"), NodePath("../VBoxContainer/Contents/HBoxContainer/ModInfoContainer/TabContainer/Mod Info"), NodePath("../VBoxContainer/Panel/HBoxContainer") ]
+
+[editable path="FileManagerInterface"]

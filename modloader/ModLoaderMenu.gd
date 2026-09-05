@@ -11,11 +11,12 @@ var userdata := {}
 var late_inited = false
 var needs_to_save = false
 
-enum Sort { ALL, ON, OFF }
-var cur_sort = Sort.ALL
+var cur_sort = FileManager.SortMode.NAME
+var cur_sort_inverted := false
 
 onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
 onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
+onready var file_manager: FileManagerInterface = $FileManagerInterface
 
 
 # Called when the node enters the scene tree for the first time.
@@ -31,51 +32,119 @@ func _ready():
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
 	$"%Sorter".connect("pressed", self, "_on_sorter_pressed")
+	$"%SortInvert".connect("toggled", self, "_on_sort_invert_toggled")
 	$"%OpenFileManager".connect("pressed", self, "_open_file_manager")
-	
+
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
-	
+
+	_setup_file_manager()
+
 	hide()
 
 
+func _setup_file_manager() -> void:
+	file_manager.connect("get_data_requested", self, "_on_fm_get_data_requested")
+	file_manager.connect("apply_data_requested", self, "_on_fm_apply_data_requested")
+	file_manager.connect("get_listed_requested", self, "_on_fm_get_listed_requested")
+	file_manager.connect("folder_updated", self, "_on_fm_folder_updated")
+	
+	# On desktop mods live next to the executable (use_game_folder=true),
+	# which matches what _loadMods() uses. On Android the APK dir is
+	# read-only so we must write to user://mods instead.
+	file_manager.setup("mods", PoolStringArray([".zip", ".ymhpack"]),
+		not Global.is_mobile_device)
+	
+	# FileManagerInterface no longer manages external buttons itself -
+	# wire its own open/close directly. %Close still also runs
+	# _close_clicked() below, so one press closes both windows.
+	$"%Close".connect("pressed", file_manager, "_on_close_pressed")
+
+
+func _loadMods():
+	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
+	if OS.get_name() == "OSX":
+		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
+	var modPathPrefix = gameInstallDirectory.plus_file("mods")
+	_load_mods_in_folder(modPathPrefix)
+
+	var dir2 = Directory.new()
+	var _directories = []
+	var workshop = SteamWorkshop.new()
+	for item in Steam.getSubscribedItems():
+		var info : Dictionary
+		info = workshop.get_item_install_info(item)
+		if info.ret:
+			_load_mods_in_folder(info.folder, true)
+
+	# surely this is just a simple addition! later i shall make it work for pc too - vineraio
+	if Global.is_mobile_device:
+		_load_mods_in_folder("user://mods", true)
+
+
+func _load_mods_in_folder(modPathPrefix, zip_only=false):
+	print("loading mods in folder: " + modPathPrefix)
+	var dir = Directory.new()
+	if dir.open(modPathPrefix) != OK:
+		return
+	if dir.list_dir_begin() != OK:
+		return
+
+	var _modZipFiles = []
+
+	while true:
+		var fileName = dir.get_next()
+		if fileName == '':
+			break
+		if dir.current_is_dir():
+			continue
+		var modFSPath: String = modPathPrefix.plus_file(fileName)
+		if zip_only and modFSPath.get_extension() != "zip":
+			continue
+		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
+		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+			continue
+		_modZipFiles.append(modFSPath)
+
+	for mod_path in _modZipFiles:
+		refresh_mod(mod_path)
+
+
 func _open_file_manager():
-	FileManager.setup(
-		"mods", 
-		[".zip", ".ymhpack"], 
-		self, 
-		"get_current_list", 
-		"apply_new_list", 
-		"on_mod_folder_updated", 
-		"get_listed",
-		"_sort_mod_entries",
-		$"%Close", 
-		$"%OpenFileManager", 
-		true
-		)
+	file_manager._on_open_pressed()
 
 
 func _on_sorter_pressed():
-	var sorter_text
 	match cur_sort:
-		Sort.ALL: 
-			cur_sort = Sort.ON
-			sorter_text = "Sort: ON"
-		Sort.ON: 
-			cur_sort = Sort.OFF
-			sorter_text = "Sort: OFF"
-		Sort.OFF: 
-			cur_sort = Sort.ALL
-			sorter_text = "Sort: ALL"
-	$"%Sorter".text = sorter_text
+		FileManager.SortMode.NAME:
+			cur_sort = FileManager.SortMode.DATE
+			$"%Sorter".text = "Sort: Date"
+		FileManager.SortMode.DATE:
+			cur_sort = FileManager.SortMode.ACTIVE
+			$"%Sorter".text = "Sort: Active"
+		FileManager.SortMode.ACTIVE:
+			cur_sort = FileManager.SortMode.NAME
+			$"%Sorter".text = "Sort: Name"
 	_sort_mod_buttons()
 
 
-func on_mod_folder_updated(_path: String, _deleted: bool):
+func _on_sort_invert_toggled(toggled: bool):
+	cur_sort_inverted = toggled
+	_sort_mod_buttons()
+
+
+func _on_fm_folder_updated(path: String) -> void:
+	on_mod_folder_updated(path)
+
+
+func on_mod_folder_updated(_path: String):
 	var modGlobalPath = ProjectSettings.globalize_path(_path)
 	if !ProjectSettings.load_resource_pack(modGlobalPath, true):
 		return
+	refresh_mod(_path)
 
+
+func refresh_mod(_path):
 	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
 	gdunzip.load(_path)
 	var modHash = ModLoader._hash_file(_path)
@@ -85,6 +154,9 @@ func on_mod_folder_updated(_path: String, _deleted: bool):
 		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
 			var metaRes = ModLoader._checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
 			if metaRes != null:
+				var mod_name = metaRes[1].name
+				if mods.has(mod_name):
+					continue
 				var modInfo = [metaRes[0], modHash, metaRes[1]]
 				modInfo[2].zip_path = _path
 				ModLoader.zips_by_name[modInfo[2].name] = _path
@@ -93,7 +165,7 @@ func on_mod_folder_updated(_path: String, _deleted: bool):
 				ModLoader.inactive_mods.append(modInfo)
 				modInfo.remove(0)
 				add_mod(modInfo)
-				FileManager._refresh_lists_menu()
+				file_manager._refresh_lists_menu()
 				_sort_mod_buttons()
 				continue
 
@@ -104,11 +176,7 @@ func adjust_ui(is_mobile):
 
 
 func _open_mods_folder():
-	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
-	if OS.get_name() == "OSX":
-		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
-	var modPathPrefix = gameInstallDirectory.plus_file("mods")
-	OS.shell_open(modPathPrefix)
+	OS.shell_open(file_manager.dir_path)
 
 func _uploader_clicked():
 	hide()
@@ -122,7 +190,7 @@ func _workshop_clicked():
 func _credits_clicked():
 	get_node("/root/Main/UILayer/ModLoaderCredits").show()
 	get_node("/root/Main/UILayer/ModLoaderCredits").raise()
-	
+
 func _close_clicked():
 	hide()
 	if current_mod:
@@ -162,14 +230,14 @@ func add_mod(mod):
 	var _container = HBoxContainer.new()
 	_container.set_h_size_flags(3)
 	_container.set_v_size_flags(1)
-	
+
 	var btn = generateButton(mod[1].friendly_name)
 	var toggle = generateButton("", false, 1)
-	
+
 	_container.name = mod[1].friendly_name
 	_container.add_child(btn, true)
 	_container.add_child(toggle, true)
-	
+
 	#Add button container to $mods
 	self.list_container.add_child(_container)
 	# Generate tab container
@@ -198,7 +266,7 @@ func add_mod(mod):
 		var req = "Requires: " + str(mod[1].requires)
 		var req_lab = generateLabel(req, 0)
 		info.get_node("VBoxContainer").add_child(req_lab)
-	
+
 	#Populate mod options tab
 	#info.get_node("ScrollContainer/VBoxContainer").add_child()
 
@@ -213,7 +281,7 @@ func show_menu(node:Node):
 
 func _tab_clicked(node:Node, _zip_path:String):
 	if current_mod != node:
-		FileManager.cur_item_path = _zip_path
+		file_manager.cur_item_path = _zip_path
 		show_menu(node)
 
 
@@ -223,14 +291,14 @@ func _tab_clicked(node:Node, _zip_path:String):
 # none is selected).
 func _on_toggle_pressed(_button_pressed: bool, _mod, _toggle, _button):
 	_set_toggle_state(_button_pressed, _mod, _toggle, _button)
-	var idx = FileManager.option_button.selected
-	if idx >= 0 and idx < FileManager.loaded_lists.size():
-		FileManager.save_current_list(FileManager.loaded_lists[idx].list_name)
+	var idx = file_manager.option_button.selected
+	if idx >= 0 and idx < file_manager.loaded_lists.size():
+		file_manager.save_current_list(file_manager.loaded_lists[idx].list_name)
 	else:
-		FileManager.save_current_list("")
+		file_manager.save_current_list("")
 
 
-# Pure UI/state sync — no saving, no calling back into FileManager.
+# Pure UI/state sync — no saving, no calling back into the file manager.
 # Safe to call from add_mod() (initial setup) and apply_new_list()
 # (restoring saved state) without risk of feeding back into a save
 # that re-triggers a restore that re-triggers apply_new_list again.
@@ -243,35 +311,25 @@ func _set_toggle_state(_button_pressed: bool, _mod, _toggle, _button):
 		"button": _button,
 		"parent": _button.get_parent()
 	}
-	
+
 	var is_mod_active = _mod in ModLoader.active_mods
 	_button.add_color_override("font_color", Color("ff333b" if _button_pressed != is_mod_active else "ffffff"))
-	
+
 	_toggle.set_pressed_no_signal(_button_pressed)
 
 
 func _sort_mod_buttons():
-	var entries = mods.values()
-	entries = FileManager.sort_data(entries)
-	for i in range(entries.size()):
-		var button_parent = entries[i].parent
-		button_parent.get_parent().move_child(button_parent, i)
-
-
-func _sort_mod_entries(a, b):
-	var a_name = a.mod[1].name.to_lower()
-	var b_name = b.mod[1].name.to_lower()
-	
-	if cur_sort == Sort.ALL:
-		return a_name < b_name
-	
-	if a.active != b.active:
-		if cur_sort == Sort.ON:
-			return a.active
-		if cur_sort == Sort.OFF:
-			return not a.active
-	
-	return a_name < b_name
+	var items := []
+	for mod_entry in mods.values():
+		items.append({
+			"name": mod_entry.button.text,
+			"active": mod_entry.active,
+			"path": mod_entry.mod[1].zip_path,
+			"parent": mod_entry.parent,
+		})
+	items = FileManager.sort_items(items, cur_sort, cur_sort_inverted)
+	for i in range(items.size()):
+		list_container.move_child(items[i].parent, i)
 
 
 func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag:int = 1 ):
@@ -327,7 +385,7 @@ func add_menu_from_node(menuNode):
 func get_current_list(_default = false) -> Dictionary:
 	var _saved_active_list := []
 	var _saved_inactive_list := []
-	
+
 	for mod_name in mods:
 		if _default:
 			_saved_active_list.append(mod_name)
@@ -335,7 +393,7 @@ func get_current_list(_default = false) -> Dictionary:
 			_saved_active_list.append(mod_name)
 		else:
 			_saved_inactive_list.append(mod_name)
-	
+
 	var _current_list = {"active": _saved_active_list, "inactive": _saved_inactive_list}
 	return _current_list
 
@@ -349,15 +407,32 @@ func apply_new_list(list: Dictionary):
 			_set_toggle_state(false, entry.mod, entry.toggle, entry.button)
 
 
-func get_listed(list: Dictionary) -> Dictionary:
+func get_listed(list: Dictionary) -> Array:
 	var _items = []
-	
+
 	for mod_name in mods:
 		var entry = mods[mod_name]
 		if mod_name in list.active:
 			_items.append(entry.mod[1].zip_path)
-	
+
 	return _items
+
+
+# ---------------------------------------------------------------------------
+# FileManagerInterface signal handlers - thin wrappers around the existing
+# business logic above, replacing the old has_method()/call()-by-name wiring.
+# ---------------------------------------------------------------------------
+
+func _on_fm_get_data_requested(use_default: bool, result: Dictionary) -> void:
+	result["data"] = get_current_list(use_default)
+
+
+func _on_fm_apply_data_requested(data: Dictionary) -> void:
+	apply_new_list(data)
+
+
+func _on_fm_get_listed_requested(list_data: Dictionary, result: Dictionary) -> void:
+	result["paths"] = PoolStringArray(get_listed(list_data))
 
 
 func _on_apply_changes_pressed():

@@ -109,7 +109,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://bin/FGCharacter.gdns"
 }, {
-"base": "",
+"base": "Reference",
 "class": "FGObject",
 "language": "NativeScript",
 "path": "res://bin/FGObject.gdns"
@@ -120,9 +120,9 @@ _global_script_classes=[ {
 "path": "res://characters/BaseChar.gd"
 }, {
 "base": "CanvasLayer",
-"class": "FileManagement",
+"class": "FileManagerInterface",
 "language": "GDScript",
-"path": "res://filemanager/FileManager.gd"
+"path": "res://filemanager/FMInterface.gd"
 }, {
 "base": "",
 "class": "FixedMath",
@@ -432,7 +432,7 @@ _global_script_class_icons={
 "FGCharacter": "",
 "FGObject": "",
 "Fighter": "",
-"FileManagement": "",
+"FileManagerInterface": "",
 "FixedMath": "",
 "FixedVec2String": "",
 "ForesightAfterImage": "",
@@ -507,6 +507,7 @@ config/icon="res://icon2.png"
 
 Steam="*res://Steam.gd"
 Global="*res://Global.gd"
+FileManager="*res://filemanager/FileManager.gd"
 SteamHustle="*res://SteamY.gd"
 ReplayManager="*res://ReplayManager.gd"
 Network="*res://cl_port/Network.gd"
@@ -516,7 +517,6 @@ Custom="*res://Custom.gd"
 Hotkeys="*res://Hotkeys.gd"
 ModOverride="*res://ModOverride.gd"
 BorderManager="*res://bordermanager/BorderManager.tscn"
-FileManager="*res://filemanager/FileManager.tscn"
 
 [debug]
 

@@ -102,6 +102,7 @@ signal game_error(what)
 signal start_game()
 signal player_turns_synced()
 signal character_selected(player_id, character, style)
+signal character_list_selected(player_id, list_name)
 signal player_turn_ready(player_id)
 signal turn_ready()
 signal match_code_received(code)
@@ -604,6 +605,12 @@ func assign_players_for_replay_challenge(replay_data):
 func select_character(character, style=null):
 	rpc_("sync_character_selection", [player_id, character, style])
 
+# Send which saved style LIST this player has selected. Kept separate from
+# select_character so the existing character_selected signal (used by mods)
+# never changes shape. Listeners opt in via character_list_selected.
+func select_list(list_name: String = ""):
+	rpc_("sync_character_list_selection", [player_id, list_name])
+
 func forfeit(opponent=false):
 	print("forfeiting")
 	if !opponent:
@@ -838,6 +845,9 @@ remotesync func sync_character_selection(player_id, character, style=null):
 	print("player %s selected character" % [str(player_id)])
 	styles[player_id] = style
 	emit_signal("character_selected", player_id, character, style)
+
+remotesync func sync_character_list_selection(player_id, list_name=""):
+	emit_signal("character_list_selected", player_id, list_name)
 
 remotesync func open_chara_select():
 	print("opening character select")

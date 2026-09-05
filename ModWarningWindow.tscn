@@ -40,6 +40,7 @@ custom_constants/margin_top = 2
 custom_constants/margin_left = 2
 
 [node name="Label" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/MarginContainer" index="0"]
+unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 230.0
@@ -70,6 +71,38 @@ Mods you should probably uninstall:
 Modded characters should generally be fine to continue using.
 
 If your game is behaving weird after the new update, your first solution should be to disable all mods."
+
+[node name="Crash" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/MarginContainer" index="1"]
+unique_name_in_owner = true
+visible = false
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 230.0
+margin_bottom = 299.0
+size_flags_vertical = 3
+bbcode_enabled = true
+bbcode_text = "[color=red] The game crashed on the last launch, so it started on SAFEBOOT mode.[/color]
+Your Only Move Is HUSTLE has received a large update that changes a lot of things, so mods may be broken, have dependencies missing, bugs, and other erros. [color=red]Mods have been automatically disabled.[/color] You can [color=lime]re-enable them in the options menu[/color], but they may cause your game to not work properly, or not even start at all.
+
+You may want to unsubscribe from certain kinds of mods until mod creators have updated them to work with the latest update (1.11.0).
+
+[color=red]Mods you should probably uninstall:[/color]
+- Lobby mods, \"Ranked\" mods, anything to do with multiplayer.
+- QOL mods that change the UI or HUD
+- Style/aura mods.
+
+If your game is behaving weird, your first solution should be to [color=red]disable all mods.[/color]"
+text = " The game crashed on the last launch, so it started on SAFEBOOT mode.
+Your Only Move Is HUSTLE has received a large update that changes a lot of things, so mods may be broken, have dependencies missing, bugs, and other erros. Mods have been automatically disabled. You can re-enable them in the options menu, but they may cause your game to not work properly, or not even start at all.
+
+You may want to unsubscribe from certain kinds of mods until mod creators have updated them to work with the latest update (1.11.0).
+
+Mods you should probably uninstall:
+- Lobby mods, \"Ranked\" mods, anything to do with multiplayer.
+- QOL mods that change the UI or HUD
+- Style/aura mods.
+
+If your game is behaving weird, your first solution should be to disable all mods."
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="1"]
 margin_top = 300.0

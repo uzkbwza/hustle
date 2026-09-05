@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
-[ext_resource path="res://filemanager/FileManager.gd" type="Script" id=2]
+[ext_resource path="res://filemanager/FMInterface.gd" type="Script" id=2]
 
-[node name="FileManager" type="CanvasLayer"]
+[node name="FileManagerInterface" type="CanvasLayer"]
 layer = 100
 script = ExtResource( 2 )
 __meta__ = {
@@ -21,7 +21,7 @@ margin_bottom = 136.5
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 139.0
-margin_bottom = 305.0
+margin_bottom = 272.0
 
 [node name="TitleBar" type="Panel" parent="Window/VBoxContainer2"]
 margin_right = 138.0
@@ -42,7 +42,7 @@ align = 1
 [node name="Contents" type="PanelContainer" parent="Window/VBoxContainer2"]
 margin_top = 10.0
 margin_right = 138.0
-margin_bottom = 304.0
+margin_bottom = 271.0
 rect_min_size = Vector2( 0, 10 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -51,7 +51,7 @@ size_flags_vertical = 3
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 137.0
-margin_bottom = 293.0
+margin_bottom = 260.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Window/VBoxContainer2/Contents/Control"]
 margin_right = 136.0
@@ -78,6 +78,7 @@ text = "Import Files"
 
 [node name="ExportFileCustom" type="Button" parent="Window/VBoxContainer2/Contents/Control"]
 unique_name_in_owner = true
+visible = false
 margin_top = 33.0
 margin_right = 136.0
 margin_bottom = 65.0
@@ -87,9 +88,9 @@ size_flags_vertical = 3
 text = "Export Custom"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Window/VBoxContainer2/Contents/Control"]
-margin_top = 66.0
+margin_top = 33.0
 margin_right = 136.0
-margin_bottom = 131.0
+margin_bottom = 98.0
 alignment = 2
 
 [node name="OptionButton" type="OptionButton" parent="Window/VBoxContainer2/Contents/Control/VBoxContainer"]
@@ -127,18 +128,18 @@ size_flags_vertical = 3
 text = "Save"
 
 [node name="Label" type="Label" parent="Window/VBoxContainer2/Contents/Control"]
-margin_top = 132.0
+margin_top = 99.0
 margin_right = 136.0
-margin_bottom = 148.0
+margin_bottom = 115.0
 rect_min_size = Vector2( 0, 16 )
 text = "Manage Selected"
 align = 1
 valign = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Window/VBoxContainer2/Contents/Control"]
-margin_top = 149.0
+margin_top = 116.0
 margin_right = 136.0
-margin_bottom = 280.0
+margin_bottom = 247.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -235,8 +236,8 @@ text = "Delete Folder"
 
 [node name="Printer" type="Label" parent="Window/VBoxContainer2/Contents/Control"]
 unique_name_in_owner = true
-margin_top = 281.0
+margin_top = 248.0
 margin_right = 136.0
-margin_bottom = 292.0
+margin_bottom = 259.0
 size_flags_vertical = 5
 autowrap = true
