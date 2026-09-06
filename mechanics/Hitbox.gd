@@ -344,6 +344,7 @@ func get_real_victim_hitlag():
 	else:
 		return victim_hitlag
 
+# depricated, left for mods that may require it
 func otg_check(obj):
 	return !obj.is_otg() or hits_otg
 
@@ -357,7 +358,9 @@ func already_hit_object(obj):
 			return true
 
 func hit(obj):
-	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit) and otg_check(obj):
+	if obj.is_invulnerable_to(self, host):
+		return
+	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit):
 		var camera = host.get_camera()
 		var dir = get_dir_float(true)
 		if grounded_hit_state is String and grounded_hit_state == "HurtGrounded" and obj.is_grounded():

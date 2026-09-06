@@ -950,6 +950,35 @@ func deactivate_hitboxes():
 	pass
 
 
+
+func is_invulnerable_to(hitbox, attacker):
+	var grounded = is_grounded()
+	var otg = is_otg()
+	
+	if (hitbox is ThrowBox) and !can_be_thrown():
+		return true
+	if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
+		return true
+	if !otg and !hitbox.hits_vs_standing:
+		return true
+	if otg and not hitbox.hits_otg:
+		return true
+	if hitbox.already_hit_object(self):
+		return true
+	if attacker:
+		if !attacker.is_grounded():
+			if aerial_attack_immune:
+				return true
+		else:
+			if grounded_attack_immune:
+				return true
+		if attacker.id == id and !hitbox.allowed_to_hit_own_team:
+			return true
+	
+	return false
+
+
+
 func hit_by(hitbox: Hitbox):
 	emit_signal("got_hit")
 	if hooks:

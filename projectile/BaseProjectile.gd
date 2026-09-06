@@ -127,6 +127,15 @@ func on_hit_ceiling():
 func can_hit_cancel(_fighter):
 	return hit_cancel_on_hit
 
+
+
+func is_invulnerable_to(hitbox, attacker):
+	if !hitbox.hits_projectiles:
+		return true
+	return .is_invulnerable_to(hitbox, attacker)
+
+
+
 func hit_by(hitbox):
 	if hooks:
 		hooks.hit_by(hitbox)

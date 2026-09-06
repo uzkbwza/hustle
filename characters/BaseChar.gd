@@ -1753,6 +1753,19 @@ func counter_hitbox(hitbox):
 	prediction_effect()
 
 
+
+func is_invulnerable_to(hitbox, attacker):
+	if hitbox is ThrowBox:
+		if !can_be_thrown():
+			if blockstun_ticks > 0:
+				hitbox.save_hit_object(self)
+			return true
+		if wakeup_throw_immunity_ticks > 0:
+			return true
+	return .is_invulnerable_to(hitbox, attacker)
+
+
+
 func hit_by(hitbox, force_hit=false):
 	if hooks:
 		hooks.hit_by(hitbox)

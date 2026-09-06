@@ -1275,53 +1275,33 @@ func apply_hitboxes(players):
 
 	hooks.post_apply_hitboxes(players)
 
+
+
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
+	
+	var host = hurtbox.get_parent()
+	if host is ObjectState:
+		host = host.host
+	var active_limbs = []
+	if (!(hurtbox is Hitbox)) and host and host.current_state():
+		active_limbs = host.current_state().get_active_hurtboxes()
+	
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
-			var host = hurtbox.get_parent()
-			if host is ObjectState:
-				host = host.host
-			var attacker = hitbox.host
-			var grounded = (host.is_grounded() if !(hurtbox is Hitbox) else true)
-			var otg = (host.is_otg() if !(hurtbox is Hitbox) else false)
 			if !hitbox.overlaps(hurtbox):
 				var any_collisions = false
-				if host and host.current_state():
-					for hurtbox_ in host.current_state().get_active_hurtboxes():
-						if hitbox.overlaps(hurtbox_):
-							any_collisions = true
-							break
+				for hurtbox_ in active_limbs:
+					if hitbox.overlaps(hurtbox_):
+						any_collisions = true
+						break
 				if !any_collisions:
 					continue
 			
-			if hitbox is ThrowBox:
-				if !host.can_be_thrown():
-					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
-						hitbox.save_hit_object(host)
-					continue
-				if host.is_in_group("Fighter"):
-					if host.wakeup_throw_immunity_ticks > 0:
-						continue
-			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
+			var attacker = hitbox.host
+			if (!(hurtbox is Hitbox)) and host.is_invulnerable_to(hitbox, attacker):
 				continue
-			if !otg and !hitbox.hits_vs_standing:
-				continue
-			if otg and not hitbox.hits_otg:
-				continue
-			if !host.is_in_group("Fighter") and !hitbox.hits_projectiles:
-				continue
-			if hitbox.already_hit_object(host):
-				continue
-			if attacker:
-				if !attacker.is_grounded():
-					if host.aerial_attack_immune:
-						continue
-				else:
-					if host.grounded_attack_immune:
-						continue
-				if attacker.id == host.id and !hitbox.allowed_to_hit_own_team:
-					continue
+			
 			hit_by = hitbox
 
 	return hit_by
