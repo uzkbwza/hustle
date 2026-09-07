@@ -2,6 +2,7 @@ extends Control
 
 class_name ActionButton
 
+signal pressed()
 signal was_pressed(action)
 signal toggled(on)
 signal data_changed()
@@ -80,22 +81,25 @@ func _ready():
 	$"%Button".connect("mouse_exited", self, "emit_signal", ["mouse_exited"])
 	$"%Button".connect("toggled", self, "on_toggled")
 	connect("visibility_changed", self, "on_visibility_changed")
-	Global.connect("mobile_ui_changed", self, "adjust_ui")
-	adjust_ui(Global.mobile_ui)
+#	Global.connect("mobile_ui_changed", self, "adjust_ui")
+#	adjust_ui(Global.mobile_ui)
 
 
-func adjust_ui(is_mobile):
-	rect_min_size = Vector2(32, 32) if is_mobile else Vector2(16, 16)
-	rect_size = rect_min_size
+#func adjust_ui(is_mobile):
+#	rect_min_size = Vector2(32, 32) if is_mobile else Vector2(16, 16)
+#	rect_size = rect_min_size
 
 
 func on_visibility_changed():
 	if state and state.flip_with_facing:
 		$"%TextureRect".flip_h = state.host.get_opponent_dir() < 0 if state.host.opponent.current_state().name != "Grabbed" else state.host.get_facing_int() < 0
 
+
 func on_toggled(on):
 	emit_signal("toggled", on)
+	emit_signal("pressed")
 	emit_signal("was_pressed", action_name)
+
 
 func set_pressed_no_signal(on):
 	$"%Button".set_pressed_no_signal(on)

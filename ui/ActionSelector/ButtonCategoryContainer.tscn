@@ -9,7 +9,7 @@
 show_behind_parent = true
 margin_right = 56.0
 margin_bottom = 77.0
-rect_min_size = Vector2( 55, 60 )
+rect_min_size = Vector2( 52, 69 )
 size_flags_horizontal = 0
 size_flags_vertical = 3
 theme = ExtResource( 1 )

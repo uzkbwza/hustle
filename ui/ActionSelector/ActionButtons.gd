@@ -50,13 +50,18 @@ var buffered_ui_actions = []
 export var opponent_action_buttons_path: NodePath
 onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_buttons_path)
 
-var button_category_containers = {
-}
+var button_category_containers = {}
+
+var mobile_focused_category = null setget set_focused_container
+
+
 
 func _input(event):
 	if event is InputEventAction:
 		if event.is_action_pressed("submit_action"):
 			_on_submit_pressed()
+
+
 
 func _ready():
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
@@ -96,6 +101,8 @@ func _ready():
 		$"%LastMoveTexture".rect_position.x -= 40
 #		$"%DIPlotContainer".alignment = BoxContainer.ALIGN_BEGIN
 	opponent_action_buttons.connect("action_clicked", self, "on_opponent_action_clicked")
+
+
 
 func on_opponent_action_clicked(_action, _data, _extra):
 	if current_button and current_button.data_node:
@@ -251,6 +258,14 @@ func adjust_ui(is_mobile):
 
 
 
+func set_focused_container(container):
+	if is_instance_valid(mobile_focused_category):
+		mobile_focused_category.mobile_focus(false)
+	mobile_focused_category = container
+	mobile_focused_category.mobile_focus(true)
+
+
+
 func init(game, id):
 	reset()
 	self.game = game
@@ -376,6 +391,7 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	button.connect("data_changed", self, "send_ui_action")
 	button.container = container
 	button.connect("was_pressed", self, "on_action_selected", [button])
+	button.connect("pressed", self, "set_focused_container", [container])
 	button.call_deferred("end_setup")
 	$"%ButtonSoundPlayer".add_container(button)
 	return button
@@ -477,6 +493,8 @@ func extra_updated():
 #	on_action_selected(current_action, current_button)
 	send_ui_action()
 
+
+
 func on_action_selected(action, button):
 	button_pressed = true
 	for b in buttons:
@@ -517,6 +535,8 @@ func on_action_selected(action, button):
 	if !fighter_extra.can_feint:
 		$"%FeintButton".set_pressed_no_signal(false)
 	send_ui_action()
+
+
 
 func show_button_data_node(button):
 	yield(get_tree(), "idle_frame")

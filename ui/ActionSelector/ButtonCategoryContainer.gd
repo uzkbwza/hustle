@@ -4,12 +4,17 @@ class_name ButtonCategoryContainer
 
 signal prediction_selected()
 
+# Depricated Constants
+# Originally used to calculate hiding and showing buttons on hover
+# Kept for now in case mods reference them
 const BOX_SIZE = 52
 const DEFAULT_HEIGHT = 60
-# Buttons visible in the collapsed (non-hovered) state — bottom 3 rows of
-# 3 cols each. Used to compute the overflow cutoff and to decide when to
-# trigger overflow at all (>9 means there's at least one hidden row).
 const VISIBLE_LIMIT = 9
+
+
+const SIZE_DEFAULT = Vector2(52, 69) # nice
+const SIZE_MOBILE_FOCUSED = Vector2(298, 80)
+
 
 onready var action_data_container = $"%ActionDataContainer"
 onready var action_data_panel_container = $"%ActionDataPanelContainer"
@@ -45,6 +50,10 @@ var category_buttons = []
 # while keeping them alive for restore.
 var hidden_buttons_node = null
 
+var is_mobile_focused = false setget mobile_focus
+
+
+
 func init(name):
 	label_text = name
 	$"%Label".text = label_text
@@ -65,17 +74,40 @@ func _ready():
 	add_child(hidden_buttons_node)
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
+	$"%ScrollContainer".connect("resized", self, "on_resized")
+	connect("minimum_size_changed", self, "enforce_min_size")
+
 
 
 func adjust_ui(is_mobile):
-	if is_mobile:
-		rect_min_size = Vector2(98, 76)
-		$"%ButtonContainer".columns = 3 #should be 5
-	else:
-		rect_min_size = Vector2(52, 60)
-		$"%ButtonContainer".columns = 3
+	mobile_focus(is_mobile_focused)
+	enforce_min_size()
+
+
+
+func enforce_min_size():
 	rect_size = rect_min_size
-	
+
+
+
+func on_resized():
+	var first_button : Control = $"%ButtonContainer".get_child(0)
+	if is_instance_valid(first_button):
+		var button_width = first_button.get_combined_minimum_size().x + 1 # +1 to account for seperation
+		var container_width = $"%ScrollContainer".rect_size.x + 1 # +1 to account for seperation
+		$"%ButtonContainer".columns = floor(container_width / button_width)
+
+
+
+func mobile_focus(on):
+	is_mobile_focused = on
+	var use_focus = Global.mobile_ui and on
+	var container_size :Vector2 = SIZE_MOBILE_FOCUSED if use_focus else SIZE_DEFAULT 
+	var button_size :Vector2 = Vector2(32, 32) if use_focus else Vector2(16, 16)
+	for button in $"%ButtonContainer".get_children():
+		button.rect_min_size = button_size
+	rect_min_size = container_size
+
 
 
 func _on_visibility_changed():
