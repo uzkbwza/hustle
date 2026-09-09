@@ -58,11 +58,7 @@ func init(name):
 	label_text = name
 	$"%Label".text = label_text
 
-#func _on_gui_input(event: InputEvent):
-#	if event is InputEventMouseButton:
-#		if event.pressed:
-#			raise()
-#	snap_to_boundaries()
+
 
 func _ready():
 	connect("visibility_changed", self, "_on_visibility_changed")
@@ -81,7 +77,6 @@ func _ready():
 
 func adjust_ui(is_mobile):
 	mobile_focus(is_mobile_focused)
-	enforce_min_size()
 
 
 
@@ -93,8 +88,9 @@ func enforce_min_size():
 func on_resized():
 	var first_button : Control = $"%ButtonContainer".get_child(0)
 	if is_instance_valid(first_button):
-		var button_width = first_button.get_combined_minimum_size().x + 1 # +1 to account for seperation
-		var container_width = $"%ScrollContainer".rect_size.x + 1 # +1 to account for seperation
+		var gap = 1 # could be pulled from theme, right now hard coded
+		var button_width = first_button.get_combined_minimum_size().x + gap
+		var container_width = $"%ScrollContainer".rect_size.x + gap
 		$"%ButtonContainer".columns = floor(container_width / button_width)
 
 
@@ -107,6 +103,7 @@ func mobile_focus(on):
 	for button in $"%ButtonContainer".get_children():
 		button.rect_min_size = button_size
 	rect_min_size = container_size
+	call_deferred("enforce_min_size")
 
 
 
@@ -116,11 +113,15 @@ func _on_visibility_changed():
 		visibility_update = true
 		pass
 
+
+
 func _owns(btn, bc) -> bool:
 	# True if `btn` still belongs to this category — i.e. not reparented out
 	# by external code (e.g. continue_button moved to TurnButtons).
 	var p = btn.get_parent()
 	return p == bc or p == hidden_buttons_node
+
+
 
 func any_buttons_visible():
 	var bc = $"%ButtonContainer"
@@ -130,6 +131,8 @@ func any_buttons_visible():
 		if button.visible:
 			return true
 	return false
+
+
 
 func get_num_available_moves():
 	var bc = $"%ButtonContainer"
@@ -142,8 +145,9 @@ func get_num_available_moves():
 	return count
 
 
+
 func update_mouse_elsewhere():
-		$"%ScrollContainer".rect_min_size.y = 0
+		$"%ScrollContainer".expand = false
 		
 		shown_labels = []
 		guard_break_label.hide()
@@ -154,14 +158,16 @@ func update_mouse_elsewhere():
 		$UpdateTimer.start()
 
 
+
 func update_mouse_over():
-		$"%ScrollContainer".rect_min_size.y = $"%ButtonContainer".rect_size.y
+		$"%ScrollContainer".expand = true
 		
 		guard_break_label.hide()
 		
 		mouse_over = true
 		can_update = false
 		$UpdateTimer.start()
+
 
 
 func _process(_delta):
@@ -190,19 +196,20 @@ func _process(_delta):
 		shown_labels[shown_label_index % len(shown_labels)].show()
 
 
+
 func set_pos_y(y):
 	rect_position.y = y
 	# This was once needed for previous iterations of this menu
 	# still exists in case mods still use it, I dunno
 
 
+
 func enable_predict_button():
 	$"%PredictButton".show()
-#	$"%PredictButton".modulate.a = 1.0
 
 func disable_predict_button():
-#	$"%PredictButton".modulate.a = 0.25
 	$"%PredictButton".hide()
+
 
 
 func add_button(button):
@@ -210,6 +217,7 @@ func add_button(button):
 	$"%ButtonContainer".add_child(button)
 	button.connect("mouse_entered", self, "on_button_mouse_entered", [button])
 	button.connect("mouse_exited", self, "on_button_mouse_exited")
+
 
 
 func update_button_layout():
@@ -228,11 +236,16 @@ func update_button_layout():
 	pass
 
 
+
 func get_prediction():
 	return $"%PredictButton".pressed and $"%PredictButton".visible
 
+
+
 func reset_prediction():
 	$"%PredictButton".set_pressed_no_signal(false)
+
+
 
 func refresh():
 	if get_prediction():
@@ -253,13 +266,15 @@ func refresh():
 			active_button = button
 			selected_button_text = button.action_title
 			update_frame_display(button)
-			update_mouse_elsewhere()
+#			update_mouse_elsewhere()
 			return
 	$"%Label".text = label_text
 	$"%Label".modulate = Color.white
 	$"%Label".modulate.a = 0.25
 	$"%FrameLabel".bbcode_text = ""
- 
+
+
+
 func update_labels(button):
 	guard_break_label.hide()
 	initiative_label.hide()
@@ -269,7 +284,8 @@ func update_labels(button):
 			shown_labels.append(guard_break_label)
 		if button.get("has_initiative_effect"):
 			shown_labels.append(initiative_label)
-	
+
+
 
 func update_frame_display(button):
 	$"%FrameLabel".bbcode_text = ""
@@ -298,6 +314,8 @@ func update_frame_display(button):
 	update_labels(button)
 	pass
 
+
+
 func _button_super_level(button) -> int:
 	if !button or !button.state:
 		return 0
@@ -315,6 +333,8 @@ func _button_super_level(button) -> int:
 			return sl
 	return 0
 
+
+
 func on_button_mouse_entered(button):
 	if get_prediction():
 		return
@@ -325,40 +345,34 @@ func on_button_mouse_entered(button):
 	update_frame_display(button)
 	$"%Label".modulate = Color.green
 
+
+
 func on_button_mouse_exited():
 	shown_labels = []
 	refresh()
 #	guard_break_label.hide()
+
+
 
 func show_data_container():
 	$"%ActionDataPanelContainer".show()
 #	yield(get_tree(), "idle_frame")
 #	action_data_container.rect_size.y = min(action_data_container.container.rect_size.y, 80)
 #	action_data_container.rect_position = Vector2(0, -action_data_container.rect_position.y - 1)
-	
+
+
+
 func hide_data_container():
 	$"%ActionDataPanelContainer".hide()
-#
-#func add_data_node(node):
-#	action_data_container.add_child(node)
 
-#func snap_to_boundaries():
-#	var viewport_size = get_viewport_rect().size
-#	if rect_global_position.x < 0:
-#		rect_global_position.x = 0
-#	if rect_global_position.y < 0:
-#		rect_global_position.y = 0
-#	if rect_global_position.x + rect_size.x > viewport_size.x:
-#		rect_global_position.x = viewport_size.x - rect_size.x
-#	if rect_global_position.y + rect_size.y > viewport_size.y:
-#		rect_global_position.y = viewport_size.y - rect_size.y
 
 
 func _on_ButtonContainer_mouse_entered():
-	
 #	$"%ScrollContainer".rect_clip_content = false
 #	mouse_over = true
 	pass # Replace with function body.
+
+
 
 func _on_ButtonContainer_mouse_exited():
 #	$"%ScrollContainer".rect_clip_content = true
@@ -366,27 +380,28 @@ func _on_ButtonContainer_mouse_exited():
 	pass # Replace with function body.
 
 
+
 func _on_PredictButton_mouse_entered():
 	$"%PredictLabel".show()
 	$"%PredictLabel".text = "P" + str((player_id % 2) + 1) + " Prediction"
-	pass # Replace with function body.
+
 
 
 func _on_PredictButton_mouse_exited():
 	$"%PredictLabel".hide()
-	pass # Replace with function body.
+
 
 
 func _on_PredictButton_pressed():
 	refresh()
 	emit_signal("prediction_selected")
-	pass # Replace with function body.
+
 
 
 func _on_UpdateTimer_timeout():
 	can_update = true
-	pass # Replace with function body.
+
+
 
 func _on_CycleTimer_timeout():
 	shown_label_index += 1
-

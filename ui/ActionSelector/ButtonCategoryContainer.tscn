@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/ActionSelector/ButtonCategoryContainer.gd" type="Script" id=2]
 [ext_resource path="res://button_container_theme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/ActionSelector/too_many_moves.png" type="Texture" id=4]
+[ext_resource path="res://ui/ClipInputControl.gd" type="Script" id=5]
 
 [node name="Control" type="Control"]
 show_behind_parent = true
@@ -142,29 +143,22 @@ rect_min_size = Vector2( 0, 10 )
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
+[node name="ScrollContainer" type="Container" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 11.0
 margin_right = 54.0
 margin_bottom = 73.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-scroll_horizontal_enabled = false
-scroll_vertical_enabled = false
-
-[node name="Overflow" type="Control" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
-margin_right = 54.0
-margin_bottom = 62.0
 rect_clip_content = true
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
 theme_type_variation = "InvisScrollbar"
+script = ExtResource( 5 )
 
-[node name="ButtonContainer" type="GridContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer/Overflow"]
+[node name="ButtonContainer" type="GridContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 54.0
+margin_bottom = 62.0
 grow_horizontal = 2
 grow_vertical = 0
 rect_min_size = Vector2( 16, 0 )
@@ -177,7 +171,7 @@ columns = 3
 
 [node name="ScrollContainer2" type="ScrollContainer" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer"]
 visible = false
-margin_top = 64.0
+margin_top = 42.0
 margin_right = 54.0
 margin_bottom = 73.0
 rect_min_size = Vector2( 48, 0 )
@@ -189,7 +183,7 @@ scroll_horizontal_enabled = false
 [node name="Panel2" type="Panel" parent="VBoxContainer/ButtonCategoryContainer/VBoxContainer/ScrollContainer2"]
 self_modulate = Color( 1, 1, 1, 0 )
 margin_right = 54.0
-margin_bottom = 9.0
+margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
