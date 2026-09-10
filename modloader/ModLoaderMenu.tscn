@@ -71,7 +71,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="OpenFileManager" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer" index="1"]
+[node name="OpenFileManager" type="CheckButton" parent="VBoxContainer/TitleBar/HBoxContainer" index="1"]
 unique_name_in_owner = true
 margin_left = 206.0
 margin_right = 334.0
@@ -150,10 +150,58 @@ anchor_bottom = 1.0
 margin_top = 11.0
 size_flags_horizontal = 3
 
-[node name="Panel" type="Panel" parent="VBoxContainer" index="2"]
-margin_top = 226.0
+[node name="FMRow" type="HBoxContainer" parent="VBoxContainer" index="2"]
+unique_name_in_owner = true
+visible = false
+anchor_right = 1.0
+margin_top = 225.0
+margin_bottom = 237.0
+size_flags_horizontal = 3
+custom_constants/separation = 4
+
+[node name="Sorter" type="Button" parent="VBoxContainer/FMRow" index="0"]
+unique_name_in_owner = true
+margin_right = 64.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Sort: Date"
+
+[node name="SortInvert" type="CheckButton" parent="VBoxContainer/FMRow" index="1"]
+unique_name_in_owner = true
+margin_left = 65.0
+margin_right = 145.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 80, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Invert"
+
+[node name="AllOnButton" type="Button" parent="VBoxContainer/FMRow" index="2"]
+unique_name_in_owner = true
+margin_left = 146.0
+margin_right = 199.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 53, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "all on"
+
+[node name="AllOffButton" type="Button" parent="VBoxContainer/FMRow" index="3"]
+unique_name_in_owner = true
+margin_left = 200.0
+margin_right = 253.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 53, 0 )
+size_flags_vertical = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "all off"
+
+[node name="Panel" type="Panel" parent="VBoxContainer" index="3"]
+margin_top = 238.0
 margin_right = 473.0
-margin_bottom = 258.0
+margin_bottom = 270.0
 rect_min_size = Vector2( 0, 32 )
 size_flags_horizontal = 3
 
@@ -161,29 +209,7 @@ size_flags_horizontal = 3
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Sorter" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="0"]
-unique_name_in_owner = true
-margin_right = 64.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 64, 0 )
-size_flags_vertical = 3
-custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
-text = "SORT: NAME"
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="SortInvert" type="CheckButton" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
-unique_name_in_owner = true
-margin_left = 65.0
-margin_right = 145.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 80, 0 )
-size_flags_vertical = 3
-custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
-text = "Invert"
-
-[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
+[node name="ModCredits" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="0"]
 unique_name_in_owner = true
 margin_left = 65.0
 margin_right = 200.0
@@ -191,7 +217,7 @@ margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "ModLoader Credits"
 
-[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="3"]
+[node name="WorkshopButton" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="1"]
 unique_name_in_owner = true
 margin_left = 146.0
 margin_right = 281.0
@@ -199,7 +225,7 @@ margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Visit Steam Workshop"
 
-[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="4"]
+[node name="WorkshopUploader" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="2"]
 unique_name_in_owner = true
 margin_left = 282.0
 margin_right = 418.0
@@ -208,6 +234,6 @@ size_flags_horizontal = 3
 text = "Upload to Steam Workshop"
 
 [node name="ButtonSoundPlayer" parent="." index="2" instance=ExtResource( 4 )]
-button_containers = [ NodePath("../VBoxContainer/TitleBar"), NodePath("../VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods"), NodePath("../VBoxContainer/Contents/HBoxContainer/ModInfoContainer/TabContainer/Mod Info"), NodePath("../VBoxContainer/Panel/HBoxContainer") ]
+button_containers = [ NodePath("../VBoxContainer/TitleBar"), NodePath("../VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods"), NodePath("../VBoxContainer/Contents/HBoxContainer/ModInfoContainer/TabContainer/Mod Info"), NodePath("../VBoxContainer/Panel/HBoxContainer"), NodePath("../VBoxContainer/FMRow") ]
 
 [editable path="FileManagerInterface"]

@@ -3356,6 +3356,43 @@ margin_bottom = 12.0
 hint_tooltip = "Hide replays with characters you don't have installed."
 text = "no missing chars"
 
+[node name="ReplayFMRow" type="HBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_top = 13.0
+margin_right = 468.0
+margin_bottom = 25.0
+
+[node name="Sorter" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/ReplayFMRow"]
+unique_name_in_owner = true
+margin_right = 100.0
+margin_bottom = 12.0
+hint_tooltip = "Click to cycle sort mode: date / name / active."
+text = "Sort: Date"
+
+[node name="SortInvert" type="CheckButton" parent="UILayer/ReplayWindow/VBoxContainer/ReplayFMRow"]
+unique_name_in_owner = true
+margin_left = 101.0
+margin_right = 171.0
+margin_bottom = 12.0
+text = "Invert"
+
+[node name="AllOnButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/ReplayFMRow"]
+unique_name_in_owner = true
+margin_left = 172.0
+margin_right = 225.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 53, 0 )
+text = "all on"
+
+[node name="AllOffButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/ReplayFMRow"]
+unique_name_in_owner = true
+margin_left = 226.0
+margin_right = 279.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 53, 0 )
+text = "all off"
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/ReplayWindow/VBoxContainer"]
 margin_top = 13.0
 margin_right = 468.0
@@ -3430,9 +3467,16 @@ margin_right = 332.0
 margin_bottom = 12.0
 text = "show backups"
 
-[node name="ReplayCancelButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+[node name="ReplayFileManagerButton" type="CheckButton" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 333.0
+margin_right = 404.0
+margin_bottom = 12.0
+text = "file manager"
+
+[node name="ReplayCancelButton" type="Button" parent="UILayer/ReplayWindow/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 405.0
 margin_right = 468.0
 margin_bottom = 12.0
 size_flags_horizontal = 3

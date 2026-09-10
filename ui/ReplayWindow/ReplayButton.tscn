@@ -16,8 +16,17 @@ margin_bottom = 20.0
 rect_clip_content = true
 custom_constants/separation = 0
 
+[node name="Toggle" type="CheckButton" parent="HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_right = 50.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 50, 0 )
+size_flags_vertical = 3
+
 [node name="Button" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
+margin_left = 50.0
 margin_right = 155.0
 margin_bottom = 20.0
 size_flags_horizontal = 3

@@ -5,6 +5,9 @@ onready var p1_action_buttons = $"%P1ActionButtons"
 onready var p2_action_buttons = $"%P2ActionButtons"
 onready var p1_side_container = $"%ActionButtons/VBoxContainer"
 onready var p2_side_container = $"%ActionButtons/VBoxContainer2"
+onready var replay_fm = $"FileManagerInterace"
+const REPLAY_BUTTON_SCENE := preload("res://ui/ReplayWindow/ReplayButton.tscn")
+const REPLAY_BUTTON_SCRIPT := preload("res://ui/ReplayWindow/ReplayButton.gd")
 var _name_color_publish_timer: Timer
 
 signal singleplayer_started()
@@ -14,6 +17,13 @@ signal replay_picked_for_challenge(match_data, path)
 signal received_synced_time()
 
 var replay_picker_for_challenge = false
+
+# Replay FM mode: window + per-row toggles + sorter/invert are visible, and
+# replays sort independently within each category (manual / autosave / backup).
+var replay_fm_active = false
+var cur_replay_sort = FileManager.SortMode.DATE
+var cur_replay_inverted := false
+var _pending_replay_selection := []
 #
 #const dark_mode_color = Color("0b0c0f")
 #const light_mode_color = Color("33394b")
@@ -157,6 +167,12 @@ func _ready():
 	$"%ReplayButton".connect("pressed", self, "_on_view_replays_button_pressed")
 	$"%ReplayCancelButton".connect("pressed", self, "_on_replay_cancel_pressed")
 	$"%OpenReplayFolderButton".connect("pressed", self, "open_replay_folder")
+	$"%ReplayFileManagerButton".connect("toggled", self, "_on_replay_fm_toggled")
+	$"%Sorter".connect("pressed", self, "_on_replay_sorter_pressed")
+	$"%SortInvert".connect("toggled", self, "_on_replay_sort_invert_toggled")
+	$"%AllOnButton".connect("pressed", self, "_on_replay_all_toggled", [true])
+	$"%AllOffButton".connect("pressed", self, "_on_replay_all_toggled", [false])
+	_setup_replay_file_manager()
 	$"%P1ActionButtons".connect("turn_ended", self, "end_turn_for", [1])
 	$"%P2ActionButtons".connect("turn_ended", self, "end_turn_for", [2])
 	$"%ShowAutosavedReplays".connect("pressed", self, "_on_view_replays_button_pressed")
@@ -539,21 +555,39 @@ func load_replays():
 	$"%ReplayWindow".show()
 	for child in $"%ReplayContainer".get_children():
 		child.free()
-	var replay_map = ReplayManager.load_replays($"%ShowAutosavedReplays".pressed, $"%ShowBackupReplays".pressed)
+	var show_autosaved = $"%ShowAutosavedReplays".pressed
+	var show_backup = $"%ShowBackupReplays".pressed
+	# The autosave/backup toggles are exclusive: one on lists only that
+	# category (root "manual" replays drop out); both off lists the root.
+	var allowed := []
+	if show_autosaved:
+		allowed.append("autosave")
+	if show_backup:
+		allowed.append("backup")
+	if allowed.size() == 0:
+		allowed.append("manual")
+	var replay_map = ReplayManager.load_replays(show_autosaved, show_backup)
+	var filtered := {}
+	for key in replay_map:
+		if REPLAY_BUTTON_SCRIPT.detect_category(replay_map[key]["path"]) in allowed:
+			filtered[key] = replay_map[key]
+	replay_map = filtered
 	var buttons = []
 	for key in replay_map:
-		var button = preload("res://ui/ReplayWindow/ReplayButton.tscn").instance()
+		var button = REPLAY_BUTTON_SCENE.instance()
 		add_child(button)
 		button.setup(replay_map, key)
 		button.connect("pressed", self, "_on_replay_button_pressed", [button])
+		button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
 		buttons.append(button)
 		remove_child(button)
-	buttons.sort_custom(self, "sort_replays")
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
-	# Apply the current search filter against names immediately — matchup data
-	# fills in asynchronously below, so we refilter after each batch to pick up
-	# matchup-based matches as they arrive.
+	_apply_pending_replay_selection()
+	_sort_replay_buttons()
+	# Sync toggles to FM mode, then apply the search filter. Matchup data
+	# fills in async below, so we refilter after each batch too.
+	_set_replay_toggle_visibility(replay_fm_active)
 	_apply_replay_filter()
 	for i in range(len(buttons)):
 		if !is_instance_valid(self):
@@ -587,6 +621,154 @@ func set_turn_time(time, minutes=false):
 
 func sort_replays(a, b):
 	return a.modified > b.modified
+
+func _setup_replay_file_manager() -> void:
+	if !is_instance_valid(replay_fm):
+		return
+	replay_fm.connect("get_data_requested", self, "_on_replay_fm_get_data_requested")
+	replay_fm.connect("apply_data_requested", self, "_on_replay_fm_apply_data_requested")
+	replay_fm.connect("get_listed_requested", self, "_on_replay_fm_get_listed_requested")
+	replay_fm.connect("folder_updated", self, "_on_replay_fm_folder_updated")
+	replay_fm.connect("file_deleted", self, "_on_replay_fm_file_deleted")
+	replay_fm.setup("replay", PoolStringArray([".replay", ".ymhpack"]), false)
+	# Its built-in Close is redundant - the replay window's own toggle opens/
+	# closes the FM window. Hide it to keep the two in sync.
+	replay_fm.get_node("%Close").hide()
+
+func _on_replay_fm_toggled(pressed: bool) -> void:
+	replay_fm_active = pressed
+	if has_node("%ReplayFMRow"):
+		$"%ReplayFMRow".visible = pressed
+	_set_replay_toggle_visibility(pressed)
+	if is_instance_valid(replay_fm):
+		if pressed:
+			replay_fm._on_open_pressed()
+		else:
+			replay_fm._on_close_pressed()
+
+func _set_replay_toggle_visibility(show: bool) -> void:
+	if !has_node("%ReplayContainer"):
+		return
+	for child in $"%ReplayContainer".get_children():
+		if is_instance_valid(child.toggle):
+			child.toggle.visible = show
+
+func _on_replay_sorter_pressed() -> void:
+	cur_replay_sort = FileManager.next_sort_mode(cur_replay_sort)
+	$"%Sorter".text = FileManager.sort_label(cur_replay_sort)
+	_sort_replay_buttons()
+
+func _on_replay_sort_invert_toggled(toggled: bool) -> void:
+	cur_replay_inverted = toggled
+	_sort_replay_buttons()
+
+
+# Toggle clicked (only in FM mode) - just save the selection.
+func _on_replay_toggle_pressed(_toggled: bool, _replay_button) -> void:
+	replay_fm.persist_selected_list()
+
+
+# "all on" / "all off" - sets every toggle, resorts (so the ACTIVE order
+# reads right) and saves.
+func _on_replay_all_toggled(on: bool) -> void:
+	if !has_node("%ReplayContainer"):
+		return
+	for child in $"%ReplayContainer".get_children():
+		if is_instance_valid(child.toggle):
+			child.toggle.set_pressed_no_signal(on)
+	_sort_replay_buttons()
+	replay_fm.persist_selected_list()
+
+
+# Sorts replays within each category (manual / autosave / backup), keeping
+# the category blocks together.
+func _sort_replay_buttons():
+	if !has_node("%ReplayContainer"):
+		return
+	var items := []
+	for child in $"%ReplayContainer".get_children():
+		items.append({
+			"name": child.path.get_file(),
+			"active": is_instance_valid(child.toggle) and child.toggle.pressed,
+			"path": child.path,
+			"modified": child.modified,
+			"group": child.category,
+			"parent": child,
+		})
+	items = FileManager.sort_items(items, cur_replay_sort, cur_replay_inverted)
+	var index = 0
+	for current_group in ["manual", "autosave", "backup"]:
+		for item in items:
+			if item.group == current_group:
+				$"%ReplayContainer".move_child(item.parent, index)
+				index += 1
+
+
+# Sets each replay toggle from the last saved/restored selection.
+func _apply_pending_replay_selection() -> void:
+	if !has_node("%ReplayContainer"):
+		return
+	for child in $"%ReplayContainer".get_children():
+		if is_instance_valid(child.toggle):
+			child.toggle.set_pressed_no_signal(child.path in _pending_replay_selection)
+
+
+# FM asked for the current on/off state to save.
+func _on_replay_fm_get_data_requested(use_default, result) -> void:
+	var selected := []
+	for child in $"%ReplayContainer".get_children():
+		if is_instance_valid(child.toggle) and child.toggle.pressed:
+			selected.append(child.path)
+	result["data"] = {"selected": selected}
+
+
+# FM asks us to apply a stored list to the toggles.
+func _on_replay_fm_apply_data_requested(data) -> void:
+	_pending_replay_selection = data.get("selected", [])
+	_apply_pending_replay_selection()
+
+
+# FM asks which files belong to a list it's about to Export/Delete.
+func _on_replay_fm_get_listed_requested(list_data, result) -> void:
+	result["paths"] = PoolStringArray(list_data.get("selected", []))
+
+# --- FileManagerInterface handlers for the replay category ------------------
+
+func _on_replay_fm_folder_updated(path: String) -> void:
+	# Single-file change (import / pack extract) - add or refresh just that
+	# row instead of rebuilding the whole list.
+	if !has_node("%ReplayContainer"):
+		return
+	for child in $"%ReplayContainer".get_children():
+		if child.get("path") == path:
+			child.show_data()
+			return
+	_add_replay_row_incremental(path)
+
+func _on_replay_fm_file_deleted(path: String) -> void:
+	# Single-file delete — drop just that row, no full rebuild.
+	if !has_node("%ReplayContainer"):
+		return
+	for child in $"%ReplayContainer".get_children():
+		if child.get("path") == path:
+			child.queue_free()
+			return
+
+# Builds one row for a newly-imported replay file, sorts/filters it in.
+func _add_replay_row_incremental(path: String) -> void:
+	$"%ReplayWindow".show()
+	var new_file := File.new()
+	var modified := new_file.get_modified_time(path)
+	var key = path.get_file().get_basename()
+	var button = REPLAY_BUTTON_SCENE.instance()
+	$"%ReplayContainer".add_child(button)
+	button.setup({key: {"path": path, "modified": modified}}, key)
+	button.connect("pressed", self, "_on_replay_button_pressed", [button])
+	button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
+	_set_replay_toggle_visibility(replay_fm_active)
+	button.show_data()
+	_apply_replay_filter()
+	_sort_replay_buttons()
 
 func _on_replay_search_changed(_text):
 	_apply_replay_filter()
@@ -651,6 +833,11 @@ const VERSION_MODE_COLORS = {
 
 func _on_replay_button_pressed(replay_button):
 	if !is_instance_valid(replay_button):
+		return
+	# In file-manager mode the row buttons select a file for single-item
+	# export/delete from the FM window instead of launching a replay.
+	if replay_fm_active and is_instance_valid(replay_fm):
+		replay_fm.cur_item_path = replay_button.path
 		return
 	# Missing-character replays always confirm — game.gd::setup would fail
 	# to load the character anyway, so we stop the cliff dive before it

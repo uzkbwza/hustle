@@ -9,11 +9,9 @@ const PACK_FORMAT_VERSION: int = 1
 const PACK_EXT: String = ".ymhpack"
 const LIST_EXT: String = ".ymhlist"
 const PENDING_DELETE_PATH: String = "user://lists/files_to_delete.ymhlist"
-# Whole-pack cap. Kept modest: a fighting-game pack is a handful of style/
-# mod files; allowing multi-GB files invites memory blowups on import/export.
 const MAX_PACK_FILE_BYTES: int = 8 * 1024 * 1024 * 1024 #8gb
-# Per-entry cap, enforced before any payload is buffered into memory.
 const MAX_ENTRY_BYTES: int = 512 * 1024 * 1024 #512mb
+const PACK_SNIFF_BYTES: int = 64 * 1024
 
 # category name (matches FileManagerInterface.dir_name) -> absolute dir_path
 var _category_dirs: Dictionary = {}
@@ -33,6 +31,23 @@ func _init() -> void:
 	
 	if OS.get_name() == "Android" and Engine.has_singleton("GodotFilePicker"):
 		android_picker = Engine.get_singleton("GodotFilePicker")
+	elif OS.get_name() == "Android":
+		push_warning("FileManager: GodotFilePicker Android plugin not found - in-game file import is unavailable.")
+	
+	# Pre-register the standard categories so pack imports work even
+	# before/without their menus existing this session. setup() calls
+	# register_category() again later, which just overwrites the same value.
+	# "mods" resolves like ModLoaderMenu does: game folder on desktop,
+	# user://mods on mobile.
+	register_category("custom", "user://custom")
+	register_category("replay", "user://replay")
+	var mods_default_dir = "user://mods"
+	if not OS.has_feature("mobile"):
+		var install_dir = OS.get_executable_path().get_base_dir()
+		if OS.get_name() == "OSX":
+			install_dir = install_dir.get_base_dir().get_base_dir().get_base_dir()
+		mods_default_dir = install_dir.plus_file("mods")
+	register_category("mods", mods_default_dir)
 	
 	_process_pending_deletions()
 	
@@ -302,11 +317,8 @@ func scan_directory_for_files(directory: String, extensions: PoolStringArray, al
 	dir.list_dir_begin(true, true)
 	var file_name = dir.get_next()
 	while file_name != "":
-		if not dir.current_is_dir():
-			for extension in extensions:
-				if all_files or "." + file_name.get_extension().to_lower() == extension:
-					results.append(directory.plus_file(file_name) if full_path else file_name)
-					break
+		if !dir.current_is_dir() and (all_files or extensions.has("." + file_name.get_extension().to_lower())):
+			results.append(directory.plus_file(file_name) if full_path else file_name)
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	return results
@@ -318,7 +330,13 @@ func copy_file_to_directory(path: String, directory: String, extensions: PoolStr
 	if ext == PACK_EXT:
 		return import_pack(path)
 	
-	if extensions.size() > 0 and not ext in extensions:
+	# Some Android file-picker plugins hand back a temp/cache path whose
+	# extension was mangled or dropped entirely. Detection is by the pack's
+	# "YMHPACK" header, not its filename, so those imports still work.
+	if ext != PACK_EXT and (ext == "." or ext in extensions) and _is_ymhpack(path):
+		return import_pack(path)
+	
+	if extensions.size() > 0 and not extensions.has(ext):
 		emit_signal("status_message", "Failed to copy file, it doesn't match the extensions: " + extensions.join(", "))
 		return false
 	
@@ -344,6 +362,19 @@ func copy_file_to_directory(path: String, directory: String, extensions: PoolStr
 	emit_signal("status_message", "File copied and verified: " + dest_path)
 	emit_signal("file_copied", dest_path, category)
 	return true
+
+
+func _is_ymhpack(path: String) -> bool:
+	var probe = File.new()
+	if not probe.file_exists(path):
+		return false
+	if probe.open(path, File.READ) != OK:
+		return false
+	var head = probe.get_buffer(min(probe.get_len(), PACK_SNIFF_BYTES))
+	probe.close()
+	if head.size() <= 0:
+		return false
+	return head.get_string_from_ascii().find("YMHPACK") != -1
 
 
 # ---------------------------------------------------------------------------
@@ -404,12 +435,13 @@ func load_list(list_dir_path: String, list_name: String) -> Dictionary:
 func load_all_lists(list_dir_path: String) -> Array:
 	make_list_folder(list_dir_path)
 	var dir = Directory.new()
+	if not dir.dir_exists(list_dir_path):
+		dir.make_dir_recursive(list_dir_path)
 	var files = []
 	var _directories = []
 	dir.open(list_dir_path)
 	dir.list_dir_begin(false, true)
 	Global.add_dir_contents(dir, files, _directories, false, LIST_EXT)
-	dir.list_dir_end()
 
 	var items := []
 	for path in files:
@@ -434,18 +466,13 @@ func mark_for_deletion(paths: PoolStringArray) -> void:
 	if paths.size() < 1:
 		return
 	
-	var f = File.new()
-	if not f.file_exists(PENDING_DELETE_PATH):
-		var tmp_path = PENDING_DELETE_PATH + ".tmp"
-		if f.open(tmp_path, File.WRITE) != OK:
-			push_warning("ModLoader: failed to write user://modded.json")
+	var dir = Directory.new()
+	if not dir.dir_exists(PENDING_DELETE_DIR):
+		if dir.make_dir_recursive(PENDING_DELETE_DIR) != OK:
+			push_warning("FileManager: failed to create %s" % PENDING_DELETE_DIR)
 			return
-		f.store_string(JSON.print([], "  "))
-		f.close()
-		var dir = Directory.new()
-		if dir.rename(tmp_path, PENDING_DELETE_PATH) != OK:
-			push_warning("ModLoader: failed to commit user://modded.json")
 	
+	# Read the pending queue (if any), append, and write it back in one pass.
 	var data: Array = []
 	var file = File.new()
 	if file.open(PENDING_DELETE_PATH, File.READ) == OK:
@@ -457,10 +484,6 @@ func mark_for_deletion(paths: PoolStringArray) -> void:
 	
 	for path in paths:
 		data.append(path)
-	
-	var dir = Directory.new()
-	if not dir.dir_exists(PENDING_DELETE_DIR):
-		dir.make_dir_recursive(PENDING_DELETE_DIR)
 	
 	var out = File.new()
 	if out.open(PENDING_DELETE_PATH, File.WRITE) == OK:
@@ -501,9 +524,27 @@ func _process_pending_deletions() -> void:
 
 enum SortMode { NAME, DATE, ACTIVE }
 
-# Sort parameters, set once per sort_items() call. Safe as instance vars:
-# sort_custom() runs synchronously, so the singleton is never read while a
-# different sort is in progress.
+const SORT_LABELS := {
+	SortMode.DATE: "Sort: Date",
+	SortMode.NAME: "Sort: Name",
+	SortMode.ACTIVE: "Sort: Active",
+}
+
+# Cycles the sort mode shared by every list menu's "Sort:" button
+# (DATE -> NAME -> ACTIVE -> ...).
+func next_sort_mode(mode: int) -> int:
+	match mode:
+		SortMode.DATE:
+			return SortMode.NAME
+		SortMode.NAME:
+			return SortMode.ACTIVE
+	return SortMode.DATE
+
+
+func sort_label(mode: int) -> String:
+	return SORT_LABELS.get(mode, SORT_LABELS[SortMode.DATE])
+
+# Per-sort state for the comparator below.
 var _sort_mode = SortMode.NAME
 var _sort_inverted := false
 
@@ -511,36 +552,51 @@ var _sort_inverted := false
 #   "name":   String display name (also the tie-breaker)
 #   "active": bool   - active entries come first in ACTIVE mode
 #   "path":   String file path used for DATE mode (file modified time)
+#   "modified": int  - optional precomputed modified time (replay rows); when
+#                      absent/negative DATE mode stats the file instead
 func sort_items(items: Array, mode: int, inverted: bool) -> Array:
+	# Resolve each item's sort keys once (to_lower, filesystem stat) up
+	# front instead of re-doing them on every comparison.
+	var keyed := []
+	for item in items:
+		keyed.append({
+			"name": str(item.get("name", "")).to_lower(),
+			"active": bool(item.get("active", false)),
+			"modified": _resolve_modified(item) if mode == SortMode.DATE else 0,
+			"item": item,
+		})
 	_sort_mode = mode
 	_sort_inverted = inverted
-	items.sort_custom(self, "_compare_items")
+	keyed.sort_custom(self, "_compare_keyed")
+	for i in keyed.size():
+		items[i] = keyed[i]["item"]
 	return items
 
 
-func _compare_items(a: Dictionary, b: Dictionary) -> bool:
+func _resolve_modified(item: Dictionary) -> int:
+	var t = item.get("modified", -1)
+	if t < 0:
+		var f := File.new()
+		t = f.get_modified_time(item.get("path", ""))
+	return t
+
+
+func _compare_keyed(a: Dictionary, b: Dictionary) -> bool:
 	if _sort_inverted:
-		return _item_less(b, a)
-	return _item_less(a, b)
+		return _key_less(b, a)
+	return _key_less(a, b)
 
 
-func _item_less(a: Dictionary, b: Dictionary) -> bool:
-	var a_name := str(a.get("name", "")).to_lower()
-	var b_name := str(b.get("name", "")).to_lower()
-
+func _key_less(a: Dictionary, b: Dictionary) -> bool:
 	match _sort_mode:
 		SortMode.DATE:
-			var file_a := File.new()
-			var file_b := File.new()
-			var a_time := file_a.get_modified_time(a.get("path", ""))
-			var b_time := file_b.get_modified_time(b.get("path", ""))
-			if a_time != b_time:
-				return a_time > b_time
-			return a_name < b_name
+			if a["modified"] != b["modified"]:
+				return a["modified"] > b["modified"]
+			return a["name"] < b["name"]
 		SortMode.ACTIVE:
-			if bool(a.get("active", false)) != bool(b.get("active", false)):
-				return bool(a.get("active", false))
-			return a_name < b_name
+			if a["active"] != b["active"]:
+				return a["active"]
+			return a["name"] < b["name"]
 		SortMode.NAME:
-			return a_name < b_name
-	return a_name < b_name
+			return a["name"] < b["name"]
+	return a["name"] < b["name"]

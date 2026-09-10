@@ -4,52 +4,18 @@ class_name FileManagerInterface
 # ============================================================================
 # FileManagerInterface
 # ============================================================================
-# Instance one of these per menu that needs "browse/import/export/save a
-# named list of files" behavior (mods, skins, whatever). All I/O is
-# delegated to the FileManager autoload. All communication with whatever
-# owns this instance happens through signals - never has_method()/call().
+# One instance per menu that manages a named list of files (mods, styles,
+# replays). All I/O goes through the FileManager autoload; the owning menu is
+# only ever talked to through signals, never has_method()/call().
 #
-# Signal contract your owner must implement (connect BEFORE calling setup(),
-# or any time before the first button press):
-#
-#   get_data_requested(use_default: bool, result: Dictionary)
-#       Fill result["data"] with the Dictionary describing current state.
-#       Called synchronously - emit_signal() returns only after your
-#       handler runs, so writing into `result` here is safe.
-#
-#   apply_data_requested(data: Dictionary)
-#       Apply the given state. Fire-and-forget, no return value needed.
-#
-#   get_listed_requested(list_data: Dictionary, result: Dictionary)
-#       Fill result["paths"] with a PoolStringArray of file paths that
-#       belong to the given saved list (used by Export List / Delete List
-#       as a set).
-#
-#   sort_requested(list_data_array: Array, result: Dictionary)
-#       Optional. Fill result["data"] with a sorted copy of the array if
-#       you care about list ordering in the dropdown; otherwise just leave
-#       result empty and the unsorted array is used.
-#
-# Example wiring from the owning menu script:
-#
-#   onready var fm := $FileManagerInterface
-#   func _ready():
-#       fm.connect("get_data_requested", self, "_on_fm_get_data")
-#       fm.connect("apply_data_requested", self, "_on_fm_apply_data")
-#       fm.connect("get_listed_requested", self, "_on_fm_get_listed")
-#       fm.setup("mods", PoolStringArray([".zip", ".ymhpack"]))
-#       close_btn.connect("pressed", fm, "_on_close_pressed")
-#       open_btn.connect("pressed", fm, "_on_open_pressed")
-#
-#   func _on_fm_get_data(use_default, result):
-#       result["data"] = {"selected": selected_mod_paths}
-#
-#   func _on_fm_apply_data(data):
-#       selected_mod_paths = data.get("selected", [])
-#       _refresh_mod_toggles()
-#
-#   func _on_fm_get_listed(list_data, result):
-#       result["paths"] = PoolStringArray(list_data.get("selected", []))
+# Handlers the owner must connect BEFORE setup():
+#   get_data_requested(use_default, result)  fill result["data"] with state.
+#   apply_data_requested(data)               apply saved state.
+#   get_listed_requested(list_data, result)  fill result["paths"]
+#                                            (the list's files, as a
+#                                            PoolStringArray).
+#   sort_requested(list_data_array, result)  optional - fill result["data"]
+#                                            with a sorted copy for the dropdown.
 # ============================================================================
 
 signal get_data_requested(use_default, result)
@@ -57,6 +23,7 @@ signal apply_data_requested(data)
 signal get_listed_requested(list_data, result)
 signal sort_requested(list_data_array, result)
 signal folder_updated(path)  # forwarded from FileManager for this instance's category
+signal file_deleted(path)  # a file in this category was deleted immediately
 
 var dir_name := "mods"
 var ext_names: PoolStringArray = [".zip", ".ymhpack"]
@@ -67,6 +34,10 @@ var loaded_lists := []
 var cur_item_path := ""
 var cur_list_name := ""
 var _is_initialized := false
+# true = deletes are queued (mark_for_deletion) and the game quits to apply
+# them on next boot (used by mods, which are loaded at startup); false =
+# files are removed immediately.
+var deferred_delete := false
 var _pending_inbox := []  # untrusted .ymhpack files awaiting user confirmation
 
 onready var option_button = $"%OptionButton"
@@ -108,10 +79,12 @@ func _ready() -> void:
 func setup(
 	_dir_name: String,
 	_ext_names: PoolStringArray,
-	_use_game_folder := false
+	_use_game_folder := false,
+	_use_deferred_delete := false
 ) -> void:
 	dir_name = _dir_name
 	ext_names = _ext_names
+	deferred_delete = _use_deferred_delete
 	
 	if _use_game_folder:
 		var install_dir = OS.get_executable_path().get_base_dir()
@@ -244,19 +217,24 @@ func _on_import_files_pressed() -> void:
 		if FileManager.android_picker:
 			FileManager.android_picker.openFilePicker("*/*")
 		else:
-			_report_from_directory()
+			_show_no_picker_dialog()
 	else:
 		_select_file_from_directory()
+
+
+func _show_no_picker_dialog() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.theme = preload("res://theme.tres")
+	dialog.title = "Import not available"
+	dialog.dialog_text = "The Android file picker plugin isn't present in this build. Tap the .ymhpack file on your device to import it into the game instead."
+	add_child(dialog)
+	dialog.connect("popup_hide", dialog, "queue_free")
+	dialog.popup_centered()
 
 
 func _on_android_file_picked(temp_path: String, _mime_type: String) -> void:
 	FileManager.copy_file_to_directory(temp_path, dir_path, ext_names, dir_name)
 	Directory.new().remove(temp_path)
-
-
-func _report_from_directory() -> void:
-	var found := FileManager.scan_directory_for_files(dir_path, ext_names)
-	printer.text = "No mod files found" if found.empty() else "Mods found: " + found.join(", ")
 
 
 func _select_file_from_directory() -> void:
@@ -367,6 +345,16 @@ func save_current_list(name_text: String, use_default := false) -> String:
 	return saved_name
 
 
+# Saves current state to the selected list (creates "default" if none is
+# selected). Every row-toggle / all-on/off handler in the menus calls this.
+func persist_selected_list() -> void:
+	var idx = option_button.selected
+	var list_name = ""
+	if idx >= 0 and idx < loaded_lists.size():
+		list_name = loaded_lists[idx].list_name
+	save_current_list(list_name)
+
+
 func _refresh_lists_menu() -> void:
 	var raw = FileManager.load_all_lists(list_dir_path)
 	raw = _maybe_sort(raw)
@@ -388,8 +376,7 @@ func _restore_current_state() -> void:
 	var state = FileManager.load_list(list_dir_path, "_current_state")
 	cur_list_name = state.get("selected_list_name", "")
 	var data = state.get("data", {})
-	# If the latest selected list was deleted, don't reapply its stale data.
-	# Fall through to the caller's defaults (all styles ON) instead.
+	# If the selected list was deleted, don't reapply its stale data.
 	if cur_list_name != "" and not File.new().file_exists(list_dir_path.plus_file(cur_list_name) + FileManager.LIST_EXT):
 		FileManager.delete_list(list_dir_path, "_current_state")
 		cur_list_name = ""
@@ -452,15 +439,40 @@ func _on_delete_list_pressed() -> void:
 func _on_delete_file_pressed() -> void:
 	if cur_item_path == "":
 		return
-	FileManager.mark_for_deletion(PoolStringArray([cur_item_path]))
+	if deferred_delete:
+		FileManager.mark_for_deletion(PoolStringArray([cur_item_path]))
+	else:
+		_delete_now(PoolStringArray([cur_item_path]))
+	cur_item_path = ""
+
+
+func _delete_now(paths: PoolStringArray) -> void:
+	var dir = Directory.new()
+	var f = File.new()
+	for path in paths:
+		if f.file_exists(path):
+			if dir.remove(path) == OK:
+				emit_signal("file_deleted", path)
+			else:
+				printer.text = "Failed to delete: " + path
 
 
 func _on_delete_listed_pressed() -> void:
 	for list in loaded_lists:
 		if list.get("list_name", "") == cur_list_name:
-			FileManager.mark_for_deletion(_request_listed_paths(list))
+			var paths = _request_listed_paths(list)
+			if deferred_delete:
+				FileManager.mark_for_deletion(paths)
+			else:
+				_delete_now(paths)
 			return
 
 
 func _on_delete_folder_pressed() -> void:
-	FileManager.mark_for_deletion(FileManager.scan_directory_for_files(dir_path, ext_names, true, true))
+	var paths = FileManager.scan_directory_for_files(dir_path, ext_names, true, true)
+	if paths.empty():
+		return
+	if deferred_delete:
+		FileManager.mark_for_deletion(paths)
+	else:
+		_delete_now(paths)

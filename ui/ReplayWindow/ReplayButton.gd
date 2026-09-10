@@ -6,8 +6,18 @@ var modified
 # UILayer's filter + the missing-character click-confirm.
 var version = ""
 var has_missing_character = false
+# Which folder the replay came from: "manual" (root), "autosave", "backup".
+var category = "manual"
+
+static func detect_category(full_path) -> String:
+	if full_path.get_base_dir().ends_with("autosave"):
+		return "autosave"
+	if full_path.get_base_dir().ends_with("backup"):
+		return "backup"
+	return "manual"
 
 onready var button = $"%Button"
+onready var toggle = $"%Toggle"
 
 signal pressed()
 signal data_updated()
@@ -19,6 +29,7 @@ func setup(replay_map, key):
 	var data = replay_map[key]
 	path = data["path"]
 	modified = data["modified"]
+	category = detect_category(path)
 #	if data.has("version"):
 #		$VersionLabel.text = str(data.version) if data.version else ("unknown")
 

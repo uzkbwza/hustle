@@ -11,8 +11,10 @@ var userdata := {}
 var late_inited = false
 var needs_to_save = false
 
-var cur_sort = FileManager.SortMode.NAME
+var cur_sort = FileManager.SortMode.DATE
 var cur_sort_inverted := false
+
+var fm_window: Control
 
 onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
 onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
@@ -32,8 +34,11 @@ func _ready():
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
 	$"%Sorter".connect("pressed", self, "_on_sorter_pressed")
+	$"%Sorter".text = "Sort: Date"
 	$"%SortInvert".connect("toggled", self, "_on_sort_invert_toggled")
-	$"%OpenFileManager".connect("pressed", self, "_open_file_manager")
+	$"%AllOnButton".connect("pressed", self, "_on_mod_all_toggled", [true])
+	$"%AllOffButton".connect("pressed", self, "_on_mod_all_toggled", [false])
+	$"%OpenFileManager".connect("toggled", self, "_open_file_manager")
 
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
@@ -53,11 +58,13 @@ func _setup_file_manager() -> void:
 	# which matches what _loadMods() uses. On Android the APK dir is
 	# read-only so we must write to user://mods instead.
 	file_manager.setup("mods", PoolStringArray([".zip", ".ymhpack"]),
-		not Global.is_mobile_device)
+		not Global.is_mobile_device, true)
 	
-	# FileManagerInterface no longer manages external buttons itself -
-	# wire its own open/close directly. %Close still also runs
-	# _close_clicked() below, so one press closes both windows.
+	# Show the sorter/invert bar only while the FM window is open.
+	fm_window = file_manager.get_node("%Window")
+	fm_window.connect("visibility_changed", self, "_on_fm_window_visibility_changed")
+	
+	# Wire the FM's own Close so one press closes both windows.
 	$"%Close".connect("pressed", file_manager, "_on_close_pressed")
 
 
@@ -110,21 +117,24 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		refresh_mod(mod_path)
 
 
-func _open_file_manager():
-	file_manager._on_open_pressed()
+func _open_file_manager(pressed: bool):
+	if pressed:
+		file_manager._on_open_pressed()
+	else:
+		file_manager._on_close_pressed()
+
+
+# visibility_changed fires with no args in Godot 3.x, so read the window
+# state here instead of taking a parameter.
+func _on_fm_window_visibility_changed() -> void:
+	var visible = fm_window.visible
+	$"%OpenFileManager".set_pressed_no_signal(visible)
+	$"%FMRow".visible = visible
 
 
 func _on_sorter_pressed():
-	match cur_sort:
-		FileManager.SortMode.NAME:
-			cur_sort = FileManager.SortMode.DATE
-			$"%Sorter".text = "Sort: Date"
-		FileManager.SortMode.DATE:
-			cur_sort = FileManager.SortMode.ACTIVE
-			$"%Sorter".text = "Sort: Active"
-		FileManager.SortMode.ACTIVE:
-			cur_sort = FileManager.SortMode.NAME
-			$"%Sorter".text = "Sort: Name"
+	cur_sort = FileManager.next_sort_mode(cur_sort)
+	$"%Sorter".text = FileManager.sort_label(cur_sort)
 	_sort_mod_buttons()
 
 
@@ -285,23 +295,14 @@ func _tab_clicked(node:Node, _zip_path:String):
 		show_menu(node)
 
 
-# Signal handler for a human actually clicking a toggle. This is the
-# only path that should persist anything — it updates the UI/mods dict
-# AND saves the change to the currently selected list (or "unnamed" if
-# none is selected).
+# User clicked a toggle - update state and save to the current list.
 func _on_toggle_pressed(_button_pressed: bool, _mod, _toggle, _button):
 	_set_toggle_state(_button_pressed, _mod, _toggle, _button)
-	var idx = file_manager.option_button.selected
-	if idx >= 0 and idx < file_manager.loaded_lists.size():
-		file_manager.save_current_list(file_manager.loaded_lists[idx].list_name)
-	else:
-		file_manager.save_current_list("")
+	file_manager.persist_selected_list()
 
 
-# Pure UI/state sync — no saving, no calling back into the file manager.
-# Safe to call from add_mod() (initial setup) and apply_new_list()
-# (restoring saved state) without risk of feeding back into a save
-# that re-triggers a restore that re-triggers apply_new_list again.
+# Pure UI/state sync - doesn't save, and is safe to call from add_mod() and
+# apply_new_list() without feeding back into a save.
 func _set_toggle_state(_button_pressed: bool, _mod, _toggle, _button):
 	var mod_name = _mod[1].name
 	mods[mod_name] = {
@@ -318,6 +319,15 @@ func _set_toggle_state(_button_pressed: bool, _mod, _toggle, _button):
 	_toggle.set_pressed_no_signal(_button_pressed)
 
 
+# "all on" / "all off" - flips every mod toggle at once, saves like above.
+func _on_mod_all_toggled(on: bool) -> void:
+	for mod_name in mods:
+		var entry = mods[mod_name]
+		_set_toggle_state(on, entry.mod, entry.toggle, entry.button)
+	_sort_mod_buttons()
+	file_manager.persist_selected_list()
+
+
 func _sort_mod_buttons():
 	var items := []
 	for mod_entry in mods.values():
@@ -330,6 +340,57 @@ func _sort_mod_buttons():
 	items = FileManager.sort_items(items, cur_sort, cur_sort_inverted)
 	for i in range(items.size()):
 		list_container.move_child(items[i].parent, i)
+
+
+# Save config dict of all mods with their active states into the file manager.
+func get_current_list() -> Dictionary:
+	var result := {}
+	var active := []
+	var inactive := []
+	for mod in mods:
+		if mods[mod].active:
+			active.append(mods[mod].mod[1].name)
+		else:
+			inactive.append(mods[mod].mod[1].name)
+	result["active"] = active
+	result["inactive"] = inactive
+	return result
+
+
+# Apply the given list of mod names to the on/off mods dict and each toggle.
+func apply_new_list(data: Dictionary) -> void:
+	var active: Array = data.get("active", [])
+	var inactive: Array = data.get("inactive", [])
+	for mod_name in mods:
+		var entry = mods[mod_name]
+		var on = (mod_name in active) or (not mod_name in inactive)
+		_set_toggle_state(on, entry.mod, entry.toggle, entry.button)
+	_sort_mod_buttons()
+
+
+# Turn a saved list into a pool of exact file paths (for Export/Delete).
+func get_listed(list_data: Dictionary) -> PoolStringArray:
+	var active: Array = list_data.get("active", [])
+	var result := PoolStringArray()
+	for mod_name in active:
+		if mod_name in mods:
+			result.append(mods[mod_name].mod[1].zip_path)
+	return result
+
+
+# FM asked for the current on/off state to save.
+func _on_fm_get_data_requested(use_default, result) -> void:
+	result["data"] = get_current_list()
+
+
+# FM asks us to apply a stored list to the toggles.
+func _on_fm_apply_data_requested(data) -> void:
+	apply_new_list(data)
+
+
+# FM asks which files belong to a list it's about to Export/Delete.
+func _on_fm_get_listed_requested(list_data, result) -> void:
+	result["paths"] = get_listed(list_data)
 
 
 func generateButton(text_gen, _is_button = true, _h_size_flag: int = 3, _v_size_flag:int = 1 ):
@@ -380,59 +441,6 @@ func add_menu_from_node(menuNode):
 	$"%Tabs".add_child(menuButton)
 	menuButton.set_theme_type_variation("TabButton")
 	$"%MenuContainer".add_child(menuNode)
-
-
-func get_current_list(_default = false) -> Dictionary:
-	var _saved_active_list := []
-	var _saved_inactive_list := []
-
-	for mod_name in mods:
-		if _default:
-			_saved_active_list.append(mod_name)
-		elif mods[mod_name].active:
-			_saved_active_list.append(mod_name)
-		else:
-			_saved_inactive_list.append(mod_name)
-
-	var _current_list = {"active": _saved_active_list, "inactive": _saved_inactive_list}
-	return _current_list
-
-
-func apply_new_list(list: Dictionary):
-	for mod_name in mods:
-		var entry = mods[mod_name]
-		if mod_name in list.active:
-			_set_toggle_state(true, entry.mod, entry.toggle, entry.button)
-		elif mod_name in list.inactive:
-			_set_toggle_state(false, entry.mod, entry.toggle, entry.button)
-
-
-func get_listed(list: Dictionary) -> Array:
-	var _items = []
-
-	for mod_name in mods:
-		var entry = mods[mod_name]
-		if mod_name in list.active:
-			_items.append(entry.mod[1].zip_path)
-
-	return _items
-
-
-# ---------------------------------------------------------------------------
-# FileManagerInterface signal handlers - thin wrappers around the existing
-# business logic above, replacing the old has_method()/call()-by-name wiring.
-# ---------------------------------------------------------------------------
-
-func _on_fm_get_data_requested(use_default: bool, result: Dictionary) -> void:
-	result["data"] = get_current_list(use_default)
-
-
-func _on_fm_apply_data_requested(data: Dictionary) -> void:
-	apply_new_list(data)
-
-
-func _on_fm_get_listed_requested(list_data: Dictionary, result: Dictionary) -> void:
-	result["paths"] = PoolStringArray(get_listed(list_data))
 
 
 func _on_apply_changes_pressed():

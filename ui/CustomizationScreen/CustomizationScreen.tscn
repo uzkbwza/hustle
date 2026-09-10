@@ -45,23 +45,14 @@ margin_bottom = 13.0
 toggle_mode = true
 text = "Manage Styles"
 
-[node name="Sorter" type="Button" parent="HBoxContainer"]
+[node name="FileManagerButton" type="CheckButton" parent="HBoxContainer"]
 unique_name_in_owner = true
 visible = false
 margin_left = 74.0
-margin_right = 138.0
+margin_right = 158.0
 margin_bottom = 13.0
-rect_min_size = Vector2( 64, 0 )
-text = "Sort: Name"
-
-[node name="SortInvert" type="CheckButton" parent="HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_left = 74.0
-margin_right = 138.0
-margin_bottom = 13.0
-rect_min_size = Vector2( 64, 0 )
-text = "Invert"
+rect_min_size = Vector2( 84, 0 )
+text = "file manager"
 
 [node name="LoadStyleButton" parent="HBoxContainer" instance=ExtResource( 7 )]
 visible = false
@@ -113,6 +104,45 @@ margin_left = 567.0
 margin_right = 625.0
 margin_bottom = 13.0
 text = "open folder"
+
+[node name="FMRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_left = 220.0
+margin_top = 40.0
+margin_right = 470.0
+margin_bottom = 53.0
+
+[node name="Sorter" type="Button" parent="FMRow"]
+unique_name_in_owner = true
+margin_right = 68.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 68, 0 )
+text = "Sort: Date"
+
+[node name="SortInvert" type="CheckButton" parent="FMRow"]
+unique_name_in_owner = true
+margin_left = 69.0
+margin_right = 133.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 64, 0 )
+text = "Invert"
+
+[node name="AllOnButton" type="Button" parent="FMRow"]
+unique_name_in_owner = true
+margin_left = 134.0
+margin_right = 187.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 53, 0 )
+text = "all on"
+
+[node name="AllOffButton" type="Button" parent="FMRow"]
+unique_name_in_owner = true
+margin_left = 188.0
+margin_right = 241.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 53, 0 )
+text = "all off"
 
 [node name="StyleCreditsScroll" type="ScrollContainer" parent="."]
 unique_name_in_owner = true

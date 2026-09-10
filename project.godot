@@ -109,7 +109,7 @@ _global_script_classes=[ {
 "language": "NativeScript",
 "path": "res://bin/FGCharacter.gdns"
 }, {
-"base": "",
+"base": "Reference",
 "class": "FGObject",
 "language": "NativeScript",
 "path": "res://bin/FGObject.gdns"
@@ -505,7 +505,7 @@ config/icon="res://icon2.png"
 
 [autoload]
 
-Steam="res://Steam.gd"
+Steam="*res://Steam.gd"
 Global="*res://Global.gd"
 FileManager="*res://filemanager/FileManager.gd"
 SteamHustle="*res://SteamY.gd"
