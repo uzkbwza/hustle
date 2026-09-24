@@ -65,6 +65,7 @@ func _ready():
 	Network.connect("force_open_action_buttons", self, "_on_multiplayer_turn_started")
 	Network.connect("style_save_response_received", self, "_on_style_save_response_received")
 	SteamLobby.connect("received_spectator_match_data", self, "_on_received_spectator_match_data")
+	Network.connect("received_spectator_match_data", self, "_on_received_spectator_match_data")
 	$"%P1ActionButtons".connect("action_clicked", self, "on_action_clicked", [1])
 	$"%P2ActionButtons".connect("action_clicked", self, "on_action_clicked", [2])
 	$"%GhostButton".connect("toggled", self, "_on_ghost_button_toggled")
@@ -160,6 +161,8 @@ func _on_show_style_toggled(on, player_id):
 			hud.refresh_portrait_style(player_id)
 
 func _on_player_disconnected():
+	if Network.relay_spectating or SteamLobby.SPECTATING:
+		return
 	if hooks:
 		hooks.player_disconnected()
 	$"%OpponentDisconnectedLabel".show()

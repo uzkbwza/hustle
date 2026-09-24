@@ -521,7 +521,7 @@ BorderManager="*res://bordermanager/BorderManager.tscn"
 [debug]
 
 gdscript/warnings/enable=false
-multirun/number_of_windows=2
+multirun/number_of_windows=4
 multirun/window_distance=1270
 multirun/add_custom_args=true
 multirun/first_window_args="listen"

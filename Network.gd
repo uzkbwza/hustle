@@ -43,6 +43,12 @@ var steam = false
 var forfeiter = 0
 var last_action_sent_tick = 0
 
+var relay_spectating = false
+var relay_spectate_pending = false
+var relay_spectators = {}
+var relay_spectator_ticks = {}
+var relay_spectator_timer = null
+
 var ticks = {
 	1: null,
 	2: null
@@ -57,6 +63,7 @@ var auto = false
 
 # Names for remote players in id:name format.
 var players = {}
+var relay_id = 0
 var players_ready = []
 
 var action_button_panels = {}
@@ -121,14 +128,16 @@ signal both_players_turn_end()
 signal match_ready(match_data)
 signal resim_requested()
 signal resim_denied()
-# requester_id is the verified Steam ID of the request sender (0 on relay).
-# requester_name is a display string — verified Steam persona on steam,
-# claimed username on relay (where there's no spoof-resistant alternative).
 signal style_save_request_received(target_player_id, requester_id, requester_name, style_name)
 signal style_save_response_received(target_player_id, requester_id, requester_name, allowed)
 signal force_open_action_buttons()
 signal player_count_received(playercount)
 signal multiplayer_stopped()
+signal received_spectator_match_data(data)
+signal spectate_declined()
+signal spectator_error(message)
+signal room_info_received(info)
+signal room_player_left(id)
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -145,32 +154,30 @@ func _ready():
 	add_child(timer)
 	timer.start(NETWORK_TIMER_CYCLE)
 
+	relay_spectator_timer = Timer.new()
+	relay_spectator_timer.one_shot = false
+	relay_spectator_timer.connect("timeout", self, "_on_relay_spectator_timer_timeout")
+	add_child(relay_spectator_timer)
+	relay_spectator_timer.start(3)
+
 	randomize()
 	_setup_rpc_whitelist()
 
 
 func get_multiplayer_active():
-	return multiplayer_active and !SteamLobby.SPECTATING
+	return multiplayer_active and !SteamLobby.SPECTATING and !relay_spectating
 
-# Lobby-broadcast RPC — reaches every lobby member, including peers
-# rpc_() can't address (spectators sending to fighters, or asking the
-# non-OPPONENT_ID fighter as a spectator). Receivers must self-filter
-# (e.g. by Network.player_id and SPECTATING) since the packet hits all.
-# Steam path uses SteamLobby.broadcast_rpc; relay falls back to rpc_'s
-# "remote" type since 1v1 relay only has one remote peer anyway.
 func broadcast_rpc(function_name: String, arg=null):
 	if steam:
 		if !(multiplayer_active or SteamLobby.SPECTATING):
 			return
 		SteamLobby.broadcast_rpc(function_name, arg)
 		return
-	# Relay path: spectator broadcast isn't supported — fall through to
-	# normal rpc_ which targets the remote peer (only fighters in 1v1).
 	if multiplayer_active:
 		rpc_(function_name, arg, "remote")
 
 func rpc_(function_name: String, arg=null, type="remotesync"):
-	if SteamLobby.SPECTATING:
+	if SteamLobby.SPECTATING or relay_spectating:
 		return
 
 	if !multiplayer_active:
@@ -258,6 +265,13 @@ func get_local_id():
 		return SteamHustle.STEAM_ID
 	return get_tree().get_network_unique_id()
 
+func get_self_id():
+	if steam:
+		return SteamHustle.STEAM_ID
+	if !direct_connect and multiplayer_client:
+		return relay_id
+	return get_local_id()
+
 func join_game_direct(ip, port, new_player_name):
 	_reset()
 	player_name = new_player_name
@@ -269,17 +283,18 @@ func join_game_direct(ip, port, new_player_name):
 	get_tree().set_network_peer(peer)
 
 func setup_relay_multiplayer(address):
+	relay_id = 0
 	multiplayer_client = MultiplayerClient.new(address)
 	multiplayer_active = true
 	direct_connect = false
 	get_tree().set_network_peer(multiplayer_client.get_client())
 
-func host_game_relay(new_player_name, public=true):
+func host_game_relay(new_player_name, public=true, room_name=""):
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
 	multiplayer_host = true
 	player_name = new_player_name.substr(0, 32)
-	rpc_id(1, "create_match", player_name, public)
+	rpc_id(1, "create_match", player_name, public, room_name)
 	yield(self, "match_code_received")
 
 func join_game_relay(new_player_name, room_code):
@@ -398,6 +413,11 @@ func _reset():
 	ids_synced = false
 	turn_synced = false
 	
+	relay_spectating = false
+	relay_spectate_pending = false
+	relay_spectators.clear()
+	relay_spectator_ticks.clear()
+	
 	get_tree().set_network_peer(null)
 
 # Callback from SceneTree.
@@ -409,7 +429,7 @@ func player_connected(id):
 func pid_to_username(player_id):
 		if player_id != 1 and player_id != 2 or !is_instance_valid(game):
 			return ""
-		if SteamLobby.SPECTATING or !network_ids.has(player_id):
+		if SteamLobby.SPECTATING or relay_spectating or !network_ids.has(player_id):
 			return Global.current_game.match_data.user_data["p" + str(player_id)]
 		if direct_connect:
 			return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
@@ -450,6 +470,15 @@ remote func player_disconnected(id):
 #	multiplayer_active = false
 	if !(id in players):
 		return
+	# Only the opponent's departure may count as an opponent quit;
+	# spectator drops must never forge a forfeit.
+	if !steam and !direct_connect:
+		var opponent_net_id = 0
+		var opp_player_id = opponent_player_id(player_id)
+		if network_ids.has(opp_player_id):
+			opponent_net_id = network_ids[opp_player_id]
+		if opponent_net_id == 0 or id != opponent_net_id:
+			return
 	if Global.css_open:
 		Global.reload()
 		if steam:
@@ -487,9 +516,13 @@ func _connected_fail():
 	emit_signal("connection_failed")
 
 remotesync func receive_player_timer(id, timer):
+	if _rpc_from_wire() and id == player_id:
+		return
 	emit_signal("sync_timer_request", id, timer)
 	if steam:
 		SteamLobby.spectator_sync_timers(id, timer)
+	elif !relay_spectators.empty():
+		_push_to_relay_spectators("spectator_sync_timers", {"id": id, "time": timer})
 
 func sync_timer(id, time):
 	rpc_("receive_player_timer", [id, time], "remotesync")
@@ -511,6 +544,9 @@ func turn_ready(id):
 func get_sender_id():
 #	if direct_connect:
 	return get_tree().get_rpc_sender_id()
+
+func _rpc_from_wire():
+	return get_tree().get_rpc_sender_id() != 0
 
 func unregister_player(id):
 	if !steam:
@@ -535,6 +571,8 @@ remote func receive_player_count(count):
 	emit_signal("player_count_received", count)
 
 remotesync func player_emote(player_id, message):
+	if _rpc_from_wire() and player_id == self.player_id:
+		return
 	if is_instance_valid(Global.current_game):
 		var player = Global.current_game.get_player(player_id)
 		if player:
@@ -570,13 +608,20 @@ func assign_players():
 		begin_game()
 
 	elif is_host():
-		var network_ids = {}
-		var player_ids = players.keys()
-		assert(player_ids.size() == 2)
-		player_ids.shuffle()
-		network_ids[1] = player_ids[0]
-		network_ids[2] = player_ids[1]
-		rpc_("sync_ids", network_ids)
+		var attempts = 0
+		while players.keys().size() != 2:
+			if attempts >= 30:
+				print("assign_players: only %d player(s) registered" % [players.keys().size()])
+				emit_signal("game_error", "Your opponent disconnected or never finished joining. Please try again.")
+				return
+			attempts += 1
+			yield(get_tree().create_timer(0.1), "timeout")
+		var assigned_ids = {}
+		var player_keys = players.keys()
+		player_keys.shuffle()
+		assigned_ids[1] = player_keys[0]
+		assigned_ids[2] = player_keys[1]
+		rpc_("sync_ids", assigned_ids)
 
 func assign_players_for_replay_challenge(replay_data):
 	print("assigning players for replay challenge")
@@ -617,10 +662,12 @@ remotesync func player_forfeit(player_id):
 	if is_instance_valid(game):
 		game.forfeit(player_id)
 		forfeiter = player_id
-		if player_id != self.player_id and !SteamLobby.SPECTATING and !ReplayManager.playback:
+		if player_id != self.player_id and !SteamLobby.SPECTATING and !relay_spectating and !ReplayManager.playback:
 			SteamHustle.unlock_achievement("ACH_WIN_BY_FORFEIT")
 		if steam and !SteamLobby.SPECTATING:
 			SteamLobby.spectate_forfeit(player_id)
+		elif !relay_spectating and !relay_spectators.empty():
+			_push_to_relay_spectators("spectator_player_forfeit", player_id)
 
 func begin_game():
 	SteamLobby.REMATCHING_ID = 0
@@ -670,6 +717,201 @@ func stop_multiplayer(leave_steam_lobby=false):
 
 	emit_signal("multiplayer_stopped")
 
+func request_spectate(code):
+	if steam or !(multiplayer_client and multiplayer_client.connected):
+		return
+	relay_spectate_pending = true
+	rpc_id(1, "request_spectate", player_name.substr(0, 64), code)
+
+func cancel_spectate_request():
+	if steam:
+		return
+	relay_spectate_pending = false
+	if multiplayer_client and multiplayer_client.connected:
+		rpc_id(1, "end_spectate")
+
+func request_room_info(room_code):
+	if steam or !(multiplayer_client and multiplayer_client.connected):
+		return
+	rpc_id(1, "fetch_room_info", room_code)
+
+remote func receive_room_info(info):
+	emit_signal("room_info_received", info)
+
+remote func room_player_left(_id):
+	emit_signal("room_player_left", _id)
+
+func leave_match():
+	if steam or !(multiplayer_client and multiplayer_client.connected):
+		return
+	rpc_id(1, "leave_match")
+
+func end_spectate():
+	if steam:
+		return
+	if relay_spectating:
+		_stop_relay_spectating()
+		if multiplayer_client and multiplayer_client.connected:
+			rpc_id(1, "end_spectate")
+
+func _stop_relay_spectating():
+	relay_spectating = false
+	relay_spectate_pending = false
+	relay_spectators.clear()
+	relay_spectator_ticks.clear()
+
+remote func spectate_accept(data):
+	if data is Dictionary and data.get("replay") != null:
+		ReplayManager.frames = data.replay
+	if !relay_spectate_pending or relay_spectating:
+		return
+	if data is Dictionary and data.get("match_data") is Dictionary and data.get("replay") != null:
+		var match_data = data.match_data
+		var missing = []
+		for i in [1, 2]:
+			var char_data = match_data.get("selected_characters", {}).get(i, {})
+			var char_name = char_data.get("name", "")
+			if char_name != "" and !Global.name_paths.has(char_name):
+				missing.append(char_name)
+		if missing.size() > 0:
+			relay_spectate_pending = false
+			relay_spectating = false
+			if multiplayer_client and multiplayer_client.connected:
+				rpc_id(1, "end_spectate")
+			emit_signal("spectator_error", "You're missing the mods for this match: " + ", ".join(missing))
+			return
+		relay_spectating = true
+		relay_spectate_pending = false
+		multiplayer_active = false
+		ReplayManager.init()
+		match_data["replay"] = data.replay
+		ReplayManager.frames = data.replay
+		emit_signal("received_spectator_match_data", match_data)
+
+remote func spectator_replay_update(replay):
+	if relay_spectating and replay is Dictionary:
+		for pid in replay.keys():
+			if !ReplayManager.frames.has(pid):
+				ReplayManager.frames[pid] = {}
+			for tick in replay[pid].keys():
+				ReplayManager.frames[pid][tick] = replay[pid][tick]
+
+remote func spectator_sync_timers(data):
+	if !relay_spectating or !(data is Dictionary):
+		return
+	emit_signal("sync_timer_request", data.get("id"), data.get("time"))
+
+remote func spectator_turn_ready(id):
+	if relay_spectating:
+		emit_signal("player_turn_ready", id)
+
+remote func spectator_player_forfeit(player_id):
+	if relay_spectating:
+		player_forfeit(player_id)
+
+remote func spectate_declined():
+	if relay_spectate_pending:
+		relay_spectate_pending = false
+		emit_signal("spectate_declined")
+
+remote func spectate_ended(disconnected_id):
+	if relay_spectators.has(disconnected_id):
+		relay_spectators.erase(disconnected_id)
+		relay_spectator_ticks.erase(disconnected_id)
+	if int(disconnected_id) == 0:
+		if relay_spectate_pending:
+			relay_spectate_pending = false
+			emit_signal("spectate_declined")
+		if relay_spectating:
+			_stop_relay_spectating()
+			if is_instance_valid(game):
+				Global.reload()
+
+remote func spectate_request(spectator_id):
+	if steam:
+		return
+	if relay_spectators.has(spectator_id):
+		return
+	relay_spectators[spectator_id] = false
+	if is_instance_valid(game):
+		relay_spectators[spectator_id] = true
+		relay_spectator_ticks[spectator_id] = _replay_watermarks()
+		rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
+
+func _spectate_accept_data():
+	return {
+		"spectate_accept": get_tree().get_network_unique_id(),
+		"match_data": game.match_data,
+		"replay": ReplayManager.frames,
+	}
+
+func _replay_watermarks():
+	var wm = {}
+	for pid in ReplayManager.frames.keys():
+		if !(pid is int) or pid < 1 or pid > 2:
+			continue
+		var highest = -1
+		for tick in ReplayManager.frames[pid].keys():
+			if int(tick) > highest:
+				highest = int(tick)
+		wm[pid] = highest
+	return wm
+
+func _push_replay_updates_delta():
+	if steam or relay_spectators.empty():
+		return
+	if !(multiplayer_client and multiplayer_client.connected):
+		return
+	for spectator_id in relay_spectators.keys():
+		var wm = relay_spectator_ticks.get(spectator_id)
+		if wm == null:
+			wm = {}
+			for pid in ReplayManager.frames.keys():
+				if pid is int and pid >= 1 and pid <= 2:
+					wm[pid] = -1
+			relay_spectator_ticks[spectator_id] = wm
+		var delta = {}
+		for pid in ReplayManager.frames.keys():
+			if !(pid is int) or pid < 1 or pid > 2:
+				continue
+			var ticks = ReplayManager.frames[pid]
+			var highest = wm.get(pid, -1)
+			var cur_max = -1
+			for tick in ticks.keys():
+				if int(tick) > cur_max:
+					cur_max = int(tick)
+			if cur_max < highest:
+				highest = -1
+			for tick in ticks.keys():
+				if int(tick) <= highest:
+					continue
+				if !delta.has(pid):
+					delta[pid] = {}
+				delta[pid][tick] = ticks[tick]
+			wm[pid] = cur_max
+		if delta.empty():
+			continue
+		rpc_id(1, "relay_to_spectator", spectator_id, "spectator_replay_update", delta)
+
+func _push_to_relay_spectators(function_name, arg=null):
+	if steam or relay_spectators.empty():
+		return
+	if !(multiplayer_client and multiplayer_client.connected):
+		return
+	rpc_id(1, "relay_to_spectators", function_name, arg)
+
+func _on_relay_spectator_timer_timeout():
+	if steam or relay_spectators.empty():
+		return
+	if !is_instance_valid(game):
+		return
+	for spectator_id in relay_spectators.keys():
+		if !relay_spectators[spectator_id]:
+			relay_spectators[spectator_id] = true
+			relay_spectator_ticks[spectator_id] = _replay_watermarks()
+			rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
+	_push_replay_updates_delta()
+
 func _on_network_timer_timeout():
 	pass
 #	if multiplayer_active:
@@ -695,12 +937,14 @@ remote func receive_match_code(code):
 	emit_signal("match_code_received")
 
 remote func send_action(action, data, extra, player_id):
-		print("received action: " + str(action))
-		action_inputs[player_id]["action"] = action
-		action_inputs[player_id]["data"] = data
-		action_inputs[player_id]["extra"] = extra
-		player_objects[player_id].on_action_selected(action, data, extra)
-		rpc_("opponent_received_action", null, "remote")
+	if _rpc_from_wire() and player_id == self.player_id:
+		return
+	print("received action: " + str(action))
+	action_inputs[player_id]["action"] = action
+	action_inputs[player_id]["data"] = data
+	action_inputs[player_id]["extra"] = extra
+	player_objects[player_id].on_action_selected(action, data, extra)
+	rpc_("opponent_received_action", null, "remote")
 		
 
 remote func opponent_received_action():
@@ -716,6 +960,8 @@ remotesync func send_chat_message(player_id, message):
 remotesync func end_turn_simulation(tick, player_id):
 #	if get_sender_id() == network_id:
 #		return
+	if _rpc_from_wire() and player_id == self.player_id:
+		return
 	player_id = opponent_player_id(player_id)
 	print("ending turn simulation for player " + str(player_id) + " at tick " + str(tick))
 	ticks[player_id] = tick
@@ -746,11 +992,15 @@ remote func client_actionable():
 	emit_signal("client_actionable")
 
 remotesync func multiplayer_turn_ready(id):
+	if _rpc_from_wire() and id == player_id:
+		return
 	Network.turns_ready[id] = true
 	print("turn ready for player " + str(id))
 	emit_signal("player_turn_ready", id)
 	if steam:
 		SteamLobby.spectator_turn_ready(id)
+	elif !relay_spectating and !relay_spectators.empty():
+		_push_to_relay_spectators("spectator_turn_ready", id)
 	if turn_ready(id):
 		action_submitted = true
 #		if is_host():
@@ -806,7 +1056,7 @@ remotesync func register_player(new_player_name, id, version):
 		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent must update to the newest version." % [Global.VERSION, version])
 #		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, version])
 		return
-	if get_local_id() == id:
+	if get_self_id() == id:
 		network_id = id
 	print("registering player: " + str(id))
 	players[id] = new_player_name
@@ -815,12 +1065,14 @@ remotesync func register_player(new_player_name, id, version):
 remotesync func sync_ids(network_ids):
 	self.network_ids = network_ids
 	for player in network_ids:
-		if network_ids[player] == get_local_id():
+		if network_ids[player] == get_self_id():
 			player_id = player
 	ids_synced = true
 	emit_signal("player_ids_synced")
 
 remotesync func send_rematch_request(player_id):
+	if _rpc_from_wire() and player_id == self.player_id:
+		return
 	rematch_requested[player_id] = true
 	if rematch_requested[1] and rematch_requested[2]:
 		forfeiter = 0
@@ -835,6 +1087,8 @@ remotesync func send_rematch_request(player_id):
 				begin_game()
 
 remotesync func sync_character_selection(player_id, character, style=null):
+	if _rpc_from_wire() and player_id == self.player_id:
+		return
 	print("player %s selected character" % [str(player_id)])
 	styles[player_id] = style
 	emit_signal("character_selected", player_id, character, style)
@@ -860,32 +1114,16 @@ remote func deny_resim():
 	rpc_("send_chat_message", [opponent_player_id(player_id), "-- denied resync request."])
 	emit_signal("resim_denied")
 
-# Style "ask the owner if I can save their style" flow. The requester
-# broadcasts receive_style_save_request; the targeted player's Chat window
-# shows a yes/no prompt, then broadcasts receive_style_save_response back.
-#
-# Identity: on steam we derive the requester's steam_id from p2p_packet_sender
-# (which Steam verifies), look up the verified persona for display, and route
-# the response by steam_id. On relay we trust the claimed username — there's
-# no spectator support there anyway, so the only "remote" peer is the
-# opponent and there's nothing to spoof.
 remote func receive_style_save_request(target_player_id, requester_name, style_name):
 	var sender_id = 0
 	var display_name = requester_name
 	if steam:
 		sender_id = SteamLobby.p2p_packet_sender
 		if sender_id != 0:
-			# Prefer the verified Steam persona over the claimed username.
-			# Otherwise a peer could send a fake name and trick the target
-			# into granting access intended for someone else.
 			display_name = Steam.getFriendPersonaName(sender_id)
 	emit_signal("style_save_request_received", target_player_id, sender_id, display_name, style_name)
 
 remote func receive_style_save_response(target_player_id, requester_id, requester_name, allowed):
-	# Verify the response actually came from the target — otherwise any lobby
-	# peer could spoof a "yes" and trick the requester into saving the style
-	# without permission. Only enforced on steam (where p2p_packet_sender is
-	# the real source); relay falls back to the existing match-peer trust.
 	if steam:
 		var expected = network_ids.get(target_player_id, 0)
 		if expected != 0 and SteamLobby.p2p_packet_sender != expected:
@@ -912,7 +1150,6 @@ remotesync func finalize_resim():
 func undo_finished():
 	undo = false
 
-# relay stuff
 remote func test_relay():
 	print("relay test")
 
@@ -927,7 +1164,10 @@ remote func receive_match_id(match_id):
 	emit_signal("match_code_received", match_id)
 
 remote func player_connected_relay():
-	rpc_("register_player", [player_name, get_local_id(), Global.VERSION])
+	rpc_("register_player", [player_name, get_self_id(), Global.VERSION])
+
+remote func your_relay_id(received):
+	relay_id = received
 
 func is_modded():
 	return false
@@ -935,6 +1175,8 @@ func is_modded():
 func on_turn_started():
 	if steam:
 		SteamLobby.update_spectators(ReplayManager.frames)
+	elif !relay_spectators.empty() and is_instance_valid(game):
+		_push_replay_updates_delta()
 
 func rpc_steam(function_name, arg):
 	SteamLobby.rpc_(function_name, arg)

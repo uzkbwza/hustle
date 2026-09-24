@@ -537,6 +537,8 @@ func _on_forfeit_button_pressed():
 	$"%PausePanel".hide()
 
 func _on_opponent_disconnected():
+	if SteamLobby.SPECTATING or Network.relay_spectating or ReplayManager.playback or !Network.multiplayer_active:
+		return
 	if is_instance_valid(game) and !game.game_finished:
 		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
 		Network.forfeit(true)

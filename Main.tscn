@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=2]
+[gd_scene load_steps=97 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -83,6 +83,7 @@
 [ext_resource path="res://ui/Window/Window.gd" type="Script" id=201]
 [ext_resource path="res://ui/CommunityEvents.gd" type="Script" id=202]
 [ext_resource path="res://MainHooks.gd" type="Script" id=203]
+[ext_resource path="res://ui/RelayLobby.tscn" type="PackedScene" id=204]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -3078,7 +3079,7 @@ text = "done"
 unique_name_in_owner = true
 volume_db = -20.0
 
-[node name="Lobby" parent="UILayer" instance=ExtResource( 5 )]
+[node name="Lobby" parent="UILayer" instance=ExtResource( 204 )]
 unique_name_in_owner = true
 visible = false
 direct_connect = false
