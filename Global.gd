@@ -152,6 +152,9 @@ var songs = {
 
 var character_select_node = null
 
+var character_select_owners := {}
+var reload_pending := false
+
 var characters_cache = {}
 
 func get_cached_character(name):
@@ -573,9 +576,63 @@ func save_player_data(data: Dictionary):
 	dir.rename(tmp_path, "user://playerdata.json")
 
 func reload():
-	if character_select_node:
-		character_select_node.get_parent().remove_child(character_select_node)
+	if reload_pending:
+		return
+	reload_pending = true
+	if is_instance_valid(character_select_node):
+		_snapshot_character_select_owners()
+		var parent = character_select_node.get_parent()
+		if parent:
+			parent.remove_child(character_select_node)
+	elif character_select_node:
+		character_select_node = null
 	get_tree().reload_current_scene()
+
+func _process(_delta):
+	if reload_pending:
+		reload_pending = false
+
+func _snapshot_character_select_owners() -> void:
+	character_select_owners.clear()
+	if not is_instance_valid(character_select_node):
+		return
+	var css: Node = character_select_node
+	var queue := [css]
+	while not queue.empty():
+		var node: Node = queue.pop_front()
+		character_select_owners[node.get_instance_id()] = _owner_path_within(css, node.owner)
+		for child in node.get_children():
+			queue.append(child)
+
+func _owner_path_within(css: Node, owner_node):
+	if owner_node == null:
+		return null
+	if owner_node == css:
+		return NodePath(".")
+	var segments := []
+	var cursor: Node = owner_node
+	while cursor != null and cursor != css:
+		segments.push_front(cursor.name)
+		cursor = cursor.get_parent()
+	if cursor != css:
+		return null
+	return NodePath("/".join(segments))
+
+func _restore_character_select_owners(css: Node, scene_root_owner: Node) -> void:
+	if character_select_owners.empty():
+		return
+	var queue := [css]
+	while not queue.empty():
+		var node: Node = queue.pop_front()
+		var owner_path = character_select_owners.get(node.get_instance_id(), null)
+		if owner_path == null:
+			node.owner = scene_root_owner
+		elif owner_path is NodePath:
+			var target: Node = css.get_node_or_null(owner_path)
+			if target != null:
+				node.owner = target
+		for child in node.get_children():
+			queue.append(child)
 
 # Strip the build-channel suffix off VERSION so "1.10.0-steam-unstable"
 # compares cleanly against MOD_DISABLE_VERSIONS entries like "1.10.0".

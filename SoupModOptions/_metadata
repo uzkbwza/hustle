@@ -1,0 +1,15 @@
+{
+  "author": "Supersonic#2382",
+  "client_side": true,
+  "description": "Adds a mod options menu and some utilities for modders to save persistent settings.",
+  "friendly_name": "Mod Options Menu",
+  "id": "12345",
+  "link": "",
+  "name": "soupModOptions",
+  "overwrites": false,
+  "priority": -10001,
+  "requires": [
+    ""
+  ],
+  "version": "1.2.1"
+}

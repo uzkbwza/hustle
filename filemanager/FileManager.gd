@@ -34,11 +34,6 @@ func _init() -> void:
 	elif OS.get_name() == "Android":
 		push_warning("FileManager: GodotFilePicker Android plugin not found - in-game file import is unavailable.")
 	
-	# Pre-register the standard categories so pack imports work even
-	# before/without their menus existing this session. setup() calls
-	# register_category() again later, which just overwrites the same value.
-	# "mods" resolves like ModLoaderMenu does: game folder on desktop,
-	# user://mods on mobile.
 	register_category("custom", "user://custom")
 	register_category("replay", "user://replay")
 	var mods_default_dir = "user://mods"
@@ -59,7 +54,7 @@ func _init() -> void:
 
 
 func _notification(what: int) -> void:
-	if Global.is_mobile_device and what == MainLoop.NOTIFICATION_APPLICATION_FOCUS_IN:
+	if Global.is_mobile_device and what == MainLoop.NOTIFICATION_WM_FOCUS_IN:
 		_check_ymhpack_inbox()
 
 
@@ -102,10 +97,6 @@ func _register_file_associations() -> void:
 	Global.save_options_after_change("registered_ymhpack", true)
 
 
-# Scans the mobile inbox for untrusted .ymhpack files and reports them via
-# inbox_files_pending WITHOUT importing or deleting anything. Import only
-# happens after the user explicitly confirms (see import_inbox). This stops
-# content received on a device from being silently extracted on its own.
 func _check_ymhpack_inbox() -> void:
 	var inbox = "user://ymhpack"
 	var dir = Directory.new()
@@ -124,8 +115,6 @@ func _check_ymhpack_inbox() -> void:
 		emit_signal("inbox_files_pending", pending)
 
 
-# Imports and removes the confirmed .ymhpack files sitting in the mobile
-# inbox. Call this only after the user has explicitly chosen to accept them.
 func import_inbox() -> void:
 	var inbox = "user://ymhpack"
 	var dir = Directory.new()
@@ -330,9 +319,6 @@ func copy_file_to_directory(path: String, directory: String, extensions: PoolStr
 	if ext == PACK_EXT:
 		return import_pack(path)
 	
-	# Some Android file-picker plugins hand back a temp/cache path whose
-	# extension was mangled or dropped entirely. Detection is by the pack's
-	# "YMHPACK" header, not its filename, so those imports still work.
 	if ext != PACK_EXT and (ext == "." or ext in extensions) and _is_ymhpack(path):
 		return import_pack(path)
 	

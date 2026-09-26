@@ -135,10 +135,10 @@ func _enter_tree():
 		$"%CharacterSelect".free()
 		var css: Node = Global.character_select_node
 		add_child(css)
-		move_child(css, 15)
+		move_child(css, min(15, get_child_count() - 1))
 		css.name = "CharacterSelect"
-		css.owner = owner
 		css.unique_name_in_owner = true
+		Global._restore_character_select_owners(css, owner)
 		css.reset()
 
 func _ready():

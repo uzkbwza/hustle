@@ -1,0 +1,154 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://SoupModOptions/ModOptionsTheme.tres" type="Theme" id=1]
+[ext_resource path="res://SoupModOptions/ModOptionsWindow.gd" type="Script" id=2]
+
+[node name="ModOptionsWindow" type="PanelContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -100.0
+margin_right = 200.0
+margin_bottom = 100.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 399.0
+margin_bottom = 199.0
+
+[node name="TitleBar" type="Panel" parent="VBoxContainer"]
+margin_right = 398.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 0, 9 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="VBoxContainer/TitleBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = 2.0
+mouse_filter = 1
+text = "Mod Options"
+align = 1
+
+[node name="CloseButton" type="Button" parent="VBoxContainer/TitleBar"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 12.0
+text = "Close"
+flat = true
+
+[node name="Contents" type="PanelContainer" parent="VBoxContainer"]
+margin_top = 9.0
+margin_right = 398.0
+margin_bottom = 198.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 397.0
+margin_bottom = 188.0
+size_flags_horizontal = 3
+
+[node name="TabsScrollContainer" type="ScrollContainer" parent="VBoxContainer/Contents/HBoxContainer"]
+margin_right = 112.0
+margin_bottom = 187.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+theme_type_variation = "TabScrollContainer"
+follow_focus = true
+scroll_horizontal_enabled = false
+
+[node name="Tabs" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/TabsScrollContainer"]
+unique_name_in_owner = true
+margin_right = 112.0
+margin_bottom = 187.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MenuContainer" type="PanelContainer" parent="VBoxContainer/Contents/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 116.0
+margin_right = 396.0
+margin_bottom = 187.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="FakeMenu" type="ScrollContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer"]
+visible = false
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 279.0
+margin_bottom = 186.0
+
+[node name="OptionList" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu"]
+margin_right = 278.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+custom_constants/separation = 0
+
+[node name="CategoryTest" type="PanelContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList"]
+margin_right = 278.0
+margin_bottom = 28.0
+
+[node name="CategoryContainer" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 277.0
+margin_bottom = 27.0
+
+[node name="Titlebar" type="PanelContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer"]
+margin_right = 276.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = "CategoryTitlebar"
+
+[node name="CategoryTitle" type="Label" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer/Titlebar"]
+visible = false
+margin_right = 276.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "i hate this"
+align = 1
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer/Titlebar"]
+margin_right = 276.0
+margin_bottom = 12.0
+theme_type_variation = "CategoryButton"
+pressed = true
+text = "category A"
+flat = true
+align = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer"]
+margin_top = 12.0
+margin_right = 276.0
+margin_bottom = 26.0
+theme_type_variation = "CategoryOptions"
+
+[node name="OptionList" type="VBoxContainer" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer/PanelContainer"]
+margin_left = 3.0
+margin_right = 276.0
+margin_bottom = 12.0
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList/CategoryTest/CategoryContainer/PanelContainer/OptionList"]
+margin_right = 273.0
+margin_bottom = 12.0
+text = "option in the category"
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer/Contents/HBoxContainer/MenuContainer/FakeMenu/OptionList"]
+margin_top = 28.0
+margin_right = 278.0
+margin_bottom = 40.0
+text = "option out of the category"

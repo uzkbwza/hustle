@@ -33,7 +33,7 @@ func get_extra():
 		"bounce": bounce.get_data(),
 		"honk": $"%HonkEnabled".pressed
 	}
-if loic.is_visible_in_tree():
+	if loic.is_visible_in_tree():
 		extra["loic_dir"] = loic.get_data()
 	return extra
 

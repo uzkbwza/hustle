@@ -1,0 +1,307 @@
+[gd_resource type="Theme" load_steps=48 format=2]
+
+[ext_resource path="res://ui/checkbutton2.png" type="Texture" id=1]
+[ext_resource path="res://ui/checkbutton3.png" type="Texture" id=2]
+[ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=3]
+[ext_resource path="res://ui/checkbutton1.png" type="Texture" id=4]
+[ext_resource path="res://ui/checkbutton4.png" type="Texture" id=5]
+[ext_resource path="res://ui/updown.png" type="Texture" id=6]
+[ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=7]
+[ext_resource path="res://SoupModOptions/sprites/optionbutton_radiochecked.png" type="Texture" id=8]
+[ext_resource path="res://SoupModOptions/sprites/optionbutton_radiounchecked.png" type="Texture" id=9]
+[ext_resource path="res://SoupModOptions/sprites/optionbutton_unchecked.png" type="Texture" id=10]
+[ext_resource path="res://SoupModOptions/sprites/optionbutton_checked.png" type="Texture" id=11]
+[ext_resource path="res://SoupModOptions/sprites/optionbutton_arrow.png" type="Texture" id=12]
+[ext_resource path="res://SoupModOptions/sprites/arrowleft.png" type="Texture" id=13]
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_bottom = 1
+border_color = Color( 0.8, 0.8, 0.8, 0.490196 )
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.164706, 0.164706, 0.164706, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=42]
+content_margin_right = 0.0
+
+[sub_resource type="StyleBoxFlat" id=44]
+content_margin_left = 3.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 2.0
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_bottom = 1
+
+[sub_resource type="StyleBoxFlat" id=43]
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="Image" id=45]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=27]
+flags = 4
+flags = 4
+image = SubResource( 45 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="StyleBoxFlat" id=18]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 1
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=17]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 1
+border_width_top = 6
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=29]
+content_margin_left = 0.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color( 0, 0, 0, 1 )
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=25]
+bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
+
+[sub_resource type="StyleBoxFlat" id=23]
+bg_color = Color( 0.235294, 0.235294, 0.235294, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=22]
+bg_color = Color( 0.168627, 0.168627, 0.168627, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=24]
+bg_color = Color( 0.239216, 0.239216, 0.239216, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=31]
+content_margin_left = 2.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 0, 0, 0, 1 )
+border_width_right = 1
+border_color = Color( 1, 1, 1, 1 )
+expand_margin_bottom = 1.0
+shadow_color = Color( 0, 0, 0, 0 )
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id=34]
+bg_color = Color( 1, 1, 1, 0.313726 )
+corner_detail = 1
+shadow_color = Color( 0, 0, 0, 0 )
+
+[sub_resource type="StyleBoxFlat" id=32]
+content_margin_left = 2.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+shadow_color = Color( 0, 0, 0, 0 )
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=21]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=39]
+bg_color = Color( 1, 1, 1, 0.356863 )
+
+[sub_resource type="StyleBoxFlat" id=40]
+content_margin_left = 2.0
+content_margin_right = 2.0
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxLine" id=41]
+color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=36]
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.776471, 0.462745, 0.462745, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color( 0.431373, 0.266667, 0.266667, 1 )
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=37]
+content_margin_right = 0.0
+bg_color = Color( 0, 0, 0, 1 )
+border_width_right = 1
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 4
+border_width_right = 2
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=20]
+bg_color = Color( 1, 0.2, 0.239216, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.2, 0.239216, 1 )
+
+[resource]
+default_font = ExtResource( 7 )
+Button/styles/disabled = SubResource( 9 )
+Button/styles/focus = SubResource( 15 )
+Button/styles/hover = SubResource( 11 )
+Button/styles/normal = SubResource( 3 )
+Button/styles/pressed = SubResource( 8 )
+CategoryButton/base_type = "CheckButton"
+CategoryButton/icons/off = ExtResource( 13 )
+CategoryButton/icons/off_disabled = ExtResource( 13 )
+CategoryButton/icons/on = ExtResource( 12 )
+CategoryButton/icons/on_disabled = ExtResource( 12 )
+CategoryButton/styles/disabled = SubResource( 42 )
+CategoryButton/styles/focus = SubResource( 42 )
+CategoryButton/styles/hover = SubResource( 42 )
+CategoryButton/styles/hover_pressed = SubResource( 42 )
+CategoryButton/styles/normal = SubResource( 42 )
+CategoryButton/styles/pressed = SubResource( 42 )
+CategoryOptions/base_type = "PanelContainer"
+CategoryOptions/styles/panel = SubResource( 44 )
+CategoryTitlebar/base_type = "PanelContainer"
+CategoryTitlebar/styles/panel = SubResource( 43 )
+CheckButton/icons/off = ExtResource( 4 )
+CheckButton/icons/off_disabled = ExtResource( 2 )
+CheckButton/icons/on = ExtResource( 1 )
+CheckButton/icons/on_disabled = ExtResource( 5 )
+ColorPicker/constants/sv_height = 60
+ColorPicker/constants/sv_width = 60
+HSlider/icons/grabber = ExtResource( 3 )
+HSlider/icons/grabber_disabled = ExtResource( 3 )
+HSlider/icons/grabber_highlight = ExtResource( 3 )
+HSlider/icons/tick = SubResource( 27 )
+HSlider/styles/grabber_area = SubResource( 18 )
+HSlider/styles/grabber_area_highlight = SubResource( 18 )
+HSlider/styles/slider = SubResource( 17 )
+InvisPanelContainer/base_type = "PanelContainer"
+InvisPanelContainer/styles/panel = SubResource( 29 )
+ItemList/styles/bg = SubResource( 25 )
+ItemList/styles/bg_focus = SubResource( 25 )
+LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.752941 )
+LineEdit/styles/focus = SubResource( 23 )
+LineEdit/styles/normal = SubResource( 22 )
+LineEdit/styles/read_only = SubResource( 24 )
+ModOptionsTabButton/base_type = "Button"
+ModOptionsTabButton/styles/disabled = SubResource( 31 )
+ModOptionsTabButton/styles/focus = SubResource( 34 )
+ModOptionsTabButton/styles/hover = SubResource( 31 )
+ModOptionsTabButton/styles/normal = SubResource( 31 )
+ModOptionsTabButton/styles/pressed = SubResource( 32 )
+OptionButton/icons/arrow = ExtResource( 12 )
+OptionList/base_type = "VBoxContainer"
+OptionList/constants/separation = 1
+Panel/styles/panel = SubResource( 4 )
+PanelContainer/styles/panel = SubResource( 21 )
+PopupMenu/icons/checked = ExtResource( 11 )
+PopupMenu/icons/radio_checked = ExtResource( 8 )
+PopupMenu/icons/radio_unchecked = ExtResource( 9 )
+PopupMenu/icons/unchecked = ExtResource( 10 )
+PopupMenu/styles/hover = SubResource( 39 )
+PopupMenu/styles/panel = SubResource( 40 )
+PopupMenu/styles/panel_disabled = SubResource( 40 )
+PopupMenu/styles/separator = SubResource( 41 )
+ScrollContainer/styles/bg = SubResource( 36 )
+SelectButton/styles/hover = SubResource( 13 )
+SelectButton/styles/normal = SubResource( 14 )
+SpinBox/icons/updown = ExtResource( 6 )
+TabButton/base_type = "Button"
+TabButton/styles/disabled = SubResource( 31 )
+TabButton/styles/focus = SubResource( 34 )
+TabButton/styles/hover = SubResource( 31 )
+TabButton/styles/normal = SubResource( 31 )
+TabButton/styles/pressed = SubResource( 32 )
+TabScrollContainer/base_type = "ScrollContainer"
+TabScrollContainer/styles/bg = SubResource( 37 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = ExtResource( 7 )
+TooltipPanel/styles/panel = SubResource( 19 )
+VBoxContainer/constants/separation = 0
+VScrollBar/styles/grabber = SubResource( 5 )
+VScrollBar/styles/grabber_highlight = SubResource( 7 )
+VScrollBar/styles/grabber_pressed = SubResource( 5 )
+VScrollBar/styles/scroll = SubResource( 6 )
+VScrollBar/styles/scroll_focus = SubResource( 6 )
+YouPanel/styles/panel = SubResource( 20 )

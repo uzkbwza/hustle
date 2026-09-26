@@ -19,6 +19,7 @@ var mods_w_missing_depend = {}
 var zips_by_name = {}
 var active = false
 var charLoaderModDetected = false
+var soupModOptionsDetected = false
 var charFolders = []
 
 func _read_modded_json_text() -> String:
@@ -243,6 +244,9 @@ func _initMods():
 					zips_by_name[modInfo[2].name] = modFSPath
 					if metaRes[1].name == "char_loader" and metaRes[1].id == "12345":
 						charLoaderModDetected = true
+						continue
+					if str(metaRes[1].name).to_lower() == "soupmodoptions":
+						soupModOptionsDetected = true
 						continue
 					
 					all_mods.append(modInfo)

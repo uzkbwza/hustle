@@ -631,6 +631,7 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	update_fighter_vars(_name, _charPath, _bttName)
 
 	if (curFighter in loadedChars):
+		currentlyLoading = false
 		return []
 
 	loadingLabel_start() # little message at the corner of the screen that shows up saying "Character Loaded"

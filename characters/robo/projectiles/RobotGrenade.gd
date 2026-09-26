@@ -99,6 +99,8 @@ func _process(delta):
 		active_indicator.visible = Utils.pulse(0.064, 0.5)
 
 func explode():
+	if disabled:
+		return
 	disable()
 	spawn_object(EXPLOSION, 0, -8)
 

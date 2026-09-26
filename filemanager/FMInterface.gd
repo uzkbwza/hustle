@@ -39,6 +39,7 @@ var _is_initialized := false
 # files are removed immediately.
 var deferred_delete := false
 var _pending_inbox := []  # untrusted .ymhpack files awaiting user confirmation
+var _inbox_dialog: AcceptDialog = null
 
 onready var option_button = $"%OptionButton"
 onready var list_edit = $"%ListEdit"
@@ -70,8 +71,6 @@ func _ready() -> void:
 	FileManager.connect("file_copied", self, "_on_file_copied")
 	FileManager.connect("inbox_files_pending", self, "_on_inbox_files_pending")
 
-	# Re-scan now that we are connected — catches packs that arrived
-	# before this node's _ready() ran (cold start from file tap).
 	if Global.is_mobile_device:
 		call_deferred("_recheck_inbox")
 
@@ -177,27 +176,26 @@ func _on_close_pressed() -> void:
 
 
 func _on_inbox_files_pending(files: Array) -> void:
-	# Stage the received packages; they are NOT imported until the user
-	# explicitly confirms in the dialog.
 	_pending_inbox = files
 	_show_inbox_confirm_if_pending()
 
 
 func _recheck_inbox() -> void:
-	# Called via call_deferred from _ready() so the inbox signal (which may
-	# have fired before we connected) is re-emitted with the current files.
 	FileManager._check_ymhpack_inbox()
 
 
 func _show_inbox_confirm_if_pending() -> void:
 	if _pending_inbox.empty():
 		return
+	if is_instance_valid(_inbox_dialog) and _inbox_dialog.visible:
+		return
 	var dialog := AcceptDialog.new()
 	dialog.theme = preload("res://theme.tres")
-	dialog.title = "Found received packages"
+	dialog.window_title = "Found received packages"
 	dialog.dialog_text = "%d package file(s) were received. Import them now?" % _pending_inbox.size()
 	dialog.get_ok().text = "Import"
-	add_child(dialog)
+	get_tree().root.add_child(dialog)
+	_inbox_dialog = dialog
 	dialog.connect("confirmed", self, "_on_inbox_import_confirmed", [dialog])
 	dialog.connect("popup_hide", dialog, "queue_free")
 	dialog.popup_centered()
@@ -225,7 +223,7 @@ func _on_import_files_pressed() -> void:
 func _show_no_picker_dialog() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.theme = preload("res://theme.tres")
-	dialog.title = "Import not available"
+	dialog.window_title = "Import not available"
 	dialog.dialog_text = "The Android file picker plugin isn't present in this build. Tap the .ymhpack file on your device to import it into the game instead."
 	add_child(dialog)
 	dialog.connect("popup_hide", dialog, "queue_free")
