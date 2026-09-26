@@ -104,7 +104,7 @@ func update_missed_block():
 func get_extra():
 	var extra = {
 		"explode": bomb_button.pressed,
-		"pull": pull_button.pressed if pull_button.visible else fighter.pulling,
+		"pull": pull_button.visible and pull_button.pressed,
 		"detach": detach_button.pressed,
 #		"store": store_button.pressed,
 		"release": release_button.pressed,
@@ -116,3 +116,4 @@ func reset():
 	bomb_button.set_pressed_no_signal(false)
 	release_button.set_pressed_no_signal(false)
 	store_button.set_pressed_no_signal(false)
+	pull_button.set_pressed_no_signal(fighter.pulling if fighter else false)

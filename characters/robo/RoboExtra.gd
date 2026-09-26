@@ -23,17 +23,19 @@ func _ready():
 	
 func get_extra():
 	current_dir = $"%FlyDir".get_dir()
-	return {
+	var extra = {
 		"fly_dir": $"%FlyDir".get_data() if $"%FlyDir".is_visible_in_tree() else fighter.flying_dir,
 		"fly_enabled": $"%FlyEnabled".pressed if $"%FlyEnabled".is_visible_in_tree() else (fighter.flying_dir != null),
 		"armor_enabled": $"%ArmorEnabled".pressed,
 		"nade_activated": $"%NadeActive".pressed and $"%NadeActive".visible,
 		"pull_enabled": $"%PullEnabled".pressed and $"%PullEnabled".visible,
-		"loic_dir": loic.get_data() if loic.is_visible_in_tree() else {"x": fighter.loic_dir, "y": 0},
 		"drive_cancel": drive_pressed() if fighter.stance != "Drive" else !drive_pressed(),
 		"bounce": bounce.get_data(),
 		"honk": $"%HonkEnabled".pressed
 	}
+if loic.is_visible_in_tree():
+		extra["loic_dir"] = loic.get_data()
+	return extra
 
 func drive_pressed():
 	return $"%DriveCancel".pressed and $"%DriveCancel".visible
