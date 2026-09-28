@@ -1,6 +1,7 @@
 extends Node
 
 
+
 func _ready():
 	_addModToggle(ModLoader.active)
 #	if ModLoader.active:
@@ -16,6 +17,19 @@ func _ready():
 	if ModLoader.soupModOptionsDetected:
 		ModLoader.soupModOptionsDetected = false
 		_add_soup_mod_options_warning()
+	if ModLoader.active:
+		_add_mod_options_menu()
+	yield(get_node("../.."), "ready")
+	call_deferred("late_init")
+
+
+
+func late_init():
+	if ModLoader.active:
+		var ModOptions = get_node("../../ModOptions")
+		for key in ModOptions.menu.menus:
+			ModOptions.menu.menus[key].emit_signal("late_init")
+
 
 
 #Creates mod menu and places it in the options container
@@ -29,6 +43,19 @@ func _add_modlist():
 	var btn:Node = addMainMenuButton("Mod List")
 	btn.connect("pressed", menu, "_mainmenu_button_pressed")
 	return menu
+
+
+
+func _add_mod_options_menu():
+	var menu = load("res://SoupModOptions/ModOptionsMenu.tscn").instance()
+	var uilayer = $"%OptionsContainer/.."
+	uilayer.add_child_below_node($"%OptionsContainer", menu, true)
+	
+	var btn:Node = addMainMenuButton("Mod Options")
+	
+	btn.connect("pressed", menu, "_mainmenu_button_pressed")
+
+
 
 func _add_char_loader_warning():
 	var container = addContainer("CharLoaderWarning", "Alert")
@@ -46,6 +73,8 @@ func _add_char_loader_warning():
 	label.autowrap = true
 	container.show()
 
+
+
 func _add_soup_mod_options_warning():
 	var container = addContainer("SoupModOptionsWarning", "Alert")
 	var close = generateButton("Close")
@@ -62,6 +91,8 @@ func _add_soup_mod_options_warning():
 	label.autowrap = true
 	container.show()
 
+
+
 #Calls function from ModLoaderMenu.gd to populate list of mods
 func _populate_mod_menu(menu):
 	if ModLoader.active:
@@ -70,6 +101,7 @@ func _populate_mod_menu(menu):
 	else:
 		menu._loadMods()
 	menu.file_manager._restore_current_state()
+
 
 
 func _addModList():
@@ -144,6 +176,8 @@ func _addModList():
 	# function for the button
 	btn.connect("pressed", self, "_modlist_button_pressed")
 
+
+
 #Main Menu button and Mod Toggle
 #needed
 func addMainMenuButton(_text):
@@ -155,13 +189,17 @@ func addMainMenuButton(_text):
 	get_tree().get_root().get_node("Main/UILayer/ButtonSoundPlayer").add_container($"%MainMenu".get_node("ModListButtonContainer"))
 	
 	return button_mainmenu
-	
+
+
+
 #needed
 func _addModToggle(moddedState):
 	var modToggleBtn = $"%ModToggle"
 	modToggleBtn.pressed = moddedState
 	modToggleBtn.connect("pressed", self, "_toggle_mods_active", [modToggleBtn])
-	
+
+
+
 #needed
 func _toggle_mods_active(btn):
 	var modded_state := {"modsEnabled": true, "lastLaunchOk": true}
@@ -181,16 +219,22 @@ func _toggle_mods_active(btn):
 		out.store_string(JSON.print(modded_state, "  "))
 		out.close()
 
+
+
 func generateContainer(name_gen):
 	var _container = preload("res://modloader/ModLoaderWindow.tscn").instance()
 	_container.name = name_gen
 	return _container
+
+
 
 func generateLabel(text_gen, align):
 	var _label = Label.new()
 	_label.text = text_gen
 	_label.align = align
 	return _label
+
+
 
 func generateRichLabel(text_gen):
 	var _richLabel = load("res://modloader/ModdedRichText.gd").new()
@@ -204,6 +248,8 @@ func generateRichLabel(text_gen):
 	_richLabel.install_effect(ghostFX)
 	return _richLabel
 
+
+
 func generateButton(text_gen):
 	var _button = Button.new()
 	_button.text = text_gen
@@ -212,10 +258,13 @@ func generateButton(text_gen):
 	_button.set("custom_colors/font_color_hover", Color(100.0, 0.2, 0.23, 1.0))
 	return _button
 
+
+
 func generateCheckButton(text_gen):
 	var _checkButton = CheckButton.new()
 	_checkButton.text = text_gen
 	return _checkButton
+
 
 
 func addContainer(_name, _text):
@@ -224,7 +273,9 @@ func addContainer(_name, _text):
 	container.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").text = _text
 	container.set("visible", false)
 	return container
-	
+
+
+
 func _addMisingList():
 	var mod_w_missing = ModLoader.mods_w_missing_depend
 	var list = addContainer("ModMissingContainer", "Mod Missing Dependecies")

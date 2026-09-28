@@ -245,7 +245,7 @@ func _initMods():
 					if metaRes[1].name == "char_loader" and metaRes[1].id == "12345":
 						charLoaderModDetected = true
 						continue
-					if str(metaRes[1].name).to_lower() == "soupmodoptions":
+					if metaRes[1].name == "soupModOptions":
 						soupModOptionsDetected = true
 						continue
 					
@@ -281,6 +281,7 @@ func _dependencyCheck(modInfo, first, modSubFolder):
 	#Check if active_mods already includes dependency
 	var missing_dependices = modInfo[2].requires.duplicate()
 	missing_dependices.erase("char_loader")
+	missing_dependices.erase("soupModOptions")
 
 	# char loader is base game now, so this dependency is no longer needed.
 	var dependices_loaded = false

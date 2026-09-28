@@ -1001,8 +1001,15 @@ func _on_quit_button_pressed():
 			else:
 				SteamLobby.exit_match_from_button()
 
+
+
 func _on_quit_program_button_pressed():
+	if ModLoader.active:
+		var ModOptions = get_tree().get_current_scene().get_node("ModOptions")
+		ModOptions.menu._close_clicked() #should ensure settings save
 	get_tree().quit()
+
+
 
 func _on_sync_timer_request(id, time):
 	if !chess_timer:
