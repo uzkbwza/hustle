@@ -337,16 +337,18 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
-	if is_mobile:
-		p2_side_container.visible = false
-		p1_side_container.visible = true
-	else:
+	#if is_mobile:
+	#	p2_side_container.visible = false
+	#	p1_side_container.visible = true
+	#else:
 		p1_side_container.visible = true
 		p2_side_container.visible = true
 
 
 
 func switch_hud_side():
+	return
+	
 	if Global.mobile_ui:
 		p2_side_container.visible = false
 		# above is to not overflow outside of the hud and cause everything to break

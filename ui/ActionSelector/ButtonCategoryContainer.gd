@@ -13,7 +13,10 @@ const VISIBLE_LIMIT = 9
 
 
 const SIZE_DEFAULT = Vector2(52, 69) # nice
-const SIZE_MOBILE_FOCUSED = Vector2(298, 80)
+# const SIZE_MOBILE_UNFOCUSED = Vector2(52, 80) # for 3 column
+const SIZE_MOBILE_UNFOCUSED = Vector2(35, 80)
+# const SIZE_MOBILE_FOCUSED = Vector2(166, 80) # for 5 column
+const SIZE_MOBILE_FOCUSED = Vector2(133, 80)
 
 
 onready var action_data_container = $"%ActionDataContainer"
@@ -97,9 +100,10 @@ func on_resized():
 
 func mobile_focus(on):
 	is_mobile_focused = on
-	var use_focus = Global.mobile_ui and on
-	var container_size :Vector2 = SIZE_MOBILE_FOCUSED if use_focus else SIZE_DEFAULT 
-	var button_size :Vector2 = Vector2(32, 32) if use_focus else Vector2(16, 16)
+	var container_size = SIZE_DEFAULT
+	if Global.mobile_ui:
+		container_size = SIZE_MOBILE_FOCUSED if on else SIZE_MOBILE_UNFOCUSED 
+	var button_size :Vector2 = Vector2(32, 32) if Global.mobile_ui and on else Vector2(16, 16)
 	for button in $"%ButtonContainer".get_children():
 		button.rect_min_size = button_size
 	rect_min_size = container_size

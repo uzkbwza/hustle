@@ -15,6 +15,10 @@ const NUDGE_SCENE = preload("res://ui/ActionSelector/ActionUIData/NudgeActionUID
 const BUTTON_CATEGORY_CONTAINER_SCENE = preload("res://ui/ActionSelector/ButtonCategoryContainer.tscn")
 const BUTTON_CATEGORY_DISTANCE = 100
 
+const CATEGORY_DEFAULT_GAP = 1
+const CATEGORY_MOBILE_GAP = 6
+
+
 export var player_id = 1
 
 var fighter: Fighter
@@ -253,8 +257,11 @@ func reset():
 
 
 func adjust_ui(is_mobile):
-	$"%SwitchButtons".visible = is_mobile
-	$"%TurnButtons".rect_min_size.x = 60 if is_mobile else 45
+	#$"%SwitchButtons".visible = is_mobile
+	#$"%TurnButtons".rect_min_size.x = 60 if is_mobile else 45
+	$"%TurnButtons".visible = not is_mobile
+	var category_gap = CATEGORY_MOBILE_GAP if is_mobile else CATEGORY_DEFAULT_GAP
+	$"%CategoryContainer".add_constant_override("separation", category_gap)
 
 
 
