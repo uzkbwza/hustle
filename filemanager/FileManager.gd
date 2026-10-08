@@ -22,13 +22,9 @@ signal status_message(text)
 signal pack_imported(path, count)
 signal pack_import_failed(path, reason)
 signal file_copied(path, category)
-signal inbox_files_pending(files)  # untrusted .ymhpack files await user confirmation
 
 
 func _init() -> void:
-	if OS.get_name() == "Windows":
-		_register_file_associations()
-	
 	if OS.get_name() == "Android" and Engine.has_singleton("GodotFilePicker"):
 		android_picker = Engine.get_singleton("GodotFilePicker")
 	elif OS.get_name() == "Android":
@@ -45,17 +41,6 @@ func _init() -> void:
 	register_category("mods", mods_default_dir)
 	
 	_process_pending_deletions()
-	
-	for arg in OS.get_cmdline_args():
-		if arg.get_extension().to_lower() == "ymhpack":
-			import_pack(arg)
-	
-	_check_ymhpack_inbox()
-
-
-func _notification(what: int) -> void:
-	if Global.is_mobile_device and what == MainLoop.NOTIFICATION_WM_FOCUS_IN:
-		_check_ymhpack_inbox()
 
 
 # ---------------------------------------------------------------------------
@@ -72,62 +57,6 @@ func unregister_category(category: String) -> void:
 
 func get_category_dir(category: String) -> String:
 	return _category_dirs.get(category, "")
-
-
-# ---------------------------------------------------------------------------
-# Windows file association / cmdline / mobile inbox
-# ---------------------------------------------------------------------------
-
-func _register_file_associations() -> void:
-	if Global.registered_ymhpack:
-		return
-	
-	var exe_path = OS.get_executable_path().replace("/", "\\")
-	var commands = [
-		["add", "HKCU\\Software\\Classes\\.ymhpack", "/ve", "/d", "YourOnlyMoveIsHustlePack", "/f"],
-		["add", "HKCU\\Software\\Classes\\YourOnlyMoveIsHustlePack", "/ve", "/d", "YourOnlyMoveIsHustlePack", "/f"],
-		["add", "HKCU\\Software\\Classes\\YourOnlyMoveIsHustlePack\\shell\\open\\command", "/ve", "/d", "\"" + exe_path + "\" \"%1\"", "/f"],
-		["add", "HKCU\\Software\\Classes\\YourOnlyMoveIsHustlePack\\DefaultIcon", "/ve", "/d", exe_path + ",0", "/f"],
-	]
-	for cmd in commands:
-		OS.execute("reg", cmd, true)
-	OS.execute("cmd", ["/c", "assoc", ".ymhpack"], false)
-	
-	Global.registered_ymhpack = true
-	Global.save_options_after_change("registered_ymhpack", true)
-
-
-func _check_ymhpack_inbox() -> void:
-	var inbox = "user://ymhpack"
-	var dir = Directory.new()
-	if dir.open(inbox) != OK:
-		return
-	dir.list_dir_begin(true, true)
-	var pending := []
-	var f = dir.get_next()
-	while f != "":
-		if f.get_extension().to_lower() == "ymhpack":
-			pending.append(inbox.plus_file(f))
-		f = dir.get_next()
-	dir.list_dir_end()
-	
-	if not pending.empty():
-		emit_signal("inbox_files_pending", pending)
-
-
-func import_inbox() -> void:
-	var inbox = "user://ymhpack"
-	var dir = Directory.new()
-	if dir.open(inbox) != OK:
-		return
-	dir.list_dir_begin(true, true)
-	var f = dir.get_next()
-	while f != "":
-		if f.get_extension().to_lower() == "ymhpack":
-			if import_pack(inbox.plus_file(f)):
-				dir.remove(f)
-		f = dir.get_next()
-	dir.list_dir_end()
 
 
 # ---------------------------------------------------------------------------
@@ -188,8 +117,16 @@ func export_pack(entries: Array, destination_dir: String, package_name: String) 
 	
 	var out_file = File.new()
 	if out_file.open(final_path, File.WRITE) != OK:
-		emit_signal("status_message", "Failed to export, couldn't write package: " + final_path)
-		return false
+		# Scoped storage (Android 10+) blocks raw writes into shared folders
+		# like Downloads without "All files access". Fall back to the app's
+		# private external storage, which needs no permission.
+		var fallback_dir = "user://exports"
+		if not dir.dir_exists(fallback_dir):
+			dir.make_dir_recursive(fallback_dir)
+		final_path = fallback_dir.plus_file(clean_name + PACK_EXT)
+		if out_file.open(final_path, File.WRITE) != OK:
+			emit_signal("status_message", "Failed to export, couldn't write package: " + final_path)
+			return false
 	
 	out_file.store_var(package, false)
 	out_file.close()
@@ -336,6 +273,15 @@ func copy_file_to_directory(path: String, directory: String, extensions: PoolStr
 	var file_name = path.get_file()
 	var dest_path = directory.plus_file(file_name)
 	var err = dir.copy(path, dest_path)
+	
+	if err != OK:
+		# Shared storage (e.g. Downloads on Android 10+) may reject the write;
+		# fall back to the app's private external storage.
+		var fallback_dir = "user://exports"
+		if not dir.dir_exists(fallback_dir):
+			dir.make_dir_recursive(fallback_dir)
+		dest_path = fallback_dir.plus_file(file_name)
+		err = dir.copy(path, dest_path)
 	
 	if err != OK:
 		emit_signal("status_message", "Failed to copy file, error code: " + str(err))

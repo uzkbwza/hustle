@@ -85,12 +85,12 @@ align = 1
 margin_top = 15.0
 margin_right = 357.0
 margin_bottom = 42.0
-rect_min_size = Vector2( 0, 27 )
 
 [node name="ServerList" type="OptionButton" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/ServerRow"]
 unique_name_in_owner = true
 margin_right = 225.0
 margin_bottom = 27.0
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "Dojo 1 (NY)"
 items = [ "Dojo 1 (NY)", null, false, 0, null, "Dojo 2 (LA)", null, false, 1, null, "Dojo 3 (EU)", null, false, 3, null, "Local Dojo (coming soon)", null, true, 4, null ]
@@ -191,14 +191,14 @@ margin_right = 540.0
 margin_bottom = 320.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 4
+custom_constants/separation = 2
 alignment = 1
 
 [node name="NameEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_right = 171.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 max_length = 32
 placeholder_text = "enter name here"
@@ -208,7 +208,7 @@ unique_name_in_owner = true
 margin_top = 36.0
 margin_right = 171.0
 margin_bottom = 68.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 placeholder_text = "Room Name (optional)"
 
@@ -218,18 +218,18 @@ margin_top = 72.0
 margin_right = 171.0
 margin_bottom = 264.0
 size_flags_horizontal = 3
-custom_constants/separation = 4
+custom_constants/separation = 2
 
 [node name="HostRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer"]
 margin_right = 171.0
 margin_bottom = 32.0
-custom_constants/separation = 4
+custom_constants/separation = 2
 
 [node name="HostButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/HostRow"]
 unique_name_in_owner = true
 margin_right = 105.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "host"
 
@@ -238,7 +238,7 @@ unique_name_in_owner = true
 margin_left = 109.0
 margin_right = 171.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 pressed = true
 text = "public"
@@ -248,7 +248,7 @@ unique_name_in_owner = true
 margin_top = 36.0
 margin_right = 171.0
 margin_bottom = 68.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 placeholder_text = "Room Code"
 
@@ -258,19 +258,19 @@ margin_top = 72.0
 margin_right = 171.0
 margin_bottom = 156.0
 size_flags_horizontal = 3
-custom_constants/separation = 4
+custom_constants/separation = 2
 
 [node name="JoinButtons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
 margin_right = 171.0
 margin_bottom = 32.0
-custom_constants/separation = 4
+custom_constants/separation = 2
 
 [node name="JoinButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer/JoinButtons"]
 unique_name_in_owner = true
 margin_right = 83.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 80, 32 )
+rect_min_size = Vector2( 80, 24 )
 size_flags_horizontal = 3
 text = "join"
 
@@ -279,7 +279,7 @@ unique_name_in_owner = true
 margin_left = 87.0
 margin_right = 171.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 80, 32 )
+rect_min_size = Vector2( 80, 24 )
 size_flags_horizontal = 3
 text = "spectate"
 
@@ -288,7 +288,7 @@ unique_name_in_owner = true
 margin_top = 36.0
 margin_right = 171.0
 margin_bottom = 68.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "127.0.0.1"
 placeholder_text = "IP"
@@ -298,7 +298,7 @@ unique_name_in_owner = true
 margin_top = 72.0
 margin_right = 171.0
 margin_bottom = 104.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "52450"
 placeholder_text = "port"
@@ -309,7 +309,7 @@ visible = false
 margin_top = 268.0
 margin_right = 171.0
 margin_bottom = 300.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "start"
 
@@ -318,7 +318,7 @@ unique_name_in_owner = true
 margin_top = 304.0
 margin_right = 171.0
 margin_bottom = 336.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "go back"
 
@@ -477,13 +477,13 @@ margin_right = 540.0
 margin_bottom = 320.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 8
+custom_constants/separation = 4
 
 [node name="RoomCodeLabel" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_right = 171.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "Room: "
 align = 1
@@ -494,7 +494,7 @@ unique_name_in_owner = true
 margin_top = 40.0
 margin_right = 171.0
 margin_bottom = 72.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "start match"
 
@@ -503,7 +503,7 @@ unique_name_in_owner = true
 margin_top = 80.0
 margin_right = 171.0
 margin_bottom = 112.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "leave room"
 

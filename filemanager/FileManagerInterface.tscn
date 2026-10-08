@@ -13,9 +13,9 @@ __meta__ = {
 [node name="Window" parent="." instance=ExtResource( 1 )]
 unique_name_in_owner = true
 margin_left = -70.0
-margin_top = -136.5
+margin_top = -108.5
 margin_right = 70.0
-margin_bottom = 136.5
+margin_bottom = 108.5
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Window"]
 margin_left = 1.0
@@ -61,8 +61,7 @@ margin_bottom = 32.0
 unique_name_in_owner = true
 margin_right = 48.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 48, 0 )
-size_flags_vertical = 3
+rect_min_size = Vector2( 48, 24 )
 custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
 text = "Close"
 
@@ -71,9 +70,8 @@ unique_name_in_owner = true
 margin_left = 49.0
 margin_right = 136.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Import Files"
 
 [node name="ExportFileCustom" type="Button" parent="Window/VBoxContainer2/Contents/Control"]
@@ -82,9 +80,8 @@ visible = false
 margin_top = 33.0
 margin_right = 136.0
 margin_bottom = 65.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Export Custom"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Window/VBoxContainer2/Contents/Control"]
@@ -97,9 +94,8 @@ alignment = 2
 unique_name_in_owner = true
 margin_right = 136.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 0, 32 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 theme_type_variation = "ChallengeButton"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Window/VBoxContainer2/Contents/Control/VBoxContainer"]
@@ -113,7 +109,6 @@ margin_right = 103.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 placeholder_text = "List Name"
 caret_blink = true
 caret_blink_speed = 0.5
@@ -123,8 +118,7 @@ unique_name_in_owner = true
 margin_left = 104.0
 margin_right = 136.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 32, 32 )
-size_flags_vertical = 3
+rect_min_size = Vector2( 32, 24 )
 text = "Save"
 
 [node name="Label" type="Label" parent="Window/VBoxContainer2/Contents/Control"]
@@ -141,7 +135,6 @@ margin_top = 116.0
 margin_right = 136.0
 margin_bottom = 247.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer"]
 margin_right = 69.0
@@ -153,9 +146,8 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 margin_right = 69.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Export File"
 
 [node name="ExportList" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
@@ -163,9 +155,8 @@ unique_name_in_owner = true
 margin_top = 33.0
 margin_right = 69.0
 margin_bottom = 65.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Export List"
 
 [node name="ExportListed" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
@@ -173,9 +164,8 @@ unique_name_in_owner = true
 margin_top = 66.0
 margin_right = 69.0
 margin_bottom = 98.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Export Listed"
 
 [node name="ExportFolder" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3"]
@@ -183,9 +173,8 @@ unique_name_in_owner = true
 margin_top = 99.0
 margin_right = 69.0
 margin_bottom = 131.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Export Folder"
 
 [node name="VBoxContainer4" type="VBoxContainer" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer"]
@@ -199,9 +188,8 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 margin_right = 66.0
 margin_bottom = 32.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Delete File"
 
 [node name="DeleteList" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
@@ -209,9 +197,8 @@ unique_name_in_owner = true
 margin_top = 33.0
 margin_right = 66.0
 margin_bottom = 65.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Delete List"
 
 [node name="DeleteListed" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
@@ -219,9 +206,8 @@ unique_name_in_owner = true
 margin_top = 66.0
 margin_right = 66.0
 margin_bottom = 98.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Delete Listed"
 
 [node name="DeleteFolder" type="Button" parent="Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4"]
@@ -229,9 +215,8 @@ unique_name_in_owner = true
 margin_top = 99.0
 margin_right = 66.0
 margin_bottom = 131.0
-rect_min_size = Vector2( 32, 32 )
+rect_min_size = Vector2( 32, 24 )
 size_flags_horizontal = 3
-size_flags_vertical = 3
 text = "Delete Folder"
 
 [node name="Printer" type="Label" parent="Window/VBoxContainer2/Contents/Control"]

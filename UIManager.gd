@@ -6,7 +6,7 @@ const VIEWPORT_H = 360
 const MIN_BUTTON_HEIGHT = 20
 const MAX_BUTTON_HEIGHT = 32
 const MIN_BUTTON_WIDTH = 20
-const MIN_GAP = 6
+const MIN_GAP = 2
 
 var _originals = {}
 var _active = {}

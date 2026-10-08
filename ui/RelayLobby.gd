@@ -487,7 +487,7 @@ func create_match_row(match_):
 	var name_btn = Button.new()
 	name_btn.text = "%s - %s" % [room_name, match_.code]
 	name_btn.size_flags_horizontal = 3
-	name_btn.rect_min_size.y = 32
+	name_btn.rect_min_size.y = 24
 	name_btn.clip_text = true
 	if in_match:
 		name_btn.disabled = true
@@ -497,7 +497,7 @@ func create_match_row(match_):
 		return row
 	var spec_btn = Button.new()
 	spec_btn.text = "spectate" if spectators == 0 else "spectate (%d)" % spectators
-	spec_btn.rect_min_size = Vector2(0, 32)
+	spec_btn.rect_min_size = Vector2(0, 24)
 	if spectators >= MAX_SPECTATORS:
 		spec_btn.disabled = true
 	spec_btn.connect("pressed", self, "_on_spectate_pressed", [match_.code])
