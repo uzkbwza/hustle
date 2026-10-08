@@ -209,8 +209,10 @@ func _apply_texture(id, tex) -> void:
 
 
 func _open_url(url: String) -> void:
-	# Open in the Steam overlay, exactly like the social buttons (ui/UILayer.gd).
-	Steam.activateGameOverlayToWebPage(url)
+	if Steam.getAppID() != 0:
+		Steam.activateGameOverlayToWebPage(url)
+	else:
+		OS.shell_open(url)
 
 
 # ---------------------------------------------------------------------------

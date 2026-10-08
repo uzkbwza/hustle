@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=52 format=2]
+[gd_resource type="Theme" load_steps=53 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/HorizSlider/grabber.png" type="Texture" id=2]
@@ -57,6 +57,9 @@ border_width_left = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxLine" id=47]
+color = Color( 0.164706, 0.164706, 0.164706, 1 )
 
 [sub_resource type="StyleBoxFlat" id=18]
 bg_color = Color( 1, 1, 1, 1 )
@@ -223,6 +226,7 @@ ColorPicker/constants/sv_width = 60
 GravLabel/base_type = "Label"
 GravLabel/constants/shadow_as_outline = 9
 HBoxContainer/constants/separation = 1
+HSeparator/styles/separator = SubResource( 47 )
 HSlider/icons/grabber = ExtResource( 2 )
 HSlider/icons/grabber_disabled = ExtResource( 2 )
 HSlider/icons/grabber_highlight = ExtResource( 2 )
