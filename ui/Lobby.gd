@@ -77,10 +77,7 @@ func _on_refresh_timer_timeout():
 		$"%RefreshTimer".stop()
 
 func get_server_address():
-#	if SteamHustle.STARTED:
-		return steam_dojo
-#	else:
-#		return servers[$"%ServerList".selected]
+	return "ws://168.235.104.144:52450"
 
 func _on_room_code_edit_text_changed(text):
 	if !direct_connect:

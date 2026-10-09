@@ -108,7 +108,7 @@ func _on_refresh_timer_timeout():
 		$"%RefreshTimer".stop()
 
 func get_server_address():
-	return "ws://localhost:52450"
+	return "ws://168.235.104.144:52450"
 #	if SteamHustle.STARTED:
 #		return steam_dojo
 #	else:
