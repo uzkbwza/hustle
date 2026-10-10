@@ -16,7 +16,11 @@ func _on_action_buttons_visibility_changed():
 	var p1_info_scene = ui_layer.p1_info_scene
 	var p2_info_scene = ui_layer.p2_info_scene
 
-	if !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
+	if Global.mobile_ui:
+		$"%OptionsBarContainer".hide()
+		$"%PredictionSettingsOpenButton".hide()
+
+	elif !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
 		$"%OptionsBarContainer".hide()
 		$"%PredictionSettingsOpenButton".hide()
 

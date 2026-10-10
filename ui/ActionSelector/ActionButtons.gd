@@ -16,7 +16,7 @@ const BUTTON_CATEGORY_CONTAINER_SCENE = preload("res://ui/ActionSelector/ButtonC
 const BUTTON_CATEGORY_DISTANCE = 100
 
 const CATEGORY_DEFAULT_GAP = 1
-const CATEGORY_MOBILE_GAP = 6
+const CATEGORY_MOBILE_GAP = 2
 
 
 export var player_id = 1
@@ -57,6 +57,10 @@ onready var opponent_action_buttons: ActionButtons = get_node(opponent_action_bu
 var button_category_containers = {}
 
 var mobile_focused_category = null setget set_focused_container
+
+var _mobile_turn_bar = null
+var _mobile_turn_pairs = []
+var _mobile_turn_guard = false
 
 
 
@@ -172,6 +176,8 @@ func _physics_process(delta):
 			visible = false
 
 func _process(delta):
+	if Global.mobile_ui and _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
+		_sync_mobile_turn_bar()
 	$"%DI".set_flash(false)
 	if active and is_instance_valid(fighter):
 		if fighter.will_forfeit:
@@ -209,6 +215,17 @@ func _rebuild_select_button_shortcut():
 	_select_button_shortcut = _build_select_button_shortcut()
 	if has_node("%SelectButton"):
 		$"%SelectButton".shortcut = _select_button_shortcut
+	_apply_select_shortcut_to_mobile_bar()
+
+func _apply_select_shortcut_to_mobile_bar():
+	if _mobile_turn_bar == null or not is_instance_valid(_mobile_turn_bar):
+		return
+	if _select_button_shortcut == null:
+		_select_button_shortcut = _build_select_button_shortcut()
+	for pair in _mobile_turn_pairs:
+		if pair[1] == $"%SelectButton":
+			pair[0].shortcut = _select_button_shortcut
+			return
 
 func _on_hotkey_binding_changed(action: String):
 	if action == Hotkeys.LOCK_IN:
@@ -262,6 +279,10 @@ func adjust_ui(is_mobile):
 	$"%TurnButtons".visible = not is_mobile
 	var category_gap = CATEGORY_MOBILE_GAP if is_mobile else CATEGORY_DEFAULT_GAP
 	$"%CategoryContainer".add_constant_override("separation", category_gap)
+	if is_mobile:
+		call_deferred("_rebuild_mobile_turn_bar")
+	elif _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
+		_mobile_turn_bar.visible = false
 
 
 
@@ -319,6 +340,80 @@ func init(game, id):
 	continue_button["custom_fonts/font"] = null
 	$"%TurnButtons".add_child(continue_button)
 	$"%TurnButtons".move_child(continue_button, 1)
+	if Global.mobile_ui:
+		call_deferred("_rebuild_mobile_turn_bar")
+
+
+func _rebuild_mobile_turn_bar():
+	if _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
+		_mobile_turn_bar.queue_free()
+	_mobile_turn_bar = HBoxContainer.new()
+	_mobile_turn_bar.name = "MobileTurnBar"
+	_mobile_turn_bar.add_constant_override("separation", 2)
+	_mobile_turn_bar.visible = Global.mobile_ui
+	add_child(_mobile_turn_bar)
+	_mobile_turn_pairs = []
+	var entries = [
+		[$"%AutoButton", true],
+		[$"%UndoButton", false],
+		[$"%ReverseButton", true],
+		[$"%FeintButton", true],
+		[continue_button, true],
+		[$"%SelectButton", false],
+	]
+	for entry in entries:
+		var orig = entry[0]
+		if orig == null or not is_instance_valid(orig):
+			continue
+		var is_toggle = entry[1]
+		var btn = CheckButton.new() if is_toggle else Button.new()
+		btn.text = orig.text
+		btn.flat = false
+		btn.theme_type_variation = orig.theme_type_variation
+		btn.rect_min_size = Vector2(0, 16)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if is_toggle:
+			btn.toggle_mode = true
+			btn.connect("toggled", self, "_on_mobile_turn_toggled", [orig])
+		else:
+			btn.connect("pressed", self, "_on_mobile_turn_pressed", [orig])
+		_mobile_turn_bar.add_child(btn)
+		_mobile_turn_pairs.append([btn, orig])
+	if player_id == 2:
+		var children = _mobile_turn_bar.get_children()
+		children.invert()
+		for i in range(children.size()):
+			_mobile_turn_bar.move_child(children[i], i)
+	_apply_select_shortcut_to_mobile_bar()
+	_sync_mobile_turn_bar()
+
+func _on_mobile_turn_pressed(orig):
+	if not is_instance_valid(orig):
+		return
+	orig.emit_signal("pressed")
+
+func _on_mobile_turn_toggled(on, orig):
+	if _mobile_turn_guard or not is_instance_valid(orig):
+		return
+	_mobile_turn_guard = true
+	orig.pressed = on
+	orig.emit_signal("pressed")
+	_mobile_turn_guard = false
+
+
+func _sync_mobile_turn_bar():
+	if _mobile_turn_bar == null or not is_instance_valid(_mobile_turn_bar):
+		return
+	for pair in _mobile_turn_pairs:
+		var dup = pair[0]
+		var orig = pair[1]
+		if not is_instance_valid(orig) or not dup is BaseButton:
+			if dup is Control:
+				dup.visible = false
+			continue
+		dup.visible = orig.visible
+		dup.disabled = orig.disabled
+		dup.set_pressed_no_signal(orig.pressed)
 
 
 
@@ -355,8 +450,8 @@ func category_sort_func(a, b):
 	}
 #	if cat_map.has(a.label_text) and cat_map.has(b.label_text):
 	if player_id == 1:
-		return cat_map[a.label_text] > cat_map[b.label_text]
-	return cat_map[a.label_text] < cat_map[b.label_text]
+		return cat_map[a.category_name] > cat_map[b.category_name]
+	return cat_map[a.category_name] < cat_map[b.category_name]
 #	return false
 
 func create_button(name, title, category, data_scene=null, button_scene=BUTTON_SCENE, texture=null, reversible=true, flip_icon=true, state=null):

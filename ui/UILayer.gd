@@ -85,6 +85,18 @@ onready var p2_turn_timer = $"%P2TurnTimer"
 onready var block_advantage_label = $"%BlockAdvantageLabel"
 onready var neutral_label = $"%NeutralLabel"
 
+var _nudge_target = null
+var _nudge_target_conn = null
+var _nudge_dragging = false
+const _NUDGE_WINDOW_DEFAULT_POS = Vector2(8, 44)
+const _NUDGE_XY_STEP = 0.02
+const _NUDGE_SLIDER_STEP = 1
+
+var _mobile_sync_guard = false
+var _pred_dragging = false
+var _pred_default_captured = false
+var _pred_panel_default_pos = Vector2.ZERO
+
 var p1_synced_time = null
 var p2_synced_time = null
 
@@ -321,6 +333,17 @@ func _ready():
 	p2_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
 	
 	$"%OpenMenuButton".connect("pressed", self, "pause")
+	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
+	$"%MobileReplayButton".connect("pressed", self, "_on_mobile_replay_button_pressed")
+	$"%ArrowsButton".connect("pressed", self, "_on_arrows_button_pressed")
+	$"%MobileNudgeClose".connect("pressed", self, "_on_nudge_close_pressed")
+	$"%MobileNudgeUp".connect("pressed", self, "_on_nudge_up_pressed")
+	$"%MobileNudgeDown".connect("pressed", self, "_on_nudge_down_pressed")
+	$"%MobileNudgeLeft".connect("pressed", self, "_on_nudge_left_pressed")
+	$"%MobileNudgeRight".connect("pressed", self, "_on_nudge_right_pressed")
+	$"%MobileNudgeInput".connect("text_entered", self, "_on_nudge_input_submitted")
+	$"%MobileNudgeApply".connect("pressed", self, "_on_nudge_apply_pressed")
+	_setup_mobile_prediction_controls()
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
@@ -337,12 +360,326 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
-	#if is_mobile:
-	#	p2_side_container.visible = false
-	#	p1_side_container.visible = true
-	#else:
-		p1_side_container.visible = true
-		p2_side_container.visible = true
+	p1_side_container.visible = true
+	p2_side_container.visible = true
+	$"%ChatButton".visible = is_mobile
+	$"%MobileReplayButton".visible = is_mobile
+	$"%ArrowsButton".visible = is_mobile
+	$"%MobilePredictionsButton".visible = is_mobile
+	$"%MobilePredictionPanel".visible = false
+	if is_mobile:
+		$"%OptionsBarContainer".hide()
+		$"%PredictionSettingsOpenButton".hide()
+	elif !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
+		$"%OptionsBarContainer".hide()
+		$"%PredictionSettingsOpenButton".hide()
+	else:
+		$"%OptionsBarContainer".show()
+		$"%PredictionSettingsOpenButton".visible = !$"%OptionsBar".visible
+	_adjust_mobile_advice_labels(is_mobile)
+	_adjust_nudge_window(is_mobile)
+
+func _adjust_mobile_advice_labels(is_mobile):
+	var adv = $"%AdvantageLabel"
+	var block = $"%BlockAdvantageLabel"
+	if is_mobile:
+		adv.margin_top = 43.0
+		adv.margin_bottom = 57.0
+		block.margin_top = 28.0
+		block.margin_bottom = 42.0
+	else:
+		adv.margin_top = 71.0
+		adv.margin_bottom = 85.0
+		block.margin_top = 56.0
+		block.margin_bottom = 70.0
+
+func _setup_mobile_prediction_controls():
+	$"%MobilePredictionsButton".connect("pressed", self, "_on_mobile_predictions_pressed")
+	$"%MobilePredictionClose".connect("pressed", self, "_on_mobile_prediction_close")
+	_bind_mobile_toggle("%MobileGhostButton", "%GhostButton")
+	_bind_mobile_toggle("%MobileAfterimageButton", "%AfterimageButton")
+	_bind_mobile_toggle("%MobileFreezeOnMyTurn", "%FreezeOnMyTurn")
+	_bind_mobile_toggle("%MobileFreezeSound", "%FreezeSound")
+	$"%MobileClearParticlesButton".connect("pressed", self, "_on_ClearParticlesButton_pressed")
+	var speed_pairs = {
+		"%Mobile1Speed": "%1Speed",
+		"%Mobile5Speed": "%5Speed",
+		"%Mobile2Speed": "%2Speed",
+		"%Mobile3Speed": "%3Speed",
+		"%Mobile4Speed": "%4Speed",
+	}
+	for mobile_name in speed_pairs:
+		var mobile_btn = get_node_or_null(mobile_name)
+		var orig_btn = get_node_or_null(speed_pairs[mobile_name])
+		if mobile_btn != null and orig_btn != null:
+			mobile_btn.connect("pressed", self, "_on_mobile_speed_pressed", [orig_btn])
+	$"%GhostSpeed".connect("value_changed", self, "_sync_mobile_speed")
+	call_deferred("_sync_mobile_prediction_controls")
+
+func _bind_mobile_toggle(mobile_name: String, orig_name: String):
+	var mobile_btn = get_node_or_null(mobile_name)
+	var orig_btn = get_node_or_null(orig_name)
+	if mobile_btn == null or orig_btn == null:
+		return
+	mobile_btn.set_pressed_no_signal(orig_btn.pressed)
+	mobile_btn.connect("toggled", self, "_on_mobile_toggle", [orig_btn])
+	orig_btn.connect("toggled", self, "_on_original_toggle", [mobile_btn])
+
+func _on_mobile_toggle(pressed, orig_btn):
+	if _mobile_sync_guard or not is_instance_valid(orig_btn):
+		return
+	_mobile_sync_guard = true
+	orig_btn.pressed = pressed
+	orig_btn.emit_signal("pressed")
+	_mobile_sync_guard = false
+
+func _on_original_toggle(pressed, mobile_btn):
+	if _mobile_sync_guard or not is_instance_valid(mobile_btn):
+		return
+	mobile_btn.set_pressed_no_signal(pressed)
+
+func _on_mobile_speed_pressed(orig_btn):
+	if _mobile_sync_guard or not is_instance_valid(orig_btn):
+		return
+	orig_btn.emit_signal("pressed")
+
+func _sync_mobile_speed(speed):
+	var map = {1: "%Mobile1Speed", 5: "%Mobile5Speed", 2: "%Mobile2Speed", 3: "%Mobile3Speed", 4: "%Mobile4Speed"}
+	_mobile_sync_guard = true
+	for k in map:
+		var btn = get_node_or_null(map[k])
+		if btn != null:
+			btn.set_pressed_no_signal(k == speed)
+	_mobile_sync_guard = false
+
+func _sync_mobile_prediction_controls():
+	var pairs = {
+		"%MobileGhostButton": "%GhostButton",
+		"%MobileAfterimageButton": "%AfterimageButton",
+		"%MobileFreezeOnMyTurn": "%FreezeOnMyTurn",
+		"%MobileFreezeSound": "%FreezeSound",
+	}
+	for mobile_name in pairs:
+		var m = get_node_or_null(mobile_name)
+		var o = get_node_or_null(pairs[mobile_name])
+		if m != null and o != null:
+			m.set_pressed_no_signal(o.pressed)
+	_sync_mobile_speed(Global.ghost_speed)
+
+func _on_mobile_predictions_pressed():
+	var panel = $"%MobilePredictionPanel"
+	if not panel.visible and not _pred_default_captured:
+		_pred_panel_default_pos = panel.rect_position
+		_pred_default_captured = true
+	panel.visible = not panel.visible
+	if panel.visible:
+		_sync_mobile_prediction_controls()
+		panel.raise()
+
+func _on_mobile_prediction_close():
+	$"%MobilePredictionPanel".visible = false
+	_pred_dragging = false
+
+func _on_chat_button_pressed():
+	if is_instance_valid(game):
+		$"%ChatWindow".show()
+		$"%ChatWindow".line_edit_focus()
+
+func _on_mobile_replay_button_pressed():
+	if is_instance_valid(game):
+		var ev = InputEventAction.new()
+		ev.action = Hotkeys.WATCH_REPLAY
+		ev.pressed = true
+		Input.parse_input_event(ev)
+
+func _adjust_nudge_window(is_mobile):
+	if not is_mobile:
+		var win = $"%MobileNudgeWindow"
+		win.visible = false
+		win.rect_position = _NUDGE_WINDOW_DEFAULT_POS
+		_set_nudge_target(null)
+		_nudge_dragging = false
+		if _pred_default_captured:
+			$"%MobilePredictionPanel".rect_position = _pred_panel_default_pos
+		_pred_dragging = false
+
+func _on_arrows_button_pressed():
+	var win = $"%MobileNudgeWindow"
+	win.visible = not win.visible
+	if win.visible:
+		win.raise()
+		_update_nudge_window_target()
+
+func _on_nudge_close_pressed():
+	$"%MobileNudgeWindow".visible = false
+	_nudge_dragging = false
+
+func _update_nudge_window_target():
+	var label = $"%MobileNudgeTarget"
+	var input = $"%MobileNudgeInput"
+	if is_instance_valid(_nudge_target):
+		label.text = _nudge_target.name
+		input.text = _nudge_value_text(_nudge_target)
+	else:
+		label.text = "No target"
+		input.text = ""
+
+func _nudge_value_text(t) -> String:
+	if t is XYPlot:
+		var r = float(t.panel_radius)
+		if r == 0.0:
+			r = 1.0
+		return "%.2f %.2f" % [t.value_float.x / r, t.value_float.y / r]
+	elif _is_horiz_slider(t):
+		return str(t.get_value())
+	return ""
+
+func _on_nudge_input_submitted(text: String):
+	var t = _nudge_target
+	if not is_instance_valid(t):
+		return
+	var nums = _parse_numbers(text)
+	if nums.size() == 0:
+		return
+	if t is XYPlot:
+		var x = nums[0]
+		var y = nums[1] if nums.size() > 1 else 0.0
+		var point = Vector2(x, y).limit_length(1.0) * float(t.panel_radius)
+		_set_xyplot_value(t, point, false)
+	elif _is_horiz_slider(t):
+		var slider = t.get_node("Direction")
+		slider.value = clamp(nums[0], slider.min_value, slider.max_value)
+		t.emit_signal("data_changed")
+		t.buffer_value_changed = false
+	$"%MobileNudgeInput".text = _nudge_value_text(t)
+
+func _parse_numbers(text: String) -> Array:
+	var out = []
+	for part in text.replace(",", " ").replace("x", " ").split(" ", false):
+		if part.is_valid_float():
+			out.append(part.to_float())
+	return out
+
+func _on_nudge_apply_pressed():
+	_on_nudge_input_submitted($"%MobileNudgeInput".text)
+
+func _set_nudge_target(t):
+	if is_instance_valid(_nudge_target_conn) and _nudge_target_conn.is_connected("data_changed", self, "_on_nudge_target_data_changed"):
+		_nudge_target_conn.disconnect("data_changed", self, "_on_nudge_target_data_changed")
+	_nudge_target = t
+	_nudge_target_conn = null
+	if is_instance_valid(t):
+		t.connect("data_changed", self, "_on_nudge_target_data_changed")
+		_nudge_target_conn = t
+	if $"%MobileNudgeWindow".visible:
+		call_deferred("_update_nudge_window_target")
+
+func _on_nudge_target_data_changed():
+	if $"%MobileNudgeWindow".visible:
+		$"%MobileNudgeInput".text = _nudge_value_text(_nudge_target)
+
+func _on_nudge_up_pressed():
+	_apply_nudge(Vector2(0, -1))
+
+func _on_nudge_down_pressed():
+	_apply_nudge(Vector2(0, 1))
+
+func _on_nudge_left_pressed():
+	_apply_nudge(Vector2(-1, 0))
+
+func _on_nudge_right_pressed():
+	_apply_nudge(Vector2(1, 0))
+
+func _set_xyplot_value(t, point: Vector2, sticky: bool):
+	var new_value = point
+	if sticky and t.snap and not Global.XY_SNAP_TOGGLE_ENABLED:
+		new_value = _xy_sticky_snap(t, t.value_float, point)
+	t.update_value(new_value, true, false)
+	t.emit_signal("data_changed")
+
+func _apply_nudge(dir: Vector2):
+	var t = _nudge_target
+	if not is_instance_valid(t):
+		return
+	if t is XYPlot:
+		var current = t.value_float
+		var raw_new = (current + dir * _NUDGE_XY_STEP * t.panel_radius).limit_length(t.panel_radius)
+		_set_xyplot_value(t, raw_new, true)
+	elif _is_horiz_slider(t):
+		var amount = _NUDGE_SLIDER_STEP * (dir.x - dir.y)
+		var slider = t.get_node("Direction")
+		slider.value = clamp(slider.value + amount, slider.min_value, slider.max_value)
+		t.emit_signal("data_changed")
+		t.buffer_value_changed = false
+	$"%MobileNudgeInput".text = _nudge_value_text(t)
+
+func _is_horiz_slider(node) -> bool:
+	return node != null and node.has_method("get_value") and node.has_node("Direction")
+
+func _input(event):
+	if not Global.mobile_ui:
+		return
+	var win = $"%MobileNudgeWindow"
+	var panel = $"%MobilePredictionPanel"
+	if event is InputEventMouseMotion:
+		if _nudge_dragging:
+			win.rect_position += event.relative
+		if _pred_dragging:
+			panel.rect_position += event.relative
+		return
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		if not event.pressed:
+			_nudge_dragging = false
+			_pred_dragging = false
+			return
+		if panel.visible and panel.get_global_rect().has_point(event.position):
+			var title_hit = $"%MobilePredictionTitle".get_global_rect().has_point(event.position)
+			var close_hit = $"%MobilePredictionClose".get_global_rect().has_point(event.position)
+			if title_hit and not close_hit:
+				_pred_dragging = true
+			_nudge_dragging = false
+			return
+		if win.visible:
+			if $"%MobileNudgeTitle".get_global_rect().has_point(event.position):
+				_nudge_dragging = true
+			if win.get_global_rect().has_point(event.position):
+				return
+		_nudge_dragging = false
+		var t = _find_nudgeable_at(event.position)
+		if t != null:
+			_set_nudge_target(t)
+
+func _find_nudgeable_at(pos: Vector2):
+	var best = null
+	var best_depth = -1
+	for root in [p1_action_buttons, p2_action_buttons]:
+		if not is_instance_valid(root):
+			continue
+		for t in _collect_nudgeables(root, []):
+			if not t.is_visible_in_tree():
+				continue
+			if not t.get_global_rect().has_point(pos):
+				continue
+			var d = _tree_depth(t)
+			if d > best_depth:
+				best_depth = d
+				best = t
+	return best
+
+func _collect_nudgeables(node, out):
+	for c in node.get_children():
+		if c is XYPlot or _is_horiz_slider(c):
+			out.append(c)
+		_collect_nudgeables(c, out)
+	return out
+
+func _tree_depth(node):
+	var d = 0
+	var n = node
+	while n.get_parent() != null:
+		d += 1
+		n = n.get_parent()
+	return d
 
 
 
@@ -1955,15 +2292,7 @@ func _handle_xy_nudge(event):
 	var plot = Hotkeys.hovered_xy_plot
 	var current = plot.value_float
 	var raw_new = (current + nudge * plot.panel_radius).limit_length(plot.panel_radius)
-	var new_value = raw_new
-	if plot.snap and not Global.XY_SNAP_TOGGLE_ENABLED:
-		# Sticky-snap zones: outside any zone, free movement; entering a zone
-		# snaps to its center; nudging while inside a zone pops the result to
-		# the zone boundary on the motion side so the next nudge starts from
-		# outside the zone and continues free instead of re-snapping back.
-		new_value = _xy_sticky_snap(plot, current, raw_new)
-	plot.update_value(new_value, true, true)
-	plot.emit_signal("data_changed")
+	_set_xyplot_value(plot, raw_new, true)
 
 # Mirrors XYPlot's internal SNAP_AMOUNT (half-width of a snap zone, in radians
 # for angles and as a ratio of panel_radius for radius). _XY_ZONE_EXIT_EPSILON

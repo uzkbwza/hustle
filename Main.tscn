@@ -1169,6 +1169,89 @@ script = ExtResource( 1 )
 margin_left = 150.0
 margin_right = 290.0
 
+[node name="VBoxContainer2" parent="UILayer/FileManagerInterace/Window" index="1"]
+margin_bottom = 216.0
+
+[node name="Contents" parent="UILayer/FileManagerInterace/Window/VBoxContainer2" index="1"]
+margin_bottom = 215.0
+
+[node name="Control" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents" index="0"]
+margin_bottom = 204.0
+
+[node name="HBoxContainer2" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control" index="0"]
+margin_bottom = 24.0
+
+[node name="Close" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer2" index="0"]
+margin_bottom = 24.0
+
+[node name="ImportFiles" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer2" index="1"]
+margin_bottom = 24.0
+
+[node name="VBoxContainer" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control" index="2"]
+margin_top = 25.0
+margin_bottom = 74.0
+
+[node name="OptionButton" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/VBoxContainer" index="0"]
+margin_bottom = 24.0
+
+[node name="HBoxContainer" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/VBoxContainer" index="1"]
+margin_top = 25.0
+margin_bottom = 49.0
+
+[node name="ListEdit" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/VBoxContainer/HBoxContainer" index="0"]
+margin_bottom = 24.0
+
+[node name="SaveList" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/VBoxContainer/HBoxContainer" index="1"]
+margin_bottom = 24.0
+
+[node name="Label" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control" index="3"]
+margin_top = 75.0
+margin_bottom = 91.0
+
+[node name="HBoxContainer" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control" index="4"]
+margin_top = 92.0
+margin_bottom = 191.0
+
+[node name="VBoxContainer3" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer" index="0"]
+margin_bottom = 99.0
+
+[node name="ExportFile" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3" index="0"]
+margin_bottom = 24.0
+
+[node name="ExportList" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3" index="1"]
+margin_top = 25.0
+margin_bottom = 49.0
+
+[node name="ExportListed" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3" index="2"]
+margin_top = 50.0
+margin_bottom = 74.0
+
+[node name="ExportFolder" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer3" index="3"]
+margin_top = 75.0
+margin_bottom = 99.0
+
+[node name="VBoxContainer4" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer" index="1"]
+margin_bottom = 99.0
+
+[node name="DeleteFile" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4" index="0"]
+margin_bottom = 24.0
+
+[node name="DeleteList" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4" index="1"]
+margin_top = 25.0
+margin_bottom = 49.0
+
+[node name="DeleteListed" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4" index="2"]
+margin_top = 50.0
+margin_bottom = 74.0
+
+[node name="DeleteFolder" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control/HBoxContainer/VBoxContainer4" index="3"]
+margin_top = 75.0
+margin_bottom = 99.0
+
+[node name="Printer" parent="UILayer/FileManagerInterace/Window/VBoxContainer2/Contents/Control" index="5"]
+margin_top = 192.0
+margin_bottom = 203.0
+
 [node name="BgCircle" type="Control" parent="UILayer"]
 material = SubResource( 22 )
 anchor_left = 0.5
@@ -1938,21 +2021,334 @@ icon_align = 1
 unique_name_in_owner = true
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -20.0
-margin_right = 20.0
-margin_bottom = 12.0
+margin_left = -168.0
+margin_top = 3.0
+margin_right = 168.0
+margin_bottom = 17.0
 grow_horizontal = 2
-rect_min_size = Vector2( 100, 20 )
+rect_min_size = Vector2( 328, 14 )
+custom_constants/separation = 4
+alignment = 1
+
+[node name="MobilePredictionsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+unique_name_in_owner = true
+margin_right = 64.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 64, 14 )
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "Predictions"
+flat = true
+
+[node name="MobileReplayButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+unique_name_in_owner = true
+margin_left = 68.0
+margin_right = 132.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 64, 14 )
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "Replay"
+flat = true
 
 [node name="OpenMenuButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
 unique_name_in_owner = true
-margin_right = 100.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 100, 16 )
-size_flags_horizontal = 3
+margin_left = 136.0
+margin_right = 200.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 64, 14 )
 custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
 text = "Menu"
 flat = true
+
+[node name="ChatButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+unique_name_in_owner = true
+margin_left = 204.0
+margin_right = 268.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 64, 14 )
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "Chat"
+flat = true
+
+[node name="ArrowsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+unique_name_in_owner = true
+margin_left = 272.0
+margin_right = 336.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 64, 14 )
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "Arrows"
+flat = true
+
+[node name="MobilePredictionPanel" type="Control" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -160.0
+margin_top = 22.0
+margin_right = 160.0
+margin_bottom = 182.0
+
+[node name="Bg" type="PanelContainer" parent="UILayer/GameUI/MobilePredictionPanel"]
+self_modulate = Color( 1, 1, 1, 0.5 )
+margin_right = 320.0
+margin_bottom = 160.0
+
+[node name="Margin" type="MarginContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg"]
+margin_right = 320.0
+margin_bottom = 160.0
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 314.0
+margin_bottom = 154.0
+custom_constants/separation = 4
+
+[node name="MobilePredictionTitle" type="HBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+unique_name_in_owner = true
+margin_right = 308.0
+margin_bottom = 22.0
+
+[node name="Label" type="Label" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionTitle"]
+margin_right = 284.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+text = "Prediction"
+
+[node name="MobilePredictionClose" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionTitle"]
+unique_name_in_owner = true
+margin_left = 288.0
+margin_right = 308.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 20, 20 )
+text = "X"
+
+[node name="MobilePredictionGrid" type="GridContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+unique_name_in_owner = true
+margin_top = 26.0
+margin_right = 308.0
+margin_bottom = 82.0
+custom_constants/vseparation = 4
+custom_constants/hseparation = 6
+columns = 2
+
+[node name="MobileGhostButton" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+unique_name_in_owner = true
+margin_right = 151.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "show prediction"
+
+[node name="MobileAfterimageButton" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+unique_name_in_owner = true
+margin_left = 157.0
+margin_right = 308.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "afterimages"
+
+[node name="MobileFreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+unique_name_in_owner = true
+margin_top = 30.0
+margin_right = 151.0
+margin_bottom = 56.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "freeze on ready"
+
+[node name="MobileFreezeSound" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+unique_name_in_owner = true
+margin_left = 157.0
+margin_top = 30.0
+margin_right = 308.0
+margin_bottom = 56.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "freeze sound"
+
+[node name="MobileGhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+unique_name_in_owner = true
+margin_top = 86.0
+margin_right = 308.0
+margin_bottom = 112.0
+
+[node name="Label" type="Label" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+margin_right = 58.0
+margin_bottom = 26.0
+text = "speed:"
+
+[node name="Mobile1Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+unique_name_in_owner = true
+margin_left = 62.0
+margin_right = 108.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x0.25"
+
+[node name="Mobile5Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+unique_name_in_owner = true
+margin_left = 112.0
+margin_right = 158.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x0.5"
+
+[node name="Mobile2Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+unique_name_in_owner = true
+margin_left = 162.0
+margin_right = 208.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x1"
+
+[node name="Mobile3Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+unique_name_in_owner = true
+margin_left = 212.0
+margin_right = 258.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x2"
+
+[node name="Mobile4Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+unique_name_in_owner = true
+margin_left = 262.0
+margin_right = 308.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x4"
+
+[node name="MobileClearParticlesButton" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+unique_name_in_owner = true
+margin_top = 116.0
+margin_right = 308.0
+margin_bottom = 142.0
+rect_min_size = Vector2( 0, 26 )
+text = "clear particles"
+
+[node name="MobileNudgeWindow" type="PanelContainer" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+self_modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 8.0
+margin_top = 44.0
+margin_right = 116.0
+margin_bottom = 226.0
+rect_min_size = Vector2( 108, 182 )
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 101.0
+margin_bottom = 175.0
+custom_constants/separation = 4
+
+[node name="MobileNudgeTitle" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+unique_name_in_owner = true
+margin_right = 94.0
+margin_bottom = 16.0
+
+[node name="TitleLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeTitle"]
+margin_right = 74.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+text = "Nudge"
+
+[node name="MobileNudgeClose" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeTitle"]
+unique_name_in_owner = true
+margin_left = 74.0
+margin_right = 94.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 20, 16 )
+text = "X"
+
+[node name="MobileNudgeTarget" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+unique_name_in_owner = true
+margin_top = 20.0
+margin_right = 94.0
+margin_bottom = 32.0
+text = "No target"
+align = 1
+clip_text = true
+
+[node name="DPad" type="GridContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+margin_top = 36.0
+margin_right = 94.0
+margin_bottom = 138.0
+size_flags_horizontal = 4
+custom_constants/vseparation = 3
+custom_constants/hseparation = 3
+columns = 3
+
+[node name="Spacer1" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+rect_min_size = Vector2( 30, 30 )
+
+[node name="MobileNudgeUp" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 30, 30 )
+text = "^"
+
+[node name="Spacer2" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+rect_min_size = Vector2( 30, 30 )
+
+[node name="MobileNudgeLeft" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 30, 30 )
+text = "<"
+
+[node name="DPadCenter" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+rect_min_size = Vector2( 30, 30 )
+
+[node name="MobileNudgeRight" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 30, 30 )
+text = ">"
+
+[node name="Spacer3" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+rect_min_size = Vector2( 30, 30 )
+
+[node name="MobileNudgeDown" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 30, 30 )
+text = "v"
+
+[node name="Spacer4" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+rect_min_size = Vector2( 30, 30 )
+
+[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+margin_top = 142.0
+margin_right = 94.0
+margin_bottom = 168.0
+rect_min_size = Vector2( 0, 26 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeInput" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeEntryRow"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+align = 1
+placeholder_text = "value"
+
+[node name="MobileNudgeApply" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeEntryRow"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 34, 26 )
+text = "Set"
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true

@@ -11,12 +11,9 @@ const BOX_SIZE = 52
 const DEFAULT_HEIGHT = 60
 const VISIBLE_LIMIT = 9
 
-
 const SIZE_DEFAULT = Vector2(52, 69) # nice
-# const SIZE_MOBILE_UNFOCUSED = Vector2(52, 80) # for 3 column
-const SIZE_MOBILE_UNFOCUSED = Vector2(35, 80)
-# const SIZE_MOBILE_FOCUSED = Vector2(166, 80) # for 5 column
-const SIZE_MOBILE_FOCUSED = Vector2(133, 80)
+const SIZE_MOBILE_UNFOCUSED = Vector2(36, 96)
+const SIZE_MOBILE_FOCUSED = Vector2(164, 80)
 
 
 onready var action_data_container = $"%ActionDataContainer"
@@ -26,6 +23,7 @@ onready var initiative_label = $"%InitiativeLabel"
 onready var guard_break_label = $"%GuardBreakLabel"
 
 var label_text = ""
+var category_name = ""
 var selected_button_text = ""
 var active_button = null
 
@@ -58,8 +56,8 @@ var is_mobile_focused = false setget mobile_focus
 
 
 func init(name):
-	label_text = name
-	$"%Label".text = label_text
+	category_name = name
+	_update_label_text()
 
 
 
@@ -79,7 +77,22 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
+	_update_label_text()
 	mobile_focus(is_mobile_focused)
+
+func _update_label_text():
+	if Global.mobile_ui:
+		var abbrevs = {
+			"Defense": "Def",
+			"Super": "Sup",
+			"Movement": "Mov",
+			"Attack": "Atk",
+			"Special": "Spe",
+		}
+		label_text = abbrevs.get(category_name, category_name)
+	else:
+		label_text = category_name
+	$"%Label".text = label_text
 
 
 
@@ -89,9 +102,11 @@ func enforce_min_size():
 
 
 func on_resized():
+	if Global.mobile_ui:
+		return
 	var first_button : Control = $"%ButtonContainer".get_child(0)
 	if is_instance_valid(first_button):
-		var gap = 1 # could be pulled from theme, right now hard coded
+		var gap = 1 
 		var button_width = first_button.get_combined_minimum_size().x + gap
 		var container_width = $"%ScrollContainer".rect_size.x + gap
 		$"%ButtonContainer".columns = floor(container_width / button_width)
@@ -102,9 +117,14 @@ func mobile_focus(on):
 	is_mobile_focused = on
 	var container_size = SIZE_DEFAULT
 	if Global.mobile_ui:
-		container_size = SIZE_MOBILE_FOCUSED if on else SIZE_MOBILE_UNFOCUSED 
-	var button_size :Vector2 = Vector2(32, 32) if Global.mobile_ui and on else Vector2(16, 16)
-	for button in $"%ButtonContainer".get_children():
+		container_size = SIZE_MOBILE_FOCUSED if on else SIZE_MOBILE_UNFOCUSED
+	var button_size = Vector2(32, 32) if Global.mobile_ui and on else Vector2(16, 16)
+	var bc = $"%ButtonContainer"
+	if Global.mobile_ui:
+		bc.columns = 5 if on else 2
+		bc.add_constant_override("hseparation", 0)
+		bc.add_constant_override("vseparation", 0)
+	for button in bc.get_children():
 		button.rect_min_size = button_size
 	rect_min_size = container_size
 	call_deferred("enforce_min_size")
