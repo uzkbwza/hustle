@@ -48,6 +48,8 @@ func _ready():
 	$"%ShowButton".connect("pressed", self, "toggle")
 	$"%LineEdit".connect("message_ready", self, "on_message_ready")
 	Network.connect("chat_message_received", self, "on_chat_message_received")
+	Network.connect("relay_match_chat_received", self, "on_relay_chat_message_received")
+	Network.connect("relay_match_chat_history_received", self, "on_relay_chat_history_received")
 	Network.connect("style_save_request_received", self, "_on_style_save_request_received")
 	Network.connect("style_save_response_received", self, "_on_style_save_response_received")
 	Network.connect("match_ready", self, "_on_match_ready")
@@ -381,6 +383,39 @@ func on_chat_message_received(player_id: int, message: String):
 	yield(get_tree(), 'idle_frame')
 	if stick:
 		scroll.scroll_vertical = 10000000000000000
+
+func on_relay_chat_message_received(sender_name: String, message: String, silent: bool = false):
+	var text = ProfanityFilter.filter(("<[color=#999999]") + sender_name + "[/color]> " + message)
+	var node = RichTextLabel.new()
+	node.bbcode_enabled = true
+	node.append_bbcode(text)
+	node.fit_content_height = true
+	if sender_name != Network.player_name and !silent:
+		play_chat_sound()
+	var category = "match" if SteamLobby.get_status() in ["fighting", "spectating"] else "lobby"
+	var container = _container_for(category)
+	var scroll = match_scroll if category == "match" else $"%ScrollContainer"
+	var stick = _at_bottom(scroll)
+	container.call_deferred("add_child", node)
+	if container.get_child_count() + 1 > MAX_LINES:
+		container.call_deferred("remove_child", container.get_child(0))
+	if category != _active_category():
+		if category == "match":
+			unread_match = true
+		else:
+			unread_lobby = true
+		_refresh_tab_titles()
+	yield(get_tree(), 'idle_frame')
+	yield(get_tree(), 'idle_frame')
+	if stick:
+		scroll.scroll_vertical = 10000000000000000
+
+func on_relay_chat_history_received(entries):
+	if !(entries is Array):
+		return
+	for entry in entries:
+		if entry is Array and entry.size() >= 2:
+			on_relay_chat_message_received(str(entry[0]), str(entry[1]), true)
 
 func god_message(message: String):
 	# Respect the chat-wide mute toggle for the join/leave + system notice
@@ -796,7 +831,7 @@ func unfocus_line_edit():
 
 func on_message_ready(message):
 	$"%TooLongLabel".hide()
-	if Network.multiplayer_active or SteamLobby.SPECTATING:
+	if Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating:
 		if len(message) < 1000:
 			$"%LineEdit".clear()
 			send_message(message)
@@ -840,11 +875,14 @@ func send_message(message):
 
 	if "[img" in message and "ui/unknown2.png" in message:
 		SteamHustle.unlock_achievement("ACH_JUMPSCARE")
-	if !Network.multiplayer_active and !SteamLobby.SPECTATING:
+	if !Network.multiplayer_active and !SteamLobby.SPECTATING and !Network.relay_spectating:
 		on_chat_message_received(1, message)
 		return
 	if !Network.steam:
-		Network.rpc_("send_chat_message", [Network.player_id, message])
+		if Network.relay_spectating:
+			Network.send_relay_chat(message)
+		else:
+			Network.rpc_("send_chat_message", [Network.player_id, message])
 	else:
 		# Tag the outgoing scope from the tab we're typing in, so the receiver
 		# files by our authoritative choice instead of guessing from our (over-

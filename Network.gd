@@ -119,6 +119,10 @@ signal player_ids_synced()
 signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
+signal relay_match_chat_received(sender_name, message)
+signal relay_match_chat_history_received(entries)
+signal room_chat_received(sender_name, message)
+signal room_chat_history_received(history)
 signal check_players_ready()
 signal opponent_ready()
 signal client_actionable()
@@ -789,12 +793,25 @@ remote func spectate_accept(data):
 		emit_signal("received_spectator_match_data", match_data)
 
 remote func spectator_replay_update(replay):
-	if relay_spectating and replay is Dictionary:
-		for pid in replay.keys():
-			if !ReplayManager.frames.has(pid):
-				ReplayManager.frames[pid] = {}
-			for tick in replay[pid].keys():
-				ReplayManager.frames[pid][tick] = replay[pid][tick]
+	if !relay_spectating or !(replay is Dictionary):
+		return
+	for pid in [1, 2]:
+		if !replay.has(pid):
+			continue
+		if !ReplayManager.frames.has(pid):
+			ReplayManager.frames[pid] = {}
+		for tick in replay[pid].keys():
+			ReplayManager.frames[pid][tick] = replay[pid][tick]
+	if replay.get("finished", false):
+		ReplayManager.frames["finished"] = true
+	if replay.has("emotes") and replay["emotes"] is Dictionary:
+		if !ReplayManager.frames.has("emotes") or !(ReplayManager.frames["emotes"] is Dictionary):
+			ReplayManager.frames["emotes"] = {1: {}, 2: {}}
+		for pid in replay["emotes"].keys():
+			if !ReplayManager.frames["emotes"].has(pid):
+				ReplayManager.frames["emotes"][pid] = {}
+			for tick in replay["emotes"][pid].keys():
+				ReplayManager.frames["emotes"][pid][tick] = replay["emotes"][pid][tick]
 
 remote func spectator_sync_timers(data):
 	if !relay_spectating or !(data is Dictionary):
@@ -846,15 +863,24 @@ func _spectate_accept_data():
 	}
 
 func _replay_watermarks():
-	var wm = {}
-	for pid in ReplayManager.frames.keys():
-		if !(pid is int) or pid < 1 or pid > 2:
-			continue
+	var wm = {"emote_marks": {}}
+	for pid in [1, 2]:
 		var highest = -1
-		for tick in ReplayManager.frames[pid].keys():
-			if int(tick) > highest:
-				highest = int(tick)
+		if ReplayManager.frames.has(pid):
+			for tick in ReplayManager.frames[pid].keys():
+				if int(tick) > highest:
+					highest = int(tick)
 		wm[pid] = highest
+	var emote_frames = ReplayManager.frames.get("emotes", null)
+	if emote_frames is Dictionary:
+		for pid in [1, 2]:
+			var highest_emote = -1
+			if emote_frames.has(pid):
+				for tick in emote_frames[pid].keys():
+					if int(tick) > highest_emote:
+						highest_emote = int(tick)
+			wm["emote_marks"][pid] = highest_emote
+	wm["finished"] = ReplayManager.frames.get("finished", false)
 	return wm
 
 func _push_replay_updates_delta():
@@ -862,20 +888,21 @@ func _push_replay_updates_delta():
 		return
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
+	var frames = ReplayManager.frames
+	var finished = frames.get("finished", false)
+	var emote_frames = frames.get("emotes", null)
+	var entries = []
 	for spectator_id in relay_spectators.keys():
 		var wm = relay_spectator_ticks.get(spectator_id)
 		if wm == null:
-			wm = {}
-			for pid in ReplayManager.frames.keys():
-				if pid is int and pid >= 1 and pid <= 2:
-					wm[pid] = -1
+			wm = {"emote_marks": {}}
 			relay_spectator_ticks[spectator_id] = wm
 		var delta = {}
-		for pid in ReplayManager.frames.keys():
-			if !(pid is int) or pid < 1 or pid > 2:
+		for pid in [1, 2]:
+			if !frames.has(pid):
 				continue
-			var ticks = ReplayManager.frames[pid]
-			var highest = wm.get(pid, -1)
+			var ticks = frames[pid]
+			var highest = int(wm.get(pid, -1))
 			var cur_max = -1
 			for tick in ticks.keys():
 				if int(tick) > cur_max:
@@ -889,9 +916,33 @@ func _push_replay_updates_delta():
 					delta[pid] = {}
 				delta[pid][tick] = ticks[tick]
 			wm[pid] = cur_max
+		if finished and !wm.get("finished", false):
+			delta["finished"] = true
+			wm["finished"] = true
+		if emote_frames is Dictionary:
+			var emote_marks = wm.get("emote_marks", {})
+			for pid in [1, 2]:
+				if !emote_frames.has(pid):
+					continue
+				var marks = emote_frames[pid]
+				var highest_emote = int(emote_marks.get(pid, -1))
+				for tick in marks.keys():
+					if int(tick) <= highest_emote:
+						continue
+					if !delta.has("emotes"):
+						delta["emotes"] = {}
+					if !delta["emotes"].has(pid):
+						delta["emotes"][pid] = {}
+					delta["emotes"][pid][tick] = marks[tick]
+					highest_emote = int(tick)
+				emote_marks[pid] = highest_emote
+			wm["emote_marks"] = emote_marks
 		if delta.empty():
 			continue
-		rpc_id(1, "relay_to_spectator", spectator_id, "spectator_replay_update", delta)
+		entries.append([spectator_id, "spectator_replay_update", delta])
+	if entries.empty():
+		return
+	rpc_id(1, "relay_to_spectators_batched", entries)
 
 func _push_to_relay_spectators(function_name, arg=null):
 	if steam or relay_spectators.empty():
@@ -956,6 +1007,39 @@ remote func check_tick_sync(tick):
 
 remotesync func send_chat_message(player_id, message):
 	emit_signal("chat_message_received", player_id, message)
+
+func send_relay_chat(message):
+	if steam:
+		return
+	if !(multiplayer_client and multiplayer_client.connected):
+		return
+	emit_signal("relay_match_chat_received", player_name, message)
+	rpc_id(1, "relay_match_chat", message)
+
+remote func receive_match_chat(sender_name, message):
+	emit_signal("relay_match_chat_received", sender_name, message)
+
+remote func receive_match_chat_history(history):
+	if history is Array:
+		emit_signal("relay_match_chat_history_received", history)
+
+func send_room_chat(message):
+	if steam:
+		return
+	if !(multiplayer_client and multiplayer_client.connected):
+		return
+	message = message.strip_edges()
+	if message == "":
+		return
+	emit_signal("room_chat_received", player_name, message)
+	rpc_id(1, "relay_room_chat", message)
+
+remote func receive_room_chat(sender_name, message):
+	emit_signal("room_chat_received", sender_name, message)
+
+remote func receive_room_chat_history(history):
+	if history is Array:
+		emit_signal("room_chat_history_received", history)
 
 remotesync func end_turn_simulation(tick, player_id):
 #	if get_sender_id() == network_id:

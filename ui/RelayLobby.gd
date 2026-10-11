@@ -24,6 +24,11 @@ onready var room_start_button = $"%RoomStartButton"
 onready var leave_room_button = $"%LeaveRoomButton"
 onready var room_info_timer = $"%RoomInfoTimer"
 
+onready var room_chat_scroll = $"%RoomChatScroll"
+onready var room_chat_history = $"%RoomChatHistory"
+onready var room_chat_edit = $"%RoomChatEdit"
+onready var room_chat_send_button = $"%RoomChatSendButton"
+
 signal quit_on_rematch()
 
 export var direct_connect = true
@@ -79,10 +84,14 @@ func _ready():
 	Network.connect("relay_match_joined", self, "_on_relay_match_joined")
 	Network.connect("room_info_received", self, "_on_room_info_received")
 	Network.connect("room_player_left", self, "_on_room_player_left")
+	Network.connect("room_chat_received", self, "_on_room_chat_received")
+	Network.connect("room_chat_history_received", self, "_on_room_chat_history_received")
 	room_start_button.connect("pressed", self, "_on_start_pressed")
 	leave_room_button.connect("pressed", self, "_on_leave_room_pressed")
 	room_info_timer.connect("timeout", self, "_on_room_info_timer_timeout")
 	room_code_label.connect("pressed", self, "_on_room_code_pressed")
+	room_chat_edit.connect("text_entered", self, "_on_room_chat_text_entered")
+	room_chat_send_button.connect("pressed", self, "_on_room_chat_send_pressed")
 	$"%RefreshTimer".wait_time = 2.0
 	experimental_mode = "unstable" in Global.VERSION
 	if experimental_mode:
@@ -308,6 +317,10 @@ func _enter_room_view(code, spectating=false):
 	room_lobby.show()
 	$"%NetworkStartButton".hide()
 	$"%BackButton".hide()
+	if is_instance_valid(room_chat_history):
+		room_chat_history.clear()
+		if is_instance_valid(room_chat_edit):
+			room_chat_edit.clear()
 	Network.request_room_info(code)
 	room_info_timer.start()
 
@@ -417,6 +430,46 @@ func _on_room_info_received(info):
 		room_spectators_label.text = _format_spectators(spectators)
 		if Network.is_host():
 			room_start_button.disabled = players.size() < 2
+
+func _on_room_chat_text_entered(text):
+	_submit_room_chat(text)
+
+func _on_room_chat_send_pressed():
+	_submit_room_chat(room_chat_edit.text)
+
+func _submit_room_chat(text):
+	if text.strip_edges() == "":
+		return
+	Network.send_room_chat(text)
+	room_chat_edit.clear()
+
+func _on_room_chat_received(sender_name, message):
+	_render_room_chat(sender_name, message)
+	_scroll_room_chat_to_bottom()
+
+func _on_room_chat_history_received(history):
+	if !is_instance_valid(room_chat_history):
+		return
+	room_chat_history.clear()
+	for entry in history:
+		if entry is Array and entry.size() >= 2:
+			_render_room_chat(entry[0], entry[1])
+	_scroll_room_chat_to_bottom()
+
+func _render_room_chat(sender_name, message):
+	if !is_instance_valid(room_chat_history):
+		return
+	var color = "ffffff"
+	if str(sender_name) == Network.player_name:
+		color = "1d8df5"
+	var text = ProfanityFilter.filter("<[color=#%s]%s[/color]> %s" % [color, str(sender_name), str(message)])
+	room_chat_history.append_bbcode(text + "\n")
+
+func _scroll_room_chat_to_bottom():
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	if is_instance_valid(room_chat_scroll):
+		room_chat_scroll.scroll_vertical = 10000000000000000
 
 func _format_players(players):
 	var text = "Players\n"

@@ -1448,14 +1448,14 @@ func init(game):
 		$"%RematchButton".disabled = false
 	self.game = game
 	setup_action_buttons()
-	if Network.multiplayer_active or SteamLobby.SPECTATING:
+	if Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating:
 		game.connect("playback_requested", self, "_on_game_playback_requested")
 		$"%ChatWindow".show()
 	game_started = false
 	timer_mode = game.match_data.get("timer_mode", "default")
 	# Show timer UI only when there's actually a timer running. "none" hides
 	# the labels entirely so the screen stays clean for untimed matches.
-	var show_timer = (Network.multiplayer_active or SteamLobby.SPECTATING) and timer_mode != "none"
+	var show_timer = (Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating) and timer_mode != "none"
 	$"%P1TurnTimerLabel".visible = show_timer
 	$"%P2TurnTimerLabel".visible = show_timer
 	# Persistent-bank modes carry timer state across turns and need
@@ -1479,7 +1479,7 @@ func _on_player_turn_ready(player_id):
 	if !is_instance_valid(game):
 		return
 	lock_in_tick = game.current_tick
-	if player_id != Network.player_id or SteamLobby.SPECTATING:
+	if player_id != Network.player_id or SteamLobby.SPECTATING or Network.relay_spectating:
 		$"%TurnReadySound".play()
 
 	turns_taken[player_id] = true
@@ -1602,11 +1602,11 @@ func on_player_actionable():
 #		p1_turn_timer.wait_time = MIN_TURN_TIME
 #	if p2_turn_timer.wait_time == 0:
 #		 p2_turn_timer.wait_time = MIN_TURN_TIME
-	if Network.multiplayer_active or SteamLobby.SPECTATING:
+	if Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating:
 #		Network.rpc_("my_turn_started")
 		var wait_start = OS.get_ticks_msec()
 		while !(Network.can_open_action_buttons):
-			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING:
+			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING and !Network.relay_spectating:
 				print("button-open watchdog: stuck waiting >3s, resending end_turn_simulation")
 				if is_instance_valid(game):
 					Network.rpc_("end_turn_simulation", [game.current_tick, Network.player_id])
@@ -2086,8 +2086,7 @@ func _process(delta):
 	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
 	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
 	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
-	#quick fix for now
-	$"%MobileMatchButtons".visible = (Global.mobile_ui or Global.is_mobile_device)  and is_instance_valid(game) and not game.game_finished 
+	$"%MobileMatchButtons".visible = Global.mobile_ui and is_instance_valid(game)
 	
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused
@@ -2100,7 +2099,7 @@ func _process(delta):
 	$"%SoftlockResetButton".visible = false
 	if Network.multiplayer_active and is_instance_valid(game):
 		var my_action_buttons = p1_action_buttons if Network.player_id == 1 else p2_action_buttons
-		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5 and !(game.game_finished or ReplayManager.playback) and !SteamLobby.SPECTATING
+		$"%SoftlockResetButton".visible = (!my_action_buttons.visible or my_action_buttons.get_node("%SelectButton").disabled) and actionable_time > 5 and !(game.game_finished or ReplayManager.playback) and !SteamLobby.SPECTATING and !Network.relay_spectating
 		if !$"%SoftlockResetButton".visible:
 			$"%SoftlockResetButton".disabled = false
 
