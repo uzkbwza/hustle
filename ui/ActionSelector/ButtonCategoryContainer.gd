@@ -12,8 +12,16 @@ const DEFAULT_HEIGHT = 60
 const VISIBLE_LIMIT = 9
 
 const SIZE_DEFAULT = Vector2(52, 69) # nice
-const SIZE_MOBILE_UNFOCUSED = Vector2(36, 96)
-const SIZE_MOBILE_FOCUSED = Vector2(164, 80)
+const SIZE_MOBILE_UNFOCUSED = Vector2(35, 86)
+const SIZE_MOBILE_FOCUSED = Vector2(166, 86)
+
+const CATEGORY_ABBREVIATIONS = {
+		"Defense": "Def",
+		"Super": "Sup",
+		"Movement": "Mov",
+		"Attack": "Atk",
+		"Special": "Spe",
+	}
 
 
 onready var action_data_container = $"%ActionDataContainer"
@@ -82,14 +90,7 @@ func adjust_ui(is_mobile):
 
 func _update_label_text():
 	if Global.mobile_ui:
-		var abbrevs = {
-			"Defense": "Def",
-			"Super": "Sup",
-			"Movement": "Mov",
-			"Attack": "Atk",
-			"Special": "Spe",
-		}
-		label_text = abbrevs.get(category_name, category_name)
+		label_text = CATEGORY_ABBREVIATIONS.get(category_name, category_name)
 	else:
 		label_text = category_name
 	$"%Label".text = label_text
@@ -102,11 +103,9 @@ func enforce_min_size():
 
 
 func on_resized():
-	if Global.mobile_ui:
-		return
 	var first_button : Control = $"%ButtonContainer".get_child(0)
 	if is_instance_valid(first_button):
-		var gap = 1 
+		var gap = $"%ButtonContainer".get_constant("hseparation")
 		var button_width = first_button.get_combined_minimum_size().x + gap
 		var container_width = $"%ScrollContainer".rect_size.x + gap
 		$"%ButtonContainer".columns = floor(container_width / button_width)
@@ -115,18 +114,23 @@ func on_resized():
 
 func mobile_focus(on):
 	is_mobile_focused = on
+	var button_container = $"%ButtonContainer"
+	var label_container = $"%CenterContainer"
+	var too_many_moves_node = $"%TooManyMoves"
+	too_many_moves_node.margin_top = 9
+	label_container.rect_min_size.y = 12
 	var container_size = SIZE_DEFAULT
+	var button_size = Vector2(16, 16)
 	if Global.mobile_ui:
 		container_size = SIZE_MOBILE_FOCUSED if on else SIZE_MOBILE_UNFOCUSED
-	var button_size = Vector2(32, 32) if Global.mobile_ui and on else Vector2(16, 16)
-	var bc = $"%ButtonContainer"
-	if Global.mobile_ui:
-		bc.columns = 5 if on else 2
-		bc.add_constant_override("hseparation", 0)
-		bc.add_constant_override("vseparation", 0)
-	for button in bc.get_children():
+		button_size = Vector2(32, 32) if on else Vector2(16, 16)
+		label_container.visible = on
+		too_many_moves_node.margin_top = 15 if on else -2
+		label_container.rect_min_size.y = 16 if on else 12
+	for button in button_container.get_children():
 		button.rect_min_size = button_size
 	rect_min_size = container_size
+	too_many_moves_node.rect_size.y = 0
 	call_deferred("enforce_min_size")
 
 
