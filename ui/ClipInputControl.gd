@@ -11,7 +11,6 @@ func set_expand(value):
 
 
 
-# I'm losing my mind
 func _clips_input():
 	return true
 

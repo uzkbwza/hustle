@@ -329,9 +329,6 @@ func _ready():
 		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
 		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
 	
-	p1_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
-	p2_action_buttons.connect("switch_hud_side", self, "switch_hud_side")
-	
 	$"%OpenMenuButton".connect("pressed", self, "pause")
 	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
 	$"%MobileReplayButton".connect("pressed", self, "_on_mobile_replay_button_pressed")
@@ -360,13 +357,13 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
-	p1_side_container.visible = true
-	p2_side_container.visible = true
 	$"%ChatButton".visible = is_mobile
 	$"%MobileReplayButton".visible = is_mobile
 	$"%ArrowsButton".visible = is_mobile
 	$"%MobilePredictionsButton".visible = is_mobile
 	$"%MobilePredictionPanel".visible = false
+	$"%MobilePlayerSeperator".visible = true # might hide this behind is_mobile
+	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	if is_mobile:
 		$"%OptionsBarContainer".hide()
 		$"%PredictionSettingsOpenButton".hide()
@@ -680,17 +677,6 @@ func _tree_depth(node):
 		d += 1
 		n = n.get_parent()
 	return d
-
-
-
-func switch_hud_side():
-	return
-	
-	if Global.mobile_ui:
-		p2_side_container.visible = false
-		# above is to not overflow outside of the hud and cause everything to break
-		p1_side_container.visible = not p1_side_container.visible
-		p2_side_container.visible = not p1_side_container.visible # not a typo
 
 
 

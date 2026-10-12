@@ -8,15 +8,16 @@ signal action_clicked(action, data, extra)
 
 signal opponent_ready()
 
-signal switch_hud_side()
-
 const BUTTON_SCENE = preload("res://ui/ActionSelector/ActionButton.tscn")
 const NUDGE_SCENE = preload("res://ui/ActionSelector/ActionUIData/NudgeActionUIData.tscn")
 const BUTTON_CATEGORY_CONTAINER_SCENE = preload("res://ui/ActionSelector/ButtonCategoryContainer.tscn")
 const BUTTON_CATEGORY_DISTANCE = 100
 
+const CATEGORY_HEIGHT_DEFAULT = 67
+const CATEGORY_HEIGHT_MOBILE = 86
+
 const CATEGORY_DEFAULT_GAP = 1
-const CATEGORY_MOBILE_GAP = 2
+const CATEGORY_MOBILE_GAP = 1
 
 
 export var player_id = 1
@@ -97,7 +98,6 @@ func _ready():
 	$"%DI".connect("data_changed", self, "send_ui_action")
 	$"%ReverseButton".connect("pressed", self, "send_ui_action", [null])
 	$"%FeintButton".connect("pressed", self, "send_ui_action", [null])
-	$"%HUDSwitchButton".connect("pressed", self, "_on_hud_switch_pressed")
 
 	if !player_id == 1:
 		var top_row_items = $"%TopRow".get_children()
@@ -274,11 +274,12 @@ func reset():
 
 
 func adjust_ui(is_mobile):
-	#$"%SwitchButtons".visible = is_mobile
 	#$"%TurnButtons".rect_min_size.x = 60 if is_mobile else 45
 	$"%TurnButtons".visible = not is_mobile
 	var category_gap = CATEGORY_MOBILE_GAP if is_mobile else CATEGORY_DEFAULT_GAP
 	$"%CategoryContainer".add_constant_override("separation", category_gap)
+	var category_height = CATEGORY_HEIGHT_MOBILE if is_mobile else CATEGORY_HEIGHT_DEFAULT
+	$"%CategoryContainer".rect_min_size.y = category_height
 	if is_mobile:
 		call_deferred("_rebuild_mobile_turn_bar")
 	elif _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
@@ -325,16 +326,12 @@ func init(game, id):
 #		for i in range(button_category_containers.size()):
 #			$"%CategoryContainer".move_child(button_category_containers[button_category_containers.keys()[i]], button_category_containers.size() - i)
 		$"%TopRowDataContainer".move_child(fighter_extra, 2)
-		$"%HUDSwitchButton".text = "P2"
 		$"%CategoryContainer".size_flags_horizontal = SIZE_SHRINK_END
 		$"%CategoryContainer".move_child($"%TurnButtons", $"%CategoryContainer".get_children().size() - 1)
-		$"%CategoryContainer".move_child($"%SwitchButtons", $"%CategoryContainer".get_children().size() - 1)
 	else:
 		$"%TopRowDataContainer".move_child(fighter_extra, 0)
-		$"%HUDSwitchButton".text = "P1"
 		$"%CategoryContainer".size_flags_horizontal = 0
 		$"%CategoryContainer".move_child($"%TurnButtons", 0)
-		$"%CategoryContainer".move_child($"%SwitchButtons", 0)
 	continue_button = create_button("Continue", "Hold", "Movement", null, preload("res://ui/ActionSelector/ContinueButton.tscn"), null, false)
 	continue_button.get_parent().remove_child(continue_button)
 	continue_button["custom_fonts/font"] = null
@@ -982,9 +979,6 @@ func activate(refresh=true):
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
 
-
-func _on_hud_switch_pressed():
-	emit_signal("switch_hud_side")
 
 
 func _on_DIContainer_mouse_entered():

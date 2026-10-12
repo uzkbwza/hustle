@@ -11,7 +11,7 @@ const BOX_SIZE = 52
 const DEFAULT_HEIGHT = 60
 const VISIBLE_LIMIT = 9
 
-const SIZE_DEFAULT = Vector2(52, 69) # nice
+const SIZE_DEFAULT = Vector2(52, 67) # :)
 const SIZE_MOBILE_UNFOCUSED = Vector2(35, 86)
 const SIZE_MOBILE_FOCUSED = Vector2(166, 86)
 
@@ -65,7 +65,7 @@ var is_mobile_focused = false setget mobile_focus
 
 func init(name):
 	category_name = name
-	_update_label_text()
+	_update_category_label()
 
 
 
@@ -85,15 +85,14 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
-	_update_label_text()
+	_update_category_label()
 	mobile_focus(is_mobile_focused)
 
-func _update_label_text():
-	if Global.mobile_ui:
-		label_text = CATEGORY_ABBREVIATIONS.get(category_name, category_name)
-	else:
-		label_text = category_name
+func _update_category_label():
+	label_text = category_name
+	var abbreviation = CATEGORY_ABBREVIATIONS.get(category_name, category_name)
 	$"%Label".text = label_text
+	$AbbreviatedLabel.text = abbreviation
 
 
 
@@ -112,21 +111,21 @@ func on_resized():
 
 
 
-func mobile_focus(on):
-	is_mobile_focused = on
+func mobile_focus(focused):
+	is_mobile_focused = focused
 	var button_container = $"%ButtonContainer"
 	var label_container = $"%CenterContainer"
 	var too_many_moves_node = $"%TooManyMoves"
-	too_many_moves_node.margin_top = 9
-	label_container.rect_min_size.y = 12
+	too_many_moves_node.margin_top = 10
+	label_container.rect_min_size.y = 13 if not Global.mobile_ui else 17
+	label_container.visible = focused or not Global.mobile_ui
+	$AbbreviatedLabel.visible = Global.mobile_ui and not focused
 	var container_size = SIZE_DEFAULT
 	var button_size = Vector2(16, 16)
 	if Global.mobile_ui:
-		container_size = SIZE_MOBILE_FOCUSED if on else SIZE_MOBILE_UNFOCUSED
-		button_size = Vector2(32, 32) if on else Vector2(16, 16)
-		label_container.visible = on
-		too_many_moves_node.margin_top = 15 if on else -2
-		label_container.rect_min_size.y = 16 if on else 12
+		container_size = SIZE_MOBILE_FOCUSED if focused else SIZE_MOBILE_UNFOCUSED
+		button_size = Vector2(32, 32) if focused else Vector2(16, 16)
+		too_many_moves_node.margin_top = 15 if focused else -2
 	for button in button_container.get_children():
 		button.rect_min_size = button_size
 	rect_min_size = container_size
@@ -213,7 +212,7 @@ func _process(_delta):
 			update_mouse_elsewhere()
 
 	#$"VBoxContainer/CenterContainer".rect_position.y = 0
-	$"%TooManyMoves".visible = get_num_available_moves() > 9
+	$"%TooManyMoves".visible = $"%ButtonContainer".rect_size.y > $"%ScrollContainer".rect_size.y
 	if mouse_over:
 		$"%TooManyMoves".visible = false
 	set_deferred("visibility_update", false)

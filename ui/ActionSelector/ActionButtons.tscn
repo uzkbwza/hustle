@@ -248,24 +248,6 @@ text = "Auto"
 clip_text = true
 align = 2
 
-[node name="SwitchButtons" type="VBoxContainer" parent="BottomRow/PanelContainer/CategoryContainer"]
-unique_name_in_owner = true
-visible = false
-margin_left = 44.0
-margin_right = 74.0
-margin_bottom = 60.0
-
-[node name="HUDSwitchButton" type="Button" parent="BottomRow/PanelContainer/CategoryContainer/SwitchButtons"]
-unique_name_in_owner = true
-margin_right = 30.0
-margin_bottom = 60.0
-rect_min_size = Vector2( 32, 0 )
-hint_tooltip = "Resimulate the match until the previous turn."
-mouse_default_cursor_shape = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "P2"
-
 [node name="ButtonSoundPlayer" parent="." instance=ExtResource( 5 )]
 unique_name_in_owner = true
 button_containers = [  ]
