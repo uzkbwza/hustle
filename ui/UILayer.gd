@@ -351,7 +351,6 @@ func _ready():
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
 	$"%CharacterSelect".connect("opened", self, "reset_ui")
-#	$"CharacterSelect".connect("opened", self, "reset_ui")
 	yield(get_tree(), "idle_frame")
 
 
@@ -362,7 +361,6 @@ func adjust_ui(is_mobile):
 	$"%ArrowsButton".visible = is_mobile
 	$"%MobilePredictionsButton".visible = is_mobile
 	$"%MobilePredictionPanel".visible = false
-	$"%MobilePlayerSeperator".visible = true
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	if is_mobile:
 		$"%OptionsBarContainer".hide()

@@ -4,6 +4,8 @@ class_name ButtonCategoryContainer
 
 signal prediction_selected()
 
+signal request_focus()
+
 # Depricated Constants
 # Originally used to calculate hiding and showing buttons on hover
 # Kept for now in case mods reference them
@@ -81,12 +83,27 @@ func _ready():
 	adjust_ui(Global.mobile_ui)
 	$"%ScrollContainer".connect("resized", self, "on_resized")
 	connect("minimum_size_changed", self, "enforce_min_size")
+	$"%ButtonCategoryContainer".connect("gui_input", self, "on_button_container_gui_input")
+
+
+
+func on_button_container_gui_input(event :InputEvent):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == BUTTON_LEFT:
+			emit_signal("request_focus")
+		return
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			emit_signal("request_focus")
+		return
 
 
 
 func adjust_ui(is_mobile):
 	_update_category_label()
 	mobile_focus(is_mobile_focused)
+
+
 
 func _update_category_label():
 	label_text = category_name

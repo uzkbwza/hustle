@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/ActionSelector/ButtonCategoryContainer.gd" type="Script" id=2]
@@ -6,11 +6,34 @@
 [ext_resource path="res://ui/ActionSelector/too_many_moves.png" type="Texture" id=4]
 [ext_resource path="res://ui/ClipInputControl.gd" type="Script" id=5]
 
-[sub_resource type="StyleBoxEmpty" id=1]
+[sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 1.0
 content_margin_right = 1.0
 content_margin_top = 1.0
 content_margin_bottom = 1.0
+bg_color = Color( 0.12549, 0.12549, 0.12549, 0.376471 )
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 1.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 0, 0, 0, 0.501961 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.196078, 0.243137, 0.270588, 1 )
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+expand_margin_top = 1.0
+expand_margin_bottom = 1.0
+anti_aliasing = false
 
 [node name="Control" type="Control"]
 show_behind_parent = true
@@ -29,8 +52,8 @@ __meta__ = {
 [node name="AbbreviatedLabel" type="Label" parent="."]
 modulate = Color( 1, 1, 1, 0.25098 )
 anchor_right = 1.0
-margin_top = -10.0
-margin_bottom = 1.0
+margin_top = -12.0
+margin_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Cat"
@@ -133,17 +156,17 @@ bbcode_enabled = true
 scroll_active = false
 
 [node name="ButtonCategoryContainer" type="PanelContainer" parent="VBoxContainer"]
-self_modulate = Color( 1, 1, 1, 0 )
+unique_name_in_owner = true
 margin_top = 14.0
 margin_right = 56.0
 margin_bottom = 77.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 1 )
-custom_styles/panel = SubResource( 1 )
+custom_styles/panel = SubResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ButtonCategoryContainer"]
 margin_left = 1.0
@@ -170,6 +193,7 @@ unique_name_in_owner = true
 margin_right = 54.0
 margin_bottom = 61.0
 rect_clip_content = true
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -252,6 +276,26 @@ stretch_mode = 4
 
 [node name="CycleTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="StoringThisForLaterWillDeleteLater" type="PanelContainer" parent="."]
+visible = false
+self_modulate = Color( 1, 1, 1, 0 )
+margin_right = 54.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 10 )
+mouse_filter = 2
+size_flags_horizontal = 3
+custom_styles/panel = SubResource( 1 )
+
+[node name="AnotherPanelStorageDontWorry" type="PanelContainer" parent="."]
+visible = false
+self_modulate = Color( 1, 1, 1, 0 )
+margin_right = 54.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 10 )
+mouse_filter = 2
+size_flags_horizontal = 3
+custom_styles/panel = SubResource( 2 )
 
 [connection signal="mouse_entered" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_entered"]
 [connection signal="mouse_exited" from="VBoxContainer/CenterContainer/PredictButton" to="." method="_on_PredictButton_mouse_exited"]

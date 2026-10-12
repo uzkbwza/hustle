@@ -384,10 +384,14 @@ func _rebuild_mobile_turn_bar():
 	_apply_select_shortcut_to_mobile_bar()
 	_sync_mobile_turn_bar()
 
+
+
 func _on_mobile_turn_pressed(orig):
 	if not is_instance_valid(orig):
 		return
 	orig.emit_signal("pressed")
+
+
 
 func _on_mobile_turn_toggled(on, orig):
 	if _mobile_turn_guard or not is_instance_valid(orig):
@@ -396,6 +400,7 @@ func _on_mobile_turn_toggled(on, orig):
 	orig.pressed = on
 	orig.emit_signal("pressed")
 	_mobile_turn_guard = false
+
 
 
 func _sync_mobile_turn_bar():
@@ -495,6 +500,8 @@ func create_button(name, title, category, data_scene=null, button_scene=BUTTON_S
 	$"%ButtonSoundPlayer".add_container(button)
 	return button
 
+
+
 func create_category(category, category_int=-1):
 	var scene = BUTTON_CATEGORY_CONTAINER_SCENE.instance()
 	scene.fighter = fighter
@@ -506,7 +513,10 @@ func create_category(category, category_int=-1):
 	scene.connect("prediction_selected", self, "_on_prediction_selected", [category])
 	scene.game = game
 	scene.player_id = player_id
+	scene.connect("request_focus", self, "set_focused_container", [scene])
 	$"%CategoryContainer".add_child(scene)
+
+
 
 func _on_prediction_selected(selected_category):
 	for category in button_category_containers:
@@ -978,7 +988,14 @@ func activate(refresh=true):
 			var input = Network.p2_undo_action
 			on_action_submitted(input["action"], input["data"], input["extra"])
 			Network.p2_undo_action = null
-
+	
+	if not is_instance_valid(mobile_focused_category) or not mobile_focused_category.visible:
+		var focus_priority_list = ["Movement", "Attack", "Special", "Super", "Defense"]
+		for cat_name in focus_priority_list:
+			if button_category_containers.has(cat_name) and button_category_containers[cat_name].visible:
+				set_focused_container(button_category_containers[cat_name])
+				break
+	
 
 
 func _on_DIContainer_mouse_entered():

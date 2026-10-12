@@ -1473,6 +1473,7 @@ opponent_action_buttons_path = NodePath("../../VBoxContainer2/P2ActionButtons")
 
 [node name="MobilePlayerSeperator" type="ColorRect" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 unique_name_in_owner = true
+self_modulate = Color( 1, 1, 1, 0 )
 margin_left = 319.0
 margin_top = 30.0
 margin_right = 320.0
