@@ -460,7 +460,11 @@ func _process(delta):
 	var btts = bttContainer.get_children()
 
 	go_button.rect_position.y = 177 + min(bttContainer.rect_size.y, scroll_container.rect_size.y)
-
+	
+	# very dirty fix for the gamesettings shifting with too many mods. we need to rethink the uimanager.
+	game_settings_panel_container.margin_top = -172
+	game_settings_panel_container.margin_bottom = -25
+	
 	if (btt_disableTimer > 0):
 		btt_disableTimer -= delta * 60
 		btt_disableTimer = max(btt_disableTimer, 0)

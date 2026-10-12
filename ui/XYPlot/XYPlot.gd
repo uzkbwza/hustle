@@ -396,10 +396,21 @@ func _process(_delta):
 		if was_game_paused and not game.game_paused:
 			_on_plot_mouse_exited()
 			mouse_clicked = false
+			touch_dragging = false
 		was_game_paused = game.game_paused
 
-	if mouse_over and mouse_clicked:
-		update_value()
+	if mouse_clicked or touch_dragging:
+		if mouse_clicked:
+			update_value(null, true, false, get_global_mouse_position())
+		else:
+			update_value(null, true, false, last_drag_screen_pos)
+		
+		if touch_dragging and not touch_long_press_triggered:
+			var current_time = Time.get_ticks_msec() / 1000.0
+			if current_time - touch_press_time >= LONG_PRESS_TIME:
+				touch_long_press_triggered = true
+				update_value(get_default_value())
+				call_deferred("emit_signal", "data_changed")
 
 	if buffer_changed:
 		buffer_changed = false
@@ -410,8 +421,9 @@ func _process(_delta):
 	var mouse_position = get_global_mouse_position()
 	if (not rect.has_point(mouse_position)):
 		if not get_parent().visible:
-			mouse_clicked = false
 			mouse_over = false
+			touch_dragging = false
+			touch_long_press_triggered = false
 	
 func update():
 	if panel:
@@ -419,6 +431,71 @@ func update():
 	if nub:
 		nub.update()
 	.update()
+
+func _input(event):
+	if Engine.editor_hint or not visible:
+		return
+	
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_handle_touch_event(event)
+		else:
+			if touch_dragging and event.index == touch_id:
+				update_value(null, true, false, last_drag_screen_pos)
+				touch_dragging = false
+				touch_id = -1
+				if buffer_update:
+					buffer_changed = true
+					buffer_update = false
+	elif event is InputEventScreenDrag:
+		_handle_drag_event(event)
+	elif event is InputEventMouseMotion:
+		_handle_mouse_motion(event)
+	elif event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT and not event.pressed:
+			if mouse_clicked:
+				# same coordinate space as _process (canvas space), not event.global_position
+				last_drag_screen_pos = get_global_mouse_position()
+				update_value(null, true, false, last_drag_screen_pos)
+			mouse_clicked = false
+			if buffer_update:
+				buffer_changed = true
+				buffer_update = false
+
+func _get_expanded_rect():
+	var rect = panel.get_global_rect()
+	return rect.grow(TOUCH_AREA_EXPANSION)
+
+func _handle_mouse_motion(event: InputEventMouseMotion):
+	if mouse_clicked:
+		last_drag_screen_pos = get_global_mouse_position()
+		update_value(null, true, false, last_drag_screen_pos)
+
+func _handle_touch_event(event: InputEventScreenTouch):
+	var rect = _get_expanded_rect()
+	if rect.has_point(event.position) and event.pressed:
+		touch_dragging = true
+		touch_id = event.index
+		touch_press_time = Time.get_ticks_msec() / 1000.0
+		touch_long_press_triggered = false
+		update_timer.start(get_update_speed())
+		last_drag_screen_pos = event.position
+		update_value(null, true, false, event.position)
+		call_deferred("emit_signal", "data_changed")
+		buffer_changed = true
+		buffer_update = false
+
+func _handle_drag_event(event: InputEventScreenDrag):
+	if touch_dragging and event.index == touch_id:
+		last_drag_screen_pos = event.position
+		update_value(null, true, false, event.position)
+		
+		if not touch_long_press_triggered:
+			var current_time = Time.get_ticks_msec() / 1000.0
+			if current_time - touch_press_time >= LONG_PRESS_TIME:
+				touch_long_press_triggered = true
+				update_value(get_default_value())
+				call_deferred("emit_signal", "data_changed")
 
 ################################################################################
 ################################ container logic ###############################
@@ -483,6 +560,15 @@ var buffer_changed = false
 var buffer_update = false
 var was_game_paused = false
 
+var touch_dragging = false
+var touch_id = -1
+var touch_press_time = 0
+var touch_long_press_triggered = false
+var last_drag_screen_pos = Vector2()
+
+const TOUCH_AREA_EXPANSION = 20.0
+const LONG_PRESS_TIME = 0.5
+
 const PERCENT_MAX = 100
 
 var value_float = Vector2()
@@ -491,7 +577,7 @@ var last_di_pos = null
 const SNAP_AMOUNT = 0.1
 
 func _on_update_timer_timeout():
-	if mouse_clicked and mouse_over:
+	if mouse_clicked:
 		emit_signal("data_changed")
 		update_timer.start(get_update_speed())
 
@@ -518,13 +604,10 @@ func _on_plot_mouse_input_event(event:InputEventMouseButton):
 		if event.pressed:
 			if mouse_over:
 				mouse_clicked = true
+				last_drag_screen_pos = get_global_mouse_position()
 				update_timer.start(get_update_speed())
+				update_value(null, true, false, last_drag_screen_pos)
 				call_deferred("emit_signal", "data_changed")
-		else:
-			mouse_clicked = false
-			if buffer_update:
-				buffer_changed = true
-				buffer_update = false
 	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
 			if mouse_over:
@@ -548,7 +631,7 @@ func midpoint():
 	
 	return Vector2(pos_x, pos_y)
 
-func update_value(p = null, set_buffer_update = true, ignore_snap = false):
+func update_value(p = null, set_buffer_update = true, ignore_snap = false, screen_pos = null):
 	var limit_center = get_limit_center()
 	var limit_range = get_limit_range()
 
@@ -559,7 +642,12 @@ func update_value(p = null, set_buffer_update = true, ignore_snap = false):
 	
 	var point
 	if p == null:
-		var mpos = panel.get_local_mouse_position()
+		var mpos
+		if screen_pos != null:
+			var panel_global_pos = panel.get_global_position()
+			mpos = screen_pos - panel_global_pos
+		else:
+			mpos = panel.get_local_mouse_position()
 		point = (mpos - midpoint).limit_length(panel_radius)
 	else :
 		point = p

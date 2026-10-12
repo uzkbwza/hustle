@@ -305,6 +305,10 @@ func _grow_container_root(node):
 	if new_size.x == VIEWPORT_W or new_size.y == VIEWPORT_H:
 		node.rect_clip_content = true
 	_clamp_position(node)
+	var sibling_bounds = _collect_sibling_bounds(node)
+	for child in node.get_children():
+		if child is Control and _is_growable(child):
+			_fit_to_band(node, child, sibling_bounds)
 
 func _reflow_plain_root(node):
 	for child in node.get_children():
@@ -313,9 +317,10 @@ func _reflow_plain_root(node):
 		if child is Control and _is_growable(child):
 			_grow_to_combined(child)
 	_grow_plain_root_to_fit(node)
+	var sibling_bounds = _collect_sibling_bounds(node)
 	for child in node.get_children():
 		if child is Control and _is_growable(child):
-			_fit_to_band(node, child)
+			_fit_to_band(node, child, sibling_bounds)
 	for child in node.get_children():
 		if child is Control:
 			_clamp_child_into_parent(child, node)
@@ -357,13 +362,13 @@ func _grow_plain_root_to_fit(node):
 		node.rect_clip_content = true
 	_clamp_position(node)
 
-func _fit_to_band(ctx, child):
+func _fit_to_band(ctx, child, sibling_bounds):
 	if not _is_growable(child):
 		return
 	if ctx.rect_size.x < 16.0 or ctx.rect_size.y < 16.0:
 		return
 	_force_sort(ctx)
-	var band = _compute_band(ctx, child)
+	var band = _compute_band(ctx, child, sibling_bounds)
 	var pos = child.rect_position
 	var size = child.rect_size
 	if pos.x >= band.position.x - 0.01 and pos.y >= band.position.y - 0.01 and pos.x + size.x <= band.end.x + 0.01 and pos.y + size.y <= band.end.y + 0.01:
@@ -377,7 +382,7 @@ func _fit_to_band(ctx, child):
 			child.rect_clip_content = true
 	_position_in_band(child, band)
 
-func _compute_band(ctx, child):
+func _compute_band(ctx, child, sibling_bounds: Array):
 	var full = Rect2(Vector2(), ctx.rect_size)
 	var vb = _visual_bounds(child, ctx)
 	if vb.size.x < 1.0 or vb.size.y < 1.0:
@@ -389,10 +394,11 @@ func _compute_band(ctx, child):
 	var cid = child.get_instance_id()
 	if cid in _originals and "orig_rect" in _originals[cid]:
 		orc = _originals[cid].orig_rect
-	for other in ctx.get_children():
+	for i in range(ctx.get_child_count()):
+		var other = ctx.get_child(i)
 		if other == child or not (other is Control) or not other.visible:
 			continue
-		var ob = _visual_bounds(other, ctx)
+		var ob = sibling_bounds[i]
 		if ob.size.x < 1.0 or ob.size.y < 1.0:
 			continue
 		var c2 = ob.position + ob.size * 0.5
@@ -431,6 +437,15 @@ func _compute_band(ctx, child):
 	if band.size.x < 16.0 or band.size.y < 16.0:
 		return full
 	return band
+
+func _collect_sibling_bounds(ctx):
+	var bounds = []
+	for child in ctx.get_children():
+		if child is Control and child.visible:
+			bounds.append(_visual_bounds(child, ctx))
+		else:
+			bounds.append(Rect2())
+	return bounds
 
 func _position_in_band(node, band):
 	var pos = node.rect_position
@@ -473,7 +488,8 @@ func _regrow(n):
 			_apply_subtree(child)
 		_grow_to_combined(n)
 		var p = n.get_parent()
-		_fit_to_band(p, n)
+		var sibling_bounds = _collect_sibling_bounds(p)
+		_fit_to_band(p, n, sibling_bounds)
 		_clamp_child_into_parent(n, p)
 	elif n is Container:
 		_grow_container_root(n)

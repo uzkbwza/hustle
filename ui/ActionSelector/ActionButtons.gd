@@ -363,13 +363,15 @@ func _rebuild_mobile_turn_bar():
 		if orig == null or not is_instance_valid(orig):
 			continue
 		var is_toggle = entry[1]
-		var btn = CheckButton.new() if is_toggle else Button.new()
+		# Special case: ContinueButton (Hold) is a Button with toggle_mode, not a CheckButton
+		var is_continue_button = (orig == continue_button)
+		var btn = Button.new() if is_continue_button else (CheckButton.new() if is_toggle else Button.new())
 		btn.text = orig.text
 		btn.flat = false
 		btn.theme_type_variation = orig.theme_type_variation
 		btn.rect_min_size = Vector2(0, 16)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		if is_toggle:
+		if is_toggle or is_continue_button:
 			btn.toggle_mode = true
 			btn.connect("toggled", self, "_on_mobile_turn_toggled", [orig])
 		else:
