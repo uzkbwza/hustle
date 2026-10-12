@@ -14,3 +14,8 @@ workspace/
 
 # Ignore the Android compiler, for some reason it replicates the entire project inside it - VineRaio
 android/build/
+
+# Android signing keys (never commit)
+*.keystore
+*.jks
+*.credentials.txt
