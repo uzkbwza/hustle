@@ -17,7 +17,7 @@ static func detect_category(full_path) -> String:
 	return "manual"
 
 onready var button = $"%Button"
-onready var toggle = $"%Toggle"
+onready var toggle = get_node_or_null("%Toggle")
 
 signal pressed()
 signal data_updated()
@@ -30,6 +30,9 @@ func setup(replay_map, key):
 	path = data["path"]
 	modified = data["modified"]
 	category = detect_category(path)
+	# Ensure toggle is optional for compatibility with older scenes/mods
+	if is_instance_valid(toggle):
+		toggle.visible = false
 #	if data.has("version"):
 #		$VersionLabel.text = str(data.version) if data.version else ("unknown")
 

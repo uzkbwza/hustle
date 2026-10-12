@@ -201,12 +201,17 @@ func init():
 		button.text = name
 	buttons[0].pressed = true
 	moving_sprite_start = $"%MovingSprite".position
-	$"%ManageStylesButton".connect("toggled", self, "_on_manage_styles_pressed")
-	$"%Sorter".connect("pressed", self, "_on_style_sorter_pressed")
-	$"%Sorter".text = "Sort: Date"
-	$"%SortInvert".connect("toggled", self, "_on_style_sort_invert_toggled")
-	$"%AllOnButton".connect("pressed", self, "_on_style_all_toggled", [true])
-	$"%AllOffButton".connect("pressed", self, "_on_style_all_toggled", [false])
+	if has_node("%ManageStylesButton"):
+		$"%ManageStylesButton".connect("toggled", self, "_on_manage_styles_pressed")
+	if has_node("%Sorter"):
+		$"%Sorter".connect("pressed", self, "_on_style_sorter_pressed")
+		$"%Sorter".text = "Sort: Date"
+	if has_node("%SortInvert"):
+		$"%SortInvert".connect("toggled", self, "_on_style_sort_invert_toggled")
+	if has_node("%AllOnButton"):
+		$"%AllOnButton".connect("pressed", self, "_on_style_all_toggled", [true])
+	if has_node("%AllOffButton"):
+		$"%AllOffButton".connect("pressed", self, "_on_style_all_toggled", [false])
 	$"%Character".connect("color_changed", self, "_on_character_color_changed")
 	$"%Extra1".connect("color_changed", self, "_on_extra_color_1_changed")
 	$"%Extra2".connect("color_changed", self, "_on_extra_color_2_changed")
@@ -316,8 +321,10 @@ func init():
 	$"%AuraCopyPasteRow".add_child(swap_aura_button)
 	_refresh_swap_aura_menu()
 	$"%SaveButton".connect("pressed", self, "save_style")
-	_load_styles()
-	_setup_file_manager()
+	if has_method("_load_styles"):
+		_load_styles()
+	if has_method("_setup_file_manager"):
+		_setup_file_manager()
 	$"%ExpandAllButton".connect("pressed", self, "_on_expand_all_pressed")
 	$"%CollapseAllButton".connect("pressed", self, "_on_collapse_all_pressed")
 	$"%FlatViewButton".connect("toggled", self, "_on_flat_view_toggled")
@@ -340,16 +347,24 @@ func init():
 
 
 func _on_manage_styles_pressed(_toggled):
+	if not has_node("%ListPanel") and not has_node("%Panel"):
+		return
 	if _toggled:
-		$"%ListPanel".show()
-		$"%Panel".hide()
-		$"%FileManagerButton".show()
+		if has_node("%ListPanel"):
+			$"%ListPanel".show()
+		if has_node("%Panel"):
+			$"%Panel".hide()
+		if has_node("%FileManagerButton"):
+			$"%FileManagerButton".show()
 	else:
-		$"%ListPanel".hide()
-		$"%Panel".show()
-		if $"%FileManagerButton".pressed:
+		if has_node("%ListPanel"):
+			$"%ListPanel".hide()
+		if has_node("%Panel"):
+			$"%Panel".show()
+		if has_node("%FileManagerButton") and $"%FileManagerButton".pressed:
 			$"%FileManagerButton".pressed = false
-		$"%FileManagerButton".hide()
+		if has_node("%FileManagerButton"):
+			$"%FileManagerButton".hide()
 
 
 func show():
@@ -409,12 +424,15 @@ func save_style(clear_text = false):
 			SteamHustle.unlock_achievement("ACH_SNEAKY")
 	# Pick up a brand-new style file in the toggle list too (no-op if this
 	# save just overwrote an already-listed one).
-	_load_styles()
-	_set_current_style_selection(data.style_name)
-	if clear_text:
+	if has_method("_load_styles"):
+		_load_styles()
+	if has_method("_set_current_style_selection"):
+		_set_current_style_selection(data.style_name)
+	if clear_text and has_node("%StyleName"):
 		$"%StyleName".clear()
-	_set_label_with_ellipsis($"%SavedLabel", "saved as " + data.style_name + ".style")
-	$"%SavedLabel".show()
+	if has_node("%SavedLabel"):
+		_set_label_with_ellipsis($"%SavedLabel", "saved as " + data.style_name + ".style")
+		$"%SavedLabel".show()
 
 func update_warning():
 #	if !Global.full_version():

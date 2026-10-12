@@ -362,7 +362,7 @@ func adjust_ui(is_mobile):
 	$"%ArrowsButton".visible = is_mobile
 	$"%MobilePredictionsButton".visible = is_mobile
 	$"%MobilePredictionPanel".visible = false
-	$"%MobilePlayerSeperator".visible = true # might hide this behind is_mobile
+	$"%MobilePlayerSeperator".visible = true
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	if is_mobile:
 		$"%OptionsBarContainer".hide()
@@ -679,7 +679,6 @@ func _tree_depth(node):
 	return d
 
 
-
 func should_open_mod_warning_window():
 	# Only show the warning when ModLoader._init force-disabled mods this
 	# session because of a MOD_DISABLE_VERSIONS transition (first launch on
@@ -905,7 +904,8 @@ func load_replays():
 		add_child(button)
 		button.setup(replay_map, key)
 		button.connect("pressed", self, "_on_replay_button_pressed", [button])
-		button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
+		if is_instance_valid(button.toggle):
+			button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
 		buttons.append(button)
 		remove_child(button)
 	for button in buttons:
@@ -1091,7 +1091,8 @@ func _add_replay_row_incremental(path: String) -> void:
 	$"%ReplayContainer".add_child(button)
 	button.setup({key: {"path": path, "modified": modified}}, key)
 	button.connect("pressed", self, "_on_replay_button_pressed", [button])
-	button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
+	if is_instance_valid(button.toggle):
+		button.toggle.connect("toggled", self, "_on_replay_toggle_pressed", [button])
 	_set_replay_toggle_visibility(replay_fm_active)
 	button.show_data()
 	_apply_replay_filter()

@@ -291,3 +291,20 @@ func endAuthSession(_steam_id: int):
 
 func cancelAuthTicket(_ticket_id: int):
 	pass
+
+
+func getAchievementDisplayAttribute(_achievement_name: String, _key: String):
+	if _key == "name":
+		return _achievement_name
+	elif _key == "desc":
+		return "Achievement description for " + _achievement_name
+	return ""
+
+func setRichPresence(_key: String, _value: String):
+	pass
+
+func setRichPresenceStatus(_status: String):
+	pass
+
+func clearRichPresence():
+	pass

@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=2]
+[gd_scene load_steps=103 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -84,6 +84,10 @@
 [ext_resource path="res://ui/CommunityEvents.gd" type="Script" id=202]
 [ext_resource path="res://MainHooks.gd" type="Script" id=203]
 [ext_resource path="res://ui/RelayLobby.tscn" type="PackedScene" id=204]
+[ext_resource path="res://ui/8Way/point_straight1.png" type="Texture" id=205]
+[ext_resource path="res://ui/8Way/point_straight2.png" type="Texture" id=206]
+[ext_resource path="res://ui/8Way/point_straight3.png" type="Texture" id=207]
+[ext_resource path="res://ui/8Way/point_straight4.png" type="Texture" id=208]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -197,6 +201,22 @@ frame_8/texture = ExtResource( 43 )
 frame_8/delay_sec = 0.0
 frame_9/texture = ExtResource( 39 )
 frame_9/delay_sec = 0.0
+
+[sub_resource type="StyleBoxFlat" id=90]
+bg_color = Color( 0.0627451, 0.0627451, 0.0627451, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=91]
+bg_color = Color( 0.113725, 0.113725, 0.113725, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
@@ -2259,106 +2279,166 @@ visible = false
 self_modulate = Color( 1, 1, 1, 0.5 )
 margin_left = 8.0
 margin_top = 44.0
-margin_right = 116.0
-margin_bottom = 226.0
-rect_min_size = Vector2( 108, 182 )
+margin_right = 136.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 128, 176 )
 
-[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 101.0
-margin_bottom = 175.0
-custom_constants/separation = 4
+[node name="Margin" type="MarginContainer" parent="UILayer/GameUI/MobileNudgeWindow"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 135.0
+margin_bottom = 219.0
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
 
-[node name="MobileNudgeTitle" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 128.0
+margin_bottom = 212.0
+custom_constants/separation = 6
+
+[node name="MobileNudgeTitle" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
 unique_name_in_owner = true
-margin_right = 94.0
+margin_right = 123.0
 margin_bottom = 16.0
 
-[node name="TitleLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeTitle"]
-margin_right = 74.0
+[node name="TitleLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeTitle"]
+margin_right = 99.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 text = "Nudge"
 
-[node name="MobileNudgeClose" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeTitle"]
+[node name="MobileNudgeClose" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeTitle"]
 unique_name_in_owner = true
-margin_left = 74.0
-margin_right = 94.0
+margin_left = 103.0
+margin_right = 123.0
 margin_bottom = 16.0
 rect_min_size = Vector2( 20, 16 )
+custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
+custom_colors/font_color_hover = Color( 1, 0.4, 0.439216, 1 )
 text = "X"
 
-[node name="MobileNudgeTarget" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
+[node name="MobileNudgeTarget" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
 unique_name_in_owner = true
-margin_top = 20.0
-margin_right = 94.0
-margin_bottom = 32.0
+margin_top = 22.0
+margin_right = 123.0
+margin_bottom = 34.0
+custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
 text = "No target"
 align = 1
 clip_text = true
 
-[node name="DPad" type="GridContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
-margin_top = 36.0
-margin_right = 94.0
-margin_bottom = 138.0
+[node name="DPad" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+margin_top = 40.0
+margin_right = 99.0
+margin_bottom = 112.0
+rect_min_size = Vector2( 72, 72 )
 size_flags_horizontal = 4
-custom_constants/vseparation = 3
-custom_constants/hseparation = 3
-columns = 3
 
-[node name="Spacer1" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
-rect_min_size = Vector2( 30, 30 )
+[node name="DPadUpBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+margin_left = 24.0
+margin_right = 48.0
+margin_bottom = 24.0
+custom_styles/panel = SubResource( 90 )
 
-[node name="MobileNudgeUp" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+[node name="DPadLeftBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+margin_top = 24.0
+margin_right = 24.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 90 )
+
+[node name="DPadCenter" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+margin_left = 24.0
+margin_top = 24.0
+margin_right = 48.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 91 )
+
+[node name="DPadRightBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+margin_left = 48.0
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 90 )
+
+[node name="DPadDownBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+margin_left = 24.0
+margin_top = 48.0
+margin_right = 48.0
+margin_bottom = 72.0
+custom_styles/panel = SubResource( 90 )
+
+[node name="MobileNudgeUp" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 30, 30 )
-text = "^"
+margin_left = 24.0
+margin_right = 48.0
+margin_bottom = 24.0
+texture_normal = ExtResource( 205 )
+texture_pressed = ExtResource( 207 )
+texture_hover = ExtResource( 206 )
+texture_disabled = ExtResource( 208 )
+expand = true
 
-[node name="Spacer2" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
-rect_min_size = Vector2( 30, 30 )
-
-[node name="MobileNudgeLeft" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+[node name="MobileNudgeLeft" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 30, 30 )
-text = "<"
+margin_top = 24.0
+margin_right = 24.0
+margin_bottom = 48.0
+rect_rotation = -90.0
+rect_pivot_offset = Vector2( 12, 12 )
+texture_normal = ExtResource( 205 )
+texture_pressed = ExtResource( 207 )
+texture_hover = ExtResource( 206 )
+texture_disabled = ExtResource( 208 )
+expand = true
 
-[node name="DPadCenter" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
-rect_min_size = Vector2( 30, 30 )
-
-[node name="MobileNudgeRight" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+[node name="MobileNudgeRight" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 30, 30 )
-text = ">"
+margin_left = 48.0
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 48.0
+rect_rotation = 90.0
+rect_pivot_offset = Vector2( 12, 12 )
+texture_normal = ExtResource( 205 )
+texture_pressed = ExtResource( 207 )
+texture_hover = ExtResource( 206 )
+texture_disabled = ExtResource( 208 )
+expand = true
 
-[node name="Spacer3" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
-rect_min_size = Vector2( 30, 30 )
-
-[node name="MobileNudgeDown" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
+[node name="MobileNudgeDown" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 30, 30 )
-text = "v"
+margin_left = 24.0
+margin_top = 48.0
+margin_right = 48.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 205 )
+texture_pressed = ExtResource( 207 )
+texture_hover = ExtResource( 206 )
+texture_disabled = ExtResource( 208 )
+expand = true
+flip_v = true
 
-[node name="Spacer4" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/VBox/DPad"]
-rect_min_size = Vector2( 30, 30 )
-
-[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/VBox"]
-margin_top = 142.0
-margin_right = 94.0
-margin_bottom = 168.0
-rect_min_size = Vector2( 0, 26 )
+[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+margin_top = 118.0
+margin_right = 123.0
+margin_bottom = 142.0
+rect_min_size = Vector2( 0, 24 )
 custom_constants/separation = 4
 
-[node name="MobileNudgeInput" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeEntryRow"]
+[node name="MobileNudgeInput" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeEntryRow"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 0, 26 )
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 align = 1
 placeholder_text = "value"
 
-[node name="MobileNudgeApply" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/VBox/MobileNudgeEntryRow"]
+[node name="MobileNudgeApply" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeEntryRow"]
 unique_name_in_owner = true
-rect_min_size = Vector2( 34, 26 )
+rect_min_size = Vector2( 36, 24 )
 text = "Set"
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
