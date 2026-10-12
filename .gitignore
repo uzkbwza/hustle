@@ -11,7 +11,3 @@ export_presets.cfg
 data_*/
 
 workspace/
-# Android signing keys (never commit)
-*.keystore
-*.jks
-*.credentials.txt
