@@ -89,8 +89,8 @@ var _nudge_target = null
 var _nudge_target_conn = null
 var _nudge_dragging = false
 const _NUDGE_WINDOW_DEFAULT_POS = Vector2(8, 44)
-const _NUDGE_XY_STEP = 0.02
-const _NUDGE_SLIDER_STEP = 1
+var _nudge_xy_step = 0.01
+var _nudge_slider_step = 1.0
 
 var _mobile_sync_guard = false
 var _pred_dragging = false
@@ -340,6 +340,12 @@ func _ready():
 	$"%MobileNudgeRight".connect("pressed", self, "_on_nudge_right_pressed")
 	$"%MobileNudgeInput".connect("text_entered", self, "_on_nudge_input_submitted")
 	$"%MobileNudgeApply".connect("pressed", self, "_on_nudge_apply_pressed")
+	if is_instance_valid($"%MobileNudgeMultiplier"):
+		$"%MobileNudgeMultiplier".connect("text_changed", self, "_on_nudge_multiplier_changed")
+		$"%MobileNudgeMultiplier".connect("text_entered", self, "_on_nudge_multiplier_entered")
+	if is_instance_valid($"%MobileNudgeSliderMult"):
+		$"%MobileNudgeSliderMult".connect("text_changed", self, "_on_nudge_slider_mult_changed")
+		$"%MobileNudgeSliderMult".connect("text_entered", self, "_on_nudge_slider_mult_entered")
 	_setup_mobile_prediction_controls()
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
@@ -362,6 +368,7 @@ func adjust_ui(is_mobile):
 	$"%MobilePredictionsButton".visible = is_mobile
 	$"%MobilePredictionPanel".visible = false
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
+	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
 	if is_mobile:
 		$"%OptionsBarContainer".hide()
 		$"%PredictionSettingsOpenButton".hide()
@@ -512,12 +519,25 @@ func _on_nudge_close_pressed():
 func _update_nudge_window_target():
 	var label = $"%MobileNudgeTarget"
 	var input = $"%MobileNudgeInput"
+	var xy_mult_row = $"%MobileNudgeMultiplierRow"
+	var slider_mult_row = $"%MobileNudgeSliderMultRow"
 	if is_instance_valid(_nudge_target):
 		label.text = _nudge_target.name
 		input.text = _nudge_value_text(_nudge_target)
+		if _nudge_target is XYPlot:
+			xy_mult_row.visible = true
+			slider_mult_row.visible = false
+		elif _is_horiz_slider(_nudge_target):
+			xy_mult_row.visible = false
+			slider_mult_row.visible = true
+		else:
+			xy_mult_row.visible = false
+			slider_mult_row.visible = false
 	else:
 		label.text = "No target"
 		input.text = ""
+		xy_mult_row.visible = false
+		slider_mult_row.visible = false
 
 func _nudge_value_text(t) -> String:
 	if t is XYPlot:
@@ -543,10 +563,43 @@ func _on_nudge_input_submitted(text: String):
 		_set_xyplot_value(t, point, false)
 	elif _is_horiz_slider(t):
 		var slider = t.get_node("Direction")
-		slider.value = clamp(nums[0], slider.min_value, slider.max_value)
-		t.emit_signal("data_changed")
-		t.buffer_value_changed = false
+		var new_val = clamp(nums[0], slider.min_value, slider.max_value)
+		if !is_equal_approx(new_val, slider.value):
+			slider.value = new_val
+			if t.has_method("emit_signal") and t.has_signal("data_changed"):
+				t.emit_signal("data_changed")
+			t.buffer_value_changed = false
+			if "last_emitted_value" in t:
+				t.last_emitted_value = slider.value
 	$"%MobileNudgeInput".text = _nudge_value_text(t)
+
+func _on_nudge_multiplier_changed(text: String):
+	var nums = _parse_numbers(text)
+	if nums.size() > 0:
+		var v = nums[0]
+		if v > 0:
+			_nudge_xy_step = v
+		else:
+			_nudge_xy_step = 0.01
+	else:
+		pass
+
+func _on_nudge_multiplier_entered(text: String):
+	_on_nudge_multiplier_changed(text)
+
+func _on_nudge_slider_mult_changed(text: String):
+	var nums = _parse_numbers(text)
+	if nums.size() > 0:
+		var v = nums[0]
+		if v > 0:
+			_nudge_slider_step = v
+		else:
+			_nudge_slider_step = 1.0
+	else:
+		pass
+
+func _on_nudge_slider_mult_entered(text: String):
+	_on_nudge_slider_mult_changed(text)
 
 func _parse_numbers(text: String) -> Array:
 	var out = []
@@ -598,14 +651,26 @@ func _apply_nudge(dir: Vector2):
 		return
 	if t is XYPlot:
 		var current = t.value_float
-		var raw_new = (current + dir * _NUDGE_XY_STEP * t.panel_radius).limit_length(t.panel_radius)
+		var step_mult = _nudge_xy_step
+		if not Global.mobile_ui:
+			step_mult = 0.01
+		var effective_step = dir * step_mult
+		var raw_new = (current + effective_step * t.panel_radius).limit_length(t.panel_radius)
 		_set_xyplot_value(t, raw_new, true)
 	elif _is_horiz_slider(t):
-		var amount = _NUDGE_SLIDER_STEP * (dir.x - dir.y)
+		var step_mult = _nudge_slider_step
+		if not Global.mobile_ui:
+			step_mult = 1.0
+		var amount = step_mult * (dir.x - dir.y)
 		var slider = t.get_node("Direction")
-		slider.value = clamp(slider.value + amount, slider.min_value, slider.max_value)
-		t.emit_signal("data_changed")
-		t.buffer_value_changed = false
+		var new_val = clamp(slider.value + amount, slider.min_value, slider.max_value)
+		if !is_equal_approx(new_val, slider.value):
+			slider.value = new_val
+			if t.has_method("emit_signal") and t.has_signal("data_changed"):
+				t.emit_signal("data_changed")
+			t.buffer_value_changed = false
+			if "last_emitted_value" in t:
+				t.last_emitted_value = slider.value
 	$"%MobileNudgeInput".text = _nudge_value_text(t)
 
 func _is_horiz_slider(node) -> bool:
@@ -2071,7 +2136,16 @@ func _process(delta):
 	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
 	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
 	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
-	$"%MobileMatchButtons".visible = Global.mobile_ui and is_instance_valid(game)
+	var show_mobile = false
+	if Global.has_method("is_mobile_device"):
+		show_mobile = Global.is_mobile_device()
+	if "is_mobile_device" in Global:
+		show_mobile = Global.is_mobile_device
+	if Global.mobile_ui:
+		show_mobile = true
+	if not show_mobile and OS.has_feature("mobile"):
+		show_mobile = true
+	$"%MobileMatchButtons".visible = show_mobile and is_instance_valid(game)
 	
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused
@@ -2273,9 +2347,13 @@ func _handle_xy_nudge(event):
 		nudge = Vector2(0, 0.01)
 	if nudge == null:
 		return
+	# Desktop UI: don't use custom multiplier
+	if not Global.mobile_ui:
+		_nudge_xy_step = 0.01
 	var plot = Hotkeys.hovered_xy_plot
 	var current = plot.value_float
-	var raw_new = (current + nudge * plot.panel_radius).limit_length(plot.panel_radius)
+	var effective_nudge = nudge * (_nudge_xy_step / 0.01)
+	var raw_new = (current + effective_nudge * plot.panel_radius).limit_length(plot.panel_radius)
 	_set_xyplot_value(plot, raw_new, true)
 
 # Mirrors XYPlot's internal SNAP_AMOUNT (half-width of a snap zone, in radians

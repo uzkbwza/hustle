@@ -369,7 +369,7 @@ func _rebuild_mobile_turn_bar():
 		btn.text = orig.text
 		btn.flat = false
 		btn.theme_type_variation = orig.theme_type_variation
-		btn.rect_min_size = Vector2(0, 16)
+		btn.rect_min_size = Vector2(0, 20)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if is_toggle or is_continue_button:
 			btn.toggle_mode = true

@@ -183,6 +183,7 @@ func refresh_mod(_path):
 func adjust_ui(is_mobile):
 	$"%WorkshopUploader".visible = not is_mobile
 	$"%WorkshopButton".visible = not is_mobile
+	$"%ModsLocation".visible = not Global.is_mobile_device
 
 
 func _open_mods_folder():

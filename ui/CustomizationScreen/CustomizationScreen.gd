@@ -218,6 +218,7 @@ func init():
 	$"%Outline".connect("color_changed", self, "_on_outline_color_changed")
 	$"%ShowOutline".connect("toggled", self, "_on_show_outline_toggled")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	$"%OpenFolderButton".visible = not Global.is_mobile_device
 	for i in range(Custom.simple_colors.size()):
 		var simple_color_button = preload("res://ui/CustomizationScreen/SimpleColorButton.tscn").instance()
 		var color = Custom.simple_colors[i]

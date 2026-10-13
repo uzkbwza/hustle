@@ -33,6 +33,8 @@ func init():
 		tag_nodes[node_tags[node]] = node
 	initialized = true
 	refresh()
+	# HOW YOU GOT TO HERE ON MOBILE?!?! JUST TO CRASH THE GAME!??! -VINERAGEIO
+	$"%OpenFolderButton".visible = not Global.is_mobile_device
 
 func show():
 	if !initialized:

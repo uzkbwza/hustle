@@ -2423,10 +2423,64 @@ texture_disabled = ExtResource( 208 )
 expand = true
 flip_v = true
 
-[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+[node name="MobileNudgeMultiplierRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+unique_name_in_owner = true
 margin_top = 118.0
 margin_right = 123.0
 margin_bottom = 142.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeMultiplierLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeMultiplierRow"]
+margin_right = 30.0
+margin_bottom = 24.0
+size_flags_vertical = 1
+text = "xy mult:"
+valign = 1
+
+[node name="MobileNudgeMultiplier" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeMultiplierRow"]
+unique_name_in_owner = true
+margin_left = 34.0
+margin_right = 123.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "0.01"
+align = 1
+max_length = 8
+placeholder_text = "0.01"
+
+[node name="MobileNudgeSliderMultRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+unique_name_in_owner = true
+margin_top = 148.0
+margin_right = 123.0
+margin_bottom = 172.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeSliderMultLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeSliderMultRow"]
+margin_right = 30.0
+margin_bottom = 24.0
+size_flags_vertical = 1
+text = "slider mult:"
+valign = 1
+
+[node name="MobileNudgeSliderMult" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeSliderMultRow"]
+unique_name_in_owner = true
+margin_left = 34.0
+margin_right = 123.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "1"
+align = 1
+max_length = 8
+placeholder_text = "1"
+
+[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
+margin_top = 148.0
+margin_right = 123.0
+margin_bottom = 172.0
 rect_min_size = Vector2( 0, 24 )
 custom_constants/separation = 4
 
@@ -2935,8 +2989,8 @@ margin_bottom = 330.0
 
 [node name="AnnouncementContainer" type="VBoxContainer" parent="UILayer/MainMenu/AnnouncementScrollContainer"]
 unique_name_in_owner = true
-margin_right = 112.0
-margin_bottom = 328.0
+margin_right = 97.0
+margin_bottom = 75.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3428,8 +3482,6 @@ anchor_bottom = 1.0
 
 [node name="HotkeysList" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Hotkeys/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 220.0
-margin_bottom = 218.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

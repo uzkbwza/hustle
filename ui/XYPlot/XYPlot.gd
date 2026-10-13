@@ -386,6 +386,7 @@ func _ready():
 	
 	default_value = get_default_value()
 	update_value(default_value, false)
+	_last_emitted_value = Vector2(-999999, -999999)
 
 func _process(_delta):
 	if Engine.editor_hint: return
@@ -405,25 +406,35 @@ func _process(_delta):
 		else:
 			update_value(null, true, false, last_drag_screen_pos)
 		
+		if is_visible_in_tree():
+			if !value_float.is_equal_approx(_last_emitted_value):
+				emit_signal("data_changed")
+				_last_emitted_value = value_float
+				buffer_changed = true
+		
 		if touch_dragging and not touch_long_press_triggered:
 			var current_time = Time.get_ticks_msec() / 1000.0
 			if current_time - touch_press_time >= LONG_PRESS_TIME:
 				touch_long_press_triggered = true
 				update_value(get_default_value())
-				call_deferred("emit_signal", "data_changed")
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
 
 	if buffer_changed:
 		buffer_changed = false
 		if is_visible_in_tree():
-			call_deferred("emit_signal", "data_changed")
+			if !value_float.is_equal_approx(_last_emitted_value):
+				emit_signal("data_changed")
+				_last_emitted_value = value_float
 
-	var rect = get_global_rect()
+	var rect = _get_expanded_rect()
 	var mouse_position = get_global_mouse_position()
 	if (not rect.has_point(mouse_position)):
-		if not get_parent().visible:
+		if not mouse_clicked and not touch_dragging:
 			mouse_over = false
-			touch_dragging = false
-			touch_long_press_triggered = false
+			if Hotkeys.hovered_xy_plot == self:
+				Hotkeys.hovered_xy_plot = null
 	
 func update():
 	if panel:
@@ -442,6 +453,9 @@ func _input(event):
 		else:
 			if touch_dragging and event.index == touch_id:
 				update_value(null, true, false, last_drag_screen_pos)
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
 				touch_dragging = false
 				touch_id = -1
 				if buffer_update:
@@ -454,9 +468,11 @@ func _input(event):
 	elif event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and not event.pressed:
 			if mouse_clicked:
-				# same coordinate space as _process (canvas space), not event.global_position
 				last_drag_screen_pos = get_global_mouse_position()
 				update_value(null, true, false, last_drag_screen_pos)
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
 			mouse_clicked = false
 			if buffer_update:
 				buffer_changed = true
@@ -470,6 +486,10 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	if mouse_clicked:
 		last_drag_screen_pos = get_global_mouse_position()
 		update_value(null, true, false, last_drag_screen_pos)
+		if !value_float.is_equal_approx(_last_emitted_value):
+			emit_signal("data_changed")
+			_last_emitted_value = value_float
+			buffer_changed = true
 
 func _handle_touch_event(event: InputEventScreenTouch):
 	var rect = _get_expanded_rect()
@@ -481,21 +501,29 @@ func _handle_touch_event(event: InputEventScreenTouch):
 		update_timer.start(get_update_speed())
 		last_drag_screen_pos = event.position
 		update_value(null, true, false, event.position)
-		call_deferred("emit_signal", "data_changed")
-		buffer_changed = true
+		if !value_float.is_equal_approx(_last_emitted_value):
+			emit_signal("data_changed")
+			_last_emitted_value = value_float
+			buffer_changed = true
 		buffer_update = false
 
 func _handle_drag_event(event: InputEventScreenDrag):
 	if touch_dragging and event.index == touch_id:
 		last_drag_screen_pos = event.position
 		update_value(null, true, false, event.position)
+		if !value_float.is_equal_approx(_last_emitted_value):
+			emit_signal("data_changed")
+			_last_emitted_value = value_float
+			buffer_changed = true
 		
 		if not touch_long_press_triggered:
 			var current_time = Time.get_ticks_msec() / 1000.0
 			if current_time - touch_press_time >= LONG_PRESS_TIME:
 				touch_long_press_triggered = true
 				update_value(get_default_value())
-				call_deferred("emit_signal", "data_changed")
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
 
 ################################################################################
 ################################ container logic ###############################
@@ -572,13 +600,16 @@ const LONG_PRESS_TIME = 0.5
 const PERCENT_MAX = 100
 
 var value_float = Vector2()
+var _last_emitted_value = Vector2(-9999, -9999)
 var last_di_pos = null
 
 const SNAP_AMOUNT = 0.1
 
 func _on_update_timer_timeout():
-	if mouse_clicked:
-		emit_signal("data_changed")
+	if mouse_clicked or touch_dragging:
+		if !value_float.is_equal_approx(_last_emitted_value):
+			emit_signal("data_changed")
+			_last_emitted_value = value_float
 		update_timer.start(get_update_speed())
 
 func _on_plot_mouse_entered():
@@ -589,10 +620,10 @@ func _on_plot_mouse_entered():
 
 func _on_plot_mouse_exited():
 	mouse_over = false
-	if not mouse_clicked:
+	if not mouse_clicked and not touch_dragging:
 		x_label.hide()
 		y_label.hide()
-	if Hotkeys.hovered_xy_plot == self:
+	if Hotkeys.hovered_xy_plot == self and not mouse_clicked and not touch_dragging:
 		Hotkeys.hovered_xy_plot = null
 
 func get_update_speed():
@@ -607,12 +638,17 @@ func _on_plot_mouse_input_event(event:InputEventMouseButton):
 				last_drag_screen_pos = get_global_mouse_position()
 				update_timer.start(get_update_speed())
 				update_value(null, true, false, last_drag_screen_pos)
-				call_deferred("emit_signal", "data_changed")
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
+					buffer_changed = true
 	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
 			if mouse_over:
 				update_value(get_default_value())
-				call_deferred("emit_signal", "data_changed")
+				if !value_float.is_equal_approx(_last_emitted_value):
+					emit_signal("data_changed")
+					_last_emitted_value = value_float
 
 var panel_radius = plot_panel_size.x
 
