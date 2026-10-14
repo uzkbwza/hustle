@@ -912,6 +912,8 @@ func activate(refresh=true):
 	current_action = null
 	current_button = null
 	
+	# resetting commit state here might break things but i managed to keep the changes
+	# localized to network so it's fine smile
 	Network.turns_ready = {
 		1: false,
 		2: false

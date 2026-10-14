@@ -13,6 +13,16 @@ const MAX_PEERS = 1
 
 const NETWORK_TIMER_CYCLE = 3
 
+# yomi hustle coaching for 1 dolla at metafy dot gg slash at eternum lmk
+
+# 128-bit nonce it should be pretty fuckin brute force proof unless yomi hustle cheaters solve quantum computing
+const COMMIT_NONCE_BYTES = 16
+const COMMIT_NONCE_HEX_LENGTH = 32
+const COMMIT_HASH_HEX_LENGTH = 64
+# this is essentially a version check lol, it might be unnecessary but indulge me 
+# it needs to be bumped if the hash input format changes
+const COMMIT_HASH_TAG = "money-check-v1"
+
 var peer = null
 
 var player_id = 2
@@ -67,8 +77,19 @@ var relay_id = 0
 var players_ready = []
 
 var action_button_panels = {}
+# UI only cause ActionButtons.activate() overwrites this mid frame lmao
 var turns_ready = {}
 var action_inputs = {}
+
+# the commit-reveal is, essentially, each player first sending only a hash of their move
+# moves are only revealed once both are in. reset_action_inputs clears this per simulated tick
+var commit_hashes = {1: "", 2: ""}
+var commit_nonce = ""
+# deep copy so edits to the dicts dont break things
+var commit_payload = null
+var commit_sent = false
+var reveal_sent = false
+
 var player_objects = {}
 var player_ids = {}
 var rematch_requested = {}
@@ -96,6 +117,17 @@ var rpc_whitelist = {}
 var rpc_blacklist = {
 	"_whitelist_rpc_method": true,
 	"_blacklist_rpc_method": true,
+	# local-only blacklist so people can't callv shit over steam
+	"submit_action": true,
+	"_reset_commit_state": true,
+	"_announce_turn_ready": true,
+	"_try_send_reveal": true,
+	"_rpc_sender_is_opponent": true,
+	"_wire_player_id": true,
+	"_snapshot_value": true,
+	"_canonical_value": true,
+	"compute_commit_hash": true,
+	"generate_nonce": true,
 }
 
 onready var timer = Timer.new()
@@ -379,6 +411,8 @@ func _reset():
 		2: false
 	}
 
+	_reset_commit_state()
+
 	styles = {
 		1: null,
 		2: null
@@ -469,6 +503,15 @@ func reset_action_inputs():
 		2: false
 	}
 
+	_reset_commit_state()
+
+func _reset_commit_state():
+	commit_hashes = {1: "", 2: ""}
+	commit_nonce = ""
+	commit_payload = null
+	commit_sent = false
+	reveal_sent = false
+
 # Callback from SceneTree.
 remote func player_disconnected(id):
 #	multiplayer_active = false
@@ -531,19 +574,70 @@ remotesync func receive_player_timer(id, timer):
 func sync_timer(id, time):
 	rpc_("receive_player_timer", [id, time], "remotesync")
 
+# commit phase
 func submit_action(action, data, extra):
-	if multiplayer_active:
-		action_inputs[player_id]["action"] = action
-		action_inputs[player_id]["data"] = data
-		action_inputs[player_id]["extra"] = extra
-		rpc_("multiplayer_turn_ready", player_id)
-		print("submitting action: " + action)
+	if !multiplayer_active:
+		return
+	# meant to limit to one lock in per turn
+	if commit_sent:
+		print("submit_action: already locked in this turn: " + str(action))
+		return
+	var nonce = generate_nonce(COMMIT_NONCE_BYTES)
+	if nonce == "":
+		push_error("Network: lock in not sent")
+		emit_signal("game_error", "Could not lock in: rng failed")
+		return
+	action_inputs[player_id]["action"] = action
+	action_inputs[player_id]["data"] = data
+	action_inputs[player_id]["extra"] = extra
+	commit_payload = {
+		"action": action,
+		"data": _snapshot_value(data),
+		"extra": _snapshot_value(extra),
+	}
+	commit_nonce = nonce
+	commit_hashes[player_id] = compute_commit_hash(player_id, nonce, commit_payload["action"], commit_payload["data"], commit_payload["extra"])
+	commit_sent = true
+	print("submitting action: " + str(action))
+	_announce_turn_ready(player_id)
+	rpc_("multiplayer_commit_hash", [player_id, commit_hashes[player_id]], "remote")
+	_try_send_reveal()
 
-func turn_ready(id):
-	if ticks[1] != ticks[2]:
-		print("desync? ticks[1] = " + str(ticks[1]) + ", ticks[2] = " + str(ticks[2]))
-		return false
-	return Network.turns_ready[id] and (Network.turns_ready[opponent_player_id(id)])
+# i feel like ive gotten way too into the idea of making this shit infallible but i cant help it
+# if this fails it just returns an empty string instead
+func generate_nonce(num_bytes: int = COMMIT_NONCE_BYTES) -> String:
+	var crypto = Crypto.new()
+	if crypto == null:
+		return ""
+	var bytes = crypto.generate_random_bytes(num_bytes)
+	if bytes == null or bytes.size() != num_bytes:
+		return ""
+	return bytes.hex_encode()
+
+func _snapshot_value(v):
+	if v is Dictionary or v is Array:
+		return v.duplicate(true)
+	return v
+
+func _canonical_value(v) -> String:
+	var t = typeof(v)
+	if t == TYPE_ARRAY:
+		var items = PoolStringArray()
+		for item in v:
+			items.append(_canonical_value(item))
+		return "[" + items.join(",") + "]"
+	if t == TYPE_DICTIONARY:
+		var entries = []
+		for k in v.keys():
+			entries.append(_canonical_value(k) + ":" + _canonical_value(v[k]))
+		entries.sort()
+		return "{" + PoolStringArray(entries).join(",") + "}"
+	return var2bytes(v).hex_encode()
+
+# if u r wondering why it hashes in the player id it's because i felt like it
+func compute_commit_hash(pid: int, nonce: String, action, data, extra) -> String:
+	var payload = COMMIT_HASH_TAG + "|" + str(pid) + "|" + nonce + "|" + _canonical_value([action, data, extra])
+	return payload.sha256_text()
 
 func get_sender_id():
 #	if direct_connect:
@@ -551,6 +645,22 @@ func get_sender_id():
 
 func _rpc_from_wire():
 	return get_tree().get_rpc_sender_id() != 0
+
+# checking whether rpc came from opponent, for steam we check packet sender
+# for new legacy it's just always gonna be peer 1
+func _rpc_sender_is_opponent() -> bool:
+	if steam:
+		var sender = SteamLobby.p2p_packet_sender
+		return typeof(sender) == TYPE_INT and sender != 0 and sender == SteamLobby.OPPONENT_ID
+	if direct_connect:
+		var sender_id = get_sender_id()
+		return sender_id != 0 and sender_id == network_ids.get(opponent_player_id(player_id), -1)
+	return get_tree().get_rpc_sender_id() == 1
+
+func _wire_player_id(v) -> int:
+	if typeof(v) == TYPE_INT:
+		return v
+	return 0
 
 func unregister_player(id):
 	if !steam:
@@ -975,8 +1085,11 @@ func _on_network_timer_timeout():
 
 remote func check_opponent_sent_action():
 	print("i've been asked politely if we softlocked")
-	if action_submitted:
-		send_current_action()
+	# politely directing to my previous statement
+	if commit_sent:
+		rpc_("multiplayer_commit_hash", [player_id, commit_hashes[player_id]], "remote")
+		if reveal_sent:
+			send_current_action_reveal()
 	else:
 		print("the answer is no")
 
@@ -987,16 +1100,40 @@ remote func my_turn_started(player_id):
 remote func receive_match_code(code):
 	emit_signal("match_code_received")
 
-remote func send_action(action, data, extra, player_id):
-	if _rpc_from_wire() and player_id == self.player_id:
+# reveal phase
+remote func send_action_reveal(sender_player_id, nonce, action, data, extra):
+	if SteamLobby.SPECTATING or relay_spectating:
+		return
+	var opp_id = opponent_player_id(player_id)
+	if _wire_player_id(sender_player_id) != opp_id:
+		print("Network: how?? " + str(sender_player_id))
+		return
+	if !_rpc_sender_is_opponent():
+		print("Network: who tf r u lmaooooo")
+		return
+	if action_inputs[opp_id]["action"] != null:
+		return
+	# me when race conditions. hopefully there are none
+	if !commit_sent or commit_hashes[player_id] == "" or commit_hashes[opp_id] == "":
+		print("Network:" + str(opp_id) + " showed his hand")
+		return
+	if !(nonce is String) or nonce.length() != COMMIT_NONCE_HEX_LENGTH:
+		print("Network:" + str(opp_id) + " sending bullshit")
+		return
+	if compute_commit_hash(opp_id, nonce, action, data, extra) != commit_hashes[opp_id]:
+		print("Network:" + str(opp_id) + " is lying")
+		emit_signal("game_error", "you're playing casualty bro")
+		return
+	var obj = player_objects.get(opp_id, null)
+	if obj == null or !is_instance_valid(obj):
+		print("Network: this guy genuinely doesn't exist")
 		return
 	print("received action: " + str(action))
-	action_inputs[player_id]["action"] = action
-	action_inputs[player_id]["data"] = data
-	action_inputs[player_id]["extra"] = extra
-	player_objects[player_id].on_action_selected(action, data, extra)
+	action_inputs[opp_id]["action"] = action
+	action_inputs[opp_id]["data"] = data
+	action_inputs[opp_id]["extra"] = extra
+	obj.on_action_selected(action, data, extra)
 	rpc_("opponent_received_action", null, "remote")
-		
 
 remote func opponent_received_action():
 	print("opponent received my action")
@@ -1055,6 +1192,7 @@ remotesync func end_turn_simulation(tick, player_id):
 		can_open_action_buttons = true
 		emit_signal("player_turns_synced")
 		emit_signal("force_open_action_buttons")
+		_try_send_reveal()
 
 func host_start_turn():
 	while !game.is_waiting_on_player():
@@ -1075,39 +1213,66 @@ remotesync func client_turn_synced():
 remote func client_actionable():
 	emit_signal("client_actionable")
 
-remotesync func multiplayer_turn_ready(id):
-	if _rpc_from_wire() and id == player_id:
+# storing opponent hash
+remote func multiplayer_commit_hash(id, hash_val):
+	if SteamLobby.SPECTATING or relay_spectating:
 		return
-	Network.turns_ready[id] = true
+	var opp_id = opponent_player_id(player_id)
+	if _wire_player_id(id) != opp_id:
+		print("Network: who tf r u lmaoooo " + str(id))
+		return
+	if !_rpc_sender_is_opponent():
+		print("Network: no actually who the fuck are you")
+		return
+	if !(hash_val is String) or hash_val.length() != COMMIT_HASH_HEX_LENGTH:
+		print("Network: sending bullshit " + str(opp_id))
+		return
+	var existing = commit_hashes[opp_id]
+	if existing != "":
+		if existing != hash_val:
+			print("Network: commit different from first one" + str(opp_id))
+		_try_send_reveal()
+		return
+	commit_hashes[opp_id] = hash_val
+	_announce_turn_ready(opp_id)
+	_try_send_reveal()
+
+func _announce_turn_ready(id):
+	turns_ready[id] = true
 	print("turn ready for player " + str(id))
 	emit_signal("player_turn_ready", id)
 	if steam:
 		SteamLobby.spectator_turn_ready(id)
 	elif !relay_spectating and !relay_spectators.empty():
 		_push_to_relay_spectators("spectator_turn_ready", id)
-	if turn_ready(id):
-		action_submitted = true
-#		if is_host():
-#			host_end_turn()
-#		yield(self, "both_players_turn_end")
-		print("sending action")
-		var action_input = action_inputs[player_id]
-		last_action = action_input
-#		if rng.percent(0):
-		if is_instance_valid(game):
-			last_action_sent_tick = game.current_tick
-		send_current_action()
-		possible_softlock = true
-		emit_signal("turn_ready")
-		turn_synced = false
-		can_open_action_buttons = false
-		send_ready = true
 
-func send_current_action():
-	if last_action:
-#		last_action["extra"] = last_action["extra"].duplicate(true)
-#		last_action["extra"].secret = {}
-		rpc_("send_action", [last_action["action"], last_action["data"], last_action["extra"], player_id], "remote")
+# reveal phase
+func _try_send_reveal():
+	if !commit_sent or reveal_sent:
+		return
+	if commit_hashes[player_id] == "" or commit_hashes[opponent_player_id(player_id)] == "":
+		return
+	if ticks[1] != ticks[2]:
+		print("desync? ticks[1] = " + str(ticks[1]) + ", ticks[2] = " + str(ticks[2]))
+		return
+	reveal_sent = true
+	action_submitted = true
+	print("sending action")
+	last_action = action_inputs[player_id]
+	if is_instance_valid(game):
+		last_action_sent_tick = game.current_tick
+	send_current_action_reveal()
+	possible_softlock = true
+	emit_signal("turn_ready")
+	turn_synced = false
+	can_open_action_buttons = false
+	send_ready = true
+
+# no-op until _try_send_reveal allows it
+func send_current_action_reveal():
+	if !reveal_sent or commit_payload == null or commit_nonce == "":
+		return
+	rpc_("send_action_reveal", [player_id, commit_nonce, commit_payload["action"], commit_payload["data"], commit_payload["extra"]], "remote")
 
 func host_end_turn():
 	while !game.is_waiting_on_player():
