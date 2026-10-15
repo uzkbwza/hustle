@@ -1,6 +1,7 @@
 extends XYPlot
 
 func _process(delta):
+	_handle_game_pause_state()
 	panel.hint_tooltip = ""
 	var data = get_data()
 	if value_float.x == 0 and value_float.y == 0:

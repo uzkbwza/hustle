@@ -19,6 +19,8 @@ const CATEGORY_HEIGHT_MOBILE = 86
 const CATEGORY_DEFAULT_GAP = 1
 const CATEGORY_MOBILE_GAP = 1
 
+const MOBILE_LAST_MOVE_OFFSET = Vector2(246.5, -160)
+
 
 export var player_id = 1
 
@@ -62,6 +64,8 @@ var mobile_focused_category = null setget set_focused_container
 var _mobile_turn_bar = null
 var _mobile_turn_pairs = []
 var _mobile_turn_guard = false
+var _mobile_last_move = null
+var _mobile_last_move_target = null
 
 
 
@@ -70,6 +74,10 @@ func _input(event):
 		if event.is_action_pressed("submit_action"):
 			_on_submit_pressed()
 
+
+
+func _exit_tree():
+	_free_mobile_last_move()
 
 
 func _ready():
@@ -192,6 +200,9 @@ func _process(delta):
 	if buffered_ui_actions:
 		_send_ui_action(buffered_ui_actions[-1])
 		buffered_ui_actions = []
+	if _mobile_last_move != null and is_instance_valid(_mobile_last_move):
+		_refresh_mobile_last_move_target()
+		_sync_mobile_last_move()
 	
 var _select_button_shortcut: ShortCut
 
@@ -282,8 +293,10 @@ func adjust_ui(is_mobile):
 	$"%CategoryContainer".rect_min_size.y = category_height
 	if is_mobile:
 		call_deferred("_rebuild_mobile_turn_bar")
-	elif _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
-		_mobile_turn_bar.visible = false
+	else:
+		if _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
+			_mobile_turn_bar.visible = false
+		_free_mobile_last_move()
 
 
 
@@ -385,6 +398,76 @@ func _rebuild_mobile_turn_bar():
 			_mobile_turn_bar.move_child(children[i], i)
 	_apply_select_shortcut_to_mobile_bar()
 	_sync_mobile_turn_bar()
+	_rebuild_mobile_last_move()
+
+
+func _rebuild_mobile_last_move():
+	if not Global.mobile_ui:
+		return
+	_free_mobile_last_move()
+	var host = _mobile_last_move_host()
+	if host == null:
+		return
+	_mobile_last_move = $"%LastMoveTexture".duplicate()
+	_mobile_last_move.name = "MobileLastMoveIndicator"
+	_mobile_last_move.visible = false
+	_mobile_last_move.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_disable_unique_names(_mobile_last_move)
+	host.add_child(_mobile_last_move)
+	_sync_mobile_last_move()
+
+
+func _mobile_last_move_host():
+	var node = get_parent()
+	while node != null:
+		if node is Control and node.get_parent() is CanvasLayer:
+			return node
+		node = node.get_parent()
+	return null
+
+
+func _refresh_mobile_last_move_target():
+	if not is_visible_in_tree():
+		_mobile_last_move_target = null
+		return
+	var offset = MOBILE_LAST_MOVE_OFFSET
+	if player_id == 2:
+		offset.x = rect_size.x - offset.x
+	_mobile_last_move_target = rect_global_position + offset
+
+
+func _disable_unique_names(node):
+	node.set_unique_name_in_owner(false)
+	for child in node.get_children():
+		_disable_unique_names(child)
+
+
+func _free_mobile_last_move():
+	if _mobile_last_move != null and is_instance_valid(_mobile_last_move):
+		_mobile_last_move.queue_free()
+	_mobile_last_move = null
+	_mobile_last_move_target = null
+
+
+func _sync_mobile_last_move():
+	if _mobile_last_move == null or not is_instance_valid(_mobile_last_move):
+		return
+	var orig = $"%LastMoveTexture"
+	_mobile_last_move.texture = orig.texture
+	_mobile_last_move.modulate = orig.modulate
+	if _mobile_last_move_target != null:
+		_mobile_last_move.rect_global_position = _mobile_last_move_target
+	var orig_label = orig.get_node_or_null("LastMoveLabel")
+	var copy_label = _mobile_last_move.get_node_or_null("LastMoveLabel")
+	if orig_label != null and copy_label != null:
+		copy_label.text = orig_label.text
+		copy_label.visible = orig_label.visible
+	var orig_data = orig.get_node_or_null("LastMoveData")
+	var copy_data = _mobile_last_move.get_node_or_null("LastMoveData")
+	if orig_data != null and copy_data != null:
+		copy_data.text = orig_data.text
+		copy_data.visible = orig_data.visible
+	_mobile_last_move.visible = orig.visible and is_visible_in_tree() and _mobile_last_move_target != null
 
 
 

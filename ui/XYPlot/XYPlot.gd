@@ -378,7 +378,6 @@ func _ready():
 	if not Engine.editor_hint:
 		panel.connect("mouse_entered", self, "_on_plot_mouse_entered")
 		panel.connect("mouse_exited", self, "_on_plot_mouse_exited")
-		panel.connect("mouse_input_event", self, "_on_plot_mouse_input_event")
 
 	$UpdateTimer.connect("timeout", self, "_on_update_timer_timeout")
 
@@ -392,41 +391,7 @@ func _process(_delta):
 	if Engine.editor_hint: return
 	if not visible: return
 
-	var game = Global.current_game
-	if is_instance_valid(game):
-		if was_game_paused and not game.game_paused:
-			_on_plot_mouse_exited()
-			mouse_clicked = false
-			touch_dragging = false
-		was_game_paused = game.game_paused
-
-	if mouse_clicked or touch_dragging:
-		if mouse_clicked:
-			update_value(null, true, false, get_global_mouse_position())
-		else:
-			update_value(null, true, false, last_drag_screen_pos)
-		
-		if is_visible_in_tree():
-			if !value_float.is_equal_approx(_last_emitted_value):
-				emit_signal("data_changed")
-				_last_emitted_value = value_float
-				buffer_changed = true
-		
-		if touch_dragging and not touch_long_press_triggered:
-			var current_time = Time.get_ticks_msec() / 1000.0
-			if current_time - touch_press_time >= LONG_PRESS_TIME:
-				touch_long_press_triggered = true
-				update_value(get_default_value())
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
-
-	if buffer_changed:
-		buffer_changed = false
-		if is_visible_in_tree():
-			if !value_float.is_equal_approx(_last_emitted_value):
-				emit_signal("data_changed")
-				_last_emitted_value = value_float
+	_handle_game_pause_state()
 
 	var rect = _get_expanded_rect()
 	var mouse_position = get_global_mouse_position()
@@ -451,32 +416,13 @@ func _input(event):
 		if event.pressed:
 			_handle_touch_event(event)
 		else:
-			if touch_dragging and event.index == touch_id:
-				update_value(null, true, false, last_drag_screen_pos)
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
-				touch_dragging = false
-				touch_id = -1
-				if buffer_update:
-					buffer_changed = true
-					buffer_update = false
+			_handle_touch_release(event)
 	elif event is InputEventScreenDrag:
 		_handle_drag_event(event)
 	elif event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
 	elif event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and not event.pressed:
-			if mouse_clicked:
-				last_drag_screen_pos = get_global_mouse_position()
-				update_value(null, true, false, last_drag_screen_pos)
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
-			mouse_clicked = false
-			if buffer_update:
-				buffer_changed = true
-				buffer_update = false
+		_handle_mouse_button(event)
 
 func _get_expanded_rect():
 	var rect = panel.get_global_rect()
@@ -486,44 +432,98 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	if mouse_clicked:
 		last_drag_screen_pos = get_global_mouse_position()
 		update_value(null, true, false, last_drag_screen_pos)
-		if !value_float.is_equal_approx(_last_emitted_value):
-			emit_signal("data_changed")
-			_last_emitted_value = value_float
-			buffer_changed = true
+		_emit_if_changed()
+
+func _handle_mouse_button(event: InputEventMouseButton):
+	if event.button_index == BUTTON_LEFT:
+		if event.pressed:
+			var press_pos = get_global_mouse_position()
+			if panel.get_global_rect().has_point(press_pos):
+				mouse_clicked = true
+				last_drag_screen_pos = press_pos
+				update_value(null, true, false, press_pos)
+				_emit_if_changed()
+		else:
+			if mouse_clicked:
+				last_drag_screen_pos = get_global_mouse_position()
+				update_value(null, true, false, last_drag_screen_pos)
+				_emit_if_changed()
+			mouse_clicked = false
+			if buffer_update:
+				buffer_changed = true
+				buffer_update = false
+	elif event.button_index == BUTTON_RIGHT:
+		if event.pressed:
+			var right_pos = get_global_mouse_position()
+			if panel.get_global_rect().has_point(right_pos):
+				update_value(get_default_value())
+				_emit_if_changed()
 
 func _handle_touch_event(event: InputEventScreenTouch):
-	var rect = _get_expanded_rect()
-	if rect.has_point(event.position) and event.pressed:
-		touch_dragging = true
-		touch_id = event.index
-		touch_press_time = Time.get_ticks_msec() / 1000.0
-		touch_long_press_triggered = false
-		update_timer.start(get_update_speed())
-		last_drag_screen_pos = event.position
-		update_value(null, true, false, event.position)
-		if !value_float.is_equal_approx(_last_emitted_value):
-			emit_signal("data_changed")
-			_last_emitted_value = value_float
-			buffer_changed = true
+	if touch_id != -1 and event.index != touch_id:
+		return
+	var pos = event.position
+	if panel.get_global_rect().has_point(pos):
+		var now = Time.get_ticks_msec() / 1000.0
+		if now - last_tap_time <= DOUBLE_TAP_TIME and pos.distance_to(last_tap_pos) <= DOUBLE_TAP_DIST:
+			last_tap_time = 0.0
+			mouse_clicked = false
+			touch_dragging = false
+			touch_pending = false
+			touch_id = -1
+			update_value(get_default_value())
+			_emit_if_changed()
+			return
+		last_tap_time = now
+		last_tap_pos = pos
+		_begin_touch_drag(event.index, pos)
+
+func _begin_touch_drag(index, pos):
+	touch_pending = false
+	touch_dragging = true
+	touch_id = index
+	last_drag_screen_pos = pos
+	update_value(null, true, false, pos)
+	_emit_if_changed()
+	buffer_update = false
+
+func _handle_touch_release(event: InputEventScreenTouch):
+	if event.index != touch_id:
+		return
+	if touch_dragging:
+		update_value(null, true, false, last_drag_screen_pos)
+		_emit_if_changed()
+	touch_dragging = false
+	touch_pending = false
+	touch_id = -1
+	if buffer_update:
+		buffer_changed = true
 		buffer_update = false
 
 func _handle_drag_event(event: InputEventScreenDrag):
-	if touch_dragging and event.index == touch_id:
-		last_drag_screen_pos = event.position
-		update_value(null, true, false, event.position)
-		if !value_float.is_equal_approx(_last_emitted_value):
-			emit_signal("data_changed")
-			_last_emitted_value = value_float
-			buffer_changed = true
-		
-		if not touch_long_press_triggered:
-			var current_time = Time.get_ticks_msec() / 1000.0
-			if current_time - touch_press_time >= LONG_PRESS_TIME:
-				touch_long_press_triggered = true
-				update_value(get_default_value())
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
+	if event.index != touch_id:
+		return
+
+	if touch_pending:
+		if event.position.distance_to(touch_start_pos) < TOUCH_DRAG_THRESHOLD:
+			return
+		_begin_touch_drag(event.index, event.position)
+
+	if not touch_dragging:
+		return
+
+	last_drag_screen_pos = event.position
+	update_value(null, true, false, event.position)
+	_emit_if_changed()
+
+func _emit_if_changed():
+	if not is_visible_in_tree():
+		return
+	var data = as_percentage_int_vec(value_float)
+	if int(_last_emitted_value.x) == data.x and int(_last_emitted_value.y) == data.y:
+		return
+	emit_signal("data_changed")
+	_last_emitted_value = Vector2(data.x, data.y)
 
 ################################################################################
 ################################ container logic ###############################
@@ -589,13 +589,17 @@ var buffer_update = false
 var was_game_paused = false
 
 var touch_dragging = false
+var touch_pending = false
+var touch_start_pos = Vector2()
 var touch_id = -1
-var touch_press_time = 0
-var touch_long_press_triggered = false
 var last_drag_screen_pos = Vector2()
+var last_tap_time = 0.0
+var last_tap_pos = Vector2()
 
 const TOUCH_AREA_EXPANSION = 20.0
-const LONG_PRESS_TIME = 0.5
+const TOUCH_DRAG_THRESHOLD = 10.0
+const DOUBLE_TAP_TIME = 0.3
+const DOUBLE_TAP_DIST = 40.0
 
 const PERCENT_MAX = 100
 
@@ -606,11 +610,22 @@ var last_di_pos = null
 const SNAP_AMOUNT = 0.1
 
 func _on_update_timer_timeout():
-	if mouse_clicked or touch_dragging:
-		if !value_float.is_equal_approx(_last_emitted_value):
-			emit_signal("data_changed")
-			_last_emitted_value = value_float
-		update_timer.start(get_update_speed())
+	pass
+
+func _handle_game_pause_state():
+	if Engine.editor_hint:
+		return
+	var game = Global.current_game
+	if not is_instance_valid(game):
+		return
+	if was_game_paused and not game.game_paused:
+		_on_plot_mouse_exited()
+		mouse_clicked = false
+		touch_dragging = false
+		touch_pending = false
+		touch_id = -1
+		last_tap_time = 0.0
+	was_game_paused = game.game_paused
 
 func _on_plot_mouse_entered():
 	mouse_over = true
@@ -625,30 +640,6 @@ func _on_plot_mouse_exited():
 		y_label.hide()
 	if Hotkeys.hovered_xy_plot == self and not mouse_clicked and not touch_dragging:
 		Hotkeys.hovered_xy_plot = null
-
-func get_update_speed():
-	return ((1.0 + (1.0 / Global.get_ghost_speed_modifier())) / 2.0) * 0.3
-	pass
-
-func _on_plot_mouse_input_event(event:InputEventMouseButton):
-	if event.button_index == BUTTON_LEFT:
-		if event.pressed:
-			if mouse_over:
-				mouse_clicked = true
-				last_drag_screen_pos = get_global_mouse_position()
-				update_timer.start(get_update_speed())
-				update_value(null, true, false, last_drag_screen_pos)
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
-					buffer_changed = true
-	if event.button_index == BUTTON_RIGHT:
-		if event.pressed:
-			if mouse_over:
-				update_value(get_default_value())
-				if !value_float.is_equal_approx(_last_emitted_value):
-					emit_signal("data_changed")
-					_last_emitted_value = value_float
 
 var panel_radius = plot_panel_size.x
 

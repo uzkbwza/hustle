@@ -24,12 +24,22 @@ export var max_value = 100
 var buffer_value_changed = false
 
 var mouse_clicked = false
+var mouse_pending = false
+var mouse_start_pos = Vector2()
 var touch_dragging = false
+var touch_pending = false
 var touch_id = -1
+var touch_start_pos = Vector2()
 var last_drag_pos = Vector2()
 var last_emitted_value = -999999
+var last_tap_time = 0.0
+var last_tap_pos = Vector2()
+var double_tap_pending = false
 
 const TOUCH_AREA_EXPANSION = 20.0
+const TOUCH_DRAG_THRESHOLD = 10.0
+const DOUBLE_TAP_TIME = 0.3
+const DOUBLE_TAP_DIST = 40.0
 
 func _input(event: InputEvent):
 	if Engine.editor_hint:
@@ -37,51 +47,110 @@ func _input(event: InputEvent):
 	
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			var rect = _get_expanded_rect()
-			if rect.has_point(event.position):
-				touch_dragging = true
-				touch_id = event.index
-				last_drag_pos = event.position
-				_update_from_screen_pos(event.position)
+			_handle_touch_press(event)
 		else:
-			if touch_dragging and event.index == touch_id:
-				_update_from_screen_pos(last_drag_pos)
-				touch_dragging = false
-				touch_id = -1
-				if buffer_value_changed:
-					if !is_equal_approx($Direction.value, last_emitted_value):
-						emit_signal("data_changed")
-						last_emitted_value = $Direction.value
-					buffer_value_changed = false
+			_handle_touch_release(event)
 	elif event is InputEventScreenDrag:
-		if touch_dragging and event.index == touch_id:
-			last_drag_pos = event.position
-			_update_from_screen_pos(event.position)
+		_handle_touch_drag(event)
 	elif event is InputEventMouseMotion:
-		if mouse_clicked:
-			_update_from_global_mouse()
+		_handle_mouse_motion()
 	elif event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				var rect = _get_expanded_rect()
-				if rect.has_point(get_global_mouse_position()):
-					mouse_clicked = true
-					_update_from_global_mouse()
+				_handle_mouse_press()
 			else:
 				if mouse_clicked:
 					_update_from_global_mouse()
 				mouse_clicked = false
-				if buffer_value_changed:
-					if !is_equal_approx($Direction.value, last_emitted_value):
-						emit_signal("data_changed")
-						last_emitted_value = $Direction.value
-					buffer_value_changed = false
+				mouse_pending = false
+				_flush_buffer()
 		elif event.button_index == BUTTON_RIGHT:
 			if event.pressed and $Direction.get_rect().has_point(get_local_mouse_position()):
 				$Direction.value = default
-				if !is_equal_approx($Direction.value, last_emitted_value):
-					emit_signal("data_changed")
-					last_emitted_value = $Direction.value
+				_emit_if_changed()
+
+func _handle_touch_press(event: InputEventScreenTouch):
+	if touch_id != -1 and event.index != touch_id:
+		return
+	var pos = event.position
+	var rect = _get_expanded_rect()
+	if rect.has_point(pos):
+		var now = Time.get_ticks_msec() / 1000.0
+		if now - last_tap_time <= DOUBLE_TAP_TIME and pos.distance_to(last_tap_pos) <= DOUBLE_TAP_DIST:
+			last_tap_time = 0.0
+			double_tap_pending = true
+			touch_id = event.index
+			touch_dragging = false
+			touch_pending = false
+			return
+		last_tap_time = now
+		last_tap_pos = pos
+		_begin_touch_drag(event.index, pos)
+
+func _begin_touch_drag(index, pos):
+	touch_pending = false
+	touch_dragging = true
+	touch_id = index
+	last_drag_pos = pos
+	_update_from_screen_pos(pos)
+
+func _handle_touch_drag(event: InputEventScreenDrag):
+	if event.index != touch_id:
+		return
+	if touch_pending:
+		if event.position.distance_to(touch_start_pos) < TOUCH_DRAG_THRESHOLD:
+			return
+		touch_pending = false
+		touch_dragging = true
+	if not touch_dragging:
+		return
+	last_drag_pos = event.position
+	_update_from_screen_pos(event.position)
+
+func _handle_touch_release(event: InputEventScreenTouch):
+	if event.index != touch_id:
+		return
+	if double_tap_pending:
+		double_tap_pending = false
+		touch_dragging = false
+		touch_pending = false
+		touch_id = -1
+		$Direction.value = default
+		_emit_if_changed()
+		return
+	if touch_dragging:
+		_update_from_screen_pos(last_drag_pos)
+	touch_dragging = false
+	touch_pending = false
+	touch_id = -1
+	_flush_buffer()
+
+func _handle_mouse_press():
+	var pos = get_global_mouse_position()
+	if $Direction.get_global_rect().has_point(pos):
+		mouse_clicked = true
+		_update_from_global_mouse()
+
+func _handle_mouse_motion():
+	if mouse_clicked:
+		_update_from_global_mouse()
+	elif mouse_pending and Input.is_mouse_button_pressed(BUTTON_LEFT):
+		if get_global_mouse_position().distance_to(mouse_start_pos) >= TOUCH_DRAG_THRESHOLD:
+			mouse_pending = false
+			mouse_clicked = true
+			_update_from_global_mouse()
+
+func _flush_buffer():
+	if buffer_value_changed:
+		_emit_if_changed()
+		buffer_value_changed = false
+
+func _emit_if_changed():
+	var v = get_value()
+	if v == int(round(last_emitted_value)):
+		return
+	emit_signal("data_changed")
+	last_emitted_value = v
 
 func _get_expanded_rect():
 	var rect = $Direction.get_global_rect()
@@ -118,9 +187,7 @@ func _set_value_if_changed(new_val):
 		if has_node("ValueLabel"):
 			$ValueLabel.text = str(int(round($Direction.value)))
 		if mouse_clicked or touch_dragging:
-			if !is_equal_approx($Direction.value, last_emitted_value):
-				emit_signal("data_changed")
-				last_emitted_value = $Direction.value
+			_emit_if_changed()
 			buffer_value_changed = false
 
 func _ready():
@@ -140,10 +207,8 @@ func on_value_changed(value):
 		$ValueLabel.text = str(int(round(value)))
 
 func _process(_delta):
-	if buffer_value_changed and !Input.is_mouse_button_pressed(BUTTON_LEFT) and not touch_dragging:
-		if !is_equal_approx($Direction.value, last_emitted_value):
-			emit_signal("data_changed")
-			last_emitted_value = $Direction.value
+	if buffer_value_changed and not mouse_clicked and not mouse_pending and not touch_dragging and not touch_pending:
+		_emit_if_changed()
 		buffer_value_changed = false
 
 func get_value():

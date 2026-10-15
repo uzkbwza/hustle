@@ -1,21 +1,12 @@
 tool
 extends Control
 
-# signal data_changed()
-signal mouse_input_event(event)
-
 onready var parent = get_parent()
 
 var flash = false
 
 func set_flash(on):
 	flash = on
-
-func _input(event:InputEvent):
-	if Engine.editor_hint: return
-	
-	if event is InputEventMouseButton:
-		call_deferred("emit_signal", "mouse_input_event", event)
 
 func _draw():
 	var radius = parent.panel_radius

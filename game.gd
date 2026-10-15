@@ -144,6 +144,10 @@ var effects: Array = []
 
 var drag_position = null
 
+var touch_points = {}
+var pinch_active = false
+var pinch_last_distance = 0.0
+
 var real_tick = 0
 var super_freeze_ticks = 0
 var super_active = false
@@ -1765,13 +1769,19 @@ func _unhandled_input(event: InputEvent):
 			mouse_pressed = false
 			drag_position = null
 	if event is InputEventMouseMotion:
-		if drag_position and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
+		if drag_position and not pinch_active and ((is_waiting_on_player() and !ReplayManager.playback) or Global.frame_advance):
 			# event.relative is in screen pixels; camera position is in world
 			# units. scale by zoom so the panned point stays under the cursor
 			# at any zoom level.
 			camera.global_position -= event.relative * camera.zoom
 			snapping_camera = false
-		
+	if event is InputEventScreenTouch:
+		_handle_screen_touch(event)
+	if event is InputEventScreenDrag:
+		_handle_screen_drag(event)
+	if event is InputEventMagnifyGesture and !is_ghost:
+		var magnify = event as InputEventMagnifyGesture
+		_apply_zoom_factor(1.0 / magnify.factor)
 	if !is_ghost and (singleplayer or spectating):
 			if event.is_action_pressed("playback"):
 				if !ReplayManager.resimulating and current_tick > 0:
@@ -1818,6 +1828,47 @@ func zoom_out():
 
 func reset_zoom():
 	camera_zoom = 1.0
+	emit_signal("zoom_changed")
+	update_camera_limits()
+
+func _handle_screen_touch(event: InputEventScreenTouch):
+	if is_ghost:
+		return
+	if event.pressed:
+		touch_points[event.index] = event.position
+	else:
+		touch_points.erase(event.index)
+	if touch_points.size() == 2:
+		pinch_active = true
+		pinch_last_distance = _pinch_distance()
+	else:
+		pinch_active = false
+		pinch_last_distance = 0.0
+
+func _handle_screen_drag(event: InputEventScreenDrag):
+	if is_ghost:
+		return
+	if not touch_points.has(event.index):
+		return
+	touch_points[event.index] = event.position
+	if touch_points.size() != 2:
+		return
+	var dist = _pinch_distance()
+	if pinch_last_distance > 0.0 and dist > 0.0:
+		_apply_zoom_factor(pinch_last_distance / dist)
+	pinch_last_distance = dist
+
+func _pinch_distance():
+	var keys = touch_points.keys()
+	return touch_points[keys[0]].distance_to(touch_points[keys[1]])
+
+func _apply_zoom_factor(factor):
+	if factor <= 0.0:
+		return
+	var new_zoom = clamp(camera_zoom * factor, 0.2, 3.0)
+	if is_equal_approx(new_zoom, camera_zoom):
+		return
+	camera_zoom = new_zoom
 	emit_signal("zoom_changed")
 	update_camera_limits()
 

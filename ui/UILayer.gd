@@ -562,7 +562,7 @@ func _on_nudge_input_submitted(text: String):
 		var point = Vector2(x, y).limit_length(1.0) * float(t.panel_radius)
 		_set_xyplot_value(t, point, false)
 	elif _is_horiz_slider(t):
-		var slider = t.get_node("Direction")
+		var slider = _slider_node(t)
 		var new_val = clamp(nums[0], slider.min_value, slider.max_value)
 		if !is_equal_approx(new_val, slider.value):
 			slider.value = new_val
@@ -662,7 +662,7 @@ func _apply_nudge(dir: Vector2):
 		if not Global.mobile_ui:
 			step_mult = 1.0
 		var amount = step_mult * (dir.x - dir.y)
-		var slider = t.get_node("Direction")
+		var slider = _slider_node(t)
 		var new_val = clamp(slider.value + amount, slider.min_value, slider.max_value)
 		if !is_equal_approx(new_val, slider.value):
 			slider.value = new_val
@@ -674,7 +674,10 @@ func _apply_nudge(dir: Vector2):
 	$"%MobileNudgeInput".text = _nudge_value_text(t)
 
 func _is_horiz_slider(node) -> bool:
-	return node != null and node.has_method("get_value") and node.has_node("Direction")
+	return node != null and node.has_method("get_value") and (node.has_node("Direction") or node.has_node("HSlider"))
+
+func _slider_node(t):
+	return t.get_node("Direction") if t.has_node("Direction") else t.get_node("HSlider")
 
 func _input(event):
 	if not Global.mobile_ui:

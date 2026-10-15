@@ -1473,7 +1473,7 @@ opponent_action_buttons_path = NodePath("../../VBoxContainer2/P2ActionButtons")
 
 [node name="MobilePlayerSeperator" type="ColorRect" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 unique_name_in_owner = true
-self_modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 1, 1, 1, 0.12549 )
 margin_left = 319.0
 margin_top = 30.0
 margin_right = 320.0
@@ -2989,8 +2989,8 @@ margin_bottom = 330.0
 
 [node name="AnnouncementContainer" type="VBoxContainer" parent="UILayer/MainMenu/AnnouncementScrollContainer"]
 unique_name_in_owner = true
-margin_right = 97.0
-margin_bottom = 75.0
+margin_right = 112.0
+margin_bottom = 328.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3482,6 +3482,8 @@ anchor_bottom = 1.0
 
 [node name="HotkeysList" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Hotkeys/ScrollContainer"]
 unique_name_in_owner = true
+margin_right = 220.0
+margin_bottom = 218.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
