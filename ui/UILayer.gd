@@ -80,6 +80,9 @@ var MIN_TURN_TIME = 5.0
 
 onready var lobby = $Lobby
 onready var direct_connect_lobby = $DirectConnectLobby
+var online_warning_screen = null
+var online_warning_pending_method = ""
+var online_warning_accepted = false
 onready var p1_turn_timer = $"%P1TurnTimer"
 onready var p2_turn_timer = $"%P2TurnTimer"
 onready var block_advantage_label = $"%BlockAdvantageLabel"
@@ -1576,16 +1579,51 @@ func _on_singleplayer_pressed():
 	SteamLobby.leave_Lobby()
 	emit_signal("singleplayer_started")
 
+# Mobile UI shows a one-time full-screen "online interactions are not rated"
+# page before the first multiplayer screen. Gated on mobile_ui (not is_mobile_device) so it
+# can be tested on desktop via "force mobile ui layout"; debug builds show it
+# every time, like the custom character nag in SteamLobbyList.
+# Returns true when the warning took over; the handler re-runs after Continue.
+func _show_online_warning(method):
+	if !Global.mobile_ui or Global.seen_online_warning or online_warning_accepted:
+		return false
+	if online_warning_screen == null:
+		online_warning_screen = preload("res://ui/OnlineWarningScreen.tscn").instance()
+		add_child(online_warning_screen)
+		online_warning_screen.connect("accepted", self, "_on_online_warning_accepted")
+	online_warning_pending_method = method
+	hide_main_menu(true)
+	online_warning_screen.show()
+	online_warning_screen.raise()
+	return true
+
+func _on_online_warning_accepted():
+	online_warning_accepted = true
+	# The lobby screens expect MainMenu itself visible (they only hide its
+	# buttons/title), so restore it before running the real handler.
+	$"%MainMenu".show()
+	if !OS.is_debug_build():
+		Global.seen_online_warning = true
+		Global.save_options()
+	call(online_warning_pending_method)
+	online_warning_accepted = false
+
 func _on_direct_connect_button_pressed():
+	if _show_online_warning("_on_direct_connect_button_pressed"):
+		return
 	direct_connect_lobby.show()
 	hide_main_menu()
 
 func _on_multiplayer_pressed():
+	if _show_online_warning("_on_multiplayer_pressed"):
+		return
 	SteamLobby.leave_Lobby()
 	lobby.show()
 	hide_main_menu()
 	
 func _on_steam_multiplayer_pressed():
+	if _show_online_warning("_on_steam_multiplayer_pressed"):
+		return
 	$"%SteamLobbyList".show()
 	hide_main_menu()
 	

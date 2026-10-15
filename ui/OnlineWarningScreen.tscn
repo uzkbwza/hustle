@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/OnlineWarningScreen.gd" type="Script" id=2]
+
+[node name="OnlineWarningScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0431373, 0.0470588, 0.0588235, 1 )
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+margin_left = 412.0
+margin_top = 266.0
+margin_right = 612.0
+margin_bottom = 334.0
+rect_min_size = Vector2( 200, 0 )
+custom_constants/separation = 8
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 11.0
+text = "Playing Online"
+align = 1
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+margin_top = 19.0
+margin_right = 200.0
+margin_bottom = 48.0
+text = "Online interactions are not rated. Chat and usernames come from other players, not from us.
+
+Never share personal information like your real name, address, or passwords."
+align = 1
+autowrap = true
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 56.0
+margin_right = 200.0
+margin_bottom = 68.0
+text = "Continue"

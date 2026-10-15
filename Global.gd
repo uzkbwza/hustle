@@ -72,6 +72,9 @@ var speed_lines_enabled = true
 var replay_extra_freeze_frames = true
 var enable_replay_backups = true
 var seen_custom_character_nag = false
+# One-time "online interactions are not rated" popup shown on mobile UI
+# before the first multiplayer screen opens (Google Play requirement).
+var seen_online_warning = false
 var forfeit_buttons_enabled = false
 var show_health_count = false
 # Mirror the ghost's "Ready in Xf" / "Hit @ Xf" floating labels onto fixed
@@ -457,6 +460,7 @@ func save_options():
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 			"enable_replay_backups": enable_replay_backups,
 			"seen_custom_character_nag": seen_custom_character_nag,
+			"seen_online_warning": seen_online_warning,
 #			"forfeit_buttons_enabled": forfeit_buttons_enabled,
 			"master_value" : master_value,
 			"fx_value" : fx_value,
@@ -512,6 +516,7 @@ func get_default_player_data():
 			"replay_extra_freeze_frames": true,
 			"enable_replay_backups": true,
 			"seen_custom_character_nag": false,
+			"seen_online_warning": false,
 #			"forfeit_buttons_enabled": false,
 			"master_value" : 1.0,
 			"fx_value" : 1.0,
