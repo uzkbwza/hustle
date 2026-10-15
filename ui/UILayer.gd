@@ -1579,13 +1579,11 @@ func _on_singleplayer_pressed():
 	SteamLobby.leave_Lobby()
 	emit_signal("singleplayer_started")
 
-# Mobile UI shows a one-time full-screen "online interactions are not rated"
-# page before the first multiplayer screen. Gated on mobile_ui (not is_mobile_device) so it
-# can be tested on desktop via "force mobile ui layout"; debug builds show it
-# every time, like the custom character nag in SteamLobbyList.
+# Mobile devices show a one-time full-screen "online interactions are not
+# rated" page before the first multiplayer screen (Google Play requirement).
 # Returns true when the warning took over; the handler re-runs after Continue.
 func _show_online_warning(method):
-	if !Global.mobile_ui or Global.seen_online_warning or online_warning_accepted:
+	if !Global.is_mobile_device or Global.seen_online_warning or online_warning_accepted:
 		return false
 	if online_warning_screen == null:
 		online_warning_screen = preload("res://ui/OnlineWarningScreen.tscn").instance()
@@ -1602,9 +1600,8 @@ func _on_online_warning_accepted():
 	# The lobby screens expect MainMenu itself visible (they only hide its
 	# buttons/title), so restore it before running the real handler.
 	$"%MainMenu".show()
-	if !OS.is_debug_build():
-		Global.seen_online_warning = true
-		Global.save_options()
+	Global.seen_online_warning = true
+	Global.save_options()
 	call(online_warning_pending_method)
 	online_warning_accepted = false
 
