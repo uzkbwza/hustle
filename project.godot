@@ -502,6 +502,7 @@ boot_splash/image="res://splash.png"
 boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon2.png"
+config/quit_on_go_back=false
 
 [autoload]
 

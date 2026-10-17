@@ -22,6 +22,9 @@ func _ready():
 #	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	SteamLobby.connect("lobby_match_list_received", self, "_on_lobby_match_list_received", [], CONNECT_DEFERRED)
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	if is_connected("swiped_back", self, "_on_back_button_pressed"):
+		disconnect("swiped_back", self, "_on_back_button_pressed")
+	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	lobby_name.connect("text_entered", self, "_on_lobby_name_text_entered")
 	
 	charloader_button.disabled = !ModLoader.active
@@ -47,6 +50,7 @@ func _on_create_lobby_button_pressed():
 	SteamLobby.create_lobby(availability, $"%LobbySize".value)
 
 func _on_back_button_pressed():
+	if not visible: return
 	Network.stop_multiplayer()
 	Global.reload()
 

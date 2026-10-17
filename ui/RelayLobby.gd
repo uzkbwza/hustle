@@ -73,6 +73,9 @@ func _ready():
 	spectate_button.connect("pressed", self, "_on_spectate_code_pressed")
 	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	if is_connected("swiped_back", self, "_on_back_button_pressed"):
+		disconnect("swiped_back", self, "_on_back_button_pressed")
+	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
@@ -595,6 +598,7 @@ func _on_spectate_accepted(_data):
 	leave_room_button.hide()
 			
 func _on_back_button_pressed():
+	if not visible: return
 	Network.cancel_spectate_request()
 	Network.stop_multiplayer()
 	Global.reload()

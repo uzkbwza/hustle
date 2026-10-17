@@ -1473,7 +1473,7 @@ opponent_action_buttons_path = NodePath("../../VBoxContainer2/P2ActionButtons")
 
 [node name="MobilePlayerSeperator" type="ColorRect" parent="UILayer/GameUI/BottomBar/ActionButtons"]
 unique_name_in_owner = true
-self_modulate = Color( 1, 1, 1, 0.12549 )
+self_modulate = Color( 1, 1, 1, 0 )
 margin_left = 319.0
 margin_top = 30.0
 margin_right = 320.0
@@ -2047,6 +2047,18 @@ mouse_default_cursor_shape = 2
 action_mode = 0
 icon = ExtResource( 65 )
 flat = true
+icon_align = 1
+
+[node name="MobileBarToggleButton" type="Button" parent="UILayer/GameUI"]
+unique_name_in_owner = true
+visible = false
+margin_left = 320.0
+margin_right = 339.0
+margin_bottom = 12.0
+hint_tooltip = "Toggle the mobile touch bar"
+mouse_default_cursor_shape = 2
+toggle_mode = true
+icon = ExtResource( 66 )
 icon_align = 1
 
 [node name="MobileMatchButtons" type="HBoxContainer" parent="UILayer/GameUI"]

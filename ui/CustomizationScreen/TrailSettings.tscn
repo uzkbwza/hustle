@@ -78,7 +78,7 @@ step = 1.0
 [node name="TriggersSection" type="VBoxContainer" parent="."]
 margin_top = 147.0
 margin_right = 212.0
-margin_bottom = 172.0
+margin_bottom = 185.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Triggers"
@@ -101,9 +101,9 @@ text = "hide when inactive"
 
 [node name="DynamicTriggers" type="CheckButton" parent="TriggersSection"]
 unique_name_in_owner = true
-margin_top = 13.0
+margin_top = 26.0
 margin_right = 212.0
-margin_bottom = 25.0
+margin_bottom = 38.0
 hint_tooltip = "Gate this aura's emission on character state. When off, the aura emits constantly."
 text = "dynamic triggers"
 
@@ -290,9 +290,9 @@ hint_tooltip = "Invert the trigger logic — the aura is normally on, and hides 
 text = "  hide on trigger"
 
 [node name="PositionSection" type="VBoxContainer" parent="."]
-margin_top = 177.0
+margin_top = 190.0
 margin_right = 212.0
-margin_bottom = 309.0
+margin_bottom = 322.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Position & Attachment"
@@ -383,9 +383,9 @@ pressed = true
 text = "consistent side"
 
 [node name="ScaleSection" type="VBoxContainer" parent="."]
-margin_top = 314.0
+margin_top = 327.0
 margin_right = 212.0
-margin_bottom = 391.0
+margin_bottom = 430.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Scale"
@@ -408,7 +408,6 @@ margin_top = 52.0
 margin_bottom = 77.0
 default_value = 0.5
 max_value = 1.0
-step = 0.01
 
 [node name="Scale Randomness" parent="ScaleSection" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -417,9 +416,9 @@ margin_bottom = 103.0
 max_value = 1.0
 
 [node name="TransformSection" type="VBoxContainer" parent="."]
-margin_top = 396.0
+margin_top = 435.0
 margin_right = 212.0
-margin_bottom = 447.0
+margin_bottom = 512.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Transform"
@@ -429,7 +428,6 @@ unique_name_in_owner = true
 default_value = 1.0
 min_value = -2.0
 max_value = 2.0
-step = 0.01
 
 [node name="Transform Scale Y" parent="TransformSection" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -438,21 +436,19 @@ margin_bottom = 51.0
 default_value = 1.0
 min_value = -2.0
 max_value = 2.0
-step = 0.01
 
 [node name="Transform Rotation" parent="TransformSection" instance=ExtResource( 3 )]
 unique_name_in_owner = true
 margin_top = 52.0
 margin_bottom = 77.0
-default_value = 0.0
 min_value = -360.0
 max_value = 360.0
 step = 1.0
 
 [node name="ColorSection" type="VBoxContainer" parent="."]
-margin_top = 396.0
+margin_top = 517.0
 margin_right = 212.0
-margin_bottom = 668.0
+margin_bottom = 841.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Color"
@@ -508,7 +504,6 @@ margin_top = 273.0
 margin_bottom = 298.0
 default_value = 0.5
 max_value = 1.0
-step = 0.01
 
 [node name="Alpha Midpoint" parent="ColorSection" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -516,12 +511,11 @@ margin_top = 299.0
 margin_bottom = 324.0
 default_value = 0.5
 max_value = 1.0
-step = 0.01
 
 [node name="EmissionAreaSection" type="VBoxContainer" parent="."]
-margin_top = 673.0
+margin_top = 846.0
 margin_right = 212.0
-margin_bottom = 724.0
+margin_bottom = 897.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Emission Area"
@@ -539,9 +533,9 @@ default_value = 12.0
 max_value = 32.0
 
 [node name="ParticleShapeSection" type="VBoxContainer" parent="."]
-margin_top = 729.0
+margin_top = 902.0
 margin_right = 212.0
-margin_bottom = 741.0
+margin_bottom = 914.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Particle Shape"
@@ -563,9 +557,9 @@ margin_bottom = 12.0
 text = "shape"
 
 [node name="GravitySection" type="VBoxContainer" parent="."]
-margin_top = 746.0
+margin_top = 919.0
 margin_right = 212.0
-margin_bottom = 797.0
+margin_bottom = 970.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Gravity"
@@ -583,9 +577,9 @@ min_value = -100.0
 step = 0.1
 
 [node name="InitialVelocitySection" type="VBoxContainer" parent="."]
-margin_top = 802.0
+margin_top = 975.0
 margin_right = 212.0
-margin_bottom = 946.0
+margin_bottom = 1119.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Initial Velocity"
@@ -623,9 +617,9 @@ max_value = 1.0
 step = 0.001
 
 [node name="LinearAccelSection" type="VBoxContainer" parent="."]
-margin_top = 951.0
+margin_top = 1124.0
 margin_right = 212.0
-margin_bottom = 1002.0
+margin_bottom = 1175.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Linear Accel"
@@ -643,9 +637,9 @@ max_value = 1.0
 step = 0.001
 
 [node name="RadialAccelSection" type="VBoxContainer" parent="."]
-margin_top = 1007.0
+margin_top = 1180.0
 margin_right = 212.0
-margin_bottom = 1058.0
+margin_bottom = 1231.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Radial Accel"
@@ -663,9 +657,9 @@ max_value = 1.0
 step = 0.001
 
 [node name="TangentialAccelSection" type="VBoxContainer" parent="."]
-margin_top = 1063.0
+margin_top = 1236.0
 margin_right = 212.0
-margin_bottom = 1114.0
+margin_bottom = 1287.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Tangential Accel"
@@ -683,9 +677,9 @@ max_value = 1.0
 step = 0.001
 
 [node name="OrbitVelocitySection" type="VBoxContainer" parent="."]
-margin_top = 1119.0
+margin_top = 1292.0
 margin_right = 212.0
-margin_bottom = 1170.0
+margin_bottom = 1343.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Orbit Velocity"
@@ -704,9 +698,9 @@ max_value = 1.0
 step = 0.001
 
 [node name="DampingSection" type="VBoxContainer" parent="."]
-margin_top = 1175.0
+margin_top = 1348.0
 margin_right = 212.0
-margin_bottom = 1226.0
+margin_bottom = 1399.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Damping"
@@ -723,9 +717,9 @@ margin_bottom = 51.0
 max_value = 1.0
 
 [node name="RotationSection" type="VBoxContainer" parent="."]
-margin_top = 1231.0
+margin_top = 1404.0
 margin_right = 212.0
-margin_bottom = 1334.0
+margin_bottom = 1507.0
 script = ExtResource( 6 )
 level = 1
 section_title = "Rotation"

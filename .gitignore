@@ -14,6 +14,8 @@ workspace/
 
 # Ignore the Android compiler, for some reason it replicates the entire project inside it - VineRaio
 android/build/
+# Except for the java file. needed for swipe back to not close the app.
+!android/build/src/com/godot/game/GodotApp.java
 
 # Android signing keys (never commit)
 *.keystore

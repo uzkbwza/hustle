@@ -63,6 +63,7 @@ func _setup_file_manager() -> void:
 	# Show the sorter/invert bar only while the FM window is open.
 	fm_window = file_manager.get_node("%Window")
 	fm_window.connect("visibility_changed", self, "_on_fm_window_visibility_changed")
+	$"%FMRow".connect("visibility_changed", self, "_on_fm_row_visibility_changed")
 	
 	# Wire the FM's own Close so one press closes both windows.
 	$"%Close".connect("pressed", file_manager, "_on_close_pressed")
@@ -130,6 +131,17 @@ func _on_fm_window_visibility_changed() -> void:
 	var visible = fm_window.visible
 	$"%OpenFileManager".set_pressed_no_signal(visible)
 	$"%FMRow".visible = visible
+	_reapply_ui()
+
+
+func _on_fm_row_visibility_changed() -> void:
+	_reapply_ui()
+
+
+func _reapply_ui() -> void:
+	var u = get_node_or_null("/root/UIManager")
+	if u != null and Global.mobile_ui:
+		u._apply_subtree(self)
 
 
 func _on_sorter_pressed():
@@ -181,8 +193,8 @@ func refresh_mod(_path):
 
 
 func adjust_ui(is_mobile):
-	$"%WorkshopUploader".visible = not is_mobile
-	$"%WorkshopButton".visible = not is_mobile
+	$"%WorkshopUploader".visible = not Global.is_mobile_device
+	$"%WorkshopButton".visible = not Global.is_mobile_device
 	$"%ModsLocation".visible = not Global.is_mobile_device
 
 

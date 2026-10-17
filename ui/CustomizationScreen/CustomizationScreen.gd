@@ -218,6 +218,9 @@ func init():
 	$"%Outline".connect("color_changed", self, "_on_outline_color_changed")
 	$"%ShowOutline".connect("toggled", self, "_on_show_outline_toggled")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	if is_connected("swiped_back", self, "_on_back_button_pressed"):
+		disconnect("swiped_back", self, "_on_back_button_pressed")
+	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%OpenFolderButton".visible = not Global.is_mobile_device
 	for i in range(Custom.simple_colors.size()):
 		var simple_color_button = preload("res://ui/CustomizationScreen/SimpleColorButton.tscn").instance()
@@ -264,18 +267,18 @@ func init():
 		$"%HitsparkParticleSlotTabsContainer".add_child(hitspark_particle_slot_tabs)
 	if has_node("%HitsparkCopyPasteRow"):
 		copy_hitspark_particles_button = Button.new()
-		copy_hitspark_particles_button.text = "copy particles"
+		copy_hitspark_particles_button.text = "copy part."
 		copy_hitspark_particles_button.hint_tooltip = "Copy this slot's particle settings."
 		copy_hitspark_particles_button.connect("pressed", self, "_on_copy_hitspark_particles_pressed")
 		$"%HitsparkCopyPasteRow".add_child(copy_hitspark_particles_button)
 		paste_hitspark_particles_button = Button.new()
-		paste_hitspark_particles_button.text = "paste particles"
+		paste_hitspark_particles_button.text = "paste part."
 		paste_hitspark_particles_button.hint_tooltip = "Paste particles into this slot."
 		paste_hitspark_particles_button.disabled = true
 		paste_hitspark_particles_button.connect("pressed", self, "_on_paste_hitspark_particles_pressed")
 		$"%HitsparkCopyPasteRow".add_child(paste_hitspark_particles_button)
 		swap_hitspark_particles_button = Button.new()
-		swap_hitspark_particles_button.text = "swap particles"
+		swap_hitspark_particles_button.text = "swap part."
 		swap_hitspark_particles_button.hint_tooltip = "Swap the two hitspark particle slots."
 		swap_hitspark_particles_button.connect("pressed", self, "_on_swap_hitspark_particles_pressed")
 		$"%HitsparkCopyPasteRow".add_child(swap_hitspark_particles_button)
@@ -1245,6 +1248,7 @@ func _preview_aura_rotation_from_entry(entry) -> float:
 	return dir.angle()
 
 func _on_back_button_pressed():
+	if not visible: return
 	Global.reload()
 
 func _on_expand_all_pressed():

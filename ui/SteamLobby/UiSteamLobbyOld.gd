@@ -27,6 +27,9 @@ func _ready():
 	SteamLobby.connect("challenger_cancelled", self, "_on_challenger_cancelled")
 	SteamLobby.connect("spectate_declined", self, "_on_spectate_declined")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	if is_connected("swiped_back", self, "_on_back_button_pressed"):
+		disconnect("swiped_back", self, "_on_back_button_pressed")
+	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%StartButton".connect("pressed", self, "_on_start_button_pressed")
 	$"%LockSettingsButton".connect("pressed", self, "_on_LockSettingsButton_pressed")
 	$"%LockConfirmButton".connect("pressed", self, "_on_LockConfirmButton_pressed")
@@ -373,11 +376,13 @@ func _on_spectate_cancel_pressed():
 	$"%LoadingSpectatorRect".hide()
 
 func _on_back_button_pressed():
+	if not visible: return
 	Network.stop_multiplayer(true)
 	Global.reload()
 
 
 func _on_IncompatibleQuitButton_pressed():
+	if not visible: return
 	Network.stop_multiplayer(true)
 	Global.reload()
 

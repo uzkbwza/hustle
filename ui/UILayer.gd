@@ -8,6 +8,8 @@ onready var p2_side_container = $"%ActionButtons/VBoxContainer2"
 onready var replay_fm = $"FileManagerInterace"
 const REPLAY_BUTTON_SCENE := preload("res://ui/ReplayWindow/ReplayButton.tscn")
 const REPLAY_BUTTON_SCRIPT := preload("res://ui/ReplayWindow/ReplayButton.gd")
+const MOBILE_BAR_OPEN_ICON := preload("res://ui/ghostsettingsup.png")
+const MOBILE_BAR_CLOSED_ICON := preload("res://ui/ghostsettingsdown.png")
 var _name_color_publish_timer: Timer
 
 signal singleplayer_started()
@@ -96,6 +98,7 @@ var _nudge_xy_step = 0.01
 var _nudge_slider_step = 1.0
 
 var _mobile_sync_guard = false
+var _desktop_mobile_bar = false
 var _pred_dragging = false
 var _pred_default_captured = false
 var _pred_panel_default_pos = Vector2.ZERO
@@ -333,6 +336,7 @@ func _ready():
 		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
 	
 	$"%OpenMenuButton".connect("pressed", self, "pause")
+	$"%MobileBarToggleButton".connect("toggled", self, "_on_mobile_bar_toggled")
 	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
 	$"%MobileReplayButton".connect("pressed", self, "_on_mobile_replay_button_pressed")
 	$"%ArrowsButton".connect("pressed", self, "_on_arrows_button_pressed")
@@ -365,10 +369,7 @@ func _ready():
 
 
 func adjust_ui(is_mobile):
-	$"%ChatButton".visible = is_mobile
-	$"%MobileReplayButton".visible = is_mobile
-	$"%ArrowsButton".visible = is_mobile
-	$"%MobilePredictionsButton".visible = is_mobile
+	_apply_mobile_bar_visibility(is_mobile)
 	$"%MobilePredictionPanel".visible = false
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
@@ -383,6 +384,37 @@ func adjust_ui(is_mobile):
 		$"%PredictionSettingsOpenButton".visible = !$"%OptionsBar".visible
 	_adjust_mobile_advice_labels(is_mobile)
 	_adjust_nudge_window(is_mobile)
+
+func _apply_mobile_bar_visibility(is_mobile):
+	var show_mobile_buttons = is_mobile or _desktop_mobile_bar
+	$"%ChatButton".visible = show_mobile_buttons
+	$"%MobileReplayButton".visible = show_mobile_buttons
+	$"%ArrowsButton".visible = show_mobile_buttons
+	$"%MobilePredictionsButton".visible = show_mobile_buttons
+
+func _on_mobile_bar_toggled(pressed):
+	_desktop_mobile_bar = pressed
+	_apply_mobile_bar_visibility(Global.mobile_ui)
+	if not pressed:
+		$"%MobilePredictionPanel".visible = false
+	$"%MobileBarToggleButton".icon = MOBILE_BAR_OPEN_ICON if pressed else MOBILE_BAR_CLOSED_ICON
+
+func _update_mobile_bar_toggle_position(show_mobile):
+	if show_mobile:
+		return
+	var button = $"%MobileBarToggleButton"
+	if not button.visible:
+		return
+	var label = null
+	for info_name in ["TopInfo", "TopInfoMP", "TopInfoReplay"]:
+		var info = get_node("%" + info_name)
+		if info.visible:
+			label = info
+			break
+	if label == null:
+		return
+	var text_width = label.get_font("font").get_string_size(label.text).x
+	button.rect_position.x = label.rect_position.x + label.rect_size.x * 0.5 + text_width * 0.5 + 6.0
 
 func _adjust_mobile_advice_labels(is_mobile):
 	var adv = $"%AdvantageLabel"
@@ -2170,20 +2202,14 @@ func _process(delta):
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
 	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
 
-	var show_control_info = not Global.mobile_ui and is_instance_valid(game) and not game.game_finished and not Network.rematch_menu
+	var show_control_info = not Global.mobile_ui and not _desktop_mobile_bar and is_instance_valid(game) and not game.game_finished and not Network.rematch_menu
 	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
 	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
 	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
-	var show_mobile = false
-	if Global.has_method("is_mobile_device"):
-		show_mobile = Global.is_mobile_device()
-	if "is_mobile_device" in Global:
-		show_mobile = Global.is_mobile_device
-	if Global.mobile_ui:
-		show_mobile = true
-	if not show_mobile and OS.has_feature("mobile"):
-		show_mobile = true
-	$"%MobileMatchButtons".visible = show_mobile and is_instance_valid(game)
+	var show_mobile = Global.mobile_ui
+	$"%MobileMatchButtons".visible = (show_mobile or _desktop_mobile_bar) and is_instance_valid(game)
+	$"%MobileBarToggleButton".visible = not show_mobile and is_instance_valid(game)
+	_update_mobile_bar_toggle_position(show_mobile)
 	
 	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
 	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused

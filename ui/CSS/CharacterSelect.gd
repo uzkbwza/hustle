@@ -95,6 +95,9 @@ func _ready():
 	$"%GoButton".connect("pressed", self, "go")
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
+	if is_connected("swiped_back", self, "quit"):
+		disconnect("swiped_back", self, "quit")
+	UIManager.connect("swiped_back", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	var dir = Directory.new()
@@ -394,6 +397,7 @@ func _on_button_pressed(button):
 		button.set_pressed_no_signal(false)
 
 func quit():
+	if not visible: return
 	if Network.multiplayer_active:
 		Network.stop_multiplayer()
 #	if SteamLobby.LOBBY_ID != 0:
@@ -458,8 +462,11 @@ func _process(delta):
 		createdButtons = true
 
 	var btts = bttContainer.get_children()
-
-	go_button.rect_position.y = 177 + min(bttContainer.rect_size.y, scroll_container.rect_size.y)
+	
+	# dirt solution for jitter for now. sorry trimay!! - vineraio
+	var grid_y = 177 + min(bttContainer.rect_size.y, scroll_container.rect_size.y)
+	var floor_y = scroll_container.rect_position.y + scroll_container.rect_size.y + 2
+	go_button.rect_position.y = max(grid_y, floor_y)
 	
 	# very dirty fix for the gamesettings shifting with too many mods. we need to rethink the uimanager.
 	game_settings_panel_container.margin_top = -172

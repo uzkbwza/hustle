@@ -156,6 +156,7 @@ func get_tags():
 	return tags
 
 func _on_BackButton_pressed():
+	if not visible: return
 	Global.reload()
 	pass # Replace with function body.
 
