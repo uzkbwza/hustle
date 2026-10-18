@@ -18,8 +18,19 @@ var mods_w_missing_depend = {}
 # path is also stamped onto each mod's metadata dict as `zip_path` (modInfo[2]).
 var zips_by_name = {}
 var active = false
-var charLoaderModDetected = false
-var soupModOptionsDetected = false
+
+# list of mods that have been historically merged with base game code
+# and now should display a warning about it
+# "metadata.name": "metadata.friendly_name"
+var knownMergedModNames = {
+	"char_loader": "Character Loader",
+	"soupModOptions": "Mod Options Menu",
+	"_tri_search_bar": "Better Character Select",
+}
+var hasMergedModInstalled = false
+var shownMergedModWarning = false
+var mergedModsDetected = {}
+
 var charFolders = []
 
 func _read_modded_json_text() -> String:
@@ -242,11 +253,9 @@ func _initMods():
 					# and in zips_by_name for direct order-independent lookup.
 					modInfo[2].zip_path = modFSPath
 					zips_by_name[modInfo[2].name] = modFSPath
-					if metaRes[1].name == "char_loader" and metaRes[1].id == "12345":
-						charLoaderModDetected = true
-						continue
-					if metaRes[1].name == "soupModOptions":
-						soupModOptionsDetected = true
+					if knownMergedModNames.has(metaRes[1].name):
+						mergedModsDetected[metaRes[1].name] = true
+						hasMergedModInstalled = true
 						continue
 					
 					all_mods.append(modInfo)

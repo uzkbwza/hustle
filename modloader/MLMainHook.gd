@@ -11,12 +11,11 @@ func _ready():
 	var menu = _add_modlist()
 	_populate_mod_menu(menu)
 	_addMisingList()
-	if ModLoader.charLoaderModDetected:
-		ModLoader.charLoaderModDetected = false
-		_add_char_loader_warning()
-	if ModLoader.soupModOptionsDetected:
-		ModLoader.soupModOptionsDetected = false
-		_add_soup_mod_options_warning()
+	
+	if ModLoader.hasMergedModInstalled and not ModLoader.shownMergedModWarning:
+		_add_merged_mod_warning()
+		ModLoader.shownMergedModWarning = true
+		
 	if ModLoader.active:
 		_add_mod_options_menu()
 	yield(get_node("../.."), "ready")
@@ -57,39 +56,12 @@ func _add_mod_options_menu():
 
 
 
-func _add_char_loader_warning():
-	var container = addContainer("CharLoaderWarning", "Alert")
-	var close = generateButton("Close")
-	close.connect("pressed", container, "hide")
-	container.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
-	var label = Label.new()
-	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.align = Label.ALIGN_CENTER
-	label.valign = Label.VALIGN_CENTER
-	container.list_container.add_child(label)
-
-	label.text = "The Character Loader mod has been disabled, as its functionality is now present in the base game. To disable this popup, please uninstall the mod."
-	label.autowrap = true
-	container.show()
-
-
-
-func _add_soup_mod_options_warning():
-	var container = addContainer("SoupModOptionsWarning", "Alert")
-	var close = generateButton("Close")
-	close.connect("pressed", container, "hide")
-	container.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
-	var label = Label.new()
-	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.align = Label.ALIGN_CENTER
-	label.valign = Label.VALIGN_CENTER
-	container.list_container.add_child(label)
-
-	label.text = "The Mod Options Menu mod has been disabled, as its functionality is now present in the base game. To disable this popup, please uninstall the mod."
-	label.autowrap = true
-	container.show()
+func _add_merged_mod_warning():
+	var container = load("res://modloader/MergedModAlert.tscn").instance()
+	$"%MainMenu".add_child(container)
+	for mod_name in ModLoader.mergedModsDetected:
+		var friendly_name = ModLoader.knownMergedModNames[mod_name]
+		container.add_mod_name(friendly_name)
 
 
 
