@@ -102,15 +102,15 @@ func _ready():
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	var dir = Directory.new()
 
-	searchBar = load("res://cl_port/searchbar.tscn").instance()
-	searchBar.connect("text_entered", self, "on_searched")
+	searchBar = load("res://ui/CSS/BetterSearchBar.tscn").instance()
 
-	self.add_child(searchBar)
+	add_child(searchBar)
 	# for retro compatibility reasons, copying PlayerInfo over from characters/ (5.0 onwards) to ui/ (4.10 and below)
 	if (dir.file_exists("res://characters/PlayerInfo.tscn") && !dir.file_exists("res://ui/PlayerInfo.tscn")):
 		var pi_scene = load("res://characters/PlayerInfo.tscn").instance()
 		ModLoader.saveScene(pi_scene, "res://ui/PlayerInfo.tscn")
 		pi_scene.queue_free()
+	# TriMay: I don't know why we're doing this... I mean I'm not touching it but I'm confused by it
 
 	#get headers
 	var h = File.new()
@@ -304,16 +304,8 @@ func get_character_data(button):
 	data["name"] = scene.name
 	scene.free()
 	return data
-#
-#func get_display_data(button):
-#	var data = {}
-#	var scene = button.character_scene.instance()
-#	data["name"] = scene.name
-#	data["portrait"] = scene.character_portrait
-#	data["extra_color_1"] = scene.extra_color_1
-#	data["extra_color_2"] = scene.extra_color_2
-#	scene.free()
-#	return data
+
+
 
 func get_display_data(button):
 	var data = {}
@@ -362,25 +354,7 @@ func display_character(id, data):
 	var display = $"%P1Display" if id == 1 else $"%P2Display"
 	display.load_character_data(data)
 
-#func _on_button_pressed(button):
-#	for button in buttons:
-#		button.set_pressed_no_signal(false)
-##	button.set_pressed_no_signal(true)
-#	var data = get_character_data(button)
-#	var display_data = get_display_data(button)
-#	display_character(current_player, display_data)
-#	selected_characters[current_player] = data
-#	if singleplayer and current_player == 1:
-#		current_player = 2
-#		$"%SelectingLabel".text = "P2 SELECT YOUR CHARACTER"
-#		$"%SelectingLabel".modulate = Color.red
-#	else:
-#		for button in buttons:
-#			button.disabled = true
-#		if singleplayer:
-#			$"%GoButton".disabled = false
-#	if !singleplayer:
-#		Network.select_character(data, $"%P1Display".selected_style if current_player == 1 else $"%P2Display".selected_style)
+
 
 func _on_button_pressed(button):
 	if btt_disableTimer > 0 or currentlyLoading:
@@ -492,7 +466,7 @@ func _process(delta):
 			b.visible = (connected and SteamLobby.LOBBY_CHARLOADER_ENABLED) or !connected
 			
 
-	searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
+	# searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
 
 	
 	$"%QuitButton".disabled = currentlyLoading
@@ -699,19 +673,14 @@ func getButtonHeight(_divisions):
 			h = 140 / _divisions
 	return h
 
+
+
 func updateButtonHeight(_divisions):
-#	var height = getButtonHeight(_divisions)
-#	var btt_scene = load("res://ui/CSS/CharacterButton.tscn").instance()
-#	btt_scene.set_custom_minimum_size(Vector2(60, height))
-#	ModLoader.saveScene(btt_scene, "res://ui/CSS/CharacterButton.tscn")
-#
-#	var r = self.get_node("%CharacterButtonContainer")
-##	var btts = r.get_children()
-##	for b in btts:
-##		b.set_custom_minimum_size(Vector2(60, 0))
-##		b.set_size(Vector2(60, height))
-#	r.set_size(Vector2(300, height))
+	# There was a bunch of commented out code here
+	# (depricated, kept for mod compatibility)
 	pass
+
+
 
 func async_loadButtonChar(button):
 	var miss = loadListChar(name_to_index[button.name])
@@ -822,18 +791,11 @@ var createdButtons = false
 var buffer_go = false
 
 func on_searched(text):
-	var btts = bttContainer.get_children()
-	for j in len(btts):
-		var b = btts[j]
-		if (!b.is_visible()):
-			continue
+	# Now handled by BetterSearchBar
+	# (depricated, kept for mod compatibility)
+	pass
 
-		# set buttons positions when theres more than 1 row (sorry for the bullshit formula)
-		var searchFound = (b.text.to_lower().find(text.to_lower()) != -1 or searchBar.text == "")
 
-		if searchFound:
-
-			b.grab_focus()
 
 ## General helper functions ##
 #

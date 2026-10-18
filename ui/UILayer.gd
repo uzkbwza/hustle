@@ -150,10 +150,11 @@ func _enter_tree():
 	if Global.character_select_node == null:
 		Global.character_select_node = $"%CharacterSelect"
 	else:
+		var css_index = $"%CharacterSelect".get_index()
 		$"%CharacterSelect".free()
 		var css: Node = Global.character_select_node
 		add_child(css)
-		move_child(css, min(15, get_child_count() - 1))
+		move_child(css, clamp(css_index, 0, get_child_count() - 1))
 		css.name = "CharacterSelect"
 		css.unique_name_in_owner = true
 		Global._restore_character_select_owners(css, owner)

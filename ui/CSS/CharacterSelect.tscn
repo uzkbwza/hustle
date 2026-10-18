@@ -50,7 +50,7 @@ size_flags_horizontal = 5
 size_flags_vertical = 5
 custom_constants/vseparation = 1
 custom_constants/hseparation = 1
-columns = 9
+columns = 8
 
 [node name="GoButton" type="Button" parent="."]
 unique_name_in_owner = true

@@ -3069,6 +3069,10 @@ margin_bottom = 90.0
 theme = ExtResource( 4 )
 text = "Quit"
 
+[node name="CharacterSelect" parent="UILayer" instance=ExtResource( 12 )]
+unique_name_in_owner = true
+visible = false
+
 [node name="OptionsContainer" type="PanelContainer" parent="UILayer"]
 unique_name_in_owner = true
 visible = false
@@ -3667,10 +3671,6 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 7 )
-
-[node name="CharacterSelect" parent="UILayer" instance=ExtResource( 12 )]
-unique_name_in_owner = true
-visible = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer"]
 visible = false

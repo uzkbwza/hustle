@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=47 format=2]
+[gd_resource type="Theme" load_steps=49 format=2]
 
 [ext_resource path="res://ui/default_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/checkbutton1.png" type="Texture" id=2]
@@ -53,6 +53,27 @@ border_width_left = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=43]
+bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[sub_resource type="StyleBoxFlat" id=44]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=45]
+bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[sub_resource type="StyleBoxFlat" id=48]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_top = 1
+border_width_bottom = 2
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=49]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_top = 4
+border_width_bottom = 2
+border_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 
 [sub_resource type="StyleBoxFlat" id=18]
 bg_color = Color( 1, 1, 1, 1 )
@@ -156,15 +177,6 @@ border_color = Color( 0.8, 0.8, 0.8, 0 )
 [sub_resource type="StyleBoxFlat" id=19]
 bg_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="StyleBoxFlat" id=43]
-bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
-
-[sub_resource type="StyleBoxFlat" id=44]
-bg_color = Color( 1, 1, 1, 1 )
-
-[sub_resource type="StyleBoxFlat" id=45]
-bg_color = Color( 0.470588, 0.470588, 0.470588, 1 )
-
 [sub_resource type="StyleBoxFlat" id=46]
 bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 border_width_left = 1
@@ -202,6 +214,17 @@ CheckButton/icons/on_disabled = ExtResource( 6 )
 ColorPicker/constants/sv_height = 60
 ColorPicker/constants/sv_width = 60
 HBoxContainer/constants/separation = 1
+HScrollBar/icons/decrement = null
+HScrollBar/icons/decrement_highlight = null
+HScrollBar/icons/decrement_pressed = null
+HScrollBar/icons/increment = null
+HScrollBar/icons/increment_highlight = null
+HScrollBar/icons/increment_pressed = null
+HScrollBar/styles/grabber = SubResource( 43 )
+HScrollBar/styles/grabber_highlight = SubResource( 44 )
+HScrollBar/styles/grabber_pressed = SubResource( 45 )
+HScrollBar/styles/scroll = SubResource( 48 )
+HScrollBar/styles/scroll_focus = SubResource( 49 )
 HSlider/icons/grabber = ExtResource( 3 )
 HSlider/icons/grabber_disabled = ExtResource( 3 )
 HSlider/icons/grabber_highlight = ExtResource( 3 )
