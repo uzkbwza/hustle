@@ -10,6 +10,8 @@ onready var bg_texture_rects = {
 	2: $"%BackgroundRight",
 }
 
+export var default_background : Texture
+
 
 
 func set_style_params(id, params):
@@ -38,6 +40,8 @@ func apply_style(id, style):
 
 
 func set_border_background(id, tex):
+	if tex == null:
+		tex = default_background
 	if bg_texture_rects.has(id):
 		bg_texture_rects[id].texture = tex
 
@@ -53,7 +57,7 @@ func show_menu_art():
 	$LeftChar.visible = false
 	$RightChar.visible = false
 	$ColorRect.visible = true
-	
+
 
 
 func show_character_art():

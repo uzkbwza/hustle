@@ -698,21 +698,22 @@ func _update_import_warning():
 		return
 	var keys = []
 	for k in errorMessage.keys():
-		if !(k in keys):
-			keys.append(k)
+		var txt = k
+		if $"%CharacterButtonContainer".has_node(k):
+			txt = $"%CharacterButtonContainer".get_node(k).text
+		if !(txt in keys):
+			keys.append(txt)
 	for k in importWarnings.keys():
-		if !(k in keys):
-			keys.append(k)
+		var txt = k
+		if $"%CharacterButtonContainer".has_node(k):
+			txt = $"%CharacterButtonContainer".get_node(k).text
+		if !(txt in keys):
+			keys.append(txt)
 	if keys.empty():
 		importWarningLabel.text = ""
 		return
-	var joined = ""
-	var first = true
-	for n in keys:
-		if !first:
-			joined += ", "
-		joined += n
-		first = false
+	var joined = ",".join(keys)
+	
 	importWarningLabel.text = "[!] Broken imports: " + joined + "  --  modder, fix your .import files. user: try Options > Delete Character Cache"
 
 # this function encapsulates character selection, to be called either when a character finishes loading or when pressing a base character button
