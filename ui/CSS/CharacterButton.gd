@@ -1,16 +1,16 @@
 extends Button
 
 export(PackedScene) var character_scene
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+
+onready var char_select = get_node("../../../..") # get_parent x 4
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	connect("visibility_changed", self, "on_visibility_changed")
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+
+func on_visibility_changed():
+	if is_visible_in_tree():
+		var display_data = char_select.get_display_data(self)
+		$ClipContents/TextureRect.texture = display_data["portrait"]

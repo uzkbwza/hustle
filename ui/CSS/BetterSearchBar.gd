@@ -1,19 +1,20 @@
-extends LineEdit
+extends Control
 
 
 var char_container
-onready var show_all_button = $ShowAllButton
-onready var random_button = $RandomButton
-onready var clear_button = $ClearButton
-onready var options_button = $OptionsButton
-onready var options_menu = $OptionsContainer/OptionsList
-onready var options_panel = $OptionsContainer
+onready var line_edit = $"%LineEdit"
+onready var show_all_button = $"%ShowAllButton"
+onready var random_button = $"%RandomButton"
+onready var clear_button = $"%ClearButton"
+onready var options_button = $"%OptionsButton"
+onready var options_menu = $"%OptionsList"
+onready var options_panel = $"%OptionsContainer"
 
 
 func _ready():
 	char_container = get_parent().get_node("%CharacterButtonContainer")
-	connect("text_changed", self, "_on_text_changed")
 	connect("visibility_changed", self, "_on_visibility_changed")
+	line_edit.connect("text_changed", self, "_on_text_changed")
 	random_button.connect("pressed", self, "pick_random")
 	clear_button.connect("pressed", self, "clear_search")
 	options_button.connect("pressed", self, "toggle_options_list")
@@ -26,6 +27,7 @@ func _ready():
 func _process(delta):
 	visible = true
 	if is_visible_in_tree():
+		var text : String = line_edit.text
 		var has_no_text : bool = (text != "")
 		clear_button.visible = has_no_text
 		show_all_button.visible = has_no_text
@@ -38,7 +40,8 @@ func _process(delta):
 
 
 func _on_text_changed(new_text):
-	var lower_text = text.to_lower()
+	var text : String = line_edit.text
+	var lower_text : = text.to_lower()
 	for child in char_container.get_children():
 		if child is Button:
 			child.modulate = Color(1, 1, 1, 1) if (text == "") or (lower_text in child.text.to_lower()) else Color(0.5, 0.5, 0.5, 0.25)
@@ -71,7 +74,7 @@ func pick_random():
 
 
 func clear_search():
-	text = ""
+	line_edit.text = ""
 	_on_text_changed("")
 
 
