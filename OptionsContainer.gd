@@ -9,6 +9,25 @@ func _ready():
 	attach_global_toggle($"%ShowBorderArtButton", "show_border_art")
 	
 	Global.connect("option_changed", self, "on_option_changed")
+	
+	UIManager.register_menu(self, _ui_elements())
+
+func _ui_elements() -> Array:
+	return [
+		$"%FullscreenButton", $"%CapFramerateButton", $"%VsyncButton",
+		$"%HitboxesButton", $"%ExtraInfoButton", $"%HealthCountButton",
+		$"%NextTurnHudButton", $"%ShowNextTurnOnCharsButton", $"%LastMoveIndicatorButton",
+		$"%ProjectileOwnersButton", $"%PlaybackHotkeysRequireWindowButton",
+		$"%SpeedLinesButton", $"%TimerSoundButton", $"%ExtraFreezeFrames",
+		$"%PlaybackControls", $"%EnableEmotes", $"%EnableStyleColorsButton",
+		$"%EnableAurasButton", $"%EnableHitsparksButton", $"%ShowCommunityEventsButton",
+		$"%ShowBorderArtButton", $"%ForceAltUIButton", $"%MusicButton",
+		$"%EnableReplayBackups", $"%AutoFCButton", $"%XYPlotInvertSnapButton",
+		$"%MasterSlider", $"%FXSlider", $"%UISlider", $"%MusicSlider",
+		$"%CustomName", $"%CustomNameReset", $"%NameHueSlider",
+		$"%NameSaturationSlider", $"%NameColorReset",
+		$"%ModToggle", $"%OptionsBackButton",
+	]
 
 
 

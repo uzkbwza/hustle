@@ -1,47 +1,30 @@
 extends Node
 
 const SIZE_SCALE = 1.25
-const VIEWPORT_W = 640
-const VIEWPORT_H = 360
 const MIN_BUTTON_HEIGHT = 24
 const MAX_BUTTON_HEIGHT = 32
 const MIN_BUTTON_WIDTH = 24
 const MIN_GAP = 2
 const SCROLL_DRAG_THRESHOLD = 6.0
 
-const WHITELIST = ["PausePanel"]
-const BLACKLIST = [
-	"SteamLobby", "Credits", "SteamLobbyList", "SuperDim", "P1SuperTexture", "P2SuperTexture",
-	"WinLabel", "ExtraInfoContainer", "BgCircle", "DebugContainer", "ButtonSoundPlayer", "TurnButtons",
-	"HudLayer", "ColorPickers", "SoupModOptionsWarning", "CharLoaderWarning", "ModMissingContainer",
-	"ModInfoContainer", "ModListContainer", "Lobby", "TitleBar", "DirectConnectLobby",
-]
-const BLACKLIST_CANVAS_ONLY = ["SteamLobby", "Credits", "SteamLobbyList"]
-
 signal swiped_back()
 
-var _originals = {}
+var _menus = {}
+var _elements = {}
+
 var _mobile = false
 var _force_button = null
-var _pending_added = []
-var _flush_queued = false
 var _drag_scroll = null
 var _drag_active = false
 var _drag_start = Vector2()
 var _drag_last = Vector2()
-var _next_sweep = 3000
-var _new_record_count = 0
-var _skip_cache = {}
-var _sorted_pass = {}
-var _base_cache = {}
-
-func _enter_tree():
-	get_tree().connect("node_added", self, "_on_node_added")
-	get_tree().connect("node_removed", self, "_on_node_removed")
+var _drag_touch_id = -1
 
 func _exit_tree():
-	get_tree().disconnect("node_added", self, "_on_node_added")
-	get_tree().disconnect("node_removed", self, "_on_node_removed")
+	if is_inside_tree():
+		var vp = get_viewport()
+		if vp != null and vp.is_connected("size_changed", self, "_on_viewport_resized"):
+			vp.disconnect("size_changed", self, "_on_viewport_resized")
 	if get_tree().is_connected("node_added", self, "_on_force_button_added"):
 		get_tree().disconnect("node_added", self, "_on_force_button_added")
 	if Global.is_connected("mobile_ui_changed", self, "_on_mobile_ui_changed"):
@@ -52,9 +35,416 @@ func _exit_tree():
 func _ready():
 	Global.connect("mobile_ui_changed", self, "_on_mobile_ui_changed")
 	Global.connect("option_changed", self, "_on_option_changed")
+	var vp = get_viewport()
+	if vp != null and not vp.is_connected("size_changed", self, "_on_viewport_resized"):
+		vp.connect("size_changed", self, "_on_viewport_resized")
 	_mobile = Global.mobile_ui
-	call_deferred("_delayed_apply_all")
 	call_deferred("_find_force_button")
+
+func _on_viewport_resized():
+	if _mobile:
+		_apply_all()
+
+func register_menu(menu, elements: Array = []) -> void:
+	if menu == null:
+		return
+	var id = menu.get_instance_id()
+	if not _menus.has(id):
+		_menus[id] = weakref(menu)
+		if not menu.is_connected("tree_exiting", self, "_on_menu_exiting"):
+			menu.connect("tree_exiting", self, "_on_menu_exiting", [id])
+	for el in elements:
+		_dispatch_element(el)
+	for eid in _elements:
+		var rec = _elements[eid]
+		if rec.menu == 0 and _is_under(menu, rec):
+			rec.menu = id
+	_apply_menu(menu)
+
+func _dispatch_element(el) -> void:
+	var spec = _spec(el)
+	if spec == null:
+		return
+	var node = spec.node
+	if spec.kind != "":
+		_add_element(node, spec.kind, spec.clamp, spec.weight, spec.position, spec.scale)
+	elif node is Slider:
+		scale_slider(node, spec.weight, spec.position, spec.scale)
+	elif node is SpinBox:
+		scale_spinbox(node, spec.weight, spec.position, spec.scale)
+	elif node is LineEdit:
+		scale_input(node, spec.weight, spec.position, spec.scale)
+	elif node is BaseButton and not (node is TextureButton):
+		scale_button(node, spec.weight, spec.position, spec.scale)
+	elif node is BoxContainer:
+		scale_gap(node, spec.weight, spec.position, spec.scale)
+	elif node is Control:
+		scale_control(node, spec.weight, spec.position, spec.scale)
+
+func register_control(node: Control, elements: Array = []) -> void:
+	for el in elements:
+		_dispatch_element(el)
+	if node != null:
+		var rec = _elements.get(node.get_instance_id(), null)
+		if rec != null:
+			rec.menu = _owning_menu(node)
+
+func unregister_menu(menu: Control) -> void:
+	if menu == null:
+		return
+	var id = menu.get_instance_id()
+	_menus.erase(id)
+	_forget_elements_under(menu, true)
+
+func _on_menu_exiting(id):
+	_menus.erase(id)
+	for eid in _elements.keys():
+		if _elements[eid].menu == id:
+			_elements[eid].menu = 0
+
+func _is_under(menu, rec):
+	var node = rec.node.get_ref()
+	if node == null or menu == null:
+		return false
+	return menu == node or menu.is_a_parent_of(node)
+
+func scale_button(node: BaseButton, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "min", true, weight, position, rect_scale)
+
+func scale_slider(node: Slider, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "min", true, weight, position, rect_scale)
+
+func scale_spinbox(node: SpinBox, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "min", true, weight, position, rect_scale)
+	var line_edit = node.get_line_edit()
+	if line_edit != null:
+		scale_input(line_edit, weight, position, rect_scale)
+
+func scale_input(node: LineEdit, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "min", true, weight, position, rect_scale)
+
+func scale_control(node: Control, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "min", false, weight, position, rect_scale)
+
+func scale_gap(node: BoxContainer, weight := 1.0, position = null, rect_scale = null) -> void:
+	_add_element(node, "gap", false, weight, position, rect_scale)
+
+func reapply_menu(menu: Control) -> void:
+	if menu == null:
+		return
+	var id = menu.get_instance_id()
+	for eid in _elements:
+		var rec = _elements[eid]
+		if rec.menu == id or _is_under(menu, rec):
+			rec.menu = id
+			if _mobile:
+				_apply_element(rec)
+			else:
+				_restore_element(rec)
+
+func set_menu_weight(menu: Control, weight: float) -> void:
+	if menu == null:
+		return
+	var id = menu.get_instance_id()
+	for eid in _elements:
+		var rec = _elements[eid]
+		if rec.menu == id or _is_under(menu, rec):
+			rec.menu = id
+			rec.weight = weight
+			if _mobile:
+				_apply_element(rec)
+
+func _spec(el):
+	if el == null:
+		return null
+	var spec = {
+		"node": null,
+		"kind": "",
+		"clamp": false,
+		"weight": 1.0,
+		"position": null,
+		"scale": null,
+	}
+	if el is Dictionary:
+		spec.node = el.get("node", null)
+		spec.kind = el.get("kind", "")
+		spec.weight = float(el.get("weight", 1.0))
+		spec.position = _as_vector2(el.get("position", null))
+		spec.scale = _as_vector2(el.get("scale", el.get("rect_scale", null)))
+		if not el.has("kind") and el.has("clamp"):
+			spec.clamp = bool(el.get("clamp"))
+	elif el is Control:
+		spec.node = el
+	else:
+		return null
+	if spec.node == null or not is_instance_valid(spec.node):
+		return null
+	if spec.kind != "":
+		spec.clamp = spec.kind == "min" and spec.node is BaseButton
+	elif spec.node is Slider or spec.node is SpinBox or spec.node is LineEdit or (spec.node is BaseButton and not (spec.node is TextureButton)):
+		spec.clamp = true
+	return spec
+
+func _as_vector2(value):
+	if value == null:
+		return null
+	if value is Vector2:
+		return value
+	if value is Array and value.size() == 2:
+		return Vector2(value[0], value[1])
+	if value is int or value is float:
+		return Vector2(value, value)
+	return null
+
+func _add_element(node, kind, use_clamp: bool, weight: float, position = null, rect_scale = null):
+	if node == null or not is_instance_valid(node):
+		return
+	var id = node.get_instance_id()
+	var rec = _elements.get(id)
+	if rec == null:
+		rec = {
+			"node": weakref(node),
+			"kind": kind,
+			"clamp": use_clamp,
+			"menu": 0,
+			"weight": weight,
+			"scale": rect_scale,
+			"position": position,
+			"orig": _read_orig(node, kind),
+			"orig_pos": node.rect_position if node is Control else Vector2(),
+			"nudged": false,
+		}
+		if node is Control:
+			rec["orig_size"] = node.rect_size
+			rec["orig_margin"] = Rect2(node.margin_left, node.margin_top, node.margin_right, node.margin_bottom)
+		_elements[id] = rec
+		if not node.is_connected("tree_exiting", self, "_on_element_exiting"):
+			node.connect("tree_exiting", self, "_on_element_exiting", [id])
+		if node is Control and not node.is_connected("resized", self, "_on_element_resized"):
+			node.connect("resized", self, "_on_element_resized", [id])
+	else:
+		rec.weight = weight
+		if rect_scale != null:
+			rec.scale = rect_scale
+		if position != null:
+			rec.position = position
+	if rec.menu == 0:
+		rec.menu = _owning_menu(node)
+	if _mobile:
+		_apply_element(rec)
+
+func _read_orig(node, kind):
+	if kind == "gap":
+		return float(node.get_constant("separation"))
+	return node.rect_min_size
+
+func _owning_menu(node):
+	var n = node
+	while n != null:
+		var id = n.get_instance_id()
+		if _menus.has(id):
+			return id
+		n = n.get_parent()
+	return 0
+
+func _on_element_exiting(id):
+	_elements.erase(id)
+
+func _forget_elements_under(menu, restore: bool):
+	for eid in _elements.keys():
+		var rec = _elements[eid]
+		var node = rec.node.get_ref()
+		if node == null or node == menu or (menu != null and menu.is_a_parent_of(node)):
+			if restore:
+				_restore_element(rec)
+			_elements.erase(eid)
+
+func _apply_menu(menu):
+	for eid in _elements:
+		var rec = _elements[eid]
+		if rec.menu == menu.get_instance_id() or _is_under(menu, rec):
+			rec.menu = menu.get_instance_id()
+			if _mobile:
+				_apply_element(rec)
+
+func _apply_all():
+	for eid in _elements:
+		_apply_element(_elements[eid])
+
+func _restore_all():
+	for eid in _elements:
+		_restore_element(_elements[eid])
+	for eid in _elements:
+		var rec = _elements[eid]
+		var node = rec.node.get_ref()
+		if node != null and is_instance_valid(node) and node is Control and rec.has("orig_size"):
+			_restore_size(node, rec.orig_size)
+
+func _apply_element(rec):
+	var node = rec.node.get_ref()
+	if node == null or not is_instance_valid(node):
+		return
+	if rec.kind == "gap":
+		var orig = float(rec.orig)
+		var target = max(orig * SIZE_SCALE, MIN_GAP)
+		var sep = int(round(orig + (target - orig) * rec.weight))
+		node.add_constant_override("separation", sep)
+		_apply_position(rec, node)
+		return
+	var orig = rec.orig
+	if not (orig is Vector2):
+		return
+	node.rect_min_size = orig
+	var combined = node.get_combined_minimum_size()
+	var gain = Vector2(SIZE_SCALE, SIZE_SCALE)
+	var target
+	if rec.clamp:
+		var min_x = max(combined.x, MIN_BUTTON_WIDTH)
+		var min_y = clamp(combined.y * gain.y, MIN_BUTTON_HEIGHT, MAX_BUTTON_HEIGHT)
+		target = Vector2(max(min_x, orig.x), max(min_y, orig.y))
+	else:
+		target = Vector2(max(combined.x * gain.x, orig.x), max(combined.y * gain.y, orig.y))
+	var scaled = orig + (target - orig) * rec.weight
+	if rec.scale != null:
+		scaled = Vector2(scaled.x * rec.scale.x, scaled.y * rec.scale.y)
+	scaled = _fit_size_to_parent(node, scaled, orig)
+	node.rect_min_size = scaled
+	_apply_position(rec, node)
+
+func _fit_size_to_parent(node, size: Vector2, orig) -> Vector2:
+	var bounds = _parent_bounds(node)
+	if bounds != null:
+		if size.x > bounds.x:
+			size.x = max(bounds.x, orig.x)
+		if size.y > bounds.y:
+			size.y = max(bounds.y, orig.y)
+	return size
+
+func _apply_position(rec, node):
+	if not (node is Control):
+		return
+	if rec.position != null:
+		node.rect_position = rec.position
+	elif _has_registered_ancestor(node):
+		return
+	elif _layout_managed(node):
+		return
+	elif _recenter_anchored(node, rec):
+		return
+	_clamp_to_screen(node, rec)
+
+func _recenter_anchored(node, rec) -> bool:
+	if abs(node.anchor_left - 0.5) >= 0.01 or abs(node.anchor_right - 0.5) >= 0.01 or abs(node.anchor_top - 0.5) >= 0.01 or abs(node.anchor_bottom - 0.5) >= 0.01:
+		return false
+	var margin = rec.get("orig_margin", Rect2(node.margin_left, node.margin_top, node.margin_right, node.margin_bottom))
+	var h_centered = abs(margin.position.x + margin.size.x) < 0.01
+	var v_centered = abs(margin.position.y + margin.size.y) < 0.01
+	if not h_centered and not v_centered:
+		return false
+	var parent_rect = node.get_parent().get_rect() if node.get_parent() is Control else node.get_viewport().get_visible_rect()
+	var center = parent_rect.position + parent_rect.size * 0.5
+	var pos = node.rect_position
+	if h_centered:
+		pos.x = center.x - node.rect_size.x * 0.5
+	if v_centered:
+		pos.y = center.y - node.rect_size.y * 0.5
+	if pos != node.rect_position:
+		node.rect_position = pos
+	return true
+
+func _layout_managed(node):
+	var n = node.get_parent()
+	while n != null and n != get_tree().root:
+		if n is Container:
+			return true
+		n = n.get_parent()
+	return false
+
+func _clamp_to_screen(node, rec):
+	if not node.is_inside_tree():
+		return
+	var vp = node.get_viewport()
+	if vp == null:
+		return
+	var screen = vp.get_visible_rect()
+	var rect = node.get_global_rect()
+	var max_pos = screen.position + screen.size - rect.size
+	var target = rect.position
+	target.x = clamp(target.x, screen.position.x, max(screen.position.x, max_pos.x))
+	target.y = clamp(target.y, screen.position.y, max(screen.position.y, max_pos.y))
+	if target != rect.position:
+		node.rect_global_position = target
+		rec.nudged = true
+
+func _has_registered_ancestor(node):
+	var n = node.get_parent()
+	while n != null and n != get_tree().root:
+		if _elements.has(n.get_instance_id()):
+			return true
+		n = n.get_parent()
+	return false
+
+func _on_element_resized(id):
+	if not _mobile:
+		return
+	var rec = _elements.get(id)
+	if rec == null:
+		return
+	var node = rec.node.get_ref()
+	if node != null and is_instance_valid(node):
+		_apply_position(rec, node)
+
+func _parent_bounds(node):
+	var parent = node.get_parent()
+	if parent is Control and not (parent is Container) and parent.rect_size.x > 0 and parent.rect_size.y > 0:
+		return parent.rect_size
+	return null
+
+func _restore_element(rec):
+	var node = rec.node.get_ref()
+	if node == null or not is_instance_valid(node):
+		return
+	if rec.kind == "gap":
+		node.remove_constant_override("separation")
+		if node.get_constant("separation") != rec.orig:
+			node.add_constant_override("separation", rec.orig)
+	else:
+		if rec.orig is Vector2:
+			node.rect_min_size = rec.orig
+	if (rec.position != null or rec.nudged) and node is Control:
+		node.rect_position = rec.orig_pos
+		rec.nudged = false
+
+func _restore_size(node, orig_size):
+	if _layout_managed(node):
+		return
+	if node.rect_size != orig_size:
+		node.rect_size = orig_size
+
+func _on_mobile_ui_changed(mobile):
+	if _mobile == mobile:
+		return
+	_mobile = mobile
+	if mobile:
+		_apply_all()
+	else:
+		_restore_all()
+	_update_force_button()
+
+func _on_option_changed(option, value):
+	if option == "force_alt_ui":
+		_update_force_button()
+
+func _update_force_button():
+	var btn = _force_button.get_ref() if _force_button else null
+	if btn and is_instance_valid(btn):
+		btn.set_pressed_no_signal(Global.force_alt_ui)
+		var alt_text = "desktop" if Global.mobile_ui else "mobile"
+		btn.text = "force " + alt_text + " ui layout"
+
+func hide_on_device(node: CanvasItem) -> void:
+	if node != null and Global.is_mobile_device:
+		node.visible = false
 
 func _find_force_button():
 	var btn = get_node_or_null("%ForceAltUIButton")
@@ -83,611 +473,6 @@ func _on_force_button_added(node):
 		_force_button = weakref(node)
 		_update_force_button()
 
-func _on_node_removed(node):
-	if node == _drag_scroll:
-		_drag_scroll = null
-		_drag_active = false
-	_base_cache.clear()
-	_skip_cache.clear()
-	if _force_button and _force_button.get_ref() == node:
-		_force_button = null
-		call_deferred("_find_force_button")
-
-func _maybe_sweep():
-	if _originals.size() > _next_sweep:
-		_sweep_originals()
-		_next_sweep = _originals.size() + 3000
-
-func _sweep_originals():
-	var dead = []
-	for id in _originals:
-		var rec = _originals[id]
-		if not rec.node or rec.node.get_ref() == null:
-			dead.append(id)
-	for id in dead:
-		_originals.erase(id)
-
-func _delayed_apply_all():
-	var attempts := 0
-	while attempts < 3:
-		yield(get_tree(), "idle_frame")
-		_mobile = Global.mobile_ui
-		_apply_all()
-		attempts += 1
-
-func _on_option_changed(option, value):
-	if option == "force_alt_ui":
-		_update_force_button()
-
-func _update_force_button():
-	var btn = _force_button.get_ref() if _force_button else null
-	if btn and is_instance_valid(btn):
-		btn.set_pressed_no_signal(Global.force_alt_ui)
-		var alt_text = "desktop" if Global.mobile_ui else "mobile"
-		btn.text = "force " + alt_text + " ui layout"
-
-func _on_mobile_ui_changed(mobile):
-	if _mobile == mobile:
-		return
-	_mobile = mobile
-	if mobile:
-		call_deferred("_apply_all")
-	else:
-		call_deferred("_restore_all")
-	_update_force_button()
-
-func _on_node_added(node):
-	if Global.is_mobile_device and _is_device_hidden_button(node):
-		node.visible = false
-	if not _mobile:
-		if node.get_instance_id() in _originals:
-			_restore_node(_originals[node.get_instance_id()])
-		return
-	if not node is Control:
-		return
-	if _skip_subtree(node):
-		return
-	_pending_added.append(node)
-	if _flush_queued:
-		return
-	_flush_queued = true
-	call_deferred("_flush_added")
-
-func _flush_added():
-	_flush_queued = false
-	var nodes = _pending_added
-	_pending_added = []
-	if not _mobile or nodes.empty():
-		return
-	var owners = {}
-	for n in nodes:
-		if not is_instance_valid(n):
-			continue
-		var owner = n if (_is_root(n) or _is_self_grown(n)) else _root_of(n)
-		if owner == null:
-			owner = n
-		owners[owner.get_instance_id()] = owner
-	for id in owners:
-		_apply_subtree(owners[id])
-
-func _root_of(node):
-	var n = node.get_parent()
-	while n and n != get_tree().root:
-		if _is_root(n) or _is_self_grown(n):
-			return n
-		n = n.get_parent()
-	return null
-
-func _apply_all():
-	if not _mobile:
-		return
-	_apply_subtree(get_tree().root)
-
-func _apply_subtree(node):
-	if not _mobile:
-		return
-	if not is_instance_valid(node):
-		return
-	_sorted_pass = {}
-	_capture_subtree(node)
-	_layout_subtree(node)
-
-func _capture_subtree(node):
-	var is_control = node is Control
-	if is_control:
-		if _skip_subtree(node):
-			return
-		_ensure_record(node)
-	for child in node.get_children():
-		_capture_subtree(child)
-
-func _layout_subtree(node):
-	var is_control = node is Control
-	if is_control:
-		if _skip_subtree(node):
-			return
-	for child in node.get_children():
-		_layout_subtree(child)
-	if is_control:
-		_apply_node(node)
-
-func _ensure_record(node):
-	var id = node.get_instance_id()
-	if not (id in _originals):
-		_originals[id] = _capture(node)
-		_base_cache.clear()
-		_new_record_count += 1
-		if _new_record_count > 128:
-			_new_record_count = 0
-			_maybe_sweep()
-
-func _apply_node(node):
-	var id = node.get_instance_id()
-	var record = _originals[id]
-	_restore_node(record)
-	_modify(node, record)
-	record.active = true
-	if _is_self_grown(node):
-		_regrow_self(node)
-
-func _capture(node):
-	var record = {}
-	record.node = weakref(node)
-	if (node is BaseButton and not (node is TextureButton)) or node is LineEdit or _is_icon_button(node) or node is Slider:
-		record.orig_min = node.rect_min_size
-	elif node is BoxContainer:
-		record.orig_sep = node.get_constant("separation")
-	elif node is Control and not (node is Container) and _self_grown_child(node) != null:
-		record.orig_min = node.rect_min_size
-		record.orig_size = node.rect_size
-		record.grow_parent = true
-	if _is_root(node) or _is_self_grown(node) or _is_plain_root_child(node):
-		record.orig_margin_left = node.margin_left
-		record.orig_margin_top = node.margin_top
-		record.orig_margin_right = node.margin_right
-		record.orig_margin_bottom = node.margin_bottom
-		record.orig_clip = node.rect_clip_content
-		record.orig_rect = Rect2(node.rect_position, node.rect_size)
-	return record
-
-func _modify(node, record):
-	if (node is BaseButton and not (node is TextureButton)) or node is LineEdit or _is_icon_button(node) or node is Slider:
-		var combined = node.get_combined_minimum_size()
-		var min_x = max(combined.x, MIN_BUTTON_WIDTH)
-		var min_y = clamp(combined.y * SIZE_SCALE, MIN_BUTTON_HEIGHT, MAX_BUTTON_HEIGHT)
-		record.mod_min = Vector2(max(min_x, record.orig_min.x), max(min_y, record.orig_min.y))
-		node.rect_min_size = record.mod_min
-	elif node is BoxContainer:
-		record.mod_sep = max(record.orig_sep * SIZE_SCALE, MIN_GAP)
-		node.add_constant_override("separation", record.mod_sep)
-	elif "grow_parent" in record:
-		_grow_parent_to_fit(node, _self_grown_child(node))
-	if _is_root(node):
-		_apply_root(node, record)
-
-func _is_device_hidden_button(node):
-	if not (node is BaseButton):
-		return false
-	if node.name == "SteamMultiplayerButton":
-		return true
-
-func _whitelisted(node):
-	if node.name in WHITELIST:
-		return true
-	for pattern in WHITELIST:
-		if node.name.match(pattern):
-			return true
-	return false
-
-func _blacklisted(node):
-	var nm = node.name
-	if nm in BLACKLIST:
-		if nm in BLACKLIST_CANVAS_ONLY:
-			return node.get_parent() is CanvasLayer
-		return true
-	for pattern in BLACKLIST:
-		if nm.match(pattern):
-			return true
-	return false
-
-func _skip_subtree(node):
-	var id = node.get_instance_id()
-	if id in _skip_cache:
-		var cached = _skip_cache[id]
-		if cached == true:
-			return true
-		if cached == false:
-			return false
-	var n = node
-	while n and n != get_tree().root:
-		if _whitelisted(n):
-			_skip_cache[id] = false
-			return false
-		if n is ActionUIData:
-			_skip_cache[id] = false
-			return false
-		if n is ActionButtons:
-			_skip_cache[id] = true
-			return true
-		if n is Game:
-			_skip_cache[id] = true
-			return true
-		if n.name == "GameUI":
-			var res = (n != node)
-			_skip_cache[id] = res
-			return res
-		if _blacklisted(n):
-			_skip_cache[id] = true
-			return true
-		n = n.get_parent()
-	_skip_cache[id] = false
-	return false
-
-func _is_root(node):
-	if node is Window:
-		return true
-	if node.get_parent() is CanvasLayer:
-		if node.name in ["GameUI", "HudLayer", "SuperDim", "P1SuperTexture", "P2SuperTexture", "WinLabel", "ExtraInfoContainer", "BgCircle", "DebugContainer", "ButtonSoundPlayer"]:
-			return false
-		return true
-	if node.name == "PausePanel":
-		return true
-	return false
-
-func _is_self_grown(node):
-	if _is_root(node):
-		return false
-	if not (node is Container):
-		return false
-	var p = node.get_parent()
-	if p == null or p == get_tree().root:
-		return false
-	if not (p is Control):
-		return false
-	if p is Container or _is_root(p):
-		return false
-	return true
-
-func _is_plain_root_child(node):
-	var p = node.get_parent()
-	if p == null:
-		return false
-	if not _is_root(p):
-		return false
-	return not (p is Container)
-
-func _is_growable(node):
-	if node is Container:
-		return true
-	return (node is BaseButton and not (node is TextureButton)) or node is LineEdit or _is_icon_button(node) or node is Slider
-
-func _is_icon_button(node):
-	if not (node is TextureButton):
-		return false
-	var p = node.get_parent()
-	return p != null and p.name == "TitleBar"
-
-func _self_grown_child(node):
-	for c in node.get_children():
-		if c is Container and _is_self_grown(c):
-			return c
-	return null
-
-func _grow_parent_to_fit(parent, child):
-	if child == null or not (parent is Control) or parent is Container or _is_root(parent):
-		return
-	var pid = parent.get_instance_id()
-	if not (pid in _originals):
-		return
-	var rec = _originals[pid]
-	if not ("grow_parent" in rec):
-		return
-	var base = _base_min(child)
-	_apply_scale(child, 1.0)
-	if base.x > rec.orig_size.x + 0.01 or base.y > rec.orig_size.y + 0.01:
-		return
-	var combined = child.get_combined_minimum_size()
-	var nm = Vector2(max(rec.orig_min.x, combined.x), max(rec.orig_min.y, combined.y))
-	rec.mod_min = nm
-	if parent.rect_min_size != nm:
-		parent.rect_min_size = nm
-	if parent.rect_size.x < nm.x or parent.rect_size.y < nm.y:
-		parent.rect_size = Vector2(max(parent.rect_size.x, nm.x), max(parent.rect_size.y, nm.y))
-
-func _base_min(node):
-	var id = node.get_instance_id()
-	if id in _base_cache:
-		return _base_cache[id]
-	_apply_scale(node, 0.0)
-	var base = node.get_combined_minimum_size()
-	_apply_scale(node, 1.0)
-	_base_cache[id] = base
-	return base
-
-func _apply_root(node, record):
-	if node is Container:
-		_grow_container_root(node)
-	else:
-		_reflow_plain_root(node)
-
-func _grow_container_root(node):
-	var combined = node.get_combined_minimum_size()
-	var new_size = Vector2(min(max(node.rect_size.x, combined.x), VIEWPORT_W), min(max(node.rect_size.y, combined.y), VIEWPORT_H))
-	if new_size != node.rect_size:
-		_position_centered(node, new_size)
-		node.rect_size = new_size
-	if new_size.x == VIEWPORT_W or new_size.y == VIEWPORT_H:
-		node.rect_clip_content = true
-	_clamp_position(node)
-	_force_sort(node)
-	var sibling_bounds = _collect_sibling_bounds(node)
-	for child in node.get_children():
-		if child is Control and _is_growable(child) and not _is_root(child):
-			_fit_to_band(node, child, sibling_bounds)
-
-func _reflow_plain_root(node):
-	for child in node.get_children():
-		if child is Control and _is_growable(child):
-			_grow_to_combined(child)
-	_grow_plain_root_to_fit(node)
-	_force_sort(node)
-	var sibling_bounds = _collect_sibling_bounds(node)
-	for child in node.get_children():
-		if child is Control and _is_growable(child) and not _is_root(child):
-			_fit_to_band(node, child, sibling_bounds)
-	for child in node.get_children():
-		if child is Control:
-			_clamp_child_into_parent(child, node)
-	_grow_plain_root_to_fit(node)
-	for child in node.get_children():
-		if child is Control:
-			_clamp_child_into_parent(child, node)
-
-func _regrow_self(node):
-	_grow_to_combined(node)
-	var p = node.get_parent()
-	if p == null or not (p is Control):
-		return
-	_grow_parent_to_fit(p, node)
-	_force_sort(p)
-	_fit_to_band(p, node, _collect_sibling_bounds(p))
-	_clamp_child_into_parent(node, p)
-
-func _grow_to_combined(node):
-	var combined = node.get_combined_minimum_size()
-	var new_size = Vector2(max(node.rect_size.x, combined.x), max(node.rect_size.y, combined.y))
-	if new_size != node.rect_size:
-		_position_centered(node, new_size)
-		node.rect_size = new_size
-
-func _position_centered(node, new_size):
-	var old_size = node.rect_size
-	var pos = node.rect_position
-	if abs(node.anchor_left - 0.5) < 0.01 and abs(node.anchor_right - 0.5) < 0.01:
-		pos.x += (old_size.x - new_size.x) / 2.0
-	if abs(node.anchor_top - 0.5) < 0.01 and abs(node.anchor_bottom - 0.5) < 0.01:
-		pos.y += (old_size.y - new_size.y) / 2.0
-	node.rect_position = pos
-
-func _grow_plain_root_to_fit(node):
-	var needed = Vector2(0.0, 0.0)
-	for child in node.get_children():
-		if child is Control:
-			needed.x = max(needed.x, child.rect_position.x + child.rect_size.x)
-			needed.y = max(needed.y, child.rect_position.y + child.rect_size.y)
-	needed.x = min(needed.x, VIEWPORT_W)
-	needed.y = min(needed.y, VIEWPORT_H)
-	var new_size = Vector2(max(node.rect_size.x, needed.x), max(node.rect_size.y, needed.y))
-	if new_size == node.rect_size:
-		return
-	_position_centered(node, new_size)
-	node.rect_size = new_size
-	if needed.x >= VIEWPORT_W or needed.y >= VIEWPORT_H:
-		node.rect_clip_content = true
-	_clamp_position(node)
-
-func _fit_to_band(ctx, child, sibling_bounds):
-	if not _is_growable(child):
-		return
-	if ctx.rect_size.x < 16.0 or ctx.rect_size.y < 16.0:
-		return
-	var band = _compute_band(ctx, child, sibling_bounds)
-	var pos = child.rect_position
-	var size = child.rect_size
-	if pos.x >= band.position.x - 0.01 and pos.y >= band.position.y - 0.01 and pos.x + size.x <= band.end.x + 0.01 and pos.y + size.y <= band.end.y + 0.01:
-		return
-	if size.x > band.size.x + 0.01 or size.y > band.size.y + 0.01:
-		var s = _shrink_to_fit(child, band)
-		if s < 0.999:
-			var cur = child.rect_size
-			var new_size = Vector2(min(cur.x, band.size.x), min(cur.y, band.size.y))
-			if new_size != cur:
-				child.rect_size = new_size
-				child.rect_clip_content = true
-	_position_in_band(child, band)
-
-func _compute_band(ctx, child, sibling_bounds: Array):
-	var full = Rect2(Vector2(), ctx.rect_size)
-	var vb = _visual_bounds(child, ctx)
-	if vb.size.x < 1.0 or vb.size.y < 1.0:
-		return full
-	var min_p = Vector2(0.0, 0.0)
-	var max_p = ctx.rect_size
-	var c1 = vb.position + vb.size * 0.5
-	var orc = null
-	var cid = child.get_instance_id()
-	if cid in _originals and "orig_rect" in _originals[cid]:
-		orc = _originals[cid].orig_rect
-	for i in range(ctx.get_child_count()):
-		var other = ctx.get_child(i)
-		if other == child or not (other is Control) or not other.visible or _is_root(other):
-			continue
-		var ob = sibling_bounds[i]
-		if ob.size.x < 1.0 or ob.size.y < 1.0:
-			continue
-		var c2 = ob.position + ob.size * 0.5
-		var dx = c2.x - c1.x
-		var dy = c2.y - c1.y
-		var gap_x = MIN_GAP
-		var gap_y = MIN_GAP
-		if orc != null:
-			var oid = other.get_instance_id()
-			if oid in _originals and "orig_rect" in _originals[oid]:
-				var oorc = _originals[oid].orig_rect
-				gap_x = min(float(MIN_GAP), (oorc.position.x - orc.end.x) if dx >= 0.0 else (orc.position.x - oorc.end.x))
-				gap_y = min(float(MIN_GAP), (oorc.position.y - orc.end.y) if dy >= 0.0 else (orc.position.y - oorc.end.y))
-		if abs(dy) >= abs(dx):
-			if vb.end.x + MIN_GAP > ob.position.x and ob.end.x + MIN_GAP > vb.position.x:
-				if dy >= 0.0:
-					max_p.y = min(max_p.y, ob.position.y - gap_y)
-				else:
-					min_p.y = max(min_p.y, ob.end.y + gap_y)
-		else:
-			if vb.end.y + MIN_GAP > ob.position.y and ob.end.y + MIN_GAP > vb.position.y:
-				if dx >= 0.0:
-					max_p.x = min(max_p.x, ob.position.x - gap_x)
-				else:
-					min_p.x = max(min_p.x, ob.end.x + gap_x)
-	if orc != null:
-		if orc.position.x >= MIN_GAP:
-			min_p.x = max(min_p.x, MIN_GAP)
-		if orc.position.y >= MIN_GAP:
-			min_p.y = max(min_p.y, MIN_GAP)
-		if ctx.rect_size.x - orc.end.x >= MIN_GAP:
-			max_p.x = min(max_p.x, ctx.rect_size.x - MIN_GAP)
-		if ctx.rect_size.y - orc.end.y >= MIN_GAP:
-			max_p.y = min(max_p.y, ctx.rect_size.y - MIN_GAP)
-	var band = Rect2(min_p, max_p - min_p)
-	if band.size.x < 16.0 or band.size.y < 16.0:
-		return full
-	return band
-
-func _collect_sibling_bounds(ctx):
-	var bounds = []
-	for child in ctx.get_children():
-		if child is Control and child.visible:
-			bounds.append(_visual_bounds(child, ctx))
-		else:
-			bounds.append(Rect2())
-	return bounds
-
-func _position_in_band(node, band):
-	var pos = node.rect_position
-	var size = node.rect_size
-	pos.x = clamp(pos.x, band.position.x, max(band.position.x, band.end.x - size.x))
-	pos.y = clamp(pos.y, band.position.y, max(band.position.y, band.end.y - size.y))
-	node.rect_position = pos
-
-func _shrink_to_fit(child, band):
-	var f0 = _base_min(child)
-	_apply_scale(child, 1.0)
-	var f1 = child.get_combined_minimum_size()
-	var inc = f1 - f0
-	if inc.x <= 0.5 and inc.y <= 0.5:
-		return 1.0
-	var s = 1.0
-	if f1.x > band.size.x and inc.x > 0.5 and f0.x <= band.size.x:
-		s = min(s, (band.size.x - f0.x) / inc.x)
-	if f1.y > band.size.y and inc.y > 0.5 and f0.y <= band.size.y:
-		s = min(s, (band.size.y - f0.y) / inc.y)
-	s = clamp(s, 0.0, 1.0)
-	if s < 0.999:
-		_apply_scale(child, s)
-	return s
-
-func _apply_scale(node, s):
-	if node is Control:
-		var record = _originals.get(node.get_instance_id(), null)
-		if record != null and record.get("active", false):
-			if "mod_min" in record:
-				node.rect_min_size = record.orig_min + (record.mod_min - record.orig_min) * s
-			elif "mod_sep" in record:
-				node.add_constant_override("separation", record.orig_sep + (record.mod_sep - record.orig_sep) * s)
-	for child in node.get_children():
-		_apply_scale(child, s)
-
-func _force_sort(node):
-	var id = node.get_instance_id()
-	if id in _sorted_pass:
-		return
-	_sorted_pass[id] = true
-	if node is Container:
-		node.notification(Container.NOTIFICATION_SORT_CHILDREN)
-	for child in node.get_children():
-		_force_sort(child)
-
-func _clamp_child_into_parent(child, parent):
-	var pos = child.rect_position
-	var size = child.rect_size
-	pos.x = clamp(pos.x, 0.0, max(0.0, parent.rect_size.x - size.x))
-	pos.y = clamp(pos.y, 0.0, max(0.0, parent.rect_size.y - size.y))
-	child.rect_position = pos
-
-func _clamp_position(node):
-	var pos = node.rect_position
-	var size = node.rect_size
-	pos.x = clamp(pos.x, 0.0, max(0.0, VIEWPORT_W - size.x))
-	pos.y = clamp(pos.y, 0.0, max(0.0, VIEWPORT_H - size.y))
-	node.rect_position = pos
-
-func _restore_all():
-	for id in _originals:
-		var record = _originals[id]
-		if record.get("active", false):
-			_restore_node(record)
-			record.erase("active")
-
-func _restore_node(record):
-	var node = record.node.get_ref()
-	if not node or not is_instance_valid(node):
-		return
-	if "orig_min" in record:
-		node.rect_min_size = record.orig_min
-	if "orig_size" in record:
-		node.rect_size = record.orig_size
-	if "orig_sep" in record:
-		node.remove_constant_override("separation")
-		if node.get_constant("separation") != record.orig_sep:
-			node.add_constant_override("separation", record.orig_sep)
-	if "orig_margin_left" in record:
-		node.margin_left = record.orig_margin_left
-		node.margin_top = record.orig_margin_top
-		node.margin_right = record.orig_margin_right
-		node.margin_bottom = record.orig_margin_bottom
-		node.rect_clip_content = record.orig_clip
-
-func _visual_bounds(node, ctx):
-	var rects = []
-	_collect_visual(node, ctx, rects)
-	if rects.empty():
-		return Rect2()
-	var acc = rects[0]
-	for i in range(1, rects.size()):
-		var r = rects[i]
-		var p = Vector2(min(acc.position.x, r.position.x), min(acc.position.y, r.position.y))
-		var e = Vector2(max(acc.end.x, r.end.x), max(acc.end.y, r.end.y))
-		acc = Rect2(p, e - p)
-	return acc
-
-func _collect_visual(node, ctx, rects):
-	if not (node is Control):
-		for child in node.get_children():
-			_collect_visual(child, ctx, rects)
-		return
-	if not node.visible:
-		return
-	if node != ctx and _draws_self(node):
-		rects.append(_to_root_rect(node, ctx))
-	for child in node.get_children():
-		_collect_visual(child, ctx, rects)
-
-func _to_root_rect(node, ctx):
-	var gp = node.rect_global_position - ctx.rect_global_position
-	return Rect2(gp, node.rect_size)
-
-func _draws_self(node):
-	return node is Panel or node is PanelContainer or node is TextureRect or node is Label or node is BaseButton or node is LineEdit or node is ScrollContainer or node is ColorRect or node is RichTextLabel
-
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
 #		var ev = InputEventKey.new()
@@ -698,15 +483,16 @@ func _notification(what):
 		emit_signal("swiped_back")
 
 func _input(event):
-	pass
 	if event is InputEventScreenTouch:
-		if not _emulate_mouse_from_touch():
-			if event.pressed:
+		if event.pressed:
+			if _drag_touch_id == -1:
+				_drag_touch_id = event.index
 				_begin_drag(event.position)
-			else:
-				_end_drag()
+		elif event.index == _drag_touch_id:
+			_drag_touch_id = -1
+			_end_drag()
 	elif event is InputEventScreenDrag:
-		if not _emulate_mouse_from_touch():
+		if event.index == _drag_touch_id:
 			_update_drag(event.position)
 	elif event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		if event.pressed:
@@ -719,17 +505,37 @@ func _input(event):
 		else:
 			_reset_drag()
 
-func _emulate_mouse_from_touch():
-	return ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")
-
 func _begin_drag(pos):
-	var sc = _find_scroll_at(pos)
-	if sc != null and _on_scrollbar(sc, pos):
-		sc = null
-	_drag_scroll = sc
 	_drag_active = false
 	_drag_start = pos
 	_drag_last = pos
+	var sc = _find_scroll_at(pos)
+	if sc == null or _on_scrollbar(sc, pos) or _interactive_at(sc, pos) != null:
+		_drag_scroll = null
+		return
+	_drag_scroll = sc
+
+func _interactive_at(root, pos):
+	if not (root is Control) or not root.is_visible_in_tree():
+		return null
+	if root.get_global_rect().has_point(pos) and _consumes_drag(root):
+		return root
+	for child in root.get_children():
+		var found = _interactive_at(child, pos)
+		if found != null:
+			return found
+	return null
+
+func _consumes_drag(node) -> bool:
+	if node is Slider or node is SpinBox or node is LineEdit:
+		return true
+	var script = node.get_script()
+	if script != null:
+		if script.has_method("_handle_touch_drag") or script.has_method("_handle_drag_event"):
+			return true
+	if node.has_method("get_value") or node.has_method("get_data"):
+		return true
+	return false
 
 func _on_scrollbar(sc, pos):
 	var vs = sc.get_v_scrollbar()

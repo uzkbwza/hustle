@@ -101,6 +101,7 @@ func on_button_container_gui_input(event :InputEvent):
 
 func adjust_ui(is_mobile):
 	_update_category_label()
+	$"%ButtonCategoryContainer".self_modulate.a = 1.0 if is_mobile else 0.0
 	mobile_focus(is_mobile_focused)
 
 

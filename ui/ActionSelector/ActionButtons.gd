@@ -19,7 +19,9 @@ const CATEGORY_HEIGHT_MOBILE = 86
 const CATEGORY_DEFAULT_GAP = 1
 const CATEGORY_MOBILE_GAP = 1
 
-const MOBILE_LAST_MOVE_OFFSET = Vector2(246.5, -160)
+const MOBILE_LAST_MOVE_Y = 210.5
+const MOBILE_LAST_MOVE_P1_X = -25.5
+const MOBILE_LAST_MOVE_P2_X = 54.5
 
 
 export var player_id = 1
@@ -412,8 +414,17 @@ func _rebuild_mobile_last_move():
 	_mobile_last_move.name = "MobileLastMoveIndicator"
 	_mobile_last_move.visible = false
 	_mobile_last_move.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mobile_last_move.anchor_left = 0.0
+	_mobile_last_move.anchor_top = 0.0
+	_mobile_last_move.anchor_right = 0.0
+	_mobile_last_move.anchor_bottom = 0.0
+	_mobile_last_move.margin_left = 0.0
+	_mobile_last_move.margin_top = 0.0
+	_mobile_last_move.margin_right = 0.0
+	_mobile_last_move.margin_bottom = 0.0
 	_disable_unique_names(_mobile_last_move)
 	host.add_child(_mobile_last_move)
+	_mobile_last_move.rect_size = $"%LastMoveTexture".rect_size
 	_sync_mobile_last_move()
 
 
@@ -430,10 +441,8 @@ func _refresh_mobile_last_move_target():
 	if not is_visible_in_tree():
 		_mobile_last_move_target = null
 		return
-	var offset = MOBILE_LAST_MOVE_OFFSET
-	if player_id == 2:
-		offset.x = rect_size.x - offset.x
-	_mobile_last_move_target = rect_global_position + offset
+	var x = MOBILE_LAST_MOVE_P1_X if player_id == 1 else MOBILE_LAST_MOVE_P2_X
+	_mobile_last_move_target = Vector2(x, MOBILE_LAST_MOVE_Y)
 
 
 func _disable_unique_names(node):
@@ -455,8 +464,9 @@ func _sync_mobile_last_move():
 	var orig = $"%LastMoveTexture"
 	_mobile_last_move.texture = orig.texture
 	_mobile_last_move.modulate = orig.modulate
+	_mobile_last_move.rect_size = orig.rect_size
 	if _mobile_last_move_target != null:
-		_mobile_last_move.rect_global_position = _mobile_last_move_target
+		_mobile_last_move.rect_position = Vector2(246 if player_id == 1 else 377, 65)
 	var orig_label = orig.get_node_or_null("LastMoveLabel")
 	var copy_label = _mobile_last_move.get_node_or_null("LastMoveLabel")
 	if orig_label != null and copy_label != null:

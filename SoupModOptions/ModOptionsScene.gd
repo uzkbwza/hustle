@@ -109,6 +109,7 @@ func add_category(internal_name, label, font_color=Color.white):
 func _add_to_list(internal_name:String, node):
 	var location_node = _resolve_slash_path(internal_name)
 	location_node.add_child(node)
+	UIManager.register_menu(ModOptions.menu, [node])
 	emit_signal("item_added", internal_name, node)
 
 func _create_generic(type, internal_name, display_name, default_value):

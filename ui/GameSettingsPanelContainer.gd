@@ -106,6 +106,27 @@ func _ready():
 	# order) while the sliders stay at scene defaults — selection text and
 	# real values don't agree until the user manually re-picks.
 	_restore_last_format()
+	UIManager.register_menu(self.get_parent(), _ui_elements())
+
+func _ui_elements() -> Array:
+	var elements := []
+	for setting in settings_nodes:
+		var node = settings_nodes[setting]
+		if node is Node:
+			elements.append(node)
+	elements.append($"%GameFormats")
+	elements.append($"%LineEdit")
+	elements.append($"%SaveButton")
+	elements.append($VBoxContainer)
+	elements.append($"%GameSettingsContainer")
+	for setting in settings_nodes:
+		var node = settings_nodes[setting]
+		if not (node is Node):
+			continue
+		var parent = node.get_parent()
+		if parent is BoxContainer and not elements.has(parent):
+			elements.append(parent)
+	return elements
 
 # "default" routes to the scene snapshot regardless of what's in
 # default.gameformat — keeps the entry meaning "the un-edited starter values"

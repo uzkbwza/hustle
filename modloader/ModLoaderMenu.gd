@@ -42,6 +42,20 @@ func _ready():
 
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
+	UIManager.register_menu(self, [
+		$VBoxContainer/TitleBar/Close,
+		$VBoxContainer/TitleBar/HBoxContainer/ApplyChanges,
+		$VBoxContainer/TitleBar/HBoxContainer/OpenFileManager,
+		$VBoxContainer/TitleBar/HBoxContainer/ModsLocation,
+		$VBoxContainer/FMRow,
+		$VBoxContainer/FMRow/Sorter,
+		$VBoxContainer/FMRow/SortInvert,
+		$VBoxContainer/FMRow/AllOnButton,
+		$VBoxContainer/FMRow/AllOffButton,
+		$VBoxContainer/Panel/HBoxContainer/ModCredits,
+		$VBoxContainer/Panel/HBoxContainer/WorkshopButton,
+		$VBoxContainer/Panel/HBoxContainer/WorkshopUploader,
+	])
 
 	_setup_file_manager()
 
@@ -139,9 +153,8 @@ func _on_fm_row_visibility_changed() -> void:
 
 
 func _reapply_ui() -> void:
-	var u = get_node_or_null("/root/UIManager")
-	if u != null and Global.mobile_ui:
-		u._apply_subtree(self)
+	if Global.mobile_ui:
+		UIManager.reapply_menu(self)
 
 
 func _on_sorter_pressed():
@@ -263,6 +276,7 @@ func add_mod(mod):
 
 	#Add button container to $mods
 	self.list_container.add_child(_container)
+	UIManager.register_menu(self, [_container, btn, toggle])
 	# Generate tab container
 	var info = generate_mod_menu(mod[1].friendly_name)
 	self.info_container.add_child(info)

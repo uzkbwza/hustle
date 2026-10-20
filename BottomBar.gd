@@ -26,10 +26,7 @@ func _on_action_buttons_visibility_changed():
 
 	else:
 		$"%OptionsBarContainer".show()
-		if !$"%OptionsBar".visible:
-			$"%PredictionSettingsOpenButton".show()
-		else:
-			$"%PredictionSettingsOpenButton".hide()
+		$"%PredictionSettingsOpenButton".hide()
 #		$"%ActivePlayerSuperContainer".show()
 	
 	if is_instance_valid(p1_info_scene):

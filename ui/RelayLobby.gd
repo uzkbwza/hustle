@@ -100,6 +100,15 @@ func _ready():
 	if experimental_mode:
 		$MatchmakingDisabledLabel.show()
 
+	UIManager.register_menu(self, [
+		$"%NameEdit", $"%RoomNameEdit",
+		$"%ConnectContainer", $MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/HostRow, $"%JoinContainer", $"%JoinButtons",		$"%HostButton", $"%PublicButton", $"%JoinButton", $"%SpectateButton",
+		$"%IPEdit", $"%PortEdit", $"%RoomCodeEdit",
+		$"%NetworkStartButton", $"%BackButton",
+		$"%RoomCodeLabel", $"%RoomStartButton", $"%LeaveRoomButton",
+		$"%RoomChatContainer", $"%RoomChatEdit", $"%RoomChatSendButton",
+	])
+
 func _on_server_list_item_selected(item):
 	Global.save_option(item, "default_dojo")
 

@@ -1,0 +1,131 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/Chat/minimize_button1.png" type="Texture" id=2]
+[ext_resource path="res://ui/Chat/minimize_button2.png" type="Texture" id=3]
+[ext_resource path="res://ui/Chat/minimize_button3.png" type="Texture" id=4]
+
+[node name="MobilePredictionPanel" instance=ExtResource( 1 )]
+self_modulate = Color( 1, 1, 1, 0.5 )
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -160.0
+margin_top = 22.0
+margin_right = 160.0
+margin_bottom = 182.0
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_right = 319.0
+margin_bottom = 159.0
+custom_constants/separation = 4
+
+[node name="TitleBar" parent="VBoxContainer" index="0"]
+self_modulate = Color( 1, 1, 1, 0.5 )
+margin_right = 318.0
+
+[node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+text = "Prediction"
+align = 0
+
+[node name="MobilePredictionClose" type="TextureButton" parent="VBoxContainer/TitleBar" index="1"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -10.0
+margin_bottom = 9.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+
+[node name="Contents" parent="VBoxContainer" index="1"]
+self_modulate = Color( 1, 1, 1, 0.5 )
+margin_top = 10.0
+margin_right = 318.0
+margin_bottom = 159.0
+
+[node name="Margin" type="MarginContainer" parent="VBoxContainer/Contents" index="0"]
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/Contents/Margin" index="0"]
+custom_constants/separation = 4
+
+[node name="MobilePredictionGrid" type="GridContainer" parent="VBoxContainer/Contents/Margin/VBox" index="0"]
+unique_name_in_owner = true
+custom_constants/vseparation = 4
+custom_constants/hseparation = 6
+columns = 2
+
+[node name="MobileGhostButton" type="CheckButton" parent="VBoxContainer/Contents/Margin/VBox/MobilePredictionGrid" index="0"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "show prediction"
+
+[node name="MobileAfterimageButton" type="CheckButton" parent="VBoxContainer/Contents/Margin/VBox/MobilePredictionGrid" index="1"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "afterimages"
+
+[node name="MobileFreezeOnMyTurn" type="CheckButton" parent="VBoxContainer/Contents/Margin/VBox/MobilePredictionGrid" index="2"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "freeze on ready"
+
+[node name="MobileFreezeSound" type="CheckButton" parent="VBoxContainer/Contents/Margin/VBox/MobilePredictionGrid" index="3"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+text = "freeze sound"
+
+[node name="MobileGhostSpeed" type="HBoxContainer" parent="VBoxContainer/Contents/Margin/VBox" index="1"]
+unique_name_in_owner = true
+
+[node name="Label" type="Label" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="0"]
+text = "speed:"
+
+[node name="Mobile1Speed" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="1"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x0.25"
+
+[node name="Mobile5Speed" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="2"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x0.5"
+
+[node name="Mobile2Speed" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="3"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x1"
+
+[node name="Mobile3Speed" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="4"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x2"
+
+[node name="Mobile4Speed" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileGhostSpeed" index="5"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+size_flags_horizontal = 3
+toggle_mode = true
+text = "x4"
+
+[node name="MobileClearParticlesButton" type="Button" parent="VBoxContainer/Contents/Margin/VBox" index="2"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 26 )
+text = "clear particles"

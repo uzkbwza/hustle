@@ -92,14 +92,13 @@ onready var neutral_label = $"%NeutralLabel"
 
 var _nudge_target = null
 var _nudge_target_conn = null
-var _nudge_dragging = false
 const _NUDGE_WINDOW_DEFAULT_POS = Vector2(8, 44)
 var _nudge_xy_step = 0.01
 var _nudge_slider_step = 1.0
 
 var _mobile_sync_guard = false
-var _desktop_mobile_bar = false
-var _pred_dragging = false
+var _bottom_adjustments_mode = false
+var _bottom_collapsed = false
 var _pred_default_captured = false
 var _pred_panel_default_pos = Vector2.ZERO
 
@@ -163,7 +162,6 @@ func _enter_tree():
 func _ready():
 	if Global.winws_detected:
 #		$"%MultiplayerButton".disabled = true
-		$"%SteamMultiplayerButton".disabled = true
 		$"%WinwsLabel".show()
 	if not Global.XY_SNAP_TOGGLE_ENABLED:
 		# XY plots always snap when the toggle feature flag is off — hide the
@@ -258,6 +256,7 @@ func _ready():
 	$"%CreditsButton".connect("pressed", $"%Credits", "show")
 	$"%CreditsButton".connect("pressed", $"%MainMenu", "hide")
 	$"%PauseOptionsButton".connect("pressed", $"%OptionsContainer", "show")
+	_register_ui_scaling()
 	$"%MusicButton".set_pressed_no_signal(Global.music_enabled)
 	$"%MusicButton".connect("toggled", self, "_on_music_button_toggled")
 	$"%MasterSlider".set_value(Global.master_value)
@@ -338,22 +337,25 @@ func _ready():
 	
 	$"%OpenMenuButton".connect("pressed", self, "pause")
 	$"%MobileBarToggleButton".connect("toggled", self, "_on_mobile_bar_toggled")
+	$"%BottomBarToggleButton".connect("pressed", self, "_on_close_prediction_settings_pressed")
 	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
 	$"%MobileReplayButton".connect("pressed", self, "_on_mobile_replay_button_pressed")
 	$"%ArrowsButton".connect("pressed", self, "_on_arrows_button_pressed")
-	$"%MobileNudgeClose".connect("pressed", self, "_on_nudge_close_pressed")
-	$"%MobileNudgeUp".connect("pressed", self, "_on_nudge_up_pressed")
-	$"%MobileNudgeDown".connect("pressed", self, "_on_nudge_down_pressed")
-	$"%MobileNudgeLeft".connect("pressed", self, "_on_nudge_left_pressed")
-	$"%MobileNudgeRight".connect("pressed", self, "_on_nudge_right_pressed")
-	$"%MobileNudgeInput".connect("text_entered", self, "_on_nudge_input_submitted")
-	$"%MobileNudgeApply".connect("pressed", self, "_on_nudge_apply_pressed")
-	if is_instance_valid($"%MobileNudgeMultiplier"):
-		$"%MobileNudgeMultiplier".connect("text_changed", self, "_on_nudge_multiplier_changed")
-		$"%MobileNudgeMultiplier".connect("text_entered", self, "_on_nudge_multiplier_entered")
-	if is_instance_valid($"%MobileNudgeSliderMult"):
-		$"%MobileNudgeSliderMult".connect("text_changed", self, "_on_nudge_slider_mult_changed")
-		$"%MobileNudgeSliderMult".connect("text_entered", self, "_on_nudge_slider_mult_entered")
+	$"%MobileHelpButton".connect("pressed", self, "toggle_help_screen")
+	$"%MobileResetZoomButton".connect("pressed", self, "_on_reset_zoom_pressed")
+	_setup_bottom_bar_buttons()
+	var nudge_win = $"%MobileNudgeWindow"
+	nudge_win.get_node("%MobileNudgeClose").connect("pressed", self, "_on_nudge_close_pressed")
+	nudge_win.get_node("%MobileNudgeUp").connect("pressed", self, "_on_nudge_up_pressed")
+	nudge_win.get_node("%MobileNudgeDown").connect("pressed", self, "_on_nudge_down_pressed")
+	nudge_win.get_node("%MobileNudgeLeft").connect("pressed", self, "_on_nudge_left_pressed")
+	nudge_win.get_node("%MobileNudgeRight").connect("pressed", self, "_on_nudge_right_pressed")
+	nudge_win.get_node("%MobileNudgeInput").connect("text_entered", self, "_on_nudge_input_submitted")
+	nudge_win.get_node("%MobileNudgeApply").connect("pressed", self, "_on_nudge_apply_pressed")
+	nudge_win.get_node("%MobileNudgeMultiplier").connect("text_changed", self, "_on_nudge_multiplier_changed")
+	nudge_win.get_node("%MobileNudgeMultiplier").connect("text_entered", self, "_on_nudge_multiplier_entered")
+	nudge_win.get_node("%MobileNudgeSliderMult").connect("text_changed", self, "_on_nudge_slider_mult_changed")
+	nudge_win.get_node("%MobileNudgeSliderMult").connect("text_entered", self, "_on_nudge_slider_mult_entered")
 	_setup_mobile_prediction_controls()
 	
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
@@ -374,30 +376,128 @@ func adjust_ui(is_mobile):
 	$"%MobilePredictionPanel".visible = false
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
+	$"%MultiplayerButton".text = "Multiplayer" if Global.is_mobile_device else "Multiplayer (Crossplay)"
+	$"%SteamMultiplayerButton".visible = not (Global.is_mobile_device or Global.winws_detected)
+	$"%PredictionSettingsOpenButton".hide()
 	if is_mobile:
 		$"%OptionsBarContainer".hide()
-		$"%PredictionSettingsOpenButton".hide()
-	elif !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
-		$"%OptionsBarContainer".hide()
-		$"%PredictionSettingsOpenButton".hide()
+		_bottom_adjustments_mode = false
 	else:
 		$"%OptionsBarContainer".show()
-		$"%PredictionSettingsOpenButton".visible = !$"%OptionsBar".visible
+	_apply_bottom_bar_visibility(not is_mobile)
 	_adjust_mobile_advice_labels(is_mobile)
 	_adjust_nudge_window(is_mobile)
 
+func _register_ui_scaling():
+	UIManager.register_menu(self, [
+		$"%PausePanel",
+		$"%ResumeButton", $"%ReplayName", $"%SaveReplayButton", $"%SaveStylesButton",
+		$"%StyleName", $"%SaveP1StyleButton", $"%SaveP2StyleButton", $"%StyleBackButton",
+		$"%PauseOptionsButton", $"%QuitToMainMenuButton", $"%ForfeitButton",
+		$"%PostGameButtons", $"%RematchButton", $"%QuitButton",
+		$"%ReplayWindow", $"%ReplaySearchRow", $"%ReplaySearchEdit", $"%VersionModeButton",
+		$"%NoMissingCharactersToggle", $"%ReplayFMRow", $"%Sorter", $"%SortInvert",
+		$"%AllOnButton", $"%AllOffButton", $"%OpenReplayFolderButton",
+		$"%ShowAutosavedReplays", $"%ShowBackupReplays", $"%ReplayFileManagerButton",
+		$"%ReplayCancelButton",
+		$"%ResetZoomButton", $"%PredictionSettingsOpenButton", $"%HelpButton",
+		$"%MobileBarToggleButton", $"%BottomBarToggleButton", $"%MobileMatchButtons",
+		$"%BottomPredictionsButton", $"%BottomReplayButton", $"%BottomMenuButton",
+		$"%BottomChatButton", $"%BottomNudgeButton", $"%BottomHudButton",
+		$"%BottomLockInButton", $"%BottomWatchReplayButton", $"%BottomEditReplayButton",
+		$"%MissingCharConfirmDialog", $"%OldVersionConfirmDialog",
+	])
+	UIManager.register_control($"%ReplayControls", [
+		$"%ReplayControls".get_node("%ShowButton"),
+		$"%ReplayControls".get_node("%PlayReplayButton"),
+		$"%ReplayControls".get_node("%EditReplayButton"),
+		$"%ReplayControls".get_node("%PauseButton"),
+		$"%ReplayControls".get_node("%FrameAdvance"),
+		$"%ReplayControls".get_node("%PlaybackSpeed"),
+	])
+
 func _apply_mobile_bar_visibility(is_mobile):
-	var show_mobile_buttons = is_mobile or _desktop_mobile_bar
+	var show_mobile_buttons = is_mobile
 	$"%ChatButton".visible = show_mobile_buttons
 	$"%MobileReplayButton".visible = show_mobile_buttons
 	$"%ArrowsButton".visible = show_mobile_buttons
 	$"%MobilePredictionsButton".visible = show_mobile_buttons
 
+func _apply_bottom_bar_visibility(is_desktop):
+	var p1 = get_node_or_null("%P1ActionButtons")
+	var p2 = get_node_or_null("%P2ActionButtons")
+	var actions_visible = p1 != null and p2 != null and (p1.visible or p2.visible)
+	var enabled = is_desktop and actions_visible
+	$"%OptionsBar".visible = enabled
+	$"%BottomBarToggleButton".visible = enabled and _bottom_adjustments_mode
+	var show_adjustments = enabled and _bottom_adjustments_mode
+	for button in _bottom_menu_buttons():
+		button.visible = enabled and not show_adjustments and not _bottom_collapsed
+	for control in _bottom_adjustment_controls():
+		control.visible = show_adjustments
+	var collapse_button = get_node_or_null("%BottomCollapseButton")
+	if collapse_button != null:
+		collapse_button.visible = enabled and not show_adjustments
+		collapse_button.icon = MOBILE_BAR_OPEN_ICON if _bottom_collapsed else MOBILE_BAR_CLOSED_ICON
+		collapse_button.hint_tooltip = "Show the action bar buttons" if _bottom_collapsed else "Hide the action bar buttons"
+
+func _bottom_menu_buttons():
+	return [
+		$"%BottomPredictionsButton", $"%BottomNudgeButton", $"%BottomReplayButton",
+		$"%BottomMenuButton", $"%BottomChatButton", $"%BottomHudButton",
+		$"%BottomLockInButton", $"%BottomWatchReplayButton", $"%BottomEditReplayButton",
+	]
+
+func _bottom_adjustment_controls():
+	return [
+		$"%GhostButton", $"%AfterimageButton", $"%FreezeOnMyTurn", $"%FreezeSound",
+		$"%GhostSpeed", $"%ClearParticlesButton",
+	]
+
+func _setup_bottom_bar_buttons():
+	$"%BottomPredictionsButton".connect("pressed", self, "_on_bottom_predictions_pressed")
+	$"%BottomReplayButton".connect("pressed", self, "_on_mobile_replay_button_pressed")
+	$"%BottomMenuButton".connect("pressed", self, "pause")
+	$"%BottomChatButton".connect("pressed", self, "_on_chat_button_pressed")
+	$"%BottomNudgeButton".connect("pressed", self, "_on_arrows_button_pressed")
+	$"%BottomCollapseButton".connect("pressed", self, "_on_bottom_collapse_pressed")
+	Hotkeys.connect("binding_changed", self, "_refresh_bottom_bar_labels")
+	_refresh_bottom_bar_labels()
+
+func _refresh_bottom_bar_labels(_action = ""):
+	_set_button_keybind($"%BottomPredictionsButton", "Predictions", Hotkeys.TOGGLE_PREDICTIONS_MENU)
+	_set_button_keybind($"%BottomNudgeButton", "Nudge", Hotkeys.TOGGLE_NUDGE_MENU)
+	_set_button_keybind($"%BottomReplayButton", "Playback", Hotkeys.TOGGLE_PLAYBACK_CONTROLS)
+	_set_button_keybind($"%BottomMenuButton", "Menu", Hotkeys.PAUSE)
+	_set_button_keybind($"%BottomChatButton", "Chat", Hotkeys.OPEN_CHAT)
+	_set_button_keybind($"%BottomHudButton", "HUD", Hotkeys.TOGGLE_HUD)
+	_set_button_keybind($"%BottomLockInButton", "Lock In", Hotkeys.LOCK_IN)
+	_set_button_keybind($"%BottomWatchReplayButton", "Watch", Hotkeys.WATCH_REPLAY)
+	_set_button_keybind($"%BottomEditReplayButton", "Edit", Hotkeys.EDIT_REPLAY)
+
+func _set_button_keybind(button, label, action):
+	var key = Hotkeys.get_display_name(action) if action != "" else ""
+	button.text = ("%s (%s)" % [label, key]) if key else label
+
+func _on_bottom_predictions_pressed():
+	if Global.mobile_ui:
+		_on_mobile_predictions_pressed()
+		return
+	_bottom_adjustments_mode = not _bottom_adjustments_mode
+	_apply_bottom_bar_visibility(true)
+
+
+func _on_bottom_collapse_pressed():
+	_bottom_collapsed = not _bottom_collapsed
+	var collapse_button = get_node_or_null("%BottomCollapseButton")
+	if collapse_button != null:
+		var bar = collapse_button.get_parent()
+		if bar != null and collapse_button.get_index() != bar.get_child_count() - 1:
+			bar.move_child(collapse_button, bar.get_child_count() - 1)
+	_apply_bottom_bar_visibility(true)
+
 func _on_mobile_bar_toggled(pressed):
-	_desktop_mobile_bar = pressed
 	_apply_mobile_bar_visibility(Global.mobile_ui)
-	if not pressed:
-		$"%MobilePredictionPanel".visible = false
 	$"%MobileBarToggleButton".icon = MOBILE_BAR_OPEN_ICON if pressed else MOBILE_BAR_CLOSED_ICON
 
 func _update_mobile_bar_toggle_position(show_mobile):
@@ -433,12 +533,12 @@ func _adjust_mobile_advice_labels(is_mobile):
 
 func _setup_mobile_prediction_controls():
 	$"%MobilePredictionsButton".connect("pressed", self, "_on_mobile_predictions_pressed")
-	$"%MobilePredictionClose".connect("pressed", self, "_on_mobile_prediction_close")
+	$"%MobilePredictionPanel".get_node("%MobilePredictionClose").connect("pressed", self, "_on_mobile_prediction_close")
 	_bind_mobile_toggle("%MobileGhostButton", "%GhostButton")
 	_bind_mobile_toggle("%MobileAfterimageButton", "%AfterimageButton")
 	_bind_mobile_toggle("%MobileFreezeOnMyTurn", "%FreezeOnMyTurn")
 	_bind_mobile_toggle("%MobileFreezeSound", "%FreezeSound")
-	$"%MobileClearParticlesButton".connect("pressed", self, "_on_ClearParticlesButton_pressed")
+	$"%MobilePredictionPanel".get_node("%MobileClearParticlesButton").connect("pressed", self, "_on_ClearParticlesButton_pressed")
 	var speed_pairs = {
 		"%Mobile1Speed": "%1Speed",
 		"%Mobile5Speed": "%5Speed",
@@ -447,18 +547,15 @@ func _setup_mobile_prediction_controls():
 		"%Mobile4Speed": "%4Speed",
 	}
 	for mobile_name in speed_pairs:
-		var mobile_btn = get_node_or_null(mobile_name)
-		var orig_btn = get_node_or_null(speed_pairs[mobile_name])
-		if mobile_btn != null and orig_btn != null:
-			mobile_btn.connect("pressed", self, "_on_mobile_speed_pressed", [orig_btn])
+		var mobile_btn = $"%MobilePredictionPanel".get_node(mobile_name)
+		var orig_btn = get_node(speed_pairs[mobile_name])
+		mobile_btn.connect("pressed", self, "_on_mobile_speed_pressed", [orig_btn])
 	$"%GhostSpeed".connect("value_changed", self, "_sync_mobile_speed")
 	call_deferred("_sync_mobile_prediction_controls")
 
 func _bind_mobile_toggle(mobile_name: String, orig_name: String):
-	var mobile_btn = get_node_or_null(mobile_name)
-	var orig_btn = get_node_or_null(orig_name)
-	if mobile_btn == null or orig_btn == null:
-		return
+	var mobile_btn = $"%MobilePredictionPanel".get_node(mobile_name)
+	var orig_btn = get_node(orig_name)
 	mobile_btn.set_pressed_no_signal(orig_btn.pressed)
 	mobile_btn.connect("toggled", self, "_on_mobile_toggle", [orig_btn])
 	orig_btn.connect("toggled", self, "_on_original_toggle", [mobile_btn])
@@ -485,9 +582,7 @@ func _sync_mobile_speed(speed):
 	var map = {1: "%Mobile1Speed", 5: "%Mobile5Speed", 2: "%Mobile2Speed", 3: "%Mobile3Speed", 4: "%Mobile4Speed"}
 	_mobile_sync_guard = true
 	for k in map:
-		var btn = get_node_or_null(map[k])
-		if btn != null:
-			btn.set_pressed_no_signal(k == speed)
+		$"%MobilePredictionPanel".get_node(map[k]).set_pressed_no_signal(k == speed)
 	_mobile_sync_guard = false
 
 func _sync_mobile_prediction_controls():
@@ -498,10 +593,7 @@ func _sync_mobile_prediction_controls():
 		"%MobileFreezeSound": "%FreezeSound",
 	}
 	for mobile_name in pairs:
-		var m = get_node_or_null(mobile_name)
-		var o = get_node_or_null(pairs[mobile_name])
-		if m != null and o != null:
-			m.set_pressed_no_signal(o.pressed)
+		$"%MobilePredictionPanel".get_node(mobile_name).set_pressed_no_signal(get_node(pairs[mobile_name]).pressed)
 	_sync_mobile_speed(Global.ghost_speed)
 
 func _on_mobile_predictions_pressed():
@@ -516,7 +608,6 @@ func _on_mobile_predictions_pressed():
 
 func _on_mobile_prediction_close():
 	$"%MobilePredictionPanel".visible = false
-	_pred_dragging = false
 
 func _on_chat_button_pressed():
 	if is_instance_valid(game):
@@ -524,11 +615,17 @@ func _on_chat_button_pressed():
 		$"%ChatWindow".line_edit_focus()
 
 func _on_mobile_replay_button_pressed():
-	if is_instance_valid(game):
-		var ev = InputEventAction.new()
-		ev.action = Hotkeys.WATCH_REPLAY
-		ev.pressed = true
-		Input.parse_input_event(ev)
+	if not is_instance_valid(game):
+		return
+	var window = $"%ReplayControls"
+	var show = not window.visible
+	Global.show_playback_controls = show
+	$"%PlaybackControls".set_pressed_no_signal(show)
+	if not Network.multiplayer_active:
+		if show:
+			window.show()
+		else:
+			window.hide()
 
 func _adjust_nudge_window(is_mobile):
 	if not is_mobile:
@@ -536,10 +633,8 @@ func _adjust_nudge_window(is_mobile):
 		win.visible = false
 		win.rect_position = _NUDGE_WINDOW_DEFAULT_POS
 		_set_nudge_target(null)
-		_nudge_dragging = false
 		if _pred_default_captured:
 			$"%MobilePredictionPanel".rect_position = _pred_panel_default_pos
-		_pred_dragging = false
 
 func _on_arrows_button_pressed():
 	var win = $"%MobileNudgeWindow"
@@ -550,13 +645,16 @@ func _on_arrows_button_pressed():
 
 func _on_nudge_close_pressed():
 	$"%MobileNudgeWindow".visible = false
-	_nudge_dragging = false
+
+func _nudge_window_visible() -> bool:
+	return $"%MobileNudgeWindow".visible
 
 func _update_nudge_window_target():
-	var label = $"%MobileNudgeTarget"
-	var input = $"%MobileNudgeInput"
-	var xy_mult_row = $"%MobileNudgeMultiplierRow"
-	var slider_mult_row = $"%MobileNudgeSliderMultRow"
+	var win = $"%MobileNudgeWindow"
+	var label = win.get_node("%MobileNudgeTarget")
+	var input = win.get_node("%MobileNudgeInput")
+	var xy_mult_row = win.get_node("%MobileNudgeMultiplierRow")
+	var slider_mult_row = win.get_node("%MobileNudgeSliderMultRow")
 	if is_instance_valid(_nudge_target):
 		label.text = _nudge_target.name
 		input.text = _nudge_value_text(_nudge_target)
@@ -607,7 +705,9 @@ func _on_nudge_input_submitted(text: String):
 			t.buffer_value_changed = false
 			if "last_emitted_value" in t:
 				t.last_emitted_value = slider.value
-	$"%MobileNudgeInput".text = _nudge_value_text(t)
+	var nudge_input = $"%MobileNudgeWindow".get_node("%MobileNudgeInput")
+	if nudge_input != null:
+		nudge_input.text = _nudge_value_text(t)
 
 func _on_nudge_multiplier_changed(text: String):
 	var nums = _parse_numbers(text)
@@ -645,7 +745,9 @@ func _parse_numbers(text: String) -> Array:
 	return out
 
 func _on_nudge_apply_pressed():
-	_on_nudge_input_submitted($"%MobileNudgeInput".text)
+	var nudge_input = $"%MobileNudgeWindow".get_node("%MobileNudgeInput")
+	if nudge_input != null:
+		_on_nudge_input_submitted(nudge_input.text)
 
 func _set_nudge_target(t):
 	if is_instance_valid(_nudge_target_conn) and _nudge_target_conn.is_connected("data_changed", self, "_on_nudge_target_data_changed"):
@@ -655,12 +757,14 @@ func _set_nudge_target(t):
 	if is_instance_valid(t):
 		t.connect("data_changed", self, "_on_nudge_target_data_changed")
 		_nudge_target_conn = t
-	if $"%MobileNudgeWindow".visible:
+	if _nudge_window_visible():
 		call_deferred("_update_nudge_window_target")
 
 func _on_nudge_target_data_changed():
-	if $"%MobileNudgeWindow".visible:
-		$"%MobileNudgeInput".text = _nudge_value_text(_nudge_target)
+	if _nudge_window_visible():
+		var nudge_input = $"%MobileNudgeWindow".get_node("%MobileNudgeInput")
+		if nudge_input != null:
+			nudge_input.text = _nudge_value_text(_nudge_target)
 
 func _on_nudge_up_pressed():
 	_apply_nudge(Vector2(0, -1))
@@ -707,7 +811,9 @@ func _apply_nudge(dir: Vector2):
 			t.buffer_value_changed = false
 			if "last_emitted_value" in t:
 				t.last_emitted_value = slider.value
-	$"%MobileNudgeInput".text = _nudge_value_text(t)
+	var nudge_input = $"%MobileNudgeWindow".get_node("%MobileNudgeInput")
+	if nudge_input != null:
+		nudge_input.text = _nudge_value_text(t)
 
 func _is_horiz_slider(node) -> bool:
 	return node != null and node.has_method("get_value") and (node.has_node("Direction") or node.has_node("HSlider"))
@@ -716,34 +822,13 @@ func _slider_node(t):
 	return t.get_node("Direction") if t.has_node("Direction") else t.get_node("HSlider")
 
 func _input(event):
-	if not Global.mobile_ui:
+	if not (event is InputEventMouseButton and event.button_index == BUTTON_LEFT):
 		return
-	var win = $"%MobileNudgeWindow"
-	var panel = $"%MobilePredictionPanel"
-	if event is InputEventMouseMotion:
-		if _nudge_dragging:
-			win.rect_position += event.relative
-		if _pred_dragging:
-			panel.rect_position += event.relative
-		return
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
-		if not event.pressed:
-			_nudge_dragging = false
-			_pred_dragging = false
+	if event.pressed:
+		if $"%MobilePredictionPanel".get_global_rect().has_point(event.position):
 			return
-		if panel.visible and panel.get_global_rect().has_point(event.position):
-			var title_hit = $"%MobilePredictionTitle".get_global_rect().has_point(event.position)
-			var close_hit = $"%MobilePredictionClose".get_global_rect().has_point(event.position)
-			if title_hit and not close_hit:
-				_pred_dragging = true
-			_nudge_dragging = false
+		if $"%MobileNudgeWindow".get_global_rect().has_point(event.position):
 			return
-		if win.visible:
-			if $"%MobileNudgeTitle".get_global_rect().has_point(event.position):
-				_nudge_dragging = true
-			if win.get_global_rect().has_point(event.position):
-				return
-		_nudge_dragging = false
 		var t = _find_nudgeable_at(event.position)
 		if t != null:
 			_set_nudge_target(t)
@@ -921,12 +1006,12 @@ func _on_playback_controls_button_toggled(on):
 	Global.set_playback_controls(on)
 
 func _on_open_prediction_settings_pressed():
-	$"%PredictionSettingsOpenButton".hide()
-	$"%OptionsBar".show()
+	_bottom_adjustments_mode = true
+	_apply_bottom_bar_visibility(not Global.mobile_ui)
 
 func _on_close_prediction_settings_pressed():
-	$"%PredictionSettingsOpenButton".show()
-	$"%OptionsBar".hide()
+	_bottom_adjustments_mode = false
+	_apply_bottom_bar_visibility(not Global.mobile_ui)
 
 func toggle_help_screen():
 	$"%HelpScreen".visible = !$"%HelpScreen".visible
@@ -1012,6 +1097,7 @@ func load_replays():
 		remove_child(button)
 	for button in buttons:
 		$"%ReplayContainer".add_child(button)
+		UIManager.register_menu(self, [button, button.get_node("%Button")])
 	_apply_pending_replay_selection()
 	_sort_replay_buttons()
 	# Sync toggles to FM mode, then apply the search filter. Matchup data
@@ -1191,6 +1277,7 @@ func _add_replay_row_incremental(path: String) -> void:
 	var key = path.get_file().get_basename()
 	var button = REPLAY_BUTTON_SCENE.instance()
 	$"%ReplayContainer".add_child(button)
+	UIManager.register_menu(self, [button, button.get_node("%Button")])
 	button.setup({key: {"path": path, "modified": modified}}, key)
 	button.connect("pressed", self, "_on_replay_button_pressed", [button])
 	if is_instance_valid(button.toggle):
@@ -2203,17 +2290,22 @@ func _process(delta):
 	$"%P1SuperContainer".rect_min_size.y = 50 if !p1_action_buttons.visible else 0
 	$"%P2SuperContainer".rect_min_size.y = 50 if !p2_action_buttons.visible else 0
 
-	var show_control_info = not Global.mobile_ui and not _desktop_mobile_bar and is_instance_valid(game) and not game.game_finished and not Network.rematch_menu
-	$"%TopInfo".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and not Network.multiplayer_active
-	$"%TopInfoMP".visible = show_control_info and !ReplayManager.playback and game.is_waiting_on_player() and Network.multiplayer_active
-	$"%TopInfoReplay".visible = show_control_info and ReplayManager.playback
+	$"%TopInfo".visible = false
+	$"%TopInfoMP".visible = false
+	$"%TopInfoReplay".visible = false
 	var show_mobile = Global.mobile_ui
-	$"%MobileMatchButtons".visible = (show_mobile or _desktop_mobile_bar) and is_instance_valid(game)
-	$"%MobileBarToggleButton".visible = not show_mobile and is_instance_valid(game)
+	$"%MobileMatchButtons".visible = show_mobile and is_instance_valid(game)
 	_update_mobile_bar_toggle_position(show_mobile)
+	_apply_bottom_bar_visibility(not show_mobile and is_instance_valid(game))
 	
-	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused
-	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused
+	$"%HelpButton".visible = is_instance_valid(game) and game.game_paused and not show_mobile
+	$"%ResetZoomButton".visible = is_instance_valid(game) and game.camera_zoom != 1.0 and game.game_paused and not show_mobile
+	var replay_playing = show_mobile and is_instance_valid(game) and ReplayManager.playback and !game.game_paused
+	$"%MobileResetZoomButton".visible = show_mobile and is_instance_valid(game) and game.camera_zoom != 1.0 and !replay_playing
+	$"%MobileHelpButton".visible = !replay_playing
+	$"%MobilePredictionsButton".visible = !replay_playing
+	$"%ArrowsButton".visible = !replay_playing
+	$"%ChatButton".visible = !replay_playing
 	if is_instance_valid(game) and !Network.multiplayer_active:
 		$"%ReplayControls".show()
 	else:

@@ -157,7 +157,9 @@ func addMainMenuButton(_text):
 	var button_mainmenu = generateButton(_text)
 	# adding it to the scene
 	button_mainmenu.flat = false
-	$"%MainMenu".get_node("ModListButtonContainer").add_child(button_mainmenu, true)
+	var main_menu = $"%MainMenu"
+	main_menu.get_node("ModListButtonContainer").add_child(button_mainmenu, true)
+	UIManager.register_menu(main_menu, [button_mainmenu])
 	get_tree().get_root().get_node("Main/UILayer/ButtonSoundPlayer").add_container($"%MainMenu".get_node("ModListButtonContainer"))
 	
 	return button_mainmenu

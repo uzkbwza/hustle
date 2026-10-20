@@ -15,6 +15,8 @@ const OPEN_DEBUG_PANEL = "open_debug_panel"
 const TOGGLE_HUD = "toggle_hud"
 const OPEN_CHAT = "open_chat"
 const SEND_CHAT = "send_chat"
+const TOGGLE_PREDICTIONS_MENU = "toggle_predictions_menu"
+const TOGGLE_NUDGE_MENU = "toggle_nudge_menu"
 
 const TOGGLE_FREE_CANCEL = "toggle_free_cancel"
 const TOGGLE_PREDICTION = "toggle_prediction"
@@ -57,6 +59,8 @@ const RUNTIME_DEFAULTS = {
 	TOGGLE_HUD: KEY_F1,
 	OPEN_CHAT: KEY_ENTER,
 	SEND_CHAT: KEY_ENTER,
+	TOGGLE_PREDICTIONS_MENU: 0,
+	TOGGLE_NUDGE_MENU: 0,
 	TOGGLE_FREE_CANCEL: 0,
 	TOGGLE_PREDICTION: 0,
 	TOGGLE_HITBOXES: 0,
@@ -100,6 +104,8 @@ const REBINDABLE = [
 	{"action": TOGGLE_FRAME_ADVANCE, "label": "Toggle Frame Advance"},
 	{"action": TOGGLE_HUD, "label": "Toggle HUD"},
 	{"action": OPEN_CHAT, "label": "Open Chat"},
+	{"action": TOGGLE_PREDICTIONS_MENU, "label": "Toggle Predictions Menu"},
+	{"action": TOGGLE_NUDGE_MENU, "label": "Toggle Nudge Menu"},
 	{"action": TOGGLE_FREE_CANCEL, "label": "Toggle Free Cancel"},
 	{"action": TOGGLE_FLIP, "label": "Toggle Flip"},
 	{"action": TOGGLE_PREDICTION, "label": "Toggle Prediction"},
@@ -183,8 +189,11 @@ func get_display_name(action: String) -> String:
 		return ""
 	for ev in InputMap.get_action_list(action):
 		if ev is InputEventKey:
-			return OS.get_scancode_string(_event_code(ev))
+			return _shorten_key_name(OS.get_scancode_string(_event_code(ev)))
 	return ""
+
+func _shorten_key_name(key_name: String) -> String:
+	return key_name.replace("Escape", "Esc")
 
 func get_bound_scancode(action: String) -> int:
 	if not InputMap.has_action(action):

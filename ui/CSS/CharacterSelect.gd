@@ -99,6 +99,13 @@ func _ready():
 		disconnect("swiped_back", self, "quit")
 	UIManager.connect("swiped_back", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
+	UIManager.register_menu(self, [
+		$"%QuitButton",$"%GameSettingsPanelContainer",
+		$"%P1Display/CenterContainer/LoadStyleButton",
+		$"%P1Display/ListCenter/StyleListButton",
+		$"%P2Display/CenterContainer/LoadStyleButton",
+		$"%P2Display/ListCenter/StyleListButton",
+	])
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	var dir = Directory.new()
 
@@ -287,6 +294,7 @@ func init(singleplayer=true):
 		else:
 			continue
 		$"%CharacterButtonContainer".add_child(button)
+		UIManager.register_menu(self, [button])
 #		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 #		var character = button.character_scene.instance()
 		button.text = name
@@ -437,14 +445,6 @@ func _process(delta):
 
 	var btts = bttContainer.get_children()
 	
-	# dirt solution for jitter for now. sorry trimay!! - vineraio
-	var grid_y = 177 + min(bttContainer.rect_size.y, scroll_container.rect_size.y)
-	var floor_y = scroll_container.rect_position.y + scroll_container.rect_size.y + 2
-	go_button.rect_position.y = max(grid_y, floor_y)
-	
-	# very dirty fix for the gamesettings shifting with too many mods. we need to rethink the uimanager.
-	game_settings_panel_container.margin_top = -172
-	game_settings_panel_container.margin_bottom = -25
 	
 	if (btt_disableTimer > 0):
 		btt_disableTimer -= delta * 60
@@ -594,6 +594,7 @@ func addCharButton(_name, _charPath, _bttName = ""):
 		# create the button
 		var char_button = load("res://ui/CSS/CharacterButton.tscn").instance()
 		bttContainer.add_child(char_button)
+		UIManager.register_menu(self, [char_button])
 		char_button.text = curBttName
 		char_button.name = curFighter
 		
@@ -763,6 +764,7 @@ func createButtons():
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = charInfo[0]
 		$"%CharacterButtonContainer".add_child(button)
+		UIManager.register_menu(self, [button])
 		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 		button.text = charInfo[1]
 	

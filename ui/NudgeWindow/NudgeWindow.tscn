@@ -1,0 +1,264 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/8Way/point_straight1.png" type="Texture" id=2]
+[ext_resource path="res://ui/8Way/point_straight2.png" type="Texture" id=3]
+[ext_resource path="res://ui/8Way/point_straight3.png" type="Texture" id=4]
+[ext_resource path="res://ui/8Way/point_straight4.png" type="Texture" id=5]
+[ext_resource path="res://ui/Chat/minimize_button1.png" type="Texture" id=6]
+[ext_resource path="res://ui/Chat/minimize_button2.png" type="Texture" id=7]
+[ext_resource path="res://ui/Chat/minimize_button3.png" type="Texture" id=8]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.0627451, 0.0627451, 0.0627451, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.113725, 0.113725, 0.113725, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[node name="MobileNudgeWindow" instance=ExtResource( 1 )]
+self_modulate = Color( 1, 1, 1, 0.5 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 8.0
+margin_top = 44.0
+margin_right = 136.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 128, 176 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_right = 127.0
+margin_bottom = 209.0
+custom_constants/separation = 6
+
+[node name="TitleBar" parent="VBoxContainer" index="0"]
+self_modulate = Color( 1, 1, 1, 0.5 )
+margin_right = 126.0
+
+[node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+text = "Nudge"
+align = 0
+
+[node name="MobileNudgeClose" type="TextureButton" parent="VBoxContainer/TitleBar" index="1"]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -10.0
+margin_bottom = 9.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 8 )
+texture_hover = ExtResource( 7 )
+
+[node name="Contents" parent="VBoxContainer" index="1"]
+self_modulate = Color( 1, 1, 1, 0.501961 )
+margin_right = 126.0
+margin_bottom = 208.0
+
+[node name="Margin" type="MarginContainer" parent="VBoxContainer/Contents" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 125.0
+margin_bottom = 197.0
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/Contents/Margin" index="0"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 118.0
+margin_bottom = 190.0
+custom_constants/separation = 6
+
+[node name="MobileNudgeTarget" type="Label" parent="VBoxContainer/Contents/Margin/VBox" index="0"]
+unique_name_in_owner = true
+margin_right = 112.0
+margin_bottom = 11.0
+custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
+text = "No target"
+align = 1
+clip_text = true
+
+[node name="DPad" type="Control" parent="VBoxContainer/Contents/Margin/VBox" index="1"]
+margin_left = 20.0
+margin_top = 17.0
+margin_right = 92.0
+margin_bottom = 89.0
+rect_min_size = Vector2( 72, 72 )
+size_flags_horizontal = 4
+
+[node name="DPadUpBg" type="Panel" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="0"]
+margin_left = 24.0
+margin_right = 48.0
+margin_bottom = 24.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="DPadLeftBg" type="Panel" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="1"]
+margin_top = 24.0
+margin_right = 24.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="DPadCenter" type="Panel" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="2"]
+margin_left = 24.0
+margin_top = 24.0
+margin_right = 48.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="DPadRightBg" type="Panel" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="3"]
+margin_left = 48.0
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="DPadDownBg" type="Panel" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="4"]
+margin_left = 24.0
+margin_top = 48.0
+margin_right = 48.0
+margin_bottom = 72.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="MobileNudgeUp" type="TextureButton" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="5"]
+unique_name_in_owner = true
+margin_left = 24.0
+margin_right = 48.0
+margin_bottom = 24.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+texture_disabled = ExtResource( 5 )
+expand = true
+
+[node name="MobileNudgeLeft" type="TextureButton" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="6"]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 24.0
+margin_bottom = 48.0
+rect_rotation = -90.0
+rect_pivot_offset = Vector2( 12, 12 )
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+texture_disabled = ExtResource( 5 )
+expand = true
+
+[node name="MobileNudgeRight" type="TextureButton" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="7"]
+unique_name_in_owner = true
+margin_left = 48.0
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 48.0
+rect_rotation = 90.0
+rect_pivot_offset = Vector2( 12, 12 )
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+texture_disabled = ExtResource( 5 )
+expand = true
+
+[node name="MobileNudgeDown" type="TextureButton" parent="VBoxContainer/Contents/Margin/VBox/DPad" index="8"]
+unique_name_in_owner = true
+margin_left = 24.0
+margin_top = 48.0
+margin_right = 48.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 3 )
+texture_disabled = ExtResource( 5 )
+expand = true
+flip_v = true
+
+[node name="MobileNudgeMultiplierRow" type="HBoxContainer" parent="VBoxContainer/Contents/Margin/VBox" index="2"]
+unique_name_in_owner = true
+margin_top = 95.0
+margin_right = 112.0
+margin_bottom = 119.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeMultiplierLabel" type="Label" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeMultiplierRow" index="0"]
+margin_right = 37.0
+margin_bottom = 24.0
+size_flags_vertical = 1
+text = "xy mult:"
+valign = 1
+
+[node name="MobileNudgeMultiplier" type="LineEdit" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeMultiplierRow" index="1"]
+unique_name_in_owner = true
+margin_left = 41.0
+margin_right = 112.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "0.01"
+align = 1
+max_length = 8
+placeholder_text = "0.01"
+
+[node name="MobileNudgeSliderMultRow" type="HBoxContainer" parent="VBoxContainer/Contents/Margin/VBox" index="3"]
+unique_name_in_owner = true
+margin_top = 125.0
+margin_right = 112.0
+margin_bottom = 149.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeSliderMultLabel" type="Label" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeSliderMultRow" index="0"]
+margin_right = 52.0
+margin_bottom = 24.0
+size_flags_vertical = 1
+text = "slider mult:"
+valign = 1
+
+[node name="MobileNudgeSliderMult" type="LineEdit" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeSliderMultRow" index="1"]
+unique_name_in_owner = true
+margin_left = 56.0
+margin_right = 112.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "1"
+align = 1
+max_length = 8
+placeholder_text = "1"
+
+[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="VBoxContainer/Contents/Margin/VBox" index="4"]
+margin_top = 155.0
+margin_right = 112.0
+margin_bottom = 179.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 4
+
+[node name="MobileNudgeInput" type="LineEdit" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeEntryRow" index="0"]
+unique_name_in_owner = true
+margin_right = 72.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+align = 1
+placeholder_text = "value"
+
+[node name="MobileNudgeApply" type="Button" parent="VBoxContainer/Contents/Margin/VBox/MobileNudgeEntryRow" index="1"]
+unique_name_in_owner = true
+margin_left = 76.0
+margin_right = 112.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 36, 24 )
+text = "Set"

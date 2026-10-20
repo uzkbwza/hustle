@@ -11,6 +11,7 @@ func _ready():
 	ModOptions.menu = self
 	get_tree().get_current_scene().call_deferred("add_child", ModOptions, true)
 	$"%CloseButton".connect("pressed", self, "_close_clicked")
+	UIManager.register_menu(self, [$"%CloseButton", $"%Tabs", $"%MenuContainer"])
 	hide()
 	
 
@@ -38,6 +39,7 @@ func add_menu_from_node(menuNode):
 	menus[menuNode.name] = menuNode
 	$"%Tabs".add_child(menuButton)
 	menuButton.set_theme_type_variation("TabButton")
+	UIManager.register_menu(self, [menuButton])
 	$"%MenuContainer".add_child(menuNode)
 	
 

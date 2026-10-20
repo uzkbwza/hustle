@@ -194,6 +194,7 @@ func init():
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = load(Global.name_paths[name])
 		$"%CharacterButtonContainer".add_child(button)
+		UIManager.register_menu(self, [button])
 		buttons.append(button)
 		button.connect("pressed", self, "_on_character_button_pressed", [button])
 		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
@@ -238,6 +239,7 @@ func init():
 		button.connect("pressed", self, "select_hitspark", [hitspark])
 		button.rect_min_size = Vector2(50, 20)
 		$"%HitsparkButtonContainer".add_child(button)
+		UIManager.register_menu(self, [button])
 	# Advanced hitspark tab: sprite picker. "(none)" first, then the named
 	# sprite frame sets pulled from Custom.HITSPARK_SPRITE_NAMES.
 	if has_node("%HitsparkSpriteOption"):
@@ -348,6 +350,26 @@ func init():
 	_on_character_button_pressed(buttons[0])
 	_on_reset_color_pressed()
 	update_warning()
+	_register_ui_scaling()
+
+
+func _register_ui_scaling():
+	UIManager.register_menu(self, [
+		$"%AllowSaveButton", $"%ClaimButton",
+		$"%ManageStylesButton", $"%FileManagerButton", $"%StyleName", $"%SaveButton",
+		$"%WorkshopButton", $"%OpenFolderButton",
+		$"%FMRow", $"%Sorter", $"%SortInvert", $"%AllOnButton", $"%AllOffButton",
+		$Panel/ScrollContainer2/VBoxContainer/ExpandCollapseRow, $"%ExpandAllButton", $"%CollapseAllButton", $"%FlatViewButton",
+		$"%ShowOutline", $"%ResetColorButton",
+		$"%HitsparkConfigCopyPasteRow", $"%HitsparkParticleSlotTabsContainer",
+		$"%HitsparkFlipWhenFacingLeft", $"%ShowHitsparkParticles", $"%HitsparkCopyPasteRow",
+		$"%HitsparkSpriteOption", $"%AuraTabsContainer", $"%ShowAura", $"%SyncAuraChanges",
+		$"%AuraCopyPasteRow", $"%BackButton",
+	])
+	for c in [copy_hitspark_particles_button, paste_hitspark_particles_button,
+			swap_hitspark_particles_button, copy_hitspark_button, paste_hitspark_button,
+			copy_aura_button, paste_aura_button, swap_aura_button]:
+		UIManager.register_menu(self, [c])
 
 
 func _on_manage_styles_pressed(_toggled):
@@ -693,6 +715,7 @@ func add_style_entry(path: String) -> void:
 	_container.add_child(btn, true)
 	_container.add_child(toggle, true)
 	$"%StyleListContainer".add_child(_container)
+	UIManager.register_menu(self, [_container, btn, toggle])
 
 	styles[style_name] = {
 		"path": path,

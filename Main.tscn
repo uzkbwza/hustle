@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=2]
+[gd_scene load_steps=104 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -84,10 +84,13 @@
 [ext_resource path="res://ui/CommunityEvents.gd" type="Script" id=202]
 [ext_resource path="res://MainHooks.gd" type="Script" id=203]
 [ext_resource path="res://ui/RelayLobby.tscn" type="PackedScene" id=204]
-[ext_resource path="res://ui/8Way/point_straight1.png" type="Texture" id=205]
-[ext_resource path="res://ui/8Way/point_straight2.png" type="Texture" id=206]
-[ext_resource path="res://ui/8Way/point_straight3.png" type="Texture" id=207]
-[ext_resource path="res://ui/8Way/point_straight4.png" type="Texture" id=208]
+[ext_resource path="res://ui/NudgeWindow/NudgeWindow.tscn" type="PackedScene" id=212]
+[ext_resource path="res://ui/PredictionPanel/PredictionPanel.tscn" type="PackedScene" id=213]
+[ext_resource path="res://characters/swordandgun/sprites/action_buttons/foresight.png" type="Texture" id=214]
+[ext_resource path="res://ui/SteamLobby/replay.png" type="Texture" id=215]
+[ext_resource path="res://ui/ActionSelector/StateIcons/shuriken.png" type="Texture" id=216]
+[ext_resource path="res://ui/SteamLobby/spectator_people_multiple.png" type="Texture" id=217]
+[ext_resource path="res://fx/cross.png" type="Texture" id=218]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -201,22 +204,6 @@ frame_8/texture = ExtResource( 43 )
 frame_8/delay_sec = 0.0
 frame_9/texture = ExtResource( 39 )
 frame_9/delay_sec = 0.0
-
-[sub_resource type="StyleBoxFlat" id=90]
-bg_color = Color( 0.0627451, 0.0627451, 0.0627451, 1 )
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color( 0, 0, 0, 1 )
-
-[sub_resource type="StyleBoxFlat" id=91]
-bg_color = Color( 0.113725, 0.113725, 0.113725, 1 )
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color( 0, 0, 0, 1 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
@@ -1575,53 +1562,150 @@ custom_constants/margin_left = 5
 
 [node name="OptionsBar" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer"]
 unique_name_in_owner = true
-visible = false
+modulate = Color( 1, 1, 1, 0.627451 )
 margin_left = 5.0
 margin_right = 635.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/separation = 4
 alignment = 1
+
+[node name="BottomBarToggleButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 60.0
+margin_right = 74.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 12 )
+hint_tooltip = "Toggle the action bar"
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 66 )
+icon_align = 1
+
+[node name="BottomPredictionsButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 78.0
+margin_right = 135.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 0 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Predictions"
+flat = true
+
+[node name="BottomNudgeButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 139.0
+margin_right = 187.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 0 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Nudge"
+flat = true
+
+[node name="BottomReplayButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 191.0
+margin_right = 239.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Playback"
+flat = true
+
+[node name="BottomChatButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 243.0
+margin_right = 291.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Chat"
+flat = true
+
+[node name="BottomMenuButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 295.0
+margin_right = 343.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Menu"
+flat = true
+
+[node name="BottomHudButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 347.0
+margin_right = 395.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+disabled = true
+text = "HUD"
+flat = true
+
+[node name="BottomLockInButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 399.0
+margin_right = 447.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+disabled = true
+text = "Lock In"
+flat = true
+
+[node name="BottomWatchReplayButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 451.0
+margin_right = 499.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+disabled = true
+text = "Watch"
+flat = true
+
+[node name="BottomEditReplayButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 503.0
+margin_right = 551.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 48, 12 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+disabled = true
+text = "Edit"
+flat = true
 
 [node name="GhostButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 12.0
-margin_right = 112.0
-margin_bottom = 12.0
+visible = false
 theme = ExtResource( 4 )
 pressed = true
 action_mode = 0
-text = "show prediction"
+text = "show"
 
 [node name="AfterimageButton" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 113.0
-margin_right = 194.0
-margin_bottom = 12.0
+visible = false
 pressed = true
 text = "afterimages"
 
 [node name="FreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 195.0
-margin_right = 297.0
-margin_bottom = 12.0
+visible = false
 pressed = true
 text = "freeze on ready"
 
 [node name="FreezeSound" type="CheckButton" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 298.0
-margin_right = 386.0
-margin_bottom = 12.0
+visible = false
 pressed = true
 text = "freeze sound"
 
 [node name="GhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 387.0
-margin_right = 530.0
-margin_bottom = 12.0
+visible = false
 script = ExtResource( 13 )
 
 [node name="Label" type="Label" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
@@ -1629,7 +1713,7 @@ unique_name_in_owner = true
 margin_right = 84.0
 margin_bottom = 11.0
 theme = ExtResource( 4 )
-text = "prediction speed:"
+text = "speed:"
 
 [node name="1Speed" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/GhostSpeed"]
 unique_name_in_owner = true
@@ -1680,17 +1764,28 @@ text = "x4"
 
 [node name="ClearParticlesButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 531.0
-margin_right = 604.0
-margin_bottom = 12.0
+visible = false
 text = "clear particles"
 
 [node name="PredictionSettingsCloseButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
 unique_name_in_owner = true
-margin_left = 605.0
-margin_right = 619.0
+visible = false
+margin_left = 537.0
+margin_right = 551.0
 margin_bottom = 12.0
 icon = ExtResource( 66 )
+
+[node name="BottomCollapseButton" type="Button" parent="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar"]
+unique_name_in_owner = true
+margin_left = 555.0
+margin_right = 569.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 12, 12 )
+hint_tooltip = "Hide the action bar buttons"
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 66 )
+icon_align = 1
 
 [node name="ResetZoomButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -1741,6 +1836,7 @@ __meta__ = {
 
 [node name="PredictionSettingsOpenButton" type="Button" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+visible = false
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -2061,452 +2157,130 @@ toggle_mode = true
 icon = ExtResource( 66 )
 icon_align = 1
 
-[node name="MobileMatchButtons" type="HBoxContainer" parent="UILayer/GameUI"]
+[node name="MobileMatchButtons" type="Control" parent="UILayer/GameUI"]
 unique_name_in_owner = true
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -168.0
+anchor_right = 1.0
 margin_top = 3.0
-margin_right = 168.0
-margin_bottom = 17.0
-grow_horizontal = 2
-rect_min_size = Vector2( 328, 14 )
-custom_constants/separation = 4
-alignment = 1
+margin_bottom = 60.0
+mouse_filter = 2
 
-[node name="MobilePredictionsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
+[node name="MobileLeftButtons" type="VBoxContainer" parent="UILayer/GameUI/MobileMatchButtons"]
 unique_name_in_owner = true
-margin_right = 64.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 64, 14 )
-custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
-text = "Predictions"
-flat = true
-
-[node name="MobileReplayButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
-unique_name_in_owner = true
-margin_left = 68.0
-margin_right = 132.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 64, 14 )
-custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
-text = "Replay"
-flat = true
-
-[node name="OpenMenuButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
-unique_name_in_owner = true
-margin_left = 136.0
-margin_right = 200.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 64, 14 )
-custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
-text = "Menu"
-flat = true
-
-[node name="ChatButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
-unique_name_in_owner = true
-margin_left = 204.0
-margin_right = 268.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 64, 14 )
-custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
-text = "Chat"
-flat = true
-
-[node name="ArrowsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons"]
-unique_name_in_owner = true
-margin_left = 272.0
-margin_right = 336.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 64, 14 )
-custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
-text = "Arrows"
-flat = true
-
-[node name="MobilePredictionPanel" type="Control" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-visible = false
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -160.0
-margin_top = 22.0
-margin_right = 160.0
-margin_bottom = 182.0
-
-[node name="Bg" type="PanelContainer" parent="UILayer/GameUI/MobilePredictionPanel"]
-self_modulate = Color( 1, 1, 1, 0.5 )
-margin_right = 320.0
-margin_bottom = 160.0
-
-[node name="Margin" type="MarginContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg"]
-margin_right = 320.0
-margin_bottom = 160.0
-custom_constants/margin_right = 6
-custom_constants/margin_top = 6
-custom_constants/margin_left = 6
-custom_constants/margin_bottom = 6
-
-[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin"]
-margin_left = 6.0
-margin_top = 6.0
-margin_right = 314.0
-margin_bottom = 154.0
+margin_top = 3.0
+margin_right = 28.0
+mouse_filter = 2
 custom_constants/separation = 4
 
-[node name="MobilePredictionTitle" type="HBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+[node name="MobileHelpButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileLeftButtons"]
 unique_name_in_owner = true
-margin_right = 308.0
+margin_right = 28.0
 margin_bottom = 22.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 65 )
+flat = true
+icon_align = 1
 
-[node name="Label" type="Label" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionTitle"]
-margin_right = 284.0
-margin_bottom = 22.0
-size_flags_horizontal = 3
-text = "Prediction"
-
-[node name="MobilePredictionClose" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionTitle"]
-unique_name_in_owner = true
-margin_left = 288.0
-margin_right = 308.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 20, 20 )
-text = "X"
-
-[node name="MobilePredictionGrid" type="GridContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+[node name="MobilePredictionsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileLeftButtons"]
 unique_name_in_owner = true
 margin_top = 26.0
-margin_right = 308.0
-margin_bottom = 82.0
-custom_constants/vseparation = 4
-custom_constants/hseparation = 6
-columns = 2
+margin_right = 28.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 214 )
+flat = true
+icon_align = 1
 
-[node name="MobileGhostButton" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+[node name="MobileReplayButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileLeftButtons"]
 unique_name_in_owner = true
-margin_right = 151.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-text = "show prediction"
+margin_top = 52.0
+margin_right = 28.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 215 )
+flat = true
+icon_align = 1
 
-[node name="MobileAfterimageButton" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+[node name="ArrowsButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileLeftButtons"]
 unique_name_in_owner = true
-margin_left = 157.0
-margin_right = 308.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-text = "afterimages"
+margin_top = 78.0
+margin_right = 28.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 218 )
+flat = true
+icon_align = 1
 
-[node name="MobileFreezeOnMyTurn" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+[node name="MobileRightButtons" type="VBoxContainer" parent="UILayer/GameUI/MobileMatchButtons"]
 unique_name_in_owner = true
-margin_top = 30.0
-margin_right = 151.0
-margin_bottom = 56.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-text = "freeze on ready"
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -30.0
+margin_top = 3.0
+margin_right = -2.0
+grow_horizontal = 0
+mouse_filter = 2
+custom_constants/separation = 4
 
-[node name="MobileFreezeSound" type="CheckButton" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobilePredictionGrid"]
+[node name="OpenMenuButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileRightButtons"]
 unique_name_in_owner = true
-margin_left = 157.0
-margin_top = 30.0
-margin_right = 308.0
-margin_bottom = 56.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-text = "freeze sound"
+margin_right = 28.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 216 )
+flat = true
+icon_align = 1
 
-[node name="MobileGhostSpeed" type="HBoxContainer" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
+[node name="ChatButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileRightButtons"]
 unique_name_in_owner = true
-margin_top = 86.0
-margin_right = 308.0
-margin_bottom = 112.0
+margin_top = 26.0
+margin_right = 28.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+icon = ExtResource( 217 )
+flat = true
+icon_align = 1
 
-[node name="Label" type="Label" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
-margin_right = 58.0
-margin_bottom = 26.0
-text = "speed:"
-
-[node name="Mobile1Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
+[node name="MobileResetZoomButton" type="Button" parent="UILayer/GameUI/MobileMatchButtons/MobileRightButtons"]
 unique_name_in_owner = true
-margin_left = 62.0
-margin_right = 108.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-toggle_mode = true
-text = "x0.25"
+margin_top = 52.0
+margin_right = 28.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 26, 22 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+flat = true
 
-[node name="Mobile5Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
-unique_name_in_owner = true
-margin_left = 112.0
-margin_right = 158.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-toggle_mode = true
-text = "x0.5"
-
-[node name="Mobile2Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
-unique_name_in_owner = true
-margin_left = 162.0
-margin_right = 208.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-toggle_mode = true
-text = "x1"
-
-[node name="Mobile3Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
-unique_name_in_owner = true
-margin_left = 212.0
-margin_right = 258.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-toggle_mode = true
-text = "x2"
-
-[node name="Mobile4Speed" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox/MobileGhostSpeed"]
-unique_name_in_owner = true
-margin_left = 262.0
-margin_right = 308.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 0, 26 )
-size_flags_horizontal = 3
-toggle_mode = true
-text = "x4"
-
-[node name="MobileClearParticlesButton" type="Button" parent="UILayer/GameUI/MobilePredictionPanel/Bg/Margin/VBox"]
-unique_name_in_owner = true
-margin_top = 116.0
-margin_right = 308.0
-margin_bottom = 142.0
-rect_min_size = Vector2( 0, 26 )
-text = "clear particles"
-
-[node name="MobileNudgeWindow" type="PanelContainer" parent="UILayer/GameUI"]
-unique_name_in_owner = true
-visible = false
-self_modulate = Color( 1, 1, 1, 0.5 )
-margin_left = 8.0
-margin_top = 44.0
-margin_right = 136.0
-margin_bottom = 220.0
-rect_min_size = Vector2( 128, 176 )
-
-[node name="Margin" type="MarginContainer" parent="UILayer/GameUI/MobileNudgeWindow"]
+[node name="Label" type="Label" parent="UILayer/GameUI/MobileMatchButtons/MobileRightButtons/MobileResetZoomButton"]
 margin_left = 1.0
-margin_top = 1.0
-margin_right = 135.0
-margin_bottom = 219.0
-custom_constants/margin_right = 6
-custom_constants/margin_top = 6
-custom_constants/margin_left = 6
-custom_constants/margin_bottom = 6
-
-[node name="VBox" type="VBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin"]
-margin_left = 6.0
-margin_top = 6.0
-margin_right = 128.0
-margin_bottom = 212.0
-custom_constants/separation = 6
-
-[node name="MobileNudgeTitle" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-unique_name_in_owner = true
-margin_right = 123.0
-margin_bottom = 16.0
-
-[node name="TitleLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeTitle"]
-margin_right = 99.0
-margin_bottom = 16.0
-size_flags_horizontal = 3
-text = "Nudge"
-
-[node name="MobileNudgeClose" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeTitle"]
-unique_name_in_owner = true
-margin_left = 103.0
-margin_right = 123.0
-margin_bottom = 16.0
-rect_min_size = Vector2( 20, 16 )
-custom_colors/font_color = Color( 1, 0.2, 0.239216, 1 )
-custom_colors/font_color_hover = Color( 1, 0.4, 0.439216, 1 )
-text = "X"
-
-[node name="MobileNudgeTarget" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-unique_name_in_owner = true
-margin_top = 22.0
-margin_right = 123.0
-margin_bottom = 34.0
-custom_colors/font_color = Color( 0.647059, 0.756863, 0.831373, 1 )
-text = "No target"
+margin_top = -1.0
+margin_right = 27.0
+margin_bottom = 19.0
+custom_constants/line_spacing = -3
+text = "reset
+zoom"
 align = 1
+valign = 1
 clip_text = true
 
-[node name="DPad" type="Control" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-margin_top = 40.0
-margin_right = 99.0
-margin_bottom = 112.0
-rect_min_size = Vector2( 72, 72 )
-size_flags_horizontal = 4
-
-[node name="DPadUpBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-margin_left = 24.0
-margin_right = 48.0
-margin_bottom = 24.0
-custom_styles/panel = SubResource( 90 )
-
-[node name="DPadLeftBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-margin_top = 24.0
-margin_right = 24.0
-margin_bottom = 48.0
-custom_styles/panel = SubResource( 90 )
-
-[node name="DPadCenter" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-margin_left = 24.0
-margin_top = 24.0
-margin_right = 48.0
-margin_bottom = 48.0
-custom_styles/panel = SubResource( 91 )
-
-[node name="DPadRightBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-margin_left = 48.0
-margin_top = 24.0
-margin_right = 72.0
-margin_bottom = 48.0
-custom_styles/panel = SubResource( 90 )
-
-[node name="DPadDownBg" type="Panel" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-margin_left = 24.0
-margin_top = 48.0
-margin_right = 48.0
-margin_bottom = 72.0
-custom_styles/panel = SubResource( 90 )
-
-[node name="MobileNudgeUp" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+[node name="MobilePredictionPanel" parent="UILayer/GameUI" instance=ExtResource( 213 )]
 unique_name_in_owner = true
-margin_left = 24.0
-margin_right = 48.0
-margin_bottom = 24.0
-texture_normal = ExtResource( 205 )
-texture_pressed = ExtResource( 207 )
-texture_hover = ExtResource( 206 )
-texture_disabled = ExtResource( 208 )
-expand = true
+visible = false
 
-[node name="MobileNudgeLeft" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
+[node name="MobileNudgeWindow" parent="UILayer/GameUI" instance=ExtResource( 212 )]
 unique_name_in_owner = true
-margin_top = 24.0
-margin_right = 24.0
-margin_bottom = 48.0
-rect_rotation = -90.0
-rect_pivot_offset = Vector2( 12, 12 )
-texture_normal = ExtResource( 205 )
-texture_pressed = ExtResource( 207 )
-texture_hover = ExtResource( 206 )
-texture_disabled = ExtResource( 208 )
-expand = true
-
-[node name="MobileNudgeRight" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-unique_name_in_owner = true
-margin_left = 48.0
-margin_top = 24.0
-margin_right = 72.0
-margin_bottom = 48.0
-rect_rotation = 90.0
-rect_pivot_offset = Vector2( 12, 12 )
-texture_normal = ExtResource( 205 )
-texture_pressed = ExtResource( 207 )
-texture_hover = ExtResource( 206 )
-texture_disabled = ExtResource( 208 )
-expand = true
-
-[node name="MobileNudgeDown" type="TextureButton" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/DPad"]
-unique_name_in_owner = true
-margin_left = 24.0
-margin_top = 48.0
-margin_right = 48.0
-margin_bottom = 72.0
-texture_normal = ExtResource( 205 )
-texture_pressed = ExtResource( 207 )
-texture_hover = ExtResource( 206 )
-texture_disabled = ExtResource( 208 )
-expand = true
-flip_v = true
-
-[node name="MobileNudgeMultiplierRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-unique_name_in_owner = true
-margin_top = 118.0
-margin_right = 123.0
-margin_bottom = 142.0
-rect_min_size = Vector2( 0, 24 )
-custom_constants/separation = 4
-
-[node name="MobileNudgeMultiplierLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeMultiplierRow"]
-margin_right = 30.0
-margin_bottom = 24.0
-size_flags_vertical = 1
-text = "xy mult:"
-valign = 1
-
-[node name="MobileNudgeMultiplier" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeMultiplierRow"]
-unique_name_in_owner = true
-margin_left = 34.0
-margin_right = 123.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "0.01"
-align = 1
-max_length = 8
-placeholder_text = "0.01"
-
-[node name="MobileNudgeSliderMultRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-unique_name_in_owner = true
-margin_top = 148.0
-margin_right = 123.0
-margin_bottom = 172.0
-rect_min_size = Vector2( 0, 24 )
-custom_constants/separation = 4
-
-[node name="MobileNudgeSliderMultLabel" type="Label" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeSliderMultRow"]
-margin_right = 30.0
-margin_bottom = 24.0
-size_flags_vertical = 1
-text = "slider mult:"
-valign = 1
-
-[node name="MobileNudgeSliderMult" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeSliderMultRow"]
-unique_name_in_owner = true
-margin_left = 34.0
-margin_right = 123.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "1"
-align = 1
-max_length = 8
-placeholder_text = "1"
-
-[node name="MobileNudgeEntryRow" type="HBoxContainer" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox"]
-margin_top = 148.0
-margin_right = 123.0
-margin_bottom = 172.0
-rect_min_size = Vector2( 0, 24 )
-custom_constants/separation = 4
-
-[node name="MobileNudgeInput" type="LineEdit" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeEntryRow"]
-unique_name_in_owner = true
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-align = 1
-placeholder_text = "value"
-
-[node name="MobileNudgeApply" type="Button" parent="UILayer/GameUI/MobileNudgeWindow/Margin/VBox/MobileNudgeEntryRow"]
-unique_name_in_owner = true
-rect_min_size = Vector2( 36, 24 )
-text = "Set"
+visible = false
 
 [node name="PausePanel" type="PanelContainer" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -2689,7 +2463,7 @@ alignment = 1
 
 [node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2700,7 +2474,7 @@ flat = true
 [node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 20.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2711,18 +2485,18 @@ flat = true
 [node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 40.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Multiplayer (Legacy)"
+text = "Multiplayer (Crossplay)"
 flat = true
 
 [node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 60.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2733,7 +2507,7 @@ flat = true
 [node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 80.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2744,7 +2518,7 @@ flat = true
 [node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 100.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2755,7 +2529,7 @@ flat = true
 [node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 120.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 140.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2766,7 +2540,7 @@ flat = true
 [node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 140.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 160.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2777,7 +2551,7 @@ flat = true
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 160.0
-margin_right = 102.0
+margin_right = 115.0
 margin_bottom = 180.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
