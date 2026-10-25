@@ -1038,6 +1038,36 @@ func save_stex(image, save_path):
 	stexf.store_buffer(pngdata)
 	stexf.close()
 
+# Same .stex as decoding the png and calling save_stex, but straight from the
+# png file's own bytes: Godot decodes both to the same pixels, and skipping the
+# decode + re-encode is most of a first-time character load. Returns false if
+# the file doesn't look like a png (the caller then uses save_stex).
+func save_stex_from_png(png_path, save_path):
+	var pngf = File.new()
+	if pngf.open(png_path, File.READ) != OK:
+		return false
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	# png signature, then the IHDR chunk, which starts with width and height
+	if pnglen < 24 or pngdata.subarray(0, 15).hex_encode() != "89504e470d0a1a0a0000000d49484452":
+		return false
+	var width = pngdata[16] << 24 | pngdata[17] << 16 | pngdata[18] << 8 | pngdata[19]
+	var height = pngdata[20] << 24 | pngdata[21] << 16 | pngdata[22] << 8 | pngdata[23]
+	var stexf = File.new()
+	stexf.open(save_path, File.WRITE)
+	stexf.store_string("GDST")
+	stexf.store_32(width)
+	stexf.store_32(height)
+	stexf.store_32(0)
+	stexf.store_32(0x07100000) # data format
+	stexf.store_32(1) # nr mipmaps
+	stexf.store_32(pnglen + 6)
+	stexf.store_string("PNG ")
+	stexf.store_buffer(pngdata)
+	stexf.close()
+	return true
+
 # save sample function made specifically for char loader
 func save_sample(og_file, dest_file):
 
@@ -1097,14 +1127,16 @@ func save_sample(og_file, dest_file):
 	f.store_32(leng)
 	f.store_buffer(fullWav)
 
-	# filling the whole duplicate chunk of data with 0x00
-	var wrote = 0
-	var zeroChunk = 8 # doing loops in chunks of 8 bytes to do less loops
-	for i in floor(leng/2 / zeroChunk): 
-		writeHex(f, [0x00], 8 * zeroChunk)
-		wrote += 8
-	for i in leng/2 - wrote: # fill in the rest of the 0s
-		writeHex(f, [0x00], 8)
+	# filling the whole duplicate chunk of data with 0x00, 64KB at a time
+	var zeros = PoolByteArray([0])
+	while zeros.size() < 65536:
+		zeros.append_array(zeros)
+	var left = leng / 2
+	while left >= zeros.size():
+		f.store_buffer(zeros)
+		left -= zeros.size()
+	if left > 0:
+		f.store_buffer(zeros.subarray(0, left - 1))
 	
 	# standard bottomer(?)
 	writeHex(f, [0x03, 0x00, 0x00, 0x00], 8)
@@ -1333,9 +1365,10 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 				# save the conversion to the temp folder
 				var tmpFile = "user://mod_temp/" + dest.split("://.import/")[1]
 				if (dest.ends_with(".stex")):
-					var img = Image.new()
-					img.load(assets[i])
-					save_stex(img, tmpFile)
+					if !save_stex_from_png(assets[i], tmpFile):
+						var img = Image.new()
+						img.load(assets[i])
+						save_stex(img, tmpFile)
 				elif (dest.ends_with(".oggstr")):
 					save_oggstr(assets[i], tmpFile)
 				else:
