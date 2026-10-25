@@ -729,9 +729,12 @@ const TEXTURE_BATCH_BYTES_MOBILE = 64 * 1024 * 1024
 const TEXTURE_THREADS = 8
 const TEXTURE_THREADS_MOBILE = 4
 
+# preload, not load(), so exports that only include used resources keep these
+const TextureDecoder = preload("res://bin/GDTextureDecoder.gdns")
+const AudioImport = preload("res://modloader/AudioImport.gd")
+
 func _preload_textures(scene_path, mod_folder):
-	var decoder_script = load("res://bin/GDTextureDecoder.gdns")
-	var decoder = decoder_script.new() if decoder_script else null
+	var decoder = TextureDecoder.new()
 	if decoder == null:
 		return []
 
@@ -1413,7 +1416,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		# loadListChar still protects against a genuinely-broken cache.
 		var soft_issues = []
 		# 1. every asset must have a .import sidecar
-		var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg")
+		var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
 		for asset_path in assets:
 			if !dir.file_exists(asset_path + ".import"):
 				soft_issues.append(asset_path + ".import")
@@ -1437,7 +1440,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 
 	_import_start()
 
-	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg")
+	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
 	var delList = [] # list of all the temp files that should be deleted once the conversion is done
 	
 	var missingFiles = []
@@ -1461,10 +1464,15 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 						var img = Image.new()
 						img.load(assets[i])
 						save_stex(img, tmpFile)
-				elif (dest.ends_with(".oggstr")):
-					save_oggstr(assets[i], tmpFile)
+				elif (dest.ends_with(".oggstr") or dest.ends_with(".mp3str")):
+					# what the editor's importer would make; the old way if that fails
+					if !AudioImport.save_compressed(assets[i], tmpFile, c) and dest.ends_with(".oggstr"):
+						save_oggstr(assets[i], tmpFile)
 				else:
-					save_sample(assets[i], tmpFile)
+					if !AudioImport.save_wav(assets[i], tmpFile, c):
+						save_sample(assets[i], tmpFile)
+				if !dir.file_exists(tmpFile): # couldn't convert; reported as missing below
+					continue
 				
 				# add it to the package
 				p.add_file(dest, tmpFile)

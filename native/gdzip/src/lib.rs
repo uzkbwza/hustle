@@ -1,5 +1,5 @@
-// Godot glue for the zip code in zipcore.rs and the texture decoder in
-// texdecode.rs.
+// Godot glue for the zip code in zipcore.rs, the texture decoder in
+// texdecode.rs and the WAV importer port in audio.rs.
 //
 // Used through res://modloader/gdunzip/gdunzip.gd (reading) and
 // res://modloader/gdunzip/gdzip.gd (writing). File access stays on the
@@ -10,6 +10,7 @@ use gdnative::export::user_data::MutexData;
 use gdnative::init::{godot_gdnative_init, godot_gdnative_terminate, godot_nativescript_init};
 use gdnative::prelude::*;
 
+pub mod audio;
 pub mod texdecode;
 pub mod zipcore;
 
@@ -268,10 +269,60 @@ impl GDTextureDecoder {
     }
 }
 
+#[derive(NativeClass)]
+#[inherit(Reference)]
+#[user_data(MutexData<GDAudioImporter>)]
+pub struct GDAudioImporter;
+
+#[methods]
+impl GDAudioImporter {
+    fn new(_base: &Reference) -> Self {
+        GDAudioImporter
+    }
+
+    /// Godot 3.5.1's WAV importer (see audio.rs). `options` holds the
+    /// [params] of the file's .import (already typed, defaults filled in).
+    /// Returns [data, format, mix_rate, loop_mode, loop_begin, loop_end,
+    /// stereo], or null where the editor's importer would fail.
+    #[method]
+    fn import_wav(&self, bytes: PoolArray<u8>, options: Dictionary) -> Variant {
+        let d = audio::WavOptions::default();
+        let get_bool = |k: &str, def: bool| options.get(k).and_then(|v| v.try_to::<bool>().ok()).unwrap_or(def);
+        let get_int = |k: &str, def: i64| options.get(k).and_then(|v| v.try_to::<i64>().ok()).unwrap_or(def);
+        let o = audio::WavOptions {
+            force_8_bit: get_bool("force/8_bit", d.force_8_bit),
+            force_mono: get_bool("force/mono", d.force_mono),
+            force_max_rate: get_bool("force/max_rate", d.force_max_rate),
+            force_max_rate_hz: get_int("force/max_rate_hz", d.force_max_rate_hz as i64) as i32,
+            edit_trim: get_bool("edit/trim", d.edit_trim),
+            edit_normalize: get_bool("edit/normalize", d.edit_normalize),
+            edit_loop_mode: get_int("edit/loop_mode", d.edit_loop_mode),
+            edit_loop_begin: get_int("edit/loop_begin", d.edit_loop_begin as i64) as i32,
+            edit_loop_end: get_int("edit/loop_end", d.edit_loop_end as i64) as i32,
+            compress_mode: get_int("compress/mode", d.compress_mode),
+        };
+        match audio::import_wav(&bytes.read(), &o) {
+            Ok(s) => {
+                let out = VariantArray::new();
+                out.push(PoolArray::<u8>::from_vec(s.data));
+                out.push(s.format);
+                out.push(s.mix_rate as i64);
+                out.push(s.loop_mode);
+                out.push(s.loop_begin as i64);
+                out.push(s.loop_end as i64);
+                out.push(s.stereo);
+                out.into_shared().to_variant()
+            }
+            Err(_) => Variant::nil(),
+        }
+    }
+}
+
 fn init(handle: InitHandle) {
     handle.add_class::<GDUnzipNative>();
     handle.add_class::<GDZipNative>();
     handle.add_class::<GDTextureDecoder>();
+    handle.add_class::<GDAudioImporter>();
 }
 
 // Own symbol names (symbol_prefix = "gdzip_" in lib/gdzip.tres) so they can't
