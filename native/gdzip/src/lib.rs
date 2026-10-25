@@ -1,5 +1,6 @@
 // Godot glue for the zip code in zipcore.rs, the texture decoder in
-// texdecode.rs and the WAV importer port in audio.rs.
+// texdecode.rs, the WAV importer port in audio.rs and file hashing in
+// hashing.rs.
 //
 // Used through res://modloader/gdunzip/gdunzip.gd (reading) and
 // res://modloader/gdunzip/gdzip.gd (writing). File access stays on the
@@ -11,6 +12,7 @@ use gdnative::init::{godot_gdnative_init, godot_gdnative_terminate, godot_native
 use gdnative::prelude::*;
 
 pub mod audio;
+pub mod hashing;
 pub mod texdecode;
 pub mod zipcore;
 
@@ -318,11 +320,43 @@ impl GDAudioImporter {
     }
 }
 
+#[derive(NativeClass)]
+#[inherit(Reference)]
+#[user_data(MutexData<GDFileHasher>)]
+pub struct GDFileHasher;
+
+#[methods]
+impl GDFileHasher {
+    fn new(_base: &Reference) -> Self {
+        GDFileHasher
+    }
+
+    /// MD5 (lowercase hex, like File.get_md5) of each file, on up to
+    /// `max_threads` threads. Paths are OS paths (globalized). "" for a file
+    /// that couldn't be read.
+    #[method]
+    fn md5_files(&self, paths: VariantArray, max_threads: i64) -> VariantArray {
+        let paths: Vec<String> = paths.iter().map(|v| v.try_to::<String>().unwrap_or_default()).collect();
+        let results: Vec<std::sync::Mutex<String>> = paths.iter().map(|_| std::sync::Mutex::new(String::new())).collect();
+        texdecode::parallel_for(paths.len(), max_threads.max(1) as usize, |i| {
+            if let Some(h) = hashing::md5_file(&paths[i]) {
+                *results[i].lock().unwrap() = h;
+            }
+        });
+        let out = VariantArray::new();
+        for r in results {
+            out.push(r.into_inner().unwrap());
+        }
+        out.into_shared()
+    }
+}
+
 fn init(handle: InitHandle) {
     handle.add_class::<GDUnzipNative>();
     handle.add_class::<GDZipNative>();
     handle.add_class::<GDTextureDecoder>();
     handle.add_class::<GDAudioImporter>();
+    handle.add_class::<GDFileHasher>();
 }
 
 // Own symbol names (symbol_prefix = "gdzip_" in lib/gdzip.tres) so they can't

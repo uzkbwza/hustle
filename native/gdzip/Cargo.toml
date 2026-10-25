@@ -12,6 +12,7 @@ miniz_oxide = "0.8"
 crc32fast = "1"
 png = "0.17"
 image-webp = "0.2"
+md-5 = "0.10"
 
 [dev-dependencies]
 zip = { version = "2", default-features = false, features = ["deflate"] }

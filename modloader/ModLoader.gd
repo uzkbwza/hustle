@@ -248,6 +248,7 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 # Load and run any ModMain.gd scripts which were present in mod ZIP files.
 # Attach the script instances to this singleton's scene to keep them alive.
 func _initMods():
+	_hash_files(_modZipFiles)
 	for modFSPath in _modZipFiles:
 		var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
 		gdunzip.load(modFSPath)
@@ -541,11 +542,60 @@ func loadSound(soundPath): # Just moved it over here so that it can be used by o
 	file.close()
 	return stream
 
+# MD5 of a mod zip: the mod's identity (online mod matching, char cache names).
+# Remembered for the session and redone if the file's size or modified time
+# changes, so char select doesn't hash every zip again each time it opens.
+const _FileHasher = preload("res://bin/GDFileHasher.gdns")
+# Past ~4 it's limited by the biggest zip, and on hard drives more readers
+# just fight over the disk.
+const HASH_THREADS = 4
+const HASH_THREADS_MOBILE = 3
+var _md5_cache = {} # path -> [size, modified time, md5]
+var _md5_mutex = Mutex.new() # char select hashes from a thread
+
 func _hash_file(path):
+	var stamp = _file_stamp(path)
+	_md5_mutex.lock()
+	var cached = _md5_cache.get(path)
+	_md5_mutex.unlock()
+	if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+		return cached[2]
 	var file = File.new()
 	var modZIPHash = file.get_md5(path)
 	file.close() # closing this, maybe causing leaks - vineraio
+	if modZIPHash != "" and stamp != null:
+		_md5_mutex.lock()
+		_md5_cache[path] = [stamp[0], stamp[1], modZIPHash]
+		_md5_mutex.unlock()
 	return modZIPHash
+
+# Hashes several zips at once (native/gdzip, one file per thread) and remembers
+# them for _hash_file. Same values as File.get_md5.
+func _hash_files(paths):
+	var hasher = _FileHasher.new()
+	if hasher == null:
+		return
+	var todo = []
+	var os_paths = []
+	for p in paths:
+		todo.append(p)
+		os_paths.append(ProjectSettings.globalize_path(p))
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, HASH_THREADS_MOBILE if Global.is_mobile_device else HASH_THREADS))
+	var hashes = hasher.md5_files(os_paths, threads)
+	for i in todo.size():
+		var stamp = _file_stamp(todo[i])
+		if hashes[i] != "" and stamp != null:
+			_md5_mutex.lock()
+			_md5_cache[todo[i]] = [stamp[0], stamp[1], hashes[i]]
+			_md5_mutex.unlock()
+
+func _file_stamp(path):
+	var f = File.new()
+	if f.open(path, File.READ) != OK:
+		return null
+	var size = f.get_len()
+	f.close()
+	return [size, f.get_modified_time(path)]
 	
 # Parses metadata
 # returns Variant with metadata or null if file doesn't exist
