@@ -1,0 +1,822 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://bordermanager/border_portrait_shader.gdshader" type="Shader" id=1]
+[ext_resource path="res://bordermanager/images/border_cowboy.png" type="Texture" id=2]
+[ext_resource path="res://bordermanager/images/border_portrait_bg_transparent.png" type="Texture" id=3]
+[ext_resource path="res://theme.tres" type="Theme" id=4]
+[ext_resource path="res://ui/CSS/SelectionArt.gd" type="Script" id=5]
+[ext_resource path="res://framework/VariableSound.gd" type="Script" id=6]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = true
+shader_param/use_extra_color_2 = true
+shader_param/extra_replace_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
+shader_param/extra_replace_color_2 = Color( 0.647059, 0.756863, 0.831373, 1 )
+shader_param/use_outline = true
+shader_param/color = Color( 0.752941, 0.752941, 0.752941, 1 )
+shader_param/extra_color_1 = Color( 1, 0, 0, 1 )
+shader_param/extra_color_2 = Color( 1, 0.752941, 0, 1 )
+shader_param/outline_color = Color( 0, 0.752941, 1, 1 )
+shader_param/max_color_distance = 0.01
+
+[sub_resource type="Animation" id=7]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 225, 430 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("../../../CharacterLeft:rect_position:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( -200, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("../../../CharacterLeft:rect_position:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( -225, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../ColorRectEdge:color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.67451, 0.631373, 0.996078, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../BackgroundLeft:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.152941, 0.133333, 0.290196, 1 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "load_done"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("../../../CharacterLeft:rect_position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -200, -0.25, 0, 0.25, 0, -200, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("../../../CharacterLeft:rect_position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( -250, -0.25, 0, 0.2, 20, -225, -0.5, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../ColorRectEdge:color")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.67451, 0.631373, 0.996078, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../BackgroundLeft:modulate")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.152941, 0.133333, 0.290196, 1 ) ]
+}
+
+[sub_resource type="Animation" id=8]
+resource_name = "loop"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 225, 430 ), Vector2( 225, 370 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../ColorRectEdge:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.501961, 0.501961, 0.501961, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../BackgroundLeft:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.25098, 0.25098, 0.25098, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath(".:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( -240, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath(".:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 180, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "reveal"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath(".:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( -240, -0.25, 0, 0.1, 300, 70, -0.1, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath(".:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 180, -0.25, 0, 0.25, 0, 180, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 1 )
+shader_param/use_extra_color_1 = true
+shader_param/use_extra_color_2 = true
+shader_param/extra_replace_color_1 = Color( 0.431373, 0.52549, 0.588235, 1 )
+shader_param/extra_replace_color_2 = Color( 0.647059, 0.756863, 0.831373, 1 )
+shader_param/use_outline = true
+shader_param/color = Color( 0.0196078, 0.101961, 0.168627, 1 )
+shader_param/extra_color_1 = Color( 0.298039, 0.588235, 0.596078, 1 )
+shader_param/extra_color_2 = Color( 0.780392, 1, 0, 1 )
+shader_param/outline_color = Color( 0.501961, 0.866667, 0.0784314, 1 )
+shader_param/max_color_distance = 0.01
+
+[sub_resource type="Animation" id=9]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 14, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("../../../CharacterRight:rect_position:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( -240, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("../../../CharacterRight:rect_position:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( -225, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../BackgroundRight:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.294118, 0.0823529, 0.0901961, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../ColorRectEdge:color")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.996078, 0.47451, 0.505882, 1 ) ]
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "load_done"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("../../../CharacterRight:rect_position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -240, -0.25, 0, 0.25, 0, -240, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("../../../CharacterRight:rect_position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( -250, -0.25, 0, 0.2, 20, -225, -0.5, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1 )
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../BackgroundRight:modulate")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.294118, 0.0823529, 0.0901961, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../ColorRectEdge:color")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.996078, 0.47451, 0.505882, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "loop"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 14, 0 ), Vector2( 14, 60 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../BackgroundRight:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.25098, 0.25098, 0.25098, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../ColorRectEdge:color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0.501961, 0.501961, 0.501961, 1 ) ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath(".:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 880, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath(".:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 180, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "reveal"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath(".:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 880, -0.25, 0, 0.1, -300, 570, -0.1, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath(".:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 180, -0.25, 0, 0.25, 0, 180, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[node name="SelectionArt" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 4 )
+script = ExtResource( 5 )
+default_background = ExtResource( 3 )
+
+[node name="LeftOffset" type="Control" parent="."]
+unique_name_in_owner = true
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = -240.0
+margin_right = -240.0
+mouse_filter = 2
+
+[node name="BackgroundPivot" type="Control" parent="LeftOffset"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_rotation = 15.0
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="LeftOffset/BackgroundPivot"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -120.0
+margin_top = -230.0
+margin_right = 120.0
+margin_bottom = 200.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="LeftOffset/BackgroundPivot/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0.0431373, 0.0470588, 0.0588235, 1 )
+
+[node name="BackgroundLeft" type="TextureRect" parent="LeftOffset/BackgroundPivot/Control"]
+unique_name_in_owner = true
+modulate = Color( 0.152941, 0.133333, 0.290196, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 7
+
+[node name="ColorRectEdge" type="ColorRect" parent="LeftOffset/BackgroundPivot/Control"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 20.0
+mouse_filter = 2
+color = Color( 0.67451, 0.631373, 0.996078, 1 )
+
+[node name="LeftLoadingText" type="Control" parent="LeftOffset/BackgroundPivot/Control"]
+unique_name_in_owner = true
+visible = false
+margin_left = 225.0
+margin_top = 430.0
+margin_right = 465.0
+margin_bottom = 444.0
+rect_rotation = -90.0
+
+[node name="Label1" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = -60.0
+margin_right = -13.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label2" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_right = 47.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label3" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 60.0
+margin_right = 107.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label4" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 120.0
+margin_right = 167.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label5" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 180.0
+margin_right = 227.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label6" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 240.0
+margin_right = 287.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label7" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 300.0
+margin_right = 347.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label8" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 360.0
+margin_right = 407.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label9" type="Label" parent="LeftOffset/BackgroundPivot/Control/LeftLoadingText"]
+margin_left = 420.0
+margin_right = 467.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="LoadingContainerLeft" type="CenterContainer" parent="LeftOffset"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -200.0
+margin_right = 240.0
+margin_bottom = 200.0
+mouse_filter = 2
+
+[node name="CharacterLeft" type="TextureRect" parent="LeftOffset"]
+unique_name_in_owner = true
+material = SubResource( 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -200.0
+margin_top = -225.0
+margin_right = 240.0
+margin_bottom = 175.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 4
+
+[node name="LeftLoadingAnimPlayer" type="AnimationPlayer" parent="LeftOffset"]
+unique_name_in_owner = true
+root_node = NodePath("../BackgroundPivot/Control/LeftLoadingText")
+anims/RESET = SubResource( 7 )
+anims/load_done = SubResource( 11 )
+anims/loop = SubResource( 8 )
+
+[node name="LeftAnimPlayer" type="AnimationPlayer" parent="LeftOffset"]
+unique_name_in_owner = true
+anims/RESET = SubResource( 3 )
+anims/reveal = SubResource( 4 )
+
+[node name="LeftSFX1" type="AudioStreamPlayer" parent="LeftOffset"]
+unique_name_in_owner = true
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="LeftOffset/LeftSFX1"]
+one_shot = true
+
+[node name="LeftSFX2" type="AudioStreamPlayer" parent="LeftOffset"]
+unique_name_in_owner = true
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="LeftOffset/LeftSFX2"]
+one_shot = true
+
+[node name="RightOffset" type="Control" parent="."]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 240.0
+margin_right = 240.0
+mouse_filter = 2
+
+[node name="BackgroundPivot" type="Control" parent="RightOffset"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_rotation = -15.0
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="RightOffset/BackgroundPivot"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -120.0
+margin_top = -230.0
+margin_right = 120.0
+margin_bottom = 210.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="RightOffset/BackgroundPivot/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0.0431373, 0.0470588, 0.0588235, 1 )
+
+[node name="BackgroundRight" type="TextureRect" parent="RightOffset/BackgroundPivot/Control"]
+unique_name_in_owner = true
+modulate = Color( 0.294118, 0.0823529, 0.0901961, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 7
+
+[node name="ColorRectEdge" type="ColorRect" parent="RightOffset/BackgroundPivot/Control"]
+anchor_bottom = 1.0
+margin_left = -20.0
+mouse_filter = 2
+color = Color( 0.996078, 0.47451, 0.505882, 1 )
+
+[node name="RightLoadingText" type="Control" parent="RightOffset/BackgroundPivot/Control"]
+unique_name_in_owner = true
+visible = false
+margin_left = 14.0
+margin_right = 254.0
+margin_bottom = 13.998
+rect_rotation = 90.0
+
+[node name="Label1" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = -60.0
+margin_right = -13.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label2" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_right = 47.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label3" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 60.0
+margin_right = 107.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label4" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 120.0
+margin_right = 167.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label5" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 180.0
+margin_right = 227.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label6" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 240.0
+margin_right = 287.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label7" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 300.0
+margin_right = 347.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label8" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 360.0
+margin_right = 407.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="Label9" type="Label" parent="RightOffset/BackgroundPivot/Control/RightLoadingText"]
+margin_left = 420.0
+margin_right = 467.0
+margin_bottom = 14.0
+text = "LOADING"
+
+[node name="CharacterRight" type="TextureRect" parent="RightOffset"]
+unique_name_in_owner = true
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -240.0
+margin_top = -225.0
+margin_right = 200.0
+margin_bottom = 175.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 4
+flip_h = true
+
+[node name="LoadingContainerRight" type="CenterContainer" parent="RightOffset"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -240.0
+margin_top = -200.0
+margin_right = 200.0
+margin_bottom = 200.0
+mouse_filter = 2
+
+[node name="RightLoadingAnimPlayer" type="AnimationPlayer" parent="RightOffset"]
+unique_name_in_owner = true
+root_node = NodePath("../BackgroundPivot/Control/RightLoadingText")
+anims/RESET = SubResource( 9 )
+anims/load_done = SubResource( 12 )
+anims/loop = SubResource( 10 )
+
+[node name="RightAnimPlayer" type="AnimationPlayer" parent="RightOffset"]
+unique_name_in_owner = true
+anims/RESET = SubResource( 5 )
+anims/reveal = SubResource( 6 )
+
+[node name="RightSFX1" type="AudioStreamPlayer" parent="RightOffset"]
+unique_name_in_owner = true
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="RightOffset/RightSFX1"]
+one_shot = true
+
+[node name="RightSFX2" type="AudioStreamPlayer" parent="RightOffset"]
+unique_name_in_owner = true
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="RightOffset/RightSFX2"]
+one_shot = true

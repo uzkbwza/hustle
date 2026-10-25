@@ -2,7 +2,7 @@ extends Button
 
 export(PackedScene) var character_scene
 
-onready var char_select = get_node("../../../..") # get_parent x 4
+onready var char_select = Network.css_instance
 
 
 func _ready():

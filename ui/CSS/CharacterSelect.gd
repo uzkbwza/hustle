@@ -92,6 +92,9 @@ func _ready():
 	loading_text.show()
 	go_button.hide()
 	
+	$"%P1Display".connect("style_selected", self, "_on_style_selected", [1])
+	$"%P2Display".connect("style_selected", self, "_on_style_selected", [2])
+	
 	$"%GoButton".connect("pressed", self, "go")
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
@@ -154,6 +157,13 @@ func _ready():
 	go_button.show()
 	loading_text.hide()
 
+
+
+func _on_style_selected(style, player_id):
+	$SelectionArt.apply_style(player_id, style)
+
+
+
 func load_mods():
 	var dir = Directory.new()
 	hash_to_folder = {}
@@ -196,13 +206,15 @@ func load_mods():
 #		if new_time - time >= 16:
 #		yield(get_tree(), "idle_frame")
 	call_deferred("on_mods_load_finished")
-	
+
+
 
 func on_mods_load_finished():
 	emit_signal("mods_loaded")
 #	if is_instance_valid(loadThread2):
 	loadThread2.wait_to_finish()
-	pass
+
+
 
 func _on_network_character_selected(player_id, character, style=null):
 	selected_characters[player_id] = character
@@ -214,6 +226,8 @@ func _on_network_character_selected(player_id, character, style=null):
 		if Network.is_host():
 			Network.rpc_("send_match_data", get_match_data())
 
+
+
 func _on_network_match_locked_in(match_data):
 	network_match_data = match_data
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.OPPONENT_ID != 0:
@@ -223,10 +237,17 @@ func _on_network_match_locked_in(match_data):
 	loadThread = Thread.new()
 	loadThread.start(self, "net_async_loadOtherChar")
 
+
+
 func reset():
+	$SelectionArt.reset()
 	hide()
 
+
+
+
 func init(singleplayer=true):
+	$SelectionArt.reset()
 	show()
 	emit_signal("opened")
 	loadingLabel_vanish()
@@ -305,11 +326,33 @@ func init(singleplayer=true):
 		$ButtonSoundPlayer.add_container($"%CharacterButtonContainer")
 		$ButtonSoundPlayer.setup()
 	_on_button_mouse_entered(buttons[0])
-	
+
+
+
 func get_character_data(button):
 	var data = {}
 	var scene = button.character_scene.instance()
 	data["name"] = scene.name
+	data["border_portrait"] = null
+	data["border_background"] = null
+	data["select_sfx"] = []
+	if "border_portrait" in scene:
+		data["border_portrait"] = scene.border_portrait
+		data["border_background"] = scene.border_background
+		if scene.select_sfx_1 != null:
+			data["select_sfx"].append({
+				"sfx": scene.select_sfx_1,
+				"delay": scene.select_sfx_1_delay_sec,
+				"vol_db": scene.select_sfx_1_vol_db,
+				"pitch_variation": scene.select_sfx_1_pitch_variation,
+			})
+		if scene.select_sfx_2 != null:
+			data["select_sfx"].append({
+				"sfx": scene.select_sfx_2,
+				"delay": scene.select_sfx_2_delay_sec,
+				"vol_db": scene.select_sfx_2_vol_db,
+				"pitch_variation": scene.select_sfx_2_pitch_variation,
+			})
 	scene.free()
 	return data
 
@@ -368,7 +411,12 @@ func _on_button_pressed(button):
 	if btt_disableTimer > 0 or currentlyLoading:
 		button.set_pressed_no_signal(false)
 		return
-	var miss = []
+	#var miss = []
+	$SelectionArt.animate_reveal(current_player)
+	$SelectionArt.animate_load_started(current_player)
+	$SelectionArt.set_portrait(current_player, null)
+	$SelectionArt.set_background(current_player, null)
+
 	if (isCustomChar(button.name)):
 		loadThread = Thread.new()
 		loadThread.start(self, "async_loadButtonChar", button)
@@ -377,6 +425,8 @@ func _on_button_pressed(button):
 
 	for button in buttons:
 		button.set_pressed_no_signal(false)
+
+
 
 func quit():
 	if not visible: return
@@ -723,6 +773,12 @@ func buffer_select(button):
 	var display_data = get_display_data(button)
 	display_character(current_player, display_data)
 	selected_characters[current_player] = data
+	
+	$SelectionArt.animate_load_done(current_player)
+	$SelectionArt.set_portrait(current_player, data["border_portrait"])
+	$SelectionArt.set_background(current_player, data["border_background"])
+	$SelectionArt.set_sfx_data(current_player, data["select_sfx"])
+	$SelectionArt.set_style_params(current_player, display_data)
 	
 	if singleplayer and current_player == 1:
 		current_player = 2

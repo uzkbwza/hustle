@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://ui/CSS/CharacterSelect.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://ui/CSS/CharacterDisplay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://cl_port/CharacterDisplay.gd" type="Script" id=6]
 [ext_resource path="res://ui/ButtonSoundPlayer.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/CSS/SelectionArt.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/GameSettingsPanelContainer.tscn" type="PackedScene" id=9]
 
 [node name="CharacterSelect" type="Panel"]
@@ -19,9 +20,12 @@ __meta__ = {
 "_edit_vertical_guides_": [ 320.0 ]
 }
 
+[node name="SelectionArt" parent="." instance=ExtResource( 8 )]
+
 [node name="GameSettingsPanelContainer" parent="." instance=ExtResource( 9 )]
 unique_name_in_owner = true
 margin_bottom = -25.0
+grow_horizontal = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 anchor_left = 0.5
@@ -59,9 +63,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -40.0
-margin_top = -69.0
+margin_top = -64.0
 margin_right = 40.0
-margin_bottom = -35.0
+margin_bottom = -30.0
 theme = ExtResource( 2 )
 theme_type_variation = "ChallengeButton"
 disabled = true
@@ -98,6 +102,7 @@ script = ExtResource( 6 )
 margin_left = 213.0
 margin_right = 426.0
 margin_bottom = 208.0
+grow_horizontal = 2
 mouse_filter = 2
 size_flags_horizontal = 3
 

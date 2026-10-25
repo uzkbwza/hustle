@@ -436,8 +436,17 @@ use_extra_color_1 = false
 extra_color_1 = Color( 1, 0, 1, 1 )
 use_extra_color_2 = false
 extra_color_2 = Color( 1, 0, 1, 1 )
+_c_screen_border_and_char_select_art = 0
 border_portrait = null
 border_background = ExtResource( 200 )
+select_sfx_1 = ExtResource( 136 )
+select_sfx_1_delay_sec = 0.0
+select_sfx_1_vol_db = -4.0
+select_sfx_1_pitch_variation = 0.1
+select_sfx_2 = null
+select_sfx_2_delay_sec = 0.0
+select_sfx_2_vol_db = -10.0
+select_sfx_2_pitch_variation = 0.1
 
 [node name="Sprite" parent="Flip" index="0"]
 material = ExtResource( 134 )

@@ -9,11 +9,16 @@ onready var bg_texture_rects = {
 	1: $"%BackgroundLeft",
 	2: $"%BackgroundRight",
 }
+onready var color_rects = {
+	1: $LeftColorRect,
+	2: $RightColorRect,
+}
 
 export var default_background : Texture
 
 var default_extra_1 = { 1:Color.white, 2:Color.white }
 var default_extra_2 = { 1:Color.white, 2:Color.white }
+var applied_styles = { 1:null, 2:null }
 
 
 
@@ -38,11 +43,14 @@ func set_style_params(id, params):
 		
 		if default_extra_2.has(id):
 			default_extra_2[id] = extra_replace_2 if use_extra_2 else Color.white
+		
+		apply_style(id, applied_styles[id])
 
 
 
 func apply_style(id, style):
 	if char_texture_rects.has(id):
+		applied_styles[id] = style
 		if not (style is Dictionary):
 			style = {}
 		var material :ShaderMaterial = char_texture_rects[id].get_material()
@@ -75,12 +83,19 @@ func set_border_art(id, tex):
 func show_menu_art():
 	$LeftChar.visible = false
 	$RightChar.visible = false
-	$ColorRect.visible = true
+	$LeftColorRect.visible = true
+	$RightColorRect.visible = true
 
 
 
 func show_character_art():
 	$LeftChar.visible = true
 	$RightChar.visible = true
-	$ColorRect.visible = false
+	$LeftColorRect.visible = false
+	$RightColorRect.visible = false
 
+
+
+func set_border_color(id, col : Color):
+	if color_rects.has(id):
+		color_rects[id].color = col

@@ -1,6 +1,12 @@
 extends Viewport
 
 
+
+var menu_color = Color("0a1d3a")
+var dark_color = Color("0b0c0f")
+
+
+
 func _ready():
 	get_tree().connect("screen_resized", self, "_on_screen_resized")
 	Global.connect("option_changed", self, "_on_option_changed")
@@ -34,6 +40,8 @@ func show_character_art():
 
 func show_menu_art():
 	$BorderArt.show_menu_art()
+	$BorderArt.set_border_color(1, menu_color)
+	$BorderArt.set_border_color(2, menu_color)
 
 
 
@@ -45,8 +53,11 @@ func apply_style(id, style):
 
 func set_border_background(id, tex):
 	$BorderArt.set_border_background(id, tex)
-	
+
 func set_border_art(id, tex):
 	$BorderArt.set_border_art(id, tex)
+
+func set_border_color(id, col : Color):
+	$BorderArt.set_border_color(id, col)
 
 

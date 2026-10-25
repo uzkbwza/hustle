@@ -224,8 +224,18 @@ export var extra_color_1 = Color("ff00ff")
 export var use_extra_color_2 = false
 export var extra_color_2 = Color("ff00ff")
 
-export (Texture) var border_portrait
-export (Texture) var border_background
+export var _c_screen_border_and_char_select_art = 0
+
+export (Texture) var border_portrait = null
+export (Texture) var border_background = null
+export (AudioStream) var select_sfx_1 = null
+export (float) var select_sfx_1_delay_sec = 0.0
+export (float) var select_sfx_1_vol_db = -10.0
+export (float) var select_sfx_1_pitch_variation = 0.1
+export (AudioStream) var select_sfx_2 = null
+export (float) var select_sfx_2_delay_sec = 0.0
+export (float) var select_sfx_2_vol_db = -10.0
+export (float) var select_sfx_2_pitch_variation = 0.1
 
 
 var global_damage_modifier = "1.0"

@@ -93,8 +93,17 @@ expand = true
 stretch_mode = 4
 flip_h = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
-visible = false
+[node name="LeftColorRect" type="ColorRect" parent="."]
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -8.0
+margin_top = -8.0
+margin_right = 8.0
+margin_bottom = 8.0
+color = Color( 0.0392157, 0.113725, 0.227451, 1 )
+
+[node name="RightColorRect" type="ColorRect" parent="."]
+anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -8.0
