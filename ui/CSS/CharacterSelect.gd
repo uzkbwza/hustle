@@ -682,6 +682,7 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	# the scene is edited, the node name gets updated
 	var char_scene
 	if (miss == []):
+		var _textures = _preload_textures(_charPath, curModFolder) # keeps them alive until the scene has them
 		var packed = load(_charPath)
 		char_scene = packed.instance() if packed else null
 		if char_scene == null:
@@ -710,6 +711,91 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	Global.name_paths[curFighter] = _charPath
 
 	return miss
+
+
+# Decodes the textures this character's scene uses on every core
+# (native/gdzip) and puts them in the resource cache, so the load() of the
+# scene right after finds them ready instead of Godot decoding them one by
+# one. Gives the same pixels; textures the native side can't do exactly like
+# Godot are left alone and load the normal way. Returns the textures, which
+# the caller has to keep until the scene is loaded (the resource cache
+# doesn't keep anything alive by itself).
+# decoded size per batch, to cap memory use (phones have a lot less of it)
+const TEXTURE_BATCH_BYTES = 256 * 1024 * 1024
+const TEXTURE_BATCH_BYTES_MOBILE = 64 * 1024 * 1024
+
+func _preload_textures(scene_path, mod_folder):
+	var decoder_script = load("res://bin/GDTextureDecoder.gdns")
+	var decoder = decoder_script.new() if decoder_script else null
+	if decoder == null:
+		return []
+
+	# every png the scene uses, through its sub-scenes and resources
+	var pngs = []
+	var seen = {scene_path: true}
+	var todo = [scene_path]
+	while !todo.empty():
+		for dep in ResourceLoader.get_dependencies(todo.pop_back()):
+			dep = dep.split("::")[0]
+			if seen.has(dep):
+				continue
+			seen[dep] = true
+			if dep.get_extension() == "png":
+				if dep.begins_with(mod_folder + "/") and !ResourceLoader.has_cached(dep):
+					pngs.append(dep)
+			elif dep.get_extension() in ["tscn", "tres", "scn", "res"]:
+				todo.append(dep)
+
+	var max_batch = TEXTURE_BATCH_BYTES_MOBILE if Global.is_mobile_device else TEXTURE_BATCH_BYTES
+	var textures = []
+	var batch = [] # [png path, .stex contents]
+	var batch_bytes = 0
+	for png in pngs:
+		var import_file = ConfigFile.new()
+		if import_file.load(png + ".import") != OK:
+			continue
+		var stex_path = import_file.get_value("remap", "path", "")
+		var f = File.new()
+		if stex_path == "" or f.open(stex_path, File.READ) != OK:
+			continue
+		# only read the whole file if the header says it's one image the
+		# native side can take: png or webp inside, one mipmap, no size override
+		var header = f.get_buffer(32)
+		var data_format = header[16] | header[17] << 8 | header[18] << 16 | header[19] << 24 if header.size() == 32 else 0
+		var mipmaps = header[20] | header[21] << 8 | header[22] << 16 | header[23] << 24 if header.size() == 32 else 0
+		if (data_format & (3 << 20)) == 0 or mipmaps != 1 or header[6] | header[7] | header[10] | header[11] != 0:
+			f.close()
+			continue
+		f.seek(0)
+		var stex = f.get_buffer(f.get_len())
+		f.close()
+		batch.append([png, stex])
+		# width and height from the .stex header
+		batch_bytes += (stex[4] | stex[5] << 8) * (stex[8] | stex[9] << 8) * 4
+		if batch_bytes >= max_batch:
+			_decode_texture_batch(decoder, batch, textures)
+			batch = []
+			batch_bytes = 0
+	_decode_texture_batch(decoder, batch, textures)
+	return textures
+
+func _decode_texture_batch(decoder, batch, textures):
+	if batch.empty():
+		return
+	var files = []
+	for entry in batch:
+		files.append(entry[1])
+	var decoded = decoder.decode_stex(files)
+	for i in decoded.size():
+		var d = decoded[i]
+		if d == null:
+			continue
+		var image = Image.new()
+		image.create_from_data(d[0], d[1], false, d[2], d[3])
+		var texture = ImageTexture.new()
+		texture.create_from_image(image, d[4])
+		texture.take_over_path(batch[i][0])
+		textures.append(texture)
 
 
 ## Button functions ##

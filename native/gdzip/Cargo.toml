@@ -10,6 +10,8 @@ crate-type = ["cdylib", "rlib"]
 gdnative = { version = "=0.11.3", default-features = false }
 miniz_oxide = "0.8"
 crc32fast = "1"
+png = "0.17"
+image-webp = "0.2"
 
 [dev-dependencies]
 zip = { version = "2", default-features = false, features = ["deflate"] }

@@ -1,4 +1,5 @@
-// Godot glue for the zip code in zipcore.rs.
+// Godot glue for the zip code in zipcore.rs and the texture decoder in
+// texdecode.rs.
 //
 // Used through res://modloader/gdunzip/gdunzip.gd (reading) and
 // res://modloader/gdunzip/gdzip.gd (writing). File access stays on the
@@ -9,6 +10,7 @@ use gdnative::export::user_data::MutexData;
 use gdnative::init::{godot_gdnative_init, godot_gdnative_terminate, godot_nativescript_init};
 use gdnative::prelude::*;
 
+pub mod texdecode;
 pub mod zipcore;
 
 use zipcore::{Parse, ZipBuilder};
@@ -162,9 +164,113 @@ impl GDZipNative {
     }
 }
 
+#[derive(NativeClass)]
+#[inherit(Reference)]
+#[user_data(MutexData<GDTextureDecoder>)]
+pub struct GDTextureDecoder;
+
+/// Where one texture's png is, and where its pixels go. The pointers are
+/// into PoolByteArrays that the calling thread keeps locked until every
+/// worker is done; each output is only written by one worker.
+struct DecodeJob {
+    kind: texdecode::Kind,
+    data: *const u8,
+    data_len: usize,
+    out: *mut u8,
+    out_len: usize,
+}
+unsafe impl Send for DecodeJob {}
+unsafe impl Sync for DecodeJob {}
+
+#[methods]
+impl GDTextureDecoder {
+    fn new(_base: &Reference) -> Self {
+        GDTextureDecoder
+    }
+
+    /// Takes the contents of .stex files and decodes them on all cores.
+    /// Returns, per file, [width, height, Image format, pixels, texture flags],
+    /// or null where Godot should load it itself (see texdecode.rs).
+    #[method]
+    fn decode_stex(&self, files: VariantArray) -> VariantArray {
+        let inputs: Vec<Option<PoolArray<u8>>> =
+            files.iter().map(|v| v.try_to::<PoolArray<u8>>().ok()).collect();
+        let reads: Vec<_> = inputs.iter().map(|a| a.as_ref().map(|a| a.read())).collect();
+        let plans: Vec<_> = reads
+            .iter()
+            .map(|r| r.as_ref().and_then(|r| texdecode::plan(r)))
+            .collect();
+        let mut outputs: Vec<Option<PoolArray<u8>>> = plans
+            .iter()
+            .map(|p| {
+                p.as_ref().map(|p| {
+                    let mut a = PoolArray::new();
+                    a.resize(p.out_len as i32);
+                    a
+                })
+            })
+            .collect();
+
+        let ok: Vec<std::sync::atomic::AtomicBool> =
+            plans.iter().map(|_| std::sync::atomic::AtomicBool::new(false)).collect();
+        {
+            let mut writes: Vec<_> = outputs.iter_mut().map(|o| o.as_mut().map(|a| a.write())).collect();
+            let jobs: Vec<Option<DecodeJob>> = plans
+                .iter()
+                .zip(&reads)
+                .zip(writes.iter_mut())
+                .map(|((plan, read), write)| match (plan, read, write) {
+                    (Some(p), Some(r), Some(w)) => Some(DecodeJob {
+                        kind: p.kind,
+                        data: r[p.data.clone()].as_ptr(),
+                        data_len: p.data.len(),
+                        out: w.as_mut_ptr(),
+                        out_len: p.out_len,
+                    }),
+                    _ => None,
+                })
+                .collect();
+            texdecode::parallel_for(jobs.len(), |i| {
+                if let Some(job) = &jobs[i] {
+                    let (data, out) = unsafe {
+                        (
+                            std::slice::from_raw_parts(job.data, job.data_len),
+                            std::slice::from_raw_parts_mut(job.out, job.out_len),
+                        )
+                    };
+                    let done = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        texdecode::decode_into(job.kind, data, out)
+                    }))
+                    .unwrap_or(false);
+                    ok[i].store(done, std::sync::atomic::Ordering::Relaxed);
+                }
+            });
+        }
+        drop(reads);
+
+        let result = VariantArray::new();
+        for ((plan, output), ok) in plans.into_iter().zip(outputs).zip(ok) {
+            match (plan, output) {
+                (Some(p), Some(pixels)) if ok.into_inner() => {
+                    let entry = VariantArray::new();
+                    entry.push(p.width as i64);
+                    entry.push(p.height as i64);
+                    entry.push(p.format);
+                    entry.push(pixels);
+                    entry.push(p.flags as i64);
+                    result.push(entry.into_shared());
+                }
+                _ => result.push(Variant::nil()),
+            }
+        }
+        result.into_shared()
+    }
+}
+
 fn init(handle: InitHandle) {
     handle.add_class::<GDUnzipNative>();
     handle.add_class::<GDZipNative>();
+    handle.add_class::<GDTextureDecoder>();
 }
 
 // Own symbol names (symbol_prefix = "gdzip_" in lib/gdzip.tres) so they can't
