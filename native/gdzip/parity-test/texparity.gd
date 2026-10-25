@@ -41,7 +41,7 @@ func _idle(_d):
 			stexes.append(file.get_buffer(file.get_len()))
 			file.close()
 			chunk.append(names[j])
-		var decoded = decoder.decode_stex(stexes)
+		var decoded = decoder.decode_stex(stexes, 8)
 		for k in chunk.size():
 			n.files += 1
 			var dd = decoded[k]

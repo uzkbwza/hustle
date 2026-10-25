@@ -188,11 +188,12 @@ impl GDTextureDecoder {
         GDTextureDecoder
     }
 
-    /// Takes the contents of .stex files and decodes them on all cores.
-    /// Returns, per file, [width, height, Image format, pixels, texture flags],
-    /// or null where Godot should load it itself (see texdecode.rs).
+    /// Takes the contents of .stex files and decodes them on up to
+    /// `max_threads` threads. Returns, per file, [width, height, Image format,
+    /// pixels, texture flags], or null where Godot should load it itself
+    /// (see texdecode.rs).
     #[method]
-    fn decode_stex(&self, files: VariantArray) -> VariantArray {
+    fn decode_stex(&self, files: VariantArray, max_threads: i64) -> VariantArray {
         let inputs: Vec<Option<PoolArray<u8>>> =
             files.iter().map(|v| v.try_to::<PoolArray<u8>>().ok()).collect();
         let reads: Vec<_> = inputs.iter().map(|a| a.as_ref().map(|a| a.read())).collect();
@@ -230,7 +231,7 @@ impl GDTextureDecoder {
                     _ => None,
                 })
                 .collect();
-            texdecode::parallel_for(jobs.len(), |i| {
+            texdecode::parallel_for(jobs.len(), max_threads.max(1) as usize, |i| {
                 if let Some(job) = &jobs[i] {
                     let (data, out) = unsafe {
                         (

@@ -723,6 +723,11 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 # decoded size per batch, to cap memory use (phones have a lot less of it)
 const TEXTURE_BATCH_BYTES = 256 * 1024 * 1024
 const TEXTURE_BATCH_BYTES_MOBILE = 64 * 1024 * 1024
+# decoding threads. Past ~8 it stops getting faster (memory bound), and one
+# core is always left for the game itself so the UI doesn't hitch. Phones get
+# fewer: half their cores are slow ones and they throttle when hot.
+const TEXTURE_THREADS = 8
+const TEXTURE_THREADS_MOBILE = 4
 
 func _preload_textures(scene_path, mod_folder):
 	var decoder_script = load("res://bin/GDTextureDecoder.gdns")
@@ -747,6 +752,7 @@ func _preload_textures(scene_path, mod_folder):
 				todo.append(dep)
 
 	var max_batch = TEXTURE_BATCH_BYTES_MOBILE if Global.is_mobile_device else TEXTURE_BATCH_BYTES
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, TEXTURE_THREADS_MOBILE if Global.is_mobile_device else TEXTURE_THREADS))
 	var textures = []
 	var batch = [] # [png path, .stex contents]
 	var batch_bytes = 0
@@ -773,19 +779,19 @@ func _preload_textures(scene_path, mod_folder):
 		# width and height from the .stex header
 		batch_bytes += (stex[4] | stex[5] << 8) * (stex[8] | stex[9] << 8) * 4
 		if batch_bytes >= max_batch:
-			_decode_texture_batch(decoder, batch, textures)
+			_decode_texture_batch(decoder, batch, textures, threads)
 			batch = []
 			batch_bytes = 0
-	_decode_texture_batch(decoder, batch, textures)
+	_decode_texture_batch(decoder, batch, textures, threads)
 	return textures
 
-func _decode_texture_batch(decoder, batch, textures):
+func _decode_texture_batch(decoder, batch, textures, threads):
 	if batch.empty():
 		return
 	var files = []
 	for entry in batch:
 		files.append(entry[1])
-	var decoded = decoder.decode_stex(files)
+	var decoded = decoder.decode_stex(files, threads)
 	for i in decoded.size():
 		var d = decoded[i]
 		if d == null:

@@ -207,11 +207,13 @@ fn decode_png(png: &[u8], out: &mut [u8]) -> bool {
     reader.next_frame(out).is_ok()
 }
 
-/// Runs `job(i)` for every i in 0..n across all cores.
-pub fn parallel_for(n: usize, job: impl Fn(usize) + Sync) {
+/// Runs `job(i)` for every i in 0..n on up to `max_threads` threads (never
+/// more than the machine has cores), each taking the next index when done.
+pub fn parallel_for(n: usize, max_threads: usize, job: impl Fn(usize) + Sync) {
     use std::sync::atomic::{AtomicUsize, Ordering};
     let next = AtomicUsize::new(0);
-    let threads = std::thread::available_parallelism().map_or(1, |t| t.get()).min(n.max(1));
+    let cores = std::thread::available_parallelism().map_or(1, |t| t.get());
+    let threads = cores.min(max_threads).min(n).max(1);
     std::thread::scope(|s| {
         for _ in 0..threads {
             s.spawn(|| loop {
