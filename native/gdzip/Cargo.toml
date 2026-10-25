@@ -1,0 +1,30 @@
+[package]
+name = "gdzip"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+gdnative = { version = "=0.11.3", default-features = false }
+miniz_oxide = "0.8"
+crc32fast = "1"
+
+[dev-dependencies]
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+# same patched gdnative-sys as tbfg-lib (see patched-deps/README.md)
+[patch.crates-io]
+gdnative-sys = { path = "patched-deps/gdnative-sys" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "unwind"
+strip = true
+
+# gdnative's init macros check a feature this crate doesn't have
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(feature, values("custom-godot"))'] }
