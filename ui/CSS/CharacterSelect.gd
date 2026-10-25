@@ -195,13 +195,13 @@ func load_mods():
 				is_serverSided = false
 		if is_serverSided:
 			serverMods.append(hashy)
+		var cache_name = _char_cache_name(md, hashy)
 		for f in caches:
 			var fName = f.replace("user://char_cache/", "")
-			if fName.find(md.name.validate_node_name()) == 0 && fName.find(md.author.validate_node_name()) != -1:
-				if fName.find(hashy) == -1 || fName.find(clVersion.validate_node_name()) == -1:
-					dir.remove(f)
-				else:
-					charPackages[md.name] = f
+			if fName == cache_name:
+				charPackages[md.name] = f
+			elif _is_char_cache_of(fName, md):
+				dir.remove(f) # this mod's cache from another version of the mod or game
 		var new_time = Time.get_ticks_msec()
 #		if new_time - time >= 16:
 #		yield(get_tree(), "idle_frame")
@@ -1383,21 +1383,43 @@ func _validateScene(scenePath, _modFolder):
 
 # opening and loading packages, used for the .import file conversions. also adds a temp folder to be deleted afterwards
 var p
+# [mod name]-[author name]-[mod hash]-[game version].pck
+func _char_cache_name(md, mod_hash):
+	return md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-" + mod_hash + "-" + clVersion.validate_node_name() + ".pck"
+
+# Whether a char_cache file name is some version of this mod's cache: the exact
+# name and author, then a hash and a game version. (Matching on "starts with
+# the name" also caught other mods whose names start the same way, by the same
+# author, and deleted their caches.)
+func _is_char_cache_of(file_name, md):
+	var prefix = md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-"
+	if !file_name.begins_with(prefix) or !file_name.ends_with(".pck"):
+		return false
+	var rest = file_name.substr(prefix.length()).trim_suffix(".pck").split("-")
+	return rest.size() == 2 and rest[0].length() == 32 and rest[0].is_valid_hex_number()
+
+# Each mod's import is packed into its own file, which stays mounted for the
+# rest of the session. (A single shared imagepack.pck got rewritten by the next
+# character's import while the previous one was still mounted from it, breaking
+# that character's files.) ModLoader clears these at startup.
+const IMPORT_PACK_DIR = "user://mod_temp_packs"
+var _import_pack_path = "user://imagepack.pck"
+
 func _import_start():
 	p = PCKPacker.new()
-	p.pck_start("user://imagepack.pck")
+	p.pck_start(_import_pack_path)
 
 	var dir = Directory.new()
 	dir.make_dir("user://mod_temp")
 
 func _import_copy(destFile):
 	var dir = Directory.new()
-	dir.copy("user://imagepack.pck", destFile)
+	dir.copy(_import_pack_path, destFile)
 
 func _import_end():
 	p.flush()
 
-	ProjectSettings.load_resource_pack("user://imagepack.pck")
+	ProjectSettings.load_resource_pack(_import_pack_path)
 
 func _createImportFiles(folder, _charName, _charPath): # returns an array of missing files
 	var dir = Directory.new()
@@ -1438,6 +1460,10 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 			importWarnings.erase(curFighter)
 		return []
 
+	var cache_name = _char_cache_name(md, folder_to_hash(folder))
+	dir.make_dir_recursive(IMPORT_PACK_DIR)
+	# unique per import: an earlier one may still be mounted (even for this mod)
+	_import_pack_path = IMPORT_PACK_DIR.plus_file(cache_name.trim_suffix(".pck") + "-" + str(OS.get_ticks_usec()) + ".pck")
 	_import_start()
 
 	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
@@ -1503,6 +1529,12 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 	missingFiles += _validateScene(_charPath, name_to_folder[curFighter])
 
 	if (missingFiles == []):
-		_import_copy("user://char_cache/" + modName.validate_node_name() + "-" + md.author.validate_node_name() + "-" + folder_to_hash(folder) + "-" + clVersion.validate_node_name() + ".pck") # will cache the asset package for faster load times on subsequent sessions
+		var cache_path = "user://char_cache/" + cache_name
+		# never replace a good cache; another of this mod's characters may have made it
+		if !dir.file_exists(cache_path):
+			_import_copy(cache_path) # will cache the asset package for faster load times on subsequent sessions
+		# so this mod's other characters use it instead of importing it all again,
+		# which used to overwrite the cache with an empty package
+		charPackages[modName] = cache_path
 
 	return missingFiles

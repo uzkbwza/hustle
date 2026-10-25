@@ -58,6 +58,7 @@ func _write_modded_json(data: Dictionary) -> void:
 
 func _init():
 #	Steam.steamInit()
+	_clear_import_packs()
 	if not File.new().file_exists("user://modded.json"):
 		_write_modded_json({"modsEnabled": true, "lastLaunchOk": true})
 	
@@ -138,6 +139,18 @@ func _init():
 	# is treated as clean.
 	_modded_file.lastLaunchOk = true
 	_write_modded_json(_modded_file)
+
+
+# Char select packs each mod import into its own file under
+# user://mod_temp_packs and keeps it mounted for the session; clear them at
+# startup, before anything is mounted. Also the old shared imagepack.pck.
+func _clear_import_packs():
+	var dir = Directory.new()
+	if dir.dir_exists("user://mod_temp_packs"):
+		for f in _get_all_files("user://mod_temp_packs", "pck"):
+			dir.remove(f)
+	if dir.file_exists("user://imagepack.pck"):
+		dir.remove("user://imagepack.pck")
 
 
 # Parses a JSON string and returns it only if it's a valid Dictionary.
