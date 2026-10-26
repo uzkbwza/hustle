@@ -176,10 +176,8 @@ func load_mods():
 	var time = Time.get_ticks_msec()
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
-		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
-		gdunzip.load(zip)
 		var folder = ""
-		for modEntryPath in gdunzip.files:
+		for modEntryPath in ModLoader._zip_files(zip):
 			if (modEntryPath.find(".import") == -1):
 				folder = "res://" + modEntryPath.rsplit("/")[0]
 				break

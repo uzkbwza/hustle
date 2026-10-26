@@ -123,11 +123,11 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
 		if zip_only and modFSPath.get_extension() != "zip":
 			continue
-		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
-		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+		if !ModLoader._mount_zip(modFSPath):
 			continue
 		_modZipFiles.append(modFSPath)
 
+	ModLoader._hash_files(_modZipFiles) # all at once, several threads
 	for mod_path in _modZipFiles:
 		refresh_mod(mod_path)
 
@@ -173,21 +173,19 @@ func _on_fm_folder_updated(path: String) -> void:
 
 
 func on_mod_folder_updated(_path: String):
-	var modGlobalPath = ProjectSettings.globalize_path(_path)
-	if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+	if !ModLoader._mount_zip(_path):
 		return
 	refresh_mod(_path)
 
 
 func refresh_mod(_path):
-	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
-	gdunzip.load(_path)
+	var zip_files = ModLoader._zip_files(_path)
 	var modHash = ModLoader._hash_file(_path)
-	for modEntryPath in gdunzip.files:
+	for modEntryPath in zip_files:
 		var modSubFolder = modEntryPath.rsplit('/')[0]
 		var modEntryName = modEntryPath.get_file().to_lower()
 		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
-			var metaRes = ModLoader._checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
+			var metaRes = ModLoader._checkMetadata(modSubFolder, zip_files, modEntryPath)
 			if metaRes != null:
 				var mod_name = metaRes[1].name
 				if mods.has(mod_name):

@@ -245,8 +245,7 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
 		if zip_only and modFSPath.get_extension() != "zip":
 			continue
-		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
-		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+		if !_mount_zip(modFSPath):
 			continue
 		_modZipFiles.append(modFSPath)
 
@@ -257,16 +256,15 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 func _initMods():
 	_hash_files(_modZipFiles)
 	for modFSPath in _modZipFiles:
-		var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
-		gdunzip.load(modFSPath)
+		var zip_files = _zip_files(modFSPath)
 		var modHash = _hash_file(modFSPath)
-		for modEntryPath in gdunzip.files:
+		for modEntryPath in zip_files:
 			var modSubFolder = modEntryPath.rsplit('/')[0]
 			var modEntryName = modEntryPath.get_file().to_lower()
 			#Check for metadata, if fails, don't load
 			if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
 				# Verifies metadata and returns metaRes = [PackedScene, metadata]
-				var metaRes = _checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
+				var metaRes = _checkMetadata(modSubFolder, zip_files, modEntryPath)
 				if metaRes != null:
 					var modInfo = [metaRes[0], modHash, metaRes[1]]
 					# Record where this mod loaded from. On the metadata dict so it
@@ -585,8 +583,16 @@ func _hash_files(paths):
 	var todo = []
 	var os_paths = []
 	for p in paths:
+		var stamp = _file_stamp(p)
+		_md5_mutex.lock()
+		var cached = _md5_cache.get(p)
+		_md5_mutex.unlock()
+		if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+			continue # already known this session and unchanged
 		todo.append(p)
 		os_paths.append(ProjectSettings.globalize_path(p))
+	if todo.empty():
+		return
 	var threads = int(clamp(OS.get_processor_count() - 1, 1, HASH_THREADS_MOBILE if Global.is_mobile_device else HASH_THREADS))
 	var hashes = hasher.md5_files(os_paths, threads)
 	for i in todo.size():
@@ -595,6 +601,44 @@ func _hash_files(paths):
 			_md5_mutex.lock()
 			_md5_cache[todo[i]] = [stamp[0], stamp[1], hashes[i]]
 			_md5_mutex.unlock()
+
+# Each mod zip is mounted and listed once per session (again only if the file
+# changes: size or modified time). The main menu's mod list and the character
+# select used to mount and read every zip again each time they opened.
+var _mounted_zips = {} # path -> [size, modified time]
+var _zip_file_lists = {} # path -> [size, modified time, gdunzip files]
+var _zip_mutex = Mutex.new() # char select reads these from a thread
+
+func _mount_zip(path):
+	var stamp = _file_stamp(path)
+	_zip_mutex.lock()
+	var mounted = _mounted_zips.get(path)
+	_zip_mutex.unlock()
+	if mounted != null and stamp != null and mounted[0] == stamp[0] and mounted[1] == stamp[1]:
+		return true
+	if !ProjectSettings.load_resource_pack(ProjectSettings.globalize_path(path), true):
+		return false
+	if stamp != null:
+		_zip_mutex.lock()
+		_mounted_zips[path] = stamp
+		_zip_mutex.unlock()
+	return true
+
+# gdunzip's `files` for a zip (don't modify it; it's shared).
+func _zip_files(path):
+	var stamp = _file_stamp(path)
+	_zip_mutex.lock()
+	var cached = _zip_file_lists.get(path)
+	_zip_mutex.unlock()
+	if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+		return cached[2]
+	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
+	gdunzip.load(path)
+	if stamp != null:
+		_zip_mutex.lock()
+		_zip_file_lists[path] = [stamp[0], stamp[1], gdunzip.files]
+		_zip_mutex.unlock()
+	return gdunzip.files
 
 func _file_stamp(path):
 	var f = File.new()
