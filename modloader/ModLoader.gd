@@ -593,14 +593,84 @@ func _hash_files(paths):
 		os_paths.append(ProjectSettings.globalize_path(p))
 	if todo.empty():
 		return
-	var threads = int(clamp(OS.get_processor_count() - 1, 1, HASH_THREADS_MOBILE if Global.is_mobile_device else HASH_THREADS))
-	var hashes = hasher.md5_files(os_paths, threads)
+
+	# hashes from earlier sessions, for files whose fingerprint is unchanged
+	var fingerprints = hasher.fingerprint_files(os_paths)
+	var disk = _md5_disk_cache_load()
+	var disk_changed = false
+	var need = []
+	var need_os = []
+	var need_fp = []
 	for i in todo.size():
-		var stamp = _file_stamp(todo[i])
-		if hashes[i] != "" and stamp != null:
-			_md5_mutex.lock()
-			_md5_cache[todo[i]] = [stamp[0], stamp[1], hashes[i]]
-			_md5_mutex.unlock()
+		var fp = fingerprints[i]
+		var entry = disk.get(todo[i])
+		if fp[0] != "" and typeof(entry) == TYPE_DICTIONARY and entry.get("fp") == fp[0] and typeof(entry.get("md5")) == TYPE_STRING:
+			_remember_md5(todo[i], entry.md5)
+			continue
+		need.append(todo[i])
+		need_os.append(os_paths[i])
+		need_fp.append(fp)
+
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, HASH_THREADS_MOBILE if Global.is_mobile_device else HASH_THREADS))
+	var hashes = hasher.md5_files(need_os, threads) if !need.empty() else []
+	for i in need.size():
+		if hashes[i] == "":
+			continue
+		_remember_md5(need[i], hashes[i])
+		# only files whose fingerprint can be trusted and that weren't just changed
+		if need_fp[i][0] != "" and need_fp[i][1]:
+			disk[need[i]] = {"fp": need_fp[i][0], "md5": hashes[i]}
+			disk_changed = true
+		elif disk.has(need[i]):
+			disk.erase(need[i])
+			disk_changed = true
+	if disk_changed:
+		_md5_disk_cache_save(disk)
+
+func _remember_md5(path, md5):
+	var stamp = _file_stamp(path)
+	if stamp != null:
+		_md5_mutex.lock()
+		_md5_cache[path] = [stamp[0], stamp[1], md5]
+		_md5_mutex.unlock()
+
+# MD5s from earlier sessions, next to the character caches, each with the
+# file's fingerprint when it was hashed (native/gdzip hashing.rs: device, inode
+# or file ID, size, modified and change times, to the nanosecond / 100ns). A
+# hash is only reused if the fingerprint is exactly the same; anything off and
+# the file is hashed again. Clearing the character cache deletes it too.
+const MD5_DISK_CACHE = "user://char_cache/mod_hashes.json"
+const MD5_DISK_CACHE_FORMAT = 1
+var _md5_disk = null
+
+func _md5_disk_cache_load():
+	if _md5_disk != null:
+		return _md5_disk
+	_md5_disk = {}
+	var f = File.new()
+	if f.open(MD5_DISK_CACHE, File.READ) == OK:
+		var parsed = JSON.parse(f.get_as_text())
+		f.close()
+		if parsed.error == OK and typeof(parsed.result) == TYPE_DICTIONARY \
+		and parsed.result.get("format") == MD5_DISK_CACHE_FORMAT and typeof(parsed.result.get("files")) == TYPE_DICTIONARY:
+			_md5_disk = parsed.result.files
+	return _md5_disk
+
+func _md5_disk_cache_save(disk):
+	var check = File.new()
+	for path in disk.keys():
+		if !check.file_exists(path):
+			disk.erase(path) # mods that are gone
+	var dir = Directory.new()
+	dir.make_dir_recursive(MD5_DISK_CACHE.get_base_dir())
+	var tmp = MD5_DISK_CACHE + ".tmp"
+	var f = File.new()
+	if f.open(tmp, File.WRITE) != OK:
+		return
+	f.store_string(JSON.print({"format": MD5_DISK_CACHE_FORMAT, "files": disk}))
+	f.close()
+	if dir.rename(tmp, MD5_DISK_CACHE) != OK:
+		dir.remove(tmp)
 
 # Each mod zip is mounted and listed once per session (again only if the file
 # changes: size or modified time). The main menu's mod list and the character

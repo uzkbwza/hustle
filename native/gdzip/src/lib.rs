@@ -349,6 +349,28 @@ impl GDFileHasher {
         }
         out.into_shared()
     }
+
+    /// For each file: [fingerprint, settled] (see hashing.rs), or ["", false]
+    /// where the file's filesystem isn't one whose fingerprints can be trusted.
+    #[method]
+    fn fingerprint_files(&self, paths: VariantArray) -> VariantArray {
+        let out = VariantArray::new();
+        for v in paths.iter() {
+            let entry = VariantArray::new();
+            match hashing::fingerprint(&v.try_to::<String>().unwrap_or_default()) {
+                Some(f) => {
+                    entry.push(f.id);
+                    entry.push(f.settled);
+                }
+                None => {
+                    entry.push("");
+                    entry.push(false);
+                }
+            }
+            out.push(entry.into_shared());
+        }
+        out.into_shared()
+    }
 }
 
 fn init(handle: InitHandle) {

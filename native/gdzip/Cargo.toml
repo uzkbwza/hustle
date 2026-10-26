@@ -13,6 +13,10 @@ crc32fast = "1"
 png = "0.17"
 image-webp = "0.2"
 md-5 = "0.10"
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_System_SystemInformation"] }
 
 [dev-dependencies]
 zip = { version = "2", default-features = false, features = ["deflate"] }
