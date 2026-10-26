@@ -684,6 +684,8 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	if (miss == []):
 		var _textures = _preload_textures(_charPath, curModFolder) # keeps them alive until the scene has them
 		var packed = load(_charPath)
+		if _pending_cache != null:
+			_finish_char_cache(packed, _charPath) # before instancing changes anything
 		char_scene = packed.instance() if packed else null
 		if char_scene == null:
 			# Validation passed but instance still failed — treat as broken.
@@ -732,6 +734,7 @@ const TEXTURE_THREADS_MOBILE = 4
 # preload, not load(), so exports that only include used resources keep these
 const TextureDecoder = preload("res://bin/GDTextureDecoder.gdns")
 const AudioImport = preload("res://modloader/AudioImport.gd")
+const TextToBinary = preload("res://modloader/TextToBinary.gd")
 
 func _preload_textures(scene_path, mod_folder):
 	var decoder = TextureDecoder.new()
@@ -1383,9 +1386,13 @@ func _validateScene(scenePath, _modFolder):
 
 # opening and loading packages, used for the .import file conversions. also adds a temp folder to be deleted afterwards
 var p
-# [mod name]-[author name]-[mod hash]-[game version].pck
+# [mod name]-[author name]-[mod hash]-[game version][format].pck
+# The format letter changes when what's in a cache changes, so old ones are
+# rebuilt: "b" = also has binary copies of the mod's scenes and resources.
+const CHAR_CACHE_FORMAT = "b"
+
 func _char_cache_name(md, mod_hash):
-	return md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-" + mod_hash + "-" + clVersion.validate_node_name() + ".pck"
+	return md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-" + mod_hash + "-" + clVersion.validate_node_name() + CHAR_CACHE_FORMAT + ".pck"
 
 # Whether a char_cache file name is some version of this mod's cache: the exact
 # name and author, then a hash and a game version. (Matching on "starts with
@@ -1404,6 +1411,54 @@ func _is_char_cache_of(file_name, md):
 # that character's files.) ModLoader clears these at startup.
 const IMPORT_PACK_DIR = "user://mod_temp_packs"
 var _import_pack_path = "user://imagepack.pck"
+
+var _pending_cache = null
+
+# Writes the character's cache: the converted assets plus binary copies of
+# the mod's text scenes/resources (TextToBinary, each one checked against the
+# text version), with .remap files so later loads skip parsing text. Runs right
+# after the scene loaded, so it's in memory and unchanged. Without a scene,
+# the cache only has the assets, as before.
+func _finish_char_cache(packed, scene_path):
+	var pending = _pending_cache
+	_pending_cache = null
+	var dir = Directory.new()
+	var entries = pending.entries.duplicate()
+	var temps = pending.temps.duplicate()
+	# Some resources (shader code, for one) are read back from the renderer
+	# when saved; a build without one (the headless "Server" platform) would
+	# save them empty.
+	if packed != null and OS.get_name() != "Server":
+		dir.make_dir_recursive("user://mod_temp/bin")
+		var i = 0
+		for path in ModLoader._get_all_files(pending.folder, "tscn") + ModLoader._get_all_files(pending.folder, "tres"):
+			i += 1
+			loadingText = "Optimizing " + path.get_file()
+			# everything else straight from the file, never a copy a mod changed in memory
+			var res = packed if path == scene_path else ResourceLoader.load(path, "", true)
+			var bin = "user://mod_temp/bin/%d.res" % i
+			var remap = "user://mod_temp/bin/%d.remap" % i
+			if TextToBinary.convert(path, res, bin, remap):
+				entries.append([path + ".converted.res", bin])
+				entries.append([path + ".remap", remap])
+			temps.append(bin)
+			temps.append(remap)
+
+	_import_pack_path = IMPORT_PACK_DIR.plus_file(pending.path.get_file().trim_suffix(".pck") + "-" + str(OS.get_ticks_usec()) + ".pck")
+	_import_start()
+	for e in entries:
+		p.add_file(e[0], e[1])
+	_import_end()
+	# never replace a good cache; another of this mod's characters may have made it
+	if !dir.file_exists(pending.path):
+		_import_copy(pending.path)
+	# so this mod's other characters use it instead of importing it all again,
+	# which used to overwrite the cache with an empty package
+	charPackages[pending.mod] = pending.path
+	for f in temps:
+		dir.remove(f)
+	dir.remove("user://mod_temp/bin")
+	dir.remove("user://mod_temp")
 
 func _import_start():
 	p = PCKPacker.new()
@@ -1468,6 +1523,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 
 	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
 	var delList = [] # list of all the temp files that should be deleted once the conversion is done
+	var pack_entries = [] # [path in the package, source file], to build the final package from
 	
 	var missingFiles = []
 
@@ -1502,6 +1558,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 				
 				# add it to the package
 				p.add_file(dest, tmpFile)
+				pack_entries.append([dest, tmpFile])
 				delList.append(tmpFile)
 	
 	# include every file inside the res://[mod name]/.import folder to the package (not the same as the .import folder at the root of the zip)
@@ -1509,6 +1566,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		var imports = ModLoader._get_all_files(folder)
 		for f in imports:
 			p.add_file("res://.import/" + f.split(".import/")[1], f)
+			pack_entries.append(["res://.import/" + f.split(".import/")[1], f])
 	
 	_import_end() # this will close the package and install it, leaving the .import folder files in their place
 
@@ -1522,19 +1580,14 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 			if !dir.file_exists(expected):
 				missingFiles.append(expected)
 	
-	for f in delList:
-		dir.remove(f)
-	dir.remove("user://mod_temp")
-	
 	missingFiles += _validateScene(_charPath, name_to_folder[curFighter])
 
 	if (missingFiles == []):
-		var cache_path = "user://char_cache/" + cache_name
-		# never replace a good cache; another of this mod's characters may have made it
-		if !dir.file_exists(cache_path):
-			_import_copy(cache_path) # will cache the asset package for faster load times on subsequent sessions
-		# so this mod's other characters use it instead of importing it all again,
-		# which used to overwrite the cache with an empty package
-		charPackages[modName] = cache_path
+		# the cache is written by _finish_char_cache once the scene has loaded
+		_pending_cache = {"path": "user://char_cache/" + cache_name, "mod": modName, "folder": folder, "entries": pack_entries, "temps": delList}
+	else:
+		for f in delList:
+			dir.remove(f)
+		dir.remove("user://mod_temp")
 
 	return missingFiles

@@ -143,7 +143,8 @@ func _init():
 
 # Char select packs each mod import into its own file under
 # user://mod_temp_packs and keeps it mounted for the session; clear them at
-# startup, before anything is mounted. Also the old shared imagepack.pck.
+# startup, before anything is mounted. Also the old shared imagepack.pck and
+# leftover import temp files.
 func _clear_import_packs():
 	var dir = Directory.new()
 	if dir.dir_exists("user://mod_temp_packs"):
@@ -151,6 +152,12 @@ func _clear_import_packs():
 			dir.remove(f)
 	if dir.file_exists("user://imagepack.pck"):
 		dir.remove("user://imagepack.pck")
+	# temp files of an import that didn't finish (crash, quit mid-load)
+	if dir.dir_exists("user://mod_temp"):
+		for f in _get_all_files("user://mod_temp"):
+			dir.remove(f)
+		dir.remove("user://mod_temp/bin")
+		dir.remove("user://mod_temp")
 
 
 # Parses a JSON string and returns it only if it's a valid Dictionary.
