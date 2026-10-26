@@ -763,10 +763,16 @@ func _preload_textures(scene_path, mod_folder):
 	var batch = [] # [png path, .stex contents]
 	var batch_bytes = 0
 	for png in pngs:
-		var import_file = ConfigFile.new()
-		if import_file.load(png + ".import") != OK:
+		var stex_path = ""
+		if _import_index != null:
+			stex_path = _import_index.get(png + ".import", "")
+		else:
+			var import_file = ConfigFile.new()
+			if import_file.load(png + ".import") != OK:
+				continue
+			stex_path = import_file.get_value("remap", "path", "")
+		if typeof(stex_path) != TYPE_STRING:
 			continue
-		var stex_path = import_file.get_value("remap", "path", "")
 		var f = File.new()
 		if stex_path == "" or f.open(stex_path, File.READ) != OK:
 			continue
@@ -1414,6 +1420,46 @@ var _import_pack_path = "user://imagepack.pck"
 
 var _pending_cache = null
 
+# What the cached-load checks and the texture preload need from a mod's
+# .import files, worked out once when the cache is built and stored in it:
+#   no_import: assets without a .import file
+#   expected: {.import file: the file it says the importer generates}, for
+#             .import files whose asset exists
+# Neither can change while the cache is valid (its name has the zip's hash),
+# and reading thousands of small files out of the zip on every load was slow.
+var _import_index = null
+
+func _make_import_index(folder):
+	var dir = Directory.new()
+	var no_import = []
+	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
+	for asset_path in assets:
+		if !dir.file_exists(asset_path + ".import"):
+			no_import.append(asset_path + ".import")
+	var expected = {}
+	for f in ModLoader._get_all_files(folder, "import"):
+		if dir.file_exists(f.replace(".import", "")):
+			var im = ConfigFile.new()
+			im.load(f)
+			expected[f] = im.get_value("remap", "path")
+	return {"no_import": no_import, "expected": expected}
+
+func _import_index_path(cache_path):
+	return "res://.import/" + cache_path.get_file().trim_suffix(".pck") + ".charloader-index.json"
+
+func _read_import_index(cache_path):
+	var f = File.new()
+	if f.open(_import_index_path(cache_path), File.READ) != OK:
+		return null
+	var parsed = JSON.parse(f.get_as_text())
+	f.close()
+	if parsed.error != OK or typeof(parsed.result) != TYPE_DICTIONARY:
+		return null
+	var index = parsed.result
+	if typeof(index.get("no_import")) != TYPE_ARRAY or typeof(index.get("expected")) != TYPE_DICTIONARY:
+		return null
+	return index
+
 # Writes the character's cache: the converted assets plus binary copies of
 # the mod's text scenes/resources (TextToBinary, each one checked against the
 # text version), with .remap files so later loads skip parsing text. Runs right
@@ -1443,6 +1489,14 @@ func _finish_char_cache(packed, scene_path):
 				entries.append([path + ".remap", remap])
 			temps.append(bin)
 			temps.append(remap)
+
+	var index_tmp = "user://mod_temp/import_index.json"
+	var index_file = File.new()
+	if index_file.open(index_tmp, File.WRITE) == OK:
+		index_file.store_string(JSON.print(_make_import_index(pending.folder)))
+		index_file.close()
+		entries.append([_import_index_path(pending.path), index_tmp])
+		temps.append(index_tmp)
 
 	_import_pack_path = IMPORT_PACK_DIR.plus_file(pending.path.get_file().trim_suffix(".pck") + "-" + str(OS.get_ticks_usec()) + ".pck")
 	_import_start()
@@ -1482,6 +1536,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 	# if mod cache exists, just import it and return
 	var md = ModLoader._readMetadata(folder + "/_metadata")
 	var modName = md.name
+	_import_index = null
 	if (modName in charPackages.keys()):
 		loadingText = "Loading Cached Package"
 		ProjectSettings.load_resource_pack(charPackages[modName])
@@ -1492,20 +1547,17 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		# pair was a likely source of intermittent crashes. The null-guard in
 		# loadListChar still protects against a genuinely-broken cache.
 		var soft_issues = []
+		var index = _read_import_index(charPackages[modName])
+		if index == null: # a cache from before there was an index
+			index = _make_import_index(folder)
+		_import_index = index.expected
 		# 1. every asset must have a .import sidecar
-		var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
-		for asset_path in assets:
-			if !dir.file_exists(asset_path + ".import"):
-				soft_issues.append(asset_path + ".import")
+		soft_issues += index.no_import
 		# 2. every .import's expected destination must exist (on disk or in pck)
-		var imports = ModLoader._get_all_files(folder, "import")
-		for f in imports:
-			if dir.file_exists(f.replace(".import", "")):
-				var im = ConfigFile.new()
-				im.load(f)
-				var expected = im.get_value("remap", "path")
-				if !dir.file_exists(expected) and !ResourceLoader.exists(expected):
-					soft_issues.append(expected)
+		for f in index.expected:
+			var expected = index.expected[f]
+			if !dir.file_exists(expected) and !ResourceLoader.exists(expected):
+				soft_issues.append(expected)
 		# 3. the scene's referenced resources must exist
 		soft_issues += _validateScene(_charPath, name_to_folder.get(curFighter, ""))
 		if !soft_issues.empty():
