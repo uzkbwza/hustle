@@ -648,6 +648,7 @@ anims/reveal = SubResource( 4 )
 
 [node name="LeftSFX1" type="AudioStreamPlayer" parent="LeftOffset"]
 unique_name_in_owner = true
+bus = "Fx"
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="LeftOffset/LeftSFX1"]
@@ -655,6 +656,7 @@ one_shot = true
 
 [node name="LeftSFX2" type="AudioStreamPlayer" parent="LeftOffset"]
 unique_name_in_owner = true
+bus = "Fx"
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="LeftOffset/LeftSFX2"]
@@ -809,6 +811,7 @@ anims/reveal = SubResource( 6 )
 
 [node name="RightSFX1" type="AudioStreamPlayer" parent="RightOffset"]
 unique_name_in_owner = true
+bus = "Fx"
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="RightOffset/RightSFX1"]
@@ -816,6 +819,7 @@ one_shot = true
 
 [node name="RightSFX2" type="AudioStreamPlayer" parent="RightOffset"]
 unique_name_in_owner = true
+bus = "Fx"
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="RightOffset/RightSFX2"]

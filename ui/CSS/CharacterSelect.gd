@@ -343,14 +343,16 @@ func get_character_data(button):
 			data["select_sfx"].append({
 				"sfx": scene.select_sfx_1,
 				"delay": scene.select_sfx_1_delay_sec,
-				"vol_db": scene.select_sfx_1_vol_db,
+				"volume_db": scene.select_sfx_1_vol_db,
+				"base_pitch": scene.select_sfx_1_base_pitch,
 				"pitch_variation": scene.select_sfx_1_pitch_variation,
 			})
 		if scene.select_sfx_2 != null:
 			data["select_sfx"].append({
 				"sfx": scene.select_sfx_2,
 				"delay": scene.select_sfx_2_delay_sec,
-				"vol_db": scene.select_sfx_2_vol_db,
+				"volume_db": scene.select_sfx_2_vol_db,
+				"base_pitch": scene.select_sfx_2_base_pitch,
 				"pitch_variation": scene.select_sfx_2_pitch_variation,
 			})
 	scene.free()

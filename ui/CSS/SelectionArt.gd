@@ -146,6 +146,8 @@ func set_sfx_data(id, sfx_data : Array):
 		var used_sfx_node = side_sfx_nodes[sound_num]
 		var sfx_timer :Timer = used_sfx_node.get_node("Timer")
 		
+		used_sfx_node.pitch_scale = entry.get("base_pitch", 0.0)
+		used_sfx_node.pitch_scale_ = used_sfx_node.pitch_scale
 		used_sfx_node.pitch_variation = entry.get("pitch_variation", 0.1)
 		used_sfx_node.stream = entry.get("sfx", null)
 		used_sfx_node.volume_db = entry.get("volume_db", -10)

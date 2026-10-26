@@ -8,7 +8,9 @@ const GHOST_ACTIONABLE_FREEZE_TICKS = 10
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
 const CLASH_DAMAGE_DIFF = 25
-const CAMERA_PADDING = 20
+const CAMERA_PADDING_DEFAULT = 20
+
+var CAMERA_PADDING = CAMERA_PADDING_DEFAULT
 
 export(int) var char_distance = 200
 export(int) var stage_width = 1100
@@ -227,6 +229,7 @@ func copy_to(game: Game):
 #	print(p2_pos)
 #	game.p1.set_pos(p1_pos.x, p1_pos.y)
 #	game.p2.set_pos(p2_pos.x, p2_pos.y)
+	game.CAMERA_PADDING = CAMERA_PADDING
 	game.current_tick = current_tick
 	p1.chara.copy_to(game.p1.chara)
 	p2.chara.copy_to(game.p2.chara)
@@ -385,6 +388,8 @@ func forfeit(id):
 
 func start_game(singleplayer: bool, match_data: Dictionary):
 	self.match_data = match_data
+	
+	CAMERA_PADDING = CAMERA_PADDING_DEFAULT
 	
 	if match_data.has("spectating"):
 		spectating = match_data.spectating

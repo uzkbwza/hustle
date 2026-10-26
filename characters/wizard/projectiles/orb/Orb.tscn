@@ -123,20 +123,6 @@ colors = PoolColorArray( 1, 0.486275, 0.121569, 1, 1, 0.486275, 0.121569, 1, 1, 
 [node name="Orb" instance=ExtResource( 1 )]
 material = SubResource( 2 )
 script = ExtResource( 2 )
-__meta__ = {
-"limb_data": {
-"Head": {
-},
-"LeftFoot": {
-},
-"LeftHand": {
-},
-"RightFoot": {
-},
-"RightHand": {
-}
-}
-}
 extra_state_variables = "frozen
 locked
 push_ticks
@@ -157,6 +143,7 @@ has_projectile_parry_window = false
 can_be_hit_by_melee = true
 free_cancel_on_hit = true
 apply_hitlag_when_hit_by_melee = false
+hookable = true
 
 [node name="Sprite" parent="Flip" index="0"]
 frames = SubResource( 4 )

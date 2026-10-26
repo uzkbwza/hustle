@@ -231,10 +231,12 @@ export (Texture) var border_background = null
 export (AudioStream) var select_sfx_1 = null
 export (float) var select_sfx_1_delay_sec = 0.0
 export (float) var select_sfx_1_vol_db = -10.0
+export (float) var select_sfx_1_base_pitch = 0.0
 export (float) var select_sfx_1_pitch_variation = 0.1
 export (AudioStream) var select_sfx_2 = null
 export (float) var select_sfx_2_delay_sec = 0.0
 export (float) var select_sfx_2_vol_db = -10.0
+export (float) var select_sfx_2_base_pitch = 0.0
 export (float) var select_sfx_2_pitch_variation = 0.1
 
 
