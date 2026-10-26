@@ -167,6 +167,8 @@ func _on_style_selected(style, player_id):
 func load_mods():
 	var dir = Directory.new()
 	hash_to_folder = {}
+	hash_folders = {}
+	server_folders = {}
 	serverMods = []
 	Network.hash_to_folder = {}
 	if (!dir.dir_exists("user://char_cache")):
@@ -176,30 +178,30 @@ func load_mods():
 	var time = Time.get_ticks_msec()
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
-		var folder = ""
-		for modEntryPath in ModLoader._zip_files(zip):
-			if (modEntryPath.find(".import") == -1):
-				folder = "res://" + modEntryPath.rsplit("/")[0]
-				break
 		var hashy = ModLoader._hash_file(zip)
-		hash_to_folder[hashy] = folder
-		Network.hash_to_folder[hashy] = folder
-		var md = ModLoader._readMetadata(folder + "/_metadata")
-		if (md == null):
-			continue
-		var is_serverSided = true
-		if md.has("client_side"):
-			if md["client_side"]:
-				is_serverSided = false
-		if is_serverSided:
-			serverMods.append(hashy)
-		var cache_name = _char_cache_name(md, hashy)
-		for f in caches:
-			var fName = f.replace("user://char_cache/", "")
-			if fName == cache_name:
-				charPackages[md.name] = f
-			elif _is_char_cache_of(fName, md):
-				dir.remove(f) # this mod's cache from another version of the mod or game
+		var folders = _zip_mod_folders(ModLoader._zip_files(zip))
+		hash_to_folder[hashy] = folders[0]
+		hash_folders[hashy] = folders
+		Network.hash_to_folder[hashy] = PoolStringArray(folders).join(", ") # shown when mod lists differ
+		for folder in folders:
+			var md = ModLoader._readMetadata(folder + "/_metadata")
+			if (md == null):
+				continue
+			var is_serverSided = true
+			if md.has("client_side"):
+				if md["client_side"]:
+					is_serverSided = false
+			if is_serverSided:
+				if !(hashy in serverMods):
+					serverMods.append(hashy)
+				server_folders[folder] = true
+			var cache_name = _char_cache_name(md, hashy)
+			for f in caches:
+				var fName = f.replace("user://char_cache/", "")
+				if fName == cache_name:
+					charPackages[md.name] = f
+				elif _is_char_cache_of(fName, md):
+					dir.remove(f) # this mod's cache from another version of the mod or game
 		var new_time = Time.get_ticks_msec()
 #		if new_time - time >= 16:
 #		yield(get_tree(), "idle_frame")
@@ -573,7 +575,38 @@ func folder_to_name(_folder): # having the names as keys and the folders as valu
 	return dict_findKey(name_to_folder, _folder)
 
 func folder_to_hash(_folder): # same here, there might be multiple .zip files that have the same mod folder name
+	for h in hash_folders:
+		if _folder in hash_folders[h]:
+			return h
 	return dict_findKey(hash_to_folder, _folder)
+
+# A zip can hold several mods, each in its own folder. hash_to_folder keeps the
+# first one (what it always held); hash_folders has all of them.
+var hash_folders = {} # zip hash -> mod folders in that zip, in zip order
+var server_folders = {} # mod folders whose mod is server-sided
+
+# The top-level folders of a zip that have a _metadata file, in zip order. If
+# none do, the first folder, as before (it's then skipped for having no metadata).
+func _zip_mod_folders(files):
+	var first = ""
+	var folders = []
+	for path in files:
+		if path.find(".import") != -1:
+			continue
+		var folder = "res://" + path.rsplit("/")[0]
+		if first == "":
+			first = folder
+		if !(folder in folders) and files.has(folder.trim_prefix("res://") + "/_metadata"):
+			folders.append(folder)
+	if folders.empty():
+		folders.append(first)
+	return folders
+
+# Whether zip `h` has mod folder `folder`.
+func _hash_has_folder(h, folder):
+	if hash_folders.has(h):
+		return folder in hash_folders[h]
+	return hash_to_folder.has(h) and hash_to_folder[h] == folder
 
 func loadingLabel_start():
 	retract_loaded = false
@@ -1029,12 +1062,24 @@ func net_updateModLists():
 	Network.char_mods = []
 #	Network.generated_modlist = true
 	var i = 0
+	var zips_done = {}
 	for mod in ModLoader.active_mods:
-		if hash_to_folder[mod[0]] in ModLoader.charFolders:
+		# a zip with several mods has an entry per mod; count the zip once
+		var zip_path = mod[mod.size() - 1].get("zip_path", "") if typeof(mod[mod.size() - 1]) == TYPE_DICTIONARY else ""
+		if zip_path != "" and zips_done.has(zip_path):
+			continue
+		zips_done[zip_path] = true
+		var has_char = false
+		var has_server = false
+		for folder in hash_folders.get(mod[0], [hash_to_folder[mod[0]]]):
+			if folder in ModLoader.charFolders:
+				has_char = true
+			elif server_folders.has(folder) or (!hash_folders.has(mod[0]) and mod[0] in serverMods):
+				has_server = true
+		if has_char:
 			Network.char_mods.append(mod[0])
-		else:
-			if (mod[0] in serverMods):
-				Network.normal_mods.append(mod[0])
+		if has_server:
+			Network.normal_mods.append(mod[0])
 		i += 1
 
 # this function gets called on main.gd
@@ -1054,15 +1099,13 @@ func net_isCharacterAvailable(_charName):
 		var foundIt1 = false
 		var foundIt2 = false
 		for m in Network.player1_chars:
-			if (hash_to_folder.has(m)):
-				if (name_to_folder[_charName] == hash_to_folder[m]):
-					foundIt1 = true
-					break
+			if _hash_has_folder(m, name_to_folder[_charName]):
+				foundIt1 = true
+				break
 		for m in Network.player2_chars:
-			if (hash_to_folder.has(m)):
-				if (name_to_folder[_charName] == hash_to_folder[m]):
-					foundIt2 = true
-					break
+			if _hash_has_folder(m, name_to_folder[_charName]):
+				foundIt2 = true
+				break
 		if (!foundIt1 or !foundIt2):
 			return false
 	return true
