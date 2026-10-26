@@ -167,6 +167,8 @@ func _on_style_selected(style, player_id):
 func load_mods():
 	var dir = Directory.new()
 	hash_to_folder = {}
+	hash_folders = {}
+	server_folders = {}
 	serverMods = []
 	Network.hash_to_folder = {}
 	if (!dir.dir_exists("user://char_cache")):
@@ -178,30 +180,30 @@ func load_mods():
 		Global.loading_character = str(zip).split("/")[-1]
 		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
 		gdunzip.load(zip)
-		var folder = ""
-		for modEntryPath in gdunzip.files:
-			if (modEntryPath.find(".import") == -1):
-				folder = "res://" + modEntryPath.rsplit("/")[0]
-				break
 		var hashy = ModLoader._hash_file(zip)
-		hash_to_folder[hashy] = folder
-		Network.hash_to_folder[hashy] = folder
-		var md = ModLoader._readMetadata(folder + "/_metadata")
-		if (md == null):
-			continue
-		var is_serverSided = true
-		if md.has("client_side"):
-			if md["client_side"]:
-				is_serverSided = false
-		if is_serverSided:
-			serverMods.append(hashy)
-		for f in caches:
-			var fName = f.replace("user://char_cache/", "")
-			if fName.find(md.name.validate_node_name()) == 0 && fName.find(md.author.validate_node_name()) != -1:
-				if fName.find(hashy) == -1 || fName.find(clVersion.validate_node_name()) == -1:
-					dir.remove(f)
-				else:
+		var folders = _zip_mod_folders(gdunzip.files)
+		hash_to_folder[hashy] = folders[0]
+		hash_folders[hashy] = folders
+		Network.hash_to_folder[hashy] = PoolStringArray(folders).join(", ") # shown when mod lists differ
+		for folder in folders:
+			var md = ModLoader._readMetadata(folder + "/_metadata")
+			if (md == null):
+				continue
+			var is_serverSided = true
+			if md.has("client_side"):
+				if md["client_side"]:
+					is_serverSided = false
+			if is_serverSided:
+				if !(hashy in serverMods):
+					serverMods.append(hashy)
+				server_folders[folder] = true
+			var cache_name = _char_cache_name(md, hashy)
+			for f in caches:
+				var fName = f.replace("user://char_cache/", "")
+				if fName == cache_name:
 					charPackages[md.name] = f
+				elif _is_char_cache_of(fName, md):
+					dir.remove(f) # this mod's cache from another version of the mod or game
 		var new_time = Time.get_ticks_msec()
 #		if new_time - time >= 16:
 #		yield(get_tree(), "idle_frame")
@@ -577,7 +579,38 @@ func folder_to_name(_folder): # having the names as keys and the folders as valu
 	return dict_findKey(name_to_folder, _folder)
 
 func folder_to_hash(_folder): # same here, there might be multiple .zip files that have the same mod folder name
+	for h in hash_folders:
+		if _folder in hash_folders[h]:
+			return h
 	return dict_findKey(hash_to_folder, _folder)
+
+# A zip can hold several mods, each in its own folder. hash_to_folder keeps the
+# first one (what it always held); hash_folders has all of them.
+var hash_folders = {} # zip hash -> mod folders in that zip, in zip order
+var server_folders = {} # mod folders whose mod is server-sided
+
+# The top-level folders of a zip that have a _metadata file, in zip order. If
+# none do, the first folder, as before (it's then skipped for having no metadata).
+func _zip_mod_folders(files):
+	var first = ""
+	var folders = []
+	for path in files:
+		if path.find(".import") != -1:
+			continue
+		var folder = "res://" + path.rsplit("/")[0]
+		if first == "":
+			first = folder
+		if !(folder in folders) and files.has(folder.trim_prefix("res://") + "/_metadata"):
+			folders.append(folder)
+	if folders.empty():
+		folders.append(first)
+	return folders
+
+# Whether zip `h` has mod folder `folder`.
+func _hash_has_folder(h, folder):
+	if hash_folders.has(h):
+		return folder in hash_folders[h]
+	return hash_to_folder.has(h) and hash_to_folder[h] == folder
 
 func loadingLabel_start():
 	retract_loaded = false
@@ -684,6 +717,7 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	# the scene is edited, the node name gets updated
 	var char_scene
 	if (miss == []):
+		var _textures = _preload_textures(_charPath, curModFolder) # keeps them alive until the scene has them
 		var packed = load(_charPath)
 		char_scene = packed.instance() if packed else null
 		if char_scene == null:
@@ -712,6 +746,106 @@ func loadListChar(index, hideName = false): # hide name parameter is for online,
 	Global.name_paths[curFighter] = _charPath
 
 	return miss
+
+
+# Decodes the textures this character's scene uses on every core
+# (native/gdzip) and puts them in the resource cache, so the load() of the
+# scene right after finds them ready instead of Godot decoding them one by
+# one. Gives the same pixels; textures the native side can't do exactly like
+# Godot are left alone and load the normal way. Returns the textures, which
+# the caller has to keep until the scene is loaded (the resource cache
+# doesn't keep anything alive by itself).
+# decoded size per batch, to cap memory use (phones have a lot less of it)
+const TEXTURE_BATCH_BYTES = 256 * 1024 * 1024
+const TEXTURE_BATCH_BYTES_MOBILE = 64 * 1024 * 1024
+# decoding threads. Past ~8 it stops getting faster (memory bound), and one
+# core is always left for the game itself so the UI doesn't hitch. Phones get
+# fewer: half their cores are slow ones and they throttle when hot.
+const TEXTURE_THREADS = 8
+const TEXTURE_THREADS_MOBILE = 4
+
+# preload, not load(), so exports that only include used resources keep these
+const TextureDecoder = preload("res://bin/GDTextureDecoder.gdns")
+const AudioImport = preload("res://modloader/AudioImport.gd")
+
+func _preload_textures(scene_path, mod_folder):
+	var decoder = TextureDecoder.new()
+	if decoder == null:
+		return []
+
+	# every png the scene uses, through its sub-scenes and resources
+	var pngs = []
+	var seen = {scene_path: true}
+	var todo = [scene_path]
+	while !todo.empty():
+		for dep in ResourceLoader.get_dependencies(todo.pop_back()):
+			dep = dep.split("::")[0]
+			if seen.has(dep):
+				continue
+			seen[dep] = true
+			if dep.get_extension() == "png":
+				if dep.begins_with(mod_folder + "/") and !ResourceLoader.has_cached(dep):
+					pngs.append(dep)
+			elif dep.get_extension() in ["tscn", "tres", "scn", "res"]:
+				todo.append(dep)
+
+	var max_batch = TEXTURE_BATCH_BYTES_MOBILE if Global.is_mobile_device else TEXTURE_BATCH_BYTES
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, TEXTURE_THREADS_MOBILE if Global.is_mobile_device else TEXTURE_THREADS))
+	var textures = []
+	var batch = [] # [png path, .stex contents]
+	var batch_bytes = 0
+	for png in pngs:
+		var stex_path = ""
+		if _import_index != null:
+			stex_path = _import_index.get(png + ".import", "")
+		else:
+			var import_file = ConfigFile.new()
+			if import_file.load(png + ".import") != OK:
+				continue
+			stex_path = import_file.get_value("remap", "path", "")
+		if typeof(stex_path) != TYPE_STRING:
+			continue
+		var f = File.new()
+		if stex_path == "" or f.open(stex_path, File.READ) != OK:
+			continue
+		# only read the whole file if the header says it's one image the
+		# native side can take: png or webp inside, one mipmap, no size override
+		var header = f.get_buffer(32)
+		var data_format = header[16] | header[17] << 8 | header[18] << 16 | header[19] << 24 if header.size() == 32 else 0
+		var mipmaps = header[20] | header[21] << 8 | header[22] << 16 | header[23] << 24 if header.size() == 32 else 0
+		if (data_format & (3 << 20)) == 0 or mipmaps != 1 or header[6] | header[7] | header[10] | header[11] != 0:
+			f.close()
+			continue
+		f.seek(0)
+		var stex = f.get_buffer(f.get_len())
+		f.close()
+		batch.append([png, stex])
+		# width and height from the .stex header
+		batch_bytes += (stex[4] | stex[5] << 8) * (stex[8] | stex[9] << 8) * 4
+		if batch_bytes >= max_batch:
+			_decode_texture_batch(decoder, batch, textures, threads)
+			batch = []
+			batch_bytes = 0
+	_decode_texture_batch(decoder, batch, textures, threads)
+	return textures
+
+func _decode_texture_batch(decoder, batch, textures, threads):
+	if batch.empty():
+		return
+	var files = []
+	for entry in batch:
+		files.append(entry[1])
+	var decoded = decoder.decode_stex(files, threads)
+	for i in decoded.size():
+		var d = decoded[i]
+		if d == null:
+			continue
+		var image = Image.new()
+		image.create_from_data(d[0], d[1], false, d[2], d[3])
+		var texture = ImageTexture.new()
+		texture.create_from_image(image, d[4])
+		texture.take_over_path(batch[i][0])
+		textures.append(texture)
 
 
 ## Button functions ##
@@ -929,12 +1063,24 @@ func net_updateModLists():
 	Network.char_mods = []
 #	Network.generated_modlist = true
 	var i = 0
+	var zips_done = {}
 	for mod in ModLoader.active_mods:
-		if hash_to_folder[mod[0]] in ModLoader.charFolders:
+		# a zip with several mods has an entry per mod; count the zip once
+		var zip_path = mod[mod.size() - 1].get("zip_path", "") if typeof(mod[mod.size() - 1]) == TYPE_DICTIONARY else ""
+		if zip_path != "" and zips_done.has(zip_path):
+			continue
+		zips_done[zip_path] = true
+		var has_char = false
+		var has_server = false
+		for folder in hash_folders.get(mod[0], [hash_to_folder[mod[0]]]):
+			if folder in ModLoader.charFolders:
+				has_char = true
+			elif server_folders.has(folder) or (!hash_folders.has(mod[0]) and mod[0] in serverMods):
+				has_server = true
+		if has_char:
 			Network.char_mods.append(mod[0])
-		else:
-			if (mod[0] in serverMods):
-				Network.normal_mods.append(mod[0])
+		if has_server:
+			Network.normal_mods.append(mod[0])
 		i += 1
 
 # this function gets called on main.gd
@@ -954,15 +1100,13 @@ func net_isCharacterAvailable(_charName):
 		var foundIt1 = false
 		var foundIt2 = false
 		for m in Network.player1_chars:
-			if (hash_to_folder.has(m)):
-				if (name_to_folder[_charName] == hash_to_folder[m]):
-					foundIt1 = true
-					break
+			if _hash_has_folder(m, name_to_folder[_charName]):
+				foundIt1 = true
+				break
 		for m in Network.player2_chars:
-			if (hash_to_folder.has(m)):
-				if (name_to_folder[_charName] == hash_to_folder[m]):
-					foundIt2 = true
-					break
+			if _hash_has_folder(m, name_to_folder[_charName]):
+				foundIt2 = true
+				break
 		if (!foundIt1 or !foundIt2):
 			return false
 	return true
@@ -1040,6 +1184,36 @@ func save_stex(image, save_path):
 	stexf.store_buffer(pngdata)
 	stexf.close()
 
+# Same .stex as decoding the png and calling save_stex, but straight from the
+# png file's own bytes: Godot decodes both to the same pixels, and skipping the
+# decode + re-encode is most of a first-time character load. Returns false if
+# the file doesn't look like a png (the caller then uses save_stex).
+func save_stex_from_png(png_path, save_path):
+	var pngf = File.new()
+	if pngf.open(png_path, File.READ) != OK:
+		return false
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	# png signature, then the IHDR chunk, which starts with width and height
+	if pnglen < 24 or pngdata.subarray(0, 15).hex_encode() != "89504e470d0a1a0a0000000d49484452":
+		return false
+	var width = pngdata[16] << 24 | pngdata[17] << 16 | pngdata[18] << 8 | pngdata[19]
+	var height = pngdata[20] << 24 | pngdata[21] << 16 | pngdata[22] << 8 | pngdata[23]
+	var stexf = File.new()
+	stexf.open(save_path, File.WRITE)
+	stexf.store_string("GDST")
+	stexf.store_32(width)
+	stexf.store_32(height)
+	stexf.store_32(0)
+	stexf.store_32(0x07100000) # data format
+	stexf.store_32(1) # nr mipmaps
+	stexf.store_32(pnglen + 6)
+	stexf.store_string("PNG ")
+	stexf.store_buffer(pngdata)
+	stexf.close()
+	return true
+
 # save sample function made specifically for char loader
 func save_sample(og_file, dest_file):
 
@@ -1099,14 +1273,16 @@ func save_sample(og_file, dest_file):
 	f.store_32(leng)
 	f.store_buffer(fullWav)
 
-	# filling the whole duplicate chunk of data with 0x00
-	var wrote = 0
-	var zeroChunk = 8 # doing loops in chunks of 8 bytes to do less loops
-	for i in floor(leng/2 / zeroChunk): 
-		writeHex(f, [0x00], 8 * zeroChunk)
-		wrote += 8
-	for i in leng/2 - wrote: # fill in the rest of the 0s
-		writeHex(f, [0x00], 8)
+	# filling the whole duplicate chunk of data with 0x00, 64KB at a time
+	var zeros = PoolByteArray([0])
+	while zeros.size() < 65536:
+		zeros.append_array(zeros)
+	var left = leng / 2
+	while left >= zeros.size():
+		f.store_buffer(zeros)
+		left -= zeros.size()
+	if left > 0:
+		f.store_buffer(zeros.subarray(0, left - 1))
 	
 	# standard bottomer(?)
 	writeHex(f, [0x03, 0x00, 0x00, 0x00], 8)
@@ -1258,21 +1434,88 @@ func _validateScene(scenePath, _modFolder):
 
 # opening and loading packages, used for the .import file conversions. also adds a temp folder to be deleted afterwards
 var p
+# [mod name]-[author name]-[mod hash]-[game version][format].pck
+# The format letter changes when what's in a cache changes, so old ones are
+# rebuilt: "c" = has the import index (see _make_import_index).
+const CHAR_CACHE_FORMAT = "c"
+
+func _char_cache_name(md, mod_hash):
+	return md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-" + mod_hash + "-" + clVersion.validate_node_name() + CHAR_CACHE_FORMAT + ".pck"
+
+# Whether a char_cache file name is some version of this mod's cache: the exact
+# name and author, then a hash and a game version. (Matching on "starts with
+# the name" also caught other mods whose names start the same way, by the same
+# author, and deleted their caches.)
+func _is_char_cache_of(file_name, md):
+	var prefix = md.name.validate_node_name() + "-" + md.author.validate_node_name() + "-"
+	if !file_name.begins_with(prefix) or !file_name.ends_with(".pck"):
+		return false
+	var rest = file_name.substr(prefix.length()).trim_suffix(".pck").split("-")
+	return rest.size() == 2 and rest[0].length() == 32 and rest[0].is_valid_hex_number()
+
+# Each mod's import is packed into its own file, which stays mounted for the
+# rest of the session. (A single shared imagepack.pck got rewritten by the next
+# character's import while the previous one was still mounted from it, breaking
+# that character's files.) ModLoader clears these at startup.
+const IMPORT_PACK_DIR = "user://mod_temp_packs"
+var _import_pack_path = "user://imagepack.pck"
+
+
+# What the cached-load checks and the texture preload need from a mod's
+# .import files, worked out once when the cache is built and stored in it:
+#   no_import: assets without a .import file
+#   expected: {.import file: the file it says the importer generates}, for
+#             .import files whose asset exists
+# Neither can change while the cache is valid (its name has the zip's hash),
+# and reading thousands of small files out of the zip on every load was slow.
+var _import_index = null
+
+func _make_import_index(folder):
+	var dir = Directory.new()
+	var no_import = []
+	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
+	for asset_path in assets:
+		if !dir.file_exists(asset_path + ".import"):
+			no_import.append(asset_path + ".import")
+	var expected = {}
+	for f in ModLoader._get_all_files(folder, "import"):
+		if dir.file_exists(f.replace(".import", "")):
+			var im = ConfigFile.new()
+			im.load(f)
+			expected[f] = im.get_value("remap", "path")
+	return {"no_import": no_import, "expected": expected}
+
+func _import_index_path(cache_path):
+	return "res://.import/" + cache_path.get_file().trim_suffix(".pck") + ".charloader-index.json"
+
+func _read_import_index(cache_path):
+	var f = File.new()
+	if f.open(_import_index_path(cache_path), File.READ) != OK:
+		return null
+	var parsed = JSON.parse(f.get_as_text())
+	f.close()
+	if parsed.error != OK or typeof(parsed.result) != TYPE_DICTIONARY:
+		return null
+	var index = parsed.result
+	if typeof(index.get("no_import")) != TYPE_ARRAY or typeof(index.get("expected")) != TYPE_DICTIONARY:
+		return null
+	return index
+
 func _import_start():
 	p = PCKPacker.new()
-	p.pck_start("user://imagepack.pck")
+	p.pck_start(_import_pack_path)
 
 	var dir = Directory.new()
 	dir.make_dir("user://mod_temp")
 
 func _import_copy(destFile):
 	var dir = Directory.new()
-	dir.copy("user://imagepack.pck", destFile)
+	dir.copy(_import_pack_path, destFile)
 
 func _import_end():
 	p.flush()
 
-	ProjectSettings.load_resource_pack("user://imagepack.pck")
+	ProjectSettings.load_resource_pack(_import_pack_path)
 
 func _createImportFiles(folder, _charName, _charPath): # returns an array of missing files
 	var dir = Directory.new()
@@ -1280,6 +1523,7 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 	# if mod cache exists, just import it and return
 	var md = ModLoader._readMetadata(folder + "/_metadata")
 	var modName = md.name
+	_import_index = null
 	if (modName in charPackages.keys()):
 		loadingText = "Loading Cached Package"
 		ProjectSettings.load_resource_pack(charPackages[modName])
@@ -1290,20 +1534,17 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		# pair was a likely source of intermittent crashes. The null-guard in
 		# loadListChar still protects against a genuinely-broken cache.
 		var soft_issues = []
+		var index = _read_import_index(charPackages[modName])
+		if index == null: # a cache from before there was an index
+			index = _make_import_index(folder)
+		_import_index = index.expected
 		# 1. every asset must have a .import sidecar
-		var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg")
-		for asset_path in assets:
-			if !dir.file_exists(asset_path + ".import"):
-				soft_issues.append(asset_path + ".import")
+		soft_issues += index.no_import
 		# 2. every .import's expected destination must exist (on disk or in pck)
-		var imports = ModLoader._get_all_files(folder, "import")
-		for f in imports:
-			if dir.file_exists(f.replace(".import", "")):
-				var im = ConfigFile.new()
-				im.load(f)
-				var expected = im.get_value("remap", "path")
-				if !dir.file_exists(expected) and !ResourceLoader.exists(expected):
-					soft_issues.append(expected)
+		for f in index.expected:
+			var expected = index.expected[f]
+			if !dir.file_exists(expected) and !ResourceLoader.exists(expected):
+				soft_issues.append(expected)
 		# 3. the scene's referenced resources must exist
 		soft_issues += _validateScene(_charPath, name_to_folder.get(curFighter, ""))
 		if !soft_issues.empty():
@@ -1313,9 +1554,13 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 			importWarnings.erase(curFighter)
 		return []
 
+	var cache_name = _char_cache_name(md, folder_to_hash(folder))
+	dir.make_dir_recursive(IMPORT_PACK_DIR)
+	# unique per import: an earlier one may still be mounted (even for this mod)
+	_import_pack_path = IMPORT_PACK_DIR.plus_file(cache_name.trim_suffix(".pck") + "-" + str(OS.get_ticks_usec()) + ".pck")
 	_import_start()
 
-	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg")
+	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
 	var delList = [] # list of all the temp files that should be deleted once the conversion is done
 	
 	var missingFiles = []
@@ -1335,13 +1580,19 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 				# save the conversion to the temp folder
 				var tmpFile = "user://mod_temp/" + dest.split("://.import/")[1]
 				if (dest.ends_with(".stex")):
-					var img = Image.new()
-					img.load(assets[i])
-					save_stex(img, tmpFile)
-				elif (dest.ends_with(".oggstr")):
-					save_oggstr(assets[i], tmpFile)
+					if !save_stex_from_png(assets[i], tmpFile):
+						var img = Image.new()
+						img.load(assets[i])
+						save_stex(img, tmpFile)
+				elif (dest.ends_with(".oggstr") or dest.ends_with(".mp3str")):
+					# what the editor's importer would make; the old way if that fails
+					if !AudioImport.save_compressed(assets[i], tmpFile, c) and dest.ends_with(".oggstr"):
+						save_oggstr(assets[i], tmpFile)
 				else:
-					save_sample(assets[i], tmpFile)
+					if !AudioImport.save_wav(assets[i], tmpFile, c):
+						save_sample(assets[i], tmpFile)
+				if !dir.file_exists(tmpFile): # couldn't convert; reported as missing below
+					continue
 				
 				# add it to the package
 				p.add_file(dest, tmpFile)
@@ -1353,6 +1604,17 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 		for f in imports:
 			p.add_file("res://.import/" + f.split(".import/")[1], f)
 	
+	# what later loads of this cache need from the .import files (see _make_import_index)
+	var index = _make_import_index(folder)
+	_import_index = index.expected
+	var index_tmp = "user://mod_temp/import_index.json"
+	var index_file = File.new()
+	if index_file.open(index_tmp, File.WRITE) == OK:
+		index_file.store_string(JSON.print(index))
+		index_file.close()
+		p.add_file(_import_index_path("user://char_cache/" + cache_name), index_tmp)
+		delList.append(index_tmp)
+
 	_import_end() # this will close the package and install it, leaving the .import folder files in their place
 
 	# check if every .import folder file is present after the conversion
@@ -1372,6 +1634,12 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 	missingFiles += _validateScene(_charPath, name_to_folder[curFighter])
 
 	if (missingFiles == []):
-		_import_copy("user://char_cache/" + modName.validate_node_name() + "-" + md.author.validate_node_name() + "-" + folder_to_hash(folder) + "-" + clVersion.validate_node_name() + ".pck") # will cache the asset package for faster load times on subsequent sessions
+		var cache_path = "user://char_cache/" + cache_name
+		# never replace a good cache; another of this mod's characters may have made it
+		if !dir.file_exists(cache_path):
+			_import_copy(cache_path) # will cache the asset package for faster load times on subsequent sessions
+		# so this mod's other characters use it instead of importing it all again,
+		# which used to overwrite the cache with an empty package
+		charPackages[modName] = cache_path
 
 	return missingFiles
