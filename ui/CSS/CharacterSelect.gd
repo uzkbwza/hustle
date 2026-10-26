@@ -178,10 +178,8 @@ func load_mods():
 	var time = Time.get_ticks_msec()
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
-		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
-		gdunzip.load(zip)
 		var hashy = ModLoader._hash_file(zip)
-		var folders = _zip_mod_folders(gdunzip.files)
+		var folders = _zip_mod_folders(ModLoader._zip_files(zip))
 		hash_to_folder[hashy] = folders[0]
 		hash_folders[hashy] = folders
 		Network.hash_to_folder[hashy] = PoolStringArray(folders).join(", ") # shown when mod lists differ

@@ -244,8 +244,7 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
 		if zip_only and modFSPath.get_extension() != "zip":
 			continue
-		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
-		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+		if !_mount_zip(modFSPath):
 			continue
 		_modZipFiles.append(modFSPath)
 
@@ -254,17 +253,17 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 # Load and run any ModMain.gd scripts which were present in mod ZIP files.
 # Attach the script instances to this singleton's scene to keep them alive.
 func _initMods():
+	_hash_files(_modZipFiles)
 	for modFSPath in _modZipFiles:
-		var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
-		gdunzip.load(modFSPath)
+		var zip_files = _zip_files(modFSPath)
 		var modHash = _hash_file(modFSPath)
-		for modEntryPath in gdunzip.files:
+		for modEntryPath in zip_files:
 			var modSubFolder = modEntryPath.rsplit('/')[0]
 			var modEntryName = modEntryPath.get_file().to_lower()
 			#Check for metadata, if fails, don't load
 			if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
 				# Verifies metadata and returns metaRes = [PackedScene, metadata]
-				var metaRes = _checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
+				var metaRes = _checkMetadata(modSubFolder, zip_files, modEntryPath)
 				if metaRes != null:
 					var modInfo = [metaRes[0], modHash, metaRes[1]]
 					# Record where this mod loaded from. On the metadata dict so it
@@ -547,11 +546,176 @@ func loadSound(soundPath): # Just moved it over here so that it can be used by o
 	file.close()
 	return stream
 
+# MD5 of a mod zip: the mod's identity (online mod matching, char cache names).
+# Remembered for the session and redone if the file's size or modified time
+# changes, so char select doesn't hash every zip again each time it opens.
+const _FileHasher = preload("res://bin/GDFileHasher.gdns")
+# Past ~4 it's limited by the biggest zip, and on hard drives more readers
+# just fight over the disk.
+const HASH_THREADS = 4
+const HASH_THREADS_MOBILE = 3
+var _md5_cache = {} # path -> [size, modified time, md5]
+var _md5_mutex = Mutex.new() # char select hashes from a thread
+
 func _hash_file(path):
+	var stamp = _file_stamp(path)
+	_md5_mutex.lock()
+	var cached = _md5_cache.get(path)
+	_md5_mutex.unlock()
+	if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+		return cached[2]
 	var file = File.new()
 	var modZIPHash = file.get_md5(path)
 	file.close() # closing this, maybe causing leaks - vineraio
+	if modZIPHash != "" and stamp != null:
+		_md5_mutex.lock()
+		_md5_cache[path] = [stamp[0], stamp[1], modZIPHash]
+		_md5_mutex.unlock()
 	return modZIPHash
+
+# Hashes several zips at once (native/gdzip, one file per thread) and remembers
+# them for _hash_file. Same values as File.get_md5.
+func _hash_files(paths):
+	var hasher = _FileHasher.new()
+	if hasher == null:
+		return
+	var todo = []
+	var os_paths = []
+	for p in paths:
+		var stamp = _file_stamp(p)
+		_md5_mutex.lock()
+		var cached = _md5_cache.get(p)
+		_md5_mutex.unlock()
+		if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+			continue # already known this session and unchanged
+		todo.append(p)
+		os_paths.append(ProjectSettings.globalize_path(p))
+	if todo.empty():
+		return
+
+	# hashes from earlier sessions, for files whose fingerprint is unchanged
+	var fingerprints = hasher.fingerprint_files(os_paths)
+	var disk = _md5_disk_cache_load()
+	var disk_changed = false
+	var need = []
+	var need_os = []
+	var need_fp = []
+	for i in todo.size():
+		var fp = fingerprints[i]
+		var entry = disk.get(todo[i])
+		if fp[0] != "" and typeof(entry) == TYPE_DICTIONARY and entry.get("fp") == fp[0] and typeof(entry.get("md5")) == TYPE_STRING:
+			_remember_md5(todo[i], entry.md5)
+			continue
+		need.append(todo[i])
+		need_os.append(os_paths[i])
+		need_fp.append(fp)
+
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, HASH_THREADS_MOBILE if Global.is_mobile_device else HASH_THREADS))
+	var hashes = hasher.md5_files(need_os, threads) if !need.empty() else []
+	for i in need.size():
+		if hashes[i] == "":
+			continue
+		_remember_md5(need[i], hashes[i])
+		# only files whose fingerprint can be trusted and that weren't just changed
+		if need_fp[i][0] != "" and need_fp[i][1]:
+			disk[need[i]] = {"fp": need_fp[i][0], "md5": hashes[i]}
+			disk_changed = true
+		elif disk.has(need[i]):
+			disk.erase(need[i])
+			disk_changed = true
+	if disk_changed:
+		_md5_disk_cache_save(disk)
+
+func _remember_md5(path, md5):
+	var stamp = _file_stamp(path)
+	if stamp != null:
+		_md5_mutex.lock()
+		_md5_cache[path] = [stamp[0], stamp[1], md5]
+		_md5_mutex.unlock()
+
+# MD5s from earlier sessions, next to the character caches, each with the
+# file's fingerprint when it was hashed (native/gdzip hashing.rs: device, inode
+# or file ID, size, modified and change times, to the nanosecond / 100ns). A
+# hash is only reused if the fingerprint is exactly the same; anything off and
+# the file is hashed again. Clearing the character cache deletes it too.
+const MD5_DISK_CACHE = "user://char_cache/mod_hashes.json"
+const MD5_DISK_CACHE_FORMAT = 1
+var _md5_disk = null
+
+func _md5_disk_cache_load():
+	if _md5_disk != null:
+		return _md5_disk
+	_md5_disk = {}
+	var f = File.new()
+	if f.open(MD5_DISK_CACHE, File.READ) == OK:
+		var parsed = JSON.parse(f.get_as_text())
+		f.close()
+		if parsed.error == OK and typeof(parsed.result) == TYPE_DICTIONARY \
+		and parsed.result.get("format") == MD5_DISK_CACHE_FORMAT and typeof(parsed.result.get("files")) == TYPE_DICTIONARY:
+			_md5_disk = parsed.result.files
+	return _md5_disk
+
+func _md5_disk_cache_save(disk):
+	var check = File.new()
+	for path in disk.keys():
+		if !check.file_exists(path):
+			disk.erase(path) # mods that are gone
+	var dir = Directory.new()
+	dir.make_dir_recursive(MD5_DISK_CACHE.get_base_dir())
+	var tmp = MD5_DISK_CACHE + ".tmp"
+	var f = File.new()
+	if f.open(tmp, File.WRITE) != OK:
+		return
+	f.store_string(JSON.print({"format": MD5_DISK_CACHE_FORMAT, "files": disk}))
+	f.close()
+	if dir.rename(tmp, MD5_DISK_CACHE) != OK:
+		dir.remove(tmp)
+
+# Each mod zip is mounted and listed once per session (again only if the file
+# changes: size or modified time). The main menu's mod list and the character
+# select used to mount and read every zip again each time they opened.
+var _mounted_zips = {} # path -> [size, modified time]
+var _zip_file_lists = {} # path -> [size, modified time, gdunzip files]
+var _zip_mutex = Mutex.new() # char select reads these from a thread
+
+func _mount_zip(path):
+	var stamp = _file_stamp(path)
+	_zip_mutex.lock()
+	var mounted = _mounted_zips.get(path)
+	_zip_mutex.unlock()
+	if mounted != null and stamp != null and mounted[0] == stamp[0] and mounted[1] == stamp[1]:
+		return true
+	if !ProjectSettings.load_resource_pack(ProjectSettings.globalize_path(path), true):
+		return false
+	if stamp != null:
+		_zip_mutex.lock()
+		_mounted_zips[path] = stamp
+		_zip_mutex.unlock()
+	return true
+
+# gdunzip's `files` for a zip (don't modify it; it's shared).
+func _zip_files(path):
+	var stamp = _file_stamp(path)
+	_zip_mutex.lock()
+	var cached = _zip_file_lists.get(path)
+	_zip_mutex.unlock()
+	if cached != null and stamp != null and cached[0] == stamp[0] and cached[1] == stamp[1]:
+		return cached[2]
+	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
+	gdunzip.load(path)
+	if stamp != null:
+		_zip_mutex.lock()
+		_zip_file_lists[path] = [stamp[0], stamp[1], gdunzip.files]
+		_zip_mutex.unlock()
+	return gdunzip.files
+
+func _file_stamp(path):
+	var f = File.new()
+	if f.open(path, File.READ) != OK:
+		return null
+	var size = f.get_len()
+	f.close()
+	return [size, f.get_modified_time(path)]
 	
 # Parses metadata
 # returns Variant with metadata or null if file doesn't exist

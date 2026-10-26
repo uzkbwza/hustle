@@ -150,6 +150,7 @@ func _delete_char_cache(btt):
 	_Global.css_instance.charPackages = {}
 	for f in ModLoader._get_all_files("user://char_cache", "pck"):
 		dir.remove(f)
+	dir.remove(ModLoader.MD5_DISK_CACHE) # remembered mod hashes, also kept there
 	get_tree().quit()
 
 func _on_show_style_toggled(on, player_id):
