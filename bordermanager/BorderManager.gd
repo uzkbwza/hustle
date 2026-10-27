@@ -51,11 +51,11 @@ func set_style_params(id, params):
 func apply_style(id, style):
 	$BorderArt.apply_style(id, style)
 
-func set_border_background(id, tex):
-	$BorderArt.set_border_background(id, tex)
+func set_background(id, tex):
+	$BorderArt.set_background(id, tex)
 
-func set_border_art(id, tex):
-	$BorderArt.set_border_art(id, tex)
+func set_portrait(id, tex):
+	$BorderArt.set_portrait(id, tex)
 
 func set_border_color(id, col : Color):
 	$BorderArt.set_border_color(id, col)

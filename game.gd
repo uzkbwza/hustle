@@ -486,22 +486,30 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2._fire_init_hook()
 	
 	if not is_ghost:
-		BorderManager.set_style_params(1, {
-			"extra_replace_color_1": p1.extra_color_1,
-			"extra_replace_color_2": p1.extra_color_2,
-			"use_extra_color_1": p1.use_extra_color_1,
-			"use_extra_color_2": p1.use_extra_color_2,
-			})
-		BorderManager.set_style_params(2, {
-			"extra_replace_color_1": p2.extra_color_1,
-			"extra_replace_color_2": p2.extra_color_2,
-			"use_extra_color_1": p2.use_extra_color_1,
-			"use_extra_color_2": p2.use_extra_color_2,
-			})
-		BorderManager.set_border_background(1, p1.border_background)
-		BorderManager.set_border_background(2, p2.border_background)
-		BorderManager.set_border_art(1, p1.border_portrait)
-		BorderManager.set_border_art(2, p2.border_portrait)
+		var player_entries = {1:p1, 2:p2}
+		for player_id in player_entries:
+			var player_fighter = player_entries[player_id]
+			print(player_id, player_fighter)
+			var shader_params =  {
+				"extra_replace_color_1": player_fighter.extra_color_1,
+				"extra_replace_color_2": player_fighter.extra_color_2,
+				"use_extra_color_1": player_fighter.use_extra_color_1,
+				"use_extra_color_2": player_fighter.use_extra_color_2,
+				"use_custom_default_extra": false,
+				"custom_default_extra_1": Color.white,
+				"custom_default_extra_2": Color.white,
+			}
+			var border_background = null
+			var border_portrait = null
+			if "border_portrait" in player_fighter:
+				border_background = player_fighter.border_background
+				border_portrait = player_fighter.border_portrait
+				shader_params["use_custom_default_extra"] = player_fighter.use_custom_unstyled_potrait_colors
+				shader_params["custom_default_extra_1"] = player_fighter.unstyled_portrait_extra_1
+				shader_params["custom_default_extra_2"] = player_fighter.unstyled_portrait_extra_2
+			BorderManager.set_style_params(player_id, shader_params)
+			BorderManager.set_background(player_id, border_background)
+			BorderManager.set_portrait(player_id, border_portrait)
 		BorderManager.show_character_art()
 
 	if match_data.has("selected_styles"):

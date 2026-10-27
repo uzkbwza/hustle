@@ -333,12 +333,26 @@ func get_character_data(button):
 	var data = {}
 	var scene = button.character_scene.instance()
 	data["name"] = scene.name
+	scene.free()
+	return data
+
+
+
+func get_portrait_data(button):
+	var data = {}
+	var scene = button.character_scene.instance()
 	data["border_portrait"] = null
 	data["border_background"] = null
+	data["use_custom_default_extra"] = false
+	data["custom_default_extra_1"] = Color.white
+	data["custom_default_extra_2"] = Color.white
 	data["select_sfx"] = []
 	if "border_portrait" in scene:
 		data["border_portrait"] = scene.border_portrait
 		data["border_background"] = scene.border_background
+		data["use_custom_default_extra"] = scene.use_custom_unstyled_potrait_colors
+		data["custom_default_extra_1"] = scene.unstyled_portrait_extra_1
+		data["custom_default_extra_2"] = scene.unstyled_portrait_extra_2
 		if scene.select_sfx_1 != null:
 			data["select_sfx"].append({
 				"sfx": scene.select_sfx_1,
@@ -772,15 +786,22 @@ func _update_import_warning():
 # this function encapsulates character selection, to be called either when a character finishes loading or when pressing a base character button
 func buffer_select(button):
 	var data = get_character_data(button)
+	var portrait_data = get_portrait_data(button)
 	var display_data = get_display_data(button)
+	
 	display_character(current_player, display_data)
 	selected_characters[current_player] = data
 	
+	portrait_data["use_extra_color_1"] = display_data.get("use_extra_color_1", false)
+	portrait_data["extra_color_1"] = display_data.get("extra_color_1", Color.magenta)
+	portrait_data["use_extra_color_2"] = display_data.get("use_extra_color_2", false)
+	portrait_data["extra_color_2"] = display_data.get("extra_color_2", Color.magenta)
+	
 	$SelectionArt.animate_load_done(current_player)
-	$SelectionArt.set_portrait(current_player, data["border_portrait"])
-	$SelectionArt.set_background(current_player, data["border_background"])
-	$SelectionArt.set_sfx_data(current_player, data["select_sfx"])
-	$SelectionArt.set_style_params(current_player, display_data)
+	$SelectionArt.set_portrait(current_player, portrait_data["border_portrait"])
+	$SelectionArt.set_background(current_player, portrait_data["border_background"])
+	$SelectionArt.set_sfx_data(current_player, portrait_data["select_sfx"])
+	$SelectionArt.set_style_params(current_player, portrait_data)
 	
 	if singleplayer and current_player == 1:
 		current_player = 2

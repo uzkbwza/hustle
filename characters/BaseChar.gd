@@ -226,18 +226,23 @@ export var extra_color_2 = Color("ff00ff")
 
 export var _c_screen_border_and_char_select_art = 0
 
-export (Texture) var border_portrait = null
-export (Texture) var border_background = null
-export (AudioStream) var select_sfx_1 = null
-export (float) var select_sfx_1_delay_sec = 0.0
-export (float) var select_sfx_1_vol_db = -10.0
-export (float) var select_sfx_1_base_pitch = 0.0
-export (float) var select_sfx_1_pitch_variation = 0.1
-export (AudioStream) var select_sfx_2 = null
-export (float) var select_sfx_2_delay_sec = 0.0
-export (float) var select_sfx_2_vol_db = -10.0
-export (float) var select_sfx_2_base_pitch = 0.0
-export (float) var select_sfx_2_pitch_variation = 0.1
+export var border_portrait :Texture = null
+export var border_background :Texture = null
+
+export var use_custom_unstyled_potrait_colors := false
+export var unstyled_portrait_extra_1 := Color("FF00FF")
+export var unstyled_portrait_extra_2 := Color("FF00FF")
+
+export var select_sfx_1 :AudioStream = null
+export var select_sfx_1_delay_sec := 0.0
+export var select_sfx_1_vol_db := -10.0
+export var select_sfx_1_base_pitch := 0.0
+export var select_sfx_1_pitch_variation := 0.1
+export var select_sfx_2 :AudioStream = null
+export var select_sfx_2_delay_sec := 0.0
+export var select_sfx_2_vol_db := -10.0
+export var select_sfx_2_base_pitch := 0.0
+export var select_sfx_2_pitch_variation := 0.1
 
 
 var global_damage_modifier = "1.0"
