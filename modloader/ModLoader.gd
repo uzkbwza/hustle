@@ -273,6 +273,12 @@ func _initMods():
 						_dependencyCheck(modInfo, true, modSubFolder)
 	for modInfo in mods_w_depend:
 		_dependencyCheck(modInfo, false, modInfo[0])
+	# Mods that won't run (a dependency is missing, or one with dependencies
+	# that overwrites characters) never got their script path taken off like
+	# the rest, and the mod list crashed reading their hash as the metadata.
+	for modInfo in all_mods:
+		if modInfo.size() == 3 and not modInfo in active_mods:
+			modInfo.remove(0)
 	active_mods.sort_custom(self, "_compareScriptPriority")
 	for item in active_mods:
 		var scriptInstance = item[0].new(self)
