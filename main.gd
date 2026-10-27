@@ -3,9 +3,9 @@ extends Node
 signal game_started()
 signal game_setup()
 
-onready var ui_layer = $UILayer
-onready var game_layer = $GameLayer
-onready var hud_layer = $HudLayer
+onready var ui_layer = $"%UILayer"
+onready var game_layer = $"%GameLayer"
+onready var hud_layer = $"%HudLayer"
 
 # Modding hooks node (MainHooks). Grabbed in _ready; see MainHooks.gd.
 var hooks = null
@@ -144,6 +144,8 @@ func _ready():
 
 	if hooks:
 		hooks.ready()
+
+	ModLoader.mark_launch_clean()
 
 func _delete_char_cache(btt):
 	var dir = Directory.new()

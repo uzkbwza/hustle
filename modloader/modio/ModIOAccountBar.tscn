@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://modloader/modio/ModIOAccountBar.gd" type="Script" id=1]
+
+[node name="ModIOAccountBar" type="VBoxContainer"]
+size_flags_horizontal = 3
+custom_constants/separation = 4
+script = ExtResource( 1 )
+
+[node name="Top" type="HBoxContainer" parent="."]
+margin_right = 54.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+custom_constants/separation = 6
+
+[node name="Toggle" type="Button" parent="Top"]
+unique_name_in_owner = true
+margin_right = 54.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Sign in"

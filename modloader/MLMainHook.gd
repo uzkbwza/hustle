@@ -38,9 +38,12 @@ func _add_modlist():
 	var uilayer = $"%OptionsContainer/.."
 	uilayer.add_child_below_node($"%OptionsContainer", credits, true)
 	uilayer.add_child_below_node($"%OptionsContainer", menu, true)
+	menu.credits = credits
 	menu.connect("uploader_clicked", uilayer, "on_workshop_uploader_clicked")
 	var btn:Node = addMainMenuButton("Mod List")
 	btn.connect("pressed", menu, "_mainmenu_button_pressed")
+	var browse_btn:Node = addMainMenuButton("Mod Workshop")
+	browse_btn.connect("pressed", menu, "_modio_clicked")
 	return menu
 
 
@@ -131,7 +134,7 @@ func _addModList():
 		infoBox.add_child(ver_lab)
 		infoBox.add_child(desc_header)
 		infoBox.add_child(desc_lab)
-		if mod[1].requires != [""]:
+		if not mod[1].requires.empty():
 			var req = "Requires: " + str(mod[1].requires)
 			var req_lab = generateLabel(req, 0)
 			info.get_node("VBoxContainer").get_node("Contents").get_node("XBoxContainer").add_child(req_lab)
@@ -142,6 +145,12 @@ func _addModList():
 		b.set("custom_colors/font_color_disabled", Color(1,0,0,.8))
 		b.disabled = true
 		list.list_container.add_child(b) # and add it
+
+	for mod_name in ModLoader.mods_w_load_errors:
+		var b = generateButton(mod_name + " (Disabled: " + str(ModLoader.mods_w_load_errors[mod_name]) + ")")
+		b.set("custom_colors/font_color_disabled", Color(1,0,0,.8))
+		b.disabled = true
+		list.list_container.add_child(b)
 	
 	# add the button into the main menu
 	var btn = addMainMenuButton("Mod List")
@@ -256,10 +265,14 @@ func _addMisingList():
 	var close = generateButton("Close")
 	close.connect("pressed", list, "hide")
 	list.get_node("VBoxContainer").get_node("TitleBar").get_node("Title").add_child(close)
-	if mod_w_missing.size() > 0:
+	if mod_w_missing.size() > 0 or ModLoader.mods_w_load_errors.size() > 0:
 		for missing in mod_w_missing:
 			var label = Label.new()
 			label.text = missing + ": Missing Dependency: " + str(mod_w_missing.get(missing))
+			list.list_container.add_child(label)
+		for mod_name in ModLoader.mods_w_load_errors:
+			var label = Label.new()
+			label.text = mod_name + ": " + str(ModLoader.mods_w_load_errors[mod_name])
 			list.list_container.add_child(label)
 		$"%MainMenu".get_node("ModMissingContainer").set("visible", true)
 

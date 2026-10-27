@@ -1,0 +1,101 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://modloader/modio/ModIOTabView.gd" type="Script" id=1]
+
+[node name="ModIOTabView" type="VBoxContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 3
+script = ExtResource( 1 )
+
+[node name="SearchRow" type="HBoxContainer" parent="."]
+size_flags_horizontal = 3
+custom_constants/separation = 2
+
+[node name="Prev" type="Button" parent="SearchRow"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 18, 0 )
+size_flags_vertical = 3
+text = "<"
+
+[node name="PageLabel" type="Label" parent="SearchRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+align = 1
+text = "1/1"
+
+[node name="Next" type="Button" parent="SearchRow"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 18, 0 )
+size_flags_vertical = 3
+text = ">"
+
+[node name="SearchEdit" type="LineEdit" parent="SearchRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "Search..."
+
+[node name="SearchBtn" type="Button" parent="SearchRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+text = "Go"
+
+[node name="SortOption" type="OptionButton" parent="SearchRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+hint_tooltip = "Sort"
+
+[node name="FilterRow" type="HBoxContainer" parent="SearchRow"]
+size_flags_vertical = 3
+custom_constants/separation = 2
+
+[node name="FilterOption" type="OptionButton" parent="SearchRow/FilterRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+hint_tooltip = "Filter"
+
+[node name="TimespanOption" type="OptionButton" parent="SearchRow/FilterRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+hint_tooltip = "Date live"
+
+[node name="Compact" type="CheckButton" parent="SearchRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+hint_tooltip = "Compact view"
+text = "Compact"
+
+[node name="AuthorRow" type="HBoxContainer" parent="."]
+size_flags_horizontal = 3
+custom_constants/separation = 4
+
+[node name="AuthorLabel" type="Label" parent="AuthorRow"]
+size_flags_vertical = 3
+text = "Creator:"
+
+[node name="AuthorOption" type="OptionButton" parent="AuthorRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+
+[node name="SubscribedCheck" type="CheckButton" parent="AuthorRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+text = "Subscribed only"
+
+[node name="Status" type="Label" parent="."]
+unique_name_in_owner = true
+rect_min_size = Vector2( 240, 12 )
+autowrap = true
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="List" type="GridContainer" parent="Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+columns = 4
+custom_constants/h_separation = 4
+custom_constants/v_separation = 4

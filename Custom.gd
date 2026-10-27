@@ -1,6 +1,7 @@
 extends Node
 
 const SUPPORTER_PACK = 2232850
+const WORKSHOP_STORE = preload("res://modloader/modio/WorkshopStore.gd")
 
 # Pair-attach limb keys → the two underlying limb names. When an aura's
 # attach_limb is one of these, two particles are spawned (one per limb).
@@ -314,6 +315,8 @@ func load_all_styles():
 	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
 		var workshop = SteamWorkshop.new()
 		for item in Steam.getSubscribedItems():
+			if WORKSHOP_STORE.is_managed(item):
+				continue
 			var info : Dictionary
 			info = workshop.get_item_install_info(item)
 			if info.ret:

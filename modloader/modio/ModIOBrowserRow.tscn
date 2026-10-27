@@ -1,0 +1,147 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://modloader/modio/ModIOBrowserRow.gd" type="Script" id=1]
+[ext_resource path="res://button_container_theme.tres" type="Theme" id=2]
+[ext_resource path="res://ui/mobileicons/icons.png" type="Texture" id=3]
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 3 )
+region = Rect2( 32, 0, 16, 16 )
+
+[node name="ModIOBrowserRow" type="GridContainer"]
+margin_right = 60.0
+margin_bottom = 46.0
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="Thumb" type="TextureRect" parent="."]
+unique_name_in_owner = true
+margin_right = 60.0
+hint_tooltip = "Click to open this mod"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+expand = true
+stretch_mode = 7
+
+[node name="Info" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+margin_top = 4.0
+margin_right = 60.0
+margin_bottom = 26.0
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="Name" type="Label" parent="Info"]
+unique_name_in_owner = true
+margin_right = 60.0
+margin_bottom = 11.0
+rect_min_size = Vector2( 60, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+text = "Mod name"
+autowrap = true
+max_lines_visible = 2
+
+[node name="Meta" type="Label" parent="Info"]
+unique_name_in_owner = true
+modulate = Color( 0.8, 0.8, 0.8, 1 )
+margin_top = 11.0
+margin_right = 60.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 60, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+text = "by someone"
+autowrap = true
+max_lines_visible = 1
+
+[node name="Summary" type="Label" parent="Info"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.7, 0.7, 0.7, 1 )
+margin_right = 60.0
+margin_bottom = 11.0
+rect_min_size = Vector2( 60, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Summary"
+autowrap = true
+max_lines_visible = 2
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+margin_top = 30.0
+margin_right = 60.0
+margin_bottom = 46.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_constants/separation = 2
+
+[node name="IconRow" type="HBoxContainer" parent="Buttons"]
+unique_name_in_owner = true
+margin_right = 60.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_constants/separation = 6
+alignment = 1
+
+[node name="Subscribe" type="TextureButton" parent="Buttons/IconRow"]
+unique_name_in_owner = true
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+texture_normal = SubResource( 21 )
+stretch_mode = 5
+
+[node name="Page" type="TextureButton" parent="Buttons/IconRow"]
+unique_name_in_owner = true
+margin_left = 22.0
+margin_right = 38.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Open this mod's page on mod.io"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+texture_normal = SubResource( 22 )
+stretch_mode = 5
+
+[node name="Collections" type="TextureButton" parent="Buttons/IconRow"]
+unique_name_in_owner = true
+margin_left = 44.0
+margin_right = 60.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Add or remove this mod from your collections"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+texture_normal = SubResource( 23 )
+stretch_mode = 5
+
+[node name="Status" type="Label" parent="Buttons"]
+unique_name_in_owner = true
+visible = false
+modulate = Color( 0.8, 0.8, 0.8, 1 )
+margin_top = 20.0
+margin_right = 66.0
+margin_bottom = 31.0
+rect_min_size = Vector2( 60, 0 )
+mouse_filter = 1
+autowrap = true
+max_lines_visible = 2

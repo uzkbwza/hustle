@@ -21,3 +21,6 @@ android/build/
 *.keystore
 *.jks
 *.credentials.txt
+
+# mod.io credentials (never commit; copy modio.cfg.example to modio.cfg)
+modloader/modio/modio.cfg

@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=2]
+[gd_scene load_steps=106 format=2]
 
 [ext_resource path="res://ui/UILayer.gd" type="Script" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -86,11 +86,7 @@
 [ext_resource path="res://ui/RelayLobby.tscn" type="PackedScene" id=204]
 [ext_resource path="res://ui/NudgeWindow/NudgeWindow.tscn" type="PackedScene" id=212]
 [ext_resource path="res://ui/PredictionPanel/PredictionPanel.tscn" type="PackedScene" id=213]
-[ext_resource path="res://characters/swordandgun/sprites/action_buttons/foresight.png" type="Texture" id=214]
-[ext_resource path="res://ui/SteamLobby/replay.png" type="Texture" id=215]
-[ext_resource path="res://ui/ActionSelector/StateIcons/shuriken.png" type="Texture" id=216]
-[ext_resource path="res://ui/SteamLobby/spectator_people_multiple.png" type="Texture" id=217]
-[ext_resource path="res://fx/cross.png" type="Texture" id=218]
+[ext_resource path="res://ui/mobileicons/icons.png" type="Texture" id=224]
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 50 )
@@ -205,6 +201,30 @@ frame_8/delay_sec = 0.0
 frame_9/texture = ExtResource( 39 )
 frame_9/delay_sec = 0.0
 
+[sub_resource type="AtlasTexture" id=306]
+atlas = ExtResource( 224 )
+region = Rect2( 0, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=303]
+atlas = ExtResource( 224 )
+region = Rect2( 48, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=301]
+atlas = ExtResource( 224 )
+region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=304]
+atlas = ExtResource( 224 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=302]
+atlas = ExtResource( 224 )
+region = Rect2( 32, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=305]
+atlas = ExtResource( 224 )
+region = Rect2( 16, 0, 16, 16 )
+
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
 __meta__ = {
@@ -239,6 +259,7 @@ on = true
 intensity_easing = -1.86607
 
 [node name="GameLayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 follow_viewport_enable = true
 
 [node name="GhostLayer" type="CanvasLayer" parent="."]
@@ -1170,7 +1191,16 @@ script = ExtResource( 72 )
 unique_name_in_owner = true
 script = ExtResource( 1 )
 
+[node name="ModIOLayer" type="CanvasLayer" parent="UILayer"]
+unique_name_in_owner = true
+layer = 101
+
+[node name="ModIOAuthLayer" type="CanvasLayer" parent="UILayer"]
+unique_name_in_owner = true
+layer = 102
+
 [node name="FileManagerInterace" parent="UILayer" instance=ExtResource( 80 )]
+unique_name_in_owner = true
 
 [node name="Window" parent="UILayer/FileManagerInterace" index="0"]
 margin_left = 150.0
@@ -1794,17 +1824,9 @@ margin_top = 9.0
 margin_right = 631.0
 margin_bottom = 28.0
 action_mode = 0
-
-[node name="Label" type="Label" parent="UILayer/GameUI/ResetZoomButton"]
-margin_left = 1.0
-margin_top = -1.0
-margin_right = 28.0
-margin_bottom = 19.0
-custom_constants/line_spacing = -3
-text = "reset
-zoom"
-align = 1
-clip_text = true
+icon = SubResource( 306 )
+flat = true
+icon_align = 1
 
 [node name="AdvantageLabel" type="Label" parent="UILayer/GameUI"]
 unique_name_in_owner = true
@@ -2159,6 +2181,7 @@ icon_align = 1
 
 [node name="MobileMatchButtons" type="Control" parent="UILayer/GameUI"]
 unique_name_in_owner = true
+modulate = Color( 1, 1, 1, 0.501961 )
 anchor_right = 1.0
 margin_top = 3.0
 margin_bottom = 60.0
@@ -2188,9 +2211,10 @@ margin_top = 26.0
 margin_right = 28.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Predictions"
 mouse_default_cursor_shape = 2
 action_mode = 0
-icon = ExtResource( 214 )
+icon = SubResource( 303 )
 flat = true
 icon_align = 1
 
@@ -2200,9 +2224,10 @@ margin_top = 52.0
 margin_right = 28.0
 margin_bottom = 74.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Playback"
 mouse_default_cursor_shape = 2
 action_mode = 0
-icon = ExtResource( 215 )
+icon = SubResource( 301 )
 flat = true
 icon_align = 1
 
@@ -2212,9 +2237,10 @@ margin_top = 78.0
 margin_right = 28.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Nudge"
 mouse_default_cursor_shape = 2
 action_mode = 0
-icon = ExtResource( 218 )
+icon = SubResource( 304 )
 flat = true
 icon_align = 1
 
@@ -2234,9 +2260,10 @@ unique_name_in_owner = true
 margin_right = 28.0
 margin_bottom = 22.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Menu"
 mouse_default_cursor_shape = 2
 action_mode = 0
-icon = ExtResource( 216 )
+icon = SubResource( 302 )
 flat = true
 icon_align = 1
 
@@ -2246,9 +2273,10 @@ margin_top = 26.0
 margin_right = 28.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Chat"
 mouse_default_cursor_shape = 2
 action_mode = 0
-icon = ExtResource( 217 )
+icon = SubResource( 305 )
 flat = true
 icon_align = 1
 
@@ -2258,21 +2286,12 @@ margin_top = 52.0
 margin_right = 28.0
 margin_bottom = 74.0
 rect_min_size = Vector2( 26, 22 )
+hint_tooltip = "Reset zoom"
 mouse_default_cursor_shape = 2
 action_mode = 0
+icon = SubResource( 306 )
 flat = true
-
-[node name="Label" type="Label" parent="UILayer/GameUI/MobileMatchButtons/MobileRightButtons/MobileResetZoomButton"]
-margin_left = 1.0
-margin_top = -1.0
-margin_right = 27.0
-margin_bottom = 19.0
-custom_constants/line_spacing = -3
-text = "reset
-zoom"
-align = 1
-valign = 1
-clip_text = true
+icon_align = 1
 
 [node name="MobilePredictionPanel" parent="UILayer/GameUI" instance=ExtResource( 213 )]
 unique_name_in_owner = true

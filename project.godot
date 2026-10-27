@@ -219,6 +219,21 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://LimbHurtbox.gd"
 }, {
+"base": "VBoxContainer",
+"class": "ModIOAccountBar",
+"language": "GDScript",
+"path": "res://modloader/modio/ModIOAccountBar.gd"
+}, {
+"base": "GridContainer",
+"class": "ModIOBrowserRow",
+"language": "GDScript",
+"path": "res://modloader/modio/ModIOBrowserRow.gd"
+}, {
+"base": "Node",
+"class": "ModIOUploadAPI",
+"language": "GDScript",
+"path": "res://modloader/modio/ModIOUploadAPI.gd"
+}, {
 "base": "Reference",
 "class": "MultiplayerClient",
 "language": "GDScript",
@@ -452,6 +467,9 @@ _global_script_class_icons={
 "HurtGrounded": "",
 "HurtboxState": "",
 "LimbHurtbox": "",
+"ModIOAccountBar": "",
+"ModIOBrowserRow": "",
+"ModIOUploadAPI": "",
 "MultiplayerClient": "",
 "Mutant": "",
 "NativeMethods": "",
@@ -512,6 +530,7 @@ FileManager="*res://filemanager/FileManager.gd"
 SteamHustle="*res://SteamY.gd"
 ReplayManager="*res://ReplayManager.gd"
 Network="*res://cl_port/Network.gd"
+ModIO="*res://modloader/modio/ModIO.gd"
 ModLoader="*res://modloader/ModLoader.gd"
 SteamLobby="*res://cl_port/SteamLobby.gd"
 Custom="*res://Custom.gd"
@@ -519,6 +538,7 @@ Hotkeys="*res://Hotkeys.gd"
 ModOverride="*res://ModOverride.gd"
 BorderManager="*res://bordermanager/BorderManager.tscn"
 UIManager="*res://UIManager.gd"
+ModIOAuth="*res://modloader/modio/ModIOAuth.gd"
 
 [debug]
 
@@ -651,3 +671,7 @@ common/enable_pause_aware_picking=true
 
 2d/snapping/use_gpu_pixel_snap=true
 quality/filters/texture_filter=0
+
+[steam]
+
+initialization/app_id=2212330

@@ -1,0 +1,259 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://theme.tres" type="Theme" id=1]
+[ext_resource path="res://modloader/modio/ModIOBrowser.gd" type="Script" id=2]
+[ext_resource path="res://modloader/modio/ModIOAccountBar.tscn" type="PackedScene" id=3]
+[ext_resource path="res://modloader/modio/ModIODetail.tscn" type="PackedScene" id=6]
+
+[node name="ModIOBrowser" type="PanelContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 12
+size_flags_vertical = 12
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+static_ = true
+
+[node name="Layout" type="HBoxContainer" parent="."]
+custom_constants/separation = 0
+
+[node name="Sidebar" type="VBoxContainer" parent="Layout"]
+rect_min_size = Vector2( 106, 0 )
+custom_constants/separation = 1
+
+[node name="TitleBar" type="Panel" parent="Layout/Sidebar"]
+rect_min_size = Vector2( 0, 20 )
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="Title" type="Button" parent="Layout/Sidebar/TitleBar"]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 2.0
+margin_top = 1.0
+margin_right = -2.0
+margin_bottom = -1.0
+text = "mod.io workshop"
+clip_text = true
+
+[node name="AccountBar" parent="Layout/Sidebar" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+
+[node name="NavScroll" type="ScrollContainer" parent="Layout/Sidebar"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="NavBox" type="VBoxContainer" parent="Layout/Sidebar/NavScroll"]
+margin_right = 2.0
+margin_bottom = 51.0
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="TabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="FeaturedTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Featured"
+clip_text = true
+
+[node name="ModsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Mods"
+clip_text = true
+
+[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Collections"
+clip_text = true
+
+[node name="GuidesTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Guides"
+clip_text = true
+
+[node name="WorkshopTabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
+unique_name_in_owner = true
+visible = false
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="ExploreTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Explore"
+clip_text = true
+
+[node name="MyItemsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "My Items"
+clip_text = true
+
+[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Collections"
+clip_text = true
+
+[node name="BottomBar" type="VBoxContainer" parent="Layout/Sidebar"]
+size_flags_horizontal = 3
+custom_constants/separation = 2
+
+[node name="Footer" type="VBoxContainer" parent="Layout/Sidebar/BottomBar"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="Website" type="Button" parent="Layout/Sidebar/BottomBar/Footer"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+text = "mod.io"
+
+[node name="UploadBar" type="VBoxContainer" parent="Layout/Sidebar/BottomBar"]
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="UploadMod" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+text = "Upload Mod"
+clip_text = true
+
+[node name="UploadGuide" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+text = "Upload Guide"
+clip_text = true
+
+[node name="UploadCollection" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+text = "Upload Collection"
+clip_text = true
+
+[node name="Close" type="Button" parent="Layout/Sidebar/BottomBar"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_colors/font_color_hover = Color( 1, 0.2, 0.231373, 1 )
+text = "Close"
+
+[node name="Contents" type="PanelContainer" parent="Layout"]
+rect_min_size = Vector2( 532, 0 )
+size_flags_horizontal = 3
+
+[node name="Main" type="VBoxContainer" parent="Layout/Contents"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 3
+
+[node name="Tabs" type="TabContainer" parent="Layout/Contents/Main"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tabs_visible = false
+
+[node name="CollectionDetail" type="VBoxContainer" parent="Layout/Contents/Main"]
+unique_name_in_owner = true
+visible = false
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 3
+
+[node name="Header" type="HBoxContainer" parent="Layout/Contents/Main/CollectionDetail"]
+size_flags_horizontal = 3
+custom_constants/separation = 4
+
+[node name="DetailBack" type="Button" parent="Layout/Contents/Main/CollectionDetail/Header"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+text = "Back"
+
+[node name="DetailTitle" type="Label" parent="Layout/Contents/Main/CollectionDetail/Header"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 120, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+autowrap = true
+max_lines_visible = 1
+
+[node name="DetailStatus" type="Label" parent="Layout/Contents/Main/CollectionDetail"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 240, 12 )
+autowrap = true
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Contents/Main/CollectionDetail"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="DetailList" type="GridContainer" parent="Layout/Contents/Main/CollectionDetail/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+columns = 4
+
+[node name="CollectionEditor" type="VBoxContainer" parent="Layout/Contents/Main"]
+unique_name_in_owner = true
+visible = false
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 3
+
+[node name="Header" type="HBoxContainer" parent="Layout/Contents/Main/CollectionEditor"]
+size_flags_horizontal = 3
+custom_constants/separation = 4
+
+[node name="EditorBack" type="Button" parent="Layout/Contents/Main/CollectionEditor/Header"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+text = "Back"
+
+[node name="EditorTitle" type="Label" parent="Layout/Contents/Main/CollectionEditor/Header"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 120, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+autowrap = true
+max_lines_visible = 1
+
+[node name="EditorStatus" type="Label" parent="Layout/Contents/Main/CollectionEditor"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 240, 12 )
+autowrap = true
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Contents/Main/CollectionEditor"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="EditorList" type="GridContainer" parent="Layout/Contents/Main/CollectionEditor/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+
+[node name="CreateRow" type="HBoxContainer" parent="Layout/Contents/Main/CollectionEditor"]
+size_flags_horizontal = 3
+custom_constants/separation = 4
+
+[node name="CollectionNameEdit" type="LineEdit" parent="Layout/Contents/Main/CollectionEditor/CreateRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "New collection name..."
+
+[node name="CollectionCreateBtn" type="Button" parent="Layout/Contents/Main/CollectionEditor/CreateRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+text = "Create"
+
+[node name="ModDetail" parent="Layout/Contents/Main" instance=ExtResource( 6 )]
+unique_name_in_owner = true

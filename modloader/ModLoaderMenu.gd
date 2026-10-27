@@ -3,6 +3,9 @@ extends Window
 
 signal uploader_clicked()
 
+const MODIO_BROWSER_SCENE := preload("res://modloader/modio/ModIOBrowser.tscn")
+const MODIO_UPLOADER_SCENE := preload("res://modloader/modio/ModIOUploader.tscn")
+
 var ModOptions
 var current_mod = null
 var mod_tabs:Dictionary = {}
@@ -16,25 +19,29 @@ var cur_sort_inverted := false
 
 var fm_window: Control
 
-onready var list_container = $VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods
-onready var info_container = $VBoxContainer/Contents/HBoxContainer/ModInfoContainer
-onready var file_manager: FileManagerInterface = $FileManagerInterface
+var modio_browser = null
+var modio_uploaders := {}
+var credits = null
+
+onready var list_container = $"%Mods"
+onready var info_container = $"%ModInfoContainer"
+onready var file_manager: FileManagerInterface = $"%FileManagerInterface"
+onready var modio_layer: CanvasLayer = get_parent().get_node("%ModIOLayer")
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	hint_tooltip=""
 	#ModOptions = load("res://modloader/ModOptions.gd").new()
 	#ModOptions.menu = self
 	#get_tree().get_current_scene().call_deferred("add_child", ModOptions, true)
 	$"%Close".connect("pressed", self, "_close_clicked")
 	$"%ModsLocation".connect("pressed", self, "_open_mods_folder")
+	$"%PlayerDataFolder".connect("pressed", self, "_open_mods_folder")
 	$"%ModCredits".connect("pressed", self, "_credits_clicked")
 	$"%WorkshopUploader".connect("pressed", self, "_uploader_clicked")
 	$"%WorkshopButton".connect("pressed", self, "_workshop_clicked")
 	$"%ApplyChanges".connect("pressed", self, "_on_apply_changes_pressed")
 	$"%Sorter".connect("pressed", self, "_on_sorter_pressed")
-	$"%Sorter".text = "Sort: Date"
 	$"%SortInvert".connect("toggled", self, "_on_sort_invert_toggled")
 	$"%AllOnButton".connect("pressed", self, "_on_mod_all_toggled", [true])
 	$"%AllOffButton".connect("pressed", self, "_on_mod_all_toggled", [false])
@@ -55,11 +62,10 @@ func _ready():
 		$VBoxContainer/Panel/HBoxContainer/ModCredits,
 		$VBoxContainer/Panel/HBoxContainer/WorkshopButton,
 		$VBoxContainer/Panel/HBoxContainer/WorkshopUploader,
+		$VBoxContainer/Panel/HBoxContainer/PlayerDataFolder,
 	])
 
 	_setup_file_manager()
-
-	hide()
 
 
 func _setup_file_manager() -> void:
@@ -109,7 +115,7 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 	var dir = Directory.new()
 	if dir.open(modPathPrefix) != OK:
 		return
-	if dir.list_dir_begin() != OK:
+	if dir.list_dir_begin(true, true) != OK:
 		return
 
 	var _modZipFiles = []
@@ -121,7 +127,13 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		if dir.current_is_dir():
 			continue
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
-		if zip_only and modFSPath.get_extension() != "zip":
+		var extension = modFSPath.get_extension().to_lower()
+		if zip_only and extension != "zip":
+			continue
+		if extension == "zip":
+			_modZipFiles.append(modFSPath)
+			continue
+		if extension == "ymhpack":
 			continue
 		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
 		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
@@ -173,67 +185,165 @@ func _on_fm_folder_updated(path: String) -> void:
 
 
 func on_mod_folder_updated(_path: String):
-	var modGlobalPath = ProjectSettings.globalize_path(_path)
-	if !ProjectSettings.load_resource_pack(modGlobalPath, true):
-		return
 	refresh_mod(_path)
 
 
 func refresh_mod(_path):
-	var gdunzip = load('res://modloader/gdunzip/gdunzip.gd').new()
-	gdunzip.load(_path)
-	var modHash = ModLoader._hash_file(_path)
-	for modEntryPath in gdunzip.files:
-		var modSubFolder = modEntryPath.rsplit('/')[0]
-		var modEntryName = modEntryPath.get_file().to_lower()
-		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
-			var metaRes = ModLoader._checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
-			if metaRes != null:
-				var mod_name = metaRes[1].name
-				if mods.has(mod_name):
-					continue
-				var modInfo = [metaRes[0], modHash, metaRes[1]]
-				modInfo[2].zip_path = _path
-				ModLoader.zips_by_name[modInfo[2].name] = _path
-				ModLoader.disabled_mod_names[modInfo[2].name] = true
-				ModLoader.all_mods.append(modInfo)
-				ModLoader.inactive_mods.append(modInfo)
-				modInfo.remove(0)
-				add_mod(modInfo)
-				file_manager._refresh_lists_menu()
-				_sort_mod_buttons()
-				continue
+	if _path.get_extension().to_lower() != "zip":
+		return
+	for candidate in ModLoader._inspect_mod_zip(_path):
+		var metadata = candidate.metadata
+		var mod_name = metadata.name
+		if mods.has(mod_name):
+			continue
+		var modInfo = [ModLoader._hash_file(_path), metadata]
+		ModLoader.zips_by_name[mod_name] = _path
+		ModLoader.disabled_mod_names[mod_name] = true
+		ModLoader.all_mods.append(modInfo)
+		ModLoader.inactive_mods.append(modInfo)
+		add_mod(modInfo)
+		file_manager._refresh_lists_menu()
+		_sort_mod_buttons()
 
 
 func adjust_ui(is_mobile):
 	$"%WorkshopUploader".visible = not Global.is_mobile_device
 	$"%WorkshopButton".visible = not Global.is_mobile_device
 	$"%ModsLocation".visible = not Global.is_mobile_device
+	$"%PlayerDataFolder".visible = Global.is_mobile_device
 
 
 func _open_mods_folder():
+	if OS.get_name() == "Android":
+		var folder := OS.get_user_data_dir()
+		OS.set_clipboard(folder)
+		var dialog := AcceptDialog.new()
+		dialog.theme = preload("res://theme.tres")
+		dialog.window_title = "Player Data Folder"
+		dialog.dialog_text = "Copied to clipboard:\n" + folder + "\n\nPaste this path into your file manager to add or remove mods, styles, and other data. Changes to mod files are applied the next time you start the game."
+		add_child(dialog)
+		dialog.connect("popup_hide", dialog, "queue_free")
+		dialog.popup_centered()
+		return
 	OS.shell_open(file_manager.dir_path)
 
 func _uploader_clicked():
 	hide()
 	emit_signal("uploader_clicked")
 
+
+func _workshop_upload_mod_clicked():
+	if is_instance_valid(modio_browser):
+		modio_browser.hide()
+	_uploader_clicked()
+
+
 func _workshop_clicked():
 #	hide()
 	Steam.activateGameOverlayToWebPage("https://steamcommunity.com/app/2212330/workshop/")
 #	emit_signal("uploader_clicked")
 
+func _modio_clicked():
+	_hide_modio_uploaders()
+	if modio_browser == null or not is_instance_valid(modio_browser):
+		modio_browser = MODIO_BROWSER_SCENE.instance()
+		modio_browser.menu = self
+		modio_browser.connect("upload_mod_requested", self, "_modio_upload_mod_clicked")
+		modio_browser.connect("upload_guide_requested", self, "_modio_upload_guide_clicked")
+		modio_browser.connect("upload_collection_requested", self, "_modio_upload_collection_clicked")
+		modio_browser.connect("upload_workshop_requested", self, "_workshop_upload_mod_clicked")
+		modio_browser.connect("closed", self, "_modio_closed")
+		modio_layer.add_child(modio_browser)
+	get_parent().hide_main_menu()
+	modio_browser.open()
+
+func _modio_closed():
+	get_parent().show_main_menu()
+
+func _hide_modio_uploaders():
+	for window in modio_uploaders.values():
+		if is_instance_valid(window):
+			window.close_menu()
+
+func _modio_upload_mod_clicked():
+	_open_modio_uploader("mod")
+
+func _modio_upload_guide_clicked():
+	_open_modio_uploader("guide")
+
+func _modio_upload_collection_clicked():
+	_open_modio_uploader("collection")
+
+func _open_modio_uploader(kind: String) -> void:
+	_hide_modio_uploaders()
+	var window = modio_uploaders.get(kind)
+	if window == null:
+		window = MODIO_UPLOADER_SCENE.instance()
+		window.kind = kind
+		window.connect("upload_complete", self, "_on_modio_upload_complete")
+		modio_layer.add_child(window)
+		modio_uploaders[kind] = window
+	window.open()
+
+func _on_modio_upload_complete():
+	file_manager._refresh_lists_menu()
+	if is_instance_valid(modio_browser):
+		modio_browser.reload_current()
+
+func remove_mod_by_zip(zip_path: String) -> void:
+	if zip_path == "":
+		return
+	var target_name = null
+	for mod_name in mods:
+		var list_entry = mods[mod_name]
+		var list_metadata = _mod_metadata(list_entry.mod)
+		if list_metadata != null and list_metadata.get("zip_path", "") == zip_path:
+			target_name = mod_name
+			break
+	if target_name == null:
+		return
+	var entry = mods[target_name]
+
+	for mod_list in [ModLoader.all_mods, ModLoader.active_mods, ModLoader.inactive_mods]:
+		var i = mod_list.size() - 1
+		while i >= 0:
+			var list_metadata = _mod_metadata(mod_list[i])
+			if list_metadata != null and list_metadata.get("zip_path", "") == zip_path:
+				mod_list.remove(i)
+				ModLoader.disabled_mod_names.erase(list_metadata.get("name", ""))
+			i -= 1
+	for mod_name in ModLoader.zips_by_name.keys():
+		if ModLoader.zips_by_name[mod_name] == zip_path:
+			ModLoader.zips_by_name.erase(mod_name)
+
+	if current_mod != null and is_instance_valid(current_mod) and current_mod.name == entry.button.text:
+		current_mod.hide()
+		current_mod = null
+	for tab in info_container.get_children():
+		if tab.name == entry.button.text:
+			info_container.remove_child(tab)
+			tab.queue_free()
+	entry.parent.queue_free()
+	mods.erase(target_name)
+	file_manager._refresh_lists_menu()
+
+func _mod_metadata(mod_info):
+	if typeof(mod_info) != TYPE_ARRAY:
+		return null
+	if mod_info.size() > 1 and typeof(mod_info[1]) == TYPE_DICTIONARY:
+		return mod_info[1]
+	if mod_info.size() > 2 and typeof(mod_info[2]) == TYPE_DICTIONARY:
+		return mod_info[2]
+	return null
+
 func _credits_clicked():
-	get_node("/root/Main/UILayer/ModLoaderCredits").show()
-	get_node("/root/Main/UILayer/ModLoaderCredits").raise()
+	credits.show()
+	credits.raise()
 
 func _close_clicked():
 	hide()
 	if current_mod:
 		current_mod.hide()
-
-func generate_info():
-	pass
 
 func _mainmenu_button_pressed():
 	show()
@@ -298,7 +408,7 @@ func add_mod(mod):
 	info.get_node("VBoxContainer").add_child(desc_lab)
 	info.get_node("VBoxContainer").add_child(auth_lab)
 	info.get_node("VBoxContainer").add_child(ver_lab)
-	if mod[1].requires != [""]:
+	if not mod[1].requires.empty():
 		printt("mod info",mod[1].name,mod[1].requires)
 		var req = "Requires: " + str(mod[1].requires)
 		var req_lab = generateLabel(req, 0)
@@ -316,9 +426,9 @@ func show_menu(node:Node):
 	#node.tab_btn.pressed = true
 	current_mod = node
 
-func _tab_clicked(node:Node, _zip_path:String):
+func _tab_clicked(node:Node, _zip_path:String = ""):
+	file_manager.cur_item_path = _zip_path
 	if current_mod != node:
-		file_manager.cur_item_path = _zip_path
 		show_menu(node)
 
 

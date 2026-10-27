@@ -7,6 +7,7 @@
 [ext_resource path="res://filemanager/FileManagerInterface.tscn" type="PackedScene" id=5]
 
 [node name="Window" instance=ExtResource( 1 )]
+visible = false
 margin_left = -237.5
 margin_top = -130.0
 margin_right = 237.5
@@ -14,6 +15,7 @@ margin_bottom = 130.0
 script = ExtResource( 2 )
 
 [node name="FileManagerInterface" parent="." index="0" instance=ExtResource( 5 )]
+unique_name_in_owner = true
 
 [node name="Window" parent="FileManagerInterface" index="0"]
 margin_left = 150.0
@@ -66,6 +68,7 @@ margin_bottom = 32.0
 size_flags_vertical = 3
 custom_colors/font_color = Color( 1, 0.2, 0.231373, 1 )
 custom_colors/font_color_hover = Color( 1, 1, 1, 1 )
+hint_tooltip = "Closes the game. Mod changes are applied the next time you start it."
 text = "Apply Changes (Quit)"
 __meta__ = {
 "_editor_description_": ""
@@ -232,6 +235,15 @@ margin_right = 418.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Upload to Steam Workshop"
+
+[node name="PlayerDataFolder" type="Button" parent="VBoxContainer/Panel/HBoxContainer" index="3"]
+unique_name_in_owner = true
+margin_left = 419.0
+margin_right = 473.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+hint_tooltip = "Copies your player data folder path to the clipboard."
+text = "Player Data Folder"
 
 [node name="ButtonSoundPlayer" parent="." index="2" instance=ExtResource( 4 )]
 button_containers = [ NodePath("../VBoxContainer/TitleBar"), NodePath("../VBoxContainer/Contents/HBoxContainer/ScrollContainer/Mods"), NodePath("../VBoxContainer/Contents/HBoxContainer/ModInfoContainer/TabContainer/Mod Info"), NodePath("../VBoxContainer/Panel/HBoxContainer"), NodePath("../VBoxContainer/FMRow") ]

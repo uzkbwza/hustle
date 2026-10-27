@@ -5,7 +5,8 @@ onready var p1_action_buttons = $"%P1ActionButtons"
 onready var p2_action_buttons = $"%P2ActionButtons"
 onready var p1_side_container = $"%ActionButtons/VBoxContainer"
 onready var p2_side_container = $"%ActionButtons/VBoxContainer2"
-onready var replay_fm = $"FileManagerInterace"
+onready var replay_fm = $"%FileManagerInterace"
+onready var mod_warning_window = $"%ModWarningWindow"
 const REPLAY_BUTTON_SCENE := preload("res://ui/ReplayWindow/ReplayButton.tscn")
 const REPLAY_BUTTON_SCRIPT := preload("res://ui/ReplayWindow/ReplayButton.gd")
 const MOBILE_BAR_OPEN_ICON := preload("res://ui/ghostsettingsup.png")
@@ -80,8 +81,8 @@ const STEAM_URL = "https://store.steampowered.com/app/2212330"
 const ITCH_URL = "https://ivysly.itch.io/your-only-move-is-hustle"
 var MIN_TURN_TIME = 5.0
 
-onready var lobby = $Lobby
-onready var direct_connect_lobby = $DirectConnectLobby
+onready var lobby = $"%Lobby"
+onready var direct_connect_lobby = $"%DirectConnectLobby"
 var online_warning_screen = null
 var online_warning_pending_method = ""
 var online_warning_accepted = false
@@ -233,13 +234,19 @@ func _ready():
 		# it, but UILayer._ready re-runs on each Global.reload(), so without this
 		# the window reappears every time the main scene reloads.
 		Global.mods_disabled_by_version_transition = false
-		# Do the same for crashes, but adjust the warning.
 		if Global.mods_disabled_by_crash:
-			$"%ModWarningWindow".get_node("%Label").hide()
-			$"%ModWarningWindow".get_node("%Crash").show()
+			mod_warning_window.get_node("%Label").hide()
+			mod_warning_window.get_node("%Crash").show()
 			Global.mods_disabled_by_crash = false
 		
-		$"%ModWarningWindow".start()
+		mod_warning_window.start()
+
+	mod_warning_window.connect("update_requested", ModIO, "update_issue")
+	mod_warning_window.connect("unsubscribe_requested", ModIO, "unsubscribe_issue")
+	mod_warning_window.connect("issues_dismissed", ModIO, "dismiss_keys")
+	if not ModIO.is_connected("issues_changed", self, "_on_mod_issues_changed"):
+		ModIO.connect("issues_changed", self, "_on_mod_issues_changed")
+	ModIO.check()
 
 	SteamLobby.connect("join_lobby_success", self, "_on_join_lobby_success")
 	$"%OptionsContainer".hide()
@@ -873,6 +880,9 @@ func should_open_mod_warning_window():
 	# their `Enable Mods` setting was flipped off.
 	return Global.mods_disabled_by_version_transition or Global.mods_disabled_by_crash
 
+func _on_mod_issues_changed(issues):
+	mod_warning_window.set_issues(issues)
+
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)
 
@@ -885,7 +895,6 @@ func _on_global_option_toggled(toggled, param):
 
 func on_workshop_uploader_clicked():
 	hide_main_menu()
-	$"%WorkshopMenu".init()
 	$"%WorkshopMenu".show()
 
 	
@@ -1033,6 +1042,12 @@ func hide_main_menu(all=false):
 		$"%ButtonContainer".hide()
 		$"%Title".hide()
 		$"%RoadmapContainer".hide()
+
+func show_main_menu():
+	$"%MainMenu".show()
+	$"%ButtonContainer".show()
+	$"%Title".show()
+	$"%RoadmapContainer".show()
 
 func _on_view_replays_button_pressed():
 	load_replays()

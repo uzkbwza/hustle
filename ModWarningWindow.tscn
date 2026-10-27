@@ -4,10 +4,10 @@
 [ext_resource path="res://ui/ModWarningWindow.gd" type="Script" id=2]
 
 [node name="ModWarningWindow" instance=ExtResource( 1 )]
-margin_left = -118.0
-margin_top = -163.0
-margin_right = 118.0
-margin_bottom = 163.0
+margin_left = -180.0
+margin_top = -170.0
+margin_right = 180.0
+margin_bottom = 170.0
 script = ExtResource( 2 )
 static_ = true
 
@@ -19,6 +19,7 @@ margin_bottom = 325.0
 margin_right = 234.0
 
 [node name="Title" parent="VBoxContainer/TitleBar" index="0"]
+unique_name_in_owner = true
 text = "WARNING!!!"
 
 [node name="Contents" parent="VBoxContainer" index="1"]
@@ -31,7 +32,8 @@ margin_top = 1.0
 margin_right = 233.0
 margin_bottom = 313.0
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Contents/VBoxContainer" index="0"]
+[node name="WarningContainer" type="MarginContainer" parent="VBoxContainer/Contents/VBoxContainer" index="0"]
+unique_name_in_owner = true
 margin_right = 232.0
 margin_bottom = 299.0
 size_flags_vertical = 3
@@ -39,7 +41,7 @@ custom_constants/margin_right = 2
 custom_constants/margin_top = 2
 custom_constants/margin_left = 2
 
-[node name="Label" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/MarginContainer" index="0"]
+[node name="Label" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/WarningContainer" index="0"]
 unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
@@ -72,7 +74,7 @@ Modded characters should generally be fine to continue using.
 
 If your game is behaving weird after the new update, your first solution should be to disable all mods."
 
-[node name="Crash" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/MarginContainer" index="1"]
+[node name="Crash" type="RichTextLabel" parent="VBoxContainer/Contents/VBoxContainer/WarningContainer" index="1"]
 unique_name_in_owner = true
 visible = false
 margin_left = 2.0
@@ -104,10 +106,59 @@ Mods you should probably uninstall:
 
 If your game is behaving weird, your first solution should be to disable all mods."
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="1"]
+[node name="SubscriptionSection" type="VBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="1"]
+unique_name_in_owner = true
+visible = false
+size_flags_vertical = 3
+custom_constants/separation = 3
+
+[node name="Header" type="Label" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection"]
+margin_right = 358.0
+margin_bottom = 14.0
+text = "Subscriptions that need attention"
+autowrap = true
+
+[node name="Scroll" type="ScrollContainer" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection"]
+margin_top = 18.0
+margin_right = 358.0
+margin_bottom = 138.0
+rect_min_size = Vector2( 0, 120 )
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="SubscriptionRows" type="VBoxContainer" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection/Scroll"]
+unique_name_in_owner = true
+margin_right = 358.0
+margin_bottom = 120.0
+size_flags_horizontal = 3
+custom_constants/separation = 8
+
+[node name="AllButtons" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection"]
+margin_top = 142.0
+margin_right = 358.0
+margin_bottom = 162.0
+custom_constants/separation = 4
+
+[node name="UpdateAll" type="Button" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection/AllButtons"]
+unique_name_in_owner = true
+margin_right = 177.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Update all"
+
+[node name="UnsubscribeAll" type="Button" parent="VBoxContainer/Contents/VBoxContainer/SubscriptionSection/AllButtons"]
+unique_name_in_owner = true
+margin_left = 181.0
+margin_right = 358.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Unsubscribe all"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Contents/VBoxContainer" index="2"]
 margin_top = 300.0
-margin_right = 232.0
+margin_right = 358.0
 margin_bottom = 312.0
+size_flags_vertical = 8
 
 [node name="OkButton" type="Button" parent="VBoxContainer/Contents/VBoxContainer/HBoxContainer" index="0"]
 unique_name_in_owner = true
@@ -128,6 +179,7 @@ text = "5"
 align = 1
 
 [node name="Timer" type="Timer" parent="." index="1"]
+unique_name_in_owner = true
 wait_time = 5.0
 one_shot = true
 

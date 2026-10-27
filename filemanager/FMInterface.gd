@@ -34,9 +34,9 @@ var loaded_lists := []
 var cur_item_path := ""
 var cur_list_name := ""
 var _is_initialized := false
-# true = deletes are queued (mark_for_deletion) and the game quits to apply
-# them on next boot (used by mods, which are loaded at startup); false =
-# files are removed immediately.
+# true = deletes are queued (mark_for_deletion) and only run on the next
+# boot, because mod files are loaded at startup; false = files are removed
+# immediately.
 var deferred_delete := false
 
 onready var option_button = $"%OptionButton"
@@ -401,6 +401,7 @@ func _on_delete_file_pressed() -> void:
 		return
 	if deferred_delete:
 		FileManager.mark_for_deletion(PoolStringArray([cur_item_path]))
+		printer.text = "Queued: this file is deleted the next time the game starts."
 	else:
 		_delete_now(PoolStringArray([cur_item_path]))
 	cur_item_path = ""
@@ -423,6 +424,7 @@ func _on_delete_listed_pressed() -> void:
 			var paths = _request_listed_paths(list)
 			if deferred_delete:
 				FileManager.mark_for_deletion(paths)
+				printer.text = "Queued: these files are deleted the next time the game starts."
 			else:
 				_delete_now(paths)
 			return
@@ -434,5 +436,6 @@ func _on_delete_folder_pressed() -> void:
 		return
 	if deferred_delete:
 		FileManager.mark_for_deletion(paths)
+		printer.text = "Queued: these files are deleted the next time the game starts."
 	else:
 		_delete_now(paths)

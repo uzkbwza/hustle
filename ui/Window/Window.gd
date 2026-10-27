@@ -4,8 +4,6 @@ class_name Window
 
 var drag_position
 
-onready var window_contents = $VBoxContainer/Contents
-
 export var static_ = false
 
 var _touch_id = -1
@@ -19,17 +17,17 @@ func _input(event: InputEvent):
 		return
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		if event.pressed:
+			_raise_if_topmost(event.position)
 			if _can_drag_at(event.position):
 				drag_position = get_global_mouse_position() - rect_global_position
-				raise()
 		else:
 			drag_position = null
 	elif event is InputEventScreenTouch:
 		if event.pressed:
+			_raise_if_topmost(event.position)
 			if _touch_id == -1 and _can_drag_at(event.position):
 				_touch_id = event.index
 				drag_position = event.position - rect_global_position
-				raise()
 		elif event.index == _touch_id:
 			_touch_id = -1
 			drag_position = null
@@ -42,6 +40,29 @@ func _input(event: InputEvent):
 			rect_global_position = event.position - drag_position
 			snap_to_boundaries()
 			get_tree().set_input_as_handled()
+
+
+func _raise_if_topmost(pos: Vector2) -> void:
+	if not get_global_rect().has_point(pos):
+		return
+	if _topmost_at(pos) != self:
+		return
+	raise()
+
+
+func _topmost_at(pos: Vector2):
+	var parent = get_parent()
+	if parent == null:
+		return self
+	var found = null
+	for child in parent.get_children():
+		if not (child is Control) or not child.is_visible_in_tree():
+			continue
+		if child.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+			continue
+		if child.get_global_rect().has_point(pos):
+			found = child
+	return found
 
 func _can_drag_at(pos: Vector2) -> bool:
 	if not get_global_rect().has_point(pos):
