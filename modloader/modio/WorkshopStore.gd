@@ -3,10 +3,14 @@ extends Reference
 const INBOX_DIR := "user://workshop_inbox"
 const DB_PATH := "user://workshop_installed.json"
 const STYLES_DIR := "user://custom"
+const CACHE_DIR := "user://workshop_cache"
 
 const MODIO_INBOX_DIR := "user://modio_inbox"
 const MODIO_PENDING_DB := "user://modio_pending.json"
 const COLLECTIONS_DB := "user://workshop_collections.json"
+
+const WORKSHOP_APP_ID := 2212330
+const STATE_SUBSCRIBED := 1
 
 
 static func load_db() -> Dictionary:
@@ -25,6 +29,64 @@ static func get_entry(item_id) -> Dictionary:
 
 static func is_managed(item_id) -> bool:
 	return not get_entry(item_id).empty()
+
+
+static func has_local_copies(entry: Dictionary) -> bool:
+	if typeof(entry) != TYPE_DICTIONARY:
+		return false
+	for group in ["mods", "styles"]:
+		var files = entry.get(group, [])
+		if typeof(files) == TYPE_ARRAY and not files.empty():
+			return true
+	return false
+
+
+static func record_subscription(item_id: int, meta: Dictionary) -> Dictionary:
+	var db = load_db()
+	var key = str(item_id)
+	var entry = db.get(key, {})
+	if typeof(entry) != TYPE_DICTIONARY:
+		entry = {}
+	entry["item_id"] = item_id
+	entry["title"] = str(meta.get("title", entry.get("title", "")))
+	entry["author"] = str(meta.get("author", entry.get("author", "")))
+	entry["preview_url"] = str(meta.get("preview_url", entry.get("preview_url", "")))
+	var updated = int(meta.get("time_updated", 0))
+	if updated > 0:
+		entry["time_updated"] = updated
+	entry["state"] = "installed"
+	entry["source"] = "steam"
+	entry["installed_at"] = OS.get_unix_time()
+	if typeof(entry.get("mods")) != TYPE_ARRAY:
+		entry["mods"] = []
+	if typeof(entry.get("styles")) != TYPE_ARRAY:
+		entry["styles"] = []
+	if typeof(entry.get("files")) != TYPE_DICTIONARY:
+		entry["files"] = {"mods": [], "styles": []}
+	db[key] = entry
+	save_db(db)
+	return entry
+
+
+static func ensure_subscriptions() -> void:
+	if not SteamHustle.STARTED:
+		return
+	if not Engine.has_singleton("Steam"):
+		return
+	if int(Steam.getAppID()) != WORKSHOP_APP_ID:
+		return
+	var db = load_db()
+	for key in db.keys():
+		if not str(key).is_valid_integer():
+			continue
+		var entry = db[key]
+		if typeof(entry) != TYPE_DICTIONARY or not has_local_copies(entry):
+			continue
+		var item_id = int(key)
+		if (int(Steam.getItemState(item_id)) & STATE_SUBSCRIBED) == 0:
+			print("Workshop: re-subscribing " + str(item_id))
+			Steam.subscribeItem(item_id)
+
 
 
 static func stage_item(item_id: int, meta: Dictionary, source_folder: String) -> bool:
@@ -176,8 +238,25 @@ static func uninstall(item_id) -> void:
 		if paths.size() > 0:
 			FileManager.mark_for_deletion(paths)
 	_delete_dir(INBOX_DIR.plus_file(str(item_id)))
+	_remove_cache(item_id)
 	db.erase(str(item_id))
 	save_db(db)
+
+
+static func _remove_cache(item_id) -> void:
+	var dir = Directory.new()
+	if dir.open(CACHE_DIR) != OK:
+		return
+	dir.list_dir_begin(true, true)
+	var prefix = "workshop_%s_" % str(item_id)
+	while true:
+		var file_name = dir.get_next()
+		if file_name == "":
+			break
+		if not dir.current_is_dir() and file_name.begins_with(prefix) \
+				and file_name.get_extension().to_lower() == "zip":
+			dir.remove(CACHE_DIR.plus_file(file_name))
+	dir.list_dir_end()
 
 
 static func modio_pending() -> Dictionary:
@@ -202,6 +281,7 @@ static func modio_record_pending(item_id, meta: Dictionary, path: String, file: 
 		"name": str(meta.get("name", "")),
 		"profile_url": str(meta.get("profile_url", "")),
 		"filename": path.get_file(),
+		"user_id": int(meta.get("user_id", 0)),
 	}
 	_save_json(MODIO_PENDING_DB, db)
 
@@ -248,6 +328,7 @@ static func modio_install_pending() -> void:
 			"filename": file_name,
 			"name": str(entry.get("name", "")),
 			"profile_url": str(entry.get("profile_url", "")),
+			"user_id": int(entry.get("user_id", 0)),
 		})
 		_delete_dir(MODIO_INBOX_DIR.plus_file(str(key)))
 
@@ -264,7 +345,7 @@ static func reconcile() -> void:
 			db_changed = true
 			continue
 		var base_dir = INBOX_DIR.plus_file(str(key)) if str(entry.get("state", "")) == "pending" else ""
-		if not _entry_files_exist(entry, base_dir):
+		if str(entry.get("state", "")) == "pending" and not _entry_files_exist(entry, base_dir):
 			db.erase(key)
 			_delete_dir(INBOX_DIR.plus_file(str(key)))
 			db_changed = true

@@ -144,7 +144,7 @@ signal network_messages_session_request(identity)
 signal new_launch_url_parameters
 signal number_of_current_players(success, players)
 signal overlay_browser_protocol(uri)
-signal overlay_toggled(active, user_initiated, app_id)
+signal overlay_toggled(active)
 signal parental_setting_changed
 signal relay_network_status(available, ping_measurement, available_config, available_relay, debug_message)
 signal remote_play_session_connected(session_id)
@@ -2234,7 +2234,7 @@ const RELAY_SIGNALS := {
 	"new_launch_url_parameters": 0,
 	"number_of_current_players": 2,
 	"overlay_browser_protocol": 1,
-	"overlay_toggled": 3,
+	"overlay_toggled": 1,
 	"parental_setting_changed": 0,
 	"relay_network_status": 5,
 	"remote_play_session_connected": 1,

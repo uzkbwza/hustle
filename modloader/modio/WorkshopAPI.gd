@@ -10,6 +10,8 @@ signal removed(item_id)
 signal vote_loaded(file_id, vote_up, vote_down, vote_skipped)
 signal vote_set(file_id, vote_up, result)
 signal vote_failed(file_id, message)
+signal subscriptions_changed
+signal library_changed(item_id)
 
 const WORKSHOP_STORE := preload("res://modloader/modio/WorkshopStore.gd")
 
@@ -50,6 +52,12 @@ func _ready() -> void:
 	Steam.connect("ugc_query_completed", self, "_on_query_completed")
 	Steam.connect("get_item_vote_result", self, "_on_get_item_vote_result")
 	Steam.connect("set_user_item_vote", self, "_on_set_user_item_vote")
+	if Steam.has_signal("item_installed"):
+		Steam.connect("item_installed", self, "_on_item_installed")
+	if Steam.has_signal("item_downloaded"):
+		Steam.connect("item_downloaded", self, "_on_item_downloaded")
+	if Steam.has_signal("user_subscribed_items_list_changed"):
+		Steam.connect("user_subscribed_items_list_changed", self, "_on_subscriptions_changed")
 
 
 func is_available() -> bool:
@@ -201,6 +209,21 @@ func _on_set_user_item_vote(result, file_id, vote_up) -> void:
 		emit_signal("vote_failed", int(file_id), "Couldn't save your vote (%s)." % str(result))
 
 
+func _on_item_installed(_app_id, file_id) -> void:
+	refresh_subscriptions()
+	emit_signal("library_changed", int(file_id))
+
+
+func _on_item_downloaded(_result, file_id, _app_id) -> void:
+	refresh_subscriptions()
+	emit_signal("library_changed", int(file_id))
+
+
+func _on_subscriptions_changed(_app_id) -> void:
+	refresh_subscriptions()
+	emit_signal("subscriptions_changed")
+
+
 func _read_result(index: int) -> Dictionary:
 	var result = Steam.getQueryUGCResult(_query_handle, index)
 	if typeof(result) != TYPE_DICTIONARY or result.empty():
@@ -338,16 +361,14 @@ func _poll_job(key: String) -> void:
 	var meta = job.get("meta", {})
 	if typeof(meta) != TYPE_DICTIONARY:
 		meta = {}
-	var staged = WORKSHOP_STORE.stage_item(item_id, meta, folder)
-	if not staged:
-		_fail_job(key, item_id, "This item has no mod or style files.")
-		return
+	var info_time = int(info.get("timestamp", 0))
+	if info_time > 0:
+		meta["time_updated"] = max(int(meta.get("time_updated", 0)), info_time)
 
-	if not job.get("was_subscribed", false):
-		Steam.unsubscribeItem(item_id)
+	var entry = WORKSHOP_STORE.record_subscription(item_id, meta)
 	refresh_subscriptions()
 	_jobs.erase(key)
-	emit_signal("install_finished", item_id, WORKSHOP_STORE.get_entry(item_id))
+	emit_signal("install_finished", item_id, entry)
 
 
 func _subscribe(item_id: int) -> void:

@@ -271,6 +271,8 @@ func _setup_workshop() -> void:
 	_workshop.connect("install_finished", self, "_on_workshop_install_finished")
 	_workshop.connect("install_failed", self, "_on_workshop_install_failed")
 	_workshop.connect("removed", self, "_on_workshop_removed")
+	_workshop.connect("library_changed", self, "_on_workshop_library_changed")
+	_workshop.connect("subscriptions_changed", self, "_on_workshop_subscriptions_changed")
 	_workshop.connect("vote_loaded", self, "_on_workshop_vote_loaded")
 	_workshop.connect("vote_set", self, "_on_workshop_vote_set")
 	_workshop.connect("vote_failed", self, "_on_workshop_vote_failed")
@@ -549,7 +551,7 @@ func _set_mode(mode: String) -> void:
 
 func _update_mode_button() -> void:
 	var available = _workshop.is_available()
-	title_button.text = "mod.io workshop" if _mode == "modio" else "steam workshop"
+	title_button.text = "mod.io (swap)" if _mode == "modio" else "steam (swap)"
 	title_button.disabled = _mode == "modio" and not available
 	if title_button.disabled:
 		title_button.hint_tooltip = "Steam Workshop is unavailable"
@@ -1166,11 +1168,11 @@ func _on_workshop_install_progress(item_id, downloaded, total) -> void:
 func _on_workshop_install_finished(item_id, entry) -> void:
 	var id = str(item_id)
 	_set_row_busy(id, false)
-	_set_row_status(id, "Queued for next launch")
 	_refresh_workshop_state(id)
+	_set_row_status(id, "Subscribed - restart to load")
 	if detail.visible and detail.mod_id == id:
-		detail.set_status("Queued. Restart the game to install it.")
-	status_line("Queued for the next launch.")
+		detail.set_status("Subscribed. Restart the game to load it.")
+	status_line("Subscribed. Restart the game to load it.")
 
 
 func _on_workshop_install_failed(item_id, message: String) -> void:
@@ -1188,6 +1190,32 @@ func _on_workshop_removed(item_id) -> void:
 	if detail.visible and detail.mod_id == id:
 		detail.set_status("Removed. Restart the game to unload it.")
 	status_line("Removed. Restart the game to unload it.")
+
+
+func _on_workshop_library_changed(item_id) -> void:
+	var id = str(item_id)
+	var was_listed = not _rows_for(id).empty()
+	_refresh_workshop_state(id)
+	if detail.visible and detail.mod_id == id:
+		detail.set_status("Downloaded. Restart the game to load it.")
+	if not was_listed:
+		_reload_workshop_subscribed()
+
+
+func _on_workshop_subscriptions_changed() -> void:
+	for view in workshop_views:
+		for row in view.rows.values():
+			row.set_subscribed(_workshop.is_item_subscribed(row.mod_id))
+	_reload_workshop_subscribed()
+
+
+func _reload_workshop_subscribed() -> void:
+	if workshop_views.size() <= WORKSHOP_TAB_MY_ITEMS:
+		return
+	var view = workshop_views[WORKSHOP_TAB_MY_ITEMS]
+	view.loaded = false
+	if _mode == "workshop" and tabs.current_tab == WORKSHOP_TAB_BASE + WORKSHOP_TAB_MY_ITEMS:
+		_load_workshop_tab(WORKSHOP_TAB_MY_ITEMS, true)
 
 
 func _refresh_workshop_state(item_id: String) -> void:

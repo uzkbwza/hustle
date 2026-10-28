@@ -46,6 +46,7 @@ var loadThread # a thread that will be used to load characters so the game doesn
 var loadThread2
 var _mods_finished = false
 var currentlyLoading = false # remains true while a character is loading, used to prevent weird shit from happening
+var _files_to_delete = [] # files to delete on main thread (Directory not thread-safe in Godot 3.x)
 
 
 # Button vars #
@@ -142,8 +143,14 @@ func _ready():
 	self.visible = false
 
 	Global.mods_loaded = false
+
+	var new_dir = Directory.new()
+	if (!new_dir.dir_exists("user://char_cache")):
+		new_dir.make_dir("user://char_cache")
+	var caches = ModLoader._get_all_files("user://char_cache", "pck")
+
 	loadThread2 = Thread.new()
-	loadThread2.start(self, "load_mods")
+	loadThread2.start(self, "load_mods", caches)
 #	load_mods()
 
 	yield(self, "mods_loaded")
@@ -165,17 +172,13 @@ func _on_style_selected(style, player_id):
 
 
 
-func load_mods():
-	var dir = Directory.new()
+func load_mods(caches: Array):
 	hash_to_folder = {}
 	hash_folders = {}
 	server_folders = {}
 	serverMods = []
 	Network.hash_to_folder = {}
-	if (!dir.dir_exists("user://char_cache")):
-		dir.make_dir("user://char_cache")
 	charPackages = {}
-	var caches = ModLoader._get_all_files("user://char_cache", "pck") # format: [mod name]-[author name]-[mod hash]-[game version].pck
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
 		_load_mod_zip(zip, caches)
@@ -202,7 +205,6 @@ func _load_mod_zip(zip, caches):
 		if !md.has("name") or !md.has("author"):
 			print("Metadata missing name or author in " + str(zip))
 			continue
-		var dir = Directory.new()
 		var is_serverSided = true
 		if md.has("client_side"):
 			if md["client_side"]:
@@ -217,7 +219,8 @@ func _load_mod_zip(zip, caches):
 			if fName == cache_name:
 				charPackages[md.name] = f
 			elif _is_char_cache_of(fName, md):
-				dir.remove(f) # this mod's cache from another version of the mod or game
+				# Collect files to delete on main thread (Directory not thread-safe in Godot 3.x)
+				_files_to_delete.append(f)
 
 
 func on_mods_load_finished():
@@ -225,6 +228,13 @@ func on_mods_load_finished():
 		return
 	_mods_finished = true
 	Global.loading_character = ""
+
+	var dir = Directory.new()
+	for f in _files_to_delete:
+		if dir.file_exists(f):
+			dir.remove(f)
+	_files_to_delete.clear()
+
 	emit_signal("mods_loaded")
 #	if is_instance_valid(loadThread2):
 	loadThread2.wait_to_finish()

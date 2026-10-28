@@ -636,6 +636,7 @@ signal issues_changed(issues)
 const WORKSHOP_API := preload("res://modloader/modio/WorkshopAPI.gd")
 const WORKSHOP_STORE := preload("res://modloader/modio/WorkshopStore.gd")
 
+const STEAM_STATE_SUBSCRIBED := 1
 const STEAM_STATE_INSTALLED := 4
 const STEAM_STATE_NEEDS_UPDATE := 8
 const STEAM_TOKEN := 1001
@@ -652,6 +653,7 @@ var _steam_offset := 0
 var _steam_total := 0
 var _modio_offset := 0
 var _modio_total := 0
+var _modio_subscribed := {}
 
 
 func check() -> void:
@@ -760,13 +762,18 @@ func _finish_steam() -> void:
 	if _workshop == null or not is_instance_valid(_workshop):
 		_emit()
 		return
+	var ids := {}
 	var subscribed = Steam.getSubscribedItems()
-	if subscribed == null:
-		_emit()
-		return
+	if subscribed != null:
+		for item in subscribed:
+			ids[str(item)] = true
 	var entries = WORKSHOP_STORE.load_db()
-	for item in subscribed:
-		var issue = _steam_issue(str(item), _steam_items.get(str(item), {}), entries)
+	for key in entries.keys():
+		ids[str(key)] = true
+	var id_list = ids.keys()
+	id_list.sort()
+	for item_id in id_list:
+		var issue = _steam_issue(str(item_id), _steam_items.get(str(item_id), {}), entries)
 		if not issue.empty():
 			issues[issue.key] = issue
 	_emit()
@@ -802,7 +809,8 @@ func _steam_issue(item_id: String, item: Dictionary, entries: Dictionary) -> Dic
 		"meta": _steam_meta(item, title, author),
 	}
 
-	if not entry.empty():
+	var steam_owned = str(entry.get("source", "")) == "steam"
+	if not entry.empty() and not steam_owned and WORKSHOP_STORE.has_local_copies(entry):
 		if not _entry_files_exist(entry):
 			issue["state"] = "missing"
 			issue["status"] = "The installed files are missing"
@@ -815,6 +823,10 @@ func _steam_issue(item_id: String, item: Dictionary, entries: Dictionary) -> Dic
 		return {}
 
 	var state = int(Steam.getItemState(int(item_id)))
+	if (state & STEAM_STATE_SUBSCRIBED) == 0:
+		issue["state"] = "missing"
+		issue["status"] = "Not subscribed"
+		return issue
 	if (state & STEAM_STATE_NEEDS_UPDATE) != 0:
 		issue["state"] = "update"
 		issue["status"] = "Steam needs to update it"
@@ -861,6 +873,7 @@ func _check_modio() -> void:
 		return
 	_modio_offset = 0
 	_modio_total = 0
+	_modio_subscribed.clear()
 	_request_modio_page()
 
 
@@ -870,28 +883,60 @@ func _request_modio_page() -> void:
 
 func _on_modio_loaded(parsed, _code, _binds) -> void:
 	var received := 0
+	var page_ok := false
 	if parsed != null and typeof(parsed) == TYPE_DICTIONARY:
 		var mods = parsed.get("data", [])
 		if typeof(mods) == TYPE_ARRAY:
+			page_ok = true
 			received = mods.size()
 			var pending = WORKSHOP_STORE.modio_pending()
 			for mod in mods:
 				if typeof(mod) != TYPE_DICTIONARY:
 					continue
+				var item_id = str(mod.get("id", ""))
+				if item_id != "":
+					_modio_subscribed[item_id] = true
 				var issue = _modio_issue(mod, pending)
 				if not issue.empty():
 					issues[issue.key] = issue
-		_modio_total = int(parsed.get("result_total", 0))
+			_modio_total = int(parsed.get("result_total", 0))
 	_modio_offset += MODIO_PAGE_SIZE
-	if received > 0 and _modio_offset < _modio_total:
+	if page_ok and received > 0 and _modio_offset < _modio_total:
 		_request_modio_page()
 	else:
+		if page_ok and _modio_offset >= _modio_total:
+			_reconcile_modio_subscriptions()
 		_emit()
+
+
+func _reconcile_modio_subscriptions() -> void:
+	var user_id := int(ModIOAuth.user_id)
+	if user_id <= 0:
+		return
+	_ensure_installed_loaded()
+	var stale := []
+	for key in _installed.keys():
+		if _modio_subscribed.has(str(key)):
+			continue
+		var info = _installed[key]
+		if typeof(info) != TYPE_DICTIONARY:
+			continue
+		var owner := int(info.get("user_id", 0))
+		if owner != 0 and owner != user_id:
+			continue
+		stale.append(str(key))
+	for key in stale:
+		print("mod.io: removing unsubscribed mod " + str(key))
+		queue_uninstall(key)
+	var pending = WORKSHOP_STORE.modio_pending()
+	for key in pending.keys():
+		if not _modio_subscribed.has(str(key)):
+			WORKSHOP_STORE.modio_discard(key)
 
 
 func _modio_issue(mod: Dictionary, pending: Dictionary) -> Dictionary:
 	var item_id = str(mod.get("id", ""))
-	if item_id == "" or pending.has(item_id):
+	if item_id == "":
 		return {}
 
 	var title = str(mod.get("name", ""))
@@ -917,6 +962,12 @@ func _modio_issue(mod: Dictionary, pending: Dictionary) -> Dictionary:
 			"profile_url": str(mod.get("profile_url", "")),
 		},
 	}
+
+	if pending.has(item_id):
+		issue["state"] = "pending"
+		issue["status"] = "Downloaded. Restart the game to install it."
+		issue["resolved"] = true
+		return issue
 
 	var installed = ModIO.get_installed(item_id)
 	if installed.empty():
@@ -959,7 +1010,7 @@ func _on_steam_install_finished(item_id, _entry) -> void:
 		return
 	issue["busy"] = false
 	issue["resolved"] = true
-	_set_status(key, "Downloaded. Queued for the next launch.")
+	_set_status(key, "Downloaded. Restart the game to load it.")
 
 
 func _on_steam_install_failed(item_id, message) -> void:
@@ -1025,6 +1076,7 @@ func _on_modio_download_finished(ok, payload, binds) -> void:
 	if issue.empty():
 		WORKSHOP_STORE.modio_discard(binds[2])
 		return
+	issue.meta["user_id"] = int(ModIOAuth.user_id)
 	WORKSHOP_STORE.modio_record_pending(issue.id, issue.meta, str(payload), file)
 	issue["busy"] = false
 	issue["resolved"] = true

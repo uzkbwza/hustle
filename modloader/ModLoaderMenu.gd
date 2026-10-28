@@ -5,6 +5,7 @@ signal uploader_clicked()
 
 const MODIO_BROWSER_SCENE := preload("res://modloader/modio/ModIOBrowser.tscn")
 const MODIO_UPLOADER_SCENE := preload("res://modloader/modio/ModIOUploader.tscn")
+const GDUNZIP := preload("res://modloader/gdunzip/gdunzip.gd")
 
 var ModOptions
 var current_mod = null
@@ -96,14 +97,12 @@ func _loadMods():
 	var modPathPrefix = gameInstallDirectory.plus_file("mods")
 	_load_mods_in_folder(modPathPrefix)
 
-	var dir2 = Directory.new()
-	var _directories = []
 	var workshop = SteamWorkshop.new()
-	for item in Steam.getSubscribedItems():
-		var info : Dictionary
-		info = workshop.get_item_install_info(item)
-		if info.ret:
-			_load_mods_in_folder(info.folder, true)
+	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
+		for item in Steam.getSubscribedItems():
+			var info = workshop.get_item_install_info(item)
+			if info.ret:
+				_load_mods_in_folder(info.folder, true)
 
 	# surely this is just a simple addition! later i shall make it work for pc too - vineraio
 	if Global.is_mobile_device:
@@ -140,6 +139,13 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 			continue
 		_modZipFiles.append(modFSPath)
 
+	# MOUNT ZIP FILES FIRST (for metadata reading)
+	for mod_path in _modZipFiles:
+		if mod_path.get_extension().to_lower() == "zip":
+			var modGlobalPath = ProjectSettings.globalize_path(mod_path)
+			ProjectSettings.load_resource_pack(modGlobalPath, true)
+
+	# THEN refresh mods (reads from mounted packs)
 	for mod_path in _modZipFiles:
 		refresh_mod(mod_path)
 
@@ -191,19 +197,59 @@ func on_mod_folder_updated(_path: String):
 func refresh_mod(_path):
 	if _path.get_extension().to_lower() != "zip":
 		return
-	for candidate in ModLoader._inspect_mod_zip(_path):
-		var metadata = candidate.metadata
-		var mod_name = metadata.name
-		if mods.has(mod_name):
-			continue
-		var modInfo = [ModLoader._hash_file(_path), metadata]
-		ModLoader.zips_by_name[mod_name] = _path
-		ModLoader.disabled_mod_names[mod_name] = true
-		ModLoader.all_mods.append(modInfo)
-		ModLoader.inactive_mods.append(modInfo)
-		add_mod(modInfo)
-		file_manager._refresh_lists_menu()
-		_sort_mod_buttons()
+
+	var gdunzip = GDUNZIP.new()
+	gdunzip.load(_path)
+	var modHash = ModLoader._hash_file(_path)
+
+	for modEntryPath in gdunzip.files:
+		var modSubFolder = modEntryPath.rsplit('/')[0]
+		var modEntryName = modEntryPath.get_file().to_lower()
+		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
+			var modMetadataPath = "res://" + modSubFolder + "/_metadata"
+			var metadata = ModLoader._readMetadata(modMetadataPath)
+			if metadata == null:
+				print("No metadata in mod: " + modSubFolder)
+				continue
+			var check = ModLoader._verifyMetadata(metadata)
+			if check != null:
+				print("Metadata error: " + check)
+				continue
+
+			var mod_name = metadata.name
+
+			# CHECK FOR MERGED MODS - skip if integrated into base game
+			if ModLoader.knownMergedModNames.has(mod_name):
+				print("Skipping merged mod: " + mod_name + " (integrated into base game)")
+				continue
+
+			# Don't re-add mods already loaded by ModLoader during boot
+			if mods.has(mod_name):
+				continue
+			if mod_name in ModLoader.zips_by_name:
+				# Mod already known to ModLoader, sync UI state
+				if not mods.has(mod_name):
+					var modInfo = [modHash, metadata]
+					metadata.zip_path = _path
+					ModLoader.zips_by_name[mod_name] = _path
+					ModLoader.disabled_mod_names[mod_name] = true
+					ModLoader.all_mods.append(modInfo)
+					ModLoader.inactive_mods.append(modInfo)
+					add_mod(modInfo)
+					file_manager._refresh_lists_menu()
+					_sort_mod_buttons()
+				continue
+
+			var modInfo = [modHash, metadata]
+			metadata.zip_path = _path
+			ModLoader.zips_by_name[mod_name] = _path
+			ModLoader.disabled_mod_names[mod_name] = true
+			ModLoader.all_mods.append(modInfo)
+			ModLoader.inactive_mods.append(modInfo)
+			add_mod(modInfo)
+			file_manager._refresh_lists_menu()
+			_sort_mod_buttons()
+			break
 
 
 func adjust_ui(is_mobile):

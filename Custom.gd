@@ -312,18 +312,37 @@ func load_all_styles():
 #	print(dir.get_current_dir())
 	Global.add_dir_contents(dir, files, _directories, false, ".style")
 
+	var workshop_files = []
 	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
 		var workshop = SteamWorkshop.new()
-		for item in Steam.getSubscribedItems():
-			if WORKSHOP_STORE.is_managed(item):
-				continue
+		var content_root := ""
+		var seen := {}
+		var subscribed = Steam.getSubscribedItems()
+		if subscribed == null:
+			subscribed = []
+		for item in subscribed:
 			var info : Dictionary
 			info = workshop.get_item_install_info(item)
-			if info.ret:
-				dir.open(info.folder)
-				dir.list_dir_begin(false, true)
-				Global.add_dir_contents(dir, files, _directories, false, ".style")
-	
+			if not info.ret or str(info.get("folder", "")) == "":
+				continue
+			var item_folder = str(info.folder)
+			seen[str(int(item))] = true
+			content_root = item_folder.get_base_dir()
+			_scan_workshop_styles(item_folder, workshop_files, _directories)
+		var root_dir = Directory.new()
+		if content_root != "" and root_dir.open(content_root) == OK:
+			root_dir.list_dir_begin(true, true)
+			while true:
+				var name = root_dir.get_next()
+				if name == "":
+					break
+				if not root_dir.current_is_dir() or not name.is_valid_integer():
+					continue
+				if not seen.has(name):
+					_scan_workshop_styles(content_root.plus_file(name), workshop_files, _directories)
+			root_dir.list_dir_end()
+
+	files = _dedupe_styles(workshop_files + files)
 	files.sort_custom(self, "sort_styles")
 #	for file in files:
 #		print(get_style_name(file))
@@ -346,3 +365,22 @@ func get_style_name(path):
 
 func sort_styles(a: String, b: String):
 	return get_style_name(a) < get_style_name(b)
+
+func _dedupe_styles(files: Array) -> Array:
+	var seen := {}
+	var unique := []
+	for path in files:
+		var style_name = get_style_name(path)
+		if seen.has(style_name):
+			continue
+		seen[style_name] = true
+		unique.append(path)
+	return unique
+
+func _scan_workshop_styles(folder: String, out: Array, directories: Array) -> void:
+	var dir = Directory.new()
+	if dir.open(folder) != OK:
+		return
+	if dir.list_dir_begin(false, true) != OK:
+		return
+	Global.add_dir_contents(dir, out, directories, true, ".style")
