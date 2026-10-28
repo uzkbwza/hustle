@@ -1677,7 +1677,7 @@ func launched_by(hitbox):
 			colliding_with_opponent = false
 
 		busy_interrupt = true
-		can_nudge = true
+		can_nudge = hitlag_ticks > 0
 
 		if !projectile:
 			refresh_feints()
@@ -2550,6 +2550,7 @@ func tick_before():
 				
 			state_machine._change_state(queued_action, queued_data)
 			if !current_state().is_hurt_state:
+				can_nudge = false
 				if !last_turn_block:
 					hitlag_ticks = 0
 				last_turn_block = false
@@ -2639,8 +2640,10 @@ func tick():
 				can_nudge = false
 		turn_frames += 1
 	elif blockstun_ticks > 0:
+		can_nudge = false
 		blockstun_ticks -= 1
 	else:
+		can_nudge = false
 		turn_frames += 1
 #		if current_tick > 1:
 #			blocked_hitbox_plus_frames = 0
