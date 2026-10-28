@@ -362,7 +362,7 @@ func add_dir_contents(dir: Directory, files: Array, directories: Array, recursiv
 				subDir.open(path)
 				subDir.list_dir_begin(true, false)
 				directories.append(path)
-				add_dir_contents(subDir, files, directories)
+				add_dir_contents(subDir, files, directories, true, extension, full_path)
 		else:
 #			print("Found file: %s" % path)
 			if extension == "" or path.ends_with(extension):

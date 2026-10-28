@@ -381,6 +381,7 @@ func _scan_workshop_styles(folder: String, out: Array, directories: Array) -> vo
 	var dir = Directory.new()
 	if dir.open(folder) != OK:
 		return
-	if dir.list_dir_begin(false, true) != OK:
+	# skip "." and "..": with recursion, ".." would scan every workshop item
+	if dir.list_dir_begin(true, true) != OK:
 		return
 	Global.add_dir_contents(dir, out, directories, true, ".style")
