@@ -163,7 +163,7 @@ func init(game):
 				p1_color = Global.get_remote_name_color(p1_steam)
 			if p2_color == null and p2_steam != 0:
 				p2_color = Global.get_remote_name_color(p2_steam)
-		elif !SteamLobby.SPECTATING and Global.has_name_color():
+		elif !SteamLobby.SPECTATING and !Network.relay_spectating and Global.has_name_color():
 			# Network.player_id defaults to 2 and is only set in actual MP
 			# setup paths. Treat non-multiplayer as "you are P1" so vs-CPU
 			# shows the user's color on their character.

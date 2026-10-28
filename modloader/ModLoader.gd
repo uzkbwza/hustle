@@ -296,7 +296,6 @@ func _inspect_mod_zip(zip_path: String) -> Array:
 		print("Mod is not a readable zip: " + zip_path)
 		return found
 
-	var provided_scripts := []
 	var native_entries := {}
 	var modmain_entries := []
 	for mod_entry_path in gdunzip.files:
@@ -306,8 +305,6 @@ func _inspect_mod_zip(zip_path: String) -> Array:
 			print("Skipping unsafe archive path: " + zip_path + " -> " + str(mod_entry_path))
 			continue
 		var mod_entry_name = mod_entry_path.get_file().to_lower()
-		if mod_entry_path.get_extension().to_lower() == "gd":
-			provided_scripts.append("res://" + mod_entry_path)
 		if _native_extension(mod_entry_path) and mod_entry_path.find("/") != -1:
 			native_entries[mod_entry_path] = int(gdunzip.files[mod_entry_path].get("uncompressed_size", -1))
 		if mod_entry_name.begins_with("modmain") and mod_entry_name.ends_with(".gd"):
@@ -327,14 +324,10 @@ func _inspect_mod_zip(zip_path: String) -> Array:
 			print("Metadata error in " + zip_path + ": " + error)
 			continue
 		metadata.zip_path = zip_path
-		var referenced_scripts := _referenced_scripts(gdunzip, mod_entry_path)
 		found.append({
 			"path": zip_path,
 			"subfolder": mod_sub_folder,
 			"script_path": "res://" + mod_entry_path,
-			"provides": provided_scripts,
-			"references": referenced_scripts,
-			"requires_scripts": _base_scripts(gdunzip, referenced_scripts),
 			"native": _native_entries_from(native_entries, mod_sub_folder),
 			"metadata": metadata,
 		})
@@ -480,135 +473,6 @@ func _remove_files(paths: Array) -> void:
 	for path in paths:
 		directory.remove(path)
 
-func _referenced_scripts(gdunzip, mod_entry_path: String) -> Array:
-	var referenced := _hard_script_literals(_read_zip_text(gdunzip, mod_entry_path))
-	var mod_script_path = "res://" + mod_entry_path
-	if not mod_script_path in referenced:
-		referenced.append(mod_script_path)
-	for script_path in referenced.duplicate():
-		if not script_path.begins_with("res://"):
-			referenced.erase(script_path)
-			continue
-		if not _is_safe_entry_path(script_path.substr(6)):
-			referenced.erase(script_path)
-	return referenced
-
-func _base_scripts(gdunzip, referenced: Array) -> Array:
-	var required := []
-	for script_path in referenced:
-		if not script_path.begins_with("res://"):
-			continue
-		var entry_path = script_path.substr(6)
-		if not _is_safe_entry_path(entry_path):
-			continue
-		if not entry_path in gdunzip.files:
-			continue
-		var base_script = _read_extends_path(gdunzip, entry_path)
-		if base_script != "" and not base_script in required:
-			required.append(base_script)
-	return required
-
-func _hard_script_literals(text: String) -> Array:
-	var found := []
-	var block_indents := []
-	for line in text.split("\n"):
-		var statement = line.strip_edges()
-		if statement == "" or statement.begins_with("#"):
-			continue
-		var indent = _indent_size(line)
-		while not block_indents.empty() and indent <= block_indents[block_indents.size() - 1]:
-			block_indents.pop_back()
-		if _opens_conditional_block(statement):
-			block_indents.append(indent)
-			continue
-		if not block_indents.empty():
-			continue
-		if not _loads_script(statement):
-			continue
-		for path in _script_literals(statement):
-			if not path in found:
-				found.append(path)
-	return found
-
-func _loads_script(statement: String) -> bool:
-	for marker in ["installScriptExtension(", "install_script_extension(", "ResourceLoader.load(", "load(", "preload("]:
-		if statement.find(marker) != -1:
-			return true
-	return false
-
-func _indent_size(line: String) -> int:
-	var size := 0
-	for index in range(line.length()):
-		var character = line.substr(index, 1)
-		if character == "\t":
-			size += 4
-		elif character == " ":
-			size += 1
-		else:
-			break
-	return size
-
-func _opens_conditional_block(statement: String) -> bool:
-	if not statement.ends_with(":"):
-		return false
-	for keyword in ["if", "elif", "else", "for", "while", "match"]:
-		if statement == keyword + ":" or statement.begins_with(keyword + " ") or statement.begins_with(keyword + "("):
-			return true
-	return false
-
-func _script_literals(text: String) -> Array:
-	var found := []
-	var start := 0
-	while true:
-		var double_quote = text.find("\"res://", start)
-		var single_quote = text.find("'res://", start)
-		var index = double_quote
-		if index == -1 or (single_quote != -1 and single_quote < index):
-			index = single_quote
-		if index == -1:
-			break
-		var quote = text.substr(index, 1)
-		var close_quote = text.find(quote, index + 1)
-		if close_quote == -1:
-			break
-		var path = text.substr(index + 1, close_quote - index - 1)
-		if path.get_extension().to_lower() == "gd" and not path in found:
-			found.append(path)
-		start = close_quote + 1
-	return found
-
-func _read_extends_path(gdunzip, entry_path: String) -> String:
-	var text = _read_zip_text(gdunzip, entry_path)
-	if text == "":
-		return ""
-	for line in text.split("\n"):
-		var statement = line.strip_edges()
-		if statement == "" or statement.begins_with("#") or statement == "tool" or statement.begins_with("class_name"):
-			continue
-		if not (statement == "extends" or statement.begins_with("extends ")):
-			return ""
-		var value = statement.substr(7).strip_edges()
-		if value.begins_with("\"") or value.begins_with("'"):
-			var quote = value.substr(0, 1)
-			var close_quote = value.find(quote, 1)
-			if close_quote > 1:
-				var base_script = value.substr(1, close_quote - 1)
-				if base_script.begins_with("res://"):
-					return base_script
-		return ""
-	return ""
-
-func _read_zip_text(gdunzip, entry_path: String) -> String:
-	if not entry_path in gdunzip.files:
-		return ""
-	var info = gdunzip.files[entry_path]
-	if int(info.get("uncompressed_size", 0)) > 1048576:
-		return ""
-	var bytes = gdunzip.uncompress(entry_path)
-	if typeof(bytes) != TYPE_RAW_ARRAY:
-		return ""
-	return bytes.get_string_from_utf8()
-
 func _validate_metadata(metadata) -> String:
 	if typeof(metadata) != TYPE_DICTIONARY:
 		return "Metadata is not a JSON object"
@@ -642,17 +506,12 @@ func _validate_metadata(metadata) -> String:
 func _resolve_and_mount(candidates: Array) -> void:
 	var by_name := {}
 	var loadable := {}
-	var providers := {}
 	var mounted := {}
-	var filesystem = File.new()
 	for candidate in candidates:
 		var mod_name: String = candidate.metadata.name
 		by_name[mod_name] = candidate
 		if not disabled_mod_names.has(mod_name):
 			loadable[mod_name] = true
-		for script_path in candidate.provides:
-			if not providers.has(script_path):
-				providers[script_path] = candidate.metadata
 
 	for mod_name in loadable.keys():
 		var candidate = by_name[mod_name]
@@ -698,26 +557,6 @@ func _resolve_and_mount(candidates: Array) -> void:
 		if not resolved.get(mod_name, false):
 			loadable.erase(mod_name)
 
-	var available_scripts := {}
-	var provider_counts := {}
-	for mod_name in loadable.keys():
-		for script_path in by_name[mod_name].provides:
-			provider_counts[script_path] = int(provider_counts.get(script_path, 0)) + 1
-			available_scripts[script_path] = true
-
-	var changed := true
-	while changed:
-		changed = false
-		for mod_name in loadable.keys():
-			if _missing_scripts(by_name[mod_name], available_scripts, providers, filesystem).empty():
-				continue
-			loadable.erase(mod_name)
-			for script_path in by_name[mod_name].provides:
-				provider_counts[script_path] = int(provider_counts[script_path]) - 1
-				if int(provider_counts[script_path]) <= 0:
-					available_scripts.erase(script_path)
-			changed = true
-
 	for candidate in candidates:
 		var metadata: Dictionary = candidate.metadata
 		if disabled_mod_names.has(metadata.name):
@@ -731,7 +570,6 @@ func _resolve_and_mount(candidates: Array) -> void:
 				print(str(metadata.friendly_name) + ": " + str(mods_w_load_errors[str(metadata.friendly_name)]))
 				continue
 			var missing = _missing_dependencies(metadata, loadable)
-			missing.append_array(_missing_scripts(candidate, available_scripts, providers, filesystem))
 			print(str(metadata.friendly_name) + ": Missing Dependency: " + str(missing))
 			mods_w_missing_depend[metadata.friendly_name] = missing
 			all_mods.append([_hash_file(candidate.path), metadata])
@@ -789,20 +627,6 @@ func _missing_dependencies(metadata: Dictionary, available: Dictionary) -> Array
 			continue
 		if not available.has(name):
 			missing.append(name)
-	return missing
-
-func _missing_scripts(candidate: Dictionary, available_scripts: Dictionary, providers: Dictionary, filesystem: File) -> Array:
-	var missing := []
-	for script_path in candidate.references + candidate.requires_scripts:
-		if script_path in candidate.provides:
-			continue
-		if available_scripts.has(script_path) or filesystem.file_exists(script_path) \
-		or filesystem.file_exists(script_path + ".remap"):
-			continue
-		var provider = providers.get(script_path, {})
-		var label = str(provider.get("friendly_name", script_path)) if not provider.empty() else script_path
-		if not label in missing:
-			missing.append(label)
 	return missing
 
 # Load and run any ModMain.gd scripts which were present in mod ZIP files.

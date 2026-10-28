@@ -34,6 +34,8 @@ signal quit_on_rematch()
 export var direct_connect = true
 
 const MAX_SPECTATORS = 64
+const SPECTATE_RETRY_INTERVAL = 2.0
+const SPECTATE_MAX_RETRIES = 10
 
 var show_match_list = true
 var showing = false
@@ -73,8 +75,8 @@ func _ready():
 	spectate_button.connect("pressed", self, "_on_spectate_code_pressed")
 	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	if is_connected("swiped_back", self, "_on_back_button_pressed"):
-		disconnect("swiped_back", self, "_on_back_button_pressed")
+	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
+		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
@@ -154,7 +156,7 @@ func show():
 	_restore_browse_ui()
 	var player_data = Global.get_player_data()
 	if player_data.has("username"):
-		name_edit.text = player_data.username
+		name_edit.text = Global.get_display_name(player_data.username)
 	name_edit.show()
 	name_edit.editable = true
 	join_button.show()
@@ -283,7 +285,9 @@ func _on_join_pressed():
 func save_username():
 	if name_edit.text.strip_edges() == "":
 		name_edit.text = "username"
-	Global.save_player_data({"username": ProfanityFilter.filter(name_edit.text.strip_edges())})
+	var chosen = ProfanityFilter.filter(name_edit.text.strip_edges())
+	Global.custom_name = chosen
+	Global.save_player_data({"username": chosen})
 
 func hide():
 	room_info_timer.stop()
@@ -585,10 +589,24 @@ func _on_spectate_pressed(match_code):
 	Network.request_spectate(match_code)
 	_enter_room_view(match_code, true)
 	save_username()
-	while Network.relay_spectate_pending:
-		yield(get_tree().create_timer(2.0), "timeout")
-		if Network.relay_spectate_pending:
-			Network.request_spectate(match_code)
+	_wait_for_spectate(match_code)
+
+func _wait_for_spectate(match_code):
+	for attempt in range(SPECTATE_MAX_RETRIES):
+		if !Network.relay_spectate_pending or current_room_code != match_code:
+			return
+		yield(get_tree().create_timer(SPECTATE_RETRY_INTERVAL), "timeout")
+		if !Network.relay_spectate_pending or current_room_code != match_code:
+			return
+		spectate_status.text = "Requesting to spectate...\n(retry %d/%d)" % [attempt + 1, SPECTATE_MAX_RETRIES]
+		Network.request_spectate(match_code)
+	if !Network.relay_spectate_pending:
+		return
+	Network.cancel_spectate_request()
+	spectate_status.text = "The room did not respond. Try again."
+	yield(get_tree().create_timer(2.0), "timeout")
+	if current_room_code == match_code:
+		_return_to_lobby_browse()
 
 func _on_spectate_code_pressed():
 	var code = $"%RoomCodeEdit".text.strip_edges()

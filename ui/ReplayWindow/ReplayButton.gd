@@ -43,6 +43,16 @@ func _pretty(full_name):
 		return full_name.split("__")[1]
 	return full_name
 
+func _is_character_installed(raw_name):
+	if raw_name == null:
+		return true
+	if Global.name_paths.has(raw_name):
+		return true
+	var css = Network.css_instance
+	if is_instance_valid(css) and css.name_to_index.has(raw_name):
+		return true
+	return false
+
 func show_data():
 	var match_data = ReplayManager.load_replay(path)
 	if !("version" in match_data):
@@ -60,8 +70,7 @@ func show_data():
 		# would actually fail to open.
 		var raw1 = sc[1].name if sc.has(1) and sc[1].has("name") else null
 		var raw2 = sc[2].name if sc.has(2) and sc[2].has("name") else null
-		has_missing_character = (raw1 != null and not Global.name_paths.has(raw1)) \
-			or (raw2 != null and not Global.name_paths.has(raw2))
+		has_missing_character = !_is_character_installed(raw1) or !_is_character_installed(raw2)
 		# Color is owned by UILayer._refresh_replay_button_colors so it stays
 		# in sync with the version-mode toggle. We only paint it here to give
 		# the initial render the right tint before the first filter pass runs.

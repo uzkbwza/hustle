@@ -127,6 +127,7 @@ func _ready():
 		btt.connect("pressed", self, "_delete_char_cache", [btt])
 #
 	var loaded_mods = false
+	var mods_wait_start = OS.get_ticks_msec()
 	while !Global.mods_loaded:
 		loaded_mods = true
 		hide_main_menu(true)
@@ -134,6 +135,12 @@ func _ready():
 		$InputBlocker.show()
 		$"%LoadingCharactersLabel2".show()
 		$"%LoadingCharactersLabel2".text = Global.loading_character
+		if OS.get_ticks_msec() - mods_wait_start > 20000:
+			printerr("Mod loading stalled on: " + str(Global.loading_character))
+			var css = _Global.css_instance
+			if css != null and is_instance_valid(css):
+				css.force_finish_mods(Global.loading_character)
+			Global.mods_loaded = true
 		yield(get_tree(), "idle_frame")
 
 	if loaded_mods:
@@ -603,12 +610,16 @@ func setup_game_deferred(singleplayer, data):
 					ud["p1_color"] = p1_col.to_html(false)
 				if p2_col != null:
 					ud["p2_color"] = p2_col.to_html(false)
-			elif Global.has_name_color():
-				# Legacy MP: only know the local user's color. Apply it to
-				# the side they're playing.
-				ud["p" + str(Network.player_id) + "_color"] = Global.get_name_color().to_html(false)
+			else:
+				# Legacy MP: both clients share their color while picking
+				# characters, so each side can be tinted for both players.
+				for side in [1, 2]:
+					var hex = Network.player_name_colors.get(side, "")
+					if hex is String and hex != "":
+						ud["p" + str(side) + "_color"] = hex
 		else:
-			ud["p1"] = Global.get_player_data().username
+			var player_name = Global.get_display_name(Global.get_player_data().username)
+			ud["p1"] = player_name if player_name != "" else "Player"
 			ud["p2"] = _format_p2_name(data.selected_characters[2]["name"])
 			# Singleplayer: user controls P1.
 			if Global.has_name_color():

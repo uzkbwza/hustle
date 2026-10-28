@@ -25,7 +25,9 @@ func _ready():
 
 func late_init():
 	if ModLoader.active:
-		var ModOptions = get_node("../../ModOptions")
+		var ModOptions = get_node_or_null("../../ModOptions")
+		if ModOptions == null or ModOptions.menu == null:
+			return
 		for key in ModOptions.menu.menus:
 			ModOptions.menu.menus[key].emit_signal("late_init")
 

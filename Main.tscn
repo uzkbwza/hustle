@@ -2578,18 +2578,6 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Quit"
 flat = true
 
-[node name="WorkshopUploader" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 180.0
-margin_right = 96.0
-margin_bottom = 200.0
-rect_min_size = Vector2( 0, 20 )
-mouse_default_cursor_shape = 2
-custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Workshop Uploader"
-flat = true
-
 [node name="Title" type="Control" parent="UILayer/MainMenu"]
 unique_name_in_owner = true
 anchor_left = 0.5
@@ -4185,7 +4173,6 @@ script = ExtResource( 203 )
 
 [connection signal="pressed" from="UILayer/GameUI/BottomBar/OptionsBarContainer/OptionsBar/ClearParticlesButton" to="UILayer" method="_on_ClearParticlesButton_pressed"]
 [connection signal="text_entered" from="UILayer/GameUI/PausePanel/VBoxContainer/ReplayName" to="." method="_on_ReplayName_text_entered"]
-[connection signal="pressed" from="UILayer/MainMenu/ButtonContainer/WorkshopUploader" to="UILayer" method="_on_WorkshopUploader_pressed"]
 [connection signal="toggled" from="UILayer/MainMenu/RoadmapContainer/RoadmapButton" to="UILayer" method="_on_RoadmapButton_toggled"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimYes" to="UILayer/ResimRequestScreen" method="_on_ResimYes_pressed"]
 [connection signal="pressed" from="UILayer/ResimRequestScreen/RequestUndoPanel/VBoxContainer/HBoxContainer/ResimNo" to="UILayer/ResimRequestScreen" method="_on_ResimNo_pressed"]

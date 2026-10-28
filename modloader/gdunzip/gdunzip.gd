@@ -39,7 +39,7 @@ var _native = null
 
 
 func _init():
-	if Engine.has_meta("gdunzip_native_missing"):
+	if OS.has_feature("mobile") or Engine.has_meta("gdunzip_native_missing"):
 		return
 	_native = _Native.new()
 	if _native == null:

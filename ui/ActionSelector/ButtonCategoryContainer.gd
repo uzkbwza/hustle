@@ -383,6 +383,8 @@ func _button_super_level(button) -> int:
 func on_button_mouse_entered(button):
 	if get_prediction():
 		return
+	if Global.mobile_ui and !button.is_pressed():
+		return
 	_on_ButtonContainer_mouse_entered()
 	$"%Label".text = button.action_title
 #	if button.action_title == selected_button_text:

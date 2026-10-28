@@ -8,8 +8,8 @@ extends PanelContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if is_connected("swiped_back", self, "_on_Button_pressed"):
-		disconnect("swiped_back", self, "_on_Button_pressed")
+	if UIManager.is_connected("swiped_back", self, "_on_Button_pressed"):
+		UIManager.disconnect("swiped_back", self, "_on_Button_pressed")
 	UIManager.connect("swiped_back", self, "_on_Button_pressed")
 	pass # Replace with function body.
 

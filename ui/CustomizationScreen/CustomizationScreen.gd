@@ -219,8 +219,8 @@ func init():
 	$"%Outline".connect("color_changed", self, "_on_outline_color_changed")
 	$"%ShowOutline".connect("toggled", self, "_on_show_outline_toggled")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	if is_connected("swiped_back", self, "_on_back_button_pressed"):
-		disconnect("swiped_back", self, "_on_back_button_pressed")
+	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
+		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%OpenFolderButton".visible = not Global.is_mobile_device
 	for i in range(Custom.simple_colors.size()):
@@ -345,8 +345,9 @@ func init():
 		$"%AllowSaveButton".hide()
 	else:
 		$"%AllowSaveButton".set_pressed_no_signal(Global.allow_save_default)
-	if !SteamHustle.WORKSHOP_ENABLED:
+	if !SteamHustle.WORKSHOP_ENABLED or Global.is_mobile_device:
 		$"%WorkshopButton".disabled = true
+		$"%WorkshopButton2".disabled = true
 	_on_character_button_pressed(buttons[0])
 	_on_reset_color_pressed()
 	update_warning()

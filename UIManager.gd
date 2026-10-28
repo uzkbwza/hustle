@@ -480,7 +480,10 @@ func _notification(what):
 #		ev.physical_scancode = KEY_ESCAPE
 #		ev.pressed = true
 #		Input.parse_input_event(ev)
-		emit_signal("swiped_back")
+		if has_signal("swiped_back"):
+			emit_signal("swiped_back")
+	elif what == MainLoop.NOTIFICATION_WM_FOCUS_OUT:
+		_reset_drag()
 
 func _input(event):
 	if event is InputEventScreenTouch:
@@ -513,7 +516,27 @@ func _begin_drag(pos):
 	if sc == null or _on_scrollbar(sc, pos) or _interactive_at(sc, pos) != null:
 		_drag_scroll = null
 		return
+	var window = _draggable_window_at(pos)
+	if window != null and window._can_drag_at(pos):
+		_drag_scroll = null
+		return
 	_drag_scroll = sc
+
+func _draggable_window_at(pos):
+	var stack = [[get_tree().root, 0]]
+	var best = null
+	var best_depth = -1
+	while not stack.empty():
+		var item = stack.pop_back()
+		var node = item[0]
+		var depth = item[1]
+		if node is Window and not node.static_ and node.is_visible_in_tree() \
+				and node.get_global_rect().has_point(pos) and depth >= best_depth:
+			best = node
+			best_depth = depth
+		for child in node.get_children():
+			stack.append([child, depth + 1])
+	return best
 
 func _interactive_at(root, pos):
 	if not (root is Control) or not root.is_visible_in_tree():

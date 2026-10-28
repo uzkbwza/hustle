@@ -44,6 +44,7 @@ var charExColors = {} # will hold the dictionaries containing the extra colors o
 
 var loadThread # a thread that will be used to load characters so the game doesn't get completely stuck
 var loadThread2
+var _mods_finished = false
 var currentlyLoading = false # remains true while a character is loading, used to prevent weird shit from happening
 
 
@@ -98,8 +99,8 @@ func _ready():
 	$"%GoButton".connect("pressed", self, "go")
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
-	if is_connected("swiped_back", self, "quit"):
-		disconnect("swiped_back", self, "quit")
+	if UIManager.is_connected("swiped_back", self, "quit"):
+		UIManager.disconnect("swiped_back", self, "quit")
 	UIManager.connect("swiped_back", self, "quit")
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	UIManager.register_menu(self, [
@@ -175,46 +176,67 @@ func load_mods():
 		dir.make_dir("user://char_cache")
 	charPackages = {}
 	var caches = ModLoader._get_all_files("user://char_cache", "pck") # format: [mod name]-[author name]-[mod hash]-[game version].pck
-	var time = Time.get_ticks_msec()
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
-		var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
-		gdunzip.load(zip)
-		var hashy = ModLoader._hash_file(zip)
-		var folders = _zip_mod_folders(gdunzip.files)
-		hash_to_folder[hashy] = folders[0]
-		hash_folders[hashy] = folders
-		Network.hash_to_folder[hashy] = PoolStringArray(folders).join(", ") # shown when mod lists differ
-		for folder in folders:
-			var md = ModLoader._readMetadata(folder + "/_metadata")
-			if (md == null):
-				continue
-			var is_serverSided = true
-			if md.has("client_side"):
-				if md["client_side"]:
-					is_serverSided = false
-			if is_serverSided:
-				if !(hashy in serverMods):
-					serverMods.append(hashy)
-				server_folders[folder] = true
-			var cache_name = _char_cache_name(md, hashy)
-			for f in caches:
-				var fName = f.replace("user://char_cache/", "")
-				if fName == cache_name:
-					charPackages[md.name] = f
-				elif _is_char_cache_of(fName, md):
-					dir.remove(f) # this mod's cache from another version of the mod or game
-		var new_time = Time.get_ticks_msec()
-#		if new_time - time >= 16:
-#		yield(get_tree(), "idle_frame")
+		_load_mod_zip(zip, caches)
 	call_deferred("on_mods_load_finished")
 
 
+func _load_mod_zip(zip, caches):
+	var gdunzip = load("res://modloader/gdunzip/gdunzip.gd").new()
+	if !gdunzip.load(zip):
+		print("Mod is not a readable zip: " + str(zip))
+		return
+	var hashy = ModLoader._hash_file(zip)
+	var folders = _zip_mod_folders(gdunzip.files)
+	if folders.empty() or folders[0] == "":
+		print("No mod folder in zip: " + str(zip))
+		return
+	hash_to_folder[hashy] = folders[0]
+	hash_folders[hashy] = folders
+	Network.hash_to_folder[hashy] = PoolStringArray(folders).join(", ") # shown when mod lists differ
+	for folder in folders:
+		var md = ModLoader._readMetadata(folder + "/_metadata")
+		if typeof(md) != TYPE_DICTIONARY:
+			continue
+		if !md.has("name") or !md.has("author"):
+			print("Metadata missing name or author in " + str(zip))
+			continue
+		var dir = Directory.new()
+		var is_serverSided = true
+		if md.has("client_side"):
+			if md["client_side"]:
+				is_serverSided = false
+		if is_serverSided:
+			if !(hashy in serverMods):
+				serverMods.append(hashy)
+			server_folders[folder] = true
+		var cache_name = _char_cache_name(md, hashy)
+		for f in caches:
+			var fName = f.replace("user://char_cache/", "")
+			if fName == cache_name:
+				charPackages[md.name] = f
+			elif _is_char_cache_of(fName, md):
+				dir.remove(f) # this mod's cache from another version of the mod or game
+
 
 func on_mods_load_finished():
+	if _mods_finished:
+		return
+	_mods_finished = true
+	Global.loading_character = ""
 	emit_signal("mods_loaded")
 #	if is_instance_valid(loadThread2):
 	loadThread2.wait_to_finish()
+
+
+func force_finish_mods(reason):
+	if _mods_finished:
+		return
+	_mods_finished = true
+	printerr("Forcing mod load to finish: " + str(reason))
+	Global.loading_character = ""
+	emit_signal("mods_loaded")
 
 
 
@@ -265,6 +287,9 @@ func init(singleplayer=true):
 	$"%GoButton".disabled = true
 	$"%GoButton".show()
 	self.singleplayer = singleplayer
+	if !singleplayer and Network.multiplayer_active and !Network.steam:
+		var hex = Global.get_name_color().to_html(false) if Global.has_name_color() else ""
+		Network.rpc_("sync_name_color", [Network.player_id, hex])
 	$"%GameSettingsPanelContainer".init(singleplayer)
 #	$"%GameSettingsPanelContainer".singleplayer = singleplayer
 #	$"%P2Display".set_enabled(singleplayer)
@@ -616,7 +641,7 @@ func _zip_mod_folders(files):
 			first = folder
 		if !(folder in folders) and files.has(folder.trim_prefix("res://") + "/_metadata"):
 			folders.append(folder)
-	if folders.empty():
+	if folders.empty() and first != "":
 		folders.append(first)
 	return folders
 

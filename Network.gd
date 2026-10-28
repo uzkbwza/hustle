@@ -58,6 +58,7 @@ var relay_spectate_pending = false
 var relay_spectators = {}
 var relay_spectator_ticks = {}
 var relay_spectator_timer = null
+var resim_timer = null
 
 var ticks = {
 	1: null,
@@ -92,6 +93,7 @@ var reveal_sent = false
 
 var player_objects = {}
 var player_ids = {}
+var player_name_colors = {}
 var rematch_requested = {}
 var hole_punch: HolePunch
 var rng = BetterRng.new()
@@ -195,6 +197,12 @@ func _ready():
 	relay_spectator_timer.connect("timeout", self, "_on_relay_spectator_timer_timeout")
 	add_child(relay_spectator_timer)
 	relay_spectator_timer.start(3)
+
+	resim_timer = Timer.new()
+	resim_timer.one_shot = true
+	resim_timer.wait_time = 15.0
+	resim_timer.connect("timeout", self, "_on_resim_timeout")
+	add_child(resim_timer)
 
 	randomize()
 	_setup_rpc_whitelist()
@@ -394,6 +402,7 @@ func _reset():
 	# Names for remote players in id:name format.
 	players = {}
 	players_ready = []
+	player_name_colors = {}
 	
 	p1_turn_time = 0
 	p2_turn_time = 0
@@ -875,9 +884,11 @@ func _stop_relay_spectating():
 	relay_spectator_ticks.clear()
 
 remote func spectate_accept(data):
+	if !relay_spectate_pending and !relay_spectating:
+		return
 	if data is Dictionary and data.get("replay") != null:
 		ReplayManager.frames = data.replay
-	if !relay_spectate_pending or relay_spectating:
+	if relay_spectating:
 		return
 	if data is Dictionary and data.get("match_data") is Dictionary and data.get("replay") != null:
 		var match_data = data.match_data
@@ -957,13 +968,12 @@ remote func spectate_ended(disconnected_id):
 remote func spectate_request(spectator_id):
 	if steam:
 		return
-	if relay_spectators.has(spectator_id):
+	if !is_instance_valid(game):
+		relay_spectators[spectator_id] = false
 		return
-	relay_spectators[spectator_id] = false
-	if is_instance_valid(game):
-		relay_spectators[spectator_id] = true
-		relay_spectator_ticks[spectator_id] = _replay_watermarks()
-		rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
+	relay_spectators[spectator_id] = true
+	relay_spectator_ticks[spectator_id] = _replay_watermarks()
+	rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
 
 func _spectate_accept_data():
 	return {
@@ -1335,6 +1345,9 @@ remotesync func send_rematch_request(player_id):
 			else:
 				begin_game()
 
+remotesync func sync_name_color(player_id, hex):
+	player_name_colors[player_id] = hex
+
 remotesync func sync_character_selection(player_id, character, style=null):
 	if _rpc_from_wire() and player_id == self.player_id:
 		return
@@ -1344,22 +1357,46 @@ remotesync func sync_character_selection(player_id, character, style=null):
 
 remotesync func open_chara_select():
 	print("opening character select")
+	player_name_colors.clear()
 	emit_signal("start_game")
 
 func request_softlock_fix():
-	if multiplayer_active:
-		rpc_("send_resim_request", null, "remote")
+	if !multiplayer_active or !is_instance_valid(game):
+		return
+	if ReplayManager.resimulating:
+		return
+	_start_resim_watchdog()
+	rpc_("send_resim_request", null, "remote")
+
+func _start_resim_watchdog():
+	if resim_timer != null:
+		resim_timer.start()
+
+func _clear_resim_state():
+	undo = false
+	auto = false
+	ReplayManager.resimulating = false
+	if resim_timer != null:
+		resim_timer.stop()
+
+func _on_resim_timeout():
+	if !undo and !ReplayManager.resimulating:
+		return
+	_clear_resim_state()
+	emit_signal("resim_denied")
 
 remote func send_resim_request():
 	emit_signal("resim_requested")
 
 func answer_resim_request(answer: bool):
 	if answer:
+		_start_resim_watchdog()
 		rpc_("multiplayer_resim", null, "remote")
 	else:
 		rpc_("deny_resim", null, "remote")
 
 remote func deny_resim():
+	_clear_resim_state()
 	rpc_("send_chat_message", [opponent_player_id(player_id), "-- denied resync request."])
 	emit_signal("resim_denied")
 
@@ -1380,6 +1417,7 @@ remote func receive_style_save_response(target_player_id, requester_id, requeste
 	emit_signal("style_save_response_received", target_player_id, requester_id, requester_name, allowed)
 
 remote func multiplayer_resim():
+	_start_resim_watchdog()
 	auto = true
 	undo = true
 	rpc_("send_opponent_replay_for_resim", [ReplayManager.frames, p1_undo_action, p2_undo_action], "remote")
@@ -1395,9 +1433,11 @@ remote func send_opponent_replay_for_resim(replay, p1_undo_action, p2_undo_actio
 remotesync func finalize_resim():
 	if is_instance_valid(game):
 		game.undo(false)
+	else:
+		_clear_resim_state()
 
 func undo_finished():
-	undo = false
+	_clear_resim_state()
 
 remote func test_relay():
 	print("relay test")

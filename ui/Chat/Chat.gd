@@ -815,8 +815,8 @@ func on_steam_chat_message_received(steam_id: int, message: String, scope: Strin
 		category = "lobby"
 	elif scope == "match":
 		# Only show in our match tab if it's actually our match (or if we're
-		# the sender — self-echoes always display somewhere).
-		if steam_id == SteamHustle.STEAM_ID or SteamLobby.can_get_messages_from_user(steam_id):
+		if steam_id == SteamHustle.STEAM_ID or SteamLobby.can_get_messages_from_user(steam_id) \
+				or (match_key != "" and match_key in [_last_known_match_key, _known_spectators_match_key]):
 			category = "match"
 		else:
 			category = ""

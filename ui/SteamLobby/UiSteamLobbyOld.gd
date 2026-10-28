@@ -27,8 +27,8 @@ func _ready():
 	SteamLobby.connect("challenger_cancelled", self, "_on_challenger_cancelled")
 	SteamLobby.connect("spectate_declined", self, "_on_spectate_declined")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	if is_connected("swiped_back", self, "_on_back_button_pressed"):
-		disconnect("swiped_back", self, "_on_back_button_pressed")
+	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
+		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%StartButton".connect("pressed", self, "_on_start_button_pressed")
 	$"%LockSettingsButton".connect("pressed", self, "_on_LockSettingsButton_pressed")

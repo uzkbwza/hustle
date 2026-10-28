@@ -337,6 +337,7 @@ func _ready():
 #		$"%MultiplayerButton".text = "Multiplayer (Legacy)"
 	
 	$NetworkSyncTimer.connect("timeout", self, "_on_network_timer_timeout")
+	Network.connect("resim_denied", self, "_on_resim_denied")
 	quit_on_rematch = false
 	for node in global_option_check_buttons:
 		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
@@ -385,6 +386,9 @@ func adjust_ui(is_mobile):
 	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
 	$"%MultiplayerButton".text = "Multiplayer" if Global.is_mobile_device else "Multiplayer (Crossplay)"
 	$"%SteamMultiplayerButton".visible = not (Global.is_mobile_device or Global.winws_detected)
+	$"%SteamBetaReplayTip".visible = not Global.is_mobile_device
+	if Global.is_mobile_device:
+		$"%OldVersionConfirmDialog".get_node("VBoxContainer/Contents/OldVersionContentVBox/OldVersionMessageLabel").text = "This replay is from an old version. Load it anyway?"
 	$"%PredictionSettingsOpenButton".hide()
 	if is_mobile:
 		$"%OptionsBarContainer".hide()
@@ -2350,10 +2354,16 @@ func start_timers():
 		p2_turn_timer.paused = false
 
 func _on_SoftlockResetButton_pressed():
+	if ReplayManager.resimulating:
+		return
 	Network.rpc_("send_chat_message", [Network.player_id, "-- wants to resync."])
 	Network.request_softlock_fix()
 	$"%SoftlockResetButton".disabled = true
 	pass # Replace with function body.
+
+func _on_resim_denied():
+	$"%SoftlockResetButton".disabled = false
+	$"%SoftlockResetButton".visible = false
 
 
 
@@ -2595,6 +2605,4 @@ func _xy_sticky_snap(plot, current: Vector2, raw_new: Vector2) -> Vector2:
 	return Vector2(cos(final_angle), sin(final_angle)) * final_radius
 
 
-func _on_WorkshopUploader_pressed():
-	on_workshop_uploader_clicked()
-	pass # Replace with function body.
+

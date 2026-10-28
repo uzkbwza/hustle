@@ -186,9 +186,11 @@ func _physics_process(delta):
 			visible = false
 
 func _process(delta):
+	$"%DI".set_flash(false)
+	if is_instance_valid(fighter):
+		_refresh_feint_tint()
 	if Global.mobile_ui and _mobile_turn_bar != null and is_instance_valid(_mobile_turn_bar):
 		_sync_mobile_turn_bar()
-	$"%DI".set_flash(false)
 	if active and is_instance_valid(fighter):
 		if fighter.will_forfeit:
 			on_action_submitted("Forfeit", null, null)
@@ -510,7 +512,9 @@ func _sync_mobile_turn_bar():
 			continue
 		dup.visible = orig.visible
 		dup.disabled = orig.disabled
+		dup.text = orig.text
 		dup.set_pressed_no_signal(orig.pressed)
+		dup.modulate = orig.modulate
 
 
 
@@ -676,11 +680,14 @@ func _send_ui_action(action=null):
 			$"%FeintButton".set_disabled(!current_button.state.can_feint())
 		else:
 			$"%FeintButton".set_disabled(true)
-		$"%FeintButton".modulate = Color.white if fighter.feints > 0 else Color("d440b6")
+		_refresh_feint_tint()
 		if !$"%FeintButton".disabled:
 			$"%FeintButton".set_disabled(!fighter_extra.can_feint)
 			if $"%FeintButton".disabled:
 				$"%FeintButton".pressed = false
+
+func _refresh_feint_tint():
+	$"%FeintButton".modulate = Color.white if fighter.feints > 0 else Color("d440b6")
 
 func extra_updated():
 	if fighter_extra:

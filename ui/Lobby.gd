@@ -48,8 +48,8 @@ func _ready():
 	start_button.connect("pressed", self, "_on_start_pressed")
 	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
-	if is_connected("swiped_back", self, "_on_back_button_pressed"):
-		disconnect("swiped_back", self, "_on_back_button_pressed")
+	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
+		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
@@ -104,7 +104,7 @@ func show():
 	showing = true
 	var player_data = Global.get_player_data()
 	if player_data.has("username"):
-		name_edit.text = player_data.username
+		name_edit.text = Global.get_display_name(player_data.username)
 	name_edit.show()
 	name_edit.editable = true
 	join_button.show()
@@ -213,7 +213,9 @@ func _on_join_pressed():
 func save_username():
 	if name_edit.text.strip_edges() == "":
 		name_edit.text = "username"
-	Global.save_player_data({"username": ProfanityFilter.filter(name_edit.text.strip_edges())})
+	var chosen = ProfanityFilter.filter(name_edit.text.strip_edges())
+	Global.custom_name = chosen
+	Global.save_player_data({"username": chosen})
 
 func _on_match_clicked(index):
 	if show_match_list:
