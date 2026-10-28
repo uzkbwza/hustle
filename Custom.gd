@@ -285,6 +285,7 @@ func save_style(style):
 	file.open(filename_, File.WRITE)
 	file.store_var(style, true)
 	file.close()
+	_style_cache.erase(filename_)
 	return filename_
 
 func save_style_workshop(style):
@@ -299,6 +300,7 @@ func save_style_workshop(style):
 	file.open(filename_, File.WRITE)
 	file.store_var(style, true)
 	file.close()
+	_style_cache.erase(filename_)
 	return folder_path
 
 func load_all_styles():
@@ -314,33 +316,7 @@ func load_all_styles():
 
 	var workshop_files = []
 	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
-		var workshop = SteamWorkshop.new()
-		var content_root := ""
-		var seen := {}
-		var subscribed = Steam.getSubscribedItems()
-		if subscribed == null:
-			subscribed = []
-		for item in subscribed:
-			var info : Dictionary
-			info = workshop.get_item_install_info(item)
-			if not info.ret or str(info.get("folder", "")) == "":
-				continue
-			var item_folder = str(info.folder)
-			seen[str(int(item))] = true
-			content_root = item_folder.get_base_dir()
-			_scan_workshop_styles(item_folder, workshop_files, _directories)
-		var root_dir = Directory.new()
-		if content_root != "" and root_dir.open(content_root) == OK:
-			root_dir.list_dir_begin(true, true)
-			while true:
-				var name = root_dir.get_next()
-				if name == "":
-					break
-				if not root_dir.current_is_dir() or not name.is_valid_integer():
-					continue
-				if not seen.has(name):
-					_scan_workshop_styles(content_root.plus_file(name), workshop_files, _directories)
-			root_dir.list_dir_end()
+		workshop_files = _workshop_style_files()
 
 	files = _dedupe_styles(workshop_files + files)
 	files.sort_custom(self, "sort_styles")
@@ -348,17 +324,80 @@ func load_all_styles():
 #		print(get_style_name(file))
 
 	for path in files:
-		var file = File.new()
-		file.open(path, File.READ)
-		var data = file.get_var()
-		file.close()
+		var data = _read_style(path)
 		if !(data is Dictionary):
 			continue
-		if !data.has("mod_data"):
-			data["mod_data"] = {}
 		styles.append(data)
 
 	return [styles, files]
+
+# Character select rebuilds the style lists every time it opens (once per
+# player), so what's read from disk is kept: the workshop scan until the
+# subscribed items or the workshop folder change, each style file until its
+# modified time changes.
+var _workshop_scan_key = null
+var _workshop_scan_files = []
+var _style_cache = {} # path -> [modified time, style]
+
+func _workshop_style_files() -> Array:
+	var workshop = SteamWorkshop.new()
+	var content_root := ""
+	var seen := {}
+	var item_folders = []
+	var key = PoolStringArray()
+	var subscribed = Steam.getSubscribedItems()
+	if subscribed == null:
+		subscribed = []
+	for item in subscribed:
+		var info : Dictionary
+		info = workshop.get_item_install_info(item)
+		if not info.ret or str(info.get("folder", "")) == "":
+			continue
+		var item_folder = str(info.folder)
+		seen[str(int(item))] = true
+		content_root = item_folder.get_base_dir()
+		item_folders.append(item_folder)
+		key.append(item_folder + "|" + str(info.get("timestamp", "")))
+	var root_dir = Directory.new()
+	if content_root != "" and root_dir.open(content_root) == OK:
+		root_dir.list_dir_begin(true, true)
+		while true:
+			var name = root_dir.get_next()
+			if name == "":
+				break
+			if not root_dir.current_is_dir() or not name.is_valid_integer():
+				continue
+			if not seen.has(name):
+				item_folders.append(content_root.plus_file(name))
+				key.append(name)
+		root_dir.list_dir_end()
+
+	var key_str = key.join("\n")
+	if key_str == _workshop_scan_key:
+		return _workshop_scan_files.duplicate()
+	var files = []
+	var _directories = []
+	for folder in item_folders:
+		_scan_workshop_styles(folder, files, _directories)
+	_workshop_scan_key = key_str
+	_workshop_scan_files = files
+	return files.duplicate()
+
+func _read_style(path):
+	var file = File.new()
+	var modified = file.get_modified_time(path)
+	var cached = _style_cache.get(path)
+	if cached != null and cached[0] == modified:
+		return cached[1].duplicate(true) if cached[1] != null else null
+	file.open(path, File.READ)
+	var data = file.get_var()
+	file.close()
+	if data is Dictionary and !data.has("mod_data"):
+		data["mod_data"] = {}
+	if !(data is Dictionary):
+		data = null
+	_style_cache[path] = [modified, data]
+	return data.duplicate(true) if data != null else null
 
 func get_style_name(path):
 	return path.get_file().split(".")[0].strip_edges()
