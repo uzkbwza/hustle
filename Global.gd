@@ -68,6 +68,7 @@ var enable_timer_sound = true
 var steam_demo_version = false
 var show_last_move_indicators = true
 var show_community_events = true
+var show_selection_art = true
 var speed_lines_enabled = true
 var replay_extra_freeze_frames = true
 var enable_replay_backups = true
@@ -418,6 +419,19 @@ func save_option(value, option):
 	set(option, value)
 	save_options()
 
+func is_point_over_window(pos: Vector2, control: Node = null) -> bool:
+	if not is_inside_tree():
+		return false
+	for window in get_tree().get_nodes_in_group("ui_window"):
+		if not is_instance_valid(window) or not window.is_visible_in_tree():
+			continue
+		if control != null and (window == control or window.is_a_parent_of(control)):
+			continue
+		if window.get_global_rect().has_point(pos):
+			return true
+	return false
+
+
 func set_light_mode(on):
 	light_mode = on
 	save_options()
@@ -442,6 +456,7 @@ func save_options():
 			"show_hitboxes": show_hitboxes,
 			"show_last_move_indicators": show_last_move_indicators,
 			"show_community_events": show_community_events,
+			"show_selection_art": show_selection_art,
 			"show_playback_controls": show_playback_controls,
 			"playback_hotkeys_require_window": playback_hotkeys_require_window,
 			"show_projectile_owners": show_projectile_owners,
@@ -531,6 +546,7 @@ func get_default_player_data():
 			"name_color_customized": false,
 			"show_health_count": false,
 			"show_community_events": true,
+			"show_selection_art": true,
 			"show_next_turn_info_hud": false,
 			"show_next_turn_info_on_chars": true,
 		}
@@ -586,7 +602,7 @@ func reload():
 		var parent = character_select_node.get_parent()
 		if parent:
 			parent.remove_child(character_select_node)
-	elif character_select_node:
+	else:
 		character_select_node = null
 	get_tree().reload_current_scene()
 
@@ -602,7 +618,8 @@ func _snapshot_character_select_owners() -> void:
 	var queue := [css]
 	while not queue.empty():
 		var node: Node = queue.pop_front()
-		character_select_owners[node.get_instance_id()] = _owner_path_within(css, node.owner)
+		if node.owner != css:
+			character_select_owners[node.get_instance_id()] = _owner_path_within(css, node.owner)
 		for child in node.get_children():
 			queue.append(child)
 
@@ -626,13 +643,14 @@ func _restore_character_select_owners(css: Node, scene_root_owner: Node) -> void
 	var queue := [css]
 	while not queue.empty():
 		var node: Node = queue.pop_front()
-		var owner_path = character_select_owners.get(node.get_instance_id(), null)
-		if owner_path == null:
-			node.owner = scene_root_owner
-		elif owner_path is NodePath:
-			var target: Node = css.get_node_or_null(owner_path)
-			if target != null:
-				node.owner = target
+		if node.owner != css:
+			var owner_path = character_select_owners.get(node.get_instance_id(), null)
+			if owner_path == null:
+				node.owner = scene_root_owner
+			elif owner_path is NodePath:
+				var target: Node = css.get_node_or_null(owner_path)
+				if target != null:
+					node.owner = target
 		for child in node.get_children():
 			queue.append(child)
 

@@ -35,10 +35,6 @@ var style_permission_requested := {}
 var style_permission_pending := {}
 
 var started_ghost_this_frame = false
-var _ghost_rebuild_pending = false
-var _ghost_rebuild_timer = null
-
-const GHOST_REBUILD_INTERVAL = 0.05
 
 var _Global = Network
 
@@ -737,22 +733,7 @@ func on_action_clicked(action, data, extra, player_id):
 	pass
 
 func start_ghost():
-	if _ghost_rebuild_timer == null:
-		_ghost_rebuild_timer = Timer.new()
-		_ghost_rebuild_timer.one_shot = true
-		_ghost_rebuild_timer.wait_time = GHOST_REBUILD_INTERVAL
-		_ghost_rebuild_timer.connect("timeout", self, "_on_ghost_rebuild_timer_timeout")
-		add_child(_ghost_rebuild_timer)
-	if !_ghost_rebuild_timer.is_stopped():
-		_ghost_rebuild_pending = true
-		return
-	_ghost_rebuild_pending = false
 	call_deferred("_start_ghost")
-	_ghost_rebuild_timer.start()
-
-func _on_ghost_rebuild_timer_timeout():
-	if _ghost_rebuild_pending:
-		start_ghost()
 
 func _process(_delta):
 	align_afterimages()

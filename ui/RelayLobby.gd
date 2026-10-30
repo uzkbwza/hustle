@@ -475,9 +475,7 @@ func _on_room_chat_history_received(history):
 func _render_room_chat(sender_name, message):
 	if !is_instance_valid(room_chat_history):
 		return
-	var color = "ffffff"
-	if str(sender_name) == Network.player_name:
-		color = "1d8df5"
+	var color = Network.name_color_for(str(sender_name))
 	var text = ProfanityFilter.filter("<[color=#%s]%s[/color]> %s" % [color, str(sender_name), str(message)])
 	room_chat_history.append_bbcode(text + "\n")
 

@@ -16,18 +16,10 @@ func _on_action_buttons_visibility_changed():
 	var p1_info_scene = ui_layer.p1_info_scene
 	var p2_info_scene = ui_layer.p2_info_scene
 
-	if Global.mobile_ui:
-		$"%OptionsBarContainer".hide()
-		$"%PredictionSettingsOpenButton".hide()
-
-	elif !$"%P1ActionButtons".visible and !$"%P2ActionButtons".visible:
-		$"%OptionsBarContainer".hide()
-		$"%PredictionSettingsOpenButton".hide()
-
-	else:
-		$"%OptionsBarContainer".show()
-		$"%PredictionSettingsOpenButton".hide()
+	$"%PredictionSettingsOpenButton".hide()
 #		$"%ActivePlayerSuperContainer".show()
+
+	ui_layer._apply_bottom_bar_visibility(not Global.mobile_ui)
 	
 	if is_instance_valid(p1_info_scene):
 		p1_info_scene.get_parent().remove_child(p1_info_scene)

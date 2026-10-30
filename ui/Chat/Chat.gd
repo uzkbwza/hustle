@@ -353,7 +353,7 @@ func is_muted():
 	
 
 func on_chat_message_received(player_id: int, message: String):
-	var color = "ff333d" if player_id == 2 else "1d8df5"
+	var color = _color_for_player_id(player_id)
 #	print("here")
 	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + Network.pid_to_username(player_id) + "[/color]> " + message)
 	var node = RichTextLabel.new()
@@ -385,7 +385,7 @@ func on_chat_message_received(player_id: int, message: String):
 		scroll.scroll_vertical = 10000000000000000
 
 func on_relay_chat_message_received(sender_name: String, message: String, silent: bool = false):
-	var text = ProfanityFilter.filter(("<[color=#999999]") + sender_name + "[/color]> " + message)
+	var text = ProfanityFilter.filter(("<[color=#%s]" % [_color_for_name(sender_name)]) + sender_name + "[/color]> " + message)
 	var node = RichTextLabel.new()
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
@@ -437,6 +437,12 @@ func god_message(message: String):
 func play_chat_sound():
 	if !is_muted():
 		$"ChatSound".play()
+
+func _color_for_player_id(player_id: int) -> String:
+	return Network.player_name_color(player_id)
+
+func _color_for_name(sender_name: String) -> String:
+	return Network.name_color_for(sender_name)
 
 # Returns the chat color hex for a user: p2 red, p1 blue, spectators gray,
 # self-spectator slightly brighter. Players currently idle in the lobby get

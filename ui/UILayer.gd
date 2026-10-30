@@ -93,7 +93,7 @@ onready var neutral_label = $"%NeutralLabel"
 
 var _nudge_target = null
 var _nudge_target_conn = null
-const _NUDGE_WINDOW_DEFAULT_POS = Vector2(8, 44)
+const _NUDGE_WINDOW_DEFAULT_POS = Vector2(32, 44)
 var _nudge_xy_step = 0.01
 var _nudge_slider_step = 1.0
 
@@ -129,6 +129,7 @@ onready var global_option_check_buttons = {
 	$"%EnableAurasButton": "enable_custom_particles",
 	$"%EnableHitsparksButton": "enable_custom_hit_sparks",
 	$"%ShowCommunityEventsButton": "show_community_events",
+	$"%ShowSelectionArtButton": "show_selection_art",
 	$"%EnableEmotes": "enable_emotes",
 	$"%LastMoveIndicatorButton": "show_last_move_indicators",
 	$"%ProjectileOwnersButton": "show_projectile_owners",
@@ -147,12 +148,14 @@ onready var global_option_check_buttons = {
 }
 
 func _enter_tree():
-	if Global.character_select_node == null:
+	if not is_instance_valid(Global.character_select_node):
 		Global.character_select_node = $"%CharacterSelect"
 	else:
 		var css_index = $"%CharacterSelect".get_index()
 		$"%CharacterSelect".free()
 		var css: Node = Global.character_select_node
+		if css.get_parent() != null:
+			css.get_parent().remove_child(css)
 		add_child(css)
 		move_child(css, clamp(css_index, 0, get_child_count() - 1))
 		css.name = "CharacterSelect"
@@ -391,10 +394,9 @@ func adjust_ui(is_mobile):
 		$"%OldVersionConfirmDialog".get_node("VBoxContainer/Contents/OldVersionContentVBox/OldVersionMessageLabel").text = "This replay is from an old version. Load it anyway?"
 	$"%PredictionSettingsOpenButton".hide()
 	if is_mobile:
-		$"%OptionsBarContainer".hide()
 		_bottom_adjustments_mode = false
-	else:
-		$"%OptionsBarContainer".show()
+	# OptionsBarContainer visibility is owned by _apply_bottom_bar_visibility so
+	# BottomBar and this screen can't fight over it.
 	_apply_bottom_bar_visibility(not is_mobile)
 	_adjust_mobile_advice_labels(is_mobile)
 	_adjust_nudge_window(is_mobile)
@@ -438,7 +440,8 @@ func _apply_bottom_bar_visibility(is_desktop):
 	var p1 = get_node_or_null("%P1ActionButtons")
 	var p2 = get_node_or_null("%P2ActionButtons")
 	var actions_visible = p1 != null and p2 != null and (p1.visible or p2.visible)
-	var enabled = is_desktop and actions_visible
+	var enabled = is_desktop and (actions_visible or Global.is_mobile_device)
+	$"%OptionsBarContainer".visible = enabled
 	$"%OptionsBar".visible = enabled
 	$"%BottomBarToggleButton".visible = enabled and _bottom_adjustments_mode
 	var show_adjustments = enabled and _bottom_adjustments_mode
@@ -621,9 +624,24 @@ func _on_mobile_prediction_close():
 	$"%MobilePredictionPanel".visible = false
 
 func _on_chat_button_pressed():
-	if is_instance_valid(game):
-		$"%ChatWindow".show()
-		$"%ChatWindow".line_edit_focus()
+	if !is_instance_valid(game):
+		return
+	var chat = $"%ChatWindow"
+	if chat.visible:
+		chat.hide()
+		chat.unfocus_line_edit()
+	else:
+		chat.show()
+		chat.raise()
+		chat.line_edit_focus()
+
+func _focus_chat():
+	if !is_instance_valid(game):
+		return
+	var chat = $"%ChatWindow"
+	chat.show()
+	chat.raise()
+	chat.line_edit_focus()
 
 func _on_mobile_replay_button_pressed():
 	if not is_instance_valid(game):
@@ -889,6 +907,10 @@ func _on_mod_issues_changed(issues):
 
 func _on_global_option_toggled(toggled, param):
 	Global.save_option(toggled, param)
+	if param == "show_selection_art":
+		var css = Global.character_select_node
+		if is_instance_valid(css) and css.has_method("apply_selection_art_setting"):
+			css.apply_selection_art_setting()
 
 #func _on_light_mode_toggled(on):
 #	Global.set_light_mode(on)
@@ -1046,12 +1068,21 @@ func hide_main_menu(all=false):
 		$"%ButtonContainer".hide()
 		$"%Title".hide()
 		$"%RoadmapContainer".hide()
+		var mod_list = get_node_or_null("%ModListButtonContainer")
+		if mod_list != null:
+			mod_list.hide()
 
 func show_main_menu():
+	var css = get_node_or_null("%CharacterSelect")
+	if css != null and css.visible:
+		return
 	$"%MainMenu".show()
 	$"%ButtonContainer".show()
 	$"%Title".show()
 	$"%RoadmapContainer".show()
+	var mod_list = get_node_or_null("%ModListButtonContainer")
+	if mod_list != null:
+		mod_list.show()
 
 func _on_view_replays_button_pressed():
 	load_replays()
@@ -1070,7 +1101,7 @@ func _on_opponent_disconnected():
 	if SteamLobby.SPECTATING or Network.relay_spectating or ReplayManager.playback or !Network.multiplayer_active:
 		return
 	if is_instance_valid(game) and !game.game_finished:
-		game.get_player((game.my_id % 2) + 1).on_action_selected("Forfeit", null, null)
+		game.get_player(Network.opponent_player_id(Network.player_id)).on_action_selected("Forfeit", null, null)
 		Network.forfeit(true)
 		print("opponent disconnected")
 		forfeit_pressed = true
@@ -2036,9 +2067,11 @@ func _unhandled_input(event):
 			get_tree().set_input_as_handled()
 			return
 	if event.is_action_pressed(Hotkeys.OPEN_CHAT):
-		if is_instance_valid(game):
-			$"%ChatWindow".show()
-			$"%ChatWindow".line_edit_focus()
+		_focus_chat()
+	if event.is_action_pressed(Hotkeys.TOGGLE_PREDICTIONS_MENU):
+		_on_mobile_predictions_pressed()
+	if event.is_action_pressed(Hotkeys.TOGGLE_NUDGE_MENU):
+		_on_arrows_button_pressed()
 	if event.is_action_pressed(Hotkeys.TOGGLE_HUD):
 		visible = !visible
 		$"../HudLayer/HudLayer".visible = ! $"../HudLayer/HudLayer".visible

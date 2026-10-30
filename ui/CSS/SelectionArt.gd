@@ -38,7 +38,12 @@ func reset():
 
 
 
+func apply_visibility_setting():
+	visible = Global.show_selection_art
+
 func animate_reveal(id :int):
+	if not Global.show_selection_art:
+		return
 	var anim_player = $"%LeftAnimPlayer" if id == 1 else $"%RightAnimPlayer"
 	anim_player.play("reveal")
 	BorderManager.set_border_color(id, BorderManager.dark_color)
@@ -53,12 +58,16 @@ func animate_unreveal(id :int):
 
 
 func animate_load_started(id :int):
+	if not Global.show_selection_art:
+		return
 	var anim_player = $"%LeftLoadingAnimPlayer" if id == 1 else $"%RightLoadingAnimPlayer"
 	anim_player.play("loop")
 
 
 
 func animate_load_done(id :int):
+	if not Global.show_selection_art:
+		return
 	var anim_player = $"%LeftLoadingAnimPlayer" if id == 1 else $"%RightLoadingAnimPlayer"
 	anim_player.play("load_done")
 

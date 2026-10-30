@@ -65,6 +65,7 @@ onready var go_button = $"%GoButton"
 onready var selecting_label = $"%SelectingLabel"
 onready var h_box_container = $HBoxContainer
 onready var quit_button = $"%QuitButton"
+onready var chat_button = $"%ChatButton"
 
 
 
@@ -100,6 +101,7 @@ func _ready():
 	$"%GoButton".connect("pressed", self, "go")
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
+	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
 	if UIManager.is_connected("swiped_back", self, "quit"):
 		UIManager.disconnect("swiped_back", self, "quit")
 	UIManager.connect("swiped_back", self, "quit")
@@ -275,13 +277,41 @@ func _on_network_match_locked_in(match_data):
 
 func reset():
 	$SelectionArt.reset()
+	apply_selection_art_setting()
+	_hide_chat()
 	hide()
+
+func _on_chat_button_pressed():
+	if get_parent() == null:
+		return
+	var chat = get_parent().get_node_or_null("%ChatWindow")
+	if chat == null:
+		return
+	if chat.visible:
+		chat.hide()
+		chat.unfocus_line_edit()
+	else:
+		chat.show()
+		chat.raise()
+		chat.line_edit_focus()
+
+func _hide_chat():
+	if get_parent() == null:
+		return
+	var chat = get_parent().get_node_or_null("%ChatWindow")
+	if chat != null:
+		chat.hide()
+		chat.unfocus_line_edit()
+
+func apply_selection_art_setting():
+	$SelectionArt.apply_visibility_setting()
 
 
 
 
 func init(singleplayer=true):
 	$SelectionArt.reset()
+	apply_selection_art_setting()
 	show()
 	emit_signal("opened")
 	loadingLabel_vanish()
@@ -297,6 +327,9 @@ func init(singleplayer=true):
 	$"%GoButton".disabled = true
 	$"%GoButton".show()
 	self.singleplayer = singleplayer
+	$"%ChatButton".visible = !singleplayer
+	if singleplayer:
+		_hide_chat()
 	if !singleplayer and Network.multiplayer_active and !Network.steam:
 		var hex = Global.get_name_color().to_html(false) if Global.has_name_color() else ""
 		Network.rpc_("sync_name_color", [Network.player_id, hex])
@@ -483,6 +516,7 @@ func _on_button_pressed(button):
 
 func quit():
 	if not visible: return
+	_hide_chat()
 	if Network.multiplayer_active:
 		Network.stop_multiplayer()
 #	if SteamLobby.LOBBY_ID != 0:

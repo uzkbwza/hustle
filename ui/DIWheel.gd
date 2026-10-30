@@ -1,6 +1,9 @@
 extends XYPlot
 
 func _process(delta):
+	if not is_visible_in_tree():
+		_reset_drag_state()
+		return
 	_handle_game_pause_state()
 	panel.hint_tooltip = ""
 	var data = get_data()

@@ -5,7 +5,6 @@ class_name Game
 const GHOST_FRAMES = 90
 const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
-const GHOST_MAX_CATCHUP_TICKS = 12
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
 const CLASH_DAMAGE_DIFF = 25
@@ -198,8 +197,7 @@ func _ready():
 		for fx in fx_node.get_children():
 			fx.free()
 		$GhostStartTimer.start()
-		$GhostStartTimer.connect("timeout", self, "_on_ghost_start_timeout")
-		ghost_time = OS.get_ticks_msec() / 1000.0
+		ghost_time = Time.get_unix_time_from_system()
 	else:
 		emit_signal("simulation_continue")
 	hooks.ready()
@@ -489,9 +487,9 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	
 	if not is_ghost:
 		var player_entries = {1:p1, 2:p2}
+		var match_styles = match_data.get("selected_styles", {})
 		for player_id in player_entries:
 			var player_fighter = player_entries[player_id]
-			print(player_id, player_fighter)
 			var shader_params =  {
 				"extra_replace_color_1": player_fighter.extra_color_1,
 				"extra_replace_color_2": player_fighter.extra_color_2,
@@ -512,6 +510,7 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 			BorderManager.set_style_params(player_id, shader_params)
 			BorderManager.set_background(player_id, border_background)
 			BorderManager.set_portrait(player_id, border_portrait)
+			BorderManager.apply_style(player_id, match_styles.get(player_id, null))
 		BorderManager.show_character_art()
 
 	if match_data.has("selected_styles"):
@@ -524,10 +523,6 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 #		if Custom.can_use_style(2, style1):
 		if is_ghost or Custom.can_use_style(2, style1):
 			p2.apply_style(style2)
-		
-		if not is_ghost:
-			BorderManager.apply_style(1, style1)
-			BorderManager.apply_style(2, style2)
 
 	if match_data.has("gravity_enabled"):
 		gravity_enabled = match_data.gravity_enabled
@@ -1557,21 +1552,19 @@ func _process(delta):
 
 		camera_snap_position = camera.position
 
-	if is_ghost and Global.ghost_speed > 2 and $GhostStartTimer.is_stopped():
-		var current_time = OS.get_ticks_msec() / 1000.0
+	if is_ghost and Global.ghost_speed > 2:
+		var current_time = Time.get_unix_time_from_system()
 		var ghost_delta = current_time - ghost_time
 		var fps = 60
 		var fixed_delta = 1.0 / fps
 		var min_delta = fixed_delta * (1.0 / Global.get_ghost_speed_modifier())
 		if ghost_delta >= min_delta:
-			var ticks = int(min(floor(ghost_delta / min_delta), GHOST_MAX_CATCHUP_TICKS))
-			ghost_time += ticks * min_delta
-			if ghost_delta > min_delta * GHOST_MAX_CATCHUP_TICKS:
-				ghost_time = current_time
+			ghost_time = current_time
 			if ghost_actionable_freeze_ticks > 0:
-				ghost_time = current_time
+				pass
 			else:
-				ghost_tick(ticks)
+				for i in range(floor(ghost_delta / min_delta)):
+					call_deferred("ghost_tick")
 		
 
 func playback_speed_allows_tick() -> bool:
@@ -1662,35 +1655,27 @@ func _physics_process(_delta):
 					var input = ReplayManager.frames[id][input_tick]
 					get_player(id).on_action_selected(input.action, input.data, input.extra)
 
-func _on_ghost_start_timeout():
-	ghost_time = OS.get_ticks_msec() / 1000.0
-
-func ghost_tick(ticks = 1):
+func ghost_tick():
 #	p1.actionable_label.hide()
 #	p2.actionable_label.hide()
 	var simulate_frames = 1
-	p1.grounded_indicator.hide()
-	p2.grounded_indicator.hide()
-	for t in range(ticks):
-		if ghost_actionable_freeze_ticks > 0:
-			break
-		simulate_frames = 1
-		if ghost_speed == 1:
-			simulate_frames = 1 if ghost_tick % 4 == 0 else 0
-		ghost_tick += 1
+	if ghost_speed == 1:
+		simulate_frames = 1 if ghost_tick % 4 == 0 else 0
+	ghost_tick += 1
 
 #	var ghost_multiplier = 1
 #	if ghost_speed == 1:
 #		ghost_multiplier = 4
 
 #	ghost_advantage_tick /= ghost_multiplier
-		for i in range(simulate_frames):
-			if ghost_actionable_freeze_ticks == 0:
-				ghost_simulated_ticks += 1
-				simulate_one_tick()
-			if ghost_simulated_ticks > GHOST_FRAMES:
-				emit_signal("ghost_finished")
-				return
+	p1.grounded_indicator.hide()
+	p2.grounded_indicator.hide()
+	for i in range(simulate_frames):
+		if ghost_actionable_freeze_ticks == 0:
+			ghost_simulated_ticks += 1
+			simulate_one_tick()
+		if ghost_simulated_ticks > GHOST_FRAMES:
+			emit_signal("ghost_finished")
 
 		if p1.ghost_blocked_melee_attack > 0 and !p1.block_frame_label.visible:
 			p1.block_frame_label.show()
@@ -1775,9 +1760,6 @@ func ghost_tick(ticks = 1):
 
 #			else:
 #				ghost_actionable_freeze_ticks = 1
-
-		if ghost_actionable_freeze_ticks > 0:
-			break
 
 func super_dim():
 	pass

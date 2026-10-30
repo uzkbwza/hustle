@@ -44,9 +44,14 @@ const DOUBLE_TAP_DIST = 40.0
 func _input(event: InputEvent):
 	if Engine.editor_hint:
 		return
+	if not is_visible_in_tree():
+		_reset_drag_state()
+		return
 	
 	if event is InputEventScreenTouch:
 		if event.pressed:
+			if Global.is_point_over_window(event.position, self):
+				return
 			_handle_touch_press(event)
 		else:
 			_handle_touch_release(event)
@@ -57,6 +62,8 @@ func _input(event: InputEvent):
 	elif event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
+				if Global.is_point_over_window(get_global_mouse_position(), self):
+					return
 				_handle_mouse_press()
 			else:
 				if mouse_clicked:
@@ -65,7 +72,7 @@ func _input(event: InputEvent):
 				mouse_pending = false
 				_flush_buffer()
 		elif event.button_index == BUTTON_RIGHT:
-			if event.pressed and $Direction.get_rect().has_point(get_local_mouse_position()):
+			if event.pressed and not Global.is_point_over_window(get_global_mouse_position(), self) and $Direction.get_rect().has_point(get_local_mouse_position()):
 				$Direction.value = default
 				_emit_if_changed()
 
@@ -126,6 +133,8 @@ func _handle_touch_release(event: InputEventScreenTouch):
 	_flush_buffer()
 
 func _handle_mouse_press():
+	if touch_id != -1 or touch_dragging:
+		return
 	var pos = get_global_mouse_position()
 	if $Direction.get_global_rect().has_point(pos):
 		mouse_clicked = true
@@ -144,6 +153,14 @@ func _flush_buffer():
 	if buffer_value_changed:
 		_emit_if_changed()
 		buffer_value_changed = false
+
+func _reset_drag_state():
+	mouse_clicked = false
+	mouse_pending = false
+	touch_dragging = false
+	touch_pending = false
+	double_tap_pending = false
+	touch_id = -1
 
 func _emit_if_changed():
 	var v = get_value()
@@ -207,6 +224,9 @@ func on_value_changed(value):
 		$ValueLabel.text = str(int(round(value)))
 
 func _process(_delta):
+	if not is_visible_in_tree():
+		_reset_drag_state()
+		return
 	if buffer_value_changed and not mouse_clicked and not mouse_pending and not touch_dragging and not touch_pending:
 		_emit_if_changed()
 		buffer_value_changed = false

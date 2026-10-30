@@ -114,22 +114,25 @@ unique_name_in_owner = true
 margin_left = 394.0
 margin_right = 492.0
 margin_bottom = 13.0
+hint_tooltip = "Upload this style to the Steam Workshop."
 disabled = true
-text = "upload to workshop"
+text = "upload"
 
 [node name="WorkshopButton2" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 493.0
 margin_right = 566.0
 margin_bottom = 13.0
-text = "visit workshop"
+hint_tooltip = "Open the Steam Workshop."
+text = "workshop"
 
 [node name="OpenFolderButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 567.0
 margin_right = 625.0
 margin_bottom = 13.0
-text = "open folder"
+hint_tooltip = "Open the custom styles folder."
+text = "folder"
 
 [node name="FMRow" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -173,7 +176,7 @@ text = "all off"
 [node name="StyleCreditsScroll" type="ScrollContainer" parent="."]
 unique_name_in_owner = true
 margin_left = 523.0
-margin_top = 22.0
+margin_top = 68.0
 margin_right = 632.0
 margin_bottom = 336.0
 mouse_filter = 2

@@ -59,6 +59,7 @@ var relay_spectators = {}
 var relay_spectator_ticks = {}
 var relay_spectator_timer = null
 var resim_timer = null
+var resim_pending = false
 
 var ticks = {
 	1: null,
@@ -398,6 +399,9 @@ func _reset():
 	
 	undo = false
 	undo_match_data = null
+	resim_pending = false
+	if resim_timer != null:
+		resim_timer.stop()
 	
 	# Names for remote players in id:name format.
 	players = {}
@@ -474,13 +478,39 @@ func player_connected(id):
 		rpc_("register_player", [player_name, id, Global.VERSION])
 
 func pid_to_username(player_id):
-		if player_id != 1 and player_id != 2 or !is_instance_valid(game):
+		if player_id != 1 and player_id != 2:
 			return ""
-		if SteamLobby.SPECTATING or relay_spectating or !network_ids.has(player_id):
-			return Global.current_game.match_data.user_data["p" + str(player_id)]
-		if direct_connect:
-			return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
-		return players[network_ids[player_id]]
+		if is_instance_valid(game):
+			if SteamLobby.SPECTATING or relay_spectating or !network_ids.has(player_id):
+				return Global.current_game.match_data.user_data["p" + str(player_id)]
+			if direct_connect:
+				return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
+			return players[network_ids[player_id]]
+		# synced player list so chat still shows names.
+		if network_ids.has(player_id):
+			var net_id = network_ids[opponent_player_id(player_id)] if direct_connect else network_ids[player_id]
+			if players.has(net_id):
+				return players[net_id]
+		if player_id == self.player_id:
+			return player_name
+		return ""
+
+func player_name_color(pid: int) -> String:
+	var hex = str(player_name_colors.get(pid, ""))
+	if hex != "":
+		return hex
+	if pid == player_id and Global.has_name_color():
+		return Global.get_name_color().to_html(false)
+	return "ff333d" if pid == 2 else "1d8df5"
+
+func name_color_for(sender_name: String) -> String:
+	for pid in [1, 2]:
+		if pid_to_username(pid) == sender_name:
+			return player_name_color(pid)
+	if sender_name == player_name or sender_name == Global.get_player_data().username:
+		if Global.has_name_color():
+			return Global.get_name_color().to_html(false)
+	return "999999"
 
 
 func opponent_id(pid=player_id):
@@ -778,7 +808,7 @@ func forfeit(opponent=false):
 		rpc_("player_forfeit", player_id)
 	else:
 		if is_instance_valid(game):
-			player_forfeit((game.my_id % 2) + 1)
+			player_forfeit(opponent_player_id(player_id))
 	pass
 
 remotesync func player_forfeit(player_id):
@@ -861,8 +891,11 @@ func request_room_info(room_code):
 remote func receive_room_info(info):
 	emit_signal("room_info_received", info)
 
-remote func room_player_left(_id):
-	emit_signal("room_player_left", _id)
+remote func room_player_left(id):
+	if multiplayer_active and (Global.css_open or (is_instance_valid(game) and !game.game_finished)):
+		player_disconnected(id)
+		return
+	emit_signal("room_player_left", id)
 
 func leave_match():
 	if steam or !(multiplayer_client and multiplayer_client.connected):
@@ -1363,8 +1396,9 @@ remotesync func open_chara_select():
 func request_softlock_fix():
 	if !multiplayer_active or !is_instance_valid(game):
 		return
-	if ReplayManager.resimulating:
+	if ReplayManager.resimulating or resim_pending:
 		return
+	resim_pending = true
 	_start_resim_watchdog()
 	rpc_("send_resim_request", null, "remote")
 
@@ -1375,12 +1409,16 @@ func _start_resim_watchdog():
 func _clear_resim_state():
 	undo = false
 	auto = false
+	resim_pending = false
 	ReplayManager.resimulating = false
 	if resim_timer != null:
 		resim_timer.stop()
 
 func _on_resim_timeout():
-	if !undo and !ReplayManager.resimulating:
+	if ReplayManager.resimulating:
+		_start_resim_watchdog()
+		return
+	if !resim_pending and !undo:
 		return
 	_clear_resim_state()
 	emit_signal("resim_denied")
@@ -1389,6 +1427,7 @@ remote func send_resim_request():
 	emit_signal("resim_requested")
 
 func answer_resim_request(answer: bool):
+	resim_pending = false
 	if answer:
 		_start_resim_watchdog()
 		rpc_("multiplayer_resim", null, "remote")
@@ -1417,6 +1456,7 @@ remote func receive_style_save_response(target_player_id, requester_id, requeste
 	emit_signal("style_save_response_received", target_player_id, requester_id, requester_name, allowed)
 
 remote func multiplayer_resim():
+	resim_pending = false
 	_start_resim_watchdog()
 	auto = true
 	undo = true
@@ -1428,6 +1468,7 @@ remote func send_opponent_replay_for_resim(replay, p1_undo_action, p2_undo_actio
 	ReplayManager.frames = replay
 	undo = true	
 	auto = true
+	_start_resim_watchdog()
 	rpc_("finalize_resim")
  
 remotesync func finalize_resim():

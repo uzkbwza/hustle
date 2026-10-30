@@ -389,7 +389,9 @@ func _ready():
 
 func _process(_delta):
 	if Engine.editor_hint: return
-	if not visible: return
+	if not is_visible_in_tree():
+		_reset_drag_state()
+		return
 
 	_handle_game_pause_state()
 
@@ -409,11 +411,13 @@ func update():
 	.update()
 
 func _input(event):
-	if Engine.editor_hint or not visible:
+	if Engine.editor_hint or not is_visible_in_tree():
 		return
 	
 	if event is InputEventScreenTouch:
 		if event.pressed:
+			if Global.is_point_over_window(event.position, self):
+				return
 			_handle_touch_event(event)
 		else:
 			_handle_touch_release(event)
@@ -422,6 +426,8 @@ func _input(event):
 	elif event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
 	elif event is InputEventMouseButton:
+		if event.pressed and Global.is_point_over_window(get_global_mouse_position(), self):
+			return
 		_handle_mouse_button(event)
 
 func _get_expanded_rect():
@@ -432,7 +438,6 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	if mouse_clicked:
 		last_drag_screen_pos = get_global_mouse_position()
 		update_value(null, true, false, last_drag_screen_pos)
-		_emit_if_changed()
 
 func _handle_mouse_button(event: InputEventMouseButton):
 	if event.button_index == BUTTON_LEFT:
@@ -442,13 +447,15 @@ func _handle_mouse_button(event: InputEventMouseButton):
 				mouse_clicked = true
 				last_drag_screen_pos = press_pos
 				update_value(null, true, false, press_pos)
-				_emit_if_changed()
+				_emit_data_changed()
+				update_timer.start(get_update_speed())
 		else:
 			if mouse_clicked:
 				last_drag_screen_pos = get_global_mouse_position()
 				update_value(null, true, false, last_drag_screen_pos)
 				_emit_if_changed()
 			mouse_clicked = false
+			update_timer.stop()
 			if buffer_update:
 				buffer_changed = true
 				buffer_update = false
@@ -457,7 +464,7 @@ func _handle_mouse_button(event: InputEventMouseButton):
 			var right_pos = get_global_mouse_position()
 			if panel.get_global_rect().has_point(right_pos):
 				update_value(get_default_value())
-				_emit_if_changed()
+				_emit_data_changed()
 
 func _handle_touch_event(event: InputEventScreenTouch):
 	if touch_id != -1 and event.index != touch_id:
@@ -472,7 +479,8 @@ func _handle_touch_event(event: InputEventScreenTouch):
 			touch_pending = false
 			touch_id = -1
 			update_value(get_default_value())
-			_emit_if_changed()
+			_emit_data_changed()
+			update_timer.stop()
 			return
 		last_tap_time = now
 		last_tap_pos = pos
@@ -484,7 +492,8 @@ func _begin_touch_drag(index, pos):
 	touch_id = index
 	last_drag_screen_pos = pos
 	update_value(null, true, false, pos)
-	_emit_if_changed()
+	_emit_data_changed()
+	update_timer.start(get_update_speed())
 	buffer_update = false
 
 func _handle_touch_release(event: InputEventScreenTouch):
@@ -496,6 +505,7 @@ func _handle_touch_release(event: InputEventScreenTouch):
 	touch_dragging = false
 	touch_pending = false
 	touch_id = -1
+	update_timer.stop()
 	if buffer_update:
 		buffer_changed = true
 		buffer_update = false
@@ -514,7 +524,13 @@ func _handle_drag_event(event: InputEventScreenDrag):
 
 	last_drag_screen_pos = event.position
 	update_value(null, true, false, event.position)
-	_emit_if_changed()
+
+func _emit_data_changed():
+	if not is_visible_in_tree():
+		return
+	var data = as_percentage_int_vec(value_float)
+	_last_emitted_value = Vector2(data.x, data.y)
+	emit_signal("data_changed")
 
 func _emit_if_changed():
 	if not is_visible_in_tree():
@@ -610,7 +626,17 @@ var last_di_pos = null
 const SNAP_AMOUNT = 0.1
 
 func _on_update_timer_timeout():
-	pass
+	if not _is_dragging():
+		return
+	_emit_if_changed()
+	if _is_dragging():
+		update_timer.start(get_update_speed())
+
+func _is_dragging():
+	return mouse_clicked or touch_dragging
+
+func get_update_speed():
+	return ((1.0 + (1.0 / Global.get_ghost_speed_modifier())) / 2.0) * 0.3
 
 func _handle_game_pause_state():
 	if Engine.editor_hint:
@@ -620,12 +646,17 @@ func _handle_game_pause_state():
 		return
 	if was_game_paused and not game.game_paused:
 		_on_plot_mouse_exited()
-		mouse_clicked = false
-		touch_dragging = false
-		touch_pending = false
-		touch_id = -1
+		_reset_drag_state()
 		last_tap_time = 0.0
 	was_game_paused = game.game_paused
+
+func _reset_drag_state():
+	mouse_clicked = false
+	touch_dragging = false
+	touch_pending = false
+	touch_id = -1
+	if is_instance_valid(update_timer):
+		update_timer.stop()
 
 func _on_plot_mouse_entered():
 	mouse_over = true

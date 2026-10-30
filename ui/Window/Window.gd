@@ -9,6 +9,9 @@ export var static_ = false
 var _touch_id = -1
 var _user_origin = null
 
+func _enter_tree():
+	add_to_group("ui_window")
+
 func _ready():
 	hint_tooltip = name
 	connect("resized", self, "_restore_user_origin")

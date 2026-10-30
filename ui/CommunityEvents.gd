@@ -1,15 +1,16 @@
 extends VBoxContainer
 # Community events list shown on the main menu.
 #
-# On launch we render straight from the on-disk cache (instant, works offline),
-# then fire a single request to the website for the live feed. Banners are cached
-# per-event so repeated launches don't hammer the server. Each event is a 112x30
-# image button with a description label underneath that smoothly expands on hover;
-# clicking opens the event link in the Steam overlay.
+# We fire a single request to the website for the live feed when the menu first
+# opens and render straight from it. Nothing is persisted: banners are decoded
+# into session-only textures so no sprites end up in the user data folder. Each
+# event is a 112x30 image button with a description label underneath that
+# smoothly expands on hover; clicking opens the event link in the Steam overlay.
 
 const FEED_URL := "https://ivysly.com/hustle/announcements.json"
-const CACHE_DIR := "user://community_events"
-const CACHE_JSON := "user://community_events/feed.json"
+# Legacy banner cache from older builds. Kept only so we can delete it: event
+# sprites are session-only now and never written into the user data folder.
+const LEGACY_CACHE_DIR := "user://community_events"
 
 const BANNER_SIZE := Vector2(112, 30)
 const HOVER_TIME := 0.15
@@ -35,9 +36,7 @@ func _ready() -> void:
 	_tween = Tween.new()
 	add_child(_tween)
 
-	var dir := Directory.new()
-	if not dir.dir_exists(CACHE_DIR):
-		dir.make_dir_recursive(CACHE_DIR)
+	_purge_legacy_cache()
 
 	_feed_request = HTTPRequest.new()
 	add_child(_feed_request)
@@ -47,13 +46,8 @@ func _ready() -> void:
 	add_child(_img_request)
 	_img_request.connect("request_completed", self, "_on_image_received")
 
-	# 1) instant render from cache (cheap, offline-friendly, every time the menu opens)
-	var cached := _load_cached_feed()
-	if cached.size() > 0:
-		_render(cached)
-
-	# 2) refresh from the network at most ONCE per game session — the flag lives on the
-	#    scene-tree root, which outlives this node if the menu UI is ever rebuilt.
+	# Refresh from the network at most ONCE per game session — the flag lives on the
+	# scene-tree root, which outlives this node if the menu UI is ever rebuilt.
 	var root := get_tree().get_root()
 	if not root.has_meta(SESSION_FLAG):
 		root.set_meta(SESSION_FLAG, true)
@@ -87,20 +81,17 @@ func _apply_visibility() -> void:
 # ---------------------------------------------------------------------------
 func _on_feed_received(result: int, code: int, _headers: PoolStringArray, body: PoolByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
-		return  # keep whatever the cache already rendered
+		return  # keep whatever is already on screen
 	var text := body.get_string_from_utf8()
 	var parsed = JSON.parse(text)
 	if parsed.error != OK or not (parsed.result is Array):
 		return
-	_save_file(CACHE_JSON, body)
 	_render(parsed.result)
 
 
 func _on_image_received(result: int, code: int, _headers: PoolStringArray, body: PoolByteArray) -> void:
 	var current = _img_queue.pop_front() if _img_queue.size() > 0 else null
 	if current != null and result == HTTPRequest.RESULT_SUCCESS and code == 200:
-		var path := _img_path(current.id)
-		_save_file(path, body)
 		_apply_texture(current.id, _texture_from_png(body))
 	_pump_image_queue()
 
@@ -119,7 +110,7 @@ func _pump_image_queue() -> void:
 # rendering
 # ---------------------------------------------------------------------------
 func _render(events: Array) -> void:
-	# tear down existing rows (the network feed supersedes the cached render)
+	# tear down existing rows (a newer feed supersedes the current render)
 	for id in _rows:
 		_rows[id].button.get_parent().queue_free()
 	_rows.clear()
@@ -132,7 +123,7 @@ func _render(events: Array) -> void:
 		if not (ev is Dictionary) or not ev.has("id"):
 			continue
 		_make_row(ev)
-		# (re)fetch the banner; cached copy shows immediately meanwhile
+		# (re)fetch the banner
 		if ev.has("image"):
 			_img_queue.append({"id": ev.id, "url": ev.image})
 
@@ -149,9 +140,6 @@ func _make_row(ev: Dictionary) -> void:
 	button.expand = true
 	button.stretch_mode = TextureButton.STRETCH_SCALE
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var cached_tex = _load_cached_texture(ev.id)
-	if cached_tex != null:
-		button.texture_normal = cached_tex
 	if ev.has("url"):
 		button.connect("pressed", self, "_open_url", [ev.url])
 	row.add_child(button)
@@ -216,34 +204,22 @@ func _open_url(url: String) -> void:
 
 
 # ---------------------------------------------------------------------------
-# cache helpers
+# helpers
 # ---------------------------------------------------------------------------
-func _img_path(id) -> String:
-	return str(CACHE_DIR, "/", id, ".png")
-
-
-func _load_cached_feed() -> Array:
-	var f := File.new()
-	if not f.file_exists(CACHE_JSON):
-		return []
-	f.open(CACHE_JSON, File.READ)
-	var text := f.get_as_text()
-	f.close()
-	var parsed = JSON.parse(text)
-	if parsed.error == OK and parsed.result is Array:
-		return parsed.result
-	return []
-
-
-func _load_cached_texture(id):
-	var path := _img_path(id)
-	var f := File.new()
-	if not f.file_exists(path):
-		return null
-	f.open(path, File.READ)
-	var bytes := f.get_buffer(f.get_len())
-	f.close()
-	return _texture_from_png(bytes)
+# Older builds wrote banner sprites + the feed into the user data folder. Events
+# are session-only now, so remove that folder (and everything in it) on launch.
+func _purge_legacy_cache() -> void:
+	var dir := Directory.new()
+	if not dir.dir_exists(LEGACY_CACHE_DIR):
+		return
+	dir.open(LEGACY_CACHE_DIR)
+	dir.list_dir_begin(true, true)
+	var entry := dir.get_next()
+	while entry != "":
+		dir.remove(entry)
+		entry = dir.get_next()
+	dir.list_dir_end()
+	dir.remove(LEGACY_CACHE_DIR)
 
 
 func _texture_from_png(bytes: PoolByteArray):
@@ -253,10 +229,3 @@ func _texture_from_png(bytes: PoolByteArray):
 	var tex := ImageTexture.new()
 	tex.create_from_image(img, 0)  # flags 0 = no filtering, crisp pixel art
 	return tex
-
-
-func _save_file(path: String, bytes: PoolByteArray) -> void:
-	var f := File.new()
-	if f.open(path, File.WRITE) == OK:
-		f.store_buffer(bytes)
-		f.close()
