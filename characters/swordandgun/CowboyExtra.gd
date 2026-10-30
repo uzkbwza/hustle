@@ -1,5 +1,7 @@
 extends PlayerExtra
 
+const SIGHT_COST : int = 1
+
 var can_shoot = false
 var aerial = false
 var grounded = false
@@ -100,8 +102,19 @@ func block_disable():
 		$"%SightButton".set_pressed_no_signal(false)
 		$"%SightButton".disabled = true
 
-func update_sight_button():
-	sight_button.disabled = !(fighter.supers_available > 0)
+func update_sight_button(move = fighter.current_state()):
+	if move == null:
+		move = fighter.current_state() #a redundant failsafe
+	
+	var move_cost = move.super_level_
+	if move.get("super_level"): #why are there separate super levels???
+		move_cost = max(move.super_level_, move.super_level)
+
+	var total_cost = move_cost + SIGHT_COST
+	sight_button.disabled = not (fighter.supers_available >= total_cost)
+	if sight_button.disabled:
+		sight_button.set_pressed_no_signal(false)
+		
 	if "Knockdown" in fighter.current_state().state_name:
 		sight_button.hide()
 
@@ -143,7 +156,7 @@ func update_selected_move(move_state):
 		$"%DetonateButton".show()
 		update_tp_button()
 	sight_button.visible = (!move_state or (move_state.state_name != "Foresight" and move_state.state_name != "ForesightNeutral")) and fighter.after_image_object == null
-	update_sight_button()
+	update_sight_button(move_state)
 
 	var obj = fighter.obj_from_name(fighter.after_image_object)
 	aerial = false
