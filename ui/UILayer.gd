@@ -161,6 +161,7 @@ func _enter_tree():
 		css.name = "CharacterSelect"
 		Global._restore_character_select_owners(css, owner)
 		css.owner = owner
+		css.unique_name_in_owner = true
 		css.reset()
 
 func _ready():
@@ -638,10 +639,13 @@ func _on_chat_button_pressed():
 func _focus_chat():
 	if !is_instance_valid(game):
 		return
-	var chat = $"%ChatWindow"
+	var chat = get_node_or_null("%ChatWindow")
+	if chat == null or chat.line_edit_focused():
+		return
 	chat.show()
 	chat.raise()
 	chat.line_edit_focus()
+	get_tree().set_input_as_handled()
 
 func _on_mobile_replay_button_pressed():
 	if not is_instance_valid(game):
@@ -2148,7 +2152,9 @@ func _unhandled_input(event):
 #				p2_action_buttons.space_pressed()
 	if event is InputEventMouseButton:
 		if event.pressed:
-			$"%ChatWindow".unfocus_line_edit()
+			var chat = get_node_or_null("%ChatWindow")
+			if chat != null:
+				chat.unfocus_line_edit()
 
 func time_convert(time_in_sec):
 	var seconds = time_in_sec%60
