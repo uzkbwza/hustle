@@ -482,15 +482,20 @@ func pid_to_username(player_id):
 			return ""
 		if is_instance_valid(game):
 			if SteamLobby.SPECTATING or relay_spectating or !network_ids.has(player_id):
-				return Global.current_game.match_data.user_data["p" + str(player_id)]
-			if direct_connect:
-				return players[network_ids[opponent_player_id(player_id)]] # idk why i need to do this
-			return players[network_ids[player_id]]
+				var current = Global.current_game
+				var match_data = current.match_data if is_instance_valid(current) else null
+				if match_data is Dictionary:
+					var user_data = match_data.get("user_data", {})
+					if user_data is Dictionary and user_data.has("p" + str(player_id)):
+						return str(user_data["p" + str(player_id)])
+				return ""
+			var net_key = opponent_player_id(player_id) if direct_connect else player_id
+			return str(players.get(network_ids.get(net_key), ""))
 		# synced player list so chat still shows names.
 		if network_ids.has(player_id):
 			var net_id = network_ids[opponent_player_id(player_id)] if direct_connect else network_ids[player_id]
 			if players.has(net_id):
-				return players[net_id]
+				return str(players[net_id])
 		if player_id == self.player_id:
 			return player_name
 		return ""
@@ -892,7 +897,7 @@ remote func receive_room_info(info):
 	emit_signal("room_info_received", info)
 
 remote func room_player_left(id):
-	if multiplayer_active and (Global.css_open or (is_instance_valid(game) and !game.game_finished)):
+	if multiplayer_active and is_instance_valid(game) and !game.game_finished:
 		player_disconnected(id)
 		return
 	emit_signal("room_player_left", id)
@@ -929,8 +934,8 @@ remote func spectate_accept(data):
 		for i in [1, 2]:
 			var char_data = match_data.get("selected_characters", {}).get(i, {})
 			var char_name = char_data.get("name", "")
-			if char_name != "" and !Global.name_paths.has(char_name):
-				missing.append(char_name)
+			if char_name != "" and !Global.has_character(char_name):
+				missing.append(Global.character_display_name(char_name))
 		if missing.size() > 0:
 			relay_spectate_pending = false
 			relay_spectating = false
@@ -1391,6 +1396,8 @@ remotesync func sync_character_selection(player_id, character, style=null):
 remotesync func open_chara_select():
 	print("opening character select")
 	player_name_colors.clear()
+	if Global.has_name_color():
+		rpc_("sync_name_color", [player_id, Global.get_name_color().to_html(false)])
 	emit_signal("start_game")
 
 func request_softlock_fix():

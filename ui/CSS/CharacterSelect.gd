@@ -1105,13 +1105,19 @@ func getCharName(_fullName):
 	return _fullName
 
 func retro_charName(_name):
-	if (_name in name_to_index.keys()):
+	if _name in name_to_index:
 		return _name
 	var realName = getCharName(_name)
 	for k in name_to_index.keys():
 		if getCharName(k) == realName:
 			return k
-	return name_to_index.keys()[0]
+	return ""
+
+func char_index_for(_name):
+	var index = name_to_index.get(_name)
+	if index == null:
+		index = name_to_index.get(retro_charName(_name))
+	return index
 
 func createLabel(_text, _name, _x, _y, _from = self):
 	var label = Label.new()
@@ -1176,11 +1182,14 @@ func net_updateModLists():
 # this function gets called on main.gd
 func net_loadReplayChars(_replayChars):
 	var rc = _replayChars
-	if rc != []:
-		if (isCustomChar(rc[0])):
-			loadListChar(name_to_index[retro_charName(rc[0])])
-		if (isCustomChar(rc[1])):
-			loadListChar(name_to_index[retro_charName(rc[1])])
+	if rc == []:
+		return
+	for char_name in [rc[0], rc[1]]:
+		if !isCustomChar(char_name):
+			continue
+		var index = char_index_for(char_name)
+		if index != null:
+			loadListChar(index)
 
 func net_isCharacterAvailable(_charName):
 	var custom = isCustomChar(_charName)

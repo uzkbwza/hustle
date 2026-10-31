@@ -5,6 +5,7 @@ class_name Game
 const GHOST_FRAMES = 90
 const SUPER_FREEZE_TICKS = 20
 const GHOST_ACTIONABLE_FREEZE_TICKS = 10
+const GHOST_MAX_CATCHUP_TICKS = 4
 const CAMERA_MAX_Y_DIST = 210
 const QUITTER_FOCUS_TICKS = 60
 const CLASH_DAMAGE_DIFF = 25
@@ -178,7 +179,9 @@ var p2_ghost_ready_tick
 
 var spectating = false
 
-var ghost_time = 0.0
+var ghost_accum = 0.0
+var end_wait_tick = -1
+var end_wait_frames = 0
 
 var camera_zoom = 1.0
 
@@ -197,7 +200,7 @@ func _ready():
 		for fx in fx_node.get_children():
 			fx.free()
 		$GhostStartTimer.start()
-		ghost_time = Time.get_unix_time_from_system()
+		ghost_accum = 0.0
 	else:
 		emit_signal("simulation_continue")
 	hooks.ready()
@@ -395,13 +398,23 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		spectating = match_data.spectating
 		if is_ghost:
 			spectating = false
-	if Global.name_paths.has(match_data.selected_characters[1]["name"]):
-		p1 = load(Global.name_paths[match_data.selected_characters[1]["name"]]).instance()
-	else:
+	var p1_path = Global.character_path(match_data.selected_characters[1]["name"])
+	if p1_path == "":
 		return false
-	if Global.name_paths.has(match_data.selected_characters[2]["name"]):
-		p2 = load(Global.name_paths[match_data.selected_characters[2]["name"]]).instance()
-	else:
+	var p1_scene = load(p1_path)
+	if p1_scene == null:
+		return false
+	p1 = p1_scene.instance()
+	if p1 == null:
+		return false
+	var p2_path = Global.character_path(match_data.selected_characters[2]["name"])
+	if p2_path == "":
+		return false
+	var p2_scene = load(p2_path)
+	if p2_scene == null:
+		return false
+	p2 = p2_scene.instance()
+	if p2 == null:
 		return false
 	
 	p1.connect("parried", self, "on_parry", [p1])
@@ -1553,18 +1566,20 @@ func _process(delta):
 		camera_snap_position = camera.position
 
 	if is_ghost and Global.ghost_speed > 2:
-		var current_time = Time.get_unix_time_from_system()
-		var ghost_delta = current_time - ghost_time
 		var fps = 60
 		var fixed_delta = 1.0 / fps
 		var min_delta = fixed_delta * (1.0 / Global.get_ghost_speed_modifier())
-		if ghost_delta >= min_delta:
-			ghost_time = current_time
-			if ghost_actionable_freeze_ticks > 0:
-				pass
-			else:
-				for i in range(floor(ghost_delta / min_delta)):
-					call_deferred("ghost_tick")
+		ghost_accum += min(delta, min_delta * GHOST_MAX_CATCHUP_TICKS)
+		var ticks = int(ghost_accum / min_delta)
+		if ticks > GHOST_MAX_CATCHUP_TICKS:
+			ticks = GHOST_MAX_CATCHUP_TICKS
+		if ticks > 0:
+			ghost_accum -= ticks * min_delta
+		if ghost_actionable_freeze_ticks > 0:
+			ghost_accum = 0.0
+		else:
+			for i in range(ticks):
+				call_deferred("ghost_tick")
 		
 
 func playback_speed_allows_tick() -> bool:
@@ -1597,8 +1612,14 @@ func _physics_process(_delta):
 				process_tick()
 		else:
 			call_deferred("simulate_one_tick")
-			if !buffer_playback and current_tick >= game_end_tick + 120:
-				start_playback()
+			if !buffer_playback:
+				if current_tick == end_wait_tick:
+					end_wait_frames += 1
+				else:
+					end_wait_tick = current_tick
+					end_wait_frames = 0
+				if current_tick >= game_end_tick + 120 or end_wait_frames > 180:
+					start_playback()
 	else:
 		if ghost_actionable_freeze_ticks > 0:
 			ghost_actionable_freeze_ticks -= 1
@@ -1704,6 +1725,7 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 			else:
 				ghost_actionable_freeze_ticks = 1
+			ghost_accum = 0.0
 			if !p1.actionable_label.visible:
 				p1.actionable_label.show()
 				p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
@@ -1741,6 +1763,7 @@ func ghost_tick():
 				ghost_actionable_freeze_ticks = GHOST_ACTIONABLE_FREEZE_TICKS
 			else:
 				ghost_actionable_freeze_ticks = 1
+			ghost_accum = 0.0
 			if !p2.actionable_label.visible:
 				p2.actionable_label.show()
 				p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames

@@ -32,7 +32,7 @@ func _read_P2P_Packet():
 
 
 		if readable.has("match_quit"):
-			if Network.:
+			if Network.rematch_menu:
 				emit_signal("quit_on_rematch")
 				Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
 			if not is_instance_valid(Global.current_game):

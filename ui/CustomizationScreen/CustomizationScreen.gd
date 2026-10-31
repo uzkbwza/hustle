@@ -2,6 +2,7 @@ extends Control
 
 var buttons = []
 var moving_sprite_start
+var _ui_built := false
 
 var character_color = Color.white
 var outline_color = Color.black
@@ -190,6 +191,20 @@ func switch_aura_slot(slot):
 	create_all_auras()
 
 func init():
+	if !_ui_built:
+		_build_ui()
+		_ui_built = true
+	if buttons.empty():
+		return
+	buttons[0].pressed = true
+	moving_sprite_start = $"%MovingSprite".position
+	_on_character_button_pressed(buttons[0])
+	_on_reset_color_pressed()
+	update_warning()
+
+
+func _build_ui():
+	buttons.clear()
 	for name in Global.name_paths:
 		var button = preload("res://ui/CSS/CharacterButton.tscn").instance()
 		button.character_scene = load(Global.name_paths[name])
@@ -200,8 +215,6 @@ func init():
 		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 #		var character = button.character_scene.instance()
 		button.text = name
-	buttons[0].pressed = true
-	moving_sprite_start = $"%MovingSprite".position
 	if has_node("%ManageStylesButton"):
 		$"%ManageStylesButton".connect("toggled", self, "_on_manage_styles_pressed")
 	if has_node("%Sorter"):
@@ -348,14 +361,11 @@ func init():
 	if !SteamHustle.WORKSHOP_ENABLED or Global.is_mobile_device:
 		$"%WorkshopButton".disabled = true
 		$"%WorkshopButton2".disabled = true
-	_on_character_button_pressed(buttons[0])
-	_on_reset_color_pressed()
-	update_warning()
 	_register_ui_scaling()
 
 
 func _register_ui_scaling():
-	UIManager.register_menu(self, [
+	var scaled = [
 		$"%AllowSaveButton", $"%ClaimButton",
 		$"%ManageStylesButton", $"%FileManagerButton", $"%StyleName", $"%SaveButton",
 		$"%WorkshopButton", $"%OpenFolderButton",
@@ -366,11 +376,17 @@ func _register_ui_scaling():
 		$"%HitsparkFlipWhenFacingLeft", $"%ShowHitsparkParticles", $"%HitsparkCopyPasteRow",
 		$"%HitsparkSpriteOption", $"%AuraTabsContainer", $"%ShowAura", $"%SyncAuraChanges",
 		$"%AuraCopyPasteRow", $"%BackButton",
-	])
+	]
+	var valid = []
+	for node in scaled:
+		if node != null:
+			valid.append(node)
+	UIManager.register_menu(self, valid)
 	for c in [copy_hitspark_particles_button, paste_hitspark_particles_button,
 			swap_hitspark_particles_button, copy_hitspark_button, paste_hitspark_button,
 			copy_aura_button, paste_aura_button, swap_aura_button]:
-		UIManager.register_menu(self, [c])
+		if c != null:
+			UIManager.register_menu(self, [c])
 
 
 func _on_manage_styles_pressed(_toggled):
@@ -1367,19 +1383,34 @@ func _on_allow_save_toggled(pressed):
 	_mark_style_modified()
 
 func _on_character_button_pressed(button):
-	for button in buttons:
-		button.set_pressed_no_signal(false)
+	for other in buttons:
+		other.set_pressed_no_signal(false)
 	button.set_pressed_no_signal(true)
-	var character: Fighter = button.character_scene.instance()
+	if !is_instance_valid(button.character_scene):
+		return
+	var character = button.character_scene.instance()
+	if character == null:
+		return
 	add_child(character)
-	$"%StaticSprite".material = character.sprite.material
-	$"%MovingSprite".material = character.sprite.material
-	var character_texture = character.sprite.frames.get_frame("Wait", 0)
-	var character_texture2 = character.character_portrait2
-	$"%StaticSprite".get_material().set_shader_param("use_extra_color_1", character.use_extra_color_1)
-	$"%StaticSprite".get_material().set_shader_param("use_extra_color_2", character.use_extra_color_2)
-	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_1", character.extra_color_1)
-	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_2", character.extra_color_2)
+	var sprite = character.get("sprite")
+	if !is_instance_valid(sprite) or sprite.frames == null:
+		character.free()
+		return
+	var animation = "Wait"
+	if !sprite.frames.has_animation(animation):
+		var animations = sprite.frames.get_animation_names()
+		if animations.empty():
+			character.free()
+			return
+		animation = animations[0]
+	var character_texture = sprite.frames.get_frame(animation, 0)
+	var character_texture2 = character.get("character_portrait2")
+	$"%StaticSprite".material = sprite.material
+	$"%MovingSprite".material = sprite.material
+	$"%StaticSprite".get_material().set_shader_param("use_extra_color_1", character.get("use_extra_color_1"))
+	$"%StaticSprite".get_material().set_shader_param("use_extra_color_2", character.get("use_extra_color_2"))
+	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_1", character.get("extra_color_1"))
+	$"%StaticSprite".get_material().set_shader_param("extra_replace_color_2", character.get("extra_color_2"))
 	$"%StaticSprite".texture = character_texture
 	$"%MovingSprite".texture = character_texture2 if character_texture2 != null else character_texture
 	current_character_limb_data = character.get_limb_data() if character.has_method("get_limb_data") else {}

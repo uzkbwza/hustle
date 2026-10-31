@@ -346,7 +346,13 @@ func _on_chat_history_synced():
 	_replay_chat_history()
 
 func line_edit_focus():
-	$"%LineEdit".grab_focus()
+	if has_node("%LineEdit"):
+		$"%LineEdit".grab_focus()
+
+func line_edit_focused() -> bool:
+	if !has_node("%LineEdit"):
+		return false
+	return $"%LineEdit".has_focus()
 
 func is_muted():
 	return $"%MuteButton".pressed or (!is_visible_in_tree() and force_mute_on_hide)
@@ -833,7 +839,8 @@ func on_steam_chat_message_received(steam_id: int, message: String, scope: Strin
 	_render_steam_message(steam_id, message, category, false)
 
 func unfocus_line_edit():
-	$"%LineEdit".release_focus()
+	if has_node("%LineEdit"):
+		$"%LineEdit".release_focus()
 
 func on_message_ready(message):
 	$"%TooLongLabel".hide()
@@ -903,6 +910,9 @@ func send_message(message):
 			scope = "match"
 		elif cat == "lobby" and SteamLobby.get_status() in ["fighting", "spectating"]:
 			scope = "lobby"
+		if SteamLobby.LOBBY_ID == 0:
+			on_chat_message_received(1, message)
+			return
 		SteamLobby.send_chat_message(message, scope)
 
 func _on_style_save_request_received(target_player_id, requester_id, requester_name, style_name):

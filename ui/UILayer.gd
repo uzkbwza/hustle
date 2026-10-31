@@ -159,8 +159,8 @@ func _enter_tree():
 		add_child(css)
 		move_child(css, clamp(css_index, 0, get_child_count() - 1))
 		css.name = "CharacterSelect"
-		css.unique_name_in_owner = true
 		Global._restore_character_select_owners(css, owner)
+		css.owner = owner
 		css.reset()
 
 func _ready():

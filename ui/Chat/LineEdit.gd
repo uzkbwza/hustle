@@ -7,9 +7,10 @@ func _ready():
 
 func _gui_input(event):
 	if event is InputEventKey:
-		if event.pressed:
+		if event.pressed and !event.echo:
 			if event.is_action_pressed(Hotkeys.SEND_CHAT):
 				send_message()
+				accept_event()
 		$KeyboardSound.play()
 
 func send_message():

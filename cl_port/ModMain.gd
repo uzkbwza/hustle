@@ -15,7 +15,6 @@ func installNetworkExtension(childScriptPath:String):
 func _init(modLoader = ModLoader):
 	modLoader.installScriptExtension("res://cl_port/AnimationTimings.gd")
 	modLoader.installScriptExtension("res://cl_port/CharacterDisplay.gd")
-	modLoader.installScriptExtension("res://cl_port/CharacterSelect.gd")
 	modLoader.installScriptExtension("res://cl_port/main.gd")
 	modLoader.installScriptExtension("res://cl_port/ErrorLabel.gd")
 	modLoader.installScriptExtension("res://cl_port/UILayer.gd")

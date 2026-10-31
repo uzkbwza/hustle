@@ -6,7 +6,7 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-1.0"
+var VERSION = "1.11.0-Unstable-3.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
@@ -161,6 +161,29 @@ var characters_cache = {}
 
 func get_cached_character(name):
 	return characters_cache[name]
+
+func character_path(char_name: String) -> String:
+	if name_paths.has(char_name):
+		return name_paths[char_name]
+	var short_name = char_name.split("__")[1] if "__" in char_name else char_name
+	for key in name_paths:
+		var key_short = key.split("__")[1] if "__" in key else key
+		if key_short == short_name:
+			return name_paths[key]
+	return ""
+
+func character_display_name(char_name: String) -> String:
+	return char_name.split("__")[1] if "__" in char_name else char_name
+
+func has_character(char_name: String) -> bool:
+	if char_name == "":
+		return true
+	if character_path(char_name) != "":
+		return true
+	var css = character_select_node
+	if is_instance_valid(css) and css.has_method("char_index_for"):
+		return css.char_index_for(char_name) != null
+	return false
 
 func full_version():
 	return (!steam_demo_version) and SteamHustle.STARTED

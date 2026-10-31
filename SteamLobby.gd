@@ -1196,6 +1196,7 @@ func _on_Lobby_Joined(lobby_id: int, _permissions: int, _locked: bool, response:
 		var default_member_data = _get_default_lobby_member_data()
 		for key in default_member_data:
 			Steam.setLobbyMemberData(LOBBY_ID, key, str(default_member_data[key]))
+		Global.publish_name_color()
 
 		LOBBY_OWNER = Steam.getLobbyOwner(LOBBY_ID)
 		

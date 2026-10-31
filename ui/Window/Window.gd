@@ -84,6 +84,8 @@ func _topmost_at(pos: Vector2):
 func _can_drag_at(pos: Vector2) -> bool:
 	if not get_global_rect().has_point(pos):
 		return false
+	if _topmost_at(pos) != self:
+		return false
 	return _interactive_at(self, pos) == null
 
 func _interactive_at(root, pos):

@@ -66,8 +66,6 @@ func _input(event: InputEvent):
 					return
 				_handle_mouse_press()
 			else:
-				if mouse_clicked:
-					_update_from_global_mouse()
 				mouse_clicked = false
 				mouse_pending = false
 				_flush_buffer()
@@ -163,8 +161,8 @@ func _reset_drag_state():
 	touch_id = -1
 
 func _emit_if_changed():
-	var v = get_value()
-	if v == int(round(last_emitted_value)):
+	var v = $Direction.value
+	if is_equal_approx(v, last_emitted_value):
 		return
 	emit_signal("data_changed")
 	last_emitted_value = v
@@ -198,14 +196,19 @@ func _update_from_global_mouse():
 
 func _set_value_if_changed(new_val):
 	var old_val = $Direction.value
-	$Direction.value = round(new_val) if abs(new_val - round(new_val)) < 0.5 else new_val
+	$Direction.value = new_val
 	if !is_equal_approx($Direction.value, old_val):
 		buffer_value_changed = true
 		if has_node("ValueLabel"):
-			$ValueLabel.text = str(int(round($Direction.value)))
+			$ValueLabel.text = _format_value($Direction.value)
 		if mouse_clicked or touch_dragging:
 			_emit_if_changed()
 			buffer_value_changed = false
+
+func _format_value(value):
+	if abs(value - round(value)) < 0.0001:
+		return str(int(round(value)))
+	return str(stepify(value, 0.01))
 
 func _ready():
 	if apply_top_node_range:
@@ -221,7 +224,7 @@ func _ready():
 func on_value_changed(value):
 	buffer_value_changed = true
 	if has_node("ValueLabel"):
-		$ValueLabel.text = str(int(round(value)))
+		$ValueLabel.text = _format_value(value)
 
 func _process(_delta):
 	if not is_visible_in_tree():

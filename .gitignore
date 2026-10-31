@@ -24,3 +24,4 @@ android/build/
 
 # mod.io credentials (never commit; copy modio.cfg.example to modio.cfg)
 modloader/modio/modio.cfg
+/tools

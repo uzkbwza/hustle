@@ -215,6 +215,20 @@ func _on_loaded_replay(match_data):
 	match_data["replay"] = true
 	_on_match_ready(match_data)
 
+func _missing_characters(data) -> Array:
+	var missing = []
+	if !(data.get("selected_characters") is Dictionary):
+		return missing
+	for player_id in [1, 2]:
+		var entry = data.selected_characters.get(player_id)
+		if !(entry is Dictionary):
+			continue
+		var char_name = str(entry.get("name", ""))
+		if !Global.has_character(char_name):
+			missing.append(Global.character_display_name(char_name))
+	return missing
+
+
 func _on_received_spectator_match_data(data):
 #	data["spectating"] = true
 #	_on_match_ready(data)
@@ -232,6 +246,13 @@ func _on_received_spectator_match_data(data):
 
 func _on_match_ready(data):
 	Utils.normalize_timer_settings(data)
+	var missing = _missing_characters(data)
+	if !missing.empty():
+		if data.get("spectating"):
+			Network.emit_signal("spectator_error", "You're missing the mods for this match: " + ", ".join(missing))
+		else:
+			print("Missing characters for match: " + ", ".join(missing))
+		return
 	match_data = data
 	if hooks:
 		hooks.match_ready(data)
@@ -284,9 +305,7 @@ func _load_replay_chars_and_wait(match_data):
 				label.text = "Loading opponent's character: " + css.getCharName(char_name) + "..."
 		yield(get_tree(), "idle_frame")
 		yield(get_tree(), "idle_frame")
-		var idx = css.name_to_index.get(char_name)
-		if idx == null:
-			idx = css.name_to_index.get(css.retro_charName(char_name))
+		var idx = css.char_index_for(char_name)
 		if idx != null:
 			css.loadListChar(idx, !is_mine)
 		yield(get_tree(), "idle_frame")
@@ -623,6 +642,9 @@ func setup_game_deferred(singleplayer, data):
 		data["user_data"] = ud
 	
 	if game.start_game(singleplayer, data) is bool:
+		game.queue_free()
+		game = null
+		Network.game = null
 		return
 	var timer_mode = data.get("timer_mode", "default")
 	# "none" mode skips timer setup entirely. Other modes need set_turn_time

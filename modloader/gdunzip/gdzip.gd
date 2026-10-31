@@ -25,7 +25,10 @@ var _file = null
 func open(path):
 	if _file != null:
 		return ERR_ALREADY_IN_USE
-	_native = _Native.new()
+	if !Engine.has_meta("gdzip_native_missing"):
+		_native = _Native.new()
+		if _native == null:
+			Engine.set_meta("gdzip_native_missing", true)
 	if _native == null:
 		return ERR_UNAVAILABLE
 	_file = File.new()
