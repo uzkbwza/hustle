@@ -269,7 +269,7 @@ func init():
 
 func _on_spectate_declined():
 	$"%LoadingSpectatorRect".hide()
-	pass
+	$"%SpectateCancelButton".hide()
 
 func _on_challenge_declined():
 	$"%ChallengeDialogScreen".hide()
@@ -374,15 +374,20 @@ func _on_spectate_requested(player):
 func _on_spectate_cancel_pressed():
 	SteamLobby.cancel_spectate_request()
 	$"%LoadingSpectatorRect".hide()
+	$"%SpectateCancelButton".hide()
 
 func _on_back_button_pressed():
 	if not visible: return
+	$"%LoadingSpectatorRect".hide()
+	$"%SpectateCancelButton".hide()
 	Network.stop_multiplayer(true)
 	Global.reload()
 
 
 func _on_IncompatibleQuitButton_pressed():
 	if not visible: return
+	$"%LoadingSpectatorRect".hide()
+	$"%SpectateCancelButton".hide()
 	Network.stop_multiplayer(true)
 	Global.reload()
 

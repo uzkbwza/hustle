@@ -137,6 +137,7 @@ func init(game):
 			$"%P1Username".text = game.match_data.user_data.p1
 		if game.match_data.user_data.has("p2"):
 			$"%P2Username".text = game.match_data.user_data.p2
+	_apply_missing_username_fallback()
 	# Personalization name-color: in Steam matches, each side's color comes
 	# from that side's published lobby member data so both fighters render
 	# in their own picked color (including for spectators). In legacy MP /
@@ -185,6 +186,29 @@ func init(game):
 
 	game.connect("game_won", self, "on_game_won")
 	pass
+
+func _apply_missing_username_fallback():
+	var p1_text = str($"%P1Username".text).strip_edges()
+	var p2_text = str($"%P2Username".text).strip_edges()
+	if p1_text == "" or p1_text == "Player":
+		var p1_name = _character_display_name(1)
+		if p1_name != "":
+			$"%P1Username".text = p1_name
+	if p2_text == "" or p2_text == "Player":
+		var p2_name = _character_display_name(2)
+		if p2_name != "":
+			$"%P2Username".text = p2_name
+
+func _character_display_name(side: int) -> String:
+	if not is_instance_valid(game) or not (game.match_data is Dictionary):
+		return ""
+	var characters = game.match_data.get("selected_characters", {})
+	if not (characters is Dictionary) or not characters.has(side):
+		return ""
+	var entry = characters[side]
+	if not (entry is Dictionary) or not entry.has("name"):
+		return ""
+	return Global.character_display_name(str(entry["name"]))
 
 # Recolor a player's HUD portrait with their style's palette (colors only —
 # no auras / outline effects beyond what the palette defines). Mirrors the

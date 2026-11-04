@@ -389,9 +389,6 @@ func hit(obj):
 				emit_signal("got_parried")
 			if obj.can_counter_hitbox(self):
 				can_hit = false
-			if obj.on_the_ground:
-				if !hits_otg:
-					can_hit = false
 
 			if !hits_vs_dizzy:
 				if obj.current_state().state_name == "HurtDizzy":

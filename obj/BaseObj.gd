@@ -170,7 +170,7 @@ func global_hitlag(amount, force=false):
 	if !force and !Global.replay_extra_freeze_frames:
 		return
 	if amount > 0 and amount < 1:
-		amount == 1
+		amount = 1
 	emit_signal("global_hitlag", round(amount))
 	if hooks:
 		hooks.global_hitlag(round(amount))
@@ -695,8 +695,9 @@ func set_facing(facing: int):
 	if facing != 1 and facing != -1:
 		facing = 1
 	chara.set_facing(facing)
-	if is_instance_valid($Flip):
-		$Flip.scale.x = -1 if facing < 0 else 1
+	var flip_node = flip if is_instance_valid(flip) else get_node_or_null("Flip")
+	if flip_node:
+		flip_node.scale.x = -1 if facing < 0 else 1
 	if initialized:
 		update_data()
 

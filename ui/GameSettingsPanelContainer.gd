@@ -199,6 +199,8 @@ func load_settings(settings):
 		settings["timer_mode"] = "chess" if settings.chess_timer else "default"
 		settings.erase("chess_timer")
 	for setting in settings:
+		if setting == "format_name":
+			continue
 		if !settings_nodes.has(setting):
 			print("invalid setting: " + str(setting))
 			continue

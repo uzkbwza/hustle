@@ -45,6 +45,8 @@ var charExColors = {} # will hold the dictionaries containing the extra colors o
 var loadThread # a thread that will be used to load characters so the game doesn't get completely stuck
 var loadThread2
 var _mods_finished = false
+var _mod_thread_done = false
+var _mod_signature = ""
 var currentlyLoading = false # remains true while a character is loading, used to prevent weird shit from happening
 var _files_to_delete = [] # files to delete on main thread (Directory not thread-safe in Godot 3.x)
 
@@ -151,8 +153,14 @@ func _ready():
 		new_dir.make_dir("user://char_cache")
 	var caches = ModLoader._get_all_files("user://char_cache", "pck")
 
-	loadThread2 = Thread.new()
-	loadThread2.start(self, "load_mods", caches)
+	_mod_signature = _mod_cache_signature(ModLoader._modZipFiles, caches)
+	if Global.mod_import_cache.get("signature", "") == _mod_signature:
+		_apply_cached_mods(Global.mod_import_cache)
+		_mod_thread_done = true
+		call_deferred("on_mods_load_finished")
+	else:
+		loadThread2 = Thread.new()
+		loadThread2.start(self, "load_mods", caches)
 #	load_mods()
 
 	yield(self, "mods_loaded")
@@ -174,6 +182,26 @@ func _on_style_selected(style, player_id):
 
 
 
+func _mod_cache_signature(zips, caches: Array) -> String:
+	var zip_paths = []
+	for zip in zips:
+		zip_paths.append(str(zip))
+	zip_paths.sort()
+	var cache_paths = caches.duplicate()
+	cache_paths.sort()
+	return PoolStringArray(zip_paths).join("|") + "::" + PoolStringArray(cache_paths).join("|")
+
+
+func _apply_cached_mods(cache: Dictionary) -> void:
+	hash_to_folder = cache.get("hash_to_folder", {})
+	hash_folders = cache.get("hash_folders", {})
+	server_folders = cache.get("server_folders", {})
+	serverMods = cache.get("serverMods", [])
+	Network.hash_to_folder = cache.get("network_hash_to_folder", {})
+	charPackages = cache.get("charPackages", {})
+	_files_to_delete = []
+
+
 func load_mods(caches: Array):
 	hash_to_folder = {}
 	hash_folders = {}
@@ -184,6 +212,7 @@ func load_mods(caches: Array):
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
 		_load_mod_zip(zip, caches)
+	_mod_thread_done = true
 	call_deferred("on_mods_load_finished")
 
 
@@ -230,17 +259,16 @@ func on_mods_load_finished():
 		return
 	_mods_finished = true
 	Global.loading_character = ""
-
-	var dir = Directory.new()
-	for f in _files_to_delete:
-		if dir.file_exists(f):
-			dir.remove(f)
-	_files_to_delete.clear()
-
+	Global.mod_import_cache = {
+		"signature": _mod_signature,
+		"hash_to_folder": hash_to_folder,
+		"hash_folders": hash_folders,
+		"server_folders": server_folders,
+		"serverMods": serverMods,
+		"network_hash_to_folder": Network.hash_to_folder,
+		"charPackages": charPackages,
+	}
 	emit_signal("mods_loaded")
-#	if is_instance_valid(loadThread2):
-	loadThread2.wait_to_finish()
-
 
 func force_finish_mods(reason):
 	if _mods_finished:
@@ -249,6 +277,17 @@ func force_finish_mods(reason):
 	printerr("Forcing mod load to finish: " + str(reason))
 	Global.loading_character = ""
 	emit_signal("mods_loaded")
+
+func _join_mod_thread():
+	if loadThread2 == null or !_mod_thread_done:
+		return
+	loadThread2.wait_to_finish()
+	loadThread2 = null
+	var dir = Directory.new()
+	for f in _files_to_delete:
+		if dir.file_exists(f):
+			dir.remove(f)
+	_files_to_delete.clear()
 
 
 
@@ -553,6 +592,8 @@ func go():
 	hide()
 
 func _process(delta):
+	if loadThread2 != null and _mods_finished:
+		_join_mod_thread()
 	Global.css_open = visible
 	if !loaded_mods:
 		return

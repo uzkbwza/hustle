@@ -208,7 +208,7 @@ func init():
 	style_list_button.player_id = player_id
 	style_list_button.update_lists()
 	style_list_button.hide()
-	if SteamHustle.STARTED and (!Network.multiplayer_active or player_id == Network.player_id):
+	if !Network.multiplayer_active or player_id == Network.player_id:
 		$"%LoadStyleButton".show()
 		style_list_button.show()
 

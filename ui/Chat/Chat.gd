@@ -12,6 +12,7 @@ const TAB_TITLES = ["match", "lobby", "users"]
 export var force_mute_on_hide = false
 
 var showing = false
+var _focus_pending := false
 
 # True while a permission prompt is on screen waiting for a yes/no click.
 # Reset on match boundary so a stale prompt doesn't block next match's request.
@@ -50,6 +51,7 @@ func _ready():
 	Network.connect("chat_message_received", self, "on_chat_message_received")
 	Network.connect("relay_match_chat_received", self, "on_relay_chat_message_received")
 	Network.connect("relay_match_chat_history_received", self, "on_relay_chat_history_received")
+	Network.connect("game_error", self, "_on_game_error")
 	Network.connect("style_save_request_received", self, "_on_style_save_request_received")
 	Network.connect("style_save_response_received", self, "_on_style_save_response_received")
 	Network.connect("match_ready", self, "_on_match_ready")
@@ -264,6 +266,30 @@ func _active_category() -> String:
 func _container_for(category):
 	return match_container if category == "match" else $"%MessageContainer"
 
+func _append_chat_line(container, node):
+	if container == null:
+		return
+	container.add_child(node)
+	while container.get_child_count() > MAX_LINES:
+		var oldest = null
+		for i in range(container.get_child_count()):
+			var child = container.get_child(i)
+			if child.name != _LOADING_NODE_NAME:
+				oldest = child
+				break
+		if oldest == null:
+			break
+		container.remove_child(oldest)
+		oldest.queue_free()
+
+func _relay_chat_line(sender_name: String, message: String) -> RichTextLabel:
+	var text = ProfanityFilter.filter(("<[color=#%s]" % [_color_for_name(sender_name)]) + sender_name + "[/color]> " + message)
+	var node = RichTextLabel.new()
+	node.bbcode_enabled = true
+	node.append_bbcode(text)
+	node.fit_content_height = true
+	return node
+
 # Only auto-scroll a chat scroll container to its bottom when the user is
 # already pinned there (within SCROLL_STICK_PX). State is cached as meta on
 # the ScrollContainer; _on_scroll_value_changed refreshes it whenever the
@@ -346,13 +372,30 @@ func _on_chat_history_synced():
 	_replay_chat_history()
 
 func line_edit_focus():
+	if !has_node("%LineEdit"):
+		return
+	_focus_pending = true
+	call_deferred("_grab_line_edit")
+
+
+func _grab_line_edit():
+	_focus_pending = false
 	if has_node("%LineEdit"):
 		$"%LineEdit".grab_focus()
 
+
 func line_edit_focused() -> bool:
+	if _focus_pending:
+		return true
 	if !has_node("%LineEdit"):
 		return false
 	return $"%LineEdit".has_focus()
+
+
+func point_is_inside(global_pos: Vector2) -> bool:
+	if not visible:
+		return false
+	return get_global_rect().has_point(global_pos)
 
 func is_muted():
 	return $"%MuteButton".pressed or (!is_visible_in_tree() and force_mute_on_hide)
@@ -376,9 +419,7 @@ func on_chat_message_received(player_id: int, message: String):
 	var container = _container_for(category)
 	var scroll = match_scroll if category == "match" else $"%ScrollContainer"
 	var stick = _at_bottom(scroll)
-	container.call_deferred("add_child", node)
-	if container.get_child_count() + 1 > MAX_LINES:
-		container.call_deferred("remove_child", container.get_child(0))
+	_append_chat_line(container, node)
 	if category != _active_category():
 		if category == "match":
 			unread_match = true
@@ -391,20 +432,14 @@ func on_chat_message_received(player_id: int, message: String):
 		scroll.scroll_vertical = 10000000000000000
 
 func on_relay_chat_message_received(sender_name: String, message: String, silent: bool = false):
-	var text = ProfanityFilter.filter(("<[color=#%s]" % [_color_for_name(sender_name)]) + sender_name + "[/color]> " + message)
-	var node = RichTextLabel.new()
-	node.bbcode_enabled = true
-	node.append_bbcode(text)
-	node.fit_content_height = true
+	var node = _relay_chat_line(sender_name, message)
 	if sender_name != Network.player_name and !silent:
 		play_chat_sound()
 	var category = "match" if SteamLobby.get_status() in ["fighting", "spectating"] else "lobby"
 	var container = _container_for(category)
 	var scroll = match_scroll if category == "match" else $"%ScrollContainer"
 	var stick = _at_bottom(scroll)
-	container.call_deferred("add_child", node)
-	if container.get_child_count() + 1 > MAX_LINES:
-		container.call_deferred("remove_child", container.get_child(0))
+	_append_chat_line(container, node)
 	if category != _active_category():
 		if category == "match":
 			unread_match = true
@@ -419,9 +454,26 @@ func on_relay_chat_message_received(sender_name: String, message: String, silent
 func on_relay_chat_history_received(entries):
 	if !(entries is Array):
 		return
+	var container = $"%MessageContainer"
+	for child in container.get_children():
+		if child.name == _LOADING_NODE_NAME:
+			continue
+		container.remove_child(child)
+		child.queue_free()
 	for entry in entries:
 		if entry is Array and entry.size() >= 2:
-			on_relay_chat_message_received(str(entry[0]), str(entry[1]), true)
+			_append_chat_line(container, _relay_chat_line(str(entry[0]), str(entry[1])))
+	$"%ScrollContainer".scroll_vertical = 10000000000000000
+
+func _on_game_error(what):
+	var in_match = Network.game != null or SteamLobby.get_status() in ["fighting", "spectating"]
+	if !in_match:
+		return
+	var node = RichTextLabel.new()
+	node.bbcode_enabled = true
+	node.append_bbcode("[color=#ff8866]:: " + ProfanityFilter.filter(str(what)) + "[/color]")
+	node.fit_content_height = true
+	_append_chat_line(_container_for(_active_category()), node)
 
 func god_message(message: String):
 	# Respect the chat-wide mute toggle for the join/leave + system notice
@@ -434,7 +486,7 @@ func god_message(message: String):
 	node.append_bbcode(text)
 	node.fit_content_height = true
 	var stick = _at_bottom(_active_scroll())
-	_container_for(_active_category()).call_deferred("add_child", node)
+	_append_chat_line(_container_for(_active_category()), node)
 	yield(get_tree(), 'idle_frame')
 	yield(get_tree(), 'idle_frame')
 	if stick:
@@ -608,7 +660,7 @@ func _post_spectator_event(text, color_hex: String = "888888"):
 	node.bbcode_enabled = true
 	node.append_bbcode("[color=#" + color_hex + "]" + ProfanityFilter.filter(text) + "[/color]")
 	node.fit_content_height = true
-	match_container.call_deferred("add_child", node)
+	_append_chat_line(match_container, node)
 	# Spectator events live in the match scrollback, so the match tab is the
 	# one that gets the unread marker. Players tab is intentionally left
 	# unmarked (its title would be too wide for the strip with a *).
@@ -839,7 +891,14 @@ func on_steam_chat_message_received(steam_id: int, message: String, scope: Strin
 	_render_steam_message(steam_id, message, category, false)
 
 func unfocus_line_edit():
-	if has_node("%LineEdit"):
+	if !has_node("%LineEdit"):
+		return
+	_focus_pending = false
+	call_deferred("_release_line_edit")
+
+
+func _release_line_edit():
+	if has_node("%LineEdit") and $"%LineEdit".has_focus():
 		$"%LineEdit".release_focus()
 
 func on_message_ready(message):
@@ -960,7 +1019,7 @@ func _show_style_save_prompt(target_player_id, requester_id, requester_name, sty
 	no_btn.connect("pressed", self, "_on_style_prompt_response", [button_row, target_player_id, requester_id, requester_name, false])
 	button_row.add_child(no_btn)
 	wrapper.add_child(button_row)
-	_container_for(_active_category()).call_deferred("add_child", wrapper)
+	_append_chat_line(_container_for(_active_category()), wrapper)
 	play_chat_sound()
 	yield(get_tree(), 'idle_frame')
 	yield(get_tree(), 'idle_frame')

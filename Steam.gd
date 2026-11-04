@@ -2302,10 +2302,12 @@ const RELAY_SIGNALS := {
 
 var _native = null
 var _native_methods = {}
+var _init_result = null
 
 
-func _enter_tree() -> void:
+func _init() -> void:
 	if not Engine.has_singleton("Steam"):
+		print("Steam: backend=stub (GodotSteam singleton not loaded)")
 		return
 	_native = Engine.get_singleton("Steam")
 	for method_info in _native.get_method_list():
@@ -2313,6 +2315,7 @@ func _enter_tree() -> void:
 	for signal_name in RELAY_SIGNALS:
 		if _native.has_signal(signal_name):
 			_native.connect(signal_name, self, "_relay" + str(RELAY_SIGNALS[signal_name]), [signal_name])
+	print("Steam: backend=native (GodotSteam)")
 
 
 func is_native() -> bool:
@@ -2399,14 +2402,21 @@ func _relay5(a, b, c, d, e, signal_name) -> void:
 
 
 func steamInit(retrieve_stats: bool = true, app_id: int = 0, embed_callbacks: bool = false) -> Dictionary:
+	if _init_result != null:
+		return _init_result
 	var result = _forward("steamInit", [retrieve_stats, app_id, embed_callbacks], null)
 	if typeof(result) == TYPE_DICTIONARY:
-		return result
-	if typeof(result) == TYPE_BOOL:
+		pass
+	elif typeof(result) == TYPE_BOOL:
 		if result:
-			return {"status": 1, "verbal": "Steamworks active."}
-		return {"status": 0, "verbal": "Steamworks failed to initialize."}
-	return {"status": 2, "verbal": "Dummy Steam"}
+			result = {"status": 1, "verbal": "Steamworks active."}
+		else:
+			result = {"status": 0, "verbal": "Steamworks failed to initialize."}
+	else:
+		result = {"status": 2, "verbal": "Dummy Steam"}
+	if int(result.get("status", 0)) == 1:
+		_init_result = result
+	return result
 
 
 func activateGameOverlayToWebPage(url: String, _mode: int = 0):

@@ -111,7 +111,6 @@ var my_id = 1
 var draw_stage = true
 
 var snapping_camera = false 
-var waiting_for_player_prev = false
 var spectate_tick = -1
 var global_gravity_modifier = "1.0"
 
@@ -627,10 +626,10 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 		if match_data.has("p2_starting_meter"):
 			p2.gain_super_meter(p2.fixed.round(p2.fixed.mul(str(Fighter.MAX_SUPER_METER), match_data.p2_starting_meter)))
 		if match_data.has("p1_starting_health"):
-			p1.hp = int(round(p1.MAX_HEALTH * float(match_data.p1_starting_health) / 100.0))
+			p1.hp = p1.fixed.round(p1.fixed.div(p1.fixed.mul(str(p1.MAX_HEALTH), str(match_data.p1_starting_health)), "100"))
 			p1.trail_hp = p1.hp
 		if match_data.has("p2_starting_health"):
-			p2.hp = int(round(p2.MAX_HEALTH * float(match_data.p2_starting_health) / 100.0))
+			p2.hp = p2.fixed.round(p2.fixed.div(p2.fixed.mul(str(p2.MAX_HEALTH), str(match_data.p2_starting_health)), "100"))
 			p2.trail_hp = p2.hp
 	elif match_data.has("starting_meter"):
 		var meter_amount = p1.fixed.round(p1.fixed.mul(str(Fighter.MAX_SUPER_METER), match_data.starting_meter))
@@ -830,7 +829,11 @@ func tick():
 				if current_tick >= max_replay_tick and not (ReplayManager.frames.has("finished") and ReplayManager.frames.finished) and not buffer_playback:
 					ReplayManager.set_deferred("playback", false)
 			else :
-				if current_tick > (ReplayManager.resim_tick if ReplayManager.resim_tick >= 0 else max_replay_tick - 2):
+				if Network.multiplayer_active and Network.resim_target_tick >= 0:
+					if current_tick >= Network.resim_target_tick:
+						ReplayManager.resimulating = false
+						camera.reset_shake()
+				elif current_tick > (ReplayManager.resim_tick if ReplayManager.resim_tick >= 0 else max_replay_tick - 2):
 					if not Network.multiplayer_active:
 						ReplayManager.playback = false
 					ReplayManager.resimulating = false
@@ -929,8 +932,8 @@ func forward_movement(p1_state,p2_state):
 	return 0
 
 func lower_health(_1,_2):
-	var p1_hp = p1.hp/p1.MAX_HEALTH
-	var p2_hp = p2.hp/p2.MAX_HEALTH
+	var p1_hp = p1.hp * p2.MAX_HEALTH
+	var p2_hp = p2.hp * p1.MAX_HEALTH
 	if(p1_hp==p2_hp):
 		return 0
 	return 1 if p1_hp<p2_hp else 2
@@ -1354,6 +1357,8 @@ func resimulate():
 	while ReplayManager.resimulating:
 		tick()
 		show_state()
+	if Network.multiplayer_active:
+		ReplayManager.playback = false
 	show_state()
 	if Network.multiplayer_active:
 		Network.undo_finished()
@@ -1376,6 +1381,8 @@ func end_game():
 		return
 	game_end_tick = current_tick
 	game_finished = true
+	end_wait_tick = -1
+	end_wait_frames = 0
 	p1.game_over = true
 	p2.game_over = true
 
@@ -1449,6 +1456,8 @@ func process_tick():
 			can_tick = real_tick % Global.playback_speed_mod == 0
 	if (Network.multiplayer_active) and !ghost_tick and !spectating:
 		can_tick = network_simulate_ready
+	if Network.resim_settling:
+		can_tick = false
 	if ReplayManager.resimulating:
 		ReplayManager.playback = true
 		can_tick = true
@@ -1658,8 +1667,6 @@ func _physics_process(_delta):
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.global_position = camera.global_position
 	#		undo()
-	waiting_for_player_prev = is_waiting_on_player()
-	
 	if !is_ghost and buffer_playback:
 		ReplayManager.resimulating = false
 		ReplayManager.play_full = false

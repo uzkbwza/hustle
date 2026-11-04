@@ -624,6 +624,8 @@ func _on_spectate_accepted(_data):
 			
 func _on_back_button_pressed():
 	if not visible: return
+	if Network.relay_spectating:
+		Network.end_spectate()
 	Network.cancel_spectate_request()
 	Network.stop_multiplayer()
 	Global.reload()

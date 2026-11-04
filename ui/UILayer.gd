@@ -1554,6 +1554,7 @@ func reset_ui():
 	$"%P2TurnTimerLabel".hide()
 	$"%GameUI".hide()
 	$"%ChatWindow".hide()
+	$"%ChatWindow".unfocus_line_edit()
 	$"%PostGameButtons".hide()
 	$"%OpponentDisconnectedLabel".hide()
 	forfeit_pressed = false
@@ -1852,12 +1853,15 @@ func _on_network_timer_timeout():
 
 func on_player_actionable():
 	if actionable and (Network.multiplayer_active and !Network.undo and !Network.auto):
-		return
+		if !Network.resync_ui_latch:
+			return
+		Network.resync_ui_latch = false
 	while is_instance_valid(game) and !game.game_paused:
 		yield(get_tree(), "idle_frame")
 	Network.undo = false
 	Network.auto = false
 	actionable = true
+	Network.resync_ui_latch = false
 	actionable_time = 0
 #	yield(Network, "both_players_actionable")
 #	if p1_turn_timer.wait_time == 0:
@@ -1868,7 +1872,7 @@ func on_player_actionable():
 #		Network.rpc_("my_turn_started")
 		var wait_start = OS.get_ticks_msec()
 		while !(Network.can_open_action_buttons):
-			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING and !Network.relay_spectating:
+			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING and !Network.relay_spectating and !Network.is_resync_in_progress():
 				print("button-open watchdog: stuck waiting >3s, resending end_turn_simulation")
 				if is_instance_valid(game):
 					Network.rpc_("end_turn_simulation", [game.current_tick, Network.player_id])
@@ -2153,7 +2157,7 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed:
 			var chat = get_node_or_null("%ChatWindow")
-			if chat != null:
+			if chat != null and not chat.point_is_inside(event.position):
 				chat.unfocus_line_edit()
 
 func time_convert(time_in_sec):

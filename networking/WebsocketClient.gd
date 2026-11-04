@@ -7,6 +7,7 @@ class_name MultiplayerClient
 # Our WebSocketClient instance.
 var _client = WebSocketClient.new()
 var connected = false
+var _ended = false
 
 var address
 
@@ -30,13 +31,18 @@ func get_client():
 	return _client
 
 func end_connection():
-	emit_signal("connection_ended")
+	if _ended:
+		return
+	_ended = true
+	connected = false
 	_client.disconnect_from_host()
+	emit_signal("connection_ended")
 
 func _closed():
 	# was_clean will tell you if the disconnection was correctly notified
 	# by the remote peer before closing the socket.
 	print("closed connection.")
+	connected = false
 	end_connection()
 
 func _connected():

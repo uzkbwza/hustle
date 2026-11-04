@@ -9,7 +9,6 @@ func _ready():
 		$"%ReplayButton",
 		$"%OptionsButton",
 		$"%QuitProgramButton",
-		$"%WorkshopUploader",
 		$"%ModListButtonContainer",
 		$"%RoadmapContainer",
 		$"%RoadmapButton",

@@ -53,13 +53,14 @@ func _write_modded_json(data: Dictionary) -> void:
 	file.close()
 
 	var dir = Directory.new()
+	if dir.file_exists("user://modded.json"):
+		dir.remove("user://modded.json")
 	if dir.rename(tmp_path, "user://modded.json") != OK:
 		push_warning("ModLoader: failed to commit user://modded.json")
 
 
 func _init():
 #	Steam.steamInit()
-	_clear_import_packs()
 	if not File.new().file_exists("user://modded.json"):
 		_write_modded_json({"modsEnabled": true, "lastLaunchOk": true})
 
@@ -71,10 +72,13 @@ func _init():
 	# and let the UI warn the user.
 	var was_corrupted = false
 	if _modded_file == null \
-	or !_modded_file.has("modsEnabled") or typeof(_modded_file.modsEnabled) != TYPE_BOOL \
-	or !_modded_file.has("lastLaunchOk") or typeof(_modded_file.lastLaunchOk) != TYPE_BOOL:
+	or !_modded_file.has("modsEnabled") or typeof(_modded_file.modsEnabled) != TYPE_BOOL:
 		was_corrupted = true
 		_modded_file = {"modsEnabled": false, "lastLaunchOk": false}
+		_write_modded_json(_modded_file)
+		print("ModLoader: modded.json could not be read, loading without mods")
+	elif !_modded_file.has("lastLaunchOk") or typeof(_modded_file.lastLaunchOk) != TYPE_BOOL:
+		_modded_file["lastLaunchOk"] = true
 		_write_modded_json(_modded_file)
 
 	# Version-transition gate: first launch on a MOD_DISABLE_VERSIONS entry
@@ -101,6 +105,7 @@ func _init():
 		Global.mods_disabled_by_crash = true
 		_modded_file.modsEnabled = false
 		_write_modded_json(_modded_file)
+		print("ModLoader: previous launch did not finish, loading without mods")
 		return
 
 	if !_modded_file.modsEnabled:
@@ -112,6 +117,8 @@ func _init():
 	_modded_file.lastLaunchOk = false
 	_write_modded_json(_modded_file)
 
+	_clear_import_packs()
+
 	installScriptExtension("res://modloader/MLStateSounds.gd")
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
@@ -121,7 +128,6 @@ func _init():
 #	if !dir.dir_exists(gameInstallDirectory.plus_file("mods")):
 #		dir.make_dir_recursive(gameInstallDirectory.plus_file("mods").plus_file("workshop_upload"))
 #
-	Steam.steamInit() # needed to get workshop mods.
 	active = true
 #	Global.VERSION += " Modded"
 	_load_disabled_mods()
@@ -129,6 +135,7 @@ func _init():
 	WORKSHOP_STORE.modio_install_pending()
 	WORKSHOP_STORE.reconcile()
 	WORKSHOP_STORE.ensure_subscriptions()
+	Steam.steamInit()
 	#This script has to be installed before the mods or else it doesn't get extended
 	_loadMods()
 	print("----------------mods------loaded--------------------")
@@ -222,7 +229,9 @@ func _loadMods():
 	_load_mods_in_folder(modPathPrefix)
 
 	var workshop = SteamWorkshop.new()
-	for item in Steam.getSubscribedItems():
+	var subscribed = Steam.getSubscribedItems()
+	print("workshop subscriptions: " + str(subscribed.size()))
+	for item in subscribed:
 		var info = workshop.get_item_install_info(item)
 		if info.ret:
 			_load_mods_in_folder(info.folder, true)
@@ -236,7 +245,7 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 	var dir = Directory.new()
 	if dir.open(modPathPrefix) != OK:
 		return
-	if dir.list_dir_begin() != OK:
+	if dir.list_dir_begin(true, false) != OK:
 		return
 
 	while true:
@@ -248,8 +257,11 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
 		if zip_only and modFSPath.get_extension() != "zip":
 			continue
+		if modFSPath in _modZipFiles:
+			continue
 		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
 		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+			print("skipping mod package: " + modFSPath)
 			continue
 		_modZipFiles.append(modFSPath)
 

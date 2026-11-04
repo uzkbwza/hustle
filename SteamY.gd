@@ -11,9 +11,11 @@ var IS_OWNED: bool
 var STEAM_ID: int
 var STEAM_NAME: String = ""
 
-var APP_ID
+var APP_ID = 0
 
 var STARTED = false
+var LAST_INIT_STATUS = 0
+var LAST_INIT_VERBAL = ""
 
 var WORKSHOP_ENABLED = true
 
@@ -22,15 +24,20 @@ func _enter_tree():
 		_initialize_steam()
 	
 func _initialize_steam():
-	Steam.connect("current_stats_received", self, "_on_current_stats_received")
+	if !Steam.is_connected("current_stats_received", self, "_on_current_stats_received"):
+		Steam.connect("current_stats_received", self, "_on_current_stats_received")
 
 	STARTED = true
-	var INIT: Dictionary = Steam.steamInit()
+	var INIT = Steam.steamInit()
 	print("Did steam initialize?: " + str(INIT))
-	
-	if INIT['status'] != 1:
-		print("Failed to initialize Steam. " + str(INIT['verbal']))
-	
+	if typeof(INIT) != TYPE_DICTIONARY:
+		INIT = {"status": 0, "verbal": "No response from Steam."}
+
+	LAST_INIT_STATUS = int(INIT.get("status", 0))
+	LAST_INIT_VERBAL = str(INIT.get("verbal", ""))
+	if LAST_INIT_STATUS != 1:
+		print("Steam unavailable, continuing offline: " + LAST_INIT_VERBAL)
+
 	APP_ID = Steam.getAppID()
 	IS_ONLINE = Steam.loggedOn()
 	STEAM_ID = Steam.getSteamID()
@@ -38,7 +45,13 @@ func _initialize_steam():
 	IS_OWNED = Steam.isSubscribed()
 	Steam.requestCurrentStats()
 	emit_signal("started")
-	
+
+func connect_steam() -> bool:
+	if LAST_INIT_STATUS == 1:
+		return true
+	_initialize_steam()
+	return LAST_INIT_STATUS == 1
+
 func _process(_delta):
 	if STARTED:
 		Steam.run_callbacks()

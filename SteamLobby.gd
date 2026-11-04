@@ -204,6 +204,11 @@ func join_lobby(lobby_id: int):
 	
 	print("Attempting to join lobby "+str(lobby_id)+"...")
 
+	if LOBBY_ID != 0 and LOBBY_ID != lobby_id:
+		if SPECTATING or REQUESTING_TO_SPECTATE != 0:
+			leave_spectate()
+		leave_Lobby()
+
 	# Clear any previous lobby members lists, if you were in a previous lobby
 	CLIENT_TICKETS.clear()
 	LOBBY_MEMBERS.clear()
@@ -295,7 +300,9 @@ func quit_match():
 			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 
 func exit_match_from_button():
-	if !SPECTATING:
+	if SPECTATING:
+		leave_spectate()
+	else:
 		quit_match()
 	Network.stop_multiplayer()
 	Global.reload()
@@ -424,6 +431,16 @@ func end_spectate():
 	if SPECTATING and SPECTATING_ID != 0:
 		_send_P2P_Packet(SPECTATING_ID, {"spectate_ended": SteamHustle.STEAM_ID})
 		_stop_spectating()
+
+func leave_spectate():
+	if REQUESTING_TO_SPECTATE != 0:
+		_send_P2P_Packet(REQUESTING_TO_SPECTATE, {"spectate_ended": SteamHustle.STEAM_ID})
+		REQUESTING_TO_SPECTATE = 0
+	if SPECTATING and SPECTATING_ID != 0:
+		_send_P2P_Packet(SPECTATING_ID, {"spectate_ended": SteamHustle.STEAM_ID})
+	_stop_spectating()
+	SPECTATOR_MATCH_DATA = null
+	ReplayManager.init()
 
 func update_spectators(replay):
 	for spectator in SPECTATORS:
@@ -1072,6 +1089,8 @@ func _on_Lobby_Created(connect: int, lobby_id: int):
 func _on_Lobby_Message(lobby_id: int, user: int, message: String, chat_type: int):
 	if lobby_id != LOBBY_ID:
 		return
+	if not is_lobby_member(user):
+		return
 	# Try to unwrap the versioned JSON envelope; raw text (old-patch clients
 	# or new clients without a scope override) falls through with scope="".
 	var text = message
@@ -1248,6 +1267,17 @@ const _MEMBER_SIGNATURE_KEYS = ["status", "character", "opponent_id", "player_id
 var _last_member_signature = ""
 var _member_refresh_emit_queued = false
 
+func is_lobby_member(steam_id: int) -> bool:
+	if LOBBY_ID == 0:
+		return false
+	if steam_id == SteamHustle.STEAM_ID:
+		return true
+	var count = Steam.getNumLobbyMembers(LOBBY_ID)
+	for i in range(count):
+		if Steam.getLobbyMemberByIndex(LOBBY_ID, i) == steam_id:
+			return true
+	return false
+
 func _get_Lobby_Members() -> void:
 	if LOBBY_ID == 0:
 		return
@@ -1260,10 +1290,14 @@ func _get_Lobby_Members() -> void:
 	# display, so we can skip the (expensive) rebuild when an incoming
 	# lobby_data_update didn't change any of it — see emit gate below.
 	var signature = PoolStringArray()
+	var seen_members := {}
 	# Get the data of these players from Steam
 	for member in range(0, MEMBERS):
 		# Get the member's Steam ID
 		var steam_id: int = Steam.getLobbyMemberByIndex(LOBBY_ID, member)
+		if steam_id == 0 or seen_members.has(steam_id):
+			continue
+		seen_members[steam_id] = true
 		if Steam.getLobbyMemberData(LOBBY_ID, steam_id, "status") == "spectating":
 			if int(Steam.getLobbyMemberData(LOBBY_ID, steam_id, "spectating_id")) == SteamHustle.STEAM_ID:
 				SPECTATORS.append(steam_id)

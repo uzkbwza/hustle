@@ -6,7 +6,7 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-3.0"
+var VERSION = "1.11.0-Unstable-4.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
@@ -158,6 +158,7 @@ var character_select_owners := {}
 var reload_pending := false
 
 var characters_cache = {}
+var mod_import_cache := {}
 
 func get_cached_character(name):
 	return characters_cache[name]
@@ -186,7 +187,7 @@ func has_character(char_name: String) -> bool:
 	return false
 
 func full_version():
-	return (!steam_demo_version) and SteamHustle.STARTED
+	return !steam_demo_version
 
 func world_to_screen(x, y) -> Vector2:
 	if !is_instance_valid(current_game):

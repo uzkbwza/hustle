@@ -250,20 +250,36 @@ func _on_export_file_custom_pressed() -> void:
 	dialog.popup_centered()
 
 
+func _export_destination() -> String:
+	var destination = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+	if destination == "":
+		destination = "user://exports"
+	var dir = Directory.new()
+	if not dir.dir_exists(destination):
+		dir.make_dir_recursive(destination)
+	return destination
+
+
 func _on_custom_file_picked_for_export(path: String, destination_dir: String) -> void:
 	FileManager.export_pack([{"path": path, "category": dir_name}], destination_dir, path.get_file().get_basename())
 
 
 func _on_export_listed_pressed() -> void:
+	if cur_list_name == "":
+		printer.text = "No list selected."
+		return
 	for list in loaded_lists:
 		if list.get("list_name", "") == cur_list_name:
 			var paths = _request_listed_paths(list)
+			if paths.empty():
+				printer.text = "This list has no files to export."
+				return
 			var entries := []
 			for p in paths:
 				entries.append({"path": p, "category": dir_name})
-			var downloads = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
-			FileManager.export_pack(entries, downloads, cur_list_name + "_pack")
+			FileManager.export_pack(entries, _export_destination(), cur_list_name + "_pack")
 			return
+	printer.text = "No list selected."
 
 
 func _on_export_folder_pressed() -> void:
@@ -276,16 +292,18 @@ func _on_export_folder_pressed() -> void:
 	for fname in found_names:
 		entries.append({"path": dir_path.plus_file(fname), "category": dir_name})
 	
-	var downloads = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
-	FileManager.export_pack(entries, downloads, dir_name + "_pack")
+	FileManager.export_pack(entries, _export_destination(), dir_name + "_pack")
 
 
 func _on_export_list_pressed() -> void:
 	if cur_list_name == "":
+		printer.text = "No list selected."
 		return
-	var downloads = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
 	var src_path = list_dir_path.plus_file(cur_list_name) + FileManager.LIST_EXT
-	FileManager.copy_file_to_directory(src_path, downloads, PoolStringArray([FileManager.LIST_EXT]), dir_name)
+	if not File.new().file_exists(src_path):
+		printer.text = "This list no longer exists: " + cur_list_name
+		return
+	FileManager.copy_file_to_directory(src_path, _export_destination(), PoolStringArray([FileManager.LIST_EXT]), dir_name)
 
 
 # ---------------------------------------------------------------------------

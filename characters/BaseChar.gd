@@ -1034,7 +1034,7 @@ func is_ivy():
 #	return !is_in_hurt_state() and opponent and current_prediction == opponent.current_state().type
 
 func apply_style(style):
-	if (!SteamHustle.STARTED) or Global.steam_demo_version:
+	if Global.steam_demo_version:
 		return
 	
 	if style != null and !is_ghost:

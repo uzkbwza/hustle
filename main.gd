@@ -102,7 +102,7 @@ func _ready():
 	$"%NagWindow".hide()
 	$"%NagWindow".rect_position = Vector2(randi() % 640, randi() % 360)
 	Global.connect("nag_window", $"%NagWindow", "show")
-	SteamLobby._stop_spectating()
+	SteamLobby.leave_spectate()
 	SteamLobby.quit_match()
 	$"%P1ShowStyle".connect("toggled", self, "_on_show_style_toggled", [1])
 	$"%P2ShowStyle".connect("toggled", self, "_on_show_style_toggled", [2])
@@ -633,8 +633,10 @@ func setup_game_deferred(singleplayer, data):
 					if hex is String and hex != "":
 						ud["p" + str(side) + "_color"] = hex
 		else:
-			var player_name = Global.get_display_name(Global.get_player_data().username)
-			ud["p1"] = player_name if player_name != "" else "Player"
+			var player_name = Global.custom_name
+			if player_name == "":
+				player_name = _format_p2_name(data.selected_characters[1]["name"])
+			ud["p1"] = player_name
 			ud["p2"] = _format_p2_name(data.selected_characters[2]["name"])
 			# Singleplayer: user controls P1.
 			if Global.has_name_color():
