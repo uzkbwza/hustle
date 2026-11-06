@@ -829,11 +829,7 @@ func tick():
 				if current_tick >= max_replay_tick and not (ReplayManager.frames.has("finished") and ReplayManager.frames.finished) and not buffer_playback:
 					ReplayManager.set_deferred("playback", false)
 			else :
-				if Network.multiplayer_active and Network.resim_target_tick >= 0:
-					if current_tick >= Network.resim_target_tick:
-						ReplayManager.resimulating = false
-						camera.reset_shake()
-				elif current_tick > (ReplayManager.resim_tick if ReplayManager.resim_tick >= 0 else max_replay_tick - 2):
+				if current_tick > (ReplayManager.resim_tick if ReplayManager.resim_tick >= 0 else max_replay_tick - 2):
 					if not Network.multiplayer_active:
 						ReplayManager.playback = false
 					ReplayManager.resimulating = false
@@ -1357,8 +1353,6 @@ func resimulate():
 	while ReplayManager.resimulating:
 		tick()
 		show_state()
-	if Network.multiplayer_active:
-		ReplayManager.playback = false
 	show_state()
 	if Network.multiplayer_active:
 		Network.undo_finished()
@@ -1456,8 +1450,6 @@ func process_tick():
 			can_tick = real_tick % Global.playback_speed_mod == 0
 	if (Network.multiplayer_active) and !ghost_tick and !spectating:
 		can_tick = network_simulate_ready
-	if Network.resim_settling:
-		can_tick = false
 	if ReplayManager.resimulating:
 		ReplayManager.playback = true
 		can_tick = true

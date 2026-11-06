@@ -6,7 +6,7 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-4.0"
+var VERSION = "1.11.0-Unstable-5.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
@@ -45,6 +45,8 @@ var vsync = true
 # comes back with it.
 const XY_SNAP_TOGGLE_ENABLED = false
 var xyplot_invert_snap = false
+var quick_cast_hslider = false
+var quick_cast_xyplot = true
 var show_hitboxes = false
 var show_extra_info = false
 var light_mode = false
@@ -477,6 +479,8 @@ func save_options():
 			"cap_framerate": cap_framerate,
 			"vsync": vsync,
 			"xyplot_invert_snap": xyplot_invert_snap,
+			"quick_cast_hslider": quick_cast_hslider,
+			"quick_cast_xyplot": quick_cast_xyplot,
 			"show_hitboxes": show_hitboxes,
 			"show_last_move_indicators": show_last_move_indicators,
 			"show_community_events": show_community_events,
@@ -537,6 +541,8 @@ func get_default_player_data():
 			"cap_framerate": true,
 			"vsync": true,
 			"xyplot_invert_snap": false,
+			"quick_cast_hslider": false,
+			"quick_cast_xyplot": true,
 			"ghost_speed": 2,
 			"show_hitboxes": false,
 			"show_last_move_indicators": true,

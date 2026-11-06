@@ -34,8 +34,6 @@ signal quit_on_rematch()
 export var direct_connect = true
 
 const MAX_SPECTATORS = 64
-const SPECTATE_RETRY_INTERVAL = 2.0
-const SPECTATE_MAX_RETRIES = 10
 
 var show_match_list = true
 var showing = false
@@ -48,15 +46,6 @@ var _last_match_list_signature = ""
 var current_room_code = ""
 
 var experimental_mode = false
-
-var servers = [
-	"ws://168.235.81.168:52450",
-	"ws://168.235.86.185:52450",
-	"ws://176.56.237.81:52450",
-	"ws://localhost:52450"
-]
-
-var steam_dojo = "ws://168.235.89.33:52450"
 
 func _ready():
 	# Called every time the node is added to the scene.
@@ -81,14 +70,12 @@ func _ready():
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
-	$"%ServerList".connect("item_selected", self, "refresh_multiplayer")
-	$"%ServerList".connect("item_selected", self, "_on_server_list_item_selected")
 	Network.connect("spectate_declined", self, "_on_spectate_declined")
 	Network.connect("spectator_error", self, "_on_spectator_error")
 	Network.connect("received_spectator_match_data", self, "_on_spectate_accepted")
 	Network.connect("relay_match_joined", self, "_on_relay_match_joined")
 	Network.connect("room_info_received", self, "_on_room_info_received")
-	Network.connect("room_player_left", self, "_on_room_player_left")
+	Network.connect("opponent_left", self, "_on_opponent_left")
 	Network.connect("room_chat_received", self, "_on_room_chat_received")
 	Network.connect("room_chat_history_received", self, "_on_room_chat_history_received")
 	room_start_button.connect("pressed", self, "_on_start_pressed")
@@ -111,9 +98,6 @@ func _ready():
 		$"%RoomChatContainer", $"%RoomChatEdit", $"%RoomChatSendButton",
 	])
 
-func _on_server_list_item_selected(item):
-	Global.save_option(item, "default_dojo")
-
 func refresh_multiplayer(_index=null):
 	Network.stop_multiplayer()
 	item_list.clear()
@@ -132,10 +116,6 @@ func _on_refresh_timer_timeout():
 
 func get_server_address():
 	return "ws://168.235.104.144:52450"
-#	if SteamHustle.STARTED:
-#		return steam_dojo
-#	else:
-#		return servers[$"%ServerList".selected]
 
 func _on_room_code_edit_text_changed(text):
 	if !direct_connect:
@@ -166,23 +146,18 @@ func show():
 		$"%PlayerList".hide()
 		$"%UserListPanel".hide()
 		$"%MatchListPanel".show()
-		$"%LobbyLabel".text = "Steam Dojo"
-		$"%ServerList".select(0)
 		$"%IPEdit".hide()
 		$"%PortEdit".hide()
 		$"%RoomCodeEdit".show()
 		$"%RoomNameEdit".show()
 		$"%SpectateButton".show()
 		$"%PublicButton".show()
+		Network.stop_multiplayer()
 		Network.setup_relay_multiplayer(get_server_address())
 		show_match_list = true
 		host_button.disabled = true
 		join_button.disabled = true
 		$"%ConnectingLabel".show()
-#		if SteamHustle.STARTED:
-		$"%ServerList".disabled = true
-		$"%ServerList".text = "Steam Dojo"
-			
 		yield(Network.multiplayer_client, "connection_succeeded")
 		$"%ConnectingLabel".hide()
 		$"%RefreshTimer".start()
@@ -197,7 +172,6 @@ func show():
 		if experimental_mode:
 			$"%PublicButton".pressed = false
 			$"%PublicButton".disabled = true
-		$"%ServerList".show()
 		$"%NetworkStartButton".hide()
 	else:
 		$"%PlayerList".show()
@@ -209,7 +183,6 @@ func show():
 		$"%RoomNameEdit".hide()
 		$"%SpectateButton".hide()
 		$"%PublicButton".hide()
-		$"%ServerList".hide()
 		connect_container.show()
 
 	name_edit.editable = true
@@ -350,19 +323,56 @@ func _on_room_code_pressed():
 	if is_instance_valid(room_code_label) and current_room_code != "":
 		room_code_label.text = base
 
+func _on_room_chat_text_entered(text):
+	_submit_room_chat(text)
+
+func _on_room_chat_send_pressed():
+	_submit_room_chat(room_chat_edit.text)
+
+func _submit_room_chat(text):
+	if text.strip_edges() == "":
+		return
+	Network.send_room_chat(text)
+	room_chat_edit.clear()
+
+func _on_room_chat_received(sender_name, message):
+	_render_room_chat(sender_name, message)
+	_scroll_room_chat_to_bottom()
+
+func _on_room_chat_history_received(history):
+	if !is_instance_valid(room_chat_history):
+		return
+	room_chat_history.clear()
+	for entry in history:
+		if entry is Array and entry.size() >= 3:
+			_render_room_chat(entry[0], entry[2], entry[1])
+		elif entry is Array and entry.size() >= 2:
+			_render_room_chat(entry[0], entry[1])
+	_scroll_room_chat_to_bottom()
+
+func _render_room_chat(sender_name, message, color=""):
+	if !is_instance_valid(room_chat_history):
+		return
+	if color == "":
+		color = Network.name_color_for(str(sender_name))
+	var text = ProfanityFilter.filter("<[color=#%s]%s[/color]> %s" % [color, str(sender_name), str(message)])
+	room_chat_history.append_bbcode(text + "\n")
+
+func _scroll_room_chat_to_bottom():
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	if is_instance_valid(room_chat_scroll):
+		room_chat_scroll.scroll_vertical = 10000000000000000
+
 func _hide_browse_ui():
 	name_edit.hide()
 	$"%LobbyLabel".hide()
-	$"%ServerList".hide()
 	$"%MatchListPanel".hide()
 	$"%UserListPanel".hide()
 
 func _restore_browse_ui():
 	$"%LobbyLabel".show()
-	if direct_connect:
-		$"%ServerList".hide()
-	else:
-		$"%ServerList".show()
+	if !direct_connect:
 		$"%MatchListPanel".show()
 
 func _on_relay_match_joined():
@@ -373,13 +383,19 @@ func _on_leave_room_pressed():
 	if direct_connect:
 		_on_back_button_pressed()
 		return
-	Network.leave_match()
+	if Network.relay_spectating:
+		Network.end_spectate()
+	else:
+		Network.leave_match()
 	_return_to_lobby_browse()
 
-func _on_room_player_left(_id):
+func _on_opponent_left(_username, _reason):
 	if !showing:
 		return
 	if is_instance_valid(room_lobby) and room_lobby.visible:
+		if Network.is_host():
+			Network.request_room_info(current_room_code)
+			return
 		_return_to_lobby_browse()
 
 func _return_to_lobby_browse():
@@ -446,44 +462,6 @@ func _on_room_info_received(info):
 		room_spectators_label.text = _format_spectators(spectators)
 		if Network.is_host():
 			room_start_button.disabled = players.size() < 2
-
-func _on_room_chat_text_entered(text):
-	_submit_room_chat(text)
-
-func _on_room_chat_send_pressed():
-	_submit_room_chat(room_chat_edit.text)
-
-func _submit_room_chat(text):
-	if text.strip_edges() == "":
-		return
-	Network.send_room_chat(text)
-	room_chat_edit.clear()
-
-func _on_room_chat_received(sender_name, message):
-	_render_room_chat(sender_name, message)
-	_scroll_room_chat_to_bottom()
-
-func _on_room_chat_history_received(history):
-	if !is_instance_valid(room_chat_history):
-		return
-	room_chat_history.clear()
-	for entry in history:
-		if entry is Array and entry.size() >= 2:
-			_render_room_chat(entry[0], entry[1])
-	_scroll_room_chat_to_bottom()
-
-func _render_room_chat(sender_name, message):
-	if !is_instance_valid(room_chat_history):
-		return
-	var color = Network.name_color_for(str(sender_name))
-	var text = ProfanityFilter.filter("<[color=#%s]%s[/color]> %s" % [color, str(sender_name), str(message)])
-	room_chat_history.append_bbcode(text + "\n")
-
-func _scroll_room_chat_to_bottom():
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	if is_instance_valid(room_chat_scroll):
-		room_chat_scroll.scroll_vertical = 10000000000000000
 
 func _format_players(players):
 	var text = "Players\n"
@@ -587,24 +565,6 @@ func _on_spectate_pressed(match_code):
 	Network.request_spectate(match_code)
 	_enter_room_view(match_code, true)
 	save_username()
-	_wait_for_spectate(match_code)
-
-func _wait_for_spectate(match_code):
-	for attempt in range(SPECTATE_MAX_RETRIES):
-		if !Network.relay_spectate_pending or current_room_code != match_code:
-			return
-		yield(get_tree().create_timer(SPECTATE_RETRY_INTERVAL), "timeout")
-		if !Network.relay_spectate_pending or current_room_code != match_code:
-			return
-		spectate_status.text = "Requesting to spectate...\n(retry %d/%d)" % [attempt + 1, SPECTATE_MAX_RETRIES]
-		Network.request_spectate(match_code)
-	if !Network.relay_spectate_pending:
-		return
-	Network.cancel_spectate_request()
-	spectate_status.text = "The room did not respond. Try again."
-	yield(get_tree().create_timer(2.0), "timeout")
-	if current_room_code == match_code:
-		_return_to_lobby_browse()
 
 func _on_spectate_code_pressed():
 	var code = $"%RoomCodeEdit".text.strip_edges()
@@ -661,12 +621,6 @@ func _on_game_start():
 func _on_start_pressed():
 	if !Network.is_host():
 		return
-	var attempts = 0
-	while Network.get_player_list().size() < 2:
-		if attempts >= 10:
-			return
-		attempts += 1
-		yield(get_tree().create_timer(0.2), "timeout")
 	hide()
 	Network.assign_players()
 	if !Network.ids_synced:

@@ -141,6 +141,8 @@ onready var global_option_check_buttons = {
 	$"%ExtraFreezeFrames": "replay_extra_freeze_frames",
 	$"%EnableReplayBackups": "enable_replay_backups",
 	$"%XYPlotInvertSnapButton": "xyplot_invert_snap",
+	$"%QuickCastHSliderButton": "quick_cast_hslider",
+	$"%QuickCastXYPlotButton": "quick_cast_xyplot",
 	$"%HealthCountButton": "show_health_count",
 	$"%NextTurnHudButton": "show_next_turn_info_hud",
 	$"%ShowNextTurnOnCharsButton": "show_next_turn_info_on_chars",
@@ -1853,15 +1855,12 @@ func _on_network_timer_timeout():
 
 func on_player_actionable():
 	if actionable and (Network.multiplayer_active and !Network.undo and !Network.auto):
-		if !Network.resync_ui_latch:
-			return
-		Network.resync_ui_latch = false
+		return
 	while is_instance_valid(game) and !game.game_paused:
 		yield(get_tree(), "idle_frame")
 	Network.undo = false
 	Network.auto = false
 	actionable = true
-	Network.resync_ui_latch = false
 	actionable_time = 0
 #	yield(Network, "both_players_actionable")
 #	if p1_turn_timer.wait_time == 0:
@@ -1872,7 +1871,7 @@ func on_player_actionable():
 #		Network.rpc_("my_turn_started")
 		var wait_start = OS.get_ticks_msec()
 		while !(Network.can_open_action_buttons):
-			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING and !Network.relay_spectating and !Network.is_resync_in_progress():
+			if OS.get_ticks_msec() - wait_start > 3000 and !SteamLobby.SPECTATING and !Network.relay_spectating:
 				print("button-open watchdog: stuck waiting >3s, resending end_turn_simulation")
 				if is_instance_valid(game):
 					Network.rpc_("end_turn_simulation", [game.current_tick, Network.player_id])

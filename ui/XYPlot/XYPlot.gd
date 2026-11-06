@@ -20,7 +20,6 @@ onready var nub = $PlotPanelNub
 # self explanatory
 onready var x_label = $XLabel
 onready var y_label = $YLabel
-onready var update_timer = $"%UpdateTimer"
 
 ################################################################################
 ########################### property list boilerplate ##########################
@@ -379,8 +378,6 @@ func _ready():
 		panel.connect("mouse_entered", self, "_on_plot_mouse_entered")
 		panel.connect("mouse_exited", self, "_on_plot_mouse_exited")
 
-	$UpdateTimer.connect("timeout", self, "_on_update_timer_timeout")
-
 	panel.parent = self
 	
 	default_value = get_default_value()
@@ -447,15 +444,12 @@ func _handle_mouse_button(event: InputEventMouseButton):
 				mouse_clicked = true
 				last_drag_screen_pos = press_pos
 				update_value(null, true, false, press_pos)
-				_emit_data_changed()
-				update_timer.start(get_update_speed())
 		else:
 			if mouse_clicked:
 				last_drag_screen_pos = get_global_mouse_position()
 				update_value(null, true, false, last_drag_screen_pos)
 				_emit_if_changed()
 			mouse_clicked = false
-			update_timer.stop()
 			if buffer_update:
 				buffer_changed = true
 				buffer_update = false
@@ -480,7 +474,6 @@ func _handle_touch_event(event: InputEventScreenTouch):
 			touch_id = -1
 			update_value(get_default_value())
 			_emit_data_changed()
-			update_timer.stop()
 			return
 		last_tap_time = now
 		last_tap_pos = pos
@@ -492,8 +485,6 @@ func _begin_touch_drag(index, pos):
 	touch_id = index
 	last_drag_screen_pos = pos
 	update_value(null, true, false, pos)
-	_emit_data_changed()
-	update_timer.start(get_update_speed())
 	buffer_update = false
 
 func _handle_touch_release(event: InputEventScreenTouch):
@@ -505,7 +496,6 @@ func _handle_touch_release(event: InputEventScreenTouch):
 	touch_dragging = false
 	touch_pending = false
 	touch_id = -1
-	update_timer.stop()
 	if buffer_update:
 		buffer_changed = true
 		buffer_update = false
@@ -625,18 +615,8 @@ var last_di_pos = null
 
 const SNAP_AMOUNT = 0.1
 
-func _on_update_timer_timeout():
-	if not _is_dragging():
-		return
-	_emit_if_changed()
-	if _is_dragging():
-		update_timer.start(get_update_speed())
-
 func _is_dragging():
 	return mouse_clicked or touch_dragging
-
-func get_update_speed():
-	return ((1.0 + (1.0 / Global.get_ghost_speed_modifier())) / 2.0) * 0.3
 
 func _handle_game_pause_state():
 	if Engine.editor_hint:
@@ -655,8 +635,6 @@ func _reset_drag_state():
 	touch_dragging = false
 	touch_pending = false
 	touch_id = -1
-	if is_instance_valid(update_timer):
-		update_timer.stop()
 
 func _on_plot_mouse_entered():
 	mouse_over = true
@@ -786,6 +764,8 @@ func update_value(p = null, set_buffer_update = true, ignore_snap = false, scree
 	if nub:
 		nub.update_pos(pos)
 	update()
+	if not Engine.editor_hint and Global.quick_cast_xyplot and _is_dragging():
+		_emit_if_changed()
 
 func get_panel_size():
 	match panel_type:

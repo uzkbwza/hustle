@@ -49,8 +49,7 @@ func _ready():
 	$"%ShowButton".connect("pressed", self, "toggle")
 	$"%LineEdit".connect("message_ready", self, "on_message_ready")
 	Network.connect("chat_message_received", self, "on_chat_message_received")
-	Network.connect("relay_match_chat_received", self, "on_relay_chat_message_received")
-	Network.connect("relay_match_chat_history_received", self, "on_relay_chat_history_received")
+	Network.connect("relay_chat_received", self, "on_relay_chat_message_received")
 	Network.connect("game_error", self, "_on_game_error")
 	Network.connect("style_save_request_received", self, "_on_style_save_request_received")
 	Network.connect("style_save_response_received", self, "_on_style_save_response_received")
@@ -450,20 +449,6 @@ func on_relay_chat_message_received(sender_name: String, message: String, silent
 	yield(get_tree(), 'idle_frame')
 	if stick:
 		scroll.scroll_vertical = 10000000000000000
-
-func on_relay_chat_history_received(entries):
-	if !(entries is Array):
-		return
-	var container = $"%MessageContainer"
-	for child in container.get_children():
-		if child.name == _LOADING_NODE_NAME:
-			continue
-		container.remove_child(child)
-		child.queue_free()
-	for entry in entries:
-		if entry is Array and entry.size() >= 2:
-			_append_chat_line(container, _relay_chat_line(str(entry[0]), str(entry[1])))
-	$"%ScrollContainer".scroll_vertical = 10000000000000000
 
 func _on_game_error(what):
 	var in_match = Network.game != null or SteamLobby.get_status() in ["fighting", "spectating"]
@@ -951,10 +936,10 @@ func send_message(message):
 		on_chat_message_received(1, message)
 		return
 	if !Network.steam:
-		if Network.relay_spectating:
-			Network.send_relay_chat(message)
-		else:
+		if Network.direct_connect:
 			Network.rpc_("send_chat_message", [Network.player_id, message])
+		else:
+			Network.send_relay_chat(message)
 	else:
 		# Tag the outgoing scope from the tab we're typing in, so the receiver
 		# files by our authoritative choice instead of guessing from our (over-

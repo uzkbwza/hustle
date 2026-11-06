@@ -78,37 +78,25 @@ custom_constants/separation = 4
 unique_name_in_owner = true
 margin_right = 357.0
 margin_bottom = 11.0
-text = "Steam Dojo"
+text = "Dojo"
 align = 1
 
 [node name="ServerRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
 margin_top = 15.0
 margin_right = 357.0
-margin_bottom = 39.0
-
-[node name="ServerList" type="OptionButton" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/ServerRow"]
-unique_name_in_owner = true
-margin_right = 178.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "Dojo 1 (NY)"
-items = [ "Dojo 1 (NY)", null, false, 0, null, "Dojo 2 (LA)", null, false, 1, null, "Dojo 3 (EU)", null, false, 3, null, "Local Dojo (coming soon)", null, true, 4, null ]
-selected = 0
+margin_bottom = 15.0
 
 [node name="ActivePlayers" type="RichTextLabel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/ServerRow"]
 unique_name_in_owner = true
 self_modulate = Color( 1, 1, 1, 0.592157 )
-margin_left = 179.0
 margin_right = 357.0
-margin_bottom = 24.0
 rect_min_size = Vector2( 131, 0 )
 mouse_filter = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-margin_top = 43.0
+margin_top = 19.0
 margin_right = 357.0
 margin_bottom = 318.0
 size_flags_horizontal = 3
@@ -116,7 +104,7 @@ size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 margin_right = 357.0
-margin_bottom = 275.0
+margin_bottom = 299.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 2
@@ -126,12 +114,12 @@ custom_constants/margin_bottom = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 margin_left = 2.0
 margin_right = 355.0
-margin_bottom = 273.0
+margin_bottom = 297.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
 margin_right = 353.0
-margin_bottom = 273.0
+margin_bottom = 297.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
@@ -139,7 +127,7 @@ alignment = 1
 [node name="UserListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_right = 131.0
-margin_bottom = 273.0
+margin_bottom = 297.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.8
 
@@ -148,20 +136,20 @@ self_modulate = Color( 1, 1, 1, 0.45098 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 130.0
-margin_bottom = 272.0
+margin_bottom = 296.0
 
 [node name="PlayerList" type="ItemList" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel"]
 unique_name_in_owner = true
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 130.0
-margin_bottom = 272.0
+margin_bottom = 296.0
 
 [node name="MatchListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 132.0
 margin_right = 353.0
-margin_bottom = 273.0
+margin_bottom = 297.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
@@ -170,18 +158,18 @@ self_modulate = Color( 1, 1, 1, 0.45098 )
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 220.0
-margin_bottom = 272.0
+margin_bottom = 296.0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 220.0
-margin_bottom = 272.0
+margin_bottom = 296.0
 
 [node name="MatchListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer"]
 unique_name_in_owner = true
 margin_right = 219.0
-margin_bottom = 271.0
+margin_bottom = 295.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

@@ -23,6 +23,7 @@ func _ui_elements() -> Array:
 		$"%EnableAurasButton", $"%EnableHitsparksButton", $"%ShowCommunityEventsButton",
 		$"%ShowBorderArtButton", $"%ForceAltUIButton", $"%MusicButton",
 		$"%EnableReplayBackups", $"%AutoFCButton", $"%XYPlotInvertSnapButton",
+		$"%QuickCastHSliderButton", $"%QuickCastXYPlotButton",
 		$"%MasterSlider", $"%FXSlider", $"%UISlider", $"%MusicSlider",
 		$"%CustomName", $"%CustomNameReset", $"%NameHueSlider",
 		$"%NameSaturationSlider", $"%NameColorReset",

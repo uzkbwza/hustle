@@ -201,6 +201,9 @@ func _set_value_if_changed(new_val):
 		buffer_value_changed = true
 		if has_node("ValueLabel"):
 			$ValueLabel.text = _format_value($Direction.value)
+		if Global.quick_cast_hslider and (mouse_clicked or touch_dragging):
+			_emit_if_changed()
+			buffer_value_changed = false
 
 func _format_value(value):
 	if abs(value - round(value)) < 0.0001:

@@ -2931,7 +2931,7 @@ size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Options/ScrollContainer"]
 margin_right = 220.0
-margin_bottom = 465.0
+margin_bottom = 491.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -3272,6 +3272,22 @@ margin_right = 214.0
 margin_bottom = 452.0
 hint_tooltip = "XY plots don't snap by default. Hold Shift to snap."
 text = "hold shift to snap xy plots"
+
+[node name="QuickCastHSliderButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Options/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 453.0
+margin_right = 214.0
+margin_bottom = 465.0
+hint_tooltip = "Send slider changes immediately while dragging instead of when you release."
+text = "quick cast sliders"
+
+[node name="QuickCastXYPlotButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Options/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 466.0
+margin_right = 214.0
+margin_bottom = 478.0
+hint_tooltip = "Send XY plot changes every frame while dragging instead of on a timer."
+text = "quick cast xy plots"
 
 [node name="Hotkeys" type="Control" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer"]
 visible = false

@@ -1002,7 +1002,7 @@ func activate(refresh=true):
 		$"%UndoButton".set_disabled(true)
 	else:
 		$"%UndoButton".set_disabled(false)
-	if Network.multiplayer_active or SteamLobby.SPECTATING:
+	if Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating:
 		$"%UndoButton".hide()
 #	$"%ReverseButton".set_pressed_no_signal(false)
 	$"%ReverseButton".set_disabled(true)

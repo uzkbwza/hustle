@@ -49,7 +49,6 @@ var send_ready = false
 var can_open_action_buttons = true
 var action_submitted = false
 var possible_softlock = false
-var softlock_ping_count = 0
 var steam = false
 var forfeiter = 0
 var last_action_sent_tick = 0
@@ -57,19 +56,8 @@ var last_action_sent_tick = 0
 var relay_spectating = false
 var relay_spectate_pending = false
 var relay_spectators = {}
-var relay_spectator_ticks = {}
+var relay_replay_marks = null
 var relay_spectator_timer = null
-var resim_timer = null
-var resim_pending = false
-var resim_request_pending = false
-var resim_target_tick = -1
-var resim_settling = false
-var resim_settle_timer = null
-var resim_self_tick = -1
-var resim_self_hash = ""
-var resim_peer_tick = -1
-var resim_peer_hash = ""
-var resync_ui_latch = false
 
 var ticks = {
 	1: null,
@@ -105,6 +93,7 @@ var reveal_sent = false
 var player_objects = {}
 var player_ids = {}
 var player_name_colors = {}
+var relay_name_colors = {}
 var rematch_requested = {}
 var hole_punch: HolePunch
 var rng = BetterRng.new()
@@ -164,8 +153,7 @@ signal player_ids_synced()
 signal player_disconnected()
 signal sync_timer_request(id, time)
 signal chat_message_received(id, message)
-signal relay_match_chat_received(sender_name, message)
-signal relay_match_chat_history_received(entries)
+signal relay_chat_received(sender_name, message)
 signal room_chat_received(sender_name, message)
 signal room_chat_history_received(history)
 signal check_players_ready()
@@ -186,7 +174,7 @@ signal received_spectator_match_data(data)
 signal spectate_declined()
 signal spectator_error(message)
 signal room_info_received(info)
-signal room_player_left(id)
+signal opponent_left(username, reason)
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -208,18 +196,6 @@ func _ready():
 	relay_spectator_timer.connect("timeout", self, "_on_relay_spectator_timer_timeout")
 	add_child(relay_spectator_timer)
 	relay_spectator_timer.start(3)
-
-	resim_timer = Timer.new()
-	resim_timer.one_shot = true
-	resim_timer.wait_time = 15.0
-	resim_timer.connect("timeout", self, "_on_resim_timeout")
-	add_child(resim_timer)
-
-	resim_settle_timer = Timer.new()
-	resim_settle_timer.one_shot = true
-	resim_settle_timer.wait_time = 5.0
-	resim_settle_timer.connect("timeout", self, "_on_resim_settle_timeout")
-	add_child(resim_settle_timer)
 
 	randomize()
 	_setup_rpc_whitelist()
@@ -355,7 +331,7 @@ func host_game_relay(new_player_name, public=true, room_name=""):
 		return
 	multiplayer_host = true
 	player_name = new_player_name.substr(0, 32)
-	rpc_id(1, "create_match", player_name, public, room_name)
+	rpc_id(1, "create_match", player_name, public, room_name, local_name_color())
 	yield(self, "match_code_received")
 
 func join_game_relay(new_player_name, room_code):
@@ -363,7 +339,7 @@ func join_game_relay(new_player_name, room_code):
 		return
 	multiplayer_host = false
 	player_name = new_player_name.substr(0, 32)
-	rpc_id(1, "player_join_game", player_name, room_code)
+	rpc_id(1, "player_join_game", player_name, room_code, local_name_color())
 	yield(self, "relay_match_joined")
 #	rpc_("register_player", [new_player_name, get_local_id()])
 
@@ -390,7 +366,6 @@ func _reset():
 	multiplayer_active = false
 
 	possible_softlock = false
-	softlock_ping_count = 0
 
 	game = null
 	if multiplayer_client != null:
@@ -418,18 +393,12 @@ func _reset():
 	
 	undo = false
 	undo_match_data = null
-	resim_pending = false
-	resim_request_pending = false
-	resim_target_tick = -1
-	resync_ui_latch = false
-	_reset_resim_settle()
-	if resim_timer != null:
-		resim_timer.stop()
 	
 	# Names for remote players in id:name format.
 	players = {}
 	players_ready = []
 	player_name_colors = {}
+	relay_name_colors = {}
 	
 	p1_turn_time = 0
 	p2_turn_time = 0
@@ -490,7 +459,7 @@ func _reset():
 	relay_spectating = false
 	relay_spectate_pending = false
 	relay_spectators.clear()
-	relay_spectator_ticks.clear()
+	relay_replay_marks = null
 	
 	get_tree().set_network_peer(null)
 
@@ -532,6 +501,10 @@ func player_name_color(pid: int) -> String:
 	return "ff333d" if pid == 2 else "1d8df5"
 
 func name_color_for(sender_name: String) -> String:
+	if relay_name_colors.has(sender_name):
+		var relay_hex = str(relay_name_colors[sender_name])
+		if relay_hex != "":
+			return relay_hex
 	for pid in [1, 2]:
 		if pid_to_username(pid) == sender_name:
 			return player_name_color(pid)
@@ -539,6 +512,11 @@ func name_color_for(sender_name: String) -> String:
 		if Global.has_name_color():
 			return Global.get_name_color().to_html(false)
 	return "999999"
+
+func local_name_color() -> String:
+	if Global.has_name_color():
+		return Global.get_name_color().to_html(false)
+	return ""
 
 
 func opponent_id(pid=player_id):
@@ -887,16 +865,9 @@ func stop_multiplayer(leave_steam_lobby=false):
 	print("stopping multiplayer")
 	if steam and (SteamLobby.SPECTATING or SteamLobby.REQUESTING_TO_SPECTATE != 0):
 		SteamLobby.leave_spectate()
-	var relay_leave = !steam and !direct_connect and multiplayer_client != null and multiplayer_client.connected
-	if relay_leave:
-		leave_match()
-		multiplayer_client.poll()
 	multiplayer_active = false
 	if peer:
 		peer.close_connection()
-	if multiplayer_client != null:
-		multiplayer_client.end_connection()
-		multiplayer_client = null
 	_reset()
 	if leave_steam_lobby:
 		SteamLobby.leave_Lobby()
@@ -911,7 +882,7 @@ func request_spectate(code):
 	if steam or !(multiplayer_client and multiplayer_client.connected):
 		return
 	relay_spectate_pending = true
-	rpc_id(1, "request_spectate", player_name.substr(0, 64), code)
+	rpc_id(1, "request_spectate", player_name.substr(0, 64), code, local_name_color())
 
 func cancel_spectate_request():
 	if steam:
@@ -926,13 +897,35 @@ func request_room_info(room_code):
 	rpc_id(1, "fetch_room_info", room_code)
 
 remote func receive_room_info(info):
+	if info is Dictionary:
+		var players = info.get("players", [])
+		var player_colors = info.get("player_colors", [])
+		for i in range(min(players.size(), player_colors.size())):
+			relay_name_colors[str(players[i])] = str(player_colors[i])
+		var spectators = info.get("spectators", [])
+		var spectator_colors = info.get("spectator_colors", [])
+		for i in range(min(spectators.size(), spectator_colors.size())):
+			relay_name_colors[str(spectators[i])] = str(spectator_colors[i])
 	emit_signal("room_info_received", info)
 
-remote func room_player_left(id):
-	if multiplayer_active and is_instance_valid(game) and !game.game_finished:
-		player_disconnected(id)
+remote func receive_name_color(username, hex):
+	relay_name_colors[str(username)] = str(hex)
+
+remote func receive_name_colors(colors):
+	if !(colors is Dictionary):
 		return
-	emit_signal("room_player_left", id)
+	for username in colors:
+		relay_name_colors[str(username)] = str(colors[username])
+
+remote func receive_opponent_left(username, reason):
+	if multiplayer_active and is_instance_valid(game) and !game.game_finished:
+		for id in players.keys():
+			if players[id] == username:
+				player_disconnected(id)
+				return
+		emit_signal("player_disconnected")
+		return
+	emit_signal("opponent_left", username, reason)
 
 func leave_match():
 	if steam or !(multiplayer_client and multiplayer_client.connected):
@@ -952,37 +945,37 @@ func _stop_relay_spectating():
 	relay_spectating = false
 	relay_spectate_pending = false
 	relay_spectators.clear()
-	relay_spectator_ticks.clear()
+	relay_replay_marks = null
 
 remote func spectate_accept(data):
 	if !relay_spectate_pending and !relay_spectating:
 		return
-	if data is Dictionary and data.get("replay") != null:
-		ReplayManager.frames = data.replay
+	if !(data is Dictionary) or !(data.get("match_data") is Dictionary) or data.get("replay") == null:
+		return
 	if relay_spectating:
 		return
-	if data is Dictionary and data.get("match_data") is Dictionary and data.get("replay") != null:
-		var match_data = data.match_data
-		var missing = []
-		for i in [1, 2]:
-			var char_data = match_data.get("selected_characters", {}).get(i, {})
-			var char_name = char_data.get("name", "")
-			if char_name != "" and !Global.has_character(char_name):
-				missing.append(Global.character_display_name(char_name))
-		if missing.size() > 0:
-			relay_spectate_pending = false
-			relay_spectating = false
-			if multiplayer_client and multiplayer_client.connected:
-				rpc_id(1, "end_spectate")
-			emit_signal("spectator_error", "You're missing the mods for this match: " + ", ".join(missing))
-			return
-		relay_spectating = true
+	var match_data = data.match_data
+	var missing = []
+	for i in [1, 2]:
+		var char_data = match_data.get("selected_characters", {}).get(i, {})
+		var char_name = char_data.get("name", "")
+		if char_name != "" and !Global.has_character(char_name):
+			missing.append(Global.character_display_name(char_name))
+	if missing.size() > 0:
 		relay_spectate_pending = false
-		multiplayer_active = false
-		ReplayManager.init()
-		match_data["replay"] = data.replay
-		ReplayManager.frames = data.replay
-		emit_signal("received_spectator_match_data", match_data)
+		relay_spectating = false
+		if multiplayer_client and multiplayer_client.connected:
+			rpc_id(1, "end_spectate")
+		emit_signal("spectator_error", "You're missing the mods for this match: " + ", ".join(missing))
+		return
+	relay_spectating = true
+	relay_spectate_pending = false
+	multiplayer_active = false
+	relay_replay_marks = null
+	ReplayManager.init()
+	match_data["replay"] = data.replay
+	ReplayManager.frames = data.replay
+	emit_signal("received_spectator_match_data", match_data)
 
 remote func spectator_replay_update(replay):
 	if !relay_spectating or !(replay is Dictionary):
@@ -1018,15 +1011,14 @@ remote func spectator_player_forfeit(player_id):
 	if relay_spectating:
 		player_forfeit(player_id)
 
-remote func spectate_declined():
+remote func receive_spectate_declined():
 	if relay_spectate_pending:
 		relay_spectate_pending = false
 		emit_signal("spectate_declined")
 
-remote func spectate_ended(disconnected_id):
+remote func spectate_ended(disconnected_id, reason="", player_name=""):
 	if relay_spectators.has(disconnected_id):
 		relay_spectators.erase(disconnected_id)
-		relay_spectator_ticks.erase(disconnected_id)
 	if int(disconnected_id) == 0:
 		if relay_spectate_pending:
 			relay_spectate_pending = false
@@ -1034,7 +1026,10 @@ remote func spectate_ended(disconnected_id):
 		if relay_spectating:
 			_stop_relay_spectating()
 			if is_instance_valid(game):
+				game = null
 				Global.reload()
+			else:
+				emit_signal("spectate_declined")
 
 remote func spectate_request(spectator_id):
 	if steam:
@@ -1043,7 +1038,6 @@ remote func spectate_request(spectator_id):
 		relay_spectators[spectator_id] = false
 		return
 	relay_spectators[spectator_id] = true
-	relay_spectator_ticks[spectator_id] = _replay_watermarks()
 	rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
 
 func _spectate_accept_data():
@@ -1053,87 +1047,51 @@ func _spectate_accept_data():
 		"replay": ReplayManager.frames,
 	}
 
-func _replay_watermarks():
-	var wm = {"emote_marks": {}}
-	for pid in [1, 2]:
-		var highest = -1
-		if ReplayManager.frames.has(pid):
-			for tick in ReplayManager.frames[pid].keys():
-				if int(tick) > highest:
-					highest = int(tick)
-		wm[pid] = highest
-	var emote_frames = ReplayManager.frames.get("emotes", null)
-	if emote_frames is Dictionary:
-		for pid in [1, 2]:
-			var highest_emote = -1
-			if emote_frames.has(pid):
-				for tick in emote_frames[pid].keys():
-					if int(tick) > highest_emote:
-						highest_emote = int(tick)
-			wm["emote_marks"][pid] = highest_emote
-	wm["finished"] = ReplayManager.frames.get("finished", false)
-	return wm
-
 func _push_replay_updates_delta():
 	if steam or relay_spectators.empty():
 		return
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
+	if relay_replay_marks == null:
+		relay_replay_marks = {"ticks": {1: -1, 2: -1}, "emotes": {1: -1, 2: -1}, "finished": false}
 	var frames = ReplayManager.frames
-	var finished = frames.get("finished", false)
-	var emote_frames = frames.get("emotes", null)
-	var entries = []
-	for spectator_id in relay_spectators.keys():
-		var wm = relay_spectator_ticks.get(spectator_id)
-		if wm == null:
-			wm = {"emote_marks": {}}
-			relay_spectator_ticks[spectator_id] = wm
-		var delta = {}
-		for pid in [1, 2]:
-			if !frames.has(pid):
-				continue
-			var ticks = frames[pid]
-			var highest = int(wm.get(pid, -1))
-			var cur_max = -1
-			for tick in ticks.keys():
-				if int(tick) > cur_max:
-					cur_max = int(tick)
-			if cur_max < highest:
-				highest = -1
-			for tick in ticks.keys():
-				if int(tick) <= highest:
-					continue
-				if !delta.has(pid):
-					delta[pid] = {}
-				delta[pid][tick] = ticks[tick]
-			wm[pid] = cur_max
-		if finished and !wm.get("finished", false):
-			delta["finished"] = true
-			wm["finished"] = true
-		if emote_frames is Dictionary:
-			var emote_marks = wm.get("emote_marks", {})
-			for pid in [1, 2]:
-				if !emote_frames.has(pid):
-					continue
-				var marks = emote_frames[pid]
-				var highest_emote = int(emote_marks.get(pid, -1))
-				for tick in marks.keys():
-					if int(tick) <= highest_emote:
-						continue
-					if !delta.has("emotes"):
-						delta["emotes"] = {}
-					if !delta["emotes"].has(pid):
-						delta["emotes"][pid] = {}
-					delta["emotes"][pid][tick] = marks[tick]
-					highest_emote = int(tick)
-				emote_marks[pid] = highest_emote
-			wm["emote_marks"] = emote_marks
-		if delta.empty():
+	var delta = {}
+	for pid in [1, 2]:
+		if !frames.has(pid):
 			continue
-		entries.append([spectator_id, "spectator_replay_update", delta])
-	if entries.empty():
+		var max_tick = -1
+		for tick in frames[pid].keys():
+			if int(tick) > max_tick:
+				max_tick = int(tick)
+		if max_tick < relay_replay_marks.ticks[pid]:
+			relay_replay_marks.ticks[pid] = -1
+		for tick in frames[pid].keys():
+			if int(tick) <= relay_replay_marks.ticks[pid]:
+				continue
+			if !delta.has(pid):
+				delta[pid] = {}
+			delta[pid][tick] = frames[pid][tick]
+		relay_replay_marks.ticks[pid] = max_tick
+	if frames.get("finished", false) and !relay_replay_marks.finished:
+		delta["finished"] = true
+		relay_replay_marks.finished = true
+	var emote_frames = frames.get("emotes", null)
+	if emote_frames is Dictionary:
+		for pid in [1, 2]:
+			if !emote_frames.has(pid):
+				continue
+			for tick in emote_frames[pid].keys():
+				if int(tick) <= relay_replay_marks.emotes[pid]:
+					continue
+				if !delta.has("emotes"):
+					delta["emotes"] = {}
+				if !delta["emotes"].has(pid):
+					delta["emotes"][pid] = {}
+				delta["emotes"][pid][tick] = emote_frames[pid][tick]
+				relay_replay_marks.emotes[pid] = int(tick)
+	if delta.empty():
 		return
-	rpc_id(1, "relay_to_spectators_batched", entries)
+	_push_to_relay_spectators("spectator_replay_update", delta)
 
 func _push_to_relay_spectators(function_name, arg=null):
 	if steam or relay_spectators.empty():
@@ -1150,37 +1108,22 @@ func _on_relay_spectator_timer_timeout():
 	for spectator_id in relay_spectators.keys():
 		if !relay_spectators[spectator_id]:
 			relay_spectators[spectator_id] = true
-			relay_spectator_ticks[spectator_id] = _replay_watermarks()
 			rpc_id(1, "spectator_accept", spectator_id, _spectate_accept_data())
 	_push_replay_updates_delta()
 
-func is_resync_in_progress() -> bool:
-	return resim_pending or resim_request_pending or resim_settling or undo or auto or ReplayManager.resimulating
-
 func _on_network_timer_timeout():
-	if not possible_softlock or not multiplayer_active or SteamLobby.SPECTATING or relay_spectating:
-		softlock_ping_count = 0
-		return
-	if is_resync_in_progress():
-		softlock_ping_count = 0
-		return
-	if not is_instance_valid(game):
-		return
-	if game.current_tick != last_action_sent_tick:
-		softlock_ping_count = 0
-		return
-	if softlock_ping_count >= 5:
-		return
-	softlock_ping_count += 1
-	print("softlock watchdog: no action received at tick " + str(game.current_tick) + " (attempt " + str(softlock_ping_count) + ")")
-	rpc_("check_opponent_sent_action", null, "remote")
+	pass
+#	if multiplayer_active:
+#		if possible_softlock:
+#			if is_instance_valid(game):
+#				if game.current_tick != last_action_sent_tick:
+#					return
+#			print("asking politely if we softlocked")
+#			rpc_("check_opponent_sent_action", null, "remote")
 
 remote func check_opponent_sent_action():
 	print("i've been asked politely if we softlocked")
-	if is_resync_in_progress():
-		return
-	if is_instance_valid(game):
-		rpc_("end_turn_simulation", [game.current_tick, player_id], "remotesync")
+	# politely directing to my previous statement
 	if commit_sent:
 		rpc_("multiplayer_commit_hash", [player_id, commit_hashes[player_id]], "remote")
 		if reveal_sent:
@@ -1233,7 +1176,6 @@ remote func send_action_reveal(sender_player_id, nonce, action, data, extra):
 remote func opponent_received_action():
 	print("opponent received my action")
 	possible_softlock = false
-	softlock_ping_count = 0
 
 remote func check_tick_sync(tick):
 	pass
@@ -1246,15 +1188,16 @@ func send_relay_chat(message):
 		return
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
-	emit_signal("relay_match_chat_received", player_name, message)
-	rpc_id(1, "relay_match_chat", message)
+	message = message.strip_edges()
+	if message == "":
+		return
+	emit_signal("relay_chat_received", player_name, message)
+	rpc_id(1, "relay_chat", message)
 
-remote func receive_match_chat(sender_name, message):
-	emit_signal("relay_match_chat_received", sender_name, message)
-
-remote func receive_match_chat_history(history):
-	if history is Array:
-		emit_signal("relay_match_chat_history_received", history)
+remote func receive_relay_chat(sender_name, message, name_color=""):
+	if name_color != "":
+		relay_name_colors[str(sender_name)] = str(name_color)
+	emit_signal("relay_chat_received", sender_name, message)
 
 func send_room_chat(message):
 	if steam:
@@ -1267,7 +1210,9 @@ func send_room_chat(message):
 	emit_signal("room_chat_received", player_name, message)
 	rpc_id(1, "relay_room_chat", message)
 
-remote func receive_room_chat(sender_name, message):
+remote func receive_room_chat(sender_name, message, name_color=""):
+	if name_color != "":
+		relay_name_colors[str(sender_name)] = str(name_color)
 	emit_signal("room_chat_received", sender_name, message)
 
 remote func receive_room_chat_history(history):
@@ -1449,73 +1394,19 @@ remotesync func open_chara_select():
 	emit_signal("start_game")
 
 func request_softlock_fix():
-	if !multiplayer_active or !is_instance_valid(game):
-		return
-	if ReplayManager.resimulating or resim_pending:
-		return
-	resim_pending = true
-	resim_target_tick = game.current_tick
-	resync_ui_latch = false
-	softlock_ping_count = 0
-	_start_resim_watchdog()
-	rpc_("send_resim_request", [resim_target_tick], "remote")
+	if multiplayer_active:
+		rpc_("send_resim_request", null, "remote")
 
-func _start_resim_watchdog():
-	if resim_timer != null:
-		resim_timer.start()
-
-func _reset_resim_settle():
-	resim_settling = false
-	resim_self_tick = -1
-	resim_self_hash = ""
-	resim_peer_tick = -1
-	resim_peer_hash = ""
-	if resim_settle_timer != null:
-		resim_settle_timer.stop()
-
-func _clear_resim_state():
-	undo = false
-	auto = false
-	resim_pending = false
-	resim_request_pending = false
-	resim_target_tick = -1
-	_reset_resim_settle()
-	ReplayManager.resimulating = false
-	if resim_timer != null:
-		resim_timer.stop()
-
-func _on_resim_timeout():
-	if ReplayManager.resimulating:
-		_start_resim_watchdog()
-		return
-	if !resim_pending and !undo:
-		return
-	_clear_resim_state()
-	resync_ui_latch = false
-	emit_signal("resim_denied")
-
-remote func send_resim_request(target_tick):
-	if resim_target_tick < 0 and typeof(target_tick) == TYPE_INT:
-		resim_target_tick = target_tick
-	resim_request_pending = true
-	softlock_ping_count = 0
+remote func send_resim_request():
 	emit_signal("resim_requested")
 
 func answer_resim_request(answer: bool):
-	resim_request_pending = false
-	softlock_ping_count = 0
 	if answer:
-		resim_pending = true
-		_start_resim_watchdog()
 		rpc_("multiplayer_resim", null, "remote")
 	else:
-		resim_pending = false
-		resim_target_tick = -1
 		rpc_("deny_resim", null, "remote")
 
 remote func deny_resim():
-	_clear_resim_state()
-	resync_ui_latch = false
 	rpc_("send_chat_message", [opponent_player_id(player_id), "-- denied resync request."])
 	emit_signal("resim_denied")
 
@@ -1536,8 +1427,6 @@ remote func receive_style_save_response(target_player_id, requester_id, requeste
 	emit_signal("style_save_response_received", target_player_id, requester_id, requester_name, allowed)
 
 remote func multiplayer_resim():
-	resim_pending = false
-	_start_resim_watchdog()
 	auto = true
 	undo = true
 	rpc_("send_opponent_replay_for_resim", [ReplayManager.frames, p1_undo_action, p2_undo_action], "remote")
@@ -1548,51 +1437,14 @@ remote func send_opponent_replay_for_resim(replay, p1_undo_action, p2_undo_actio
 	ReplayManager.frames = replay
 	undo = true	
 	auto = true
-	_start_resim_watchdog()
 	rpc_("finalize_resim")
- 
+
 remotesync func finalize_resim():
-	resync_ui_latch = false
-	_reset_resim_settle()
 	if is_instance_valid(game):
 		game.undo(false)
-	else:
-		_clear_resim_state()
 
 func undo_finished():
-	if !multiplayer_active or !is_instance_valid(game):
-		_clear_resim_state()
-		return
-	resim_settling = true
-	resim_self_tick = game.current_tick
-	resim_self_hash = str(game.p1.get_state_hash()) + "/" + str(game.p2.get_state_hash())
-	resim_peer_tick = -1
-	resim_peer_hash = ""
-	if resim_settle_timer != null:
-		resim_settle_timer.start()
-	rpc_("resim_complete", [resim_self_tick, resim_self_hash], "remote")
-
-remote func resim_complete(tick, state_hash):
-	if !resim_settling:
-		return
-	resim_peer_tick = tick
-	resim_peer_hash = state_hash
-	_finish_resim_settle_if_ready()
-
-func _finish_resim_settle_if_ready():
-	if !resim_settling or resim_peer_tick < 0:
-		return
-	if resim_self_tick != resim_peer_tick or resim_self_hash != resim_peer_hash:
-		print("resync mismatch: tick " + str(resim_self_tick) + "/" + str(resim_peer_tick) + " hash " + str(resim_self_hash) + "/" + str(resim_peer_hash))
-	resync_ui_latch = true
-	_clear_resim_state()
-
-func _on_resim_settle_timeout():
-	if !resim_settling:
-		return
-	resync_ui_latch = true
-	_clear_resim_state()
-	emit_signal("resim_denied")
+	undo = false
 
 remote func test_relay():
 	print("relay test")
