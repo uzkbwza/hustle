@@ -4,7 +4,7 @@ enum LOBBY_AVAILABILITY {PRIVATE, FRIENDS, PUBLIC, INVISIBLE}
 const PACKET_READ_LIMIT: int = 32
 
 signal lobby_match_list_received()
-signal lobby_data_update()
+signal lobby_data_update(success, lobby_id, member_id)
 signal join_lobby_failed(reason)
 signal join_lobby_success()
 signal lobby_created()

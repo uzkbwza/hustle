@@ -50,6 +50,8 @@ func _ready():
 	$"%LineEdit".connect("message_ready", self, "on_message_ready")
 	Network.connect("chat_message_received", self, "on_chat_message_received")
 	Network.connect("relay_chat_received", self, "on_relay_chat_message_received")
+	Network.connect("room_chat_received", self, "on_relay_room_chat_message_received")
+	Network.connect("room_chat_history_received", self, "_on_relay_room_chat_history_received")
 	Network.connect("game_error", self, "_on_game_error")
 	Network.connect("style_save_request_received", self, "_on_style_save_request_received")
 	Network.connect("style_save_response_received", self, "_on_style_save_response_received")
@@ -169,9 +171,25 @@ func _on_lobby_data_update(_success=null, _lobby_id=null, _member_id=null):
 	# affect the player-list colors, so refresh.
 	_rebuild_player_list()
 
+func _relay_match_active() -> bool:
+	if Network.steam:
+		return false
+	if Network.relay_spectating:
+		return true
+	return Network.multiplayer_active and is_instance_valid(Network.game)
+
+func _relay_connected() -> bool:
+	if Network.steam:
+		return false
+	return Network.relay_spectating or (Network.multiplayer_active and Network.multiplayer_client != null)
+
+func _in_match() -> bool:
+	if _relay_match_active():
+		return true
+	return SteamLobby.get_status() in ["fighting", "spectating"]
+
 func _update_tabs_visibility():
-	var status = SteamLobby.get_status()
-	var in_match = status == "fighting" or status == "spectating"
+	var in_match = _in_match()
 	# Tabs are only useful in a match — the lobby UI already shows every
 	# player elsewhere, so the players tab would be redundant there, and
 	# lobby chat is the only chat with content. Hide the strip entirely.
@@ -247,14 +265,13 @@ func _active_category() -> String:
 	# Idle/SP has no match context — everything routes to lobby. Otherwise
 	# go off current_tab regardless of whether the strip is currently shown,
 	# so TabButton can hide the strip without yanking the active container.
-	if SteamLobby.LOBBY_ID == 0:
+	if SteamLobby.LOBBY_ID == 0 and not _in_match():
 		return "lobby"
 	match $"%Tabs".current_tab:
 		TAB_MATCH:
 			# Match tab is disabled when not in a match; treat that as lobby
 			# so any self-echo falls through to a visible container.
-			var status = SteamLobby.get_status()
-			if status == "fighting" or status == "spectating":
+			if _in_match():
 				return "match"
 			return "lobby"
 		TAB_PLAYERS:
@@ -281,8 +298,9 @@ func _append_chat_line(container, node):
 		container.remove_child(oldest)
 		oldest.queue_free()
 
-func _relay_chat_line(sender_name: String, message: String) -> RichTextLabel:
-	var text = ProfanityFilter.filter(("<[color=#%s]" % [_color_for_name(sender_name)]) + sender_name + "[/color]> " + message)
+func _relay_chat_line(sender_name: String, message: String, name_color: String = "") -> RichTextLabel:
+	var color = name_color if name_color != "" else _color_for_name(sender_name)
+	var text = ProfanityFilter.filter(("<[color=#%s]" % [color]) + sender_name + "[/color]> " + message)
 	var node = RichTextLabel.new()
 	node.bbcode_enabled = true
 	node.append_bbcode(text)
@@ -414,7 +432,7 @@ func on_chat_message_received(player_id: int, message: String):
 	# all originate during an active match. On Steam that means they belong in
 	# the match tab — defaulting to %MessageContainer dumped them in lobby chat.
 	# Off Steam there's no match tab, so this falls through to lobby as before.
-	var category = "match" if SteamLobby.get_status() in ["fighting", "spectating"] else "lobby"
+	var category = "match" if _in_match() else "lobby"
 	var container = _container_for(category)
 	var scroll = match_scroll if category == "match" else $"%ScrollContainer"
 	var stick = _at_bottom(scroll)
@@ -431,14 +449,22 @@ func on_chat_message_received(player_id: int, message: String):
 		scroll.scroll_vertical = 10000000000000000
 
 func on_relay_chat_message_received(sender_name: String, message: String, silent: bool = false):
-	var node = _relay_chat_line(sender_name, message)
-	if sender_name != Network.player_name and !silent:
-		play_chat_sound()
-	var category = "match" if SteamLobby.get_status() in ["fighting", "spectating"] else "lobby"
+	var category = "match" if _relay_match_active() else "lobby"
+	_render_relay_message(sender_name, message, category, silent)
+
+func on_relay_room_chat_message_received(sender_name: String, message: String):
+	_render_relay_message(sender_name, message, "lobby", false)
+
+func _render_relay_message(sender_name: String, message: String, category: String, silent: bool = false, name_color: String = ""):
+	var node = _relay_chat_line(sender_name, message, name_color)
 	var container = _container_for(category)
 	var scroll = match_scroll if category == "match" else $"%ScrollContainer"
 	var stick = _at_bottom(scroll)
 	_append_chat_line(container, node)
+	if silent:
+		return
+	if category == _active_category() and sender_name != Network.player_name:
+		play_chat_sound()
 	if category != _active_category():
 		if category == "match":
 			unread_match = true
@@ -450,9 +476,12 @@ func on_relay_chat_message_received(sender_name: String, message: String, silent
 	if stick:
 		scroll.scroll_vertical = 10000000000000000
 
+func _on_relay_room_chat_history_received(_history):
+	_rebuild_lobby_container_from_history()
+	_scroll_lobby_to_bottom_deferred()
+
 func _on_game_error(what):
-	var in_match = Network.game != null or SteamLobby.get_status() in ["fighting", "spectating"]
-	if !in_match:
+	if !_in_match():
 		return
 	var node = RichTextLabel.new()
 	node.bbcode_enabled = true
@@ -538,9 +567,13 @@ func _apply_min_grabber_height(scrollbar, min_h: int):
 func _rebuild_player_list():
 	if players_container == null:
 		return
+	_update_tabs_visibility()
 	for child in players_container.get_children():
 		players_container.remove_child(child)
 		child.queue_free()
+	if !Network.steam:
+		_rebuild_relay_player_list()
+		return
 	if SteamLobby.LOBBY_ID == 0:
 		_known_match_spectators.clear()
 		_known_spectators_match_key = ""
@@ -599,10 +632,40 @@ func _rebuild_player_list():
 	# (event-driven) and the 0.5s timer (fallback for changes that don't fire).
 	_refresh_match_spectators()
 
+func _rebuild_relay_player_list():
+	if !_relay_connected():
+		return
+	var names = []
+	if _relay_match_active():
+		for pid in [1, 2]:
+			var username = str(Network.pid_to_username(pid))
+			if username != "" and not names.has(username):
+				names.append(username)
+		for spectator in Network.relay_room_info.get("spectators", []):
+			var spectator_name = str(spectator)
+			if not names.has(spectator_name):
+				names.append(spectator_name)
+	else:
+		for key in ["players", "spectators"]:
+			for username in Network.relay_room_info.get(key, []):
+				var relay_name = str(username)
+				if not names.has(relay_name):
+					names.append(relay_name)
+	for relay_name in names:
+		var btn = Button.new()
+		btn.text = relay_name
+		btn.flat = true
+		btn.clip_text = true
+		btn.align = Button.ALIGN_LEFT
+		btn.add_color_override("font_color", Color(Network.name_color_for(relay_name)))
+		players_container.add_child(btn)
+
 # Scan LOBBY_MEMBERS for users spectating the local user's current match,
 # diff against the last scan, post grey :: join/leave events to match chat
 # and mark the players tab unread.
 func _refresh_match_spectators():
+	if !Network.steam:
+		return
 	var my_match_key = SteamLobby.current_match_key()
 	if my_match_key == "":
 		_known_match_spectators.clear()
@@ -684,6 +747,8 @@ var _user_actions_popup: PopupMenu = null
 var _user_actions_target: int = 0
 
 func _show_user_actions_popup(steam_id: int, global_pos: Vector2):
+	if !Network.steam:
+		return
 	if steam_id == SteamHustle.STEAM_ID:
 		# No point poking at yourself — opens nothing.
 		return
@@ -799,6 +864,9 @@ func _rebuild_lobby_container_from_history():
 		if entry.steam_id != SteamHustle.STEAM_ID and SteamLobby.is_silenced(entry.steam_id):
 			continue
 		_render_steam_message(entry.steam_id, entry.message, "lobby", true)
+	if !Network.steam:
+		for entry in Network.relay_room_chat_history:
+			_render_relay_message(entry.get("name", ""), entry.get("message", ""), "lobby", true, entry.get("color", ""))
 	_apply_loading_indicator(c, SteamLobby.loading_lobby_chat_history)
 
 func _rebuild_match_container_from_history():
@@ -813,6 +881,9 @@ func _rebuild_match_container_from_history():
 			if entry.steam_id != SteamHustle.STEAM_ID and SteamLobby.is_silenced(entry.steam_id):
 				continue
 			_render_steam_message(entry.steam_id, entry.message, "match", true)
+	if !Network.steam:
+		for entry in Network.relay_match_chat_history:
+			_render_relay_message(entry.get("name", ""), entry.get("message", ""), "match", true, entry.get("color", ""))
 	_apply_loading_indicator(match_container, SteamLobby.loading_match_chat_history)
 
 # "loading messages..." pinned to the top of a container while we're waiting
@@ -938,8 +1009,12 @@ func send_message(message):
 	if !Network.steam:
 		if Network.direct_connect:
 			Network.rpc_("send_chat_message", [Network.player_id, message])
-		else:
+		elif _relay_match_active() or Network.relay_spectating:
 			Network.send_relay_chat(message)
+		elif Network.multiplayer_client != null and Network.relay_room_code != "":
+			Network.send_room_chat(message)
+		else:
+			on_relay_chat_message_received(Network.player_name, message)
 	else:
 		# Tag the outgoing scope from the tab we're typing in, so the receiver
 		# files by our authoritative choice instead of guessing from our (over-

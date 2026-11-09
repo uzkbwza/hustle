@@ -29,6 +29,19 @@ onready var room_chat_history = $"%RoomChatHistory"
 onready var room_chat_edit = $"%RoomChatEdit"
 onready var room_chat_send_button = $"%RoomChatSendButton"
 
+var replay_challenge_button: Button
+var replay_side_overlay: Control
+var replay_side_label: Label
+var replay_side_p1_button: Button
+var replay_side_p2_button: Button
+var replay_side_restore_timers: CheckBox
+var incoming_challenge_overlay: Control
+var incoming_challenge_label: Label
+var incoming_challenge_accept: Button
+var incoming_challenge_decline: Button
+var pending_replay_match_data = null
+var pending_replay_path = ""
+
 signal quit_on_rematch()
 
 export var direct_connect = true
@@ -78,6 +91,9 @@ func _ready():
 	Network.connect("opponent_left", self, "_on_opponent_left")
 	Network.connect("room_chat_received", self, "_on_room_chat_received")
 	Network.connect("room_chat_history_received", self, "_on_room_chat_history_received")
+	Network.connect("relay_replay_challenge_received", self, "_on_relay_replay_challenge_received")
+	Network.connect("relay_replay_challenge_declined", self, "_on_relay_replay_challenge_declined")
+	Network.connect("relay_replay_challenge_cancelled", self, "_on_relay_replay_challenge_cancelled")
 	room_start_button.connect("pressed", self, "_on_start_pressed")
 	leave_room_button.connect("pressed", self, "_on_leave_room_pressed")
 	room_info_timer.connect("timeout", self, "_on_room_info_timer_timeout")
@@ -88,6 +104,7 @@ func _ready():
 	experimental_mode = "unstable" in Global.VERSION
 	if experimental_mode:
 		$MatchmakingDisabledLabel.show()
+	_create_replay_challenge_ui()
 
 	UIManager.register_menu(self, [
 		$"%NameEdit", $"%RoomNameEdit",
@@ -130,9 +147,12 @@ func _on_ip_edit_text_changed(text):
 func show():
 	.show()
 	showing = true
-	_exit_room_view()
 	match_list_request_in_flight = false
 	_last_match_list_signature = ""
+	if !direct_connect and Network.relay_room_code != "" and !Network.relay_spectating:
+		_enter_room_view(Network.relay_room_code)
+		return
+	_exit_room_view()
 	_restore_browse_ui()
 	var player_data = Global.get_player_data()
 	if player_data.has("username"):
@@ -264,6 +284,7 @@ func save_username():
 
 func hide():
 	room_info_timer.stop()
+	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby):
 		room_lobby.hide()
 	.hide()
@@ -271,6 +292,7 @@ func hide():
 func _exit_room_view():
 	current_room_code = ""
 	room_info_timer.stop()
+	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby):
 		room_lobby.hide()
 
@@ -304,10 +326,14 @@ func _enter_room_view(code, spectating=false):
 		leave_room_button.show()
 		spectate_status.hide()
 	room_lobby.show()
+	replay_challenge_button.hide()
 	$"%NetworkStartButton".hide()
 	$"%BackButton".hide()
 	if is_instance_valid(room_chat_history):
 		room_chat_history.clear()
+		for entry in Network.relay_room_chat_history:
+			if entry is Dictionary:
+				_render_room_chat(entry.get("name", ""), entry.get("message", ""), entry.get("color", ""))
 		if is_instance_valid(room_chat_edit):
 			room_chat_edit.clear()
 	Network.request_room_info(code)
@@ -364,6 +390,216 @@ func _scroll_room_chat_to_bottom():
 	if is_instance_valid(room_chat_scroll):
 		room_chat_scroll.scroll_vertical = 10000000000000000
 
+func _create_replay_challenge_ui():
+	replay_challenge_button = Button.new()
+	replay_challenge_button.rect_min_size.y = 24
+	replay_challenge_button.text = "Replay Challenge (WIP)"
+	replay_challenge_button.connect("pressed", self, "_on_replay_challenge_pressed")
+	var buttons_column = $"%RoomStartButton".get_parent()
+	buttons_column.add_child(replay_challenge_button)
+	buttons_column.move_child(replay_challenge_button, $"%RoomStartButton".get_index())
+	replay_challenge_button.hide()
+
+	var side_parts = _create_dialog_overlay("ReplayChallengeSidePicker")
+	replay_side_overlay = side_parts[0]
+	var side_box = side_parts[1]
+	replay_side_label = Label.new()
+	replay_side_label.align = Label.ALIGN_CENTER
+	side_box.add_child(replay_side_label)
+	var side_buttons = HBoxContainer.new()
+	side_buttons.alignment = BoxContainer.ALIGN_CENTER
+	side_box.add_child(side_buttons)
+	replay_side_p1_button = Button.new()
+	replay_side_p1_button.connect("pressed", self, "_on_replay_side_picked", [1])
+	side_buttons.add_child(replay_side_p1_button)
+	replay_side_p2_button = Button.new()
+	replay_side_p2_button.connect("pressed", self, "_on_replay_side_picked", [2])
+	side_buttons.add_child(replay_side_p2_button)
+	replay_side_restore_timers = CheckBox.new()
+	replay_side_restore_timers.text = "restore timers"
+	side_box.add_child(replay_side_restore_timers)
+	var side_cancel = Button.new()
+	side_cancel.text = "cancel"
+	side_cancel.connect("pressed", self, "_on_replay_side_cancelled")
+	side_box.add_child(side_cancel)
+
+	var incoming_parts = _create_dialog_overlay("ReplayChallengeIncoming")
+	incoming_challenge_overlay = incoming_parts[0]
+	var incoming_box = incoming_parts[1]
+	incoming_challenge_label = Label.new()
+	incoming_challenge_label.align = Label.ALIGN_CENTER
+	incoming_challenge_label.autowrap = true
+	incoming_challenge_label.rect_min_size = Vector2(320, 0)
+	incoming_box.add_child(incoming_challenge_label)
+	var incoming_buttons = HBoxContainer.new()
+	incoming_buttons.alignment = BoxContainer.ALIGN_CENTER
+	incoming_box.add_child(incoming_buttons)
+	incoming_challenge_accept = Button.new()
+	incoming_challenge_accept.text = "accept"
+	incoming_challenge_accept.connect("pressed", self, "_on_incoming_challenge_accept")
+	incoming_buttons.add_child(incoming_challenge_accept)
+	incoming_challenge_decline = Button.new()
+	incoming_challenge_decline.text = "decline"
+	incoming_challenge_decline.connect("pressed", self, "_on_incoming_challenge_decline")
+	incoming_buttons.add_child(incoming_challenge_decline)
+
+func _create_dialog_overlay(node_name):
+	var overlay = ColorRect.new()
+	overlay.name = node_name
+	overlay.color = Color(0, 0, 0, 0.65)
+	overlay.anchor_right = 1.0
+	overlay.anchor_bottom = 1.0
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.hide()
+	add_child(overlay)
+	var center = CenterContainer.new()
+	center.anchor_right = 1.0
+	center.anchor_bottom = 1.0
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(center)
+	var panel = PanelContainer.new()
+	center.add_child(panel)
+	var margin = MarginContainer.new()
+	margin.add_constant_override("margin_left", 16)
+	margin.add_constant_override("margin_top", 12)
+	margin.add_constant_override("margin_right", 16)
+	margin.add_constant_override("margin_bottom", 12)
+	panel.add_child(margin)
+	var box = VBoxContainer.new()
+	box.rect_min_size = Vector2(320, 0)
+	box.add_constant_override("separation", 8)
+	margin.add_child(box)
+	return [overlay, box]
+
+func _relay_opponent_name() -> String:
+	for id in Network.players:
+		if id != Network.get_self_id():
+			return str(Network.players[id])
+	return ""
+
+func _relay_can_challenge() -> bool:
+	if direct_connect or Network.steam:
+		return false
+	if !showing or current_room_code == "":
+		return false
+	if Network.relay_spectating or is_instance_valid(Network.game):
+		return false
+	return Network.relay_opponent_id() != 0
+
+func _on_replay_challenge_pressed():
+	if !_relay_can_challenge():
+		return
+	var ui_layer = get_parent()
+	if !ui_layer.is_connected("replay_picked_for_challenge", self, "_on_replay_picked_for_challenge"):
+		ui_layer.connect("replay_picked_for_challenge", self, "_on_replay_picked_for_challenge")
+	ui_layer.open_replay_picker_for_challenge(_relay_opponent_name())
+
+func _on_replay_picked_for_challenge(match_data, path):
+	if direct_connect or Network.steam:
+		return
+	if !(match_data is Dictionary) or !_relay_can_challenge():
+		return
+	pending_replay_match_data = match_data
+	pending_replay_path = path
+	_show_replay_side_picker()
+
+func _show_replay_side_picker():
+	var p1_name = "P1"
+	var p2_name = "P2"
+	if pending_replay_match_data and pending_replay_match_data.get("selected_characters") is Dictionary:
+		var sc = pending_replay_match_data.selected_characters
+		if sc.get(1) is Dictionary and sc[1].has("name"):
+			p1_name = Global.character_display_name(sc[1]["name"])
+		if sc.get(2) is Dictionary and sc[2].has("name"):
+			p2_name = Global.character_display_name(sc[2]["name"])
+	replay_side_label.text = "Pick your side\n%s vs %s" % [p1_name, p2_name]
+	replay_side_p1_button.text = "P1 (" + p1_name + ")"
+	replay_side_p2_button.text = "P2 (" + p2_name + ")"
+	var has_timer = false
+	if pending_replay_match_data:
+		var mode = pending_replay_match_data.get("timer_mode", null)
+		if mode == null:
+			has_timer = pending_replay_match_data.get("chess_timer", false)
+		else:
+			has_timer = mode != "none"
+	var has_timer_state = has_timer and pending_replay_match_data.has("chess_timer_state")
+	replay_side_restore_timers.visible = has_timer_state
+	replay_side_restore_timers.pressed = has_timer_state
+	replay_side_overlay.show()
+
+func _on_replay_side_picked(side):
+	if pending_replay_match_data == null:
+		return
+	pending_replay_match_data["restore_timers"] = replay_side_restore_timers.visible and replay_side_restore_timers.pressed
+	Network.send_relay_replay_challenge(pending_replay_match_data, side)
+	_clear_pending_replay()
+	replay_side_overlay.hide()
+
+func _on_replay_side_cancelled():
+	_clear_pending_replay()
+	replay_side_overlay.hide()
+
+func _clear_pending_replay():
+	pending_replay_match_data = null
+	pending_replay_path = ""
+
+func _on_relay_replay_challenge_received(challenger_name, replay_data, challenger_side):
+	var p1_name = "P1"
+	var p2_name = "P2"
+	if replay_data.get("selected_characters") is Dictionary:
+		var sc = replay_data.selected_characters
+		if sc.get(1) is Dictionary and sc[1].has("name"):
+			p1_name = Global.character_display_name(sc[1]["name"])
+		if sc.get(2) is Dictionary and sc[2].has("name"):
+			p2_name = Global.character_display_name(sc[2]["name"])
+	var their_char = p1_name if challenger_side == 1 else p2_name
+	var your_side = 2 if challenger_side == 1 else 1
+	var your_char = p2_name if challenger_side == 1 else p1_name
+	incoming_challenge_label.text = "%s wants to replay-challenge you.\n%s vs %s\nThey'd play P%d (%s) — you'd play P%d (%s)." % [challenger_name, p1_name, p2_name, challenger_side, their_char, your_side, your_char]
+	incoming_challenge_accept.show()
+	incoming_challenge_decline.text = "decline"
+	incoming_challenge_overlay.show()
+	if visible:
+		$ChallengeSound.play()
+
+func _on_incoming_challenge_accept():
+	Network.accept_relay_replay_challenge()
+	incoming_challenge_overlay.hide()
+
+func _on_incoming_challenge_decline():
+	if Network.relay_replay_challenge_pending:
+		Network.decline_relay_replay_challenge()
+	incoming_challenge_overlay.hide()
+
+func _on_relay_replay_challenge_declined(reason, detail):
+	var msg = "Replay challenge declined."
+	if reason == "missing_mods":
+		var missing = []
+		if detail is Array:
+			for n in detail:
+				missing.append(str(n))
+		msg = "Opponent is missing required mods:\n%s" % ", ".join(missing)
+	elif reason == "version":
+		msg = "Opponent is on a different game version (%s)." % str(detail)
+	elif reason == "busy":
+		msg = "Opponent is busy right now."
+	incoming_challenge_label.text = msg
+	incoming_challenge_accept.hide()
+	incoming_challenge_decline.text = "ok"
+	incoming_challenge_overlay.show()
+
+func _on_relay_replay_challenge_cancelled():
+	incoming_challenge_overlay.hide()
+
+func _hide_replay_challenge_ui():
+	if is_instance_valid(replay_challenge_button):
+		replay_challenge_button.hide()
+	if is_instance_valid(replay_side_overlay):
+		replay_side_overlay.hide()
+	if is_instance_valid(incoming_challenge_overlay):
+		incoming_challenge_overlay.hide()
+	_clear_pending_replay()
+
 func _hide_browse_ui():
 	name_edit.hide()
 	$"%LobbyLabel".hide()
@@ -383,6 +619,10 @@ func _on_leave_room_pressed():
 	if direct_connect:
 		_on_back_button_pressed()
 		return
+	if Network.relay_replay_challenge_pending:
+		Network.decline_relay_replay_challenge()
+	else:
+		Network.cancel_relay_replay_challenge()
 	if Network.relay_spectating:
 		Network.end_spectate()
 	else:
@@ -392,7 +632,13 @@ func _on_leave_room_pressed():
 func _on_opponent_left(_username, _reason):
 	if !showing:
 		return
+	if Network.relay_replay_challenge_pending:
+		Network.decline_relay_replay_challenge()
+	else:
+		Network.cancel_relay_replay_challenge()
+	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby) and room_lobby.visible:
+		replay_challenge_button.hide()
 		if Network.is_host():
 			Network.request_room_info(current_room_code)
 			return
@@ -401,7 +647,10 @@ func _on_opponent_left(_username, _reason):
 func _return_to_lobby_browse():
 	Network.cancel_spectate_request()
 	current_room_code = ""
+	Network.relay_room_code = ""
+	Network.relay_room_info = {}
 	room_info_timer.stop()
+	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby):
 		room_lobby.hide()
 	show_match_list = true
@@ -462,6 +711,8 @@ func _on_room_info_received(info):
 		room_spectators_label.text = _format_spectators(spectators)
 		if Network.is_host():
 			room_start_button.disabled = players.size() < 2
+		var can_challenge = !direct_connect and !Network.steam and players.size() >= 2 and !Network.relay_spectating and !is_instance_valid(Network.game)
+		replay_challenge_button.visible = can_challenge
 
 func _format_players(players):
 	var text = "Players\n"

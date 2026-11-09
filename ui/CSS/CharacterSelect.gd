@@ -580,6 +580,8 @@ func get_match_data():
 	
 	if SteamLobby.LOBBY_ID != 0 and SteamLobby.MATCH_SETTINGS:
 		data.merge(SteamLobby.MATCH_SETTINGS)
+	elif !Network.steam and Network.multiplayer_active and !Network.is_host() and !Network.relay_match_settings.empty():
+		data.merge(Network.relay_match_settings)
 	else:
 		data.merge($"%GameSettingsPanelContainer".get_data())
 	return data

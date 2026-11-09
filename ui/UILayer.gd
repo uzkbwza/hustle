@@ -435,7 +435,7 @@ func _register_ui_scaling():
 func _apply_mobile_bar_visibility(is_mobile):
 	var show_mobile_buttons = is_mobile
 	$"%ChatButton".visible = show_mobile_buttons
-	$"%MobileReplayButton".visible = show_mobile_buttons
+	$"%MobileReplayButton".visible = show_mobile_buttons and !Network.multiplayer_active
 	$"%ArrowsButton".visible = show_mobile_buttons
 	$"%MobilePredictionsButton".visible = show_mobile_buttons
 
@@ -448,8 +448,10 @@ func _apply_bottom_bar_visibility(is_desktop):
 	$"%OptionsBar".visible = enabled
 	$"%BottomBarToggleButton".visible = enabled and _bottom_adjustments_mode
 	var show_adjustments = enabled and _bottom_adjustments_mode
+	var replay_buttons = [$"%BottomReplayButton", $"%BottomWatchReplayButton", $"%BottomEditReplayButton"]
 	for button in _bottom_menu_buttons():
-		button.visible = enabled and not show_adjustments and not _bottom_collapsed
+		var available = !Network.multiplayer_active or not replay_buttons.has(button)
+		button.visible = enabled and not show_adjustments and not _bottom_collapsed and available
 	for control in _bottom_adjustment_controls():
 		control.visible = show_adjustments
 	var collapse_button = get_node_or_null("%BottomCollapseButton")
@@ -1504,17 +1506,29 @@ func _load_replay_from_button(path):
 	if replay_picker_for_challenge:
 		replay_picker_for_challenge = false
 		$"%ReplayChallengeTitle".hide()
-		$"%SteamLobby".show()
+		_show_replay_challenge_source()
 		emit_signal("replay_picked_for_challenge", match_data, path)
 		return
 	emit_signal("loaded_replay", match_data)
+
+func _show_replay_challenge_source():
+	if !Network.steam and get_node_or_null("%Lobby") != null:
+		$"%Lobby".show()
+	else:
+		$"%SteamLobby".show()
+
+func _hide_replay_challenge_source():
+	if !Network.steam and get_node_or_null("%Lobby") != null:
+		$"%Lobby".hide()
+	else:
+		$"%SteamLobby".hide()
 
 func _on_replay_cancel_pressed():
 	if replay_picker_for_challenge:
 		replay_picker_for_challenge = false
 		$"%ReplayWindow".hide()
 		$"%ReplayChallengeTitle".hide()
-		$"%SteamLobby".show()
+		_show_replay_challenge_source()
 		return
 	Global.reload()
 
@@ -1525,7 +1539,7 @@ func open_replay_picker_for_challenge(opponent_name=""):
 	else:
 		$"%ReplayChallengeTitle".text = "Select a replay to resume with " + opponent_name
 	$"%ReplayChallengeTitle".show()
-	$"%SteamLobby".hide()
+	_hide_replay_challenge_source()
 	load_replays()
 
 #func _notification(what):
@@ -2367,10 +2381,9 @@ func _process(delta):
 	$"%MobilePredictionsButton".visible = !replay_playing
 	$"%ArrowsButton".visible = !replay_playing
 	$"%ChatButton".visible = !replay_playing
-	if is_instance_valid(game) and !Network.multiplayer_active:
-		$"%ReplayControls".show()
-	else:
-		$"%ReplayControls".hide()
+	var replay_available = is_instance_valid(game) and !Network.multiplayer_active
+	$"%ReplayControls".visible = replay_available and Global.show_playback_controls
+	$"%MobileReplayButton".visible = show_mobile and replay_available
 #	if $"%TopInfoMP".visible and !actionable:
 #		on_player_actionable()
 	$"%SoftlockResetButton".visible = false

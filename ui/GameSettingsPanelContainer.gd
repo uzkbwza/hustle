@@ -94,6 +94,7 @@ func _ready():
 			node.connect("item_selected", self, "_setting_value_changed", [setting])
 		pass
 	SteamLobby.connect("received_match_settings", self, "_on_received_match_settings")
+	Network.connect("relay_match_settings_received", self, "_on_relay_match_settings_received")
 	init = false
 	update_menu()
 	if load_all_formats() == []:
@@ -181,12 +182,15 @@ func _setting_value_changed(_value, _setting):
 	update_menu()
 
 func _on_received_match_settings(settings, force=false):
-	if SteamLobby.LOBBY_OWNER == SteamHustle.STEAM_ID:
+	if SteamLobby.LOBBY_ID != 0 and SteamLobby.LOBBY_OWNER == SteamHustle.STEAM_ID:
 		if !force:
 			return
 		if !init:
 			update_lobby_data()
 	load_settings(settings)
+
+func _on_relay_match_settings_received(settings):
+	_on_received_match_settings(settings, true)
 
 func load_settings(settings):
 	# Backwards compat: old game formats / lobby settings carried `chess_timer`
@@ -245,6 +249,10 @@ func update_menu():
 func update_lobby_data():
 #	if SteamLobby.LOBBY_ID == 0:
 #		return
+	if !Network.steam:
+		if Network.multiplayer_active and Network.multiplayer_client != null:
+			Network.publish_relay_match_settings(get_data())
+		return
 	if SteamHustle.STEAM_ID != Steam.getLobbyOwner(SteamLobby.LOBBY_ID):
 		return
 	print("updating lobby settings")
@@ -302,6 +310,8 @@ func init(singleplayer=true):
 		if !singleplayer:
 			if !Network.is_host():
 				hide()
+			else:
+				init = true
 	else:
 		init = true
 		pass
@@ -311,6 +321,8 @@ func init(singleplayer=true):
 	else:
 		update_multiplayer()
 	update_menu()
+	if !steam and init and !singleplayer and Network.multiplayer_active:
+		update_lobby_data()
 
 func update_singleplayer():
 	$"%SadnessEnabled".pressed = false

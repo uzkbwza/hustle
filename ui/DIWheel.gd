@@ -1,10 +1,9 @@
 extends XYPlot
 
 func _process(delta):
+	._process(delta)
 	if not is_visible_in_tree():
-		_reset_drag_state()
 		return
-	_handle_game_pause_state()
 	panel.hint_tooltip = ""
 	var data = get_data()
 	if value_float.x == 0 and value_float.y == 0:

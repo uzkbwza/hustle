@@ -7,7 +7,7 @@ signal lobby_match_list(lobbies)
 signal lobby_joined(lobby, permissions, locked, response)
 signal lobby_chat_update(lobby_id, changed_id, making_change_id, chat_state)
 signal lobby_message(lobby_id, user, message, chat_type)
-signal lobby_data_update
+signal lobby_data_update(success, lobby_id, member_id)
 signal lobby_invite(inviter, lobby, game)
 signal join_requested(lobby_id, steam_id)
 signal persona_state_change(steam_id, flags)
@@ -2097,7 +2097,7 @@ const RELAY_SIGNALS := {
 	"lobby_joined": 4,
 	"lobby_chat_update": 4,
 	"lobby_message": 4,
-	"lobby_data_update": 0,
+	"lobby_data_update": 3,
 	"lobby_invite": 3,
 	"join_requested": 2,
 	"persona_state_change": 2,

@@ -58,6 +58,16 @@ var relay_spectate_pending = false
 var relay_spectators = {}
 var relay_replay_marks = null
 var relay_spectator_timer = null
+var relay_room_code = ""
+var relay_room_info = {}
+var relay_room_chat_history = []
+var relay_match_chat_history = []
+var relay_match_settings = {}
+var relay_replay_data = null
+var relay_replay_challenger_side = 0
+var relay_replay_side = 0
+var relay_replay_challenger_name = ""
+var relay_replay_challenge_pending = false
 
 var ticks = {
 	1: null,
@@ -156,6 +166,11 @@ signal chat_message_received(id, message)
 signal relay_chat_received(sender_name, message)
 signal room_chat_received(sender_name, message)
 signal room_chat_history_received(history)
+signal relay_match_settings_received(settings)
+signal relay_replay_challenge_received(challenger_name, replay_data, challenger_side)
+signal relay_replay_challenge_accepted()
+signal relay_replay_challenge_declined(reason, detail)
+signal relay_replay_challenge_cancelled()
 signal check_players_ready()
 signal opponent_ready()
 signal client_actionable()
@@ -280,6 +295,20 @@ func check_valid_rpc(function_name):
 remotesync func send_match_data(match_data):
 	emit_signal("match_locked_in", match_data)
 
+func publish_relay_match_settings(settings):
+	if steam or !multiplayer_active or !is_host():
+		return
+	if !(settings is Dictionary):
+		return
+	relay_match_settings = settings.duplicate(true)
+	rpc_("receive_relay_match_settings", relay_match_settings, "remote")
+
+remote func receive_relay_match_settings(settings):
+	if !(settings is Dictionary):
+		return
+	relay_match_settings = settings.duplicate(true)
+	emit_signal("relay_match_settings_received", relay_match_settings)
+
 func _on_hole_punched(my_port, hosts_port, hosts_address):
 	print("hole punched")
 	print("my port: " + str(my_port))
@@ -331,14 +360,22 @@ func host_game_relay(new_player_name, public=true, room_name=""):
 		return
 	multiplayer_host = true
 	player_name = new_player_name.substr(0, 32)
+	players = {}
+	player_name_colors = {}
+	relay_room_chat_history = []
 	rpc_id(1, "create_match", player_name, public, room_name, local_name_color())
 	yield(self, "match_code_received")
+	relay_room_code = relay_room_code.to_upper()
 
 func join_game_relay(new_player_name, room_code):
 	if !(multiplayer_client and multiplayer_client.connected):
 		return
 	multiplayer_host = false
 	player_name = new_player_name.substr(0, 32)
+	players = {}
+	player_name_colors = {}
+	relay_room_code = room_code.to_upper()
+	relay_room_chat_history = []
 	rpc_id(1, "player_join_game", player_name, room_code, local_name_color())
 	yield(self, "relay_match_joined")
 #	rpc_("register_player", [new_player_name, get_local_id()])
@@ -460,6 +497,16 @@ func _reset():
 	relay_spectate_pending = false
 	relay_spectators.clear()
 	relay_replay_marks = null
+	relay_room_code = ""
+	relay_room_info = {}
+	relay_room_chat_history = []
+	relay_match_chat_history = []
+	relay_match_settings = {}
+	relay_replay_data = null
+	relay_replay_challenger_side = 0
+	relay_replay_side = 0
+	relay_replay_challenger_name = ""
+	relay_replay_challenge_pending = false
 	
 	get_tree().set_network_peer(null)
 
@@ -784,15 +831,16 @@ func assign_players():
 
 func assign_players_for_replay_challenge(replay_data):
 	print("assigning players for replay challenge")
-	if !steam:
+	if steam:
+		player_id = SteamLobby.PLAYER_SIDE
+		if SteamLobby.PLAYER_SIDE == 1:
+			network_ids[1] = SteamHustle.STEAM_ID
+			network_ids[2] = SteamLobby.OPPONENT_ID
+		else:
+			network_ids[1] = SteamLobby.OPPONENT_ID
+			network_ids[2] = SteamHustle.STEAM_ID
+	elif network_ids.size() < 2:
 		return
-	player_id = SteamLobby.PLAYER_SIDE
-	if SteamLobby.PLAYER_SIDE == 1:
-		network_ids[1] = SteamHustle.STEAM_ID
-		network_ids[2] = SteamLobby.OPPONENT_ID
-	else:
-		network_ids[1] = SteamLobby.OPPONENT_ID
-		network_ids[2] = SteamHustle.STEAM_ID
 	ReplayManager.frames = replay_data.frames
 	if ReplayManager.frames.has("finished"):
 		ReplayManager.frames["finished"] = false
@@ -804,6 +852,144 @@ func assign_players_for_replay_challenge(replay_data):
 	match_data["singleplayer"] = false
 	multiplayer_active = true
 	emit_signal("match_ready", match_data)
+
+func relay_opponent_id() -> int:
+	var self_id = get_self_id()
+	for id in players:
+		if id != self_id:
+			return int(id)
+	return 0
+
+func _assign_relay_replay_sides(side: int) -> bool:
+	if side != 1 and side != 2:
+		return false
+	var opponent = relay_opponent_id()
+	if opponent == 0:
+		return false
+	player_id = side
+	network_ids = {
+		side: get_self_id(),
+		opponent_player_id(side): opponent,
+	}
+	return true
+
+func _relay_replay_missing_characters(replay_data: Dictionary) -> Array:
+	var missing = []
+	var characters = replay_data.get("selected_characters", {})
+	for i in [1, 2]:
+		var char_data = characters.get(i, {})
+		if !(char_data is Dictionary):
+			continue
+		var char_name = char_data.get("name", "")
+		if char_name != "" and !Global.has_character(char_name):
+			missing.append(Global.character_display_name(char_name))
+	return missing
+
+func send_relay_replay_challenge(match_data: Dictionary, side: int):
+	if steam or !(multiplayer_client and multiplayer_client.connected):
+		return
+	if is_instance_valid(game) or relay_spectating:
+		return
+	if side != 1 and side != 2:
+		return
+	if relay_opponent_id() == 0:
+		return
+	var payload = match_data.duplicate(true)
+	payload["frames"] = ReplayManager.frames
+
+	var raw: PoolByteArray = var2bytes(payload)
+	var compressed: PoolByteArray = raw.compress(File.COMPRESSION_DEFLATE)
+
+	relay_replay_data = payload
+	relay_replay_challenger_side = side
+	relay_replay_side = side
+	relay_replay_challenger_name = player_name
+	rpc_id(1, "relay", "receive_relay_replay_challenge", [player_name, compressed, side])
+
+remote func receive_relay_replay_challenge(challenger_name, compressed, challenger_side):
+	if steam:
+		return
+	if is_instance_valid(game) or relay_spectating or relay_replay_challenge_pending or relay_replay_data != null:
+		decline_relay_replay_challenge("busy")
+		return
+	if !(compressed is PoolByteArray):
+		return
+	var inflated: PoolByteArray = compressed.decompress_dynamic(64 * 1024 * 1024, File.COMPRESSION_DEFLATE)
+	if inflated.empty():
+		return
+	var replay_data = bytes2var(inflated)
+	if !(replay_data is Dictionary):
+		return
+	if int(challenger_side) != 1 and int(challenger_side) != 2:
+		return
+	var version = str(replay_data.get("version", ""))
+	if version != "" and version != str(Global.VERSION):
+		decline_relay_replay_challenge("version", version)
+		return
+	var missing = _relay_replay_missing_characters(replay_data)
+	if !missing.empty():
+		decline_relay_replay_challenge("missing_mods", missing)
+		return
+	relay_replay_data = replay_data
+	relay_replay_challenger_side = int(challenger_side)
+	relay_replay_side = opponent_player_id(relay_replay_challenger_side)
+	relay_replay_challenger_name = str(challenger_name)
+	relay_replay_challenge_pending = true
+	emit_signal("relay_replay_challenge_received", relay_replay_challenger_name, replay_data, relay_replay_challenger_side)
+
+func accept_relay_replay_challenge():
+	if !relay_replay_challenge_pending or relay_replay_data == null:
+		return
+	if !_assign_relay_replay_sides(relay_replay_side):
+		return
+	var replay_data = relay_replay_data
+	relay_replay_data = null
+	relay_replay_challenge_pending = false
+	rpc_id(1, "relay", "receive_relay_replay_challenge_accepted", [])
+	assign_players_for_replay_challenge(replay_data)
+
+remote func receive_relay_replay_challenge_accepted():
+	if relay_replay_data == null:
+		return
+	if !_assign_relay_replay_sides(relay_replay_side):
+		return
+	var replay_data = relay_replay_data
+	relay_replay_data = null
+	assign_players_for_replay_challenge(replay_data)
+
+func decline_relay_replay_challenge(reason="", detail=null):
+	rpc_id(1, "relay", "receive_relay_replay_challenge_declined", [reason, detail])
+	relay_replay_challenge_pending = false
+	relay_replay_data = null
+	relay_replay_challenger_side = 0
+	relay_replay_side = 0
+	relay_replay_challenger_name = ""
+
+remote func receive_relay_replay_challenge_declined(reason="", detail=null):
+	relay_replay_challenge_pending = false
+	relay_replay_data = null
+	relay_replay_challenger_side = 0
+	relay_replay_side = 0
+	relay_replay_challenger_name = ""
+	emit_signal("relay_replay_challenge_declined", reason, detail)
+
+func cancel_relay_replay_challenge():
+	if relay_replay_data == null:
+		return
+	rpc_id(1, "relay", "receive_relay_replay_challenge_cancelled", [])
+	relay_replay_data = null
+	relay_replay_challenge_pending = false
+	relay_replay_challenger_side = 0
+	relay_replay_side = 0
+	relay_replay_challenger_name = ""
+
+remote func receive_relay_replay_challenge_cancelled():
+	relay_replay_challenge_pending = false
+	relay_replay_data = null
+	relay_replay_challenger_side = 0
+	relay_replay_side = 0
+	relay_replay_challenger_name = ""
+	emit_signal("relay_replay_challenge_cancelled")
 
 func select_character(character, style=null):
 	rpc_("sync_character_selection", [player_id, character, style])
@@ -898,6 +1084,7 @@ func request_room_info(room_code):
 
 remote func receive_room_info(info):
 	if info is Dictionary:
+		relay_room_info = info
 		var players = info.get("players", [])
 		var player_colors = info.get("player_colors", [])
 		for i in range(min(players.size(), player_colors.size())):
@@ -925,6 +1112,12 @@ remote func receive_opponent_left(username, reason):
 				return
 		emit_signal("player_disconnected")
 		return
+	for id in players.keys():
+		if players[id] == username:
+			players.erase(id)
+			relay_name_colors.erase(str(username))
+			emit_signal("player_list_changed")
+			break
 	emit_signal("opponent_left", username, reason)
 
 func leave_match():
@@ -1101,7 +1294,11 @@ func _push_to_relay_spectators(function_name, arg=null):
 	rpc_id(1, "relay_to_spectators", function_name, arg)
 
 func _on_relay_spectator_timer_timeout():
-	if steam or relay_spectators.empty():
+	if steam:
+		return
+	if relay_room_code != "" and multiplayer_client and multiplayer_client.connected:
+		rpc_id(1, "fetch_room_info", relay_room_code)
+	if relay_spectators.empty():
 		return
 	if !is_instance_valid(game):
 		return
@@ -1183,6 +1380,13 @@ remote func check_tick_sync(tick):
 remotesync func send_chat_message(player_id, message):
 	emit_signal("chat_message_received", player_id, message)
 
+func _record_relay_chat(history, sender_name, message, name_color=""):
+	if message == "":
+		return
+	history.append({"name": str(sender_name), "message": str(message), "color": str(name_color)})
+	while history.size() > 200:
+		history.pop_front()
+
 func send_relay_chat(message):
 	if steam:
 		return
@@ -1191,12 +1395,14 @@ func send_relay_chat(message):
 	message = message.strip_edges()
 	if message == "":
 		return
+	_record_relay_chat(relay_match_chat_history, player_name, message, local_name_color())
 	emit_signal("relay_chat_received", player_name, message)
 	rpc_id(1, "relay_chat", message)
 
 remote func receive_relay_chat(sender_name, message, name_color=""):
 	if name_color != "":
 		relay_name_colors[str(sender_name)] = str(name_color)
+	_record_relay_chat(relay_match_chat_history, sender_name, message, name_color)
 	emit_signal("relay_chat_received", sender_name, message)
 
 func send_room_chat(message):
@@ -1207,16 +1413,22 @@ func send_room_chat(message):
 	message = message.strip_edges()
 	if message == "":
 		return
+	_record_relay_chat(relay_room_chat_history, player_name, message, local_name_color())
 	emit_signal("room_chat_received", player_name, message)
 	rpc_id(1, "relay_room_chat", message)
 
 remote func receive_room_chat(sender_name, message, name_color=""):
 	if name_color != "":
 		relay_name_colors[str(sender_name)] = str(name_color)
+	_record_relay_chat(relay_room_chat_history, sender_name, message, name_color)
 	emit_signal("room_chat_received", sender_name, message)
 
 remote func receive_room_chat_history(history):
 	if history is Array:
+		relay_room_chat_history.clear()
+		for entry in history:
+			if entry is Array and entry.size() >= 3:
+				_record_relay_chat(relay_room_chat_history, entry[0], entry[2], entry[1])
 		emit_signal("room_chat_history_received", history)
 
 remotesync func end_turn_simulation(tick, player_id):
@@ -1453,10 +1665,12 @@ remote func room_join_confirm():
 	emit_signal("relay_match_joined")
 
 remote func room_join_deny(message):
+	relay_room_code = ""
 	emit_signal("game_error", message)
 
 remote func receive_match_id(match_id):
 	print("received match id: %s" % [match_id])
+	relay_room_code = str(match_id).to_upper()
 	emit_signal("match_code_received", match_id)
 
 remote func player_connected_relay():

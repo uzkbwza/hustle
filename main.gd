@@ -311,7 +311,7 @@ func _load_replay_chars_and_wait(match_data):
 		yield(get_tree(), "idle_frame")
 	# Spectators have no opponent to handshake with — signal_replay_mods_loaded
 	# returns early when OPPONENT_ID == 0, so the wait loop would hang forever.
-	if not match_data.get("spectating"):
+	if not match_data.get("spectating") and Network.steam:
 		if label:
 			label.text = "Waiting for opponent to load their character..."
 		yield(get_tree(), "idle_frame")
