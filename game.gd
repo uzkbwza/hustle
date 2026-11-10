@@ -1324,7 +1324,9 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 					continue
 			
 			var attacker = hitbox.host
-			if (!(hurtbox is Hitbox)) and host.is_invulnerable_to(hitbox, attacker):
+			if host.is_invulnerable_to(hitbox, attacker):
+				continue
+			if hurtbox is Hitbox and attacker.is_invulnerable_to(hurtbox, host):
 				continue
 			
 			hit_by = hitbox
