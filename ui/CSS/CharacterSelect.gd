@@ -209,9 +209,14 @@ func load_mods(caches: Array):
 	serverMods = []
 	Network.hash_to_folder = {}
 	charPackages = {}
+	var total = ModLoader._modZipFiles.size()
+	var done = 0
 	for zip in ModLoader._modZipFiles:
 		Global.loading_character = str(zip).split("/")[-1]
+		Global.loading_progress = str(done + 1) + " / " + str(total)
 		_load_mod_zip(zip, caches)
+		done += 1
+	Global.loading_progress = str(total) + " / " + str(total)
 	_mod_thread_done = true
 	call_deferred("on_mods_load_finished")
 
@@ -259,6 +264,7 @@ func on_mods_load_finished():
 		return
 	_mods_finished = true
 	Global.loading_character = ""
+	Global.loading_progress = ""
 	Global.mod_import_cache = {
 		"signature": _mod_signature,
 		"hash_to_folder": hash_to_folder,
@@ -276,6 +282,7 @@ func force_finish_mods(reason):
 	_mods_finished = true
 	printerr("Forcing mod load to finish: " + str(reason))
 	Global.loading_character = ""
+	Global.loading_progress = ""
 	emit_signal("mods_loaded")
 
 func _join_mod_thread():
@@ -543,6 +550,8 @@ func _on_button_pressed(button):
 	$SelectionArt.set_background(current_player, null)
 
 	if (isCustomChar(button.name)):
+		loadingText = "Loading " + getCharName(button.name) + " scene..."
+		loadingLabel_start()
 		loadThread = Thread.new()
 		loadThread.start(self, "async_loadButtonChar", button)
 	else:
@@ -588,6 +597,15 @@ func get_match_data():
 
 func go():
 	if !singleplayer:
+		var latest = {}
+		if !Network.steam:
+			if Network.is_host():
+				latest = $"%GameSettingsPanelContainer".get_data()
+			elif !Network.relay_match_settings.empty():
+				latest = Network.relay_match_settings
+		if !latest.empty():
+			network_match_data = network_match_data.duplicate(true)
+			network_match_data.merge(latest, true)
 		emit_signal("match_ready", network_match_data)
 	else:
 		emit_signal("match_ready", get_match_data())
@@ -740,6 +758,7 @@ func _hash_has_folder(h, folder):
 
 func loadingLabel_start():
 	retract_loaded = false
+	labelTimer = 0
 	loadingLabel.percent_visible = 1
 
 func loadingLabel_vanish():
@@ -889,6 +908,8 @@ const TEXTURE_BATCH_BYTES_MOBILE = 64 * 1024 * 1024
 # fewer: half their cores are slow ones and they throttle when hot.
 const TEXTURE_THREADS = 8
 const TEXTURE_THREADS_MOBILE = 4
+const IMPORT_THREADS = 6
+const IMPORT_THREADS_MOBILE = 3
 
 # preload, not load(), so exports that only include used resources keep these
 const TextureDecoder = preload("res://bin/GDTextureDecoder.gdns")
@@ -1132,12 +1153,15 @@ func on_searched(text):
 
 func textureGet(imagePath):
 	var image = Image.new()
-	var err = image.load(imagePath)
-	if err != OK:
-		return 0
-	var tex = ImageTexture.new()
-	tex.create_from_image(image, 0)
-	return tex
+	if image.load(imagePath) == OK:
+		var tex = ImageTexture.new()
+		tex.create_from_image(image, 0)
+		return tex
+	if ResourceLoader.exists(imagePath):
+		var imported = load(imagePath)
+		if imported is Texture:
+			return imported
+	return 0
 
 func isCustomChar(_name):
 	return _name.find("F-") == 0
@@ -1361,7 +1385,12 @@ func save_sample(og_file, dest_file):
 
 	## READING ##
 	var f = File.new()
-	f.open(og_file, File.READ)
+	if f.open(og_file, File.READ) != OK:
+		return false
+	var fileLen = f.get_len()
+	if fileLen < 44:
+		f.close()
+		return false
 
 	# read channel number and sample rate
 	f.seek(0x00000016)
@@ -1375,16 +1404,25 @@ func save_sample(og_file, dest_file):
 	var data32 = f.get_32()
 	while data32 != 1635017060: # this number is the word "data" spelled in hex
 		ind += 1
+		if ind + 4 > fileLen:
+			f.close()
+			return false
 		f.seek(ind - 4)
 		data32 = f.get_32()
 
 	# get data chunk size
 	f.seek(ind)
 	var leng = f.get_32()
+	if leng <= 0 or ind + 4 + leng > fileLen:
+		f.close()
+		return false
 	
 	# read the data
 	f.seek(ind + 4)
 	var fullWav = f.get_buffer(leng)
+	if fullWav.size() == 0:
+		f.close()
+		return false
 
 	leng = leng * 2 # this will be needed for later, some wav files only work when having a duplicate ammount of data (maybe it has to do with an odd number?)
 	
@@ -1464,6 +1502,47 @@ func save_oggstr(og_file, dest_file):
 	f.close()
 	
 
+# resolves a portrait stored as a sub-resource (AnimatedTexture/AtlasTexture)
+# to the first ExtResource it points at, so mods that animate their portrait
+# still get an idle frame on the character button
+func _portrait_path_from_subresource(content, sub_id):
+	var marker = "id=" + str(sub_id) + "]"
+	var at = 0
+	var block_start = -1
+	while true:
+		at = content.find("[sub_resource", at)
+		if at == -1:
+			break
+		var line_end = content.find("\n", at)
+		if line_end == -1:
+			line_end = content.length()
+		if content.substr(at, line_end - at).replace("\r", "").ends_with(marker):
+			block_start = at
+			break
+		at = line_end
+	if block_start == -1:
+		return ""
+	var block_end = content.find("\n[", block_start + 1)
+	if block_end == -1:
+		block_end = content.length()
+	var block = content.substr(block_start, block_end - block_start)
+	var ext_ind = block.find("ExtResource(")
+	if ext_ind == -1:
+		return ""
+	var ext_start = ext_ind + 13
+	var ext_end = block.find(")", ext_start)
+	if ext_end == -1:
+		return ""
+	var ext_id = int(block.substr(ext_start, ext_end - ext_start).strip_edges())
+	var ext_marker = "id=" + str(ext_id) + "]"
+	for rawLine in content.split("\n"):
+		var ext_line = rawLine.replace("\r", "").strip_edges()
+		if ext_line.begins_with("[ext_resource") and ext_line.ends_with(ext_marker):
+			var path_split = ext_line.split("path=\"")
+			if path_split.size() > 1:
+				return path_split[1].split("\" type=")[0]
+	return ""
+
 # this function finds the portrait image path inside a .tscn file, as well as the extra colors
 func _importHolderPortrait(folder, scenePath, charName):
 	var sc
@@ -1478,6 +1557,7 @@ func _importHolderPortrait(folder, scenePath, charName):
 	var content = f.get_as_text()
 	var portSource = 0
 	var portSourceInd = content.find("character_portrait = ExtResource")
+	var portSubSourceInd = content.find("character_portrait = SubResource")
 
 	var usesEx1SourceInd = content.find("use_extra_color_1 = true")
 	var usesEx2SourceInd = content.find("use_extra_color_2 = true")
@@ -1500,11 +1580,6 @@ func _importHolderPortrait(folder, scenePath, charName):
 
 
 		while ids != str(portSource) + "]":
-			line = f.get_line().replace("\n", "").replace("\r", "")
-			var split = line.split("id=")
-			if split.size() <= 1:
-				continue
-			ids = line.split("id=")[1]
 			if f.eof_reached():
 				sc = load("res://characters/BaseChar.tscn").instance()
 				sc.name = "Error\ncharacter scene must be unedited"
@@ -1513,8 +1588,19 @@ func _importHolderPortrait(folder, scenePath, charName):
 
 				return scenePath
 				break
+			line = f.get_line().replace("\n", "").replace("\r", "")
+			var split = line.split("id=")
+			if split.size() <= 1:
+				continue
+			ids = line.split("id=")[1]
 
 		portPath = line.split("=")[1].split(" typ")[0].replace("\"", "")
+	elif (portSubSourceInd != -1):
+		var subStartNumInd = portSubSourceInd + 34
+		var subId = int(content.substr(subStartNumInd, content.find(" )", portSubSourceInd) - subStartNumInd))
+		var subPath = _portrait_path_from_subresource(content, subId)
+		if subPath != "":
+			portPath = subPath
 
 	if (ex1SourceInd != -1):
 		var startNumInd = ex1SourceInd + 24
@@ -1612,20 +1698,103 @@ var _import_pack_path = "user://imagepack.pck"
 # and reading thousands of small files out of the zip on every load was slow.
 var _import_index = null
 
-func _make_import_index(folder):
+func _scan_mod_folder(folder):
+	var all = ModLoader._get_all_files(folder)
+	var assets = []
+	var imports = []
+	for f in all:
+		var ext = f.get_extension()
+		if ext == "png" or ext == "wav" or ext == "ogg" or ext == "mp3":
+			assets.append(f)
+		elif ext == "import":
+			imports.append(f)
+	return {"all": all, "assets": assets, "imports": imports}
+
+func _read_import_map(scan):
 	var dir = Directory.new()
-	var no_import = []
-	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
-	for asset_path in assets:
-		if !dir.file_exists(asset_path + ".import"):
-			no_import.append(asset_path + ".import")
+	var import_set = {}
+	for f in scan.imports:
+		import_set[f] = true
+	var dests = {}
 	var expected = {}
-	for f in ModLoader._get_all_files(folder, "import"):
-		if dir.file_exists(f.replace(".import", "")):
-			var im = ConfigFile.new()
-			im.load(f)
-			expected[f] = im.get_value("remap", "path")
-	return {"no_import": no_import, "expected": expected}
+	for f in scan.imports:
+		var asset_path = f.trim_suffix(".import")
+		if !dir.file_exists(asset_path):
+			continue
+		var c = ConfigFile.new()
+		if c.load(f) != OK:
+			continue
+		var dest = c.get_value("remap", "path")
+		if typeof(dest) != TYPE_STRING or dest == "":
+			continue
+		dests[asset_path] = dest
+		expected[f] = dest
+	var no_import = []
+	for a in scan.assets:
+		if !import_set.has(a + ".import"):
+			no_import.append(a + ".import")
+	return {"dests": dests, "expected": expected, "no_import": no_import}
+
+
+func _make_import_index(folder):
+	var map = _read_import_map(_scan_mod_folder(folder))
+	return {"no_import": map.no_import, "expected": map.expected}
+
+
+func _convert_stex(asset_path, tmp_file):
+	if !save_stex_from_png(asset_path, tmp_file):
+		var img = Image.new()
+		if img.load(asset_path) == OK:
+			save_stex(img, tmp_file)
+
+
+func _convert_stex_jobs(jobs):
+	for job in jobs:
+		_convert_stex(job[0], job[2])
+	return jobs.size()
+
+
+var _import_progress_done = 0
+var _import_progress_total = 0
+var _import_progress_label = ""
+
+func _import_progress_text():
+	if _import_progress_total <= 0:
+		return "Loading " + _import_progress_label + "..."
+	var pct = int((float(_import_progress_done) / _import_progress_total) * 100)
+	return "Loading " + _import_progress_label + " - " + str(clamp(pct, 0, 100)) + "%"
+
+func _convert_stex_parallel(jobs, label):
+	if jobs.empty():
+		return
+	var max_threads = IMPORT_THREADS_MOBILE if Global.is_mobile_device else IMPORT_THREADS
+	var threads = int(clamp(OS.get_processor_count() - 1, 1, max_threads))
+	threads = int(min(threads, jobs.size()))
+	if threads <= 1:
+		for job in jobs:
+			_convert_stex(job[0], job[2])
+			_import_progress_done += 1
+			loadingText = _import_progress_text()
+		return
+	var running = []
+	for t in range(threads):
+		var chunk = []
+		var i = t
+		while i < jobs.size():
+			chunk.append(jobs[i])
+			i += threads
+		var th = Thread.new()
+		if th.start(self, "_convert_stex_jobs", chunk) == OK:
+			running.append([th, chunk.size()])
+		else:
+			for job in chunk:
+				_convert_stex(job[0], job[2])
+			_import_progress_done += chunk.size()
+			loadingText = _import_progress_text()
+	for entry in running:
+		entry[0].wait_to_finish()
+		_import_progress_done += entry[1]
+		loadingText = _import_progress_text()
 
 func _import_index_path(cache_path):
 	return "res://.import/" + cache_path.get_file().trim_suffix(".pck") + ".charloader-index.json"
@@ -1702,52 +1871,68 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 	_import_pack_path = IMPORT_PACK_DIR.plus_file(cache_name.trim_suffix(".pck") + "-" + str(OS.get_ticks_usec()) + ".pck")
 	_import_start()
 
-	var assets = ModLoader._get_all_files(folder, "png") + ModLoader._get_all_files(folder, "wav") + ModLoader._get_all_files(folder, "ogg") + ModLoader._get_all_files(folder, "mp3")
+	var scan = _scan_mod_folder(folder)
+	var maps = _read_import_map(scan)
+
 	var delList = [] # list of all the temp files that should be deleted once the conversion is done
-	
 	var missingFiles = []
+	var packed = {}
+	var jobs = []
+	var stex_jobs = []
 
-	for i in len(assets):
-		if (!dir.file_exists(assets[i] + ".import")):
-			missingFiles.append(assets[i] + ".import")
+	for asset_path in scan.assets:
+		if !maps.dests.has(asset_path):
+			missingFiles.append(asset_path + ".import")
+			continue
+		var dest = maps.dests[asset_path]
+		if dir.file_exists(dest):
+			packed[dest] = true
+			continue
+		var split = dest.split("://.import/")
+		if split.size() < 2:
+			missingFiles.append(dest)
+			continue
+		var job = [asset_path, dest, "user://mod_temp/" + split[1]]
+		jobs.append(job)
+		if dest.ends_with(".stex"):
+			stex_jobs.append(job)
+
+	_import_progress_done = 0
+	_import_progress_total = jobs.size()
+	_import_progress_label = getCharName(_charName)
+	_convert_stex_parallel(stex_jobs, getCharName(_charName))
+	for job in jobs:
+		if job[1].ends_with(".stex"):
+			continue
+		var c = ConfigFile.new()
+		c.load(job[0] + ".import")
+		if (job[1].ends_with(".oggstr") or job[1].ends_with(".mp3str")):
+			if !AudioImport.save_compressed(job[0], job[2], c) and job[1].ends_with(".oggstr"):
+				save_oggstr(job[0], job[2])
 		else:
-			loadingText = "Loading " + getCharName(_charName) + " - " + str(int((float(i) / len(assets)) * 100)) + "%"
-			
-			# read the destination .stex/.sample path from the .import file corresponding to the asset (it's basically a .ini file)
-			var c = ConfigFile.new()
-			c.load(assets[i] + ".import")
-			var dest = c.get_value("remap", "path")
+			if !AudioImport.save_wav(job[0], job[2], c):
+				save_sample(job[0], job[2])
+		_import_progress_done += 1
+		loadingText = _import_progress_text()
 
-			if (!dir.file_exists(dest)):
-				# save the conversion to the temp folder
-				var tmpFile = "user://mod_temp/" + dest.split("://.import/")[1]
-				if (dest.ends_with(".stex")):
-					if !save_stex_from_png(assets[i], tmpFile):
-						var img = Image.new()
-						img.load(assets[i])
-						save_stex(img, tmpFile)
-				elif (dest.ends_with(".oggstr") or dest.ends_with(".mp3str")):
-					# what the editor's importer would make; the old way if that fails
-					if !AudioImport.save_compressed(assets[i], tmpFile, c) and dest.ends_with(".oggstr"):
-						save_oggstr(assets[i], tmpFile)
-				else:
-					if !AudioImport.save_wav(assets[i], tmpFile, c):
-						save_sample(assets[i], tmpFile)
-				if !dir.file_exists(tmpFile): # couldn't convert; reported as missing below
-					continue
-				
-				# add it to the package
-				p.add_file(dest, tmpFile)
-				delList.append(tmpFile)
-	
+	for job in jobs:
+		if dir.file_exists(job[2]):
+			p.add_file(job[1], job[2])
+			delList.append(job[2])
+			packed[job[1]] = true
+		else:
+			missingFiles.append(job[1])
+
 	# include every file inside the res://[mod name]/.import folder to the package (not the same as the .import folder at the root of the zip)
 	if (dir.dir_exists(folder + "/.import")):
-		var imports = ModLoader._get_all_files(folder)
-		for f in imports:
-			p.add_file("res://.import/" + f.split(".import/")[1], f)
+		for f in scan.all:
+			var at = f.find(".import/")
+			if at == -1:
+				continue
+			p.add_file("res://.import/" + f.substr(at + 8), f)
 	
 	# what later loads of this cache need from the .import files (see _make_import_index)
-	var index = _make_import_index(folder)
+	var index = {"no_import": maps.no_import, "expected": maps.expected}
 	_import_index = index.expected
 	var index_tmp = "user://mod_temp/import_index.json"
 	var index_file = File.new()
@@ -1759,15 +1944,12 @@ func _createImportFiles(folder, _charName, _charPath): # returns an array of mis
 
 	_import_end() # this will close the package and install it, leaving the .import folder files in their place
 
-	# check if every .import folder file is present after the conversion
-	var imports = ModLoader._get_all_files(folder, "import")
-	for f in imports:
-		if (dir.file_exists(f.replace(".import", ""))):
-			var im = ConfigFile.new()
-			im.load(f)
-			var expected = im.get_value("remap", "path")
-			if !dir.file_exists(expected):
-				missingFiles.append(expected)
+	for f in maps.expected:
+		var expected = maps.expected[f]
+		if packed.has(expected):
+			continue
+		if !dir.file_exists(expected) and !ResourceLoader.exists(expected):
+			missingFiles.append(expected)
 	
 	for f in delList:
 		dir.remove(f)

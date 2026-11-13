@@ -49,6 +49,34 @@ func cut_replay(last_frame):
 			if frame > last_frame:
 				frames[id].erase(frame)
 
+func should_trim_final_turn():
+	var reason = str(frames.get("end_reason", ""))
+	if reason == "ko" or reason == "forfeit":
+		return true
+	if reason == "timeout":
+		return false
+	return frames.get("finished", false)
+
+func trim_final_turn():
+	if !should_trim_final_turn():
+		return 0
+	var last_tick = 0
+	for id in frame_ids():
+		for tick in frames[id].keys():
+			if int(tick) > last_tick:
+				last_tick = int(tick)
+	if last_tick <= 0:
+		return 0
+	for id in frame_ids():
+		frames[id].erase(last_tick)
+	if frames.has("emotes") and frames.emotes is Dictionary:
+		for id in frames.emotes.keys():
+			if frames.emotes[id] is Dictionary:
+				frames.emotes[id].erase(last_tick)
+	if frames.has("finished"):
+		frames["finished"] = false
+	return last_tick
+
 func get_last_action_tick(id):
 	var frame_numbers: Array = frames[id].keys()
 	frame_numbers.sort()

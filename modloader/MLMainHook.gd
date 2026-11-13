@@ -75,8 +75,6 @@ func _populate_mod_menu(menu):
 	if ModLoader.active:
 		for mod in ModLoader.all_mods:
 			menu.add_mod(mod)
-	else:
-		menu._loadMods()
 	menu.file_manager._restore_current_state()
 
 

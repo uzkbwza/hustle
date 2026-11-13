@@ -132,11 +132,15 @@ var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
 var is_mobile_device = OS.has_feature("mobile")
 var force_alt_ui = false setget set_force_alt_ui
 var show_border_art = true setget set_show_border_art
+var touch_readout_enabled = true setget set_touch_readout_enabled
+var touch_readout_size = 1.0 setget set_touch_readout_size
 
 var active_sfx_overrides = {}
 
 var mods_loaded = false
 var loading_character = ""
+var loading_progress = ""
+var MOD_FINGERPRINT = ""
 
 var mouse_world_position = Vector2()
 var rng = BetterRng.new()
@@ -164,6 +168,12 @@ var mod_import_cache := {}
 
 func get_cached_character(name):
 	return characters_cache[name]
+
+func refresh_characters_cache():
+	for char_name in name_paths:
+		var character = load(name_paths[char_name])
+		if character:
+			characters_cache[char_name] = character
 
 func character_path(char_name: String) -> String:
 	if name_paths.has(char_name):
@@ -278,6 +288,14 @@ func set_force_alt_ui(value :bool):
 func set_show_border_art(value :bool):
 	show_border_art = value
 	emit_signal("option_changed", "show_border_art", value)
+
+func set_touch_readout_enabled(value :bool):
+	touch_readout_enabled = value
+	emit_signal("option_changed", "touch_readout_enabled", value)
+
+func set_touch_readout_size(value :float):
+	touch_readout_size = value
+	emit_signal("option_changed", "touch_readout_size", value)
 
 
 
@@ -498,6 +516,8 @@ func save_options():
 			"enable_custom_hit_sparks": enable_custom_hit_sparks,
 			"speed_lines_enabled": speed_lines_enabled,
 			"show_border_art": show_border_art,
+			"touch_readout_enabled": touch_readout_enabled,
+			"touch_readout_size": touch_readout_size,
 			"force_alt_ui": force_alt_ui,
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
@@ -556,6 +576,10 @@ func get_default_player_data():
 			"enable_custom_hit_sparks": true,
 			"show_projectile_owners": true,
 			"speed_lines_enabled": true,
+			"show_border_art": true,
+			"touch_readout_enabled": true,
+			"touch_readout_size": 1.0,
+			"force_alt_ui": false,
 			"auto_fc": true,
 			"show_extra_info": false,
 			"replay_extra_freeze_frames": true,
@@ -622,6 +646,14 @@ func save_player_data(data: Dictionary):
 	file.close()
 	var dir = Directory.new()
 	dir.rename(tmp_path, "user://playerdata.json")
+
+func base_version(version):
+	var parts = str(version).split("-")
+	if parts.size() > 1:
+		var last = parts[parts.size() - 1]
+		if last.length() > 0 and last.length() <= 10 and last.is_valid_hex_number():
+			parts.remove(parts.size() - 1)
+	return PoolStringArray(parts).join("-")
 
 func reload():
 	if reload_pending:

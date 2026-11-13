@@ -146,6 +146,7 @@ onready var global_option_check_buttons = {
 	$"%HealthCountButton": "show_health_count",
 	$"%NextTurnHudButton": "show_next_turn_info_hud",
 	$"%ShowNextTurnOnCharsButton": "show_next_turn_info_on_chars",
+	$"%TouchReadoutButton": "touch_readout_enabled",
 #	$"%SingleplayerForfeitButton": "forfeit_buttons_enabled",
 }
 
@@ -348,6 +349,8 @@ func _ready():
 	for node in global_option_check_buttons:
 		node.set_pressed_no_signal(Global.get(global_option_check_buttons[node]))
 		node.connect("toggled", self, "_on_global_option_toggled", [global_option_check_buttons[node]])
+	$"%TouchReadoutSizeSlider".set_value(Global.touch_readout_size)
+	$"%TouchReadoutSizeSlider".connect("value_changed", self, "_on_touch_readout_size_changed")
 	
 	$"%OpenMenuButton".connect("pressed", self, "pause")
 	$"%MobileBarToggleButton".connect("toggled", self, "_on_mobile_bar_toggled")
@@ -390,7 +393,6 @@ func adjust_ui(is_mobile):
 	$"%MobilePredictionPanel".visible = false
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
-	$"%MultiplayerButton".text = "Multiplayer" if Global.is_mobile_device else "Multiplayer (Crossplay)"
 	$"%SteamMultiplayerButton".visible = not (Global.is_mobile_device or Global.winws_detected)
 	$"%SteamBetaReplayTip".visible = not Global.is_mobile_device
 	if Global.is_mobile_device:
@@ -920,6 +922,9 @@ func _on_global_option_toggled(toggled, param):
 		if is_instance_valid(css) and css.has_method("apply_selection_art_setting"):
 			css.apply_selection_art_setting()
 
+func _on_touch_readout_size_changed(value):
+	Global.touch_readout_size = value
+
 #func _on_light_mode_toggled(on):
 #	Global.set_light_mode(on)
 #	if Global.light_mode:
@@ -1115,6 +1120,7 @@ func _on_opponent_disconnected():
 		forfeit_pressed = true
 		actionable = false
 	$"%PausePanel".hide()
+	call_deferred("_layout_disconnected_label")
 
 func _on_customize_pressed():
 	$"%MainMenu".hide()
@@ -1505,6 +1511,7 @@ func _load_replay_from_button(path):
 	$"%ReplayWindow".hide()
 	if replay_picker_for_challenge:
 		replay_picker_for_challenge = false
+		ReplayManager.trim_final_turn()
 		$"%ReplayChallengeTitle".hide()
 		_show_replay_challenge_source()
 		emit_signal("replay_picked_for_challenge", match_data, path)
@@ -1759,6 +1766,21 @@ func _on_game_playback_requested():
 		else:
 			$"%RematchButton".hide()
 		Network.rematch_menu = true
+		call_deferred("_layout_disconnected_label")
+
+func _layout_disconnected_label():
+	var label = get_node_or_null("%OpponentDisconnectedLabel")
+	if label == null or not label.visible:
+		return
+	var buttons = get_node_or_null("%PostGameButtons")
+	var viewport_height = get_viewport().size.y
+	var label_height = max(label.rect_size.y, 12.0)
+	var top = viewport_height - 176.0
+	if buttons != null and buttons.visible:
+		top = buttons.rect_position.y - label_height - 6.0
+	top = max(4.0, top)
+	label.margin_top = top - viewport_height
+	label.margin_bottom = top + label_height - viewport_height
 
 func on_game_started():
 	lobby.hide()

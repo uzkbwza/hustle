@@ -43,6 +43,8 @@ static func save_wav(source_path, dest_path, import_cfg):
 	var r = importer.import_wav(bytes, wav_options(import_cfg))
 	if r == null:
 		return false
+	if r[0] == null or r[0].size() == 0:
+		return false
 	var sample = AudioStreamSample.new()
 	sample.data = r[0]
 	sample.format = r[1]

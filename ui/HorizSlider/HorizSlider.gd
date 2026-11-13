@@ -98,6 +98,7 @@ func _begin_touch_drag(index, pos):
 	touch_id = index
 	last_drag_pos = pos
 	_update_from_screen_pos(pos)
+	_show_touch_readout(pos)
 
 func _handle_touch_drag(event: InputEventScreenDrag):
 	if event.index != touch_id:
@@ -111,6 +112,7 @@ func _handle_touch_drag(event: InputEventScreenDrag):
 		return
 	last_drag_pos = event.position
 	_update_from_screen_pos(event.position)
+	_show_touch_readout(event.position)
 
 func _handle_touch_release(event: InputEventScreenTouch):
 	if event.index != touch_id:
@@ -122,12 +124,14 @@ func _handle_touch_release(event: InputEventScreenTouch):
 		touch_id = -1
 		$Direction.value = default
 		_emit_if_changed()
+		UIManager.hide_touch_readout(self)
 		return
 	if touch_dragging:
 		_update_from_screen_pos(last_drag_pos)
 	touch_dragging = false
 	touch_pending = false
 	touch_id = -1
+	UIManager.hide_touch_readout(self)
 	_flush_buffer()
 
 func _handle_mouse_press():
@@ -159,6 +163,7 @@ func _reset_drag_state():
 	touch_pending = false
 	double_tap_pending = false
 	touch_id = -1
+	UIManager.hide_touch_readout(self)
 
 func _emit_if_changed():
 	var v = $Direction.value
@@ -209,6 +214,16 @@ func _format_value(value):
 	if abs(value - round(value)) < 0.0001:
 		return str(int(round(value)))
 	return str(stepify(value, 0.01))
+
+func _show_touch_readout(screen_pos):
+	if not Global.is_mobile_device:
+		return
+	var text = _format_value($Direction.value)
+	if $Direction.value > 0:
+		text = "+" + text
+	if name != "":
+		text = name + ": " + text
+	UIManager.show_touch_readout(self, text, screen_pos)
 
 func _ready():
 	if apply_top_node_range:

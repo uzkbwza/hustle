@@ -477,6 +477,7 @@ func _handle_touch_event(event: InputEventScreenTouch):
 			touch_pending = false
 			touch_id = -1
 			update_timer.stop()
+			UIManager.hide_touch_readout(self)
 			update_value(get_default_value())
 			_emit_data_changed()
 			return
@@ -492,6 +493,7 @@ func _begin_touch_drag(index, pos):
 	update_value(null, true, false, pos)
 	_start_update_timer()
 	buffer_update = false
+	_show_touch_readout(pos)
 
 func _handle_touch_release(event: InputEventScreenTouch):
 	if event.index != touch_id:
@@ -503,6 +505,10 @@ func _handle_touch_release(event: InputEventScreenTouch):
 	touch_pending = false
 	touch_id = -1
 	update_timer.stop()
+	UIManager.hide_touch_readout(self)
+	if not mouse_over:
+		x_label.hide()
+		y_label.hide()
 	if buffer_update:
 		buffer_changed = true
 		buffer_update = false
@@ -521,6 +527,21 @@ func _handle_drag_event(event: InputEventScreenDrag):
 
 	last_drag_screen_pos = event.position
 	update_value(null, true, false, event.position)
+	_show_touch_readout(event.position)
+
+func _show_touch_readout(screen_pos):
+	if not Global.is_mobile_device:
+		return
+	var data = get_data()
+	x_label.show()
+	y_label.show()
+	UIManager.show_touch_readout(self, _signed_value(data.x) + "   " + _signed_value(data.y), screen_pos)
+
+func _signed_value(value):
+	var number = int(value)
+	if number > 0:
+		return "+" + str(number)
+	return str(number)
 
 func _emit_data_changed():
 	if not is_visible_in_tree():
@@ -658,6 +679,7 @@ func _reset_drag_state():
 	touch_dragging = false
 	touch_pending = false
 	touch_id = -1
+	UIManager.hide_touch_readout(self)
 	if update_timer:
 		update_timer.stop()
 

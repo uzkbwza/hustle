@@ -48,6 +48,7 @@ func _ready():
 
 	$"%ShowButton".connect("pressed", self, "toggle")
 	$"%LineEdit".connect("message_ready", self, "on_message_ready")
+	$"%LineEdit".connect("text_entered", self, "_on_line_edit_text_entered")
 	Network.connect("chat_message_received", self, "on_chat_message_received")
 	Network.connect("relay_chat_received", self, "on_relay_chat_message_received")
 	Network.connect("room_chat_received", self, "on_relay_room_chat_message_received")
@@ -957,18 +958,28 @@ func _release_line_edit():
 	if has_node("%LineEdit") and $"%LineEdit".has_focus():
 		$"%LineEdit".release_focus()
 
+func _on_line_edit_text_entered(_text):
+	$"%LineEdit".send_message()
+
+var _last_sent_message := ""
+var _last_sent_msec := 0
+
 func on_message_ready(message):
+	if message == _last_sent_message and OS.get_ticks_msec() - _last_sent_msec < 250:
+		return
+	_last_sent_message = message
+	_last_sent_msec = OS.get_ticks_msec()
 	$"%TooLongLabel".hide()
 	if Network.multiplayer_active or SteamLobby.SPECTATING or Network.relay_spectating:
 		if len(message) < 1000:
-			$"%LineEdit".clear()
+			$"%LineEdit".clear_after_send()
 			send_message(message)
 		else:
 			$"%TooLongLabel".show()
 			$"%TooLongLabel".text = "message too long (" + str(len(message)) + "/1000)"
 	else:
 		send_message(message)
-		$"%LineEdit".clear()
+		$"%LineEdit".clear_after_send()
 
 func process_command(message: String):
 	if Network.multiplayer_active and !SteamLobby.SPECTATING:

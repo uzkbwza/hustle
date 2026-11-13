@@ -13,6 +13,8 @@ const MAX_PEERS = 1
 
 const NETWORK_TIMER_CYCLE = 3
 
+const LanDiscoveryScript = preload("res://networking/LanDiscovery.gd")
+
 # yomi hustle coaching for 1 dolla at metafy dot gg slash at eternum lmk
 
 # 128-bit nonce it should be pretty fuckin brute force proof unless yomi hustle cheaters solve quantum computing
@@ -43,6 +45,12 @@ var multiplayer_host = false
 var replay_saved = false
 var direct_connect = false
 var rematch_menu = false
+
+var lan_discovery = null
+var lan_room_active = false
+var lan_room_name = ""
+var lan_room_address = ""
+var lan_room_port = 0
 var ids_synced = false
 var turn_synced = false
 var send_ready = false
@@ -190,6 +198,7 @@ signal spectate_declined()
 signal spectator_error(message)
 signal room_info_received(info)
 signal opponent_left(username, reason)
+signal lan_rooms_changed(rooms)
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "player_connected", [], CONNECT_DEFERRED)
@@ -214,6 +223,10 @@ func _ready():
 
 	randomize()
 	_setup_rpc_whitelist()
+
+	lan_discovery = LanDiscoveryScript.new()
+	lan_discovery.connect("rooms_changed", self, "_on_lan_rooms_changed")
+	add_child(lan_discovery)
 
 
 func get_multiplayer_active():
@@ -287,10 +300,16 @@ func _setup_rpc_whitelist():
 			_whitelist_rpc_method(name)
 
 func check_valid_rpc(function_name):
-	if !(function_name in rpc_whitelist):
-		print("unrecognized method %s for RPC call. modders please use _whitelist_rpc_method() to fix this." % function_name)
+	if function_name in rpc_blacklist:
 		return false
-	return true
+	if function_name in rpc_whitelist:
+		return true
+	for method in get_method_list():
+		if method.name == function_name and (method.flags & METHOD_FLAG_FROM_SCRIPT) != 0:
+			rpc_whitelist[function_name] = true
+			return true
+	print("unrecognized method %s for RPC call. modders please use _whitelist_rpc_method() to fix this." % function_name)
+	return false
 
 remotesync func send_match_data(match_data):
 	emit_signal("match_locked_in", match_data)
@@ -348,6 +367,100 @@ func join_game_direct(ip, port, new_player_name):
 	multiplayer_host = false
 	get_tree().set_network_peer(peer)
 
+func get_local_lan_address():
+	var best = ""
+	var best_score = -1
+	for addr in IP.get_local_addresses():
+		if !_is_lan_ipv4(addr):
+			continue
+		if addr.begins_with("127.") or addr.begins_with("169.254."):
+			continue
+		var score = _lan_address_score(addr)
+		if score > best_score:
+			best_score = score
+			best = addr
+	if best != "":
+		return best
+	return "127.0.0.1"
+
+func _lan_address_score(addr):
+	if addr.begins_with("192.168.56.") or addr.begins_with("192.168.137.") or addr.begins_with("192.168.99."):
+		return 1
+	if addr.begins_with("172.17.") or addr.begins_with("172.18.") or addr.begins_with("172.19."):
+		return 1
+	if addr.begins_with("192.168.0.") or addr.begins_with("192.168.1."):
+		return 7
+	if addr.begins_with("192.168."):
+		return 6
+	if addr.begins_with("10."):
+		return 5
+	if _is_lan_private_172(addr):
+		return 3
+	return 0
+
+func _is_lan_ipv4(addr):
+	var parts = str(addr).split(".")
+	if parts.size() != 4:
+		return false
+	for part in parts:
+		if !part.is_valid_integer():
+			return false
+		var n = int(part)
+		if n < 0 or n > 255:
+			return false
+	return true
+
+func _is_lan_private_172(addr):
+	var parts = str(addr).split(".")
+	if parts.size() != 4:
+		return false
+	if !parts[0].is_valid_integer() or !parts[1].is_valid_integer():
+		return false
+	return int(parts[0]) == 172 and int(parts[1]) >= 16 and int(parts[1]) <= 31
+
+func start_lan_hosting(p_room_name, p_address, p_port, p_players=1):
+	lan_room_active = true
+	lan_room_name = str(p_room_name)
+	lan_room_address = str(p_address)
+	lan_room_port = int(p_port)
+	if lan_discovery != null:
+		lan_discovery.start_advertising(lan_room_name, player_name, lan_room_port, p_players)
+
+func update_lan_hosting_players(count):
+	if lan_discovery != null:
+		lan_discovery.update_players(count)
+
+func stop_lan_hosting():
+	if lan_discovery != null:
+		lan_discovery.stop_advertising()
+	lan_room_active = false
+	lan_room_name = ""
+	lan_room_address = ""
+	lan_room_port = 0
+
+func start_lan_browsing():
+	if lan_discovery == null:
+		return
+	lan_discovery.start_browsing()
+
+func stop_lan_browsing():
+	if lan_discovery == null:
+		return
+	lan_discovery.stop_browsing()
+
+func refresh_lan_rooms():
+	if lan_discovery == null:
+		return
+	lan_discovery.refresh()
+
+func get_lan_rooms():
+	if lan_discovery == null:
+		return []
+	return lan_discovery.get_rooms()
+
+func _on_lan_rooms_changed(rooms):
+	emit_signal("lan_rooms_changed", rooms)
+
 func setup_relay_multiplayer(address):
 	relay_id = 0
 	multiplayer_client = MultiplayerClient.new(address)
@@ -398,6 +511,7 @@ remote func server_error(message):
 func _reset():
 	peer = null
 	network_id = 0
+	second_register = false
 
 	network_ids = {}
 	multiplayer_active = false
@@ -413,6 +527,8 @@ func _reset():
 	replay_saved = false
 	direct_connect = false
 	rematch_menu = false
+
+	stop_lan_hosting()
 
 	last_action = null
 	
@@ -528,11 +644,10 @@ func pid_to_username(player_id):
 					if user_data is Dictionary and user_data.has("p" + str(player_id)):
 						return str(user_data["p" + str(player_id)])
 				return ""
-			var net_key = opponent_player_id(player_id) if direct_connect else player_id
-			return str(players.get(network_ids.get(net_key), ""))
+			return str(players.get(network_ids.get(player_id), ""))
 		# synced player list so chat still shows names.
 		if network_ids.has(player_id):
-			var net_id = network_ids[opponent_player_id(player_id)] if direct_connect else network_ids[player_id]
+			var net_id = network_ids[player_id]
 			if players.has(net_id):
 				return str(players[net_id])
 		if player_id == self.player_id:
@@ -608,6 +723,9 @@ func _reset_commit_state():
 remote func player_disconnected(id):
 #	multiplayer_active = false
 	if !(id in players):
+		return
+	if direct_connect and is_host() and !is_instance_valid(game) and !Global.css_open:
+		unregister_player(id)
 		return
 	# Only the opponent's departure may count as an opponent quit;
 	# spectator drops must never forge a forfeit.
@@ -736,7 +854,12 @@ func get_sender_id():
 	return get_tree().get_rpc_sender_id()
 
 func _rpc_from_wire():
-	return get_tree().get_rpc_sender_id() != 0
+	var sender_id = get_tree().get_rpc_sender_id()
+	if sender_id == 0:
+		return false
+	if direct_connect and sender_id == get_self_id():
+		return false
+	return true
 
 # checking whether rpc came from opponent, for steam we check packet sender
 # for new legacy it's just always gonna be peer 1
@@ -844,12 +967,22 @@ func assign_players_for_replay_challenge(replay_data):
 	ReplayManager.frames = replay_data.frames
 	if ReplayManager.frames.has("finished"):
 		ReplayManager.frames["finished"] = false
+	if ReplayManager.frames.has("end_reason"):
+		ReplayManager.frames.erase("end_reason")
 	ReplayManager.playback = true
 	ReplayManager.replaying_ingame = true
 	var match_data = replay_data.duplicate(true)
 	match_data.erase("frames")
 	match_data["replay_challenge"] = true
 	match_data["singleplayer"] = false
+	var trimmed_max = 0
+	for id in [1, 2]:
+		for tick in ReplayManager.frames[id].keys():
+			if int(tick) > trimmed_max:
+				trimmed_max = int(tick)
+	var game_length = int(match_data.get("game_length", 3000))
+	if game_length <= trimmed_max + 120:
+		match_data["game_length"] = trimmed_max + 3600
 	multiplayer_active = true
 	emit_signal("match_ready", match_data)
 
@@ -1408,10 +1541,17 @@ remote func receive_relay_chat(sender_name, message, name_color=""):
 func send_room_chat(message):
 	if steam:
 		return
-	if !(multiplayer_client and multiplayer_client.connected):
-		return
 	message = message.strip_edges()
 	if message == "":
+		return
+	if direct_connect:
+		if !multiplayer_active:
+			return
+		_record_relay_chat(relay_room_chat_history, player_name, message, local_name_color())
+		emit_signal("room_chat_received", player_name, message)
+		rpc_("receive_room_chat", [player_name, message, local_name_color()])
+		return
+	if !(multiplayer_client and multiplayer_client.connected):
 		return
 	_record_relay_chat(relay_room_chat_history, player_name, message, local_name_color())
 	emit_signal("room_chat_received", player_name, message)
@@ -1554,7 +1694,12 @@ remotesync func register_player(new_player_name, id, version):
 		emit_signal("game_error", "Failed to make lobby. One player is using mods while the other is not.")
 		return
 	
-	if version != Global.VERSION:
+	var version_matches = false
+	if version is Dictionary and Global.VERSION is Dictionary:
+		version_matches = version == Global.VERSION
+	else:
+		version_matches = Global.base_version(version) == Global.base_version(Global.VERSION)
+	if !version_matches:
 		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. You or your opponent must update to the newest version." % [Global.VERSION, version])
 #		emit_signal("game_error", "Mismatched game versions. You: %s, Opponent: %s. Get the newest version at ivysly.itch.io." % [Global.VERSION, version])
 		return

@@ -134,16 +134,20 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 			continue
 		if extension == "ymhpack":
 			continue
-		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
-		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
+		var modLoadPath = modFSPath
+		if !modLoadPath.begins_with("user://"):
+			modLoadPath = ProjectSettings.globalize_path(modLoadPath)
+		if !ProjectSettings.load_resource_pack(modLoadPath, true):
 			continue
 		_modZipFiles.append(modFSPath)
 
 	# MOUNT ZIP FILES FIRST (for metadata reading)
 	for mod_path in _modZipFiles:
 		if mod_path.get_extension().to_lower() == "zip":
-			var modGlobalPath = ProjectSettings.globalize_path(mod_path)
-			ProjectSettings.load_resource_pack(modGlobalPath, true)
+			var zipLoadPath = mod_path
+			if !zipLoadPath.begins_with("user://"):
+				zipLoadPath = ProjectSettings.globalize_path(zipLoadPath)
+			ProjectSettings.load_resource_pack(zipLoadPath, true)
 
 	# THEN refresh mods (reads from mounted packs)
 	for mod_path in _modZipFiles:

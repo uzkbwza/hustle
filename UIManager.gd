@@ -8,6 +8,7 @@ const MIN_GAP = 2
 const SCROLL_DRAG_THRESHOLD = 6.0
 
 signal swiped_back()
+signal scroll_drag_started()
 
 var _menus = {}
 var _elements = {}
@@ -19,6 +20,12 @@ var _drag_active = false
 var _drag_start = Vector2()
 var _drag_last = Vector2()
 var _drag_touch_id = -1
+
+var _readout_layer: CanvasLayer
+var _readout_label: Label
+var _readout_font: DynamicFont
+var _readout_owner = null
+var _readout_until = 0
 
 func _exit_tree():
 	if is_inside_tree():
@@ -41,9 +48,70 @@ func _ready():
 	_mobile = Global.mobile_ui
 	call_deferred("_find_force_button")
 
+func _process(_delta):
+	if _readout_label != null and _readout_label.visible:
+		if not Global.touch_readout_enabled or OS.get_ticks_msec() > _readout_until:
+			hide_touch_readout(null)
+
 func _on_viewport_resized():
 	if _mobile:
 		_apply_all()
+	if _readout_label != null and _readout_label.visible:
+		hide_touch_readout(null)
+
+func _ensure_readout():
+	if _readout_label != null:
+		return
+	_readout_layer = CanvasLayer.new()
+	_readout_layer.layer = 128
+	add_child(_readout_layer)
+	_readout_label = Label.new()
+	_readout_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_readout_label.add_color_override("font_color", Color(1, 1, 1, 1))
+	_readout_font = DynamicFont.new()
+	_readout_font.font_data = load("res://ui/PixeloidSans-Bold.ttf")
+	_readout_font.size = 28
+	_readout_font.outline_size = 3
+	_readout_font.outline_color = Color(0, 0, 0, 1)
+	_readout_label.add_font_override("font", _readout_font)
+	_readout_layer.add_child(_readout_label)
+	_readout_label.hide()
+
+func _apply_readout_size():
+	if _readout_font == null:
+		return
+	var scale = clamp(float(Global.touch_readout_size), 0.5, 2.0)
+	_readout_font.size = int(round(14.0 * scale))
+	_readout_font.outline_size = int(round(1.5 * scale))
+
+func show_touch_readout(owner, text: String, anchor_pos: Vector2) -> void:
+	if not Global.touch_readout_enabled:
+		hide_touch_readout(null)
+		return
+	_ensure_readout()
+	_apply_readout_size()
+	_readout_owner = owner
+	_readout_label.text = text
+	_readout_label.show()
+	var size = _readout_label.get_minimum_size()
+	var viewport_size = get_viewport().size
+	var pos = anchor_pos - Vector2(size.x * 0.5, size.y + 46.0)
+	pos.x = clamp(pos.x, 4.0, max(4.0, viewport_size.x - size.x - 4.0))
+	pos.y = clamp(pos.y, 4.0, max(4.0, viewport_size.y - size.y - 4.0))
+	_readout_label.rect_position = pos.round()
+	_readout_label.rect_size = size
+	_readout_until = OS.get_ticks_msec() + 1200
+
+func hide_touch_readout(owner) -> void:
+	if _readout_label == null or not _readout_label.visible:
+		return
+	if owner != null and _readout_owner != owner:
+		return
+	_readout_owner = null
+	_readout_label.hide()
+
+func is_scroll_dragging() -> bool:
+	return _drag_active
 
 func register_menu(menu, elements: Array = []) -> void:
 	if menu == null:
@@ -434,6 +502,12 @@ func _on_mobile_ui_changed(mobile):
 func _on_option_changed(option, value):
 	if option == "force_alt_ui":
 		_update_force_button()
+	elif option == "touch_readout_enabled":
+		if not value:
+			hide_touch_readout(null)
+	elif option == "touch_readout_size":
+		if _readout_label != null and _readout_label.visible:
+			hide_touch_readout(null)
 
 func _update_force_button():
 	var btn = _force_button.get_ref() if _force_button else null
@@ -575,6 +649,8 @@ func _update_drag(pos):
 		return
 	if not _drag_active and pos.distance_to(_drag_start) > SCROLL_DRAG_THRESHOLD:
 		_drag_active = true
+		emit_signal("scroll_drag_started")
+		_cancel_pending_press()
 	if _drag_active:
 		_drag_scroll.scroll_horizontal -= int(pos.x - _drag_last.x)
 		_drag_scroll.scroll_vertical -= int(pos.y - _drag_last.y)
@@ -583,8 +659,30 @@ func _update_drag(pos):
 
 func _end_drag():
 	if _drag_active:
+		_cancel_pending_press()
 		get_tree().set_input_as_handled()
 	_reset_drag()
+
+func _cancel_pending_press():
+	var node = _control_at(get_tree().root, _drag_start)
+	while node != null:
+		if node.has_method("cancel_press"):
+			node.cancel_press()
+			return
+		node = node.get_parent()
+
+func _control_at(root, pos):
+	if root is Control:
+		if not root.is_visible_in_tree() or not root.get_global_rect().has_point(pos):
+			return null
+	var children = root.get_children()
+	for i in range(children.size() - 1, -1, -1):
+		var found = _control_at(children[i], pos)
+		if found != null:
+			return found
+	if root is Control:
+		return root
+	return null
 
 func _reset_drag():
 	_drag_scroll = null

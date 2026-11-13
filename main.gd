@@ -121,6 +121,7 @@ func _ready():
 		container.add_child(btt)
 		container.move_child(btt, mod_toggle.get_index())
 		btt.connect("pressed", self, "_delete_char_cache", [btt])
+		UIManager.register_control(container, [btt])
 #
 	var loaded_mods = false
 	var mods_wait_start = OS.get_ticks_msec()
@@ -128,6 +129,7 @@ func _ready():
 		loaded_mods = true
 		hide_main_menu(true)
 		$"%LoadingCharactersLabel".show()
+		$"%LoadingCharactersLabel".text = "loading mods " + Global.loading_progress
 		$InputBlocker.show()
 		$"%LoadingCharactersLabel2".show()
 		$"%LoadingCharactersLabel2".text = Global.loading_character
@@ -153,8 +155,14 @@ func _ready():
 func _delete_char_cache(btt):
 	var dir = Directory.new()
 	_Global.css_instance.charPackages = {}
-	for f in ModLoader._get_all_files("user://char_cache", "pck"):
-		dir.remove(f)
+	if dir.dir_exists("user://char_cache"):
+		for f in ModLoader._get_all_files("user://char_cache"):
+			dir.remove(f)
+		dir.remove("user://char_cache")
+	if dir.dir_exists("user://mod_temp_packs"):
+		for f in ModLoader._get_all_files("user://mod_temp_packs"):
+			dir.remove(f)
+		dir.remove("user://mod_temp_packs")
 	get_tree().quit()
 
 func _on_show_style_toggled(on, player_id):

@@ -86,6 +86,10 @@ var LOBBY_NAME = ""
 
 var REMATCHING_ID = 0
 
+var ACTIVE_MATCH_KEY = ""
+var ACTIVE_MATCH_OPPONENT = 0
+var ACTIVE_MATCH_SIDE = 0
+
 var spectator_update_timer
 var p2p_packet_sender
 
@@ -285,9 +289,9 @@ func decline_challenge():
 	CHALLENGER_STEAM_ID = 0
 
 func quit_match():
-	if get_status() != "fighting":
-		return
-	if !SPECTATING and is_fighting():
+	var had_active_match = ACTIVE_MATCH_KEY != ""
+	if get_status() == "fighting" and !SPECTATING and is_fighting():
+		had_active_match = true
 		if OPPONENT_ID != 0:
 			_send_P2P_Packet(OPPONENT_ID, {
 				"match_quit": true
@@ -298,6 +302,25 @@ func quit_match():
 		if REMATCHING_ID == 0:
 			Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
 			Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
+	if had_active_match:
+		_clear_match_session()
+
+func _set_active_match(opponent_id: int, side: int = 0) -> void:
+	ACTIVE_MATCH_OPPONENT = opponent_id
+	ACTIVE_MATCH_SIDE = side
+	ACTIVE_MATCH_KEY = match_key_for(SteamHustle.STEAM_ID, opponent_id)
+
+func _set_active_spectated_match(host_id: int, key: String, opponent_id: int) -> void:
+	ACTIVE_MATCH_OPPONENT = host_id
+	ACTIVE_MATCH_SIDE = 0
+	ACTIVE_MATCH_KEY = key if key != "" else match_key_for(host_id, opponent_id)
+
+func _clear_match_session() -> void:
+	ACTIVE_MATCH_KEY = ""
+	ACTIVE_MATCH_OPPONENT = 0
+	ACTIVE_MATCH_SIDE = 0
+	OPPONENT_ID = 0
+	PLAYER_SIDE = 1
 
 func exit_match_from_button():
 	if SPECTATING:
@@ -355,7 +378,7 @@ func leave_Lobby() -> void:
 		Steam.endAuthSession(ticket['id'])
 	CLIENT_TICKETS.clear()
 	AUTH_USERS.clear()
-	OPPONENT_ID = 0
+	_clear_match_session()
 
 func send_chat_message(message: String, scope: String = "") -> void:
 	message = message.strip_edges()
@@ -539,6 +562,7 @@ func _setup_replay_game_vs(steam_id):
 	Network.register_player_steam(SteamHustle.STEAM_ID)
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
+	_set_active_match(OPPONENT_ID, PLAYER_SIDE)
 	Network.assign_players_for_replay_challenge(REPLAY_FULL_DATA)
 
 func _on_challenge_declined(member_id):
@@ -657,6 +681,7 @@ func _read_P2P_Packet():
 				Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", "")
 				Steam.setLobbyMemberData(LOBBY_ID, "character", "")
 				Steam.setLobbyMemberData(LOBBY_ID, "player_id", "")
+				_clear_match_session()
 		if readable.has("match_settings_updated"):
 			if PACKET_SENDER == LOBBY_OWNER:
 				if SETTINGS_LOCKED:
@@ -986,6 +1011,7 @@ func _stop_spectating():
 	SPECTATING = false
 	SPECTATING_ID = 0
 	SPECTATORS.clear()
+	_clear_match_session()
 
 func _add_spectator(steam_id):
 	# Spectate requests resend on an interval (see UiSteamLobbyOld), so a
@@ -994,7 +1020,7 @@ func _add_spectator(steam_id):
 	# but don't append a duplicate or we'd send every update twice.
 	if not (steam_id in SPECTATORS):
 		SPECTATORS.append(steam_id)
-	_send_P2P_Packet(steam_id, {"spectate_accept": SteamHustle.STEAM_ID, "match_data":Network.game.match_data, "replay": ReplayManager.frames })
+	_send_P2P_Packet(steam_id, {"spectate_accept": SteamHustle.STEAM_ID, "match_data":Network.game.match_data, "replay": ReplayManager.frames, "match_key": current_match_key()})
 
 func _remove_spectator(steam_id):
 	SPECTATORS.erase(steam_id)
@@ -1007,6 +1033,9 @@ func _on_spectate_request_accepted(data):
 	SPECTATORS.clear()
 	SPECTATING = true
 	SPECTATING_ID = data.spectate_accept
+	var spectated_opp_str = Steam.getLobbyMemberData(LOBBY_ID, SPECTATING_ID, "opponent_id")
+	var spectated_opp = int(spectated_opp_str) if spectated_opp_str != "" else 0
+	_set_active_spectated_match(SPECTATING_ID, str(data.get("match_key", "")), spectated_opp)
 	SPECTATOR_MATCH_DATA = data.match_data
 	ReplayManager.frames = data.replay
 	# Pull the match host's chat backlog so we see the conversation that
@@ -1029,6 +1058,7 @@ func _setup_game_vs(steam_id):
 	Network.assign_players()
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
+	_set_active_match(OPPONENT_ID, PLAYER_SIDE)
 
 func _get_default_lobby_member_data():
 	return {
@@ -1501,14 +1531,7 @@ func match_key_for(a: int, b: int) -> String:
 func current_match_key() -> String:
 	if LOBBY_ID == 0:
 		return ""
-	var status = get_status()
-	if status == "fighting":
-		return match_key_for(SteamHustle.STEAM_ID, OPPONENT_ID)
-	if status == "spectating":
-		var spec_opp_str = Steam.getLobbyMemberData(LOBBY_ID, SPECTATING_ID, "opponent_id")
-		var spec_opp = int(spec_opp_str) if spec_opp_str != "" else 0
-		return match_key_for(SPECTATING_ID, spec_opp)
-	return ""
+	return ACTIVE_MATCH_KEY
 
 # Match key the given user is currently in. "" for idle/busy or unknown.
 func match_key_for_user(steam_id: int) -> String:

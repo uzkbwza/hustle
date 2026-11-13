@@ -256,7 +256,7 @@ func init():
 	# (and on every re-init after a match), so we don't have to wait for the
 	# next lobby_data_update to surface the correct visibility/enabled state.
 	_refresh_settings_panel_state()
-	if Steam.getLobbyData(SteamLobby.LOBBY_ID, "version") != Global.VERSION:
+	if Global.base_version(Steam.getLobbyData(SteamLobby.LOBBY_ID, "version")) != Global.base_version(Global.VERSION):
 		$"%WrongVersionScreen".show()
 		var mismatched_version_text = "Mismatched versions. Make sure your game is fully updated, or you have the same mods enabled.\n\nYour game: %s \nThis lobby: %s" % [Global.VERSION, Steam.getLobbyData(SteamLobby.LOBBY_ID, "version")]
 		$"%WrongVersionLabel".text = mismatched_version_text

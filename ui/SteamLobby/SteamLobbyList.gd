@@ -159,7 +159,7 @@ func _on_lobby_clicked(entry):
 	for lobby in lobby_list.get_children():
 		if lobby != entry:
 			lobby.deselect()
-	if entry.lobby_data.version != Global.VERSION:
+	if Global.base_version(entry.lobby_data.version) != Global.base_version(Global.VERSION):
 		error("Mismatched versions. Make sure your game is fully updated, or you have the same mods enabled.")
 		return
 	if entry.lobby_data.max_players > 0 and entry.lobby_data.player_count >= entry.lobby_data.max_players:

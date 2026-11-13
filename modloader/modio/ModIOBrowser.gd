@@ -218,6 +218,8 @@ func _ready() -> void:
 	_build_views()
 	_connect_auth()
 	_build_tooltip()
+	if not UIManager.is_connected("scroll_drag_started", self, "_on_scroll_drag_started"):
+		UIManager.connect("scroll_drag_started", self, "_on_scroll_drag_started")
 	_connect_controls()
 	collection_detail_list.get_parent().connect("resized", self, "_apply_collection_columns")
 
@@ -2281,7 +2283,9 @@ func _wrap_tooltip_text(text: String) -> String:
 
 
 func _on_description_hovered(mod_id: String, text: String, pos: Vector2) -> void:
-	if _tooltip_pinned and _tooltip_mod_id == mod_id:
+	if UIManager.is_scroll_dragging():
+		return
+	if _tooltip_mod_id == mod_id and (_tooltip_pinned or _tooltip_panel.visible):
 		return
 	_tooltip_mod_id = mod_id
 	_tooltip_pinned = false
@@ -2289,12 +2293,18 @@ func _on_description_hovered(mod_id: String, text: String, pos: Vector2) -> void
 
 
 func _on_description_clicked(mod_id: String, text: String, pos: Vector2) -> void:
+	if UIManager.is_scroll_dragging():
+		return
 	if _tooltip_pinned and _tooltip_mod_id == mod_id:
 		_hide_tooltip()
 		return
 	_tooltip_mod_id = mod_id
 	_tooltip_pinned = true
 	_show_tooltip(text, pos)
+
+
+func _on_scroll_drag_started() -> void:
+	_hide_tooltip()
 
 
 func _on_description_left(mod_id: String) -> void:

@@ -28,6 +28,7 @@ var workshop := false
 var square_thumb := false
 var _pressed := false
 var _press_pos := Vector2.ZERO
+var _press_event_id := -1
 
 onready var thumb: TextureRect = $"%Thumb"
 onready var info: VBoxContainer = $"%Info"
@@ -48,6 +49,7 @@ func _ready() -> void:
 	page_icon.connect("pressed", self, "_on_page_pressed")
 	thumb.connect("mouse_entered", self, "_on_thumb_mouse_entered")
 	thumb.connect("mouse_exited", self, "_on_thumb_mouse_exited")
+	thumb.connect("gui_input", self, "_on_thumb_gui_input")
 	connect("gui_input", self, "_on_card_gui_input")
 
 
@@ -343,31 +345,50 @@ func _on_thumb_mouse_exited() -> void:
 	emit_signal("description_left", mod_id)
 
 
+func _on_thumb_gui_input(event) -> void:
+	if _pressed or not (event is InputEventMouseMotion) or UIManager.is_scroll_dragging():
+		return
+	var text = tooltip_text()
+	if text == "":
+		return
+	emit_signal("description_hovered", mod_id, text, get_global_mouse_position())
+
+
+func cancel_press() -> void:
+	_pressed = false
+	_press_event_id = -1
+
+
 func _on_card_gui_input(event) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				_pressed = true
-				_press_pos = event.position
+				_press_pos = get_global_mouse_position()
 			elif _pressed:
 				_pressed = false
-				emit_signal("open_pressed", mod_id)
+				if not UIManager.is_scroll_dragging():
+					emit_signal("open_pressed", mod_id)
 		elif event.button_index == BUTTON_RIGHT and event.pressed:
 			var text = tooltip_text()
 			if text != "":
 				emit_signal("description_clicked", mod_id, text, get_global_mouse_position())
 	elif event is InputEventMouseMotion:
-		if _pressed and event.position.distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
+		if _pressed and get_global_mouse_position().distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
 			_pressed = false
 	elif event is InputEventScreenTouch:
 		if event.pressed:
 			_pressed = true
+			_press_event_id = event.index
 			_press_pos = event.position
-		elif _pressed:
+		elif _pressed and event.index == _press_event_id:
 			_pressed = false
-			emit_signal("open_pressed", mod_id)
+			_press_event_id = -1
+			if not UIManager.is_scroll_dragging():
+				emit_signal("open_pressed", mod_id)
 	elif event is InputEventScreenDrag:
-		if _pressed and event.position.distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
+		if _pressed and event.index == _press_event_id \
+				and event.position.distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
 			_pressed = false
 
 

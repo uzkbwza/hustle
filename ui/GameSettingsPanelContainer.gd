@@ -250,7 +250,7 @@ func update_lobby_data():
 #	if SteamLobby.LOBBY_ID == 0:
 #		return
 	if !Network.steam:
-		if Network.multiplayer_active and Network.multiplayer_client != null:
+		if Network.multiplayer_active and (Network.multiplayer_client != null or Network.direct_connect):
 			Network.publish_relay_match_settings(get_data())
 		return
 	if SteamHustle.STEAM_ID != Steam.getLobbyOwner(SteamLobby.LOBBY_ID):

@@ -26,7 +26,14 @@ var steam_oppChars = []
 
 var normal_mods = []
 var char_mods = []
+var normal_folders = []
+var char_folders = []
 #var generated_modlist = false
+
+var player1_folders = null
+var player2_folders = null
+var player1_char_folders = null
+var player2_char_folders = null
 
 var hash_to_folder = {}
 
@@ -40,16 +47,22 @@ remotesync func register_player(new_player_name, id, mods, isSteam = false):
 		mods = {"version" : mods, "active_mods":[]}
 
 	if (mods.has("normal_mods")):
+		var mod_folders = mods.get("normal_folders", null)
+		var char_folders_remote = mods.get("char_folders", null)
 		if not second_register:
 			player1_hashes = mods.normal_mods
 			player1_chars = mods.char_mods
 			player1_hash_to_folder = mods.hash_to_folder
+			player1_folders = mod_folders
+			player1_char_folders = char_folders_remote
 			
 			second_register = true
 		elif second_register:
 			player2_hashes = mods.normal_mods
 			player2_chars = mods.char_mods
 			player2_hash_to_folder = mods.hash_to_folder
+			player2_folders = mod_folders
+			player2_char_folders = char_folders_remote
 			
 			if not _compare_checksum():
 				update_diffList()
@@ -57,7 +70,7 @@ remotesync func register_player(new_player_name, id, mods, isSteam = false):
 				return 
 	else:
 		second_register = true
-	if mods.version != Global.VERSION:
+	if Global.base_version(mods.version) != Global.base_version(Global.VERSION):
 		emit_signal("game_error", "Mismatched game versions.\nYou: %s, Opponent: %s." % [Global.VERSION, mods.version])
 		return 
 	
@@ -74,20 +87,28 @@ func update_diffList():
 	var diffList = []
 	var namesList = []
 	diff = ""
-	var allHashes = player1_hashes + player2_hashes
-	for h in allHashes:
-		if (!(h in player1_hashes) or !(h in player2_hashes)):
-			diffList.append(h)
+	if player1_folders != null and player2_folders != null:
+		var allFolders = player1_folders + player2_folders
+		for folder in allFolders:
+			if !(folder in player1_folders) or !(folder in player2_folders):
+				diffList.append(folder)
+				if !(folder in namesList):
+					namesList.append(folder)
+	else:
+		var allHashes = player1_hashes + player2_hashes
+		for h in allHashes:
+			if (!(h in player1_hashes) or !(h in player2_hashes)):
+				diffList.append(h)
 
-			var modName
-			if (player1_hash_to_folder.has(h)):
-				modName = player1_hash_to_folder[h]
-			else:
-				modName = player2_hash_to_folder[h]
-			if !(modName in namesList):
-				namesList.append(modName)
-			else:
-				namesList[namesList.find(modName)] += " (diff. versions)"
+				var modName
+				if (player1_hash_to_folder.has(h)):
+					modName = player1_hash_to_folder[h]
+				else:
+					modName = player2_hash_to_folder[h]
+				if !(modName in namesList):
+					namesList.append(modName)
+				else:
+					namesList[namesList.find(modName)] += " (diff. versions)"
 
 	for i in len(namesList):
 		var m = namesList[i]
@@ -105,11 +126,23 @@ func update_diffList():
 # these 3 function overwrites are for hash_to_folder, normal_mods and char_mods to get sent alongside active_mods
 # hash_to_folder will tell what mod names the other player should display when they differ in server-sided non-character mods (the other player doesn't know the names of the mods they don't have)
 remote func player_connected_relay():
-	rpc_("register_player", [player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "version":Global.VERSION}])
+	rpc_("register_player", [player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION}])
+
+func _direct_mod_payload():
+	return {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION}
 
 func player_connected(id):
+	pass
+
+func _connected_ok():
 	if direct_connect:
-		rpc_("register_player", [player_name, id, {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "version":Global.VERSION}])
+		rpc_("register_player", [player_name, get_self_id(), _direct_mod_payload()])
+		rpc_id(1, "request_direct_registration")
+	emit_signal("connection_succeeded")
+
+remote func request_direct_registration():
+	if direct_connect and is_host():
+		rpc_id(get_sender_id(), "register_player", player_name, get_self_id(), _direct_mod_payload())
 
 func host_game_direct(new_player_name, port):
 	_reset()
@@ -120,7 +153,7 @@ func host_game_direct(new_player_name, port):
 	multiplayer_active = true
 	direct_connect = true
 	multiplayer_host = true # this is the on
-	rpc_("register_player", [new_player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "version":Global.VERSION}])
+	rpc_("register_player", [new_player_name, get_self_id(), _direct_mod_payload()])
 
 # had to overwrite this whole function just because ivy forgot to set multiplayer_host to false
 func join_game_direct(ip, port, new_player_name):
@@ -135,6 +168,12 @@ func join_game_direct(ip, port, new_player_name):
 
 # now player hashes only correspond to non-character mods
 func _compare_checksum():
+	if player1_folders != null and player2_folders != null:
+		var folders1 = player1_folders.duplicate()
+		var folders2 = player2_folders.duplicate()
+		folders1.sort()
+		folders2.sort()
+		return folders1 == folders2
 	player1_hashes.sort()
 	player2_hashes.sort()
 

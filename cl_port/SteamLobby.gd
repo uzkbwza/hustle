@@ -51,6 +51,10 @@ func _receive_challenge(fromData, match_settings):
 
 	Network.player1_hashes = Network.normal_mods
 	Network.player2_hashes = serverMods
+	Network.player1_folders = null
+	Network.player2_folders = null
+	Network.player1_char_folders = null
+	Network.player2_char_folders = null
 
 	Network.player1_hash_to_folder = Network.hash_to_folder
 	Network.player2_hash_to_folder = fromData[3]
@@ -88,8 +92,11 @@ func _setup_game_vs(steam_id):
 	Network.register_player_steam(SteamHustle.STEAM_ID)
 	Network.player1_chars = Network.char_mods
 	Network.player2_chars = Network.steam_oppChars
+	Network.player1_char_folders = null
+	Network.player2_char_folders = null
 
 	Network.assign_players()
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "fighting")
 	Steam.setLobbyMemberData(LOBBY_ID, "opponent_id", str(OPPONENT_ID))
 	Steam.setLobbyMemberData(LOBBY_ID, "player_id", str(PLAYER_SIDE))
+	_set_active_match(OPPONENT_ID, PLAYER_SIDE)

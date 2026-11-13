@@ -1,13 +1,14 @@
 extends Node
 # MODLOADER V1.1
 
-const CL_VERSION = "4.0.0"
+const CL_VERSION = "4.1.0"
 const WORKSHOP_STORE := preload("res://modloader/modio/WorkshopStore.gd")
 const GDUNZIP := preload("res://modloader/gdunzip/gdunzip.gd")
 const GDZIP_WRITER := preload("res://modloader/gdunzip/gdzip.gd")
 const WORKSHOP_CACHE_DIR := "user://workshop_cache"
 
 var _modZipFiles = []
+var _file_hashes = {}
 var active_mods = []
 var inactive_mods = []
 var all_mods = []
@@ -19,6 +20,14 @@ var mods_w_load_errors = {}
 var mods_w_depend = []
 var zips_by_name = {}
 var active = false
+
+var _mods_allowed = false
+var _mods_load_reason = "not checked yet"
+var _pending_mod_files = []
+var _boot_progress = null
+var _boot_log_file = null
+var _abort_requested = false
+var last_step_ms = 0
 
 # list of mods that have been historically merged with base game code
 # and now should display a warning about it
@@ -93,6 +102,7 @@ func _init():
 		Global.mark_mod_sensitive_version_opened(Global.current_base_version())
 		_modded_file.modsEnabled = false
 		_write_modded_json(_modded_file)
+		_mods_load_reason = "mods disabled for this version"
 		return
 
 	# Crash gate: last session never reached the "finished booting" checkpoint
@@ -106,43 +116,150 @@ func _init():
 		_modded_file.modsEnabled = false
 		_write_modded_json(_modded_file)
 		print("ModLoader: previous launch did not finish, loading without mods")
+		_mods_load_reason = "previous launch did not finish"
 		return
 
 	if !_modded_file.modsEnabled:
+		_mods_load_reason = "mods disabled in options"
 		return
 
 	# From this point on we're actually attempting to load mods.
 	# Mark the flag dirty on disk BEFORE doing anything risky, so a
 	# crash during loading leaves "lastLaunchOk": false behind.
+	_mods_allowed = true
+	_mods_load_reason = "loading"
 	_modded_file.lastLaunchOk = false
 	_write_modded_json(_modded_file)
 
-	_clear_import_packs()
 
+func _boot_log(text):
+	last_step_ms = OS.get_ticks_msec()
+	var line = "%d ms  %s" % [last_step_ms, text]
+	print("ModLoader: " + text)
+	if _boot_log_file != null:
+		_boot_log_file.store_line(line)
+		_boot_log_file.flush()
+
+
+func _open_boot_log():
+	var dir = Directory.new()
+	if !dir.dir_exists("user://logs"):
+		dir.make_dir_recursive("user://logs")
+	_boot_log_file = File.new()
+	if _boot_log_file.open("user://logs/mod_load.log", File.WRITE) != OK:
+		_boot_log_file = null
+		return
+	_boot_log_file.store_line("ModLoader boot log")
+	_boot_log_file.flush()
+
+
+func _finish_boot():
+	_boot_log("boot finished")
+	if _boot_log_file != null:
+		_boot_log_file.close()
+		_boot_log_file = null
+
+
+func _set_boot_status(text, percent):
+	last_step_ms = OS.get_ticks_msec()
+	_boot_log(text)
+	if _boot_progress != null and is_instance_valid(_boot_progress):
+		_boot_progress.set_status(text)
+		_boot_progress.set_progress(percent)
+		_boot_progress.add_log(text)
+
+
+func _set_boot_detail(text):
+	if _boot_progress != null and is_instance_valid(_boot_progress):
+		_boot_progress.set_detail(text)
+
+
+func _boot_percent(index, total, start_pct, end_pct):
+	if total <= 0:
+		return end_pct
+	return start_pct + (end_pct - start_pct) * (float(index) / float(total))
+
+
+func request_abort():
+	_abort_requested = true
+	_boot_log("abort requested")
+
+
+func start(progress = null):
+	_boot_progress = progress
+	_abort_requested = false
+	last_step_ms = OS.get_ticks_msec()
+	_open_boot_log()
+
+	if !_mods_allowed:
+		_set_boot_status("mods not loaded: " + _mods_load_reason, 0)
+		_finish_boot()
+		yield(get_tree(), "idle_frame")
+		return
+
+	_set_boot_status("preparing mod loading", 1)
+	yield(get_tree(), "idle_frame")
+
+	_clear_import_packs()
 	installScriptExtension("res://modloader/MLStateSounds.gd")
+
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
 		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
-#
-#	var dir = Directory.new()
-#	if !dir.dir_exists(gameInstallDirectory.plus_file("mods")):
-#		dir.make_dir_recursive(gameInstallDirectory.plus_file("mods").plus_file("workshop_upload"))
-#
+
 	active = true
-#	Global.VERSION += " Modded"
 	_load_disabled_mods()
+
+	_set_boot_status("checking workshop installs", 2)
+	yield(get_tree(), "idle_frame")
 	WORKSHOP_STORE.install_pending()
 	WORKSHOP_STORE.modio_install_pending()
 	WORKSHOP_STORE.reconcile()
 	WORKSHOP_STORE.ensure_subscriptions()
+
+	_set_boot_status("starting steam", 3)
+	yield(get_tree(), "idle_frame")
 	Steam.steamInit()
-	#This script has to be installed before the mods or else it doesn't get extended
-	_loadMods()
+
+	_set_boot_status("scanning mod folders", 4)
+	yield(get_tree(), "idle_frame")
+	_collect_mod_files(gameInstallDirectory)
+	_boot_log("found " + str(_pending_mod_files.size()) + " mod packages")
+
+	var total = _pending_mod_files.size()
+	var index = 0
+	for modFSPath in _pending_mod_files:
+		if _abort_requested:
+			_boot_log("skipped by user while mounting packages")
+			break
+		index += 1
+		_set_boot_status("mounting " + modFSPath.get_file(), _boot_percent(index - 1, total, 5, 55))
+		_set_boot_detail(modFSPath)
+		yield(get_tree(), "idle_frame")
+		var modLoadPath = modFSPath
+		if !modLoadPath.begins_with("user://"):
+			modLoadPath = ProjectSettings.globalize_path(modLoadPath)
+		if ProjectSettings.load_resource_pack(modLoadPath, true):
+			_modZipFiles.append(modFSPath)
+		else:
+			_boot_log("skipping mod package: " + modFSPath)
+		yield(get_tree(), "idle_frame")
+
+	yield(_init_mods_async(), "completed")
+	Global.refresh_characters_cache()
+
+	if _abort_requested:
+		_set_boot_status("mod loading skipped - starting game", 100)
+		_finish_boot()
+		yield(get_tree(), "idle_frame")
+		return
+
 	print("----------------mods------loaded--------------------")
-	_initMods()
-	print("----------------mods initialized--------------------")
 	installScriptExtension("res://modloader/ModHashCheck.gd")
 	call_deferred("append_hash")
+	_set_boot_status("mods loaded", 100)
+	_finish_boot()
+	yield(get_tree(), "idle_frame")
 
 
 func mark_launch_clean() -> void:
@@ -216,32 +333,31 @@ func append_hash():
 		h += hash_
 	if SteamHustle.STARTED:
 		if h != "":
-			Global.VERSION += "-" + ("%10x" % hash(h)).strip_edges()
+			Global.MOD_FINGERPRINT = ("%10x" % hash(h)).strip_edges()
+			Global.VERSION += "-" + Global.MOD_FINGERPRINT
 		else:
+			Global.MOD_FINGERPRINT = ""
 			Global.VERSION = Global.VERSION.split(" Modded")[0]
 
 
-func _loadMods():
-	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
-	if OS.get_name() == "OSX":
-		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
-	var modPathPrefix = gameInstallDirectory.plus_file("mods")
-	_load_mods_in_folder(modPathPrefix)
+func _collect_mod_files(gameInstallDirectory):
+	_pending_mod_files = []
+	_collect_mod_files_in_folder(gameInstallDirectory.plus_file("mods"), false)
 
 	var workshop = SteamWorkshop.new()
 	var subscribed = Steam.getSubscribedItems()
-	print("workshop subscriptions: " + str(subscribed.size()))
+	_boot_log("workshop subscriptions: " + str(subscribed.size()))
 	for item in subscribed:
 		var info = workshop.get_item_install_info(item)
 		if info.ret:
-			_load_mods_in_folder(info.folder, true)
+			_collect_mod_files_in_folder(info.folder, true)
 
 	if Global.is_mobile_device:
-		_load_mods_in_folder("user://mods", true)
+		_collect_mod_files_in_folder("user://mods", true)
 
 
-func _load_mods_in_folder(modPathPrefix, zip_only=false):
-	print("loading mods in folder: " + modPathPrefix)
+func _collect_mod_files_in_folder(modPathPrefix, zip_only=false):
+	_boot_log("scanning mods in folder: " + modPathPrefix)
 	var dir = Directory.new()
 	if dir.open(modPathPrefix) != OK:
 		return
@@ -257,21 +373,27 @@ func _load_mods_in_folder(modPathPrefix, zip_only=false):
 		var modFSPath: String = modPathPrefix.plus_file(fileName)
 		if zip_only and modFSPath.get_extension() != "zip":
 			continue
-		if modFSPath in _modZipFiles:
+		if modFSPath in _modZipFiles or modFSPath in _pending_mod_files:
 			continue
-		var modGlobalPath = ProjectSettings.globalize_path(modFSPath)
-		if !ProjectSettings.load_resource_pack(modGlobalPath, true):
-			print("skipping mod package: " + modFSPath)
-			continue
-		_modZipFiles.append(modFSPath)
+		_pending_mod_files.append(modFSPath)
 
 	dir.list_dir_end()
 
 
 # Load and run any ModMain.gd scripts which were present in mod ZIP files.
 # Attach the script instances to this singleton's scene to keep them alive.
-func _initMods():
+func _init_mods_async():
+	yield(get_tree(), "idle_frame")
+	var total = _modZipFiles.size()
+	var index = 0
 	for modFSPath in _modZipFiles:
+		index += 1
+		_set_boot_status("reading " + modFSPath.get_file(), _boot_percent(index - 1, total, 55, 88))
+		_set_boot_detail(modFSPath)
+		yield(get_tree(), "idle_frame")
+		if _abort_requested:
+			_boot_log("skipped by user while reading packages")
+			break
 		var gdunzip = GDUNZIP.new()
 		gdunzip.load(modFSPath)
 		var modHash = _hash_file(modFSPath)
@@ -302,20 +424,41 @@ func _initMods():
 						active_mods.append(modInfo)
 					elif modInfo[2].requires != [""]:
 						_dependencyCheck(modInfo, true, modSubFolder)
+		yield(get_tree(), "idle_frame")
+
 	for modInfo in mods_w_depend:
 		_dependencyCheck(modInfo, false, modInfo[0])
 	for modInfo in all_mods:
 		if modInfo.size() == 3 and not modInfo in active_mods:
 			modInfo.remove(0)
 	active_mods.sort_custom(self, "_compareScriptPriority")
+
+	var mod_total = active_mods.size()
+	var mod_index = 0
 	for item in active_mods:
+		mod_index += 1
+		_set_boot_status("starting " + item[2].friendly_name, _boot_percent(mod_index - 1, mod_total, 88, 99))
+		yield(get_tree(), "idle_frame")
+		if _abort_requested:
+			_boot_log("skipped by user while starting mods")
+			for remaining in active_mods:
+				while remaining.size() == 3:
+					remaining.remove(0)
+			break
 		var scriptInstance = item[0].new(self)
 		add_child(scriptInstance)
 		print("Loaded " + item[2].friendly_name)
+		_boot_log("loaded " + item[2].friendly_name)
 		item.remove(0)
+		yield(get_tree(), "idle_frame")
+
+	_set_boot_status("applying character overwrites", 99)
+	yield(get_tree(), "idle_frame")
 	mods_w_overwrites.sort_custom(self, "_compareOverwritePriority")
 	var doesExist = Directory.new()
 	for item in mods_w_overwrites:
+		if _abort_requested:
+			break
 		for character in Global.name_paths:
 			if doesExist.file_exists(Global.name_paths.get(character)):
 				_overwriteCharacterTexs(item.subfolder, character)
@@ -385,8 +528,11 @@ func _checkMetadata(modSubFolder, zipFiles, modEntryPath):
 
 func _editMetaData(metadata, modMetadataPath):
 	metadata["id"] = "12345"
+	if OS.has_feature("standalone"):
+		return
 	var f = File.new()
-	f.open(modMetadataPath, File.WRITE)
+	if f.open(modMetadataPath, File.WRITE) != OK:
+		return
 	f.store_string(JSON.print(metadata, "  ", true))
 	f.close()
 
@@ -461,6 +607,8 @@ func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement s
 	var mediaSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/BaseSounds", "wav")
 	var mediaStateSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/StateSounds", "wav")
 	var charActionImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Buttons", "png")
+	if charImages.empty() and mediaSounds.empty() and mediaStateSounds.empty() and charActionImages.empty():
+		return
 	mediaSounds.sort() #Sorts the array alphabetically
 	mediaStateSounds.sort()
 
@@ -597,9 +745,12 @@ func loadSound(soundPath): # Just moved it over here so that it can be used by o
 
 
 func _hash_file(path):
+	if _file_hashes.has(path):
+		return _file_hashes[path]
 	var file = File.new()
 	var modZIPHash = file.get_md5(path)
 	file.close()
+	_file_hashes[path] = modZIPHash
 	return modZIPHash
 
 func _readMetadata(mdFSPath):

@@ -35,6 +35,7 @@ var replay_side_label: Label
 var replay_side_p1_button: Button
 var replay_side_p2_button: Button
 var replay_side_restore_timers: CheckBox
+var replay_side_cancel: Button
 var incoming_challenge_overlay: Control
 var incoming_challenge_label: Label
 var incoming_challenge_accept: Button
@@ -57,6 +58,13 @@ var match_list_request_in_flight = false
 var _last_match_list_signature = ""
 
 var current_room_code = ""
+
+var room_code_prefix = "Room: "
+
+var lan_room_name = ""
+var lan_room_address = ""
+var lan_room_port = 0
+var pending_lan_room_name = ""
 
 var experimental_mode = false
 
@@ -94,6 +102,9 @@ func _ready():
 	Network.connect("relay_replay_challenge_received", self, "_on_relay_replay_challenge_received")
 	Network.connect("relay_replay_challenge_declined", self, "_on_relay_replay_challenge_declined")
 	Network.connect("relay_replay_challenge_cancelled", self, "_on_relay_replay_challenge_cancelled")
+	if direct_connect:
+		Network.connect("lan_rooms_changed", self, "_on_lan_rooms_changed")
+		Network.connect("multiplayer_stopped", self, "_on_multiplayer_stopped")
 	room_start_button.connect("pressed", self, "_on_start_pressed")
 	leave_room_button.connect("pressed", self, "_on_leave_room_pressed")
 	room_info_timer.connect("timeout", self, "_on_room_info_timer_timeout")
@@ -127,7 +138,10 @@ func refresh_multiplayer(_index=null):
 
 func _on_refresh_timer_timeout():
 	if show_match_list:
-		refresh_match_list()
+		if direct_connect:
+			Network.refresh_lan_rooms()
+		else:
+			refresh_match_list()
 	else:
 		$"%RefreshTimer".stop()
 
@@ -149,6 +163,9 @@ func show():
 	showing = true
 	match_list_request_in_flight = false
 	_last_match_list_signature = ""
+	if direct_connect and Network.lan_room_active:
+		_enter_lan_room_view()
+		return
 	if !direct_connect and Network.relay_room_code != "" and !Network.relay_spectating:
 		_enter_room_view(Network.relay_room_code)
 		return
@@ -194,15 +211,30 @@ func show():
 			$"%PublicButton".disabled = true
 		$"%NetworkStartButton".hide()
 	else:
-		$"%PlayerList".show()
-		$"%UserListPanel".show()
-		$"%MatchListPanel".hide()
+		$"%PlayerList".hide()
+		$"%UserListPanel".hide()
+		$"%MatchListPanel".show()
+		$"%MatchListContainer".show()
 		$"%LobbyLabel".text = "Direct Connect"
+		$"%LobbyLabel".show()
+		$"%DirectConnectWarning".text = "host on the same Wi-Fi network, or type an IP and port to join"
 		$"%DirectConnectWarning".show()
 		$"%RoomCodeEdit".hide()
-		$"%RoomNameEdit".hide()
+		$"%RoomNameEdit".show()
 		$"%SpectateButton".hide()
 		$"%PublicButton".hide()
+		$"%IPEdit".show()
+		$"%PortEdit".show()
+		$"%JoinButtons".show()
+		$"%JoinButton".show()
+		$"%NetworkStartButton".hide()
+		$"%ConnectingLabel".hide()
+		$"%ActivePlayers".clear()
+		$"%BackButton".show()
+		_on_ip_edit_text_changed($"%IPEdit".text)
+		Network.start_lan_browsing()
+		$"%RefreshTimer".start()
+		_refresh_lan_rows(Network.get_lan_rooms())
 		connect_container.show()
 
 	name_edit.editable = true
@@ -234,7 +266,20 @@ func _on_host_pressed():
 	$"%RoomNameEdit".hide()
 	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
-		Network.host_game_direct(player_name, port_edit.text)
+		var port_text = port_edit.text.strip_edges()
+		if !port_text.is_valid_integer():
+			port_text = "52450"
+		var port = int(port_text)
+		if port <= 0 or port > 65535:
+			port = 52450
+		lan_room_name = ProfanityFilter.filter($"%RoomNameEdit".text.strip_edges())
+		if lan_room_name == "":
+			lan_room_name = player_name + "'s room"
+		lan_room_address = Network.get_local_lan_address()
+		lan_room_port = port
+		Network.host_game_direct(player_name, str(port))
+		Network.start_lan_hosting(lan_room_name, lan_room_address, lan_room_port, 1)
+		_enter_lan_room_view()
 	else:
 		var room_name = ProfanityFilter.filter($"%RoomNameEdit".text.strip_edges())
 		Network.setup_network_ids(player_name)
@@ -242,8 +287,7 @@ func _on_host_pressed():
 		var room_code = yield(Network, "match_code_received")
 		_enter_room_view(room_code)
 	show_match_list = false
-	if direct_connect:
-		start_button.show()
+	start_button.hide()
 	start_button.disabled = true
 	refresh_lobby()
 	save_username()
@@ -260,12 +304,29 @@ func _on_join_pressed():
 	$"%RoomNameEdit".hide()
 	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
-		var ip = ip_edit.text
-		var port = port_edit.text
+		var ip = ip_edit.text.strip_edges()
+		var port_text = port_edit.text.strip_edges()
 		if not ip.is_valid_ip_address():
 			error_label.text = "Invalid IP address!"
+			host_button.disabled = false
+			join_button.disabled = false
+			name_edit.show()
+			$"%RoomNameEdit".show()
 			return
-		Network.join_game_direct(ip, port, player_name)
+		if !port_text.is_valid_integer() or int(port_text) <= 0 or int(port_text) > 65535:
+			error_label.text = "Invalid port!"
+			host_button.disabled = false
+			join_button.disabled = false
+			name_edit.show()
+			$"%RoomNameEdit".show()
+			return
+		Network.join_game_direct(ip, port_text, player_name)
+		Network.lan_room_active = true
+		Network.lan_room_name = pending_lan_room_name
+		pending_lan_room_name = ""
+		Network.lan_room_address = ip
+		Network.lan_room_port = int(port_text)
+		_enter_lan_room_view()
 	else:
 		Network.setup_network_ids(player_name)
 		var code = $"%RoomCodeEdit".text.strip_edges().to_upper()
@@ -287,10 +348,14 @@ func hide():
 	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby):
 		room_lobby.hide()
+	if direct_connect:
+		Network.stop_lan_browsing()
 	.hide()
 
 func _exit_room_view():
 	current_room_code = ""
+	room_code_prefix = "Room: "
+	pending_lan_room_name = ""
 	room_info_timer.stop()
 	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby):
@@ -339,10 +404,110 @@ func _enter_room_view(code, spectating=false):
 	Network.request_room_info(code)
 	room_info_timer.start()
 
+func _enter_lan_room_view():
+	show_match_list = false
+	Network.stop_lan_browsing()
+	match_list = []
+	_last_match_list_signature = ""
+	var rows = $"%MatchListContainer"
+	for child in rows.get_children():
+		child.queue_free()
+	$"%RefreshTimer".stop()
+	$"%MatchListPanel".hide()
+	$"%MatchListContainer".hide()
+	$"%PlayerList".hide()
+	$"%UserListPanel".hide()
+	$"%RoomCodeEdit".hide()
+	$"%RoomNameEdit".hide()
+	$"%IPEdit".hide()
+	$"%PortEdit".hide()
+	$"%JoinButtons".hide()
+	$"%SpectateButton".hide()
+	$"%LobbyLabel".hide()
+	$"%DirectConnectWarning".hide()
+	$"%ConnectingLabel".hide()
+	$"%NetworkStartButton".hide()
+	$"%BackButton".hide()
+	connect_container.hide()
+	host_button.hide()
+	join_button.hide()
+	name_edit.hide()
+	name_edit.editable = false
+	current_room_code = "%s:%d" % [Network.lan_room_address, Network.lan_room_port]
+	room_code_prefix = "Address: "
+	room_title_label.text = Network.lan_room_name if Network.lan_room_name != "" else "LAN Room"
+	room_code_label.text = room_code_prefix + current_room_code
+	room_code_label.show()
+	room_players_label.text = "Players\n  (waiting for players)"
+	room_spectators_label.text = "Spectators\n  (not available on LAN)"
+	room_start_button.disabled = true
+	room_start_button.show()
+	leave_room_button.show()
+	spectate_status.hide()
+	room_lobby.show()
+	replay_challenge_button.hide()
+	if is_instance_valid(room_chat_history):
+		room_chat_history.clear()
+		for entry in Network.relay_room_chat_history:
+			if entry is Dictionary:
+				_render_room_chat(entry.get("name", ""), entry.get("message", ""), entry.get("color", ""))
+	if is_instance_valid(room_chat_edit):
+		room_chat_edit.clear()
+	_update_lan_room_info()
+
+func _lan_player_names():
+	var names = []
+	for id in Network.players.keys():
+		names.append(str(Network.players[id]))
+	names.sort()
+	return names
+
+func _update_lan_room_info():
+	if !direct_connect or !is_instance_valid(room_lobby) or !room_lobby.visible:
+		return
+	var names = _lan_player_names()
+	room_players_label.text = _format_players(names)
+	if Network.is_host():
+		room_start_button.disabled = names.size() < 2
+		Network.update_lan_hosting_players(names.size())
+	else:
+		room_start_button.disabled = true
+
+func _on_lan_rooms_changed(rooms):
+	if !direct_connect or !show_match_list:
+		return
+	_refresh_lan_rows(rooms)
+
+func _refresh_lan_rows(rooms):
+	if !is_instance_valid($"%MatchListContainer"):
+		return
+	var list = []
+	for room in rooms:
+		if !(room is Dictionary):
+			continue
+		var ip = str(room.get("ip", ""))
+		var port = int(room.get("port", 0))
+		if ip == "" or port <= 0:
+			continue
+		var room_name = str(room.get("name", ""))
+		if room_name == "":
+			room_name = str(room.get("host", "")) + "'s room"
+		list.append({
+			"code": "%s:%d" % [ip, port],
+			"ip": ip,
+			"port": port,
+			"name": room_name,
+			"host": str(room.get("host", "")),
+			"started": int(room.get("players", 1)) >= 2,
+			"spectators": 0,
+		})
+	match_list = list
+	_populate_match_rows(list)
+
 func _on_room_code_pressed():
 	if current_room_code == "":
 		return
-	var base = "Room: " + current_room_code
+	var base = room_code_prefix + current_room_code
 	OS.clipboard = current_room_code
 	room_code_label.text = base + "  (copied!)"
 	yield(get_tree().create_timer(1.0), "timeout")
@@ -418,10 +583,10 @@ func _create_replay_challenge_ui():
 	replay_side_restore_timers = CheckBox.new()
 	replay_side_restore_timers.text = "restore timers"
 	side_box.add_child(replay_side_restore_timers)
-	var side_cancel = Button.new()
-	side_cancel.text = "cancel"
-	side_cancel.connect("pressed", self, "_on_replay_side_cancelled")
-	side_box.add_child(side_cancel)
+	replay_side_cancel = Button.new()
+	replay_side_cancel.text = "cancel"
+	replay_side_cancel.connect("pressed", self, "_on_replay_side_cancelled")
+	side_box.add_child(replay_side_cancel)
 
 	var incoming_parts = _create_dialog_overlay("ReplayChallengeIncoming")
 	incoming_challenge_overlay = incoming_parts[0]
@@ -442,6 +607,12 @@ func _create_replay_challenge_ui():
 	incoming_challenge_decline.text = "decline"
 	incoming_challenge_decline.connect("pressed", self, "_on_incoming_challenge_decline")
 	incoming_buttons.add_child(incoming_challenge_decline)
+
+	UIManager.register_menu(self, [
+		replay_challenge_button,
+		replay_side_p1_button, replay_side_p2_button, replay_side_restore_timers, replay_side_cancel,
+		incoming_challenge_accept, incoming_challenge_decline,
+	])
 
 func _create_dialog_overlay(node_name):
 	var overlay = ColorRect.new()
@@ -617,7 +788,12 @@ func _on_relay_match_joined():
 
 func _on_leave_room_pressed():
 	if direct_connect:
-		_on_back_button_pressed()
+		Network.stop_lan_hosting()
+		Network.lan_room_active = false
+		if Network.multiplayer_active or Network.peer != null:
+			Network.stop_multiplayer()
+		else:
+			_return_to_lobby_browse()
 		return
 	if Network.relay_replay_challenge_pending:
 		Network.decline_relay_replay_challenge()
@@ -632,21 +808,36 @@ func _on_leave_room_pressed():
 func _on_opponent_left(_username, _reason):
 	if !showing:
 		return
-	if Network.relay_replay_challenge_pending:
-		Network.decline_relay_replay_challenge()
-	else:
-		Network.cancel_relay_replay_challenge()
+	if !direct_connect:
+		if Network.relay_replay_challenge_pending:
+			Network.decline_relay_replay_challenge()
+		else:
+			Network.cancel_relay_replay_challenge()
 	_hide_replay_challenge_ui()
 	if is_instance_valid(room_lobby) and room_lobby.visible:
 		replay_challenge_button.hide()
+		if direct_connect:
+			if Network.is_host():
+				_update_lan_room_info()
+			else:
+				_return_to_lobby_browse()
+			return
 		if Network.is_host():
 			Network.request_room_info(current_room_code)
 			return
 		_return_to_lobby_browse()
 
+func _on_multiplayer_stopped():
+	if !direct_connect:
+		return
+	if is_instance_valid(room_lobby) and room_lobby.visible:
+		_return_to_lobby_browse()
+
 func _return_to_lobby_browse():
 	Network.cancel_spectate_request()
 	current_room_code = ""
+	room_code_prefix = "Room: "
+	pending_lan_room_name = ""
 	Network.relay_room_code = ""
 	Network.relay_room_info = {}
 	room_info_timer.stop()
@@ -663,10 +854,26 @@ func _return_to_lobby_browse():
 	host_button.disabled = false
 	connect_container.show()
 	if direct_connect:
-		$"%RoomNameEdit".hide()
-		$"%NetworkStartButton".show()
+		Network.stop_lan_hosting()
+		Network.lan_room_active = false
+		$"%MatchListPanel".show()
+		$"%MatchListContainer".show()
+		$"%RoomNameEdit".show()
+		$"%IPEdit".show()
+		$"%PortEdit".show()
+		$"%JoinButtons".show()
+		$"%JoinButton".show()
+		$"%NetworkStartButton".hide()
 		$"%BackButton".show()
+		$"%DirectConnectWarning".show()
+		$"%LobbyLabel".text = "Direct Connect"
+		$"%LobbyLabel".show()
+		join_button.disabled = false
+		host_button.disabled = false
 		_on_ip_edit_text_changed($"%IPEdit".text)
+		Network.start_lan_browsing()
+		$"%RefreshTimer".start()
+		_refresh_lan_rows(Network.get_lan_rooms())
 	else:
 		$"%RoomNameEdit".show()
 		$"%BackButton".show()
@@ -801,6 +1008,19 @@ func create_match_row(match_):
 	return row
 
 func _on_row_join_pressed(match_code):
+	if direct_connect:
+		var parts = str(match_code).split(":")
+		if parts.size() < 2:
+			return
+		pending_lan_room_name = ""
+		for entry in match_list:
+			if str(entry.get("code", "")) == str(match_code):
+				pending_lan_room_name = str(entry.get("name", ""))
+				break
+		ip_edit.text = parts[0]
+		port_edit.text = parts[1]
+		_on_join_pressed()
+		return
 	$"%RoomCodeEdit".text = match_code
 	_on_join_pressed()
 
@@ -839,15 +1059,25 @@ func _on_back_button_pressed():
 		Network.end_spectate()
 	Network.cancel_spectate_request()
 	Network.stop_multiplayer()
+	if direct_connect:
+		Network.stop_lan_browsing()
 	Global.reload()
 
 func _on_connection_success():
 	refresh_lobby()
+	if direct_connect:
+		_update_lan_room_info()
 	pass
 
 func _on_connection_failed():
 	host_button.disabled = false
 	join_button.disabled = false
+	if direct_connect:
+		Network.lan_room_active = false
+		Network.lan_room_name = ""
+		Network.lan_room_address = ""
+		Network.lan_room_port = 0
+		Network.stop_multiplayer()
 	error_label.set_text("Connection failed.")
 
 func refresh_lobby():
@@ -865,6 +1095,8 @@ func refresh_lobby():
 		start_button.disabled = item_list.get_item_count() <= 1
 	if !start_button.disabled and prev_disabled:
 		$ChallengeSound.play()
+	if direct_connect:
+		_update_lan_room_info()
 
 func _on_game_start():
 	hide()
@@ -872,6 +1104,9 @@ func _on_game_start():
 func _on_start_pressed():
 	if !Network.is_host():
 		return
+	if direct_connect:
+		Network.stop_lan_hosting()
+		Network.lan_room_active = false
 	hide()
 	Network.assign_players()
 	if !Network.ids_synced:
@@ -889,6 +1124,8 @@ func _on_game_error(what):
 		error_label.set_text(what)
 		join_button.disabled = false
 		host_button.disabled = false
+		if direct_connect:
+			_update_lan_room_info()
 		if !Network.game and !visible:
 			Global.reload()
 #		show()

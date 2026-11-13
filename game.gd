@@ -415,6 +415,8 @@ func start_game(singleplayer: bool, match_data: Dictionary):
 	p2 = p2_scene.instance()
 	if p2 == null:
 		return false
+	if !(p1 is Fighter) or !(p2 is Fighter):
+		return false
 	
 	p1.connect("parried", self, "on_parry", [p1])
 	p2.connect("parried", self, "on_parry", [p2])
@@ -837,6 +839,7 @@ func tick():
 	else :
 		ReplayManager.frames.finished = true
 	if should_game_end():
+		_record_end_reason()
 		# Spectators autosave from end_game instead (with the streamed user_data
 		# names, not the local network usernames, which a spectator doesn't have
 		# mapped). Both paths share Network.replay_saved, so excluding spectators
@@ -1305,12 +1308,19 @@ func apply_hitboxes(players):
 func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 	var hit_by = null
 	
-	var host = hurtbox.get_parent()
+	var hitbox_target = hurtbox is Hitbox
+	var host = hurtbox.host if hitbox_target else hurtbox.get_parent()
 	if host is ObjectState:
 		host = host.host
+	if host == null or !is_instance_valid(host) or !(host is BaseObj):
+		return null
+	var grounded = true if hitbox_target else host.is_grounded()
+	var otg = false if hitbox_target else host.is_otg()
 	var active_limbs = []
-	if (!(hurtbox is Hitbox)) and host and host.current_state():
-		active_limbs = host.current_state().get_active_hurtboxes()
+	if !hitbox_target and host.has_method("current_state"):
+		var host_state = host.current_state()
+		if host_state:
+			active_limbs = host_state.get_active_hurtboxes()
 	
 	for hitbox in hitboxes:
 		if hitbox is Hitbox:
@@ -1326,8 +1336,39 @@ func get_colliding_hitbox(hitboxes, hurtbox) -> Hitbox:
 			var attacker = hitbox.host
 			if host.is_invulnerable_to(hitbox, attacker):
 				continue
-			if hurtbox is Hitbox and attacker.is_invulnerable_to(hurtbox, host):
+			if !hitbox_target:
+				hit_by = hitbox
 				continue
+			if attacker != null and is_instance_valid(attacker) and attacker is BaseObj and attacker.is_invulnerable_to(hurtbox, host):
+				continue
+
+			if hitbox is ThrowBox:
+				if !host.can_be_thrown():
+					if host.is_in_group("Fighter") and host.blockstun_ticks > 0:
+						hitbox.save_hit_object(host)
+					continue
+				if host.is_in_group("Fighter"):
+					if host.wakeup_throw_immunity_ticks > 0:
+						continue
+			if (!hitbox.hits_vs_aerial and !grounded) or (!hitbox.hits_vs_grounded and grounded):
+				continue
+			if !otg and !hitbox.hits_vs_standing:
+				continue
+			if otg and not hitbox.hits_otg:
+				continue
+			if !host.is_in_group("Fighter") and !hitbox.hits_projectiles:
+				continue
+			if hitbox.already_hit_object(host):
+				continue
+			if attacker:
+				if !attacker.is_grounded():
+					if host.aerial_attack_immune:
+						continue
+				else:
+					if host.grounded_attack_immune:
+						continue
+				if attacker.id == host.id and !hitbox.allowed_to_hit_own_team:
+					continue
 			
 			hit_by = hitbox
 
@@ -1372,9 +1413,22 @@ func start_playback():
 	emit_signal("playback_requested")
 	hooks.playback_started()
 
+func _record_end_reason():
+	if ReplayManager.frames.has("end_reason"):
+		return
+	if forfeit or forfeit_player != null:
+		ReplayManager.frames["end_reason"] = "forfeit"
+	elif p1.hp <= 0 or p2.hp <= 0:
+		ReplayManager.frames["end_reason"] = "ko"
+	elif current_tick > time:
+		ReplayManager.frames["end_reason"] = "timeout"
+	else:
+		ReplayManager.frames["end_reason"] = "unknown"
+
 func end_game():
 	if game_finished:
 		return
+	_record_end_reason()
 	game_end_tick = current_tick
 	game_finished = true
 	end_wait_tick = -1
