@@ -148,23 +148,35 @@ func host_game_direct(new_player_name, port):
 	_reset()
 	player_name = new_player_name
 	peer = NetworkedMultiplayerENet.new()
-	peer.create_server(int(port), MAX_PEERS)
+	var err = peer.create_server(int(port), MAX_PEERS)
+	if err != OK:
+		peer = null
+		_connected_fail()
+		emit_signal("game_error", "Could not host on port " + str(port) + ". Is another game already using it?")
+		return err
 	get_tree().set_network_peer(peer)
 	multiplayer_active = true
 	direct_connect = true
 	multiplayer_host = true # this is the on
 	rpc_("register_player", [new_player_name, get_self_id(), _direct_mod_payload()])
+	return OK
 
 # had to overwrite this whole function just because ivy forgot to set multiplayer_host to false
 func join_game_direct(ip, port, new_player_name):
 	_reset()
 	player_name = new_player_name
 	peer = NetworkedMultiplayerENet.new()
-	peer.create_client(ip, int(port))
+	var err = peer.create_client(ip, int(port))
+	if err != OK:
+		peer = null
+		_connected_fail()
+		emit_signal("game_error", "Could not connect to " + str(ip) + ":" + str(port) + ".")
+		return err
 	multiplayer_active = true
 	direct_connect = true
 	multiplayer_host = false
 	get_tree().set_network_peer(peer)
+	return OK
 
 # now player hashes only correspond to non-character mods
 func _compare_checksum():

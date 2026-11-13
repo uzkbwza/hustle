@@ -217,7 +217,7 @@ func show():
 		$"%MatchListContainer".show()
 		$"%LobbyLabel".text = "Direct Connect"
 		$"%LobbyLabel".show()
-		$"%DirectConnectWarning".text = "host on the same Wi-Fi network, or type an IP and port to join"
+		$"%DirectConnectWarning".text = "host on the same Wi-Fi network, or type an IP and port to join. If no rooms appear, allow the game through your firewall."
 		$"%DirectConnectWarning".show()
 		$"%RoomCodeEdit".hide()
 		$"%RoomNameEdit".show()
@@ -277,7 +277,10 @@ func _on_host_pressed():
 			lan_room_name = player_name + "'s room"
 		lan_room_address = Network.get_local_lan_address()
 		lan_room_port = port
-		Network.host_game_direct(player_name, str(port))
+		var host_err = Network.host_game_direct(player_name, str(port))
+		if host_err != OK:
+			_return_to_lobby_browse()
+			return
 		Network.start_lan_hosting(lan_room_name, lan_room_address, lan_room_port, 1)
 		_enter_lan_room_view()
 	else:
@@ -320,7 +323,10 @@ func _on_join_pressed():
 			name_edit.show()
 			$"%RoomNameEdit".show()
 			return
-		Network.join_game_direct(ip, port_text, player_name)
+		var join_err = Network.join_game_direct(ip, port_text, player_name)
+		if join_err != OK:
+			_return_to_lobby_browse()
+			return
 		Network.lan_room_active = true
 		Network.lan_room_name = pending_lan_room_name
 		pending_lan_room_name = ""

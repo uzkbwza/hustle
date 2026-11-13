@@ -1224,6 +1224,8 @@ func net_startMatch():
 func net_updateModLists():
 	Network.normal_mods = []
 	Network.char_mods = []
+	Network.normal_folders = []
+	Network.char_folders = []
 #	Network.generated_modlist = true
 	var i = 0
 	var zips_done = {}
@@ -1238,8 +1240,12 @@ func net_updateModLists():
 		for folder in hash_folders.get(mod[0], [hash_to_folder[mod[0]]]):
 			if folder in ModLoader.charFolders:
 				has_char = true
+				if !(folder in Network.char_folders):
+					Network.char_folders.append(folder)
 			elif server_folders.has(folder) or (!hash_folders.has(mod[0]) and mod[0] in serverMods):
 				has_server = true
+				if !(folder in Network.normal_folders):
+					Network.normal_folders.append(folder)
 		if has_char:
 			Network.char_mods.append(mod[0])
 		if has_server:

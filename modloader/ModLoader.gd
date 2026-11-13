@@ -594,6 +594,10 @@ func appendNodeInScene(modifiedScene, nodeName:String = "", nodeParent = null, i
 func saveScene(modifiedScene, scenePath:String):
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(modifiedScene)
+	if ResourceLoader.has_cached(scenePath):
+		var previous = load(scenePath)
+		if previous != null and previous != packed_scene:
+			previous.resource_path = ""
 	packed_scene.take_over_path(scenePath)
 	_savedObjects.append(packed_scene)
 
