@@ -246,7 +246,6 @@ func start(progress = null):
 		yield(get_tree(), "idle_frame")
 
 	yield(_init_mods_async(), "completed")
-	Global.refresh_characters_cache()
 
 	if _abort_requested:
 		_set_boot_status("mod loading skipped - starting game", 100)

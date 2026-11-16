@@ -180,9 +180,7 @@ func _ready():
 	
 	$"%SingleplayerButton".connect("pressed", self, "_on_singleplayer_pressed")
 	$"%MultiplayerButton".connect("pressed", self, "_on_multiplayer_pressed")
-	$"%SteamMultiplayerButton".connect("pressed", self, "_on_steam_multiplayer_pressed")
 	$"%CustomizeButton".connect("pressed", self, "_on_customize_pressed")
-	$"%DirectConnectButton".connect("pressed", self, "_on_direct_connect_button_pressed")
 	$"%RematchButton".connect("pressed", self, "_on_rematch_button_pressed")
 	$"%QuitButton".connect("pressed", self, "_on_quit_button_pressed")
 	$"%QuitToMainMenuButton".connect("pressed", self, "_on_quit_button_pressed")
@@ -393,7 +391,6 @@ func adjust_ui(is_mobile):
 	$"%MobilePredictionPanel".visible = false
 	$"%MobilePlayerSeperator".rect_min_size.y = 110 if is_mobile else 70
 	$"%OpenReplayFolderButton".visible = not Global.is_mobile_device
-	$"%SteamMultiplayerButton".visible = not (Global.is_mobile_device or Global.winws_detected)
 	$"%SteamBetaReplayTip".visible = not Global.is_mobile_device
 	if Global.is_mobile_device:
 		$"%OldVersionConfirmDialog".get_node("VBoxContainer/Contents/OldVersionContentVBox/OldVersionMessageLabel").text = "This replay is from an old version. Load it anyway?"
@@ -821,11 +818,11 @@ func _set_xyplot_value(t, point: Vector2, sticky: bool):
 	var new_value = point
 	if sticky and t.snap and not Global.XY_SNAP_TOGGLE_ENABLED:
 		new_value = _xy_sticky_snap(t, t.value_float, point)
-	t.update_value(new_value, true, false)
+	t.update_value(new_value, true)
 	t.emit_signal("data_changed")
 
-func _apply_nudge(dir: Vector2):
-	var t = _nudge_target
+func _apply_nudge(dir: Vector2, target = null):
+	var t = target if target != null else _nudge_target
 	if not is_instance_valid(t):
 		return
 	if t is XYPlot:
@@ -1580,6 +1577,9 @@ func reset_ui():
 	$"%ChatWindow".unfocus_line_edit()
 	$"%PostGameButtons".hide()
 	$"%OpponentDisconnectedLabel".hide()
+	_bottom_adjustments_mode = false
+	_bottom_collapsed = false
+	_apply_bottom_bar_visibility(not Global.mobile_ui)
 	forfeit_pressed = false
 	actionable = false
 
@@ -1821,21 +1821,44 @@ func _on_online_warning_accepted():
 func _on_direct_connect_button_pressed():
 	if _show_online_warning("_on_direct_connect_button_pressed"):
 		return
-	direct_connect_lobby.show()
+	open_direct_lobbies()
+
+func _steam_multiplayer_available() -> bool:
+	return not (Global.is_mobile_device or Global.winws_detected)
+
+func open_steam_lobbies():
+	SteamLobby.leave_Lobby()
+	$"%Lobby".hide()
+	$"%DirectConnectLobby".hide()
+	$"%SteamLobbyList".show()
+	hide_main_menu()
+
+func open_relay_lobbies():
+	SteamLobby.leave_Lobby()
+	$"%SteamLobbyList".hide()
+	$"%DirectConnectLobby".hide()
+	$"%Lobby".show()
+	hide_main_menu()
+
+func open_direct_lobbies():
+	SteamLobby.leave_Lobby()
+	$"%SteamLobbyList".hide()
+	$"%Lobby".hide()
+	$"%DirectConnectLobby".show()
 	hide_main_menu()
 
 func _on_multiplayer_pressed():
 	if _show_online_warning("_on_multiplayer_pressed"):
 		return
-	SteamLobby.leave_Lobby()
-	lobby.show()
-	hide_main_menu()
-	
+	if _steam_multiplayer_available():
+		open_steam_lobbies()
+	else:
+		open_relay_lobbies()
+
 func _on_steam_multiplayer_pressed():
 	if _show_online_warning("_on_steam_multiplayer_pressed"):
 		return
-	$"%SteamLobbyList".show()
-	hide_main_menu()
+	open_steam_lobbies()
 	
 
 func _on_turn_ready():
@@ -2591,29 +2614,31 @@ func _set_playback_speed(mod):
 # --- XY plot arrow-key nudging (not rebindable) -----------------------------
 
 func _handle_xy_nudge(event):
-	if not is_instance_valid(Hotkeys.hovered_xy_plot):
+	var target = null
+	if is_instance_valid(Hotkeys.hovered_horiz_slider):
+		target = Hotkeys.hovered_horiz_slider
+	elif is_instance_valid(Hotkeys.hovered_xy_plot):
+		target = Hotkeys.hovered_xy_plot
+	if target == null:
 		return
 	var nudge = null
 	# allow_echo=true lets OS key-repeat fire the nudge while the key is held
 	# (no internal timer — same pattern as LimbFinder's arrow-key nudging).
 	if event.is_action_pressed(Hotkeys.NUDGE_LEFT, true):
-		nudge = Vector2(-0.01, 0)
+		nudge = Vector2(-1, 0)
 	elif event.is_action_pressed(Hotkeys.NUDGE_RIGHT, true):
-		nudge = Vector2(0.01, 0)
+		nudge = Vector2(1, 0)
 	elif event.is_action_pressed(Hotkeys.NUDGE_UP, true):
-		nudge = Vector2(0, -0.01)
+		nudge = Vector2(0, -1)
 	elif event.is_action_pressed(Hotkeys.NUDGE_DOWN, true):
-		nudge = Vector2(0, 0.01)
+		nudge = Vector2(0, 1)
 	if nudge == null:
 		return
 	# Desktop UI: don't use custom multiplier
 	if not Global.mobile_ui:
 		_nudge_xy_step = 0.01
-	var plot = Hotkeys.hovered_xy_plot
-	var current = plot.value_float
-	var effective_nudge = nudge * (_nudge_xy_step / 0.01)
-	var raw_new = (current + effective_nudge * plot.panel_radius).limit_length(plot.panel_radius)
-	_set_xyplot_value(plot, raw_new, true)
+		_nudge_slider_step = 1.0
+	_apply_nudge(nudge, target)
 
 # Mirrors XYPlot's internal SNAP_AMOUNT (half-width of a snap zone, in radians
 # for angles and as a ratio of panel_radius for radius). _XY_ZONE_EXIT_EPSILON

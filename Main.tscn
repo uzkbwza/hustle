@@ -2477,36 +2477,9 @@ margin_bottom = 114.0
 grow_horizontal = 2
 custom_constants/separation = 0
 
-[node name="LocalSection" type="VBoxContainer" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_right = 130.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 0, 40 )
-custom_constants/separation = 2
-alignment = 1
-
-[node name="LocalLabel" type="Label" parent="UILayer/MainMenu/ButtonContainer/LocalSection"]
-unique_name_in_owner = true
-self_modulate = Color( 0.52549, 0.52549, 0.52549, 1 )
-margin_top = 3.0
-margin_right = 130.0
-margin_bottom = 14.0
-text = "Local Play"
-align = 1
-valign = 1
-
-[node name="LocalButtons" type="HBoxContainer" parent="UILayer/MainMenu/ButtonContainer/LocalSection"]
-unique_name_in_owner = true
-margin_top = 16.0
-margin_right = 130.0
-margin_bottom = 36.0
-custom_constants/separation = 8
-alignment = 1
-
-[node name="SingleplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/LocalSection/LocalButtons"]
-unique_name_in_owner = true
-margin_left = 10.0
-margin_right = 71.0
+margin_right = 96.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
@@ -2514,119 +2487,44 @@ custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Singleplayer"
 flat = true
 
-[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/LocalSection/LocalButtons"]
+[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_left = 79.0
-margin_right = 119.0
-margin_bottom = 20.0
+margin_top = 20.0
+margin_right = 96.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Multiplayer"
+flat = true
+
+[node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 40.0
+margin_right = 96.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Customize"
+flat = true
+
+[node name="ReplayButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
+unique_name_in_owner = true
+margin_top = 60.0
+margin_right = 96.0
+margin_bottom = 80.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
 text = "Replays"
 flat = true
 
-[node name="MultiplayerSection" type="VBoxContainer" parent="UILayer/MainMenu/ButtonContainer"]
-unique_name_in_owner = true
-margin_top = 40.0
-margin_right = 130.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 40 )
-custom_constants/separation = 2
-alignment = 1
-
-[node name="MultiplayerLabel" type="Label" parent="UILayer/MainMenu/ButtonContainer/MultiplayerSection"]
-unique_name_in_owner = true
-self_modulate = Color( 0.52549, 0.52549, 0.52549, 1 )
-margin_top = 3.0
-margin_right = 130.0
-margin_bottom = 14.0
-text = "Multiplayer"
-align = 1
-valign = 1
-
-[node name="MultiplayerButtons" type="HBoxContainer" parent="UILayer/MainMenu/ButtonContainer/MultiplayerSection"]
-unique_name_in_owner = true
-margin_top = 16.0
-margin_right = 130.0
-margin_bottom = 36.0
-custom_constants/separation = 8
-alignment = 1
-
-[node name="SteamMultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/MultiplayerSection/MultiplayerButtons"]
-unique_name_in_owner = true
-margin_right = 32.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-mouse_default_cursor_shape = 2
-custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Steam"
-flat = true
-
-[node name="MultiplayerButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/MultiplayerSection/MultiplayerButtons"]
-unique_name_in_owner = true
-margin_left = 40.0
-margin_right = 91.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-mouse_default_cursor_shape = 2
-custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Crossplay"
-flat = true
-
-[node name="DirectConnectButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/MultiplayerSection/MultiplayerButtons"]
-unique_name_in_owner = true
-margin_left = 99.0
-margin_right = 130.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-mouse_default_cursor_shape = 2
-custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Direct"
-flat = true
-
-[node name="CustomizeSection" type="VBoxContainer" parent="UILayer/MainMenu/ButtonContainer"]
+[node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
 margin_top = 80.0
-margin_right = 130.0
-margin_bottom = 120.0
-rect_min_size = Vector2( 0, 40 )
-custom_constants/separation = 2
-alignment = 1
-
-[node name="CustomizeLabel" type="Label" parent="UILayer/MainMenu/ButtonContainer/CustomizeSection"]
-unique_name_in_owner = true
-self_modulate = Color( 0.52549, 0.52549, 0.52549, 1 )
-margin_top = 3.0
-margin_right = 130.0
-margin_bottom = 14.0
-text = "Customize"
-align = 1
-valign = 1
-
-[node name="CustomizeButtons" type="HBoxContainer" parent="UILayer/MainMenu/ButtonContainer/CustomizeSection"]
-unique_name_in_owner = true
-margin_top = 16.0
-margin_right = 130.0
-margin_bottom = 36.0
-custom_constants/separation = 8
-alignment = 1
-
-[node name="CustomizeButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/CustomizeSection/CustomizeButtons"]
-unique_name_in_owner = true
-margin_left = 26.0
-margin_right = 58.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-mouse_default_cursor_shape = 2
-custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
-text = "Styles"
-flat = true
-
-[node name="OptionsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer/CustomizeSection/CustomizeButtons"]
-unique_name_in_owner = true
-margin_left = 66.0
-margin_right = 104.0
-margin_bottom = 20.0
+margin_right = 96.0
+margin_bottom = 100.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -2635,9 +2533,9 @@ flat = true
 
 [node name="CreditsButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 120.0
-margin_right = 130.0
-margin_bottom = 140.0
+margin_top = 100.0
+margin_right = 96.0
+margin_bottom = 120.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
@@ -2646,9 +2544,9 @@ flat = true
 
 [node name="QuitProgramButton" type="Button" parent="UILayer/MainMenu/ButtonContainer"]
 unique_name_in_owner = true
-margin_top = 140.0
-margin_right = 130.0
-margin_bottom = 160.0
+margin_top = 120.0
+margin_right = 96.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 20 )
 mouse_default_cursor_shape = 2
 custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )

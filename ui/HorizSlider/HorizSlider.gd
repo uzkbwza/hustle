@@ -163,6 +163,8 @@ func _reset_drag_state():
 	touch_pending = false
 	double_tap_pending = false
 	touch_id = -1
+	if Hotkeys.hovered_horiz_slider == self:
+		Hotkeys.hovered_horiz_slider = null
 	UIManager.hide_touch_readout(self)
 
 func _emit_if_changed():
@@ -234,7 +236,16 @@ func _ready():
 	if has_node("Label"):
 		$Label.text = name
 	$Direction.connect("value_changed", self, "on_value_changed")
+	$Direction.connect("mouse_entered", self, "_on_direction_mouse_entered")
+	$Direction.connect("mouse_exited", self, "_on_direction_mouse_exited")
 	last_emitted_value = $Direction.value
+
+func _on_direction_mouse_entered():
+	Hotkeys.hovered_horiz_slider = self
+
+func _on_direction_mouse_exited():
+	if Hotkeys.hovered_horiz_slider == self:
+		Hotkeys.hovered_horiz_slider = null
 
 func on_value_changed(value):
 	buffer_value_changed = true

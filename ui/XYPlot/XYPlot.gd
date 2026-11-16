@@ -436,7 +436,7 @@ func _get_expanded_rect():
 func _handle_mouse_motion(event: InputEventMouseMotion):
 	if mouse_clicked:
 		last_drag_screen_pos = get_global_mouse_position()
-		update_value(null, true, false, last_drag_screen_pos)
+		_update_value_impl(null, true, false, last_drag_screen_pos)
 
 func _handle_mouse_button(event: InputEventMouseButton):
 	if event.button_index == BUTTON_LEFT:
@@ -445,12 +445,12 @@ func _handle_mouse_button(event: InputEventMouseButton):
 			if panel.get_global_rect().has_point(press_pos):
 				mouse_clicked = true
 				last_drag_screen_pos = press_pos
-				update_value(null, true, false, press_pos)
+				_update_value_impl(null, true, false, press_pos)
 				_start_update_timer()
 		else:
 			if mouse_clicked:
 				last_drag_screen_pos = get_global_mouse_position()
-				update_value(null, true, false, last_drag_screen_pos)
+				_update_value_impl(null, true, false, last_drag_screen_pos)
 				_emit_if_changed()
 			mouse_clicked = false
 			update_timer.stop()
@@ -490,7 +490,7 @@ func _begin_touch_drag(index, pos):
 	touch_dragging = true
 	touch_id = index
 	last_drag_screen_pos = pos
-	update_value(null, true, false, pos)
+	_update_value_impl(null, true, false, pos)
 	_start_update_timer()
 	buffer_update = false
 	_show_touch_readout(pos)
@@ -499,7 +499,7 @@ func _handle_touch_release(event: InputEventScreenTouch):
 	if event.index != touch_id:
 		return
 	if touch_dragging:
-		update_value(null, true, false, last_drag_screen_pos)
+		_update_value_impl(null, true, false, last_drag_screen_pos)
 		_emit_if_changed()
 	touch_dragging = false
 	touch_pending = false
@@ -526,7 +526,7 @@ func _handle_drag_event(event: InputEventScreenDrag):
 		return
 
 	last_drag_screen_pos = event.position
-	update_value(null, true, false, event.position)
+	_update_value_impl(null, true, false, event.position)
 	_show_touch_readout(event.position)
 
 func _show_touch_readout(screen_pos):
@@ -715,6 +715,9 @@ func midpoint():
 	return Vector2(pos_x, pos_y)
 
 func update_value(p = null, set_buffer_update = true, ignore_snap = false, screen_pos = null):
+	_update_value_impl(p, set_buffer_update, ignore_snap, screen_pos)
+
+func _update_value_impl(p = null, set_buffer_update = true, ignore_snap = false, screen_pos = null):
 	var limit_center = get_limit_center()
 	var limit_range = get_limit_range()
 

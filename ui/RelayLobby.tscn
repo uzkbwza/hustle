@@ -8,7 +8,7 @@
 resource_name = "RESET"
 length = 0.001
 tracks/0/type = "value"
-tracks/0/path = NodePath("MarginContainer/HBoxContainer/VBoxContainer/NameEdit:modulate")
+tracks/0/path = NodePath("BrowsePanel/NetworkSetupScreen/ConnectContainer/HostRow/NameEdit:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -24,7 +24,7 @@ tracks/0/keys = {
 resource_name = "invalid_username"
 step = 0.05
 tracks/0/type = "value"
-tracks/0/path = NodePath("MarginContainer/HBoxContainer/VBoxContainer/NameEdit:modulate")
+tracks/0/path = NodePath("BrowsePanel/NetworkSetupScreen/ConnectContainer/HostRow/NameEdit:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -42,287 +42,498 @@ anchor_bottom = 1.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="BrowsePanel" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -266.0
+margin_top = -156.0
+margin_right = 266.0
+margin_bottom = 112.0
+
+[node name="PanelContainer" type="PanelContainer" parent="BrowsePanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 50
-custom_constants/margin_top = 20
-custom_constants/margin_left = 50
-custom_constants/margin_bottom = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-margin_left = 50.0
-margin_top = 20.0
-margin_right = 590.0
-margin_bottom = 340.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 10
-alignment = 1
+[node name="NetworkSetupScreen" type="VBoxContainer" parent="BrowsePanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = -1.0
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-margin_right = 359.0
-margin_bottom = 320.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-size_flags_stretch_ratio = 2.11
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 358.0
-margin_bottom = 319.0
-custom_constants/separation = 4
-
-[node name="LobbyLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+[node name="NavBar" type="HBoxContainer" parent="BrowsePanel/NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_right = 357.0
-margin_bottom = 11.0
-text = "Dojo"
+margin_right = 532.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+custom_constants/separation = 8
+
+[node name="SteamButton" type="Button" parent="BrowsePanel/NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_right = 55.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Steam (PC)"
+flat = true
+
+[node name="CrossplayButton" type="Button" parent="BrowsePanel/NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_left = 63.0
+margin_right = 151.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Relay (Crossplay)"
+flat = true
+
+[node name="DirectButton" type="Button" parent="BrowsePanel/NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_left = 159.0
+margin_right = 220.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Direct (LAN)"
+flat = true
+
+[node name="LobbyLabel" type="Label" parent="BrowsePanel/NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+visible = false
+margin_left = 174.0
+margin_top = 4.0
+margin_right = 532.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+text = "Crossplay Lobbies"
+align = 2
+valign = 1
+
+[node name="HeaderPanel" type="Panel" parent="BrowsePanel/NetworkSetupScreen"]
+margin_top = 21.0
+margin_right = 532.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 0, 14 )
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 0, 10 )
+custom_constants/margin_right = 2
+custom_constants/margin_left = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer"]
+margin_left = 2.0
+margin_right = 530.0
+margin_bottom = 14.0
+custom_constants/separation = 8
+
+[node name="LobbyNameHeader" type="Label" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer/HBoxContainer2"]
+margin_top = 1.0
+margin_right = 93.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+size_flags_stretch_ratio = 0.75
+text = "Room Name"
+
+[node name="VersionHeader" type="Label" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer/HBoxContainer2"]
+margin_left = 101.0
+margin_top = 1.0
+margin_right = 354.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.02
+text = "Game Version"
 align = 1
 
-[node name="ServerRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-margin_top = 15.0
-margin_right = 357.0
-margin_bottom = 15.0
+[node name="CustomCharactersHeader" type="Label" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer/HBoxContainer2"]
+margin_left = 362.0
+margin_top = 1.0
+margin_right = 457.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Custom Characters"
+align = 1
 
-[node name="ActivePlayers" type="RichTextLabel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/ServerRow"]
+[node name="PlayerCountHeader" type="Label" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer/HBoxContainer2"]
+margin_left = 465.0
+margin_top = 1.0
+margin_right = 528.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Players"
+align = 2
+
+[node name="SpectateHeader" type="Label" parent="BrowsePanel/NetworkSetupScreen/HeaderPanel/MarginContainer/HBoxContainer2"]
+unique_name_in_owner = true
+visible = false
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 0
+text = "Spectate"
+align = 1
+
+[node name="MatchListPanel" type="ScrollContainer" parent="BrowsePanel/NetworkSetupScreen"]
+unique_name_in_owner = true
+margin_top = 36.0
+margin_right = 532.0
+margin_bottom = 253.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MatchListContainer" type="VBoxContainer" parent="BrowsePanel/NetworkSetupScreen/MatchListPanel"]
+unique_name_in_owner = true
+margin_right = 532.0
+margin_bottom = 217.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StatusRow" type="HBoxContainer" parent="BrowsePanel/NetworkSetupScreen"]
+margin_top = 254.0
+margin_right = 532.0
+margin_bottom = 268.0
+rect_min_size = Vector2( 0, 14 )
+custom_constants/separation = 4
+
+[node name="ActivePlayers" type="RichTextLabel" parent="BrowsePanel/NetworkSetupScreen/StatusRow"]
 unique_name_in_owner = true
 self_modulate = Color( 1, 1, 1, 0.592157 )
-margin_right = 357.0
-rect_min_size = Vector2( 131, 0 )
+margin_right = 532.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 14 )
 mouse_filter = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-margin_top = 19.0
-margin_right = 357.0
+[node name="FilterBar" type="HBoxContainer" parent="BrowsePanel"]
+unique_name_in_owner = true
+margin_top = -19.0
+margin_right = 532.0
+margin_bottom = -1.0
+mouse_filter = 2
+custom_constants/separation = 5
+
+[node name="RefreshButton" type="Button" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 40, 18 )
+size_flags_horizontal = 3
+text = "refresh"
+
+[node name="FilterIncompatibleButton" type="CheckButton" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 45.0
+margin_right = 133.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 88, 18 )
+size_flags_horizontal = 3
+pressed = true
+text = "same version"
+
+[node name="FilterFullButton" type="CheckButton" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 138.0
+margin_right = 174.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 36, 18 )
+size_flags_horizontal = 3
+pressed = true
+text = "full"
+
+[node name="SortButton" type="OptionButton" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+visible = false
+margin_left = 164.0
+margin_right = 200.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 36, 18 )
+size_flags_horizontal = 3
+text = "sort by player count"
+clip_text = true
+items = [ "sort by player count", null, false, 0, null, "sort by name", null, false, 1, null ]
+selected = 0
+
+[node name="FilterSpacer" type="Control" parent="BrowsePanel/FilterBar"]
+margin_left = 179.0
+margin_right = 204.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 16, 0 )
+size_flags_horizontal = 3
+
+[node name="CustomCharLabel" type="Label" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 209.0
+margin_right = 305.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 96, 18 )
+size_flags_horizontal = 3
+text = "custom characters"
+valign = 1
+clip_text = true
+
+[node name="CustomCharOn" type="CheckBox" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 310.0
+margin_right = 352.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 42, 18 )
+size_flags_horizontal = 3
+pressed = true
+text = "on"
+clip_text = true
+
+[node name="CustomCharOff" type="CheckBox" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 357.0
+margin_right = 399.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 42, 18 )
+size_flags_horizontal = 3
+pressed = true
+text = "off"
+clip_text = true
+
+[node name="CodeSearch" type="LineEdit" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 404.0
+margin_right = 490.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 86, 18 )
+size_flags_horizontal = 3
+align = 1
+max_length = 6
+placeholder_text = "search by code"
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="SearchButton" type="Button" parent="BrowsePanel/FilterBar"]
+unique_name_in_owner = true
+margin_left = 495.0
+margin_right = 532.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 37, 18 )
+size_flags_horizontal = 3
+text = "search"
+
+[node name="ConnectPanel" type="Panel" parent="BrowsePanel"]
+margin_top = 266.0
+margin_right = 532.0
 margin_bottom = 318.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
-margin_right = 357.0
-margin_bottom = 299.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/margin_right = 2
-custom_constants/margin_left = 2
-custom_constants/margin_bottom = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer"]
-margin_left = 2.0
-margin_right = 355.0
-margin_bottom = 297.0
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
-margin_right = 353.0
-margin_bottom = 297.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-alignment = 1
-
-[node name="UserListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ConnectContainer" type="VBoxContainer" parent="BrowsePanel"]
 unique_name_in_owner = true
-margin_right = 131.0
-margin_bottom = 297.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 1.8
+margin_top = 272.0
+margin_right = 532.0
+margin_bottom = 316.0
+custom_constants/separation = 4
 
-[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel"]
-self_modulate = Color( 1, 1, 1, 0.45098 )
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 130.0
-margin_bottom = 296.0
-
-[node name="PlayerList" type="ItemList" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/UserListPanel"]
+[node name="HostRow" type="HBoxContainer" parent="BrowsePanel/ConnectContainer"]
 unique_name_in_owner = true
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 130.0
-margin_bottom = 296.0
+margin_right = 532.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+custom_constants/separation = 4
 
-[node name="MatchListPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="NameEdit" type="LineEdit" parent="BrowsePanel/ConnectContainer/HostRow"]
 unique_name_in_owner = true
-margin_left = 132.0
-margin_right = 353.0
-margin_bottom = 297.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
-
-[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
-self_modulate = Color( 1, 1, 1, 0.45098 )
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 220.0
-margin_bottom = 296.0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel"]
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 220.0
-margin_bottom = 296.0
-
-[node name="MatchListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/MatchListPanel/ScrollContainer"]
-unique_name_in_owner = true
-margin_right = 219.0
-margin_bottom = 295.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 369.0
-margin_right = 540.0
-margin_bottom = 320.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 2
-alignment = 1
-
-[node name="NameEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 57.0
-margin_right = 171.0
-margin_bottom = 81.0
-rect_min_size = Vector2( 0, 24 )
+margin_right = 162.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 max_length = 32
 placeholder_text = "enter name here"
 
-[node name="RoomNameEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="RoomNameEdit" type="LineEdit" parent="BrowsePanel/ConnectContainer/HostRow"]
 unique_name_in_owner = true
-margin_top = 83.0
-margin_right = 171.0
-margin_bottom = 107.0
-rect_min_size = Vector2( 0, 24 )
+margin_left = 166.0
+margin_right = 402.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.45
 placeholder_text = "Room Name (optional)"
 
-[node name="ConnectContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HostButton" type="Button" parent="BrowsePanel/ConnectContainer/HostRow"]
 unique_name_in_owner = true
-margin_top = 109.0
-margin_right = 171.0
-margin_bottom = 237.0
-size_flags_horizontal = 3
-custom_constants/separation = 2
+margin_left = 406.0
+margin_right = 478.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 72, 20 )
+size_flags_horizontal = 0
+theme_type_variation = "ChallengeButton"
+text = "create room"
 
-[node name="HostRow" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer"]
-margin_right = 171.0
-margin_bottom = 24.0
-custom_constants/separation = 2
-
-[node name="HostButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/HostRow"]
+[node name="PublicButton" type="CheckButton" parent="BrowsePanel/ConnectContainer/HostRow"]
 unique_name_in_owner = true
-margin_right = 84.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "host"
-
-[node name="PublicButton" type="CheckButton" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/HostRow"]
-unique_name_in_owner = true
-margin_left = 86.0
-margin_right = 171.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
+margin_left = 482.0
+margin_right = 532.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 0
+theme_type_variation = "ChallengeButton"
 pressed = true
 text = "public"
 
-[node name="RoomCodeEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer"]
+[node name="JoinContainer" type="HBoxContainer" parent="BrowsePanel/ConnectContainer"]
 unique_name_in_owner = true
-margin_top = 26.0
-margin_right = 171.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 0, 24 )
+margin_top = 24.0
+margin_right = 532.0
+margin_bottom = 44.0
+rect_min_size = Vector2( 0, 20 )
+custom_constants/separation = 4
+
+[node name="RoomCodeEdit" type="LineEdit" parent="BrowsePanel/ConnectContainer/JoinContainer"]
+unique_name_in_owner = true
+margin_right = 75.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 placeholder_text = "Room Code"
 
-[node name="JoinContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer"]
+[node name="IPEdit" type="LineEdit" parent="BrowsePanel/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
-margin_top = 52.0
-margin_right = 171.0
-margin_bottom = 128.0
+margin_left = 79.0
+margin_right = 178.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
-custom_constants/separation = 2
-
-[node name="JoinButtons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer"]
-unique_name_in_owner = true
-margin_right = 171.0
-margin_bottom = 24.0
-custom_constants/separation = 2
-
-[node name="JoinButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer/JoinButtons"]
-unique_name_in_owner = true
-margin_right = 84.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 80, 24 )
-size_flags_horizontal = 3
-text = "join"
-
-[node name="SpectateButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer/JoinButtons"]
-unique_name_in_owner = true
-margin_left = 86.0
-margin_right = 171.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 80, 24 )
-size_flags_horizontal = 3
-text = "spectate"
-
-[node name="IPEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer"]
-unique_name_in_owner = true
-margin_top = 26.0
-margin_right = 171.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.3
 text = "127.0.0.1"
 placeholder_text = "IP"
 
-[node name="PortEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/JoinContainer"]
+[node name="PortEdit" type="LineEdit" parent="BrowsePanel/ConnectContainer/JoinContainer"]
 unique_name_in_owner = true
-margin_top = 52.0
-margin_right = 171.0
-margin_bottom = 76.0
-rect_min_size = Vector2( 0, 24 )
+margin_left = 182.0
+margin_right = 224.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.55
 text = "52450"
 placeholder_text = "port"
 
-[node name="NetworkStartButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="JoinButtons" type="HBoxContainer" parent="BrowsePanel/ConnectContainer/JoinContainer"]
+unique_name_in_owner = true
+margin_left = 228.0
+margin_right = 532.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+custom_constants/separation = 4
+
+[node name="CharloaderButton" type="CheckButton" parent="BrowsePanel/ConnectContainer/JoinContainer/JoinButtons"]
+unique_name_in_owner = true
+margin_right = 144.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+hint_tooltip = "Requires mods to be enabled."
+size_flags_horizontal = 0
+custom_colors/font_color = Color( 0.396078, 0.901961, 1, 1 )
+custom_colors/font_color_hover = Color( 0.396078, 0.901961, 1, 1 )
+custom_colors/font_color_pressed = Color( 0.396078, 0.901961, 1, 1 )
+text = "allow custom characters"
+
+[node name="JoinButton" type="Button" parent="BrowsePanel/ConnectContainer/JoinContainer/JoinButtons"]
+unique_name_in_owner = true
+margin_left = 148.0
+margin_right = 188.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 40, 20 )
+size_flags_horizontal = 3
+text = "join"
+
+[node name="SpectateButton" type="Button" parent="BrowsePanel/ConnectContainer/JoinContainer/JoinButtons"]
+unique_name_in_owner = true
+margin_left = 192.0
+margin_right = 256.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 64, 20 )
+size_flags_horizontal = 3
+text = "spectate"
+
+[node name="BackButton" type="Button" parent="BrowsePanel/ConnectContainer/JoinContainer/JoinButtons"]
+unique_name_in_owner = true
+margin_left = 260.0
+margin_right = 304.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 44, 20 )
+size_flags_horizontal = 0
+text = "back"
+
+[node name="NetworkStartButton" type="Button" parent="BrowsePanel/ConnectContainer"]
 unique_name_in_owner = true
 visible = false
-margin_top = 226.0
-margin_right = 171.0
-margin_bottom = 250.0
+margin_top = 48.0
+margin_right = 532.0
+margin_bottom = 72.0
 rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 text = "start"
 
-[node name="BackButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="NetworkErrorLabel" type="Label" parent="BrowsePanel"]
 unique_name_in_owner = true
-margin_top = 239.0
-margin_right = 171.0
-margin_bottom = 263.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "go back"
-
-[node name="NetworkErrorLabel" type="Label" parent="."]
-unique_name_in_owner = true
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 12.0
-margin_top = -60.0
-margin_right = -12.0
-margin_bottom = -8.0
+margin_left = 8.0
+margin_top = 206.0
+margin_right = 524.0
+margin_bottom = 238.0
 text = " "
 align = 1
 autowrap = true
+
+[node name="ConnectingLabel" type="Label" parent="BrowsePanel"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -168.0
+margin_top = -5.5
+margin_right = 168.0
+margin_bottom = 5.5
+text = "Connecting to server..."
+align = 1
+
+[node name="DirectConnectWarning" type="Label" parent="BrowsePanel"]
+unique_name_in_owner = true
+visible = false
+margin_left = 8.0
+margin_top = 238.0
+margin_right = 524.0
+margin_bottom = 266.0
+text = "note: host may need to port-forward for direct connect to work"
+align = 1
+autowrap = true
+
+[node name="MatchmakingDisabledLabel" type="Label" parent="BrowsePanel"]
+unique_name_in_owner = true
+visible = false
+margin_left = 8.0
+margin_top = 22.0
+margin_right = 524.0
+margin_bottom = 40.0
+text = "public lobbies disabled in unstable version"
+align = 1
+
+[node name="UserListPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_right = 120.0
+margin_bottom = 120.0
+
+[node name="PlayerList" type="ItemList" parent="UserListPanel"]
+unique_name_in_owner = true
+visible = false
+margin_right = 120.0
+margin_bottom = 120.0
 
 [node name="RoomLobby" type="ColorRect" parent="."]
 unique_name_in_owner = true
@@ -468,49 +679,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 4
 
-[node name="RoomCodeLabel" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-margin_right = 171.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 0, 24 )
-focus_mode = 0
-size_flags_horizontal = 3
-text = "Room: "
-
-[node name="RoomStartButton" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 28.0
-margin_right = 171.0
-margin_bottom = 52.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "start match"
-
-[node name="LeaveRoomButton" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-margin_top = 56.0
-margin_right = 171.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 24 )
-size_flags_horizontal = 3
-text = "leave room"
-
-[node name="SpectateStatusLabel" type="Label" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-margin_top = 120.0
-margin_right = 171.0
-margin_bottom = 168.0
-rect_min_size = Vector2( 0, 48 )
-size_flags_horizontal = 3
-text = "Requesting to spectate..."
-autowrap = true
-
 [node name="RoomChatPanel" type="PanelContainer" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 84.0
 margin_right = 171.0
-margin_bottom = 320.0
+margin_bottom = 236.0
 rect_min_size = Vector2( 0, 120 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -561,32 +733,44 @@ margin_right = 169.0
 margin_bottom = 12.0
 text = "send"
 
-[node name="DirectConnectWarning" type="Label" parent="."]
+[node name="RoomCodeLabel" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 240.0
+margin_right = 171.0
+margin_bottom = 264.0
+rect_min_size = Vector2( 0, 24 )
+focus_mode = 0
+size_flags_horizontal = 3
+text = "Room: "
+
+[node name="RoomStartButton" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 268.0
+margin_right = 171.0
+margin_bottom = 292.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "start match"
+
+[node name="LeaveRoomButton" type="Button" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 296.0
+margin_right = 171.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+text = "leave room"
+
+[node name="SpectateStatusLabel" type="Label" parent="RoomLobby/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 visible = false
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -177.0
-margin_top = -22.0
-margin_right = -16.0
-margin_bottom = 36.0
-text = "note: host may need to port-forward for direct connect to work"
-align = 1
+margin_top = 272.0
+margin_right = 171.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 0, 48 )
+size_flags_horizontal = 3
+text = "Requesting to spectate..."
 autowrap = true
-
-[node name="ConnectingLabel" type="Label" parent="."]
-unique_name_in_owner = true
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -146.0
-margin_top = -5.5
-margin_right = -36.0
-margin_bottom = 5.5
-text = "Connecting to server..."
 
 [node name="RefreshTimer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -594,19 +778,6 @@ wait_time = 2.0
 
 [node name="RoomInfoTimer" type="Timer" parent="."]
 unique_name_in_owner = true
-
-[node name="MatchmakingDisabledLabel" type="Label" parent="."]
-visible = false
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -104.0
-margin_top = -95.5
-margin_right = 104.0
-margin_bottom = -84.5
-text = "public lobbies disabled in unstable version"
-align = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 1 )

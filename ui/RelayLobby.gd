@@ -8,6 +8,7 @@ onready var spectate_button = $"%SpectateButton"
 onready var name_edit = $"%NameEdit"
 onready var ip_edit = $"%IPEdit"
 onready var port_edit = $"%PortEdit"
+onready var charloader_button = $"%CharloaderButton"
 
 onready var item_list = $"%PlayerList"
 onready var error_label = $"%NetworkErrorLabel"
@@ -52,6 +53,9 @@ const MAX_SPECTATORS = 64
 var show_match_list = true
 var showing = false
 
+var show_custom_character_lobbies = true
+var show_vanilla_lobbies = true
+
 var match_list = []
 
 var match_list_request_in_flight = false
@@ -68,8 +72,14 @@ var pending_lan_room_name = ""
 
 var experimental_mode = false
 
+var _connect_margin_bottom = 0.0
+var _connect_height = 0.0
+
 func _ready():
 	# Called every time the node is added to the scene.
+	_connect_margin_bottom = $BrowsePanel/ConnectPanel.margin_bottom
+	_connect_height = connect_container.rect_size.y
+	connect_container.connect("resized", self, "_update_panel_heights")
 	Network.connect("connection_failed", self, "_on_connection_failed")
 	Network.connect("connection_succeeded", self, "_on_connection_success")
 	Network.connect("player_list_changed", self, "refresh_lobby")
@@ -83,12 +93,31 @@ func _ready():
 	host_button.connect("pressed", self, "_on_host_pressed")
 	start_button.connect("pressed", self, "_on_start_pressed")
 	spectate_button.connect("pressed", self, "_on_spectate_code_pressed")
-	item_list.connect("item_selected", self, "_on_match_clicked")
 	$"%BackButton".connect("pressed", self, "_on_back_button_pressed")
+	$"%SteamButton".visible = not (Global.is_mobile_device or Global.winws_detected)
+	$"%CrossplayButton".visible = true
+	$"%DirectButton".visible = true
+	$"%SpectateHeader".visible = !direct_connect
+	$"%SteamButton".connect("pressed", self, "_on_steam_button_pressed")
+	$"%CrossplayButton".connect("pressed", self, "_on_crossplay_button_pressed")
+	$"%DirectButton".connect("pressed", self, "_on_direct_button_pressed")
+	_update_nav_tabs()
 	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
 		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
+	if !Global.is_connected("mobile_ui_changed", self, "_on_mobile_ui_changed"):
+		Global.connect("mobile_ui_changed", self, "_on_mobile_ui_changed")
 	$"%RefreshTimer".connect("timeout", self, "_on_refresh_timer_timeout")
+	$"%RefreshButton".connect("pressed", self, "_on_filter_refresh_pressed")
+	$"%FilterIncompatibleButton".connect("toggled", self, "_on_filter_changed")
+	$"%FilterFullButton".connect("toggled", self, "_on_filter_changed")
+	$"%SortButton".connect("item_selected", self, "_on_filter_changed")
+	$"%CustomCharOn".connect("toggled", self, "_on_custom_char_on_toggled")
+	$"%CustomCharOff".connect("toggled", self, "_on_custom_char_off_toggled")
+	$"%CodeSearch".connect("text_entered", self, "_on_code_search_text_entered")
+	$"%SearchButton".connect("pressed", self, "_on_filter_search_pressed")
+	$"%CodeSearch".placeholder_text = "search by ip" if direct_connect else "search by code"
+	$"%CodeSearch".max_length = 21 if direct_connect else 6
 	$"%RoomCodeEdit".connect("text_changed", self, "_on_room_code_edit_text_changed")
 	$"%IPEdit".connect("text_changed", self, "_on_ip_edit_text_changed")
 	Network.connect("spectate_declined", self, "_on_spectate_declined")
@@ -111,20 +140,41 @@ func _ready():
 	room_code_label.connect("pressed", self, "_on_room_code_pressed")
 	room_chat_edit.connect("text_entered", self, "_on_room_chat_text_entered")
 	room_chat_send_button.connect("pressed", self, "_on_room_chat_send_pressed")
+	charloader_button.disabled = !ModLoader.active
 	$"%RefreshTimer".wait_time = 2.0
 	experimental_mode = "unstable" in Global.VERSION
 	if experimental_mode:
-		$MatchmakingDisabledLabel.show()
+		$"%MatchmakingDisabledLabel".show()
 	_create_replay_challenge_ui()
 
 	UIManager.register_menu(self, [
+		$"%NavBar", $"%SteamButton", $"%CrossplayButton", $"%DirectButton",
 		$"%NameEdit", $"%RoomNameEdit",
-		$"%ConnectContainer", $MarginContainer/HBoxContainer/VBoxContainer/ConnectContainer/HostRow, $"%JoinContainer", $"%JoinButtons",		$"%HostButton", $"%PublicButton", $"%JoinButton", $"%SpectateButton",
+		$"%RefreshButton", $"%FilterIncompatibleButton", $"%FilterFullButton", $"%SortButton",
+		$"%CustomCharOn", $"%CustomCharOff", $"%CodeSearch", $"%SearchButton",
+		$"%ConnectContainer", $"%HostRow", $"%JoinContainer", $"%JoinButtons", $"%HostButton", $"%PublicButton", $"%CharloaderButton", $"%JoinButton", $"%SpectateButton",
 		$"%IPEdit", $"%PortEdit", $"%RoomCodeEdit",
 		$"%NetworkStartButton", $"%BackButton",
 		$"%RoomCodeLabel", $"%RoomStartButton", $"%LeaveRoomButton",
 		$"%RoomChatContainer", $"%RoomChatEdit", $"%RoomChatSendButton",
 	])
+	$"%FilterBar".connect("resized", self, "_on_filter_bar_resized")
+	_on_filter_bar_resized()
+	_update_panel_heights()
+
+func _on_filter_bar_resized():
+	var bar = $"%FilterBar"
+	bar.rect_position.y = -bar.rect_size.y
+
+func _update_panel_heights():
+	var connect_growth = max(0, connect_container.rect_size.y - _connect_height)
+	$BrowsePanel/ConnectPanel.margin_bottom = _connect_margin_bottom + connect_growth
+
+func _on_mobile_ui_changed(mobile):
+	var bar = $"%FilterBar"
+	if !mobile:
+		bar.rect_size.y = 18
+	_on_filter_bar_resized()
 
 func refresh_multiplayer(_index=null):
 	Network.stop_multiplayer()
@@ -163,6 +213,7 @@ func show():
 	showing = true
 	match_list_request_in_flight = false
 	_last_match_list_signature = ""
+	$"%CodeSearch".clear()
 	if direct_connect and Network.lan_room_active:
 		_enter_lan_room_view()
 		return
@@ -179,6 +230,7 @@ func show():
 	join_button.show()
 	host_button.show()
 	connect_container.show()
+	charloader_button.show()
 	if !direct_connect:
 		$"%PlayerList".hide()
 		$"%UserListPanel".hide()
@@ -215,8 +267,6 @@ func show():
 		$"%UserListPanel".hide()
 		$"%MatchListPanel".show()
 		$"%MatchListContainer".show()
-		$"%LobbyLabel".text = "Direct Connect"
-		$"%LobbyLabel".show()
 		$"%DirectConnectWarning".text = "host on the same Wi-Fi network, or type an IP and port to join. If no rooms appear, allow the game through your firewall."
 		$"%DirectConnectWarning".show()
 		$"%RoomCodeEdit".hide()
@@ -262,8 +312,10 @@ func _on_host_pressed():
 	name_edit.hide()
 	join_button.hide()
 	host_button.hide()
+	charloader_button.hide()
 	$"%RoomCodeEdit".hide()
 	$"%RoomNameEdit".hide()
+	$"%FilterBar".hide()
 	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
 		var port_text = port_edit.text.strip_edges()
@@ -281,10 +333,12 @@ func _on_host_pressed():
 		if host_err != OK:
 			_return_to_lobby_browse()
 			return
+		Network.charloader_enabled = charloader_button.pressed and ModLoader.active
 		Network.start_lan_hosting(lan_room_name, lan_room_address, lan_room_port, 1)
 		_enter_lan_room_view()
 	else:
 		var room_name = ProfanityFilter.filter($"%RoomNameEdit".text.strip_edges())
+		Network.charloader_enabled = charloader_button.pressed and ModLoader.active
 		Network.setup_network_ids(player_name)
 		Network.host_game_relay(player_name, $"%PublicButton".pressed, room_name)
 		var room_code = yield(Network, "match_code_received")
@@ -305,6 +359,7 @@ func _on_join_pressed():
 #	name_edit.editable = false
 	name_edit.hide()
 	$"%RoomNameEdit".hide()
+	charloader_button.hide()
 	var player_name = ProfanityFilter.filter(name_edit.text)
 	if direct_connect:
 		var ip = ip_edit.text.strip_edges()
@@ -315,6 +370,7 @@ func _on_join_pressed():
 			join_button.disabled = false
 			name_edit.show()
 			$"%RoomNameEdit".show()
+			charloader_button.show()
 			return
 		if !port_text.is_valid_integer() or int(port_text) <= 0 or int(port_text) > 65535:
 			error_label.text = "Invalid port!"
@@ -322,6 +378,7 @@ func _on_join_pressed():
 			join_button.disabled = false
 			name_edit.show()
 			$"%RoomNameEdit".show()
+			charloader_button.show()
 			return
 		var join_err = Network.join_game_direct(ip, port_text, player_name)
 		if join_err != OK:
@@ -340,6 +397,7 @@ func _on_join_pressed():
 		Network.join_game_relay(player_name, code)
 	show_match_list = false
 	$"%MatchListContainer".hide()
+	$"%FilterBar".hide()
 	save_username()
 
 func save_username():
@@ -421,6 +479,7 @@ func _enter_lan_room_view():
 	$"%RefreshTimer".stop()
 	$"%MatchListPanel".hide()
 	$"%MatchListContainer".hide()
+	$"%FilterBar".hide()
 	$"%PlayerList".hide()
 	$"%UserListPanel".hide()
 	$"%RoomCodeEdit".hide()
@@ -505,10 +564,17 @@ func _refresh_lan_rows(rooms):
 			"name": room_name,
 			"host": str(room.get("host", "")),
 			"started": int(room.get("players", 1)) >= 2,
+			"players": int(room.get("players", 1)),
+			"max_players": 2,
+			"version": str(room.get("version", "")),
+			"charloader_enabled": bool(room.get("charloader_enabled", true)),
 			"spectators": 0,
 		})
-	match_list = list
-	_populate_match_rows(list)
+	match_list = []
+	for room in list:
+		if room is Dictionary:
+			match_list.append(_normalize_match_entry(room))
+	_populate_match_rows(match_list)
 
 func _on_room_code_pressed():
 	if current_room_code == "":
@@ -780,11 +846,16 @@ func _hide_replay_challenge_ui():
 func _hide_browse_ui():
 	name_edit.hide()
 	$"%LobbyLabel".hide()
+	$"%FilterBar".hide()
 	$"%MatchListPanel".hide()
 	$"%UserListPanel".hide()
+	if has_node("%NavBar"):
+		$"%NavBar".hide()
 
 func _restore_browse_ui():
-	$"%LobbyLabel".show()
+	$"%FilterBar".show()
+	if has_node("%NavBar"):
+		$"%NavBar".show()
 	if !direct_connect:
 		$"%MatchListPanel".show()
 
@@ -844,6 +915,7 @@ func _return_to_lobby_browse():
 	current_room_code = ""
 	room_code_prefix = "Room: "
 	pending_lan_room_name = ""
+	$"%CodeSearch".clear()
 	Network.relay_room_code = ""
 	Network.relay_room_info = {}
 	room_info_timer.stop()
@@ -859,6 +931,7 @@ func _return_to_lobby_browse():
 	host_button.show()
 	host_button.disabled = false
 	connect_container.show()
+	charloader_button.show()
 	if direct_connect:
 		Network.stop_lan_hosting()
 		Network.lan_room_active = false
@@ -872,8 +945,6 @@ func _return_to_lobby_browse():
 		$"%NetworkStartButton".hide()
 		$"%BackButton".show()
 		$"%DirectConnectWarning".show()
-		$"%LobbyLabel".text = "Direct Connect"
-		$"%LobbyLabel".show()
 		join_button.disabled = false
 		host_button.disabled = false
 		_on_ip_edit_text_changed($"%IPEdit".text)
@@ -943,11 +1014,21 @@ func _format_spectators(spectators):
 		text += "  " + str(s) + "\n"
 	return text
 
-func _on_match_clicked(index):
-	if show_match_list:
-		var match_ = match_list[index]
-		$"%RoomCodeEdit".text = match_.code
-		$"%JoinButton".disabled = false
+func _on_lobby_entry_selected(entry):
+	if !show_match_list:
+		return
+	for lobby in $"%MatchListContainer".get_children():
+		if lobby != entry and lobby.has_method("deselect"):
+			lobby.deselect()
+	if !(entry.lobby_data is Dictionary):
+		return
+	var full = int(entry.lobby_data.get("player_count", 0)) >= int(entry.lobby_data.get("max_players", 2))
+	if full:
+		if !direct_connect:
+			$"%RoomCodeEdit".text = str(entry.lobby_id)
+			$"%JoinButton".disabled = true
+		return
+	_on_row_join_pressed(entry.lobby_id)
 
 func _on_player_count_received(count):
 	if show_match_list:
@@ -972,46 +1053,139 @@ func _on_match_list_received(list):
 	if signature != null and signature == _last_match_list_signature:
 		return
 	_last_match_list_signature = signature
-	match_list = list
-	_populate_match_rows(list)
+	match_list = []
+	for entry in list:
+		if entry is Dictionary:
+			match_list.append(_normalize_match_entry(entry))
+	_populate_match_rows(match_list)
 
 func _populate_match_rows(list):
 	var container = $"%MatchListContainer"
 	for child in container.get_children():
 		child.queue_free()
-	container.visible = show_match_list and list.size() > 0
-	for match_ in list:
-		var row = create_match_row(match_)
-		container.add_child(row)
+	var filtered = _filtered_match_list(list)
+	container.visible = show_match_list and filtered.size() > 0
+	for match_ in filtered:
+		create_match_row(match_)
 
-func create_match_row(match_):
-	var row = HBoxContainer.new()
-	row.size_flags_horizontal = 3
-	row.size_flags_vertical = 0
-	var in_match = match_.get("started", false)
-	var spectators = int(match_.get("spectators", 0))
+func _normalize_match_entry(entry):
+	var started = bool(entry.get("started", false))
+	var normalized = entry.duplicate()
+	if !normalized.has("players"):
+		normalized["players"] = 2 if started else 1
+	if !normalized.has("max_players"):
+		normalized["max_players"] = 2
+	normalized["version"] = str(normalized.get("version", ""))
+	return normalized
+
+func _filtered_match_list(list):
+	var query = $"%CodeSearch".text.strip_edges().to_lower()
+	var same_version = $"%FilterIncompatibleButton".pressed
+	var include_full = $"%FilterFullButton".pressed
+	var base_version = Global.base_version(Global.VERSION)
+	var filtered = []
+	for entry in list:
+		if !(entry is Dictionary):
+			continue
+		var players = int(entry.get("players", 1))
+		var max_players = int(entry.get("max_players", 2))
+		if !include_full and max_players > 0 and players >= max_players:
+			continue
+		if same_version:
+			var version = str(entry.get("version", ""))
+			if version == "" or Global.base_version(version) != base_version:
+				continue
+		var custom_characters = bool(entry.get("charloader_enabled", true))
+		if custom_characters and !show_custom_character_lobbies:
+			continue
+		if !custom_characters and !show_vanilla_lobbies:
+			continue
+		if query != "":
+			var haystack = "%s %s %s %s" % [entry.get("code", ""), entry.get("name", ""), entry.get("host", ""), entry.get("ip", "")]
+			if haystack.to_lower().find(query) == -1:
+				continue
+		filtered.append(entry)
+	if $"%SortButton".selected == 1:
+		filtered.sort_custom(self, "_sort_match_by_name")
+	else:
+		filtered.sort_custom(self, "_sort_match_by_player_count")
+	return filtered
+
+func _sort_match_by_name(a, b):
+	return str(a.get("name", "")).to_lower() < str(b.get("name", "")).to_lower()
+
+func _sort_match_by_player_count(a, b):
+	return int(a.get("players", 1)) > int(b.get("players", 1))
+
+func _on_filter_changed(_value=null):
+	if show_match_list:
+		_populate_match_rows(match_list)
+
+func _on_filter_refresh_pressed():
+	if direct_connect:
+		Network.refresh_lan_rooms()
+		_refresh_lan_rows(Network.get_lan_rooms())
+	else:
+		refresh_match_list()
+
+func _on_filter_search_pressed():
+	_on_filter_changed()
+
+func _on_code_search_text_entered(_text):
+	_on_filter_changed()
+
+func _on_custom_char_on_toggled(button_pressed):
+	show_custom_character_lobbies = button_pressed
+	if !show_vanilla_lobbies and !show_custom_character_lobbies:
+		$"%CustomCharOn".pressed = false
+		$"%CustomCharOff".pressed = true
+		return
+	_on_filter_changed()
+
+func _on_custom_char_off_toggled(button_pressed):
+	show_vanilla_lobbies = button_pressed
+	if !show_vanilla_lobbies and !show_custom_character_lobbies:
+		$"%CustomCharOn".pressed = false
+		$"%CustomCharOff".pressed = true
+		return
+	_on_filter_changed()
+
+func create_match_row(match_, container=null):
+	var entry = preload("res://ui/SteamLobby/LobbyEntry.tscn").instance()
 	var room_name = str(match_.get("name", ""))
 	if room_name == "":
-		room_name = "%s's room" % match_.host
-	var name_btn = Button.new()
-	name_btn.text = "%s - %s" % [room_name, match_.code]
-	name_btn.size_flags_horizontal = 3
-	name_btn.rect_min_size.y = 24
-	name_btn.clip_text = true
-	if in_match:
-		name_btn.disabled = true
-	name_btn.connect("pressed", self, "_on_row_join_pressed", [match_.code])
-	row.add_child(name_btn)
-	if direct_connect:
-		return row
-	var spec_btn = Button.new()
-	spec_btn.text = "spectate" if spectators == 0 else "spectate (%d)" % spectators
-	spec_btn.rect_min_size = Vector2(0, 24)
-	if spectators >= MAX_SPECTATORS:
-		spec_btn.disabled = true
-	spec_btn.connect("pressed", self, "_on_spectate_pressed", [match_.code])
-	row.add_child(spec_btn)
-	return row
+		room_name = "%s's room" % match_.get("host", "")
+	var version = str(match_.get("version", ""))
+	if version == "":
+		version = "unknown"
+	var started = bool(match_.get("started", false))
+	var player_count = int(match_.get("players", 2 if started else 1))
+	var max_players = int(match_.get("max_players", 2))
+	var charloader = bool(match_.get("charloader_enabled", true))
+	var data = {
+		"name": room_name,
+		"version": version,
+		"player_count": player_count,
+		"max_players": max_players,
+		"charloader_enabled": charloader,
+		"charloader_enabled_text": "Yes" if charloader else "No",
+		"id": str(match_.get("code", "")),
+	}
+	if container == null:
+		container = $"%MatchListContainer"
+	container.add_child(entry)
+	entry.set_data(data)
+	var full = max_players > 0 and player_count >= max_players
+	entry.set_spectate_enabled(!direct_connect)
+	entry.set_enter_enabled(!full)
+	entry.connect("selected", self, "_on_lobby_entry_selected", [entry])
+	entry.connect("spectate_requested", self, "_on_row_spectate_pressed", [entry])
+	return entry
+
+func _on_row_spectate_pressed(entry):
+	if !show_match_list or direct_connect:
+		return
+	_on_spectate_pressed(str(entry.lobby_id))
 
 func _on_row_join_pressed(match_code):
 	if direct_connect:
@@ -1068,6 +1242,26 @@ func _on_back_button_pressed():
 	if direct_connect:
 		Network.stop_lan_browsing()
 	Global.reload()
+
+func _update_nav_tabs():
+	$"%CrossplayButton".disabled = !direct_connect
+	$"%DirectButton".disabled = direct_connect
+	$"%SteamButton".disabled = false
+
+func _on_steam_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_steam_lobbies"):
+		ui.open_steam_lobbies()
+
+func _on_crossplay_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_relay_lobbies"):
+		ui.open_relay_lobbies()
+
+func _on_direct_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_direct_lobbies"):
+		ui.open_direct_lobbies()
 
 func _on_connection_success():
 	refresh_lobby()

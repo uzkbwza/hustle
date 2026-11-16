@@ -74,6 +74,9 @@ remotesync func register_player(new_player_name, id, mods, isSteam = false):
 		emit_signal("game_error", "Mismatched game versions.\nYou: %s, Opponent: %s." % [Global.VERSION, mods.version])
 		return 
 	
+	if !is_host() and mods.has("charloader_enabled"):
+		charloader_enabled = bool(mods.get("charloader_enabled", true))
+
 	if (get_tree().get_network_unique_id() == id):
 		network_id = id
 	
@@ -126,10 +129,10 @@ func update_diffList():
 # these 3 function overwrites are for hash_to_folder, normal_mods and char_mods to get sent alongside active_mods
 # hash_to_folder will tell what mod names the other player should display when they differ in server-sided non-character mods (the other player doesn't know the names of the mods they don't have)
 remote func player_connected_relay():
-	rpc_("register_player", [player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION}])
+	rpc_("register_player", [player_name, get_tree().get_network_unique_id(), {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION, "charloader_enabled":charloader_enabled}])
 
 func _direct_mod_payload():
-	return {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION}
+	return {"active_mods": ModLoader.active_mods, "normal_mods":normal_mods, "normal_folders":normal_folders, "hash_to_folder":hash_to_folder, "char_mods":char_mods, "char_folders":char_folders, "version":Global.VERSION, "charloader_enabled":charloader_enabled}
 
 func player_connected(id):
 	pass

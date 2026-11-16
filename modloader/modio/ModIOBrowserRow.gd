@@ -367,7 +367,8 @@ func _on_card_gui_input(event) -> void:
 				_press_pos = get_global_mouse_position()
 			elif _pressed:
 				_pressed = false
-				if not UIManager.is_scroll_dragging():
+				if not UIManager.is_scroll_dragging() \
+						and get_global_mouse_position().distance_to(_press_pos) <= DRAG_CANCEL_DISTANCE:
 					emit_signal("open_pressed", mod_id)
 		elif event.button_index == BUTTON_RIGHT and event.pressed:
 			var text = tooltip_text()
@@ -384,7 +385,8 @@ func _on_card_gui_input(event) -> void:
 		elif _pressed and event.index == _press_event_id:
 			_pressed = false
 			_press_event_id = -1
-			if not UIManager.is_scroll_dragging():
+			if not UIManager.is_scroll_dragging() \
+					and event.position.distance_to(_press_pos) <= DRAG_CANCEL_DISTANCE:
 				emit_signal("open_pressed", mod_id)
 	elif event is InputEventScreenDrag:
 		if _pressed and event.index == _press_event_id \

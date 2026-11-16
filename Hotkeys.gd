@@ -142,6 +142,7 @@ const PROTECTED_KEYS = [KEY_ESCAPE]
 
 var defaults = {}
 var hovered_xy_plot = null
+var hovered_horiz_slider = null
 
 func _ready():
 	for action in RUNTIME_DEFAULTS:

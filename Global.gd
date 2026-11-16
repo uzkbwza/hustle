@@ -6,7 +6,7 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-7.0"
+var VERSION = "1.11.0-Unstable-8.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
@@ -170,10 +170,15 @@ func get_cached_character(name):
 	return characters_cache[name]
 
 func refresh_characters_cache():
+	var invalid_characters = []
 	for char_name in name_paths:
 		var character = load(name_paths[char_name])
-		if character:
-			characters_cache[char_name] = character
+		if !character:
+			invalid_characters.append(char_name)
+			continue
+		characters_cache[char_name] = character
+	for char_name in invalid_characters:
+		name_paths.erase(char_name)
 
 func character_path(char_name: String) -> String:
 	if name_paths.has(char_name):
@@ -233,15 +238,6 @@ func _enter_tree():
 	if _is_winws_active():
 		winws_active_message()
 		winws_detected = true
-	var invalid_characters = []
-	for char_name in name_paths:
-		var character = load(name_paths[char_name])
-		if !character:
-			invalid_characters.append(char_name)
-			continue
-		characters_cache[char_name] = character
-	for character in invalid_characters:
-		name_paths.erase(character)
 #	get_tree().set_auto_accept_quit(false)
 	steam_demo_version = "steam" in VERSION and "beta" in VERSION
 	audio_player = AudioStreamPlayer.new()

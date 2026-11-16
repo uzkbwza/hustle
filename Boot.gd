@@ -4,15 +4,18 @@ export(float) var spin_seconds = 1.8
 export(float) var stall_seconds = 10.0
 export(Color) var stall_color = Color(1, 0.42, 0.36)
 
-onready var _status_label = $Hud/HudMargin/Box/StatusLabel
-onready var _detail_label = $Hud/HudMargin/Box/Info/DetailLabel
-onready var _progress = $Hud/HudMargin/Box/Progress
-onready var _percent_label = $Hud/HudMargin/Box/Header/PercentLabel
-onready var _version_label = $Hud/HudMargin/Box/Header/VersionLabel
-onready var _elapsed_label = $Hud/HudMargin/Box/Info/ElapsedLabel
-onready var _log_label = $LogPanel/LogMargin/LogBox/LogLabel
-onready var _log_panel = $LogPanel
-onready var _spin_sprites = $Hud/HudMargin/Box/Header/SpinHolder.get_children()
+onready var _status_label = $Ui/Hud/HudMargin/Box/StatusLabel
+onready var _detail_label = $Ui/Hud/HudMargin/Box/Info/DetailLabel
+onready var _progress = $Ui/Hud/HudMargin/Box/Progress
+onready var _percent_label = $Ui/Hud/HudMargin/Box/Header/PercentLabel
+onready var _version_label = $Ui/Hud/HudMargin/Box/Header/VersionLabel
+onready var _elapsed_label = $Ui/Hud/HudMargin/Box/Info/ElapsedLabel
+onready var _log_label = $Ui/LogPanel/LogMargin/LogBox/LogLabel
+onready var _log_panel = $Ui/LogPanel
+onready var _spin_sprites = $Corners/SpinHolder.get_children()
+onready var _corners = $Corners
+onready var _ui = $Ui
+onready var _ui_tween = $UiTween
 
 var _spin_index = 0
 var _spin_side = true
@@ -52,7 +55,7 @@ func _process(delta):
 	if stalled != _stalled:
 		_stalled = stalled
 		_elapsed_label.add_color_override("font_color", stall_color if stalled else _normal_time_color)
-		_log_panel.visible = stalled
+		_log_panel.visible = stalled and _ui.visible
 		if stalled:
 			_log_label.text = PoolStringArray(_log_lines).join("\n")
 	if stalled:
@@ -74,6 +77,15 @@ func _update_spin(delta):
 		_spin_index = (_spin_index + 1) % _spin_sprites.size()
 		_spin_sprites[_spin_index].visible = true
 	_spin_sprites[_spin_index].rect_scale.x = scale_x
+
+
+func _on_toggle_ui():
+	_ui.visible = not _ui.visible
+	_log_panel.visible = _stalled and _ui.visible
+	_ui_tween.stop_all()
+	_ui_tween.interpolate_property(_corners, "rect_position", _corners.rect_position,
+		Vector2(0, -108.0 if _ui.visible else 0.0), 0.18, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	_ui_tween.start()
 
 
 func set_status(text):
@@ -105,6 +117,8 @@ func _boot():
 	var loader = get_node_or_null("/root/ModLoader")
 	if loader != null:
 		yield(loader.start(self), "completed")
+
+	Global.refresh_characters_cache()
 
 	set_status("Starting game...")
 	set_detail("")

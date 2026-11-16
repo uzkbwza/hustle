@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Boot.gd" type="Script" id=1]
 [ext_resource path="res://theme.tres" type="Theme" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://characters/wizard/sprites/idle.png" type="Texture" id=10]
 [ext_resource path="res://characters/robo/sprites/idle.png" type="Texture" id=11]
 [ext_resource path="res://characters/mutant/sprites/idle4.png" type="Texture" id=12]
+[ext_resource path="res://ui/mobileicons/icons.png" type="Texture" id=16]
 
 [sub_resource type="DynamicFontData" id=23]
 antialiased = false
@@ -27,6 +28,20 @@ fallback/0 = ExtResource( 7 )
 bg_color = Color( 0.027, 0.028, 0.033, 0.94 )
 border_width_top = 2
 border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="DynamicFont" id=15]
+size = 18
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 23 )
+fallback/0 = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=14]
+size = 9
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 23 )
+fallback/0 = ExtResource( 7 )
 
 [sub_resource type="AtlasTexture" id=18]
 atlas = ExtResource( 8 )
@@ -48,19 +63,9 @@ region = Rect2( 45, 40, 37, 40 )
 atlas = ExtResource( 12 )
 region = Rect2( 49, 46, 33, 34 )
 
-[sub_resource type="DynamicFont" id=15]
-size = 18
-outline_size = 1
-outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 23 )
-fallback/0 = ExtResource( 7 )
-
-[sub_resource type="DynamicFont" id=14]
-size = 9
-outline_size = 1
-outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 23 )
-fallback/0 = ExtResource( 7 )
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 16 )
+region = Rect2( 48, 16, 16, 16 )
 
 [node name="Boot" type="Control"]
 anchor_right = 1.0
@@ -76,7 +81,13 @@ texture = ExtResource( 3 )
 expand = true
 stretch_mode = 7
 
-[node name="LogPanel" type="PanelContainer" parent="."]
+[node name="Ui" type="Control" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="LogPanel" type="PanelContainer" parent="Ui"]
 visible = false
 self_modulate = Color( 1, 1, 1, 0.501961 )
 anchor_top = 1.0
@@ -87,7 +98,7 @@ margin_top = -201.0
 margin_right = -18.0
 margin_bottom = -115.0
 
-[node name="LogMargin" type="MarginContainer" parent="LogPanel"]
+[node name="LogMargin" type="MarginContainer" parent="Ui/LogPanel"]
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 603.0
@@ -97,21 +108,21 @@ custom_constants/margin_top = 5
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 5
 
-[node name="LogBox" type="VBoxContainer" parent="LogPanel/LogMargin"]
+[node name="LogBox" type="VBoxContainer" parent="Ui/LogPanel/LogMargin"]
 margin_left = 10.0
 margin_top = 5.0
 margin_right = 592.0
 margin_bottom = 79.0
 custom_constants/separation = 2
 
-[node name="LogTitle" type="Label" parent="LogPanel/LogMargin/LogBox"]
+[node name="LogTitle" type="Label" parent="Ui/LogPanel/LogMargin/LogBox"]
 margin_right = 582.0
 margin_bottom = 10.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 13 )
 text = "LAST STEPS"
 
-[node name="LogLabel" type="RichTextLabel" parent="LogPanel/LogMargin/LogBox"]
+[node name="LogLabel" type="RichTextLabel" parent="Ui/LogPanel/LogMargin/LogBox"]
 margin_top = 12.0
 margin_right = 582.0
 margin_bottom = 74.0
@@ -121,7 +132,7 @@ custom_colors/default_color = Color( 0.68, 0.76, 0.86, 1 )
 custom_fonts/normal_font = SubResource( 13 )
 scroll_following = true
 
-[node name="Hud" type="PanelContainer" parent="."]
+[node name="Hud" type="PanelContainer" parent="Ui"]
 self_modulate = Color( 1, 1, 1, 0 )
 anchor_top = 1.0
 anchor_right = 1.0
@@ -129,7 +140,7 @@ anchor_bottom = 1.0
 margin_top = -108.0
 custom_styles/panel = SubResource( 17 )
 
-[node name="HudMargin" type="MarginContainer" parent="Hud"]
+[node name="HudMargin" type="MarginContainer" parent="Ui/Hud"]
 margin_top = 2.0
 margin_right = 640.0
 margin_bottom = 108.0
@@ -138,75 +149,20 @@ custom_constants/margin_top = 9
 custom_constants/margin_left = 18
 custom_constants/margin_bottom = 9
 
-[node name="Box" type="VBoxContainer" parent="Hud/HudMargin"]
+[node name="Box" type="VBoxContainer" parent="Ui/Hud/HudMargin"]
 margin_left = 18.0
 margin_top = 9.0
 margin_right = 622.0
 margin_bottom = 97.0
 custom_constants/separation = 4
 
-[node name="Header" type="HBoxContainer" parent="Hud/HudMargin/Box"]
+[node name="Header" type="HBoxContainer" parent="Ui/Hud/HudMargin/Box"]
 margin_right = 604.0
 margin_bottom = 26.0
 custom_constants/separation = 10
 
-[node name="SpinHolder" type="Control" parent="Hud/HudMargin/Box/Header"]
-margin_right = 26.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 26, 26 )
-
-[node name="Ninja" type="TextureRect" parent="Hud/HudMargin/Box/Header/SpinHolder"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 13, 13 )
-mouse_filter = 2
-texture = SubResource( 18 )
-expand = true
-stretch_mode = 6
-
-[node name="Cowboy" type="TextureRect" parent="Hud/HudMargin/Box/Header/SpinHolder"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 13, 13 )
-mouse_filter = 2
-texture = SubResource( 19 )
-expand = true
-stretch_mode = 6
-
-[node name="Wizard" type="TextureRect" parent="Hud/HudMargin/Box/Header/SpinHolder"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 13, 13 )
-mouse_filter = 2
-texture = SubResource( 20 )
-expand = true
-stretch_mode = 6
-
-[node name="Robot" type="TextureRect" parent="Hud/HudMargin/Box/Header/SpinHolder"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 13, 13 )
-mouse_filter = 2
-texture = SubResource( 21 )
-expand = true
-stretch_mode = 6
-
-[node name="Mutant" type="TextureRect" parent="Hud/HudMargin/Box/Header/SpinHolder"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 13, 13 )
-mouse_filter = 2
-texture = SubResource( 22 )
-expand = true
-stretch_mode = 6
-
-[node name="Title" type="Label" parent="Hud/HudMargin/Box/Header"]
-margin_left = 36.0
-margin_right = 118.0
+[node name="Title" type="Label" parent="Ui/Hud/HudMargin/Box/Header"]
+margin_right = 82.0
 margin_bottom = 26.0
 rect_min_size = Vector2( 0, 26 )
 custom_colors/font_color = Color( 0.97, 0.94, 0.88, 1 )
@@ -214,13 +170,13 @@ custom_fonts/font = SubResource( 15 )
 text = "LOADING"
 valign = 1
 
-[node name="Spacer" type="Control" parent="Hud/HudMargin/Box/Header"]
-margin_left = 128.0
+[node name="Spacer" type="Control" parent="Ui/Hud/HudMargin/Box/Header"]
+margin_left = 92.0
 margin_right = 510.0
 margin_bottom = 26.0
 size_flags_horizontal = 3
 
-[node name="VersionLabel" type="Label" parent="Hud/HudMargin/Box/Header"]
+[node name="VersionLabel" type="Label" parent="Ui/Hud/HudMargin/Box/Header"]
 margin_left = 520.0
 margin_right = 542.0
 margin_bottom = 26.0
@@ -231,7 +187,7 @@ text = "0.0.0"
 align = 2
 valign = 1
 
-[node name="PercentLabel" type="Label" parent="Hud/HudMargin/Box/Header"]
+[node name="PercentLabel" type="Label" parent="Ui/Hud/HudMargin/Box/Header"]
 margin_left = 552.0
 margin_right = 604.0
 margin_bottom = 26.0
@@ -242,7 +198,7 @@ text = "0%"
 align = 2
 valign = 1
 
-[node name="StatusLabel" type="Label" parent="Hud/HudMargin/Box"]
+[node name="StatusLabel" type="Label" parent="Ui/Hud/HudMargin/Box"]
 margin_top = 30.0
 margin_right = 604.0
 margin_bottom = 41.0
@@ -251,7 +207,7 @@ custom_fonts/font = SubResource( 14 )
 text = "starting"
 clip_text = true
 
-[node name="Progress" type="TextureProgress" parent="Hud/HudMargin/Box"]
+[node name="Progress" type="TextureProgress" parent="Ui/Hud/HudMargin/Box"]
 margin_top = 45.0
 margin_right = 604.0
 margin_bottom = 65.0
@@ -264,13 +220,13 @@ stretch_margin_top = 6
 stretch_margin_right = 6
 stretch_margin_bottom = 6
 
-[node name="Info" type="HBoxContainer" parent="Hud/HudMargin/Box"]
+[node name="Info" type="HBoxContainer" parent="Ui/Hud/HudMargin/Box"]
 margin_top = 69.0
 margin_right = 604.0
 margin_bottom = 80.0
 custom_constants/separation = 12
 
-[node name="DetailLabel" type="Label" parent="Hud/HudMargin/Box/Info"]
+[node name="DetailLabel" type="Label" parent="Ui/Hud/HudMargin/Box/Info"]
 margin_right = 592.0
 margin_bottom = 11.0
 size_flags_horizontal = 3
@@ -278,10 +234,92 @@ custom_colors/font_color = Color( 0.62, 0.8, 1, 1 )
 custom_fonts/font = SubResource( 13 )
 clip_text = true
 
-[node name="ElapsedLabel" type="Label" parent="Hud/HudMargin/Box/Info"]
+[node name="ElapsedLabel" type="Label" parent="Ui/Hud/HudMargin/Box/Info"]
 margin_left = 604.0
 margin_right = 604.0
 margin_bottom = 11.0
 custom_colors/font_color = Color( 0.52, 0.62, 0.78, 1 )
 custom_fonts/font = SubResource( 13 )
 align = 2
+
+[node name="Corners" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="SpinHolder" type="Control" parent="Corners"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -46.0
+margin_top = -46.0
+margin_right = -20.0
+margin_bottom = -20.0
+rect_min_size = Vector2( 26, 26 )
+
+[node name="Ninja" type="TextureRect" parent="Corners/SpinHolder"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 13, 13 )
+mouse_filter = 2
+texture = SubResource( 18 )
+expand = true
+stretch_mode = 6
+
+[node name="Cowboy" type="TextureRect" parent="Corners/SpinHolder"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 13, 13 )
+mouse_filter = 2
+texture = SubResource( 19 )
+expand = true
+stretch_mode = 6
+
+[node name="Wizard" type="TextureRect" parent="Corners/SpinHolder"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 13, 13 )
+mouse_filter = 2
+texture = SubResource( 20 )
+expand = true
+stretch_mode = 6
+
+[node name="Robot" type="TextureRect" parent="Corners/SpinHolder"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 13, 13 )
+mouse_filter = 2
+texture = SubResource( 21 )
+expand = true
+stretch_mode = 6
+
+[node name="Mutant" type="TextureRect" parent="Corners/SpinHolder"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 13, 13 )
+mouse_filter = 2
+texture = SubResource( 22 )
+expand = true
+stretch_mode = 6
+
+[node name="ToggleUI" type="TextureButton" parent="Corners"]
+self_modulate = Color( 1, 1, 1, 0.376471 )
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 561.0
+margin_top = -48.0
+margin_right = 593.0
+margin_bottom = -16.0
+mouse_default_cursor_shape = 2
+texture_normal = SubResource( 24 )
+expand = true
+stretch_mode = 5
+
+[node name="UiTween" type="Tween" parent="."]
+
+[connection signal="pressed" from="Corners/ToggleUI" to="." method="_on_toggle_ui"]

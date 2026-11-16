@@ -35,9 +35,49 @@ anchor_bottom = 1.0
 margin_top = -1.0
 margin_bottom = -1.0
 
-[node name="Panel" type="Panel" parent="NetworkSetupScreen"]
+[node name="NavBar" type="HBoxContainer" parent="NetworkSetupScreen"]
+unique_name_in_owner = true
 margin_right = 532.0
-margin_bottom = 14.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+custom_constants/separation = 8
+
+[node name="SteamButton" type="Button" parent="NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_right = 55.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Steam (PC)"
+flat = true
+
+[node name="CrossplayButton" type="Button" parent="NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_left = 63.0
+margin_right = 151.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Relay (Crossplay)"
+flat = true
+
+[node name="DirectButton" type="Button" parent="NetworkSetupScreen/NavBar"]
+unique_name_in_owner = true
+margin_left = 159.0
+margin_right = 220.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+mouse_default_cursor_shape = 2
+custom_colors/font_color_hover = Color( 1, 0.2, 0.239216, 1 )
+text = "Direct (LAN)"
+flat = true
+
+[node name="Panel" type="Panel" parent="NetworkSetupScreen"]
+margin_top = 21.0
+margin_right = 532.0
+margin_bottom = 35.0
 rect_min_size = Vector2( 0, 14 )
 size_flags_horizontal = 3
 
@@ -90,12 +130,12 @@ margin_right = 528.0
 margin_bottom = 12.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
-text = "Player Count"
+text = "Players"
 align = 2
 
 [node name="LobbyListContainer" type="ScrollContainer" parent="NetworkSetupScreen"]
 unique_name_in_owner = true
-margin_top = 15.0
+margin_top = 36.0
 margin_right = 532.0
 margin_bottom = 268.0
 size_flags_horizontal = 3
@@ -310,12 +350,12 @@ unique_name_in_owner = true
 margin_left = 61.0
 margin_top = 268.0
 margin_right = 135.0
-margin_bottom = 299.0
+margin_bottom = 286.0
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CreateLobbyDialog/HostContainer"]
 margin_right = 74.0
-margin_bottom = 31.0
+margin_bottom = 18.0
 size_flags_horizontal = 3
 
 [node name="CreateLobbyButton" type="Button" parent="CreateLobbyDialog/HostContainer/VBoxContainer"]
@@ -328,11 +368,12 @@ size_flags_vertical = 3
 theme_type_variation = "ChallengeButton"
 text = "create lobby"
 
-[node name="PublicButton" type="CheckButton" parent="CreateLobbyDialog/HostContainer/VBoxContainer"]
+[node name="PublicButton" type="CheckButton" parent="CreateLobbyDialog"]
 unique_name_in_owner = true
-margin_top = 19.0
-margin_right = 74.0
-margin_bottom = 31.0
+margin_left = 61.0
+margin_top = 287.0
+margin_right = 135.0
+margin_bottom = 299.0
 theme_type_variation = "ChallengeButton"
 pressed = true
 text = "public"
@@ -431,90 +472,114 @@ action_mode = 0
 icon = ExtResource( 5 )
 flat = true
 
-[node name="CodeSearch" type="LineEdit" parent="."]
+[node name="FilterBar" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
-margin_left = 409.0
-margin_top = -18.0
-margin_right = 495.0
+margin_top = -19.0
+margin_right = 532.0
 margin_bottom = -1.0
+mouse_filter = 2
+custom_constants/separation = 5
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="RefreshButton" type="Button" parent="FilterBar"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 40, 18 )
+size_flags_horizontal = 0
+text = "refresh"
+
+[node name="FilterIncompatibleButton" type="CheckButton" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 45.0
+margin_right = 133.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 88, 18 )
+rect_pivot_offset = Vector2( 29, 8 )
+pressed = true
+text = "same version"
+
+[node name="FilterFullButton" type="CheckButton" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 138.0
+margin_right = 174.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 36, 18 )
+rect_pivot_offset = Vector2( 29, 8 )
+pressed = true
+text = "full"
+
+[node name="SortButton" type="OptionButton" parent="FilterBar"]
+unique_name_in_owner = true
+visible = false
+margin_left = 179.0
+margin_right = 215.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 36, 18 )
+text = "sort by player count"
+clip_text = true
+items = [ "sort by player count", null, false, 0, null, "sort by name", null, false, 1, null ]
+selected = 0
+
+[node name="FilterSpacer" type="Control" parent="FilterBar"]
+margin_left = 179.0
+margin_right = 208.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 29, 0 )
+
+[node name="CustomCharLabel" type="Label" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 213.0
+margin_right = 309.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 96, 18 )
+text = "custom characters"
+valign = 1
+clip_text = true
+
+[node name="CustomCharOn" type="CheckBox" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 314.0
+margin_right = 356.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 42, 18 )
+pressed = true
+text = "on"
+clip_text = true
+
+[node name="CustomCharOff" type="CheckBox" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 361.0
+margin_right = 403.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 42, 18 )
+pressed = true
+text = "off"
+clip_text = true
+
+[node name="CodeSearch" type="LineEdit" parent="FilterBar"]
+unique_name_in_owner = true
+margin_left = 408.0
+margin_right = 490.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 38, 18 )
+size_flags_horizontal = 3
 align = 1
 max_length = 6
 placeholder_text = "search by code"
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="SearchButton" type="Button" parent="."]
+[node name="SearchButton" type="Button" parent="FilterBar"]
 unique_name_in_owner = true
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -37.0
-margin_top = -286.0
-margin_bottom = -269.0
+margin_left = 495.0
+margin_right = 532.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 37, 18 )
 size_flags_horizontal = 0
 text = "search"
-
-[node name="FilterIncompatibleButton" type="CheckButton" parent="."]
-unique_name_in_owner = true
-margin_left = 41.0
-margin_top = -17.0
-margin_right = 129.0
-margin_bottom = -1.0
-rect_pivot_offset = Vector2( 29, 8 )
-pressed = true
-text = "same version"
-
-[node name="FilterFullButton" type="CheckButton" parent="."]
-unique_name_in_owner = true
-margin_left = 130.0
-margin_top = -17.0
-margin_right = 166.0
-margin_bottom = -1.0
-rect_pivot_offset = Vector2( 29, 8 )
-pressed = true
-text = "full"
-
-[node name="SortButton" type="OptionButton" parent="."]
-unique_name_in_owner = true
-margin_left = 167.0
-margin_top = -17.0
-margin_right = 203.0
-margin_bottom = -1.0
-text = "sort by player count"
-clip_text = true
-items = [ "sort by player count", null, false, 0, null, "sort by name", null, false, 1, null ]
-selected = 0
-
-[node name="CustomCharLabel" type="Label" parent="."]
-unique_name_in_owner = true
-margin_left = 229.0
-margin_top = -19.0
-margin_right = 325.0
-margin_bottom = -1.0
-text = "custom characters"
-valign = 1
-clip_text = true
-
-[node name="CustomCharOn" type="CheckBox" parent="."]
-unique_name_in_owner = true
-margin_left = 325.0
-margin_top = -18.0
-margin_right = 367.0
-margin_bottom = -1.0
-pressed = true
-text = "on"
-clip_text = true
-
-[node name="CustomCharOff" type="CheckBox" parent="."]
-unique_name_in_owner = true
-margin_left = 367.0
-margin_top = -18.0
-margin_right = 409.0
-margin_bottom = -1.0
-pressed = true
-text = "off"
-clip_text = true
 
 [node name="BackButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -526,16 +591,6 @@ margin_left = -40.0
 margin_bottom = 18.0
 size_flags_horizontal = 0
 text = "go back"
-
-[node name="RefreshButton" type="Button" parent="."]
-unique_name_in_owner = true
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -285.0
-margin_right = 40.0
-margin_bottom = -269.0
-size_flags_horizontal = 0
-text = "refresh"
 
 [node name="Label" type="Label" parent="."]
 visible = false
@@ -621,12 +676,12 @@ text = "okey dokey"
 [connection signal="visibility_changed" from="." to="." method="_on_SteamLobbyList_visibility_changed"]
 [connection signal="value_changed" from="CreateLobbyDialog/LobbySize" to="." method="_on_LobbySize_value_changed"]
 [connection signal="pressed" from="CreateLobbyDialog/ExclamationButton" to="." method="_on_ExclamationButton_pressed"]
-[connection signal="text_entered" from="CodeSearch" to="." method="_on_CodeSearch_text_entered"]
-[connection signal="pressed" from="SearchButton" to="." method="_on_SearchButton_pressed"]
-[connection signal="toggled" from="FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]
-[connection signal="toggled" from="FilterFullButton" to="." method="_on_FilterIncompatibleButton_toggled"]
-[connection signal="item_selected" from="SortButton" to="." method="_on_SortButton_item_selected"]
-[connection signal="toggled" from="CustomCharOn" to="." method="_on_CustomCharOn_toggled"]
-[connection signal="toggled" from="CustomCharOff" to="." method="_on_CustomCharOff_toggled"]
-[connection signal="pressed" from="RefreshButton" to="." method="_on_RefreshButton_pressed"]
+[connection signal="pressed" from="FilterBar/RefreshButton" to="." method="_on_RefreshButton_pressed"]
+[connection signal="toggled" from="FilterBar/FilterIncompatibleButton" to="." method="_on_FilterIncompatibleButton_toggled"]
+[connection signal="toggled" from="FilterBar/FilterFullButton" to="." method="_on_FilterIncompatibleButton_toggled"]
+[connection signal="item_selected" from="FilterBar/SortButton" to="." method="_on_SortButton_item_selected"]
+[connection signal="toggled" from="FilterBar/CustomCharOn" to="." method="_on_CustomCharOn_toggled"]
+[connection signal="toggled" from="FilterBar/CustomCharOff" to="." method="_on_CustomCharOff_toggled"]
+[connection signal="text_entered" from="FilterBar/CodeSearch" to="." method="_on_CodeSearch_text_entered"]
+[connection signal="pressed" from="FilterBar/SearchButton" to="." method="_on_SearchButton_pressed"]
 [connection signal="pressed" from="LobbySettingsChangedWindow/VBoxContainer/Contents/VBoxContainer/LobbySettingsChangeWindowButton" to="." method="_on_LobbySettingsChangeWindowButton_pressed"]

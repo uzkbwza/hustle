@@ -25,7 +25,16 @@ func _ready():
 	if UIManager.is_connected("swiped_back", self, "_on_back_button_pressed"):
 		UIManager.disconnect("swiped_back", self, "_on_back_button_pressed")
 	UIManager.connect("swiped_back", self, "_on_back_button_pressed")
+	if !Global.is_connected("mobile_ui_changed", self, "_on_mobile_ui_changed"):
+		Global.connect("mobile_ui_changed", self, "_on_mobile_ui_changed")
 	lobby_name.connect("text_entered", self, "_on_lobby_name_text_entered")
+	$"%SteamButton".connect("pressed", self, "_on_steam_button_pressed")
+	$"%CrossplayButton".connect("pressed", self, "_on_crossplay_button_pressed")
+	$"%DirectButton".connect("pressed", self, "_on_direct_button_pressed")
+	$"%SteamButton".visible = not (Global.is_mobile_device or Global.winws_detected)
+	$"%SteamButton".disabled = true
+	$"%CrossplayButton".visible = true
+	$"%DirectButton".visible = true
 	
 	charloader_button.disabled = !ModLoader.active
 #	exclamation_button.visible = ModLoader.active
@@ -33,7 +42,34 @@ func _ready():
 	if Global.seen_custom_character_nag and !OS.is_debug_build():
 		exclamation_button.hide()
 
+	UIManager.register_menu(self, [
+		$"%NavBar", $"%SteamButton", $"%CrossplayButton", $"%DirectButton",
+		$"%LobbyName", $"%CreateLobbyButton",
+		{"node": $"%PublicButton", "position": Vector2(357, 268)},
+		{"node": $"%CharloaderButton", "position": Vector2(61, 294)},
+		{"node": $"%ReplayChallengeButton", "position": Vector2(209, 294)},
+		{"node": $"%LobbySize", "position": Vector2(357, 294)},
+		{"node": $CreateLobbyDialog/LobbySizeLabel, "position": Vector2(495, 301)},
+		{"node": $"%LobbySizeLabelCount", "position": Vector2(575, 301)},
+		{"node": $"%ExclamationButton", "position": Vector2(435, 268)},
+		$"%RefreshButton", $"%FilterIncompatibleButton", $"%FilterFullButton", $"%SortButton",
+		$"%CustomCharOn", $"%CustomCharOff", $"%CodeSearch", $"%SearchButton",
+		$"%BackButton",
+	])
+	$"%FilterBar".connect("resized", self, "_on_filter_bar_resized")
+	_on_filter_bar_resized()
+
 #	charloader_button.pressed = ModLoader.active
+
+func _on_filter_bar_resized():
+	var bar = $"%FilterBar"
+	bar.rect_position.y = -bar.rect_size.y
+
+func _on_mobile_ui_changed(mobile):
+	var bar = $"%FilterBar"
+	if !mobile:
+		bar.rect_size.y = 18
+	_on_filter_bar_resized()
 
 func _on_lobby_name_text_entered(_text):
 	_on_create_lobby_button_pressed()
@@ -53,6 +89,21 @@ func _on_back_button_pressed():
 	if not visible: return
 	Network.stop_multiplayer()
 	Global.reload()
+
+func _on_steam_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_steam_lobbies"):
+		ui.open_steam_lobbies()
+
+func _on_crossplay_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_relay_lobbies"):
+		ui.open_relay_lobbies()
+
+func _on_direct_button_pressed():
+	var ui = get_parent()
+	if ui != null and ui.has_method("open_direct_lobbies"):
+		ui.open_direct_lobbies()
 
 func show():
 	.show()
@@ -140,7 +191,8 @@ func _on_lobby_match_list_received(lobbies):
 			"id": lobby,
 		}
 		lobby_entry.set_data(data)
-		if lobby == selected_lobby:
+		lobby_entry.set_enter_enabled(!(lobby_max_members > 0 and lobby_num_members >= lobby_max_members))
+		if lobby == selected_lobby and lobby_entry.enter_enabled:
 			lobby_entry.select()
 		pass
 #	yield(get_tree().create_timer(1.0), "timeout")

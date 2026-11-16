@@ -441,7 +441,8 @@ func init(singleplayer=true):
 			button.connect("mouse_entered", self, "_on_button_mouse_entered", [button])
 		$ButtonSoundPlayer.add_container($"%CharacterButtonContainer")
 		$ButtonSoundPlayer.setup()
-	_on_button_mouse_entered(buttons[0])
+	if !buttons.empty():
+		_on_button_mouse_entered(buttons[0])
 
 
 
@@ -658,10 +659,15 @@ func _process(delta):
 			b.disabled = true
 
 	var connected = SteamLobby.connected()
+	var custom_allowed = true
+	if connected:
+		custom_allowed = SteamLobby.LOBBY_CHARLOADER_ENABLED
+	elif Network.multiplayer_active and !Network.steam:
+		custom_allowed = Network.charloader_enabled
 	for j in len(btts):
 		var b = btts[j]
 		if isCustomChar(b.name):
-			b.visible = (connected and SteamLobby.LOBBY_CHARLOADER_ENABLED) or !connected
+			b.visible = custom_allowed
 			
 
 	# searchBar.visible = $ScrollContainer.get_v_scrollbar().is_visible_in_tree()
@@ -1268,6 +1274,8 @@ func net_isCharacterAvailable(_charName):
 	var custom = isCustomChar(_charName)
 	if custom and !SteamLobby.LOBBY_CHARLOADER_ENABLED and SteamLobby.LOBBY_ID != 0:
 		return false 
+	if custom and Network.multiplayer_active and !Network.steam and !Network.charloader_enabled:
+		return false
 	if (!singleplayer and custom and (Network.player1_chars != [] or Network.player2_chars != [])):
 		var foundIt1 = false
 		var foundIt2 = false

@@ -7,7 +7,8 @@ const MAGIC_ROOM = "HUSTLE_LAN_ROOM:1"
 const DISCOVERY_PORT = 52451
 const ROOM_TTL_MS = 8000
 const PROBE_INTERVAL_MS = 1200
-const UNICAST_SCAN_INTERVAL_MS = 4000
+const UNICAST_SCAN_INTERVAL_MS = 2500
+const ANNOUNCE_INTERVAL_MS = 1500
 
 signal rooms_changed(rooms)
 
@@ -19,6 +20,7 @@ var room_host = ""
 var room_port = 0
 var room_players = 1
 var room_version = ""
+var room_charloader = true
 var room_id = ""
 
 var _advertise_socket = null
@@ -26,17 +28,21 @@ var _browse_socket = null
 var _rooms = {}
 var _last_probe_ms = 0
 var _last_unicast_scan_ms = 0
+var _last_announce_ms = 0
 var _last_signature = ""
 
-func start_advertising(p_room_name, p_host_name, p_port, p_players=1):
+func start_advertising(p_room_name, p_host_name, p_port, p_players=1, p_charloader=true):
 	stop_advertising()
+	stop_browsing()
 	room_name = str(p_room_name)
 	room_host = str(p_host_name)
 	room_port = int(p_port)
 	room_players = int(p_players)
 	room_version = str(Global.VERSION)
+	room_charloader = bool(p_charloader)
 	room_id = "%d-%d" % [OS.get_ticks_usec(), randi()]
 	_advertise_socket = PacketPeerUDP.new()
+	_advertise_socket.set_broadcast_enabled(true)
 	var err = _advertise_socket.listen(DISCOVERY_PORT)
 	if err != OK:
 		print("LanDiscovery: could not listen on port " + str(DISCOVERY_PORT) + " (" + str(err) + ")")
@@ -44,6 +50,7 @@ func start_advertising(p_room_name, p_host_name, p_port, p_players=1):
 		_advertise_socket = null
 		return err
 	advertising = true
+	_last_announce_ms = 0
 	set_process(true)
 	return OK
 
@@ -57,6 +64,7 @@ func stop_advertising():
 	room_port = 0
 	room_players = 1
 	room_version = ""
+	room_charloader = true
 	room_id = ""
 
 func update_players(count):
@@ -70,7 +78,9 @@ func start_browsing():
 		_browse_socket = null
 	_browse_socket = PacketPeerUDP.new()
 	_browse_socket.set_broadcast_enabled(true)
-	var err = _browse_socket.listen(0)
+	var err = _browse_socket.listen(DISCOVERY_PORT)
+	if err != OK:
+		err = _browse_socket.listen(0)
 	if err != OK:
 		print("LanDiscovery: could not open browse socket (" + str(err) + ")")
 		_browse_socket.close()
@@ -123,10 +133,21 @@ func _sort_room(a, b):
 func _process(_delta):
 	if advertising and _advertise_socket != null:
 		_poll_advertise()
+		_announce()
 	if browsing and _browse_socket != null:
 		_poll_browse()
 	if !advertising and !browsing:
 		set_process(false)
+
+func _announce():
+	var now = OS.get_ticks_msec()
+	if now - _last_announce_ms < ANNOUNCE_INTERVAL_MS:
+		return
+	_last_announce_ms = now
+	var payload = _room_payload().to_utf8()
+	for target in _probe_targets():
+		_advertise_socket.set_dest_address(target, DISCOVERY_PORT)
+		_advertise_socket.put_packet(payload)
 
 func _poll_advertise():
 	while _advertise_socket.get_available_packet_count() > 0:
@@ -145,6 +166,7 @@ func _room_payload():
 		"port": room_port,
 		"players": room_players,
 		"version": room_version,
+		"charloader_enabled": room_charloader,
 	})
 
 func _poll_browse():
@@ -226,6 +248,7 @@ func _handle_room_packet(packet, ip):
 		"host": str(data.get("host", "")),
 		"players": int(data.get("players", 1)),
 		"version": str(data.get("version", "")),
+		"charloader_enabled": bool(data.get("charloader_enabled", true)),
 		"seen": OS.get_ticks_msec(),
 	}
 

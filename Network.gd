@@ -51,6 +51,7 @@ var lan_room_active = false
 var lan_room_name = ""
 var lan_room_address = ""
 var lan_room_port = 0
+var charloader_enabled = true
 var ids_synced = false
 var turn_synced = false
 var send_ready = false
@@ -424,7 +425,7 @@ func start_lan_hosting(p_room_name, p_address, p_port, p_players=1):
 	lan_room_address = str(p_address)
 	lan_room_port = int(p_port)
 	if lan_discovery != null:
-		lan_discovery.start_advertising(lan_room_name, player_name, lan_room_port, p_players)
+		lan_discovery.start_advertising(lan_room_name, player_name, lan_room_port, p_players, charloader_enabled)
 
 func update_lan_hosting_players(count):
 	if lan_discovery != null:
@@ -529,6 +530,7 @@ func _reset():
 	rematch_menu = false
 
 	stop_lan_hosting()
+	charloader_enabled = true
 
 	last_action = null
 	
@@ -1816,6 +1818,7 @@ remote func room_join_deny(message):
 remote func receive_match_id(match_id):
 	print("received match id: %s" % [match_id])
 	relay_room_code = str(match_id).to_upper()
+	rpc_id(1, "set_match_version", Global.VERSION)
 	emit_signal("match_code_received", match_id)
 
 remote func player_connected_relay():
