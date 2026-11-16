@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://theme.tres" type="Theme" id=1]
 [ext_resource path="res://modloader/workshop_uploader/ModUploader.gd" type="Script" id=2]
+[ext_resource path="res://ui/Window/Window.tscn" type="PackedScene" id=3]
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -336,7 +337,7 @@ align = 1
 [node name="TagsScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
 margin_top = 14.0
 margin_right = 150.0
-margin_bottom = 280.0
+margin_bottom = 194.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -345,7 +346,7 @@ scroll_horizontal_enabled = false
 [node name="TagsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer"]
 unique_name_in_owner = true
 margin_right = 150.0
-margin_bottom = 266.0
+margin_bottom = 180.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -433,12 +434,138 @@ flat = true
 unique_name_in_owner = true
 visible = false
 modulate = Color( 1, 0.2, 0.239216, 1 )
-margin_top = 242.0
+margin_top = 183.0
 margin_right = 150.0
-margin_bottom = 253.0
+margin_bottom = 194.0
 text = "must have one or more tags..."
 align = 1
 autowrap = true
+
+[node name="Gap" type="Control" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+margin_top = 195.0
+margin_right = 150.0
+margin_bottom = 215.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+margin_top = 216.0
+margin_right = 150.0
+margin_bottom = 229.0
+
+[node name="TagsLabel" type="Label" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/PanelContainer2"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 149.0
+margin_bottom = 12.0
+text = "AI Use Disclosure"
+align = 1
+
+[node name="AIHelpButton" type="Button" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/PanelContainer2/TagsLabel"]
+unique_name_in_owner = true
+margin_left = 1.0
+margin_right = 15.0
+margin_bottom = 12.0
+custom_colors/font_color = Color( 0.113725, 0.552941, 0.960784, 1 )
+text = "?"
+
+[node name="TagsScrollContainer2" type="ScrollContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox"]
+margin_top = 230.0
+margin_right = 150.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 0, 50 )
+size_flags_horizontal = 3
+scroll_horizontal_enabled = false
+
+[node name="AITagsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer2"]
+margin_right = 150.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AIImages" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer2/AITagsContainer"]
+unique_name_in_owner = true
+margin_right = 150.0
+margin_bottom = 17.0
+action_mode = 0
+text = "Contains AI Images"
+flat = true
+
+[node name="AICode" type="CheckBox" parent="PanelContainer/VBoxContainer/Panel2/HBoxContainer/TagsBox/TagsScrollContainer2/AITagsContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 150.0
+margin_bottom = 35.0
+action_mode = 0
+text = "Contains AI Code"
+flat = true
+
+[node name="AIDisclosureHelp" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+margin_left = -232.0
+margin_top = -101.0
+margin_right = 234.0
+margin_bottom = 77.0
+
+[node name="VBoxContainer" parent="AIDisclosureHelp" index="0"]
+margin_right = 465.0
+margin_bottom = 177.0
+
+[node name="TitleBar" parent="AIDisclosureHelp/VBoxContainer" index="0"]
+margin_right = 464.0
+
+[node name="Title" parent="AIDisclosureHelp/VBoxContainer/TitleBar" index="0"]
+text = "AI Disclosure Guidelines"
+
+[node name="Contents" parent="AIDisclosureHelp/VBoxContainer" index="1"]
+margin_right = 464.0
+margin_bottom = 176.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AIDisclosureHelp/VBoxContainer/Contents" index="0"]
+margin_left = 1.0
+margin_top = 22.0
+margin_right = 463.0
+margin_bottom = 143.0
+size_flags_horizontal = 5
+size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="AIDisclosureHelp/VBoxContainer/Contents/VBoxContainer"]
+margin_right = 462.0
+margin_bottom = 96.0
+custom_constants/margin_right = 12
+custom_constants/margin_top = 6
+custom_constants/margin_left = 12
+custom_constants/margin_bottom = 6
+
+[node name="RichTextLabel" type="RichTextLabel" parent="AIDisclosureHelp/VBoxContainer/Contents/VBoxContainer/MarginContainer"]
+margin_left = 12.0
+margin_top = 6.0
+margin_right = 450.0
+margin_bottom = 90.0
+bbcode_enabled = true
+bbcode_text = "Please mark your mod with the AI Disclosure tags if any of the following are true:
+
+  - Use [color=#1d8df5]\"Contains AI Images\"[/color] if your mod contains any AI generated images.
+  - Use [color=#1d8df5]\"Contains AI Code\"[/color] if at least 20% of the code in your mod was written by AI.
+
+Moderators may occasionally manually apply these tags to your mod if there is strong evidence that AI was used even if it wasn't originally disclosed."
+text = "Please mark your mod with the AI Disclosure tags if any of the following are true:
+
+  - Use \"Contains AI Images\" if your mod contains any AI generated images.
+  - Use \"Contains AI Code\" if at least 20% of the code in your mod was written by AI.
+
+Moderators may occasionally manually apply these tags to your mod if there is strong evidence that AI was used even if it wasn't originally disclosed."
+fit_content_height = true
+
+[node name="AIHelpClose" type="Button" parent="AIDisclosureHelp/VBoxContainer/Contents/VBoxContainer"]
+unique_name_in_owner = true
+margin_left = 207.0
+margin_top = 97.0
+margin_right = 255.0
+margin_bottom = 121.0
+rect_min_size = Vector2( 48, 24 )
+size_flags_horizontal = 4
+text = "Okay"
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Panel/HBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
 [connection signal="text_changed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/InfoBox/ModName" to="." method="_on_ModName_text_changed"]
@@ -448,3 +575,5 @@ autowrap = true
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2/VisitWorkshopButton" to="." method="_on_VisitWorkshopButton_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Panel2/HBoxContainer/LocalBox/HBoxContainer2/UploadButton" to="." method="_on_UploadButton_pressed"]
+
+[editable path="AIDisclosureHelp"]

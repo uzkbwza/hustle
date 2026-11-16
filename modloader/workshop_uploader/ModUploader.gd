@@ -7,6 +7,7 @@ var has_tag = false
 
 var tag_nodes = {}
 var node_tags = {}
+var ai_tags = {}
 
 var initialized = false
 
@@ -16,6 +17,10 @@ func init():
 #
 	for button in $"%TagsContainer".get_children():
 		button.connect("pressed", self, "update_has_tags")
+	
+	
+	$"%AIHelpButton".connect("pressed", self, "set_ai_info_visible", [true])
+	$"%AIHelpClose".connect("pressed", self, "set_ai_info_visible", [false])
 	
 	node_tags = {
 		$"%Character": "Character",
@@ -27,6 +32,9 @@ func init():
 		$"%Tool": "Tool",
 		$"%Overhaul": "Overhaul",
 		$"%ClientSide": "Clientside",
+		
+		$"%AIImages": "Contains AI Images",
+		$"%AICode": "Contains AI Code",
 	}
 	
 	for node in node_tags:
@@ -41,6 +49,9 @@ func show():
 		init()
 	.show()
 	refresh()
+
+func set_ai_info_visible(show):
+	$"%AIDisclosureHelp".visible = show
 
 func get_dir():
 	return ProjectSettings.globalize_path("user://".plus_file("modupload"))
