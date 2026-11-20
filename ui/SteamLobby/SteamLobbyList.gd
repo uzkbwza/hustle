@@ -198,11 +198,22 @@ func _on_lobby_match_list_received(lobbies):
 #	yield(get_tree().create_timer(1.0), "timeout")
 
 func sort_player_count(a, b):
-	return Steam.getNumLobbyMembers(a) > Steam.getNumLobbyMembers(b)
+	var count_a = Steam.getNumLobbyMembers(a)
+	var count_b = Steam.getNumLobbyMembers(b)
+	if count_a != count_b:
+		return count_a > count_b
+	var name_a = Steam.getLobbyData(a, "name")
+	var name_b = Steam.getLobbyData(b, "name")
+	if name_a != name_b:
+		return name_a > name_b
+	return a > b
 
 func sort_name(a, b):
-	return Steam.getLobbyData(a, "name") > Steam.getLobbyData(b, "name")
-	pass
+	var name_a = Steam.getLobbyData(a, "name")
+	var name_b = Steam.getLobbyData(b, "name")
+	if name_a != name_b:
+		return name_a > name_b
+	return a > b
 
 func _on_lobby_clicked(entry):
 #	print("here")

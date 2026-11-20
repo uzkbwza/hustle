@@ -97,19 +97,24 @@ func undo(cut=true):
 	if resimulating:
 		return
 	var last_frame = 0
-	var last_id = 1
+	var last_frames = {}
 	for id in frame_ids():
-		for frame in frames[id].keys():
-			if frame > last_frame:
-				last_frame = frame
-				last_id = id
-	var other_id = 1 if last_id == 2 else 2
+		var frame_numbers = frames[id].keys()
+		if frame_numbers.empty():
+			continue
+		frame_numbers.sort()
+		last_frames[id] = frame_numbers[-1]
+		last_frame = Utils.int_max(last_frame, last_frames[id])
+	var resim_from = last_frame
 	if cut:
-		frames[last_id].erase(last_frame)
-		frames[other_id].erase(last_frame)
+		for id in last_frames:
+			var frame = last_frames[id]
+			if frame >= last_frame - 2:
+				frames[id].erase(frame)
+				resim_from = Utils.int_min(resim_from, frame)
 	resimulating = true
 	playback = true
-	resim_tick = (last_frame - 2) if cut else -1
+	resim_tick = (resim_from - 2) if cut else -1
 
 func generate_mp_replay_name(p1: String, p2: String):
 	return p1 + "_v_" + p2 + "_" + generate_replay_name()

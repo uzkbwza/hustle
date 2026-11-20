@@ -6,7 +6,7 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-8.0"
+var VERSION = "1.11.0-Unstable-9.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
 
@@ -67,6 +67,7 @@ var enable_custom_particles = true
 var enable_custom_hit_sparks = true	
 var enable_emotes = true
 var enable_timer_sound = true
+var auto_clear_particles = false
 var steam_demo_version = false
 var show_last_move_indicators = true
 var show_community_events = true
@@ -382,6 +383,10 @@ func set_vsync(on):
 	OS.vsync_enabled = on
 	save_options()
 
+func set_auto_clear_particles(on):
+	auto_clear_particles = on
+	save_options()
+
 func set_hitboxes(on):
 	show_hitboxes = on
 	save_options()
@@ -503,6 +508,7 @@ func save_options():
 			"playback_hotkeys_require_window": playback_hotkeys_require_window,
 			"show_projectile_owners": show_projectile_owners,
 			"enable_timer_sound": enable_timer_sound,
+			"auto_clear_particles": auto_clear_particles,
 			"default_dojo": 0,
 			"show_extra_info": show_extra_info,
 #			"light_mode": light_mode,
@@ -566,6 +572,7 @@ func get_default_player_data():
 			"playback_hotkeys_require_window": true,
 			"default_dojo": 0,
 			"enable_timer_sound": true,
+			"auto_clear_particles": false,
 			"enable_emotes": true,
 			"enable_custom_colors": true,
 			"enable_custom_particles": true,

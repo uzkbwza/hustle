@@ -379,8 +379,9 @@ func _on_hit_something(obj, hitbox):
 	if obj.is_in_group("Fighter"):
 		hit_anything = true
 		hit_fighter = true
-		host.melee_attack_combo_scaling_applied = true
-		host.add_penalty(-25)
+		if !host.melee_attack_combo_scaling_applied:
+			host.melee_attack_combo_scaling_applied = true
+			host.add_penalty(-25)
 
 	elif obj.get("hit_cancel_on_hit"):
 		hit_hit_cancellable_projectile = true

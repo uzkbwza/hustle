@@ -88,6 +88,7 @@ var online_warning_pending_method = ""
 var online_warning_accepted = false
 onready var p1_turn_timer = $"%P1TurnTimer"
 onready var p2_turn_timer = $"%P2TurnTimer"
+var _timer_last_ticks_usec = 0
 onready var block_advantage_label = $"%BlockAdvantageLabel"
 onready var neutral_label = $"%NeutralLabel"
 
@@ -377,7 +378,10 @@ func _ready():
 	adjust_ui(Global.mobile_ui)
 	
 	$"%HelpScreen".hide()
-	if SteamLobby.LOBBY_ID != 0:
+	if SteamLobby.return_to_lobby_list:
+		SteamLobby.return_to_lobby_list = false
+		call_deferred("_on_steam_multiplayer_pressed")
+	elif SteamLobby.LOBBY_ID != 0:
 		yield(get_tree(), "idle_frame") 
 #		yield(get_tree(), "idle_frame")
 		_on_join_lobby_success()
@@ -1064,6 +1068,8 @@ func toggle_help_screen():
 func _on_join_lobby_success():
 	if is_instance_valid(Global.current_game):
 		return
+	$"%CustomizationScreen".hide()
+	close_mod_windows()
 	$"%HudLayer".hide()
 	$"%SteamLobbyList".hide()
 	$"%SteamLobby".show()
@@ -1081,6 +1087,16 @@ func hide_main_menu(all=false):
 		var mod_list = get_node_or_null("%ModListButtonContainer")
 		if mod_list != null:
 			mod_list.hide()
+
+func close_mod_windows():
+	for node_name in ["ModOptionsWindow", "Window", "ModLoaderCredits"]:
+		var node = get_node_or_null(node_name)
+		if node == null:
+			continue
+		if node.has_method("_close_clicked"):
+			node._close_clicked()
+		else:
+			node.hide()
 
 func show_main_menu():
 	var css = get_node_or_null("%CharacterSelect")
@@ -1530,6 +1546,7 @@ func _hide_replay_challenge_source():
 func _on_replay_cancel_pressed():
 	if replay_picker_for_challenge:
 		replay_picker_for_challenge = false
+		SteamLobby.cancel_replay_challenge_pick()
 		$"%ReplayWindow".hide()
 		$"%ReplayChallengeTitle".hide()
 		_show_replay_challenge_source()
@@ -1858,6 +1875,8 @@ func _on_multiplayer_pressed():
 func _on_steam_multiplayer_pressed():
 	if _show_online_warning("_on_steam_multiplayer_pressed"):
 		return
+	$"%CustomizationScreen".hide()
+	close_mod_windows()
 	open_steam_lobbies()
 	
 
@@ -1865,6 +1884,8 @@ func _on_turn_ready():
 	$"%P1TurnTimerBar".hide()
 	$"%P2TurnTimerBar".hide()
 	actionable = false
+	if Global.auto_clear_particles:
+		_on_ClearParticlesButton_pressed()
 #	p1_turn_timer.stop()
 #	p2_turn_timer.stop()
 	
@@ -2237,6 +2258,23 @@ func hide_rematch_menu():
 	if disconnected_label:
 		disconnected_label.hide()
 
+func _catch_up_turn_timers(delta):
+	var now = OS.get_ticks_usec()
+	if _timer_last_ticks_usec == 0:
+		_timer_last_ticks_usec = now
+		return
+	var real_delta = float(now - _timer_last_ticks_usec) / 1000000.0
+	_timer_last_ticks_usec = now
+	var extra = real_delta - delta
+	if extra < 0.001:
+		return
+	for timer in [p1_turn_timer, p2_turn_timer]:
+		if timer.paused or timer.is_stopped():
+			continue
+		var wait_time = timer.wait_time
+		timer.start(max(timer.time_left - extra, 0.0001))
+		timer.wait_time = wait_time
+
 func _process(delta):
 	# Freeze the turn clocks while a replay is catching up (replay challenge /
 	# backup resume). During playback the recorded inputs drive the match and the
@@ -2248,6 +2286,8 @@ func _process(delta):
 	if timer_mode != "none" and ReplayManager.playback and not ReplayManager.resimulating:
 		p1_turn_timer.paused = true
 		p2_turn_timer.paused = true
+
+	_catch_up_turn_timers(delta)
 
 	if chess_timer and is_instance_valid(game) and game.match_data:
 		var state = {
@@ -2359,14 +2399,21 @@ func _process(delta):
 	var ghost_game = get_parent().ghost_game
 	if is_instance_valid(game):
 		if game.game_paused:
+			var block_advantage = game.get_player(you_id).last_block_advantage
+			if block_advantage > 0:
+				block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
+				block_advantage_label.text = "block advantage: +" + str(block_advantage)
+			elif block_advantage < 0:
+				block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
+				block_advantage_label.text = "block advantage: " + str(block_advantage)
+			else:
+				block_advantage_label.text = ""
+
 			if is_instance_valid(ghost_game):
 				var you = ghost_game.get_player(you_id)
 				var opponent = ghost_game.get_player(opponent_id)
 				
 				var advantage = 0
-				var block_advantage = 0
-				
-				block_advantage = -you.blocked_hitbox_plus_frames + opponent.blocked_hitbox_plus_frames
 
 				if you.ghost_ready_tick != null and opponent.ghost_ready_tick != null:
 					advantage = opponent.ghost_ready_tick - you.ghost_ready_tick
@@ -2379,17 +2426,8 @@ func _process(delta):
 					advantage_label.text = "frame advantage: " + str(advantage)
 				if advantage == 0:
 					advantage_label.text = ""
-
-				if block_advantage > 0:
-					block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
-					block_advantage_label.text = "block advantage: +" + str(block_advantage)
-					
-				elif block_advantage < 0:
-					block_advantage_label.set("custom_colors/font_color", Color("ff7a81"))
-					block_advantage_label.text = "block advantage: " + str(block_advantage)
-				else:
-					block_advantage_label.text = ""
-					pass
+			else:
+				advantage_label.text = ""
 
 		else:
 			advantage_label.text = ""

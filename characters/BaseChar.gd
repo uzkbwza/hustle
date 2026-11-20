@@ -367,6 +367,7 @@ var buffer_moved_forward = false
 var moved_backward = false
 var buffer_moved_backward = false
 var blocked_hitbox_plus_frames = 0
+var last_block_advantage = 0
 
 var had_sadness = false
 
@@ -414,6 +415,8 @@ const SUPER_METER_GRACE_DIVISOR = 2
 
 var ghost_was_in_air = false
 var ghost_wrong_block = ""
+var ghost_projectile_parry = false
+var ghost_auto_continue = false
 
 var current_nudge = {
 	"x": "0",
@@ -1169,7 +1172,7 @@ func can_unlock_achievements():
 func _ready():
 	sprite.animation = "Wait"
 	state_variables.append_array(
-		["current_di", "current_nudge", "got_blocked", "super_meter_used_recently", "super_meter_grace_ticks", "parry_combo", "parried_burst_combo", "busy", "air_option_bar", "air_option_bar_max", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "gained_whiff_meter", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "combo_proration_set", "combo_proration_ready", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available", "style_aura_got_hit_tick", "style_aura_projectile_spawn_tick", "style_aura_projectiles_active_tick", "style_aura_combo_active_tick", "style_aura_being_comboed_tick", "style_aura_melee_attack_tick", "style_aura_burst_tick", "style_aura_perfect_parry_tick", "style_aura_install_super_tick", "style_aura_taunt_tick", "style_aura_taunt_started_tick", "was_taunting_for_aura", "style_aura_parry_combo_tick", "style_aura_parry_combo_started_tick", "was_parry_combo_active_for_aura", "style_aura_manual_action_pending", "style_aura_in_manual_state"]
+		["current_di", "current_nudge", "got_blocked", "super_meter_used_recently", "super_meter_grace_ticks", "parry_combo", "parried_burst_combo", "busy", "air_option_bar", "air_option_bar_max", "blocked_last_turn", "burst_cancel_combo", "in_blockstring", "knockback_taken_modifier", "block_used_air_movement", "last_parry_tick", "grounded_last_frame", "wakeup_throw_immunity_ticks", "sadness_immunity_ticks", "blockstun_ticks", "guard_broken_this_turn", "counterhit_this_turn", "gained_whiff_meter", "feint_parriable", "brace_enabled", "turn_frames", "last_turn_block", "parry_chip_divisor", "parry_knockback_divisor", "feinted_last", "hit_out_of_brace", "brace_effect_applied_yet", "braced_attack", "blocked_hitbox_plus_frames", "last_block_advantage", "visible_combo_count", "melee_attack_combo_scaling_applied", "projectile_hit_cancelling", "used_buffer", "max_di_scaling", "min_di_scaling", "last_input", "penalty_buffer", "buffered_input", "use_buffer", "was_my_turn", "combo_supers", "penalty_ticks", "can_nudge", "buffer_moved_backward", "wall_slams", "moved_backward", "moved_forward", "buffer_moved_forward", "used_air_dodge", "refresh_prediction", "clipping_wall", "has_hyper_armor", "hit_during_armor", "colliding_with_opponent", "clashing", "last_pos", "penalty", "hitstun_decay_combo_count", "touching_wall", "feinting", "feints", "lowest_tick", "is_color_active", "blocked_last_hit", "combo_proration", "combo_proration_set", "combo_proration_ready", "state_changed","nudge_amount", "initiative_effect", "reverse_state", "combo_moves_used", "parried_last_state", "initiative", "last_vel", "last_aerial_vel", "trail_hp", "always_perfect_parry", "parried", "got_parried", "parried_this_frame", "grounded_hits_taken", "on_the_ground", "hitlag_applied", "combo_damage", "burst_enabled", "di_enabled", "turbo_mode", "infinite_resources", "one_hit_ko", "dummy_interruptable", "air_movements_left", "super_meter", "supers_available", "parried", "parried_hitboxes", "burst_meter", "bursts_available", "style_aura_got_hit_tick", "style_aura_projectile_spawn_tick", "style_aura_projectiles_active_tick", "style_aura_combo_active_tick", "style_aura_being_comboed_tick", "style_aura_melee_attack_tick", "style_aura_burst_tick", "style_aura_perfect_parry_tick", "style_aura_install_super_tick", "style_aura_taunt_tick", "style_aura_taunt_started_tick", "was_taunting_for_aura", "style_aura_parry_combo_tick", "style_aura_parry_combo_started_tick", "was_parry_combo_active_for_aura", "style_aura_manual_action_pending", "style_aura_in_manual_state"]
 	)
 	add_to_group("Fighter")
 	connect("got_hit", self, "on_got_hit")
@@ -1879,6 +1882,10 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				perfect_parry = perfect_parry and hitbox.parriable
 		else:
 			perfect_parry = current_state().can_parry and !current_state().get("push") and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
+			if is_ghost and ghost_blocked_melee_attack == -1:
+				ghost_blocked_melee_attack = current_state().current_tick + 1
+				ghost_projectile_parry = perfect_parry
+				ghost_wrong_block = ""
 
 		if force_parry:
 			perfect_parry = true
@@ -2103,8 +2110,12 @@ func set_block_stun(total_plus_frames, block_hitlag=null):
 		block_hitlag = total_plus_frames
 	if total_plus_frames > 0:
 		blocked_hitbox_plus_frames = total_plus_frames
+		last_block_advantage = -total_plus_frames
+		opponent.last_block_advantage = total_plus_frames
 	elif total_plus_frames < 0:
 		opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
+		last_block_advantage = -total_plus_frames
+		opponent.last_block_advantage = total_plus_frames
 	blockstun_ticks += block_hitlag
 
 
@@ -2534,9 +2545,12 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
+		if !ghost_auto_continue:
+			last_block_advantage = 0
 		process_action(queued_action)
-		turn_frames = 0
-		opponent.turn_frames = 0
+		if !ghost_auto_continue:
+			turn_frames = 0
+			opponent.turn_frames = 0
 		turn_start_effects()
 		counterhit_this_turn = false
 		guard_broken_this_turn = false
@@ -2551,19 +2565,28 @@ func tick_before():
 		feint_parriable = false
 		if queued_action == "Continue":
 			var current_state_name = current_state().name
+			var chained_restart = false
 			if process_continue():
 				pass
 			elif current_state().get_hold_restart() != "" and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state().get_hold_restart()
 				queued_data = current_state().data
+				chained_restart = true
 			elif current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state_name
 				queued_data = current_state().data
+				chained_restart = true
 			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
 				queued_action = HOLD_FORCE_STATES[current_state_name]
+				chained_restart = true
 			elif (was_my_turn or (current_state().interruptible_on_opponent_turn and current_state().next_state_on_hold_on_opponent_turn) \
 					or (current_state().hit_fighter and combo_count == 0)) and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
+				chained_restart = true
+			if chained_restart:
+				ghost_auto_continue = false
+				turn_frames = 0
+				opponent.turn_frames = 0
 			if feinted_last:
 				feint_parriable = true
 			if !current_state().interruptible_on_opponent_turn:
@@ -2972,6 +2995,7 @@ func on_action_selected(action, data, extra):
 	queued_action = action
 	queued_data = data
 	queued_extra = extra
+	ghost_auto_continue = false
 	state_interruptable = false
 	state_hit_cancellable = false
 	# Mark the *next* state-start as player-initiated so the action_type

@@ -249,7 +249,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://characters/mutant/Beast.gd"
 }, {
-"base": "Reference",
+"base": "",
 "class": "NativeMethods",
 "language": "NativeScript",
 "path": "res://bin/NativeMethods.gdns"
@@ -530,7 +530,7 @@ config/quit_on_go_back=false
 
 [autoload]
 
-Steam="*res://Steam.gd"
+Steam="res://Steam.gd"
 Global="*res://Global.gd"
 FileManager="*res://filemanager/FileManager.gd"
 SteamHustle="*res://SteamY.gd"

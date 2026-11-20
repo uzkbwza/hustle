@@ -133,6 +133,8 @@ func _get_opposite_buttons():
 	return opposite_buttons
 
 func _on_submit_pressed():
+	if lock_in_pressed or locked_in:
+		return
 	lock_in_pressed = true
 	yield(get_tree(), "idle_frame")
 #	if fighter_extra:
@@ -772,6 +774,8 @@ func get_extra() -> Dictionary:
 	return extra
 
 func on_action_submitted(action, data=null, extra=null):
+	if !active:
+		return
 	active = false
 	extra = get_extra() if extra == null else extra
 #	hide()

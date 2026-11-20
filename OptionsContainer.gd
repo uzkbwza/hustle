@@ -7,6 +7,7 @@ func _ready():
 	
 	attach_global_toggle($"%ForceAltUIButton", "force_alt_ui")
 	attach_global_toggle($"%ShowBorderArtButton", "show_border_art")
+	attach_global_toggle($"%AutoClearParticlesButton", "auto_clear_particles")
 	
 	Global.connect("option_changed", self, "on_option_changed")
 	
@@ -19,6 +20,7 @@ func _ui_elements() -> Array:
 		$"%NextTurnHudButton", $"%ShowNextTurnOnCharsButton", $"%LastMoveIndicatorButton",
 		$"%ProjectileOwnersButton", $"%PlaybackHotkeysRequireWindowButton",
 		$"%SpeedLinesButton", $"%TimerSoundButton", $"%ExtraFreezeFrames",
+		$"%AutoClearParticlesButton",
 		$"%PlaybackControls", $"%EnableEmotes", $"%EnableStyleColorsButton",
 		$"%EnableAurasButton", $"%EnableHitsparksButton", $"%ShowCommunityEventsButton",
 		$"%ShowSelectionArtButton", $"%ShowBorderArtButton", $"%ForceAltUIButton",

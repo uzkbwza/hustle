@@ -116,6 +116,8 @@ func _ready():
 		$"%P2Display/ListCenter/StyleListButton",
 	])
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
+	if not SteamLobby.is_connected("css_packet_received", self, "_on_css_packet_received"):
+		SteamLobby.connect("css_packet_received", self, "_on_css_packet_received")
 	var dir = Directory.new()
 
 	searchBar = load("res://ui/CSS/BetterSearchBar.tscn").instance()
@@ -1226,6 +1228,15 @@ func net_startMatch():
 	buffer_go = true
 	net_sendPacket("go_button_pressed")
 	#Network.rpc_("go_button_pressed")
+
+func _on_css_packet_received(packet_name):
+	if packet_name == "go_button_activate":
+		if Network.is_host() and not singleplayer:
+			enable_online_go = true
+			if $"%GoButton".visible:
+				$"%GoButton".disabled = false
+	elif packet_name == "go_button_pressed":
+		buffer_go = true
 
 func net_updateModLists():
 	Network.normal_mods = []

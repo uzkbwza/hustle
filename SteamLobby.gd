@@ -25,6 +25,7 @@ signal client_validation_failure(message)
 signal authentication_started(steam_id)
 signal authentication_complete()
 signal spectate_declined()
+signal css_packet_received(packet_name)
 
 signal user_joined(user_id)
 signal user_left(user_id)
@@ -36,6 +37,8 @@ var MATCH_SETTINGS = {}
 var CHALLENGING_STEAM_ID = 0
 var CHALLENGER_STEAM_ID = 0
 var CHALLENGER_MATCH_SETTINGS = {}
+var pending_challenges = []
+var choosing_replay_challenge = false
 var REPLAY_FULL_DATA = null
 var REPLAY_CHALLENGER_SIDE = 0
 var remote_replay_mods_loaded = false
@@ -89,6 +92,7 @@ var REMATCHING_ID = 0
 var ACTIVE_MATCH_KEY = ""
 var ACTIVE_MATCH_OPPONENT = 0
 var ACTIVE_MATCH_SIDE = 0
+var return_to_lobby_list = false
 
 var spectator_update_timer
 var p2p_packet_sender
@@ -235,6 +239,7 @@ func challenge_user(user):
 
 func replay_challenge_user(user, match_data, side):
 	print("replay-challenging user as side " + str(side))
+	choosing_replay_challenge = false
 	var full_replay = match_data.duplicate(true)
 	full_replay["frames"] = ReplayManager.frames
 	var data = {
@@ -252,12 +257,27 @@ func replay_challenge_user(user, match_data, side):
 	REPLAY_CHALLENGER_SIDE = side
 	remote_replay_mods_loaded = false
 
+func begin_replay_challenge_pick():
+	if LOBBY_ID == 0:
+		return
+	choosing_replay_challenge = true
+	Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
+
+func cancel_replay_challenge_pick():
+	if not choosing_replay_challenge:
+		return
+	choosing_replay_challenge = false
+	if OPPONENT_ID == 0 and CHALLENGER_STEAM_ID == 0 and not SPECTATING:
+		Steam.setLobbyMemberData(LOBBY_ID, "status", _idle_status())
+	_promote_pending_challenge()
+
 func on_match_started():
 	Steam.setLobbyMemberData(LOBBY_ID, "game_started", "true")
 
 func accept_challenge():
 #	if CHALLENGER_STEAM_ID == 0:
 #		return
+	_clear_pending_challenges()
 	var steam_id = CHALLENGER_STEAM_ID
 	var match_settings = CHALLENGER_MATCH_SETTINGS
 	print("accepting challenge")
@@ -271,6 +291,7 @@ func accept_challenge():
 	_send_P2P_Packet(steam_id, {
 		"challenge_accepted": SteamHustle.STEAM_ID
 	})
+	CHALLENGER_STEAM_ID = 0
 	_setup_game_vs(OPPONENT_ID)
 
 func authenticate_with(steam_id):
@@ -287,6 +308,7 @@ func decline_challenge():
 	_send_P2P_Packet(steam_id, {"challenge_declined": SteamHustle.STEAM_ID})
 	Steam.setLobbyMemberData(LOBBY_ID, "status", _idle_status())
 	CHALLENGER_STEAM_ID = 0
+	_promote_pending_challenge()
 
 func quit_match():
 	var had_active_match = ACTIVE_MATCH_KEY != ""
@@ -328,6 +350,8 @@ func exit_match_from_button():
 	else:
 		quit_match()
 	Network.stop_multiplayer()
+	return_to_lobby_list = true
+	leave_Lobby()
 	Global.reload()
 
 func has_supporter_pack(steam_id):
@@ -349,6 +373,8 @@ func leave_Lobby() -> void:
 		# clear the cached lock so a different lobby doesn't inherit it.
 		lobby_data_synced = false
 		_cached_lock_state = false
+		pending_challenges.clear()
+		choosing_replay_challenge = false
 		# Chat history is per-lobby; this is the only point where we actually
 		# severed the lobby connection (quit_match / exit_match_from_button do
 		# not call this), so clearing here keeps the buffer alive across match
@@ -480,16 +506,23 @@ func cancel_challenge():
 	CHALLENGING_STEAM_ID = 0
 	OPPONENT_ID = 0
 	Steam.setLobbyMemberData(LOBBY_ID, "status", _idle_status())
+	_promote_pending_challenge()
 
 func _receive_challenge(steam_id, match_settings):
-	# Blocked users get the same silent decline as a busy player would —
+	# Blocked users get the same silent decline as a busy player would -
 	# they can't distinguish the reasons, so it's just "not available".
 	print("[block] _receive_challenge from ", steam_id, " is_blocked=", is_blocked(steam_id), " block_list=", Global.blocked_users)
 	if is_blocked(steam_id):
 		_send_P2P_Packet(steam_id, {"challenge_declined": SteamHustle.STEAM_ID})
 		return
-	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") != "idle":
-		_send_P2P_Packet(steam_id, {"player_busy": null})
+	if not _can_accept_challenge():
+		# Another incoming challenge is already on screen - hold this one and
+		# surface it once the current dialog is resolved. Otherwise both
+		# challengers race and the loser's request is silently dropped.
+		if CHALLENGER_STEAM_ID != 0 or choosing_replay_challenge:
+			_queue_pending_challenge(steam_id, "challenge", match_settings)
+		else:
+			_send_P2P_Packet(steam_id, {"player_busy": null})
 		return
 	print("received challenge")
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
@@ -501,8 +534,14 @@ func _receive_replay_challenge(steam_id, replay_data, challenger_side):
 	if is_blocked(steam_id):
 		_send_P2P_Packet(steam_id, {"replay_challenge_declined": SteamHustle.STEAM_ID})
 		return
-	if Steam.getLobbyMemberData(LOBBY_ID, SteamHustle.STEAM_ID, "status") != "idle":
-		_send_P2P_Packet(steam_id, {"player_busy": null})
+	if not _can_accept_challenge():
+		if CHALLENGER_STEAM_ID != 0 or choosing_replay_challenge:
+			_queue_pending_challenge(steam_id, "replay", {
+				"replay_data": replay_data,
+				"challenger_side": challenger_side,
+			})
+		else:
+			_send_P2P_Packet(steam_id, {"player_busy": null})
 		return
 	print("received replay challenge from side " + str(challenger_side))
 	Steam.setLobbyMemberData(LOBBY_ID, "status", "busy")
@@ -512,7 +551,44 @@ func _receive_replay_challenge(steam_id, replay_data, challenger_side):
 	remote_replay_mods_loaded = false
 	emit_signal("received_replay_challenge", steam_id, replay_data, challenger_side)
 
+func _can_accept_challenge():
+	if CHALLENGER_STEAM_ID != 0 or OPPONENT_ID != 0 or choosing_replay_challenge:
+		return false
+	if SPECTATING or Global.lobby_busy_mode:
+		return false
+	return not is_fighting()
+
+func _queue_pending_challenge(steam_id, type, data):
+	for pending in pending_challenges:
+		if pending.sender == steam_id and pending.type == type:
+			return
+	pending_challenges.append({"sender": steam_id, "type": type, "data": data})
+
+func _remove_pending_challenge(steam_id):
+	for i in range(pending_challenges.size() - 1, -1, -1):
+		if pending_challenges[i].sender == steam_id:
+			pending_challenges.remove(i)
+
+func _promote_pending_challenge():
+	if CHALLENGER_STEAM_ID != 0 or OPPONENT_ID != 0 or choosing_replay_challenge:
+		return
+	if SPECTATING or Global.lobby_busy_mode:
+		return
+	if pending_challenges.empty():
+		return
+	var pending = pending_challenges.pop_front()
+	if pending.type == "replay":
+		_receive_replay_challenge(pending.sender, pending.data.replay_data, pending.data.challenger_side)
+	else:
+		_receive_challenge(pending.sender, pending.data)
+
+func _clear_pending_challenges():
+	for pending in pending_challenges:
+		_send_P2P_Packet(pending.sender, {"player_busy": null})
+	pending_challenges.clear()
+
 func accept_replay_challenge():
+	_clear_pending_challenges()
 	var steam_id = CHALLENGER_STEAM_ID
 	var my_side = 2 if REPLAY_CHALLENGER_SIDE == 1 else 1
 	print("accepting replay challenge as side " + str(my_side))
@@ -523,6 +599,7 @@ func accept_replay_challenge():
 	_send_P2P_Packet(steam_id, {
 		"replay_challenge_accepted": SteamHustle.STEAM_ID,
 	})
+	CHALLENGER_STEAM_ID = 0
 	_setup_replay_game_vs(OPPONENT_ID)
 
 func decline_replay_challenge():
@@ -532,6 +609,7 @@ func decline_replay_challenge():
 	CHALLENGER_STEAM_ID = 0
 	REPLAY_FULL_DATA = null
 	REPLAY_CHALLENGER_SIDE = 0
+	_promote_pending_challenge()
 
 func signal_replay_mods_loaded():
 	if OPPONENT_ID == 0:
@@ -549,6 +627,7 @@ func decline_replay_challenge_with_reason(reason, detail=null):
 	CHALLENGER_STEAM_ID = 0
 	REPLAY_FULL_DATA = null
 	REPLAY_CHALLENGER_SIDE = 0
+	_promote_pending_challenge()
 
 func _on_opponent_replay_challenge_accepted(steam_id):
 	Steam.setLobbyMemberData(SteamLobby.LOBBY_ID, "player_id", str(PLAYER_SIDE))
@@ -690,8 +769,7 @@ func _read_P2P_Packet():
 					MATCH_SETTINGS = readable.match_settings_updated
 				emit_signal("received_match_settings", readable.match_settings_updated)
 		if readable.has("player_busy"):
-			
-			pass
+			_on_challenge_declined(PACKET_SENDER)
 		if readable.has("request_match_settings"):
 			_send_P2P_Packet(readable.request_match_settings, {"match_settings_updated":MATCH_SETTINGS})
 		if readable.has("request_chat_history"):
@@ -764,11 +842,17 @@ func _read_P2P_Packet():
 		if readable.has("message"):
 			if readable.message == "handshake":
 				emit_signal("handshake_made")
+		if readable.has("_packetName"):
+			if PACKET_SENDER == OPPONENT_ID:
+				emit_signal("css_packet_received", readable._packetName)
 		
 		if readable.has("challenge_cancelled"):
 			if PACKET_SENDER == CHALLENGER_STEAM_ID:
 				emit_signal("challenger_cancelled")
 				CHALLENGER_STEAM_ID = 0
+				_promote_pending_challenge()
+			else:
+				_remove_pending_challenge(PACKET_SENDER)
 		if readable.has("challenge_declined"):
 			_on_challenge_declined(readable.challenge_declined)
 		if readable.has("spectate_accept"):

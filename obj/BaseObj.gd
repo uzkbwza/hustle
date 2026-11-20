@@ -737,7 +737,7 @@ func set_y(y: int):
 	chara.set_y(y)
 
 func get_center_position_float():
-	return Vector2(position.x + collision_box.x, position.y + collision_box.y)
+	return get_pos_visual() + Vector2(collision_box.x, collision_box.y)
 	
 func set_pos(x, y):
 	check_params(x, y)

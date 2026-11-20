@@ -169,6 +169,11 @@ func on_launched():
 
 func on_grabbed():
 	on_launched()
+	armor_active = false
+	super_armor_installed = false
+	armor_startup_ticks = 0
+	buffer_armor = false
+	got_hit = false
 
 func are_missiles_active():
 	for object in get_active_projectiles():

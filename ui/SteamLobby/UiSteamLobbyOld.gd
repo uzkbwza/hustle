@@ -146,6 +146,7 @@ func _on_user_challenge_pressed():
 	$"%SendChallengeDialogScreen".show()
 
 func _on_user_replay_challenge_pressed(member):
+	SteamLobby.begin_replay_challenge_pick()
 	pending_replay_challenge_member = member
 	var ui_layer = get_parent()
 	if !ui_layer.is_connected("replay_picked_for_challenge", self, "_on_replay_picked_for_challenge"):
@@ -202,6 +203,7 @@ func _on_side_picker_p2_pressed():
 
 func _on_side_picker_cancel_pressed():
 	_clear_pending_replay_challenge()
+	SteamLobby.cancel_replay_challenge_pick()
 	$"%SidePickerDialogScreen".hide()
 
 func _send_replay_challenge(side):

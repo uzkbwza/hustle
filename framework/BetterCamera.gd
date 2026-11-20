@@ -61,6 +61,8 @@ func reset_shake():
 	tweens = []
 	
 func bump(dir=Vector2(), amount=default_screenshake_amount, time=default_screenshake_time):
+	if get_parent() and get_parent().is_ghost:
+		return
 	if amount > MAX_SHAKE_AMOUNT:
 		amount = MAX_SHAKE_AMOUNT
 	amount = float(amount)

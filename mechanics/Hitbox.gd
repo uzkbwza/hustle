@@ -350,7 +350,7 @@ func otg_check(obj):
 
 func save_hit_object(obj):
 	for hitbox in grouped_hitboxes:
-		hitbox.hit_objects.append(obj.name)
+		hitbox.hit_objects.append(obj.obj_name)
 
 func already_hit_object(obj):
 	for hitbox in grouped_hitboxes:
@@ -360,7 +360,7 @@ func already_hit_object(obj):
 func hit(obj):
 	if obj.is_invulnerable_to(self, host):
 		return
-	if !(obj.name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit):
+	if !(obj.obj_name in hit_objects) and (!obj.invulnerable or hitbox_type == HitboxType.ThrowHit):
 		var camera = host.get_camera()
 		var dir = get_dir_float(true)
 		if grounded_hit_state is String and grounded_hit_state == "HurtGrounded" and obj.is_grounded():
@@ -436,7 +436,7 @@ func can_draw_box():
 func add_hit_object(obj_name):
 	for hitbox in grouped_hitboxes:
 		if !(obj_name in hitbox.hit_objects):
-			hitbox.hit_objects.append(hitbox)
+			hitbox.hit_objects.append(obj_name)
 
 func reset_hit_objects():
 	hit_objects.clear()

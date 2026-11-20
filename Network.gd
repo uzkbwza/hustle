@@ -123,6 +123,7 @@ var p2_turn_time = 0
 var last_action = null
 var undo = false
 var undo_match_data = null
+var resim_target_tick = -1
 
 var p1_undo_action = null
 var p2_undo_action = null
@@ -1800,10 +1801,23 @@ remote func send_opponent_replay_for_resim(replay, p1_undo_action, p2_undo_actio
 
 remotesync func finalize_resim():
 	if is_instance_valid(game):
+		resim_target_tick = _last_common_replay_tick()
 		game.undo(false)
+
+func _last_common_replay_tick():
+	var target = -1
+	for id in ReplayManager.frame_ids():
+		var frame_numbers = ReplayManager.frames[id].keys()
+		if frame_numbers.empty():
+			return -1
+		frame_numbers.sort()
+		var last = frame_numbers[-1]
+		target = last if target < 0 else min(target, last)
+	return target
 
 func undo_finished():
 	undo = false
+	resim_target_tick = -1
 
 remote func test_relay():
 	print("relay test")

@@ -118,6 +118,9 @@ func init(member):
 		# Global.lobby_busy_mode and the lobby member data is visible.
 		$"%ChallengeButton".show()
 		$"%ChallengeButton".margin_right = 92
+		# init() resets the text/disabled above, so force the self button to
+		# repaint instead of letting the idempotence check keep a stale label.
+		_last_self_button_status = ""
 		_refresh_self_button()
 
 # Re-render the self row's status button from the current Steam member data.

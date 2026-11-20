@@ -808,7 +808,7 @@ func _physics_process(delta):
 
 func align_afterimages():
 	if is_instance_valid(game):
-		var zoom = game.camera.zoom.x * game.camera_zoom
+		var zoom = game.camera.zoom.x
 		var center = -game.camera_snap_position / zoom
 #		center.y = min(center.y, ghost_game.camera.limit_bottom)
 		for image in $"%Afterimages".get_children():
@@ -855,12 +855,18 @@ func _start_ghost():
 	p1.queued_action = p1_ghost_action
 	p1.queued_data = p1_ghost_data
 	p1.queued_extra = p1_ghost_extra
+	p1.ghost_auto_continue = false
 	p1.is_ghost = true
 
 	p2.queued_action = p2_ghost_action
 	p2.queued_data = p2_ghost_data
 	p2.queued_extra = p2_ghost_extra
+	p2.ghost_auto_continue = false
 	p2.is_ghost = true
+	if p1_ghost_action != null:
+		ghost_game.ghost_actor = 1
+	elif p2_ghost_action != null:
+		ghost_game.ghost_actor = 2
 	call_deferred("fix_ghost_objects", ghost_game)
 
 

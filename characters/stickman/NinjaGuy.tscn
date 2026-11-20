@@ -5593,7 +5593,11 @@ stackriken_out
 can_divekick_hop
 detach_delay
 cancel_opponent_hitstun_pending
-cancel_opponent_hitstun_countdown"
+cancel_opponent_hitstun_countdown
+pulling
+will_release_momentum
+will_store_momentum
+whip_beam_charged"
 character_portrait2 = ExtResource( 245 )
 player_info_scene = ExtResource( 243 )
 player_extra_params_scene = ExtResource( 63 )

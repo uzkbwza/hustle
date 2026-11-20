@@ -19,6 +19,7 @@ unique_name_in_owner = true
 anchor_right = 0.0
 anchor_bottom = 0.0
 min_length = 0.5
+default_value = Vector2( 0.5, 0.0 )
 limit_angle = true
 limit_range_degrees = 200.0
 limit_center_degrees = 10.0

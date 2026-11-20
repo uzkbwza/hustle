@@ -3038,6 +3038,13 @@ margin_bottom = 210.0
 pressed = true
 text = "enable hit freeze frames"
 
+[node name="AutoClearParticlesButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Options/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 211.0
+margin_right = 214.0
+margin_bottom = 223.0
+text = "clear particles every turn"
+
 [node name="PlaybackControls" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/TabContainer/Options/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 211.0

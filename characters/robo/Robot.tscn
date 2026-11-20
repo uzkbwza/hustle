@@ -9925,7 +9925,9 @@ magnetize_opponent_blocked
 magnetize_bomb_strength
 loic_dir
 can_gain_ground_pound
-nade_explosion_in_combo"
+nade_explosion_in_combo
+honking
+honking_cooldown"
 enable_extra_aesthetic_hitstop = true
 num_air_movements = 0
 use_air_option_bar = true

@@ -171,6 +171,10 @@ var is_in_replay = false
 var ghost_actionable_freeze_ticks = 0
 var ghost_p1_actionable = false
 var ghost_p2_actionable = false
+var ghost_turn_started = false
+var ghost_turn_start_sim = 0
+var ghost_actor = 0
+var ghost_data_frozen = false
 var made_afterimage = false
 
 var p1_ghost_ready_tick
@@ -233,6 +237,17 @@ func copy_to(game: Game):
 #	game.p2.set_pos(p2_pos.x, p2_pos.y)
 	game.CAMERA_PADDING = CAMERA_PADDING
 	game.current_tick = current_tick
+	game.char_distance = char_distance
+	game.stage_width = stage_width
+	game.max_char_distance = max_char_distance
+	game.time = time
+	game.has_ceiling = has_ceiling
+	game.ceiling_height = ceiling_height
+	game.gravity_enabled = gravity_enabled
+	game.global_gravity_modifier = global_gravity_modifier
+	game.clashing_enabled = clashing_enabled
+	game.asymmetrical_clashing = asymmetrical_clashing
+	game.prediction_enabled = prediction_enabled
 	p1.chara.copy_to(game.p1.chara)
 	p2.chara.copy_to(game.p2.chara)
 	game.p1.update_data()
@@ -243,9 +258,11 @@ func copy_to(game: Game):
 	game.p2.hp = p2.hp
 	clean_objects()
 	for object in game.objects:
-		object.free()
+		if is_instance_valid(object):
+			object.free()
 	for fx in game.effects:
-		fx.free()
+		if is_instance_valid(fx):
+			fx.free()
 	# Sync the spawn counter so future ghost spawns get the same names real
 	# would, even though we skip copying disabled objects.
 	game.objs_spawned_count = objs_spawned_count
@@ -259,6 +276,8 @@ func copy_to(game: Game):
 			object.copy_to(new_obj)
 	game.camera.limit_left = camera.limit_left
 	game.camera.limit_right = camera.limit_right
+	game.camera.position = camera.position
+	game.camera.zoom = camera.zoom
 
 func _on_super_started(ticks, player):
 	if is_ghost:
@@ -370,6 +389,7 @@ func on_player_acted(action, data, extra, player):
 
 func on_global_hitlag(amount):
 	if is_ghost:
+		super_freeze_ticks = amount
 		return
 	super_freeze_ticks = amount
 	parry_freeze = true
@@ -1394,6 +1414,10 @@ func simulate_one_tick():
 
 func resimulate():
 	while ReplayManager.resimulating:
+		if Network.multiplayer_active and Network.resim_target_tick >= 0 and current_tick >= Network.resim_target_tick:
+			ReplayManager.resimulating = false
+			camera.reset_shake()
+			break
 		tick()
 		show_state()
 	show_state()
@@ -1686,7 +1710,7 @@ func _physics_process(_delta):
 			call_deferred("ghost_tick")
 
 	super_active = super_freeze_ticks > 0
-	if super_active and playback_speed_allows_tick():
+	if !is_ghost and super_active and playback_speed_allows_tick():
 		super_freeze_ticks -= 1
 		if super_freeze_ticks == 0:
 			super_active = false
@@ -1714,6 +1738,7 @@ func _physics_process(_delta):
 				camera.global_position = lerp(camera.global_position, target, 0.28)
 	if is_instance_valid(ghost_game):
 		ghost_game.camera.global_position = camera.global_position
+		ghost_game.camera.offset = camera.offset
 	#		undo()
 	if !is_ghost and buffer_playback:
 		ReplayManager.resimulating = false
@@ -1731,6 +1756,46 @@ func _physics_process(_delta):
 					var input = ReplayManager.frames[id][input_tick]
 					get_player(id).on_action_selected(input.action, input.data, input.extra)
 
+func queue_ghost_continue():
+	var turn_opportunity = p1.state_interruptable or p2.state_interruptable
+	for player in [p1, p2]:
+		if player.queued_action != null:
+			continue
+		if player.hitlag_ticks > 0 or player.blockstun_ticks > 0:
+			continue
+		var auto_action = "Continue"
+		var is_repick = false
+		if player.current_state().get("IS_NEW_PARRY") and player.last_input.has("action") \
+				and player.last_input["action"] != null and player.last_input["action"] in player.state_machine.states_map:
+			auto_action = player.last_input["action"]
+			is_repick = true
+		if !player.state_interruptable:
+			if !turn_opportunity:
+				continue
+			if player.busy_interrupt:
+				continue
+			if !(player.current_state().interruptible_on_opponent_turn or player.feinting or negative_on_hit(player)):
+				continue
+		player.queued_action = auto_action
+		player.queued_data = null
+		player.queued_extra = null
+		player.ghost_auto_continue = not is_repick
+
+func ghost_turn_count(p):
+	if !ghost_turn_started:
+		return p.turn_frames
+	return ghost_simulated_ticks - ghost_turn_start_sim + 1
+
+func _show_ghost_block_label(p):
+	if p.ghost_blocked_melee_attack < 0 or p.block_frame_label.visible:
+		return
+	p.block_frame_label.show()
+	if p.ghost_wrong_block == "":
+		var word = "Parry" if p.ghost_projectile_parry else "Block"
+		p.block_frame_label.text = "%s @ %sf" % [word, p.ghost_blocked_melee_attack]
+	else:
+		p.block_frame_label.text = "Parry %s @ %sf" % [p.ghost_wrong_block, p.ghost_blocked_melee_attack]
+
 func ghost_tick():
 #	p1.actionable_label.hide()
 #	p2.actionable_label.hide()
@@ -1747,21 +1812,33 @@ func ghost_tick():
 	p1.grounded_indicator.hide()
 	p2.grounded_indicator.hide()
 	for i in range(simulate_frames):
+		if super_freeze_ticks > 0:
+			super_freeze_ticks -= 1
+			continue
 		if ghost_actionable_freeze_ticks == 0:
+			var had_queued = p1.queued_action != null or p2.queued_action != null
 			ghost_simulated_ticks += 1
+			queue_ghost_continue()
 			simulate_one_tick()
+			if had_queued and p1.queued_action == null and p2.queued_action == null and !ghost_turn_started:
+				ghost_turn_started = true
+				ghost_turn_start_sim = ghost_simulated_ticks
+				ghost_p1_actionable = false
+				ghost_p2_actionable = false
+				for player in [p1, p2]:
+					player.actionable_label.hide()
+					player.hit_frame_label.hide()
+					player.block_frame_label.hide()
+					player.ghost_got_hit = false
+					player.ghost_blocked_melee_attack = -1
+					player.ghost_wrong_block = ""
 		if ghost_simulated_ticks > GHOST_FRAMES:
 			emit_signal("ghost_finished")
 
-		if p1.ghost_blocked_melee_attack > 0 and !p1.block_frame_label.visible:
-			p1.block_frame_label.show()
-			p1.block_frame_label.text = "Parry %s @ %sf" % [p1.ghost_wrong_block, p1.ghost_blocked_melee_attack]
-		
-		if p2.ghost_blocked_melee_attack > 0 and !p2.block_frame_label.visible:
-			p2.block_frame_label.show()
-			p2.block_frame_label.text = "Parry %s @ %sf" % [p2.ghost_wrong_block, p2.ghost_blocked_melee_attack]
+		_show_ghost_block_label(p1)
+		_show_ghost_block_label(p2)
 	
-		var p1_tick = ghost_simulated_ticks+(p1.hitlag_ticks if !ghost_p2_actionable else 0)
+		var p1_tick = ghost_simulated_ticks + p1.hitlag_ticks
 		if (p1.state_interruptable or p1.dummy_interruptable or p1.state_hit_cancellable) and not ghost_p1_actionable:
 			p1_ghost_ready_tick = p1_tick
 #			p1_ghost_ready_tick = ghost_advantage_tick+(p1.hitlag_ticks*ghost_multiplier if !ghost_p2_actionable else 0)
@@ -1769,7 +1846,7 @@ func ghost_tick():
 			p1_ghost_ready_tick = null
 		if p1.ghost_got_hit and !p1.hit_frame_label.visible:
 			p1.hit_frame_label.show()
-			p1.hit_frame_label.text = "Hit @ %sf" % p1.turn_frames
+			p1.hit_frame_label.text = "Hit @ %sf" % ghost_turn_count(p1)
 		if(ghost_simulated_ticks==p1_ghost_ready_tick):
 #		if(ghost_tick/ghost_multiplier==p1_ghost_ready_tick):
 			p1.ghost_ready_tick = p1_ghost_ready_tick
@@ -1783,7 +1860,7 @@ func ghost_tick():
 			ghost_accum = 0.0
 			if !p1.actionable_label.visible:
 				p1.actionable_label.show()
-				p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+				p1.actionable_label.text = "Ready\nin %sf" % ghost_turn_count(p1)
 				p1.grounded_indicator.visible = p1.is_grounded() and p1.ghost_was_in_air
 #				p2.grounded_indicator.visible = p2.is_grounded()
 			emit_signal("ghost_my_turn")
@@ -1791,16 +1868,16 @@ func ghost_tick():
 				if !p2.actionable_label.visible:
 					p2.actionable_label.show()
 					if p2.current_state().anim_length == p2.current_state().current_tick + 1 or p2.current_state().iasa_at == p2.current_state().current_tick:
-						p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+						p2.actionable_label.text = "Ready\nin %sf" % ghost_turn_count(p2)
 					else:
-						p2.actionable_label.text = "Interrupt\nin %sf" % p2.turn_frames
+						p2.actionable_label.text = "Interrupt\nin %sf" % ghost_turn_count(p2)
 #					p1.grounded_indicator.visible = p1.is_grounded()
 					p2.grounded_indicator.visible = p2.is_grounded() and p2.ghost_was_in_air
 				ghost_p2_actionable = true
 
 #			else:
 #				ghost_actionable_freeze_ticks = 1
-		var p2_tick = ghost_simulated_ticks+(p2.hitlag_ticks if !ghost_p1_actionable else 0)
+		var p2_tick = ghost_simulated_ticks + p2.hitlag_ticks
 		if (p2.state_interruptable or p2.dummy_interruptable or p2.state_hit_cancellable) and not ghost_p2_actionable:
 			p2_ghost_ready_tick = p2_tick
 #			p2_ghost_ready_tick = ghost_advantage_tick+(p2.hitlag_ticks*ghost_multiplier if !ghost_p1_actionable else 0)
@@ -1808,7 +1885,7 @@ func ghost_tick():
 			p2_ghost_ready_tick = null
 		if p2.ghost_got_hit and !p2.hit_frame_label.visible:
 			p2.hit_frame_label.show()
-			p2.hit_frame_label.text = "Hit @ %sf" % p2.turn_frames
+			p2.hit_frame_label.text = "Hit @ %sf" % ghost_turn_count(p2)
 		if(ghost_simulated_ticks==p2_ghost_ready_tick):
 			p2.ghost_ready_tick = p2_ghost_ready_tick
 			p2_ghost_ready_tick = null
@@ -1821,7 +1898,7 @@ func ghost_tick():
 			ghost_accum = 0.0
 			if !p2.actionable_label.visible:
 				p2.actionable_label.show()
-				p2.actionable_label.text = "Ready\nin %sf" % p2.turn_frames
+				p2.actionable_label.text = "Ready\nin %sf" % ghost_turn_count(p2)
 #				p1.grounded_indicator.visible = p1.is_grounded()
 				p2.grounded_indicator.visible = p2.is_grounded() and p2.ghost_was_in_air
 			emit_signal("ghost_my_turn")
@@ -1830,14 +1907,26 @@ func ghost_tick():
 				if !p1.actionable_label.visible:
 					p1.actionable_label.show()
 					if p1.current_state().anim_length == p1.current_state().current_tick + 1 or p1.current_state().iasa_at == p1.current_state().current_tick:
-						p1.actionable_label.text = "Ready\nin %sf" % p1.turn_frames
+						p1.actionable_label.text = "Ready\nin %sf" % ghost_turn_count(p1)
 					else:
-						p1.actionable_label.text = "Interrupt\nin %sf" % p1.turn_frames
+						p1.actionable_label.text = "Interrupt\nin %sf" % ghost_turn_count(p1)
 					p1.grounded_indicator.visible = p1.is_grounded() and p1.ghost_was_in_air
 #					p2.grounded_indicator.visible = p2.is_grounded()
 
 #			else:
 #				ghost_actionable_freeze_ticks = 1
+
+		if !ghost_data_frozen:
+			if ghost_actor == 1:
+				ghost_data_frozen = ghost_p1_actionable
+			elif ghost_actor == 2:
+				ghost_data_frozen = ghost_p2_actionable
+			else:
+				ghost_data_frozen = ghost_p1_actionable and ghost_p2_actionable
+
+	var real_game = Global.current_game
+	if real_game != null and real_game != self and is_instance_valid(real_game.camera):
+		camera.offset = real_game.camera.offset
 
 func super_dim():
 	pass
