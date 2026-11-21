@@ -2399,12 +2399,11 @@ func _process(delta):
 	var ghost_game = get_parent().ghost_game
 	if is_instance_valid(game):
 		if game.game_paused:
-			# resets (the ghost restarts between loops).
 			var block_advantage = game.get_player(you_id).last_block_advantage
 			if is_instance_valid(ghost_game):
-				var ghost_block_advantage = ghost_game.get_player(you_id).last_block_advantage
-				if ghost_block_advantage != 0:
-					block_advantage = ghost_block_advantage
+				var ghost_player = ghost_game.get_player(you_id)
+				if ghost_player.has_block_advantage:
+					block_advantage = ghost_player.last_block_advantage
 			if block_advantage > 0:
 				block_advantage_label.set("custom_colors/font_color", Color("94e4ff"))
 				block_advantage_label.text = "block advantage: +" + str(block_advantage)
@@ -2431,8 +2430,6 @@ func _process(delta):
 					advantage_label.text = "frame advantage: " + str(advantage)
 				if advantage == 0:
 					advantage_label.text = ""
-			else:
-				advantage_label.text = ""
 
 		else:
 			advantage_label.text = ""

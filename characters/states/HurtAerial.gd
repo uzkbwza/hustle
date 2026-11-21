@@ -104,9 +104,9 @@ func _tick():
 	
 	if (host.hitlag_ticks > 0 or (host.is_grounded() and bounce_frames > 0)):
 		pass
-	elif (col_box.x1 < -host.stage_width and fixed.lt(vel.x, "0")):
+	elif (col_box.x1 <= -host.stage_width and fixed.lt(vel.x, "0")):
 		bounce = BOUNCE.LEFT_WALL
-	elif (col_box.x2 > host.stage_width and fixed.gt(vel.x, "0")):
+	elif (col_box.x2 >= host.stage_width and fixed.gt(vel.x, "0")):
 		bounce = BOUNCE.RIGHT_WALL
 
 	if (bounce != BOUNCE.NO_BOUNCE):

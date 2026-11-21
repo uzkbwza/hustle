@@ -368,6 +368,7 @@ var moved_backward = false
 var buffer_moved_backward = false
 var blocked_hitbox_plus_frames = 0
 var last_block_advantage = 0
+var has_block_advantage = false
 
 var had_sadness = false
 
@@ -416,7 +417,6 @@ const SUPER_METER_GRACE_DIVISOR = 2
 var ghost_was_in_air = false
 var ghost_wrong_block = ""
 var ghost_projectile_parry = false
-var ghost_auto_continue = false
 
 var current_nudge = {
 	"x": "0",
@@ -1881,7 +1881,7 @@ func block_hitbox(hitbox, force_parry=false, force_block=false, ignore_guard_bre
 				perfect_parry = current_state().can_parry and (always_perfect_parry or opponent.current_state().feinting or opponent.feinting or (initiative and !blocked_last_hit) or parried_last_state)
 				perfect_parry = perfect_parry and hitbox.parriable
 		else:
-			perfect_parry = current_state().can_parry and !current_state().get("push") and (always_perfect_parry or host.always_parriable or parried_last_state or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
+			perfect_parry = current_state().can_parry and !current_state().get("push") and (always_perfect_parry or host.always_parriable or (current_state().current_tick < PROJECTILE_PERFECT_PARRY_WINDOW and host.has_projectile_parry_window))
 			if is_ghost and ghost_blocked_melee_attack == -1:
 				ghost_blocked_melee_attack = current_state().current_tick + 1
 				ghost_projectile_parry = perfect_parry
@@ -2108,14 +2108,14 @@ func set_block_stun(total_plus_frames, block_hitlag=null):
 #	blockstun_ticks = 0
 	if block_hitlag == null:
 		block_hitlag = total_plus_frames
+	last_block_advantage = -total_plus_frames
+	opponent.last_block_advantage = total_plus_frames
+	has_block_advantage = true
+	opponent.has_block_advantage = true
 	if total_plus_frames > 0:
 		blocked_hitbox_plus_frames = total_plus_frames
-		last_block_advantage = -total_plus_frames
-		opponent.last_block_advantage = total_plus_frames
 	elif total_plus_frames < 0:
 		opponent.blocked_hitbox_plus_frames = total_plus_frames * -1
-		last_block_advantage = -total_plus_frames
-		opponent.last_block_advantage = total_plus_frames
 	blockstun_ticks += block_hitlag
 
 
@@ -2545,12 +2545,11 @@ func tick_before():
 		process_extra(queued_extra)
 		pressed_feint = feinting
 	if queued_action:
-		if !ghost_auto_continue:
-			last_block_advantage = 0
+		last_block_advantage = 0
+		has_block_advantage = false
 		process_action(queued_action)
-		if !ghost_auto_continue:
-			turn_frames = 0
-			opponent.turn_frames = 0
+		turn_frames = 0
+		opponent.turn_frames = 0
 		turn_start_effects()
 		counterhit_this_turn = false
 		guard_broken_this_turn = false
@@ -2565,28 +2564,19 @@ func tick_before():
 		feint_parriable = false
 		if queued_action == "Continue":
 			var current_state_name = current_state().name
-			var chained_restart = false
 			if process_continue():
 				pass
 			elif current_state().get_hold_restart() != "" and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state().get_hold_restart()
 				queued_data = current_state().data
-				chained_restart = true
 			elif current_state_name in HOLD_RESTARTS and current_state().interruptible_on_opponent_turn:
 				queued_action = current_state_name
 				queued_data = current_state().data
-				chained_restart = true
 			elif current_state_name in HOLD_FORCE_STATES and current_state().interruptible_on_opponent_turn:
 				queued_action = HOLD_FORCE_STATES[current_state_name]
-				chained_restart = true
 			elif (was_my_turn or (current_state().interruptible_on_opponent_turn and current_state().next_state_on_hold_on_opponent_turn) \
 					or (current_state().hit_fighter and combo_count == 0)) and !feinting and current_state().next_state_on_hold:
 				queued_action = current_state().fallback_state
-				chained_restart = true
-			if chained_restart:
-				ghost_auto_continue = false
-				turn_frames = 0
-				opponent.turn_frames = 0
 			if feinted_last:
 				feint_parriable = true
 			if !current_state().interruptible_on_opponent_turn:
@@ -2995,7 +2985,6 @@ func on_action_selected(action, data, extra):
 	queued_action = action
 	queued_data = data
 	queued_extra = extra
-	ghost_auto_continue = false
 	state_interruptable = false
 	state_hit_cancellable = false
 	# Mark the *next* state-start as player-initiated so the action_type
