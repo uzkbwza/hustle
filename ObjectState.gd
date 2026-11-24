@@ -378,13 +378,9 @@ func process_hurtboxes():
 
 
 func copy_data():
-	var d = null
-	if data:
-		if data is Dictionary or data is Array:
-			d = data.duplicate()
-		else:
-			d = data
-	return d
+	if data is Dictionary or data is Array:
+		return data.duplicate(true)
+	return data
 
 #func set(key, value):
 #	if key == "test":

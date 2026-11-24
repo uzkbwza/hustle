@@ -366,6 +366,7 @@ func copy_to(o: BaseObj):
 #	o.set_facing(get_facing_int())
 	o.update_data()
 	o.sprite.rotation = sprite.rotation
+	o.sprite.visible = sprite.visible
 	o.set_facing(get_facing_int())
 	var pos = get_pos()
 	for i in range(hitboxes.size()):
