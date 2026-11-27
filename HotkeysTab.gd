@@ -18,6 +18,12 @@ func _ready():
 	add_child(confirm_dialog)
 	build_list()
 	Hotkeys.connect("binding_changed", self, "_on_binding_changed")
+	if not Global.is_connected("mobile_ui_changed", self, "_on_mobile_ui_changed"):
+		Global.connect("mobile_ui_changed", self, "_on_mobile_ui_changed")
+
+
+func _on_mobile_ui_changed(_mobile):
+	build_list()
 
 func build_list():
 	var list = $"%HotkeysList"
@@ -34,7 +40,7 @@ func build_list():
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(label)
 		var btn = Button.new()
-		btn.rect_min_size = Vector2(80, 0)
+		btn.rect_min_size = Vector2(80, 26) if Global.mobile_ui else Vector2(80, 0)
 		btn.text = _button_text_for(entry.action)
 		btn.connect("pressed", self, "_start_rebind", [entry.action])
 		row.add_child(btn)
@@ -44,6 +50,7 @@ func build_list():
 	reset_btn.text = "reset to defaults"
 	reset_btn.connect("pressed", confirm_dialog, "popup_centered")
 	list.add_child(reset_btn)
+	UIManager.register_menu(self, list.get_children())
 
 func _button_text_for(action: String) -> String:
 	if rebinding_action == action:
