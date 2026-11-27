@@ -19,6 +19,7 @@ func _ready():
 		_jump_buttons[i].add_color_override("font_color", Color(0.6, 0.6, 0.6, 1))
 	
 	attach_global_toggle($"%ForceAltUIButton", "force_alt_ui")
+	attach_global_toggle($"%ShowBootUIButton", "show_boot_ui")
 	attach_global_toggle($"%ShowBorderArtButton", "show_border_art")
 	attach_global_toggle($"%AutoClearParticlesButton", "auto_clear_particles")
 	
@@ -58,7 +59,7 @@ func _on_jump_pressed(index: int) -> void:
 func _ui_elements() -> Array:
 	return [
 		$"%DisplayJump", $"%GameplayJump", $"%AudioJump", $"%HotkeysJump", $"%ProfileJump",
-		$"%FullscreenButton", $"%CapFramerateButton", $"%VsyncButton",
+		$"%FullscreenButton", $"%ShowBootUIButton", $"%CapFramerateButton", $"%VsyncButton",
 		$"%HitboxesButton", $"%ExtraInfoButton", $"%HealthCountButton",
 		$"%NextTurnHudButton", $"%ShowNextTurnOnCharsButton", $"%LastMoveIndicatorButton",
 		$"%ProjectileOwnersButton", $"%PlaybackHotkeysRequireWindowButton",
@@ -95,6 +96,8 @@ func on_setting_changed(option = "", value = null):
 	match option:
 		"force_alt_ui":
 			$"%ForceAltUIButton".set_pressed_no_signal(value)
+		"show_boot_ui":
+			$"%ShowBootUIButton".set_pressed_no_signal(value)
 		"no_border_art":
 			$"%NoBorderArtButton".set_pressed_no_signal(value)
 

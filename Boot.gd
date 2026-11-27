@@ -15,7 +15,6 @@ onready var _log_panel = $Ui/LogPanel
 onready var _spin_sprites = $Corners/SpinHolder.get_children()
 onready var _corners = $Corners
 onready var _ui = $Ui
-onready var _ui_tween = $UiTween
 
 var _spin_index = 0
 var _spin_side = true
@@ -36,6 +35,9 @@ func _ready():
 		border.set_border_color(2, Color(0, 0, 0))
 	for i in range(_spin_sprites.size()):
 		_spin_sprites[i].visible = i == 0
+	if Global.show_boot_ui:
+		_ui.visible = true
+		_corners.rect_position = Vector2(0, -108.0)
 	call_deferred("_boot")
 
 
@@ -77,15 +79,6 @@ func _update_spin(delta):
 		_spin_index = (_spin_index + 1) % _spin_sprites.size()
 		_spin_sprites[_spin_index].visible = true
 	_spin_sprites[_spin_index].rect_scale.x = scale_x
-
-
-func _on_toggle_ui():
-	_ui.visible = not _ui.visible
-	_log_panel.visible = _stalled and _ui.visible
-	_ui_tween.stop_all()
-	_ui_tween.interpolate_property(_corners, "rect_position", _corners.rect_position,
-		Vector2(0, -108.0 if _ui.visible else 0.0), 0.18, Tween.TRANS_QUAD, Tween.EASE_OUT)
-	_ui_tween.start()
 
 
 func set_status(text):

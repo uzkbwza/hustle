@@ -134,6 +134,7 @@ var ui_hidden = false
 var mobile_ui = OS.has_feature("mobile") setget set_mobile_ui
 var is_mobile_device = OS.has_feature("mobile")
 var force_alt_ui = false setget set_force_alt_ui
+var show_boot_ui = false setget set_show_boot_ui
 var show_border_art = true setget set_show_border_art
 var touch_readout_enabled = true setget set_touch_readout_enabled
 var touch_readout_size = 1.0 setget set_touch_readout_size
@@ -289,6 +290,10 @@ func set_force_alt_ui(value :bool):
 	set_mobile_ui(is_mobile_device != force_alt_ui)
 	# my genuine reaction when gdscript doesn't have an xor keyword
 
+
+func set_show_boot_ui(value :bool):
+	show_boot_ui = value
+	emit_signal("option_changed", "show_boot_ui", value)
 
 func set_show_border_art(value :bool):
 	show_border_art = value
@@ -529,6 +534,7 @@ func save_options():
 			"touch_readout_enabled": touch_readout_enabled,
 			"touch_readout_size": touch_readout_size,
 			"force_alt_ui": force_alt_ui,
+			"show_boot_ui": show_boot_ui,
 			"auto_fc": auto_fc,
 			"replay_extra_freeze_frames": replay_extra_freeze_frames,
 			"enable_replay_backups": enable_replay_backups,
@@ -591,6 +597,7 @@ func get_default_player_data():
 			"touch_readout_enabled": true,
 			"touch_readout_size": 1.0,
 			"force_alt_ui": false,
+			"show_boot_ui": false,
 			"auto_fc": true,
 			"show_extra_info": false,
 			"replay_extra_freeze_frames": true,

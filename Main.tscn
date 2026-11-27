@@ -2946,6 +2946,9 @@ text = "show character select art"
 unique_name_in_owner = true
 pressed = true
 text = "enable border art"
+[node name="ShowBootUIButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/OptionsScroll/VBoxContainer"]
+unique_name_in_owner = true
+text = "show load info on boot"
 [node name="ForceAltUIButton" type="CheckButton" parent="UILayer/OptionsContainer/VBoxContainer/Contents/VBoxContainer/OptionsScroll/VBoxContainer"]
 unique_name_in_owner = true
 pressed = true
