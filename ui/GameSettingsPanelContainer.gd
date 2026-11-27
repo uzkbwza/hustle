@@ -190,7 +190,13 @@ func _on_received_match_settings(settings, force=false):
 	load_settings(settings)
 
 func _on_relay_match_settings_received(settings):
-	_on_received_match_settings(settings, true)
+	if !(settings is Dictionary):
+		return
+	var data = settings.duplicate()
+	if data.has("charloader_enabled"):
+		Network.charloader_enabled = bool(data["charloader_enabled"])
+	data.erase("charloader_enabled")
+	_on_received_match_settings(data, true)
 
 func load_settings(settings):
 	# Backwards compat: old game formats / lobby settings carried `chess_timer`
@@ -251,7 +257,9 @@ func update_lobby_data():
 #		return
 	if !Network.steam:
 		if Network.multiplayer_active and (Network.multiplayer_client != null or Network.direct_connect):
-			Network.publish_relay_match_settings(get_data())
+			var data = get_data()
+			data["charloader_enabled"] = Network.charloader_enabled
+			Network.publish_relay_match_settings(data)
 		return
 	if SteamHustle.STEAM_ID != Steam.getLobbyOwner(SteamLobby.LOBBY_ID):
 		return
@@ -305,6 +313,8 @@ func init(singleplayer=true):
 	# and hide it so update_menu hides the per-mode param rows for free.
 	if singleplayer:
 		$"%TimerMode".selected = TIMER_MODES.find("none")
+	else:
+		$"%TimerMode".selected = TIMER_MODES.find("default")
 	$"%TimerModeContainer".visible = !singleplayer
 	if !steam:
 		if !singleplayer:

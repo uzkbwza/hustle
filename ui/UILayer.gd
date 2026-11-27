@@ -1596,7 +1596,10 @@ func reset_ui():
 	$"%OpponentDisconnectedLabel".hide()
 	_bottom_adjustments_mode = false
 	_bottom_collapsed = false
-	_apply_bottom_bar_visibility(not Global.mobile_ui)
+	_apply_bottom_bar_visibility(false)
+	for buttons in [p1_action_buttons, p2_action_buttons]:
+		if is_instance_valid(buttons):
+			buttons.reset()
 	forfeit_pressed = false
 	actionable = false
 
@@ -1606,6 +1609,9 @@ func _on_quit_button_pressed():
 	else:
 		if can_quit():
 			if !Network.steam:
+				var online = (Network.multiplayer_active or Network.relay_spectating) and !ReplayManager.playback
+				Global.return_to_multiplayer = online
+				Global.return_to_multiplayer_direct = online and Network.direct_connect
 				Network.stop_multiplayer()
 				Global.reload()
 			else:

@@ -226,9 +226,23 @@ func _ready():
 	randomize()
 	_setup_rpc_whitelist()
 
-	lan_discovery = LanDiscoveryScript.new()
-	lan_discovery.connect("rooms_changed", self, "_on_lan_rooms_changed")
-	add_child(lan_discovery)
+	lan_discovery = _ensure_lan_discovery()
+
+
+func _ensure_lan_discovery():
+	if lan_discovery != null and is_instance_valid(lan_discovery):
+		return lan_discovery
+	for child in get_children():
+		var script = child.get_script()
+		if script != null and script.resource_path == "res://networking/LanDiscovery.gd":
+			lan_discovery = child
+			break
+	if lan_discovery == null:
+		lan_discovery = LanDiscoveryScript.new()
+		add_child(lan_discovery)
+	if not lan_discovery.is_connected("rooms_changed", self, "_on_lan_rooms_changed"):
+		lan_discovery.connect("rooms_changed", self, "_on_lan_rooms_changed")
+	return lan_discovery
 
 
 func get_multiplayer_active():
@@ -425,10 +439,12 @@ func start_lan_hosting(p_room_name, p_address, p_port, p_players=1):
 	lan_room_name = str(p_room_name)
 	lan_room_address = str(p_address)
 	lan_room_port = int(p_port)
+	_ensure_lan_discovery()
 	if lan_discovery != null:
 		lan_discovery.start_advertising(lan_room_name, player_name, lan_room_port, p_players, charloader_enabled)
 
 func update_lan_hosting_players(count):
+	_ensure_lan_discovery()
 	if lan_discovery != null:
 		lan_discovery.update_players(count)
 
@@ -441,9 +457,9 @@ func stop_lan_hosting():
 	lan_room_port = 0
 
 func start_lan_browsing():
-	if lan_discovery == null:
-		return
-	lan_discovery.start_browsing()
+	_ensure_lan_discovery()
+	if lan_discovery != null:
+		lan_discovery.start_browsing()
 
 func stop_lan_browsing():
 	if lan_discovery == null:
@@ -478,7 +494,7 @@ func host_game_relay(new_player_name, public=true, room_name=""):
 	players = {}
 	player_name_colors = {}
 	relay_room_chat_history = []
-	rpc_id(1, "create_match", player_name, public, room_name, local_name_color())
+	rpc_id(1, "create_match", player_name, public, room_name, local_name_color(), charloader_enabled)
 	yield(self, "match_code_received")
 	relay_room_code = relay_room_code.to_upper()
 
@@ -529,9 +545,9 @@ func _reset():
 	replay_saved = false
 	direct_connect = false
 	rematch_menu = false
+	charloader_enabled = true
 
 	stop_lan_hosting()
-	charloader_enabled = true
 
 	last_action = null
 	
@@ -647,10 +663,11 @@ func pid_to_username(player_id):
 					if user_data is Dictionary and user_data.has("p" + str(player_id)):
 						return str(user_data["p" + str(player_id)])
 				return ""
-			return str(players.get(network_ids.get(player_id), ""))
+			var net_key = opponent_player_id(player_id) if direct_connect else player_id
+			return str(players.get(network_ids.get(net_key), ""))
 		# synced player list so chat still shows names.
 		if network_ids.has(player_id):
-			var net_id = network_ids[player_id]
+			var net_id = network_ids[opponent_player_id(player_id)] if direct_connect else network_ids[player_id]
 			if players.has(net_id):
 				return str(players[net_id])
 		if player_id == self.player_id:

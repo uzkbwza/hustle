@@ -152,6 +152,13 @@ func _ready():
 
 	ModLoader.mark_launch_clean()
 
+	if Global.return_to_multiplayer:
+		Global.return_to_multiplayer = false
+		if Global.return_to_multiplayer_direct:
+			ui_layer.open_direct_lobbies()
+		else:
+			ui_layer.open_relay_lobbies()
+
 func _delete_char_cache(btt):
 	var dir = Directory.new()
 	_Global.css_instance.charPackages = {}

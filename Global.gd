@@ -9,6 +9,9 @@ signal option_changed(option, value)
 var VERSION = "1.11.0-Unstable-12.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
+
+var return_to_multiplayer := false
+var return_to_multiplayer_direct := false
 const STYLE_SAVE_FEATURE_ENABLED = true
 
 # Base versions where the first launch with an existing save force-disables

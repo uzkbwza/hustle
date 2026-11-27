@@ -329,11 +329,11 @@ func _on_host_pressed():
 			lan_room_name = player_name + "'s room"
 		lan_room_address = Network.get_local_lan_address()
 		lan_room_port = port
+		Network.charloader_enabled = charloader_button.pressed and ModLoader.active
 		var host_err = Network.host_game_direct(player_name, str(port))
 		if host_err != OK:
 			_return_to_lobby_browse()
 			return
-		Network.charloader_enabled = charloader_button.pressed and ModLoader.active
 		Network.start_lan_hosting(lan_room_name, lan_room_address, lan_room_port, 1)
 		_enter_lan_room_view()
 	else:
@@ -1241,12 +1241,18 @@ func _on_back_button_pressed():
 	Network.stop_multiplayer()
 	if direct_connect:
 		Network.stop_lan_browsing()
-	Global.reload()
+	if is_instance_valid(room_lobby) and room_lobby.visible:
+		_return_to_lobby_browse()
+	else:
+		Global.reload()
 
 func _update_nav_tabs():
 	$"%CrossplayButton".disabled = !direct_connect
 	$"%DirectButton".disabled = direct_connect
 	$"%SteamButton".disabled = false
+	if Global.is_mobile_device:
+		for btn in [$"%SteamButton", $"%CrossplayButton", $"%DirectButton"]:
+			btn.remove_color_override("font_color_hover")
 
 func _on_steam_button_pressed():
 	var ui = get_parent()
