@@ -6,10 +6,9 @@ signal mobile_ui_changed(mobile)
 signal option_changed(option, value)
 
 
-var VERSION = "1.11.0-Unstable-11.0"
+var VERSION = "1.11.0-Unstable-12.0"
 var MINOR_VERSION = VERSION.substr(0, VERSION.find(".", 2)) # should be 1.11
 const RESOLUTION = Vector2(640, 360)
-
 const STYLE_SAVE_FEATURE_ENABLED = true
 
 # Base versions where the first launch with an existing save force-disables
@@ -172,12 +171,18 @@ func get_cached_character(name):
 
 func refresh_characters_cache():
 	var invalid_characters = []
+	var index = 0
 	for char_name in name_paths:
 		var character = load(name_paths[char_name])
 		if !character:
 			invalid_characters.append(char_name)
-			continue
-		characters_cache[char_name] = character
+		else:
+			characters_cache[char_name] = character
+		index += 1
+		if index % 4 == 0:
+			loading_progress = "Loading characters %d / %d" % [index, name_paths.size()]
+			yield(get_tree(), "idle_frame")
+	loading_progress = ""
 	for char_name in invalid_characters:
 		name_paths.erase(char_name)
 

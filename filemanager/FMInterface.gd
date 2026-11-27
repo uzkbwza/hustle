@@ -33,7 +33,6 @@ var list_dir_path := "user://lists/mods"
 var loaded_lists := []
 var cur_item_path := ""
 var cur_list_name := ""
-var _is_initialized := false
 # true = deletes are queued (mark_for_deletion) and only run on the next
 # boot, because mod files are loaded at startup; false = files are removed
 # immediately.
@@ -149,10 +148,8 @@ func _sort_default_first(data: Array) -> Array:
 # ---------------------------------------------------------------------------
 
 func _on_open_pressed() -> void:
-	if not _is_initialized:
-		_refresh_lists_menu()
-		_is_initialized = true
-	
+	_refresh_lists_menu()
+
 	if OS.get_name() == "Android" and FileManager.android_picker:
 		if not FileManager.android_picker.is_connected("file_picked", self, "_on_android_file_picked"):
 			FileManager.android_picker.connect("file_picked", self, "_on_android_file_picked")

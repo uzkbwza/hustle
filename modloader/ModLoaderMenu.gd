@@ -14,6 +14,9 @@ var mods: Dictionary = {}
 var userdata := {}
 var late_inited = false
 var needs_to_save = false
+var _prebuilt := false
+var _prebuilding := false
+var _loading_label: Label
 
 var cur_sort = FileManager.SortMode.DATE
 var cur_sort_inverted := false
@@ -68,6 +71,12 @@ func _ready():
 
 	_setup_file_manager()
 
+	_loading_label = Label.new()
+	_loading_label.text = "loading mods..."
+	_loading_label.align = 1
+	list_container.add_child(_loading_label)
+	call_deferred("_prebuild_list")
+
 
 func _setup_file_manager() -> void:
 	file_manager.connect("get_data_requested", self, "_on_fm_get_data_requested")
@@ -91,67 +100,117 @@ func _setup_file_manager() -> void:
 
 
 func _loadMods():
+	if _prebuilt:
+		_scan_new_and_missing()
+		return
+	if not _prebuilding:
+		_prebuild_list()
+
+
+func _prebuild_list():
+	if _prebuilt or _prebuilding:
+		return
+	_prebuilding = true
+	var known_paths := {}
+	for mod_name in ModLoader.zips_by_name:
+		known_paths[ModLoader.zips_by_name[mod_name]] = true
+	var built := 0
+	for mod in ModLoader.all_mods:
+		var meta = _mod_metadata(mod)
+		if meta == null:
+			continue
+		var mod_name = str(meta.get("name", ""))
+		if mod_name == "" or mods.has(mod_name):
+			continue
+		if not ModLoader.zips_by_name.has(mod_name):
+			continue
+		meta.zip_path = ModLoader.zips_by_name[mod_name]
+		add_mod(mod)
+		var entry = mods[mod_name]
+		_set_toggle_state(mod in ModLoader.active_mods, entry.mod, entry.toggle, entry.button)
+		built += 1
+		if built % 6 == 0:
+			yield(get_tree(), "idle_frame")
+	for path in _scan_mod_paths():
+		if known_paths.has(path):
+			continue
+		refresh_mod(path)
+		built += 1
+		if built % 6 == 0:
+			yield(get_tree(), "idle_frame")
+	_remove_missing_mods()
+	if _loading_label != null and is_instance_valid(_loading_label):
+		list_container.remove_child(_loading_label)
+		_loading_label.queue_free()
+	_loading_label = null
+	_sort_mod_buttons()
+	_prebuilding = false
+	_prebuilt = true
+
+
+func _scan_new_and_missing():
+	var known_paths := {}
+	for mod_name in ModLoader.zips_by_name:
+		known_paths[ModLoader.zips_by_name[mod_name]] = true
+	for path in _scan_mod_paths():
+		if not known_paths.has(path):
+			refresh_mod(path)
+	_remove_missing_mods()
+	_sort_mod_buttons()
+
+
+func _remove_missing_mods():
+	var missing := []
+	for mod_name in mods:
+		var meta = _mod_metadata(mods[mod_name].mod)
+		if meta == null:
+			continue
+		var zip_path = str(meta.get("zip_path", ""))
+		if zip_path != "" and not File.new().file_exists(zip_path):
+			missing.append(zip_path)
+	for zip_path in missing:
+		remove_mod_by_zip(zip_path)
+
+
+func _scan_mod_paths() -> Array:
+	var paths := []
 	var gameInstallDirectory = OS.get_executable_path().get_base_dir()
 	if OS.get_name() == "OSX":
 		gameInstallDirectory = gameInstallDirectory.get_base_dir().get_base_dir().get_base_dir()
-	var modPathPrefix = gameInstallDirectory.plus_file("mods")
-	_load_mods_in_folder(modPathPrefix)
+	paths += _zip_files_in_folder(gameInstallDirectory.plus_file("mods"))
 
 	var workshop = SteamWorkshop.new()
 	if SteamHustle.STARTED and SteamHustle.WORKSHOP_ENABLED:
 		for item in Steam.getSubscribedItems():
 			var info = workshop.get_item_install_info(item)
 			if info.ret:
-				_load_mods_in_folder(info.folder, true)
+				paths += _zip_files_in_folder(str(info.get("folder", "")))
 
-	# surely this is just a simple addition! later i shall make it work for pc too - vineraio
 	if Global.is_mobile_device:
-		_load_mods_in_folder("user://mods", true)
+		paths += _zip_files_in_folder("user://mods")
+
+	paths.sort()
+	return paths
 
 
-func _load_mods_in_folder(modPathPrefix, zip_only=false):
-	print("loading mods in folder: " + modPathPrefix)
+func _zip_files_in_folder(modPathPrefix: String) -> Array:
+	var result := []
 	var dir = Directory.new()
 	if dir.open(modPathPrefix) != OK:
-		return
+		return result
 	if dir.list_dir_begin(true, true) != OK:
-		return
-
-	var _modZipFiles = []
-
+		return result
 	while true:
 		var fileName = dir.get_next()
 		if fileName == '':
 			break
 		if dir.current_is_dir():
 			continue
-		var modFSPath: String = modPathPrefix.plus_file(fileName)
-		var extension = modFSPath.get_extension().to_lower()
-		if zip_only and extension != "zip":
-			continue
-		if extension == "zip":
-			_modZipFiles.append(modFSPath)
-			continue
-		if extension == "ymhpack":
-			continue
-		var modLoadPath = modFSPath
-		if !modLoadPath.begins_with("user://"):
-			modLoadPath = ProjectSettings.globalize_path(modLoadPath)
-		if !ProjectSettings.load_resource_pack(modLoadPath, true):
-			continue
-		_modZipFiles.append(modFSPath)
-
-	# MOUNT ZIP FILES FIRST (for metadata reading)
-	for mod_path in _modZipFiles:
-		if mod_path.get_extension().to_lower() == "zip":
-			var zipLoadPath = mod_path
-			if !zipLoadPath.begins_with("user://"):
-				zipLoadPath = ProjectSettings.globalize_path(zipLoadPath)
-			ProjectSettings.load_resource_pack(zipLoadPath, true)
-
-	# THEN refresh mods (reads from mounted packs)
-	for mod_path in _modZipFiles:
-		refresh_mod(mod_path)
+		var path: String = modPathPrefix.plus_file(fileName)
+		if path.get_extension().to_lower() == "zip":
+			result.append(path)
+	dir.list_dir_end()
+	return result
 
 
 func _open_file_manager(pressed: bool):
@@ -210,11 +269,17 @@ func refresh_mod(_path):
 		var modSubFolder = modEntryPath.rsplit('/')[0]
 		var modEntryName = modEntryPath.get_file().to_lower()
 		if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
-			var modMetadataPath = "res://" + modSubFolder + "/_metadata"
-			var metadata = ModLoader._readMetadata(modMetadataPath)
-			if metadata == null:
+			var meta_entry = modSubFolder + "/_metadata"
+			if not (meta_entry in gdunzip.files):
 				print("No metadata in mod: " + modSubFolder)
 				continue
+			var bytes = gdunzip.uncompress(meta_entry)
+			if typeof(bytes) != TYPE_RAW_ARRAY or bytes.empty():
+				continue
+			var parsed = JSON.parse(bytes.get_string_from_utf8())
+			if parsed.error != OK or typeof(parsed.result) != TYPE_DICTIONARY:
+				continue
+			var metadata = parsed.result
 			var check = ModLoader._verifyMetadata(metadata)
 			if check != null:
 				print("Metadata error: " + check)
@@ -397,6 +462,7 @@ func _close_clicked():
 
 func _mainmenu_button_pressed():
 	show()
+	_loadMods()
 
 func generate_mod_menu(_name):
 	# Need to format the objects to look like the scene temp stuff

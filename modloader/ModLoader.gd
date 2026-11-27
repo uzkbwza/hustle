@@ -9,6 +9,8 @@ const WORKSHOP_CACHE_DIR := "user://workshop_cache"
 
 var _modZipFiles = []
 var _file_hashes = {}
+var _manifest_cache := {}
+var _manifest_dirty := false
 var active_mods = []
 var inactive_mods = []
 var all_mods = []
@@ -130,6 +132,7 @@ func _init():
 	_mods_load_reason = "loading"
 	_modded_file.lastLaunchOk = false
 	_write_modded_json(_modded_file)
+	_load_manifest_cache()
 
 
 func _boot_log(text):
@@ -293,6 +296,46 @@ func _clear_import_packs():
 # Returns null on parse errors or unexpected top-level types (e.g. a
 # truncated/corrupted file), so callers can treat that as "no usable data"
 # instead of accessing a null result and crashing.
+func _load_manifest_cache() -> void:
+	var file = File.new()
+	if not file.file_exists("user://mod_manifest_cache.json"):
+		return
+	if file.open("user://mod_manifest_cache.json", File.READ) != OK:
+		return
+	var parsed = _parse_json_dict(file.get_as_text())
+	file.close()
+	if parsed != null:
+		_manifest_cache = parsed
+
+
+func _save_manifest_cache() -> void:
+	var pruned := false
+	for path in _manifest_cache.keys():
+		if not (path in _modZipFiles):
+			_manifest_cache.erase(path)
+			pruned = true
+	if not _manifest_dirty and not pruned:
+		return
+	_manifest_dirty = false
+	var file = File.new()
+	if file.open("user://mod_manifest_cache.json", File.WRITE) != OK:
+		return
+	file.store_string(JSON.print(_manifest_cache))
+	file.close()
+
+
+func _cached_manifest(path: String, md5_hash: String):
+	var entry = _manifest_cache.get(path, {})
+	if typeof(entry) != TYPE_DICTIONARY:
+		return null
+	if str(entry.get("hash", "")) != md5_hash:
+		return null
+	var files = entry.get("entries", [])
+	if typeof(files) != TYPE_ARRAY:
+		return null
+	return files
+
+
 func _parse_json_dict(text: String):
 	var parsed = JSON.parse(text)
 	if parsed.error != OK:
@@ -393,14 +436,19 @@ func _init_mods_async():
 		if _abort_requested:
 			_boot_log("skipped by user while reading packages")
 			break
-		var gdunzip = GDUNZIP.new()
-		gdunzip.load(modFSPath)
 		var modHash = _hash_file(modFSPath)
-		for modEntryPath in gdunzip.files:
+		var files = _cached_manifest(modFSPath, modHash)
+		if files == null:
+			var gdunzip = GDUNZIP.new()
+			gdunzip.load(modFSPath)
+			files = gdunzip.files.keys()
+			_manifest_cache[modFSPath] = {"hash": modHash, "entries": files}
+			_manifest_dirty = true
+		for modEntryPath in files:
 			var modSubFolder = modEntryPath.rsplit('/')[0]
 			var modEntryName = modEntryPath.get_file().to_lower()
 			if modEntryName.begins_with('modmain') and modEntryName.ends_with('.gd'):
-				var metaRes = _checkMetadata(modSubFolder, gdunzip.files, modEntryPath)
+				var metaRes = _checkMetadata(modSubFolder, files, modEntryPath)
 				if metaRes != null:
 					var modInfo = [metaRes[0], modHash, metaRes[1]]
 					modInfo[2].zip_path = modFSPath
@@ -434,10 +482,11 @@ func _init_mods_async():
 
 	var mod_total = active_mods.size()
 	var mod_index = 0
+	_set_boot_status("starting " + str(mod_total) + " mods", 88)
+	yield(get_tree(), "idle_frame")
 	for item in active_mods:
 		mod_index += 1
 		_set_boot_status("starting " + item[2].friendly_name, _boot_percent(mod_index - 1, mod_total, 88, 99))
-		yield(get_tree(), "idle_frame")
 		if _abort_requested:
 			_boot_log("skipped by user while starting mods")
 			for remaining in active_mods:
@@ -449,7 +498,8 @@ func _init_mods_async():
 		print("Loaded " + item[2].friendly_name)
 		_boot_log("loaded " + item[2].friendly_name)
 		item.remove(0)
-		yield(get_tree(), "idle_frame")
+
+	_save_manifest_cache()
 
 	_set_boot_status("applying character overwrites", 99)
 	yield(get_tree(), "idle_frame")
@@ -458,9 +508,14 @@ func _init_mods_async():
 	for item in mods_w_overwrites:
 		if _abort_requested:
 			break
+		if not doesExist.dir_exists("res://" + str(item.subfolder) + "/Overwrites"):
+			continue
 		for character in Global.name_paths:
+			if _abort_requested:
+				break
 			if doesExist.file_exists(Global.name_paths.get(character)):
 				_overwriteCharacterTexs(item.subfolder, character)
+			yield(get_tree(), "idle_frame")
 
 
 func _compareOverwritePriority(a, b) -> bool:
@@ -605,11 +660,15 @@ func _getTexsFromSheet(spritePath, columns, rows):
 
 
 func _overwriteCharacterTexs(modFolderName, charName): #Base Asset replacement support
+	var dir = Directory.new()
+	var root = "res://" + modFolderName + "/Overwrites/" + charName
+	if not dir.dir_exists(root):
+		return
 	#Load all custom user overwrites
-	var charImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName, "png")
-	var mediaSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/BaseSounds", "wav")
-	var mediaStateSounds = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Sounds/StateSounds", "wav")
-	var charActionImages = _get_all_files("res://" + modFolderName + "/Overwrites/" + charName + "/Buttons", "png")
+	var charImages = _get_all_files(root, "png") if dir.dir_exists(root) else []
+	var mediaSounds = _get_all_files(root + "/Sounds/BaseSounds", "wav") if dir.dir_exists(root + "/Sounds/BaseSounds") else []
+	var mediaStateSounds = _get_all_files(root + "/Sounds/StateSounds", "wav") if dir.dir_exists(root + "/Sounds/StateSounds") else []
+	var charActionImages = _get_all_files(root + "/Buttons", "png") if dir.dir_exists(root + "/Buttons") else []
 	if charImages.empty() and mediaSounds.empty() and mediaStateSounds.empty() and charActionImages.empty():
 		return
 	mediaSounds.sort() #Sorts the array alphabetically

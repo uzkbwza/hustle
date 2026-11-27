@@ -118,7 +118,7 @@ func _boot():
 	if loader != null:
 		yield(loader.start(self), "completed")
 
-	Global.refresh_characters_cache()
+	yield(Global.refresh_characters_cache(), "completed")
 
 	set_status("Starting game...")
 	set_detail("")
