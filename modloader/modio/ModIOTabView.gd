@@ -15,6 +15,7 @@ onready var timespan_option: OptionButton = $"%TimespanOption"
 onready var compact_toggle: CheckButton = $"%Compact"
 onready var author_option: OptionButton = $"%AuthorOption"
 onready var subscribed_check: CheckButton = $"%SubscribedCheck"
+onready var upload_btn: Button = $"%UploadBtn"
 onready var status: Label = $"%Status"
 onready var list: GridContainer = $"%List"
 
@@ -111,11 +112,24 @@ func set_timespan_options(options: Array) -> void:
 
 
 func set_author_filters_visible(value: bool) -> void:
-	$AuthorRow.visible = value
+	$AuthorRow/AuthorLabel.visible = value
+	author_option.visible = value
+
+
+func set_author_labels(labels: Array) -> void:
+	author_option.clear()
+	for label in labels:
+		author_option.add_item(label)
+	author_option.select(0)
+	author = ""
 
 
 func set_subscribed_visible(value: bool) -> void:
 	subscribed_check.visible = value
+
+
+func set_upload_visible(value: bool) -> void:
+	upload_btn.visible = value
 
 
 func set_filter_visible(value: bool) -> void:
@@ -132,7 +146,6 @@ func set_sort_visible(value: bool) -> void:
 
 func set_controls_visible(value: bool) -> void:
 	$SearchRow.visible = value
-	$AuthorRow.visible = value
 
 
 func set_source_options(labels: Array, values: Array) -> void:

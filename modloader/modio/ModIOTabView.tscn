@@ -83,6 +83,12 @@ unique_name_in_owner = true
 size_flags_vertical = 3
 text = "Subscribed only"
 
+[node name="UploadBtn" type="Button" parent="AuthorRow"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+size_flags_horizontal = 10
+text = "upload"
+
 [node name="Status" type="Label" parent="."]
 unique_name_in_owner = true
 rect_min_size = Vector2( 240, 12 )

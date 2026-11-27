@@ -22,25 +22,6 @@ custom_constants/separation = 0
 rect_min_size = Vector2( 106, 0 )
 custom_constants/separation = 1
 
-[node name="TitleBar" type="Panel" parent="Layout/Sidebar"]
-rect_min_size = Vector2( 0, 20 )
-mouse_filter = 1
-size_flags_horizontal = 3
-
-[node name="Title" type="Button" parent="Layout/Sidebar/TitleBar"]
-unique_name_in_owner = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 2.0
-margin_top = 1.0
-margin_right = -2.0
-margin_bottom = -1.0
-text = "mod.io workshop"
-clip_text = true
-
-[node name="AccountBar" parent="Layout/Sidebar" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-
 [node name="NavScroll" type="ScrollContainer" parent="Layout/Sidebar"]
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -52,96 +33,78 @@ margin_bottom = 51.0
 size_flags_horizontal = 3
 custom_constants/separation = 1
 
-[node name="TabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
-unique_name_in_owner = true
+[node name="ModioSection" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
 size_flags_horizontal = 3
 custom_constants/separation = 1
 
-[node name="FeaturedTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
+[node name="ModioLink" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/ModioSection"]
+rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
-toggle_mode = true
-text = "Featured"
-clip_text = true
-
-[node name="ModsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Mods"
-clip_text = true
-
-[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Collections"
-clip_text = true
-
-[node name="GuidesTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/TabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Guides"
-clip_text = true
-
-[node name="WorkshopTabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
-unique_name_in_owner = true
-visible = false
-size_flags_horizontal = 3
-custom_constants/separation = 1
-
-[node name="ExploreTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Explore"
-clip_text = true
-
-[node name="MyItemsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "My Items"
-clip_text = true
-
-[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopTabBar"]
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Collections"
-clip_text = true
-
-[node name="BottomBar" type="VBoxContainer" parent="Layout/Sidebar"]
-size_flags_horizontal = 3
-custom_constants/separation = 2
-
-[node name="Footer" type="VBoxContainer" parent="Layout/Sidebar/BottomBar"]
-unique_name_in_owner = true
-size_flags_horizontal = 3
-custom_constants/separation = 1
-
-[node name="Website" type="Button" parent="Layout/Sidebar/BottomBar/Footer"]
-unique_name_in_owner = true
-size_flags_horizontal = 3
+flat = true
 text = "mod.io"
+clip_text = true
 
-[node name="UploadBar" type="VBoxContainer" parent="Layout/Sidebar/BottomBar"]
+[node name="TabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox/ModioSection"]
+unique_name_in_owner = true
 size_flags_horizontal = 3
 custom_constants/separation = 1
 
-[node name="UploadMod" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
-unique_name_in_owner = true
+[node name="ModsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/ModioSection/TabBar"]
 size_flags_horizontal = 3
-text = "Upload Mod"
+toggle_mode = true
+text = "mods"
 clip_text = true
 
-[node name="UploadGuide" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
-unique_name_in_owner = true
+[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/ModioSection/TabBar"]
 size_flags_horizontal = 3
-text = "Upload Guide"
+toggle_mode = true
+text = "collections"
 clip_text = true
 
-[node name="UploadCollection" type="Button" parent="Layout/Sidebar/BottomBar/UploadBar"]
-unique_name_in_owner = true
+[node name="GuidesTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/ModioSection/TabBar"]
 size_flags_horizontal = 3
-text = "Upload Collection"
+toggle_mode = true
+text = "guides"
 clip_text = true
 
-[node name="Close" type="Button" parent="Layout/Sidebar/BottomBar"]
+[node name="WorkshopSection" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox"]
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="SteamLink" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopSection"]
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+flat = true
+text = "steam"
+clip_text = true
+
+[node name="WorkshopTabBar" type="VBoxContainer" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopSection"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+custom_constants/separation = 1
+
+[node name="ModsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopSection/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "mods"
+clip_text = true
+
+[node name="StylesTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopSection/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "styles"
+clip_text = true
+
+[node name="CollectionsTab" type="Button" parent="Layout/Sidebar/NavScroll/NavBox/WorkshopSection/WorkshopTabBar"]
+size_flags_horizontal = 3
+toggle_mode = true
+text = "collections"
+clip_text = true
+
+[node name="AccountBar" parent="Layout/Sidebar" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+
+[node name="Close" type="Button" parent="Layout/Sidebar"]
 unique_name_in_owner = true
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3

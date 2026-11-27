@@ -21,19 +21,18 @@ const MODIO_IMAGE := preload("res://modloader/modio/ModIOImage.gd")
 const WORKSHOP_API_SCRIPT := preload("res://modloader/modio/WorkshopAPI.gd")
 const WORKSHOP_STORE := preload("res://modloader/modio/WorkshopStore.gd")
 
-const TAB_FEATURED := 0
-const TAB_MODS := 1
-const TAB_COLLECTIONS := 2
-const TAB_GUIDES := 3
+const TAB_MODS := 0
+const TAB_COLLECTIONS := 1
+const TAB_GUIDES := 2
 
-const TAB_NAMES := ["Featured", "Mods", "Collections", "Guides"]
+const TAB_NAMES := ["Mods", "Collections", "Guides"]
 
 const WORKSHOP_TAB_EXPLORE := 0
-const WORKSHOP_TAB_MY_ITEMS := 1
+const WORKSHOP_TAB_STYLES := 1
 const WORKSHOP_TAB_COLLECTIONS := 2
 
-const WORKSHOP_TAB_NAMES := ["Explore", "My Items", "Collections"]
-const WORKSHOP_TAB_BASE := 4
+const WORKSHOP_TAB_NAMES := ["Mods", "Styles", "Collections"]
+const WORKSHOP_TAB_BASE := 3
 const WORKSHOP_PAGE_SIZE := 50
 
 const WORKSHOP_TAG_OPTIONS := [
@@ -55,32 +54,6 @@ const WORKSHOP_SORT_OPTIONS := [
 	["Newest", "publication"],
 ]
 
-const WORKSHOP_MY_ITEMS_SORT_OPTIONS := [
-	["Recently subscribed", "subscription"],
-	["Newest", "creation"],
-	["Recently updated", "updated"],
-	["Alphabetical", "title"],
-]
-
-const WORKSHOP_MY_ITEMS_SOURCES := [
-	["Subscribed", "subscribed"],
-	["Published", "published"],
-]
-
-const WORKSHOP_DISCUSSION_LINKS := [
-	["Workshop Discussions", "Talk about Workshop items, updates and ideas.", "https://steamcommunity.com/workshop/discussions/?appid=2212330"],
-	["Game Discussions", "General discussion for Your Only Move Is HUSTLE.", "https://steamcommunity.com/app/2212330/discussions/"],
-	["Steam Guides", "Community guides for the game.", "https://steamcommunity.com/app/2212330/guides/"],
-	["Workshop Hub", "Browse the Workshop on the Steam Community.", "https://steamcommunity.com/app/2212330/workshop/"],
-]
-
-const WORKSHOP_ABOUT_LINKS := [
-	["About the Workshop", "What the Steam Workshop is and how it works.", "https://steamcommunity.com/workshop/about/?appid=2212330"],
-	["Workshop Rules", "Steam Workshop rules and guidelines.", "https://steamcommunity.com/workshop/about/"],
-	["Your Only Move Is HUSTLE", "Visit the game's Steam Community hub.", "https://steamcommunity.com/app/2212330"],
-	["Store Page", "View Your Only Move Is HUSTLE on Steam.", "https://store.steampowered.com/app/2212330/"],
-]
-
 const TIMESPAN_OPTIONS := [
 	["All time", "all_time"],
 	["Today", "today"],
@@ -93,16 +66,6 @@ const TIMESPAN_OPTIONS := [
 const MOD_SORT_OPTIONS := [
 	["Popular", "-subscribers_total"],
 	["Most downloaded", "-downloads_total"],
-	["Top rated", "-ratings_weighted_aggregate"],
-	["Newest", "-date_live"],
-	["Recently updated", "-date_updated"],
-	["Alphabetical", "name"],
-]
-
-const FEATURED_SORT_OPTIONS := [
-	["Trending", "-downloads_today"],
-	["Most downloaded", "-downloads_total"],
-	["Most subscribers", "-subscribers_total"],
 	["Top rated", "-ratings_weighted_aggregate"],
 	["Newest", "-date_live"],
 	["Recently updated", "-date_updated"],
@@ -133,15 +96,12 @@ signal closed
 var menu = null
 
 onready var account_bar = $"%AccountBar"
-onready var title_button: Button = $"%Title"
 onready var tab_bar: VBoxContainer = $"%TabBar"
 onready var workshop_tab_bar: VBoxContainer = $"%WorkshopTabBar"
 onready var tabs: TabContainer = $"%Tabs"
-onready var footer: VBoxContainer = $"%Footer"
-onready var website_btn: Button = $"%Website"
-onready var upload_mod_btn: Button = $"%UploadMod"
-onready var upload_guide_btn: Button = $"%UploadGuide"
-onready var upload_collection_btn: Button = $"%UploadCollection"
+onready var modio_link_btn: Button = $Layout/Sidebar/NavScroll/NavBox/ModioSection/ModioLink
+onready var steam_link_btn: Button = $Layout/Sidebar/NavScroll/NavBox/WorkshopSection/SteamLink
+onready var workshop_section: VBoxContainer = $Layout/Sidebar/NavScroll/NavBox/WorkshopSection
 
 onready var collection_detail = $"%CollectionDetail"
 onready var collection_detail_back: Button = $"%DetailBack"
@@ -161,7 +121,6 @@ onready var detail = $"%ModDetail"
 
 var tab_buttons := []
 var workshop_tab_buttons := []
-var workshop_link_buttons := []
 var views := []
 var workshop_views := []
 
@@ -183,7 +142,6 @@ var _current_collection := {}
 var _return_to_detail := false
 
 var _game_data := {}
-var _placements := []
 var _tags_loaded := false
 var _guide_tags_loaded := false
 
@@ -213,13 +171,15 @@ func _ready() -> void:
 	workshop_tab_buttons = workshop_tab_bar.get_children()
 	for i in range(workshop_tab_buttons.size()):
 		workshop_tab_buttons[i].connect("pressed", self, "_select_workshop_tab", [i])
-	_build_workshop_links()
 
 	_build_views()
 	_connect_auth()
 	_build_tooltip()
 	if not UIManager.is_connected("scroll_drag_started", self, "_on_scroll_drag_started"):
 		UIManager.connect("scroll_drag_started", self, "_on_scroll_drag_started")
+	if UIManager.is_connected("swiped_back", self, "_on_swiped_back"):
+		UIManager.disconnect("swiped_back", self, "_on_swiped_back")
+	UIManager.connect("swiped_back", self, "_on_swiped_back")
 	_connect_controls()
 	collection_detail_list.get_parent().connect("resized", self, "_apply_collection_columns")
 
@@ -231,7 +191,7 @@ func _ready() -> void:
 
 	_register_ui()
 	for i in range(tab_buttons.size()):
-		tab_buttons[i].set_pressed_no_signal(i == TAB_FEATURED)
+		tab_buttons[i].set_pressed_no_signal(i == TAB_MODS)
 	_update_footer()
 	Global.connect("mobile_ui_changed", self, "adjust_ui")
 	adjust_ui(Global.mobile_ui)
@@ -243,10 +203,12 @@ func _build_views() -> void:
 		var view = TAB_VIEW_SCENE.instance()
 		view.name = TAB_NAMES[i]
 		tabs.add_child(view)
-		view.setup(i, TAB_NAMES[i], _sort_options_for(i), i == TAB_FEATURED or i == TAB_MODS)
+		view.setup(i, TAB_NAMES[i], _sort_options_for(i), i == TAB_MODS)
 		view.set_timespan_options(TIMESPAN_OPTIONS)
-		view.set_author_filters_visible(i == TAB_MODS or i == TAB_COLLECTIONS or i == TAB_GUIDES)
+		view.set_author_filters_visible(true)
 		view.set_subscribed_visible(i == TAB_MODS)
+		view.set_upload_visible(true)
+		view.upload_btn.connect("pressed", self, "_on_view_upload_pressed", [i])
 		view.prev_btn.connect("pressed", self, "_on_prev_pressed", [i])
 		view.next_btn.connect("pressed", self, "_on_next_pressed", [i])
 		view.compact_toggle.connect("toggled", self, "_on_compact_toggled", [i])
@@ -278,33 +240,12 @@ func _setup_workshop() -> void:
 	_workshop.connect("vote_loaded", self, "_on_workshop_vote_loaded")
 	_workshop.connect("vote_set", self, "_on_workshop_vote_set")
 	_workshop.connect("vote_failed", self, "_on_workshop_vote_failed")
-	_update_mode_button()
-
-
-func _build_workshop_links() -> void:
-	var links = WORKSHOP_DISCUSSION_LINKS + WORKSHOP_ABOUT_LINKS
-	for entry in links:
-		var title = str(entry[0])
-		var button = Button.new()
-		button.text = _workshop_link_label(title)
-		button.hint_tooltip = title + "\n" + str(entry[1])
-		button.clip_text = true
-		button.size_flags_horizontal = 3
-		workshop_tab_bar.add_child(button)
-		button.connect("pressed", self, "_on_workshop_link_pressed", [str(entry[2])])
-		workshop_link_buttons.append(button)
-
-
-func _workshop_link_label(title: String) -> String:
-	if title == "Workshop Discussions":
-		return "Workshop Talk"
-	if title == "Game Discussions":
-		return "Game Talk"
-	if title == "About the Workshop":
-		return "About Workshop"
-	if title == "Your Only Move Is HUSTLE":
-		return "Game Community"
-	return title
+	_workshop.connect("details_loaded", self, "_on_workshop_details_loaded")
+	_workshop.connect("details_failed", self, "_on_workshop_details_failed")
+	_workshop.connect("comments_loaded", self, "_on_workshop_comments_loaded")
+	_workshop.connect("comments_failed", self, "_on_workshop_comments_failed")
+	_workshop.connect("item_deleted", self, "_on_workshop_item_deleted")
+	_workshop.connect("delete_failed", self, "_on_workshop_delete_failed")
 
 
 func _build_workshop_views() -> void:
@@ -317,24 +258,22 @@ func _build_workshop_views() -> void:
 		view.setup(WORKSHOP_TAB_BASE + i, WORKSHOP_TAB_NAMES[i],
 			_workshop_sort_options_for(i), not is_collections)
 		view.set_card_width(_card_width)
-		view.set_author_filters_visible(false)
-		view.set_subscribed_visible(false)
-		view.set_filter_visible(i == WORKSHOP_TAB_MY_ITEMS or i == WORKSHOP_TAB_EXPLORE)
-		view.set_search_visible(i == WORKSHOP_TAB_EXPLORE)
-		view.set_sort_visible(i == WORKSHOP_TAB_EXPLORE or i == WORKSHOP_TAB_MY_ITEMS)
-		if i == WORKSHOP_TAB_EXPLORE:
+		view.set_author_labels(["All creators", "My uploads"])
+		view.set_author_filters_visible(true)
+		view.set_subscribed_visible(i != WORKSHOP_TAB_COLLECTIONS)
+		view.set_upload_visible(true)
+		view.upload_btn.connect("pressed", self, "_on_view_upload_pressed", [WORKSHOP_TAB_BASE + i])
+		view.set_filter_visible(not is_collections)
+		view.set_search_visible(not is_collections)
+		view.set_sort_visible(not is_collections)
+		if i == WORKSHOP_TAB_EXPLORE or i == WORKSHOP_TAB_STYLES:
 			view.set_filter_label("Tag:")
 			view.set_filter_options(WORKSHOP_TAG_OPTIONS, WORKSHOP_TAG_OPTIONS)
-		if i == WORKSHOP_TAB_MY_ITEMS:
-			view.set_filter_label("Show:")
-			var source_labels := []
-			var source_values := []
-			for source in WORKSHOP_MY_ITEMS_SOURCES:
-				source_labels.append(source[0])
-				source_values.append(source[1])
-			view.set_source_options(source_labels, source_values)
+		if i == WORKSHOP_TAB_STYLES:
+			view._restore_filter("Style")
 		if is_collections:
 			view.set_controls_visible(false)
+			view.set_author_filters_visible(false)
 			view.status.visible = true
 		view.prev_btn.connect("pressed", self, "_on_prev_pressed", [WORKSHOP_TAB_BASE + i])
 		view.next_btn.connect("pressed", self, "_on_next_pressed", [WORKSHOP_TAB_BASE + i])
@@ -343,19 +282,17 @@ func _build_workshop_views() -> void:
 		view.search_btn.connect("pressed", self, "_on_search_pressed", [WORKSHOP_TAB_BASE + i])
 		view.sort_option.connect("item_selected", self, "_on_sort_selected", [WORKSHOP_TAB_BASE + i])
 		view.filter_option.connect("item_selected", self, "_on_workshop_filter_selected", [WORKSHOP_TAB_BASE + i])
+		view.author_option.connect("item_selected", self, "_on_author_selected", [WORKSHOP_TAB_BASE + i])
+		view.subscribed_check.connect("toggled", self, "_on_subscribed_toggled", [WORKSHOP_TAB_BASE + i])
 		tabs.set_tab_title(tabs.get_tab_count() - 1, WORKSHOP_TAB_NAMES[i])
 		workshop_views.append(view)
 
 
-func _workshop_sort_options_for(index: int) -> Array:
-	if index == WORKSHOP_TAB_MY_ITEMS:
-		return WORKSHOP_MY_ITEMS_SORT_OPTIONS
+func _workshop_sort_options_for(_index: int) -> Array:
 	return WORKSHOP_SORT_OPTIONS
 
 
 func _sort_options_for(index: int) -> Array:
-	if index == TAB_FEATURED:
-		return FEATURED_SORT_OPTIONS
 	if index == TAB_COLLECTIONS:
 		return COLLECTION_SORT_OPTIONS
 	if index == TAB_GUIDES:
@@ -364,11 +301,8 @@ func _sort_options_for(index: int) -> Array:
 
 
 func _connect_controls() -> void:
-	title_button.connect("pressed", self, "_on_mode_button_pressed")
-	website_btn.connect("pressed", self, "_on_website_pressed")
-	upload_mod_btn.connect("pressed", self, "_on_upload_mod_pressed")
-	upload_guide_btn.connect("pressed", self, "_on_upload_guide_pressed")
-	upload_collection_btn.connect("pressed", self, "_on_upload_collection_pressed")
+	modio_link_btn.connect("pressed", self, "_on_modio_link_pressed")
+	steam_link_btn.connect("pressed", self, "_on_steam_link_pressed")
 	collection_detail_back.connect("pressed", self, "_close_collection_detail")
 	collection_editor_back.connect("pressed", self, "_close_collection_editor")
 	collection_create_btn.connect("pressed", self, "_on_create_collection_pressed")
@@ -377,16 +311,15 @@ func _connect_controls() -> void:
 	detail.connect("subscribe_pressed", self, "_on_subscribe_pressed")
 	detail.connect("collections_pressed", self, "_on_collections_pressed")
 	detail.connect("page_pressed", self, "_on_page_pressed")
-	detail.connect("homepage_pressed", self, "_on_homepage_pressed")
 	detail.connect("rate_pressed", self, "_on_rate_pressed")
+	detail.connect("edit_pressed", self, "_on_edit_pressed")
+	detail.connect("delete_pressed", self, "_on_delete_pressed")
 
 
 func _register_ui() -> void:
 	var registered = [
 		$"%Close",
-		title_button,
-		website_btn,
-		upload_mod_btn, upload_guide_btn, upload_collection_btn,
+		modio_link_btn, steam_link_btn,
 		collection_name_edit, collection_create_btn,
 		collection_detail_back, collection_editor_back,
 	]
@@ -399,10 +332,9 @@ func _register_ui() -> void:
 		registered.append(view.sort_option)
 		registered.append(view.filter_option)
 		registered.append(view.timespan_option)
-		if view.index == TAB_MODS or view.index == TAB_COLLECTIONS or view.index == TAB_GUIDES:
-			registered.append(view.author_option)
-		if view.index == TAB_MODS:
-			registered.append(view.subscribed_check)
+		registered.append(view.author_option)
+		registered.append(view.subscribed_check)
+		registered.append(view.upload_btn)
 	for view in workshop_views:
 		if view.index == WORKSHOP_TAB_BASE + WORKSHOP_TAB_COLLECTIONS:
 			continue
@@ -413,6 +345,8 @@ func _register_ui() -> void:
 		registered.append(view.search_btn)
 		registered.append(view.sort_option)
 		registered.append(view.filter_option)
+		registered.append(view.subscribed_check)
+		registered.append(view.upload_btn)
 	for element in detail.ui_elements():
 		registered.append(element)
 	UIManager.register_menu(self, registered)
@@ -420,8 +354,6 @@ func _register_ui() -> void:
 		UIManager.register_control(tab_btn, [tab_btn])
 	for tab_btn in workshop_tab_buttons:
 		UIManager.register_control(tab_btn, [tab_btn])
-	for link_btn in workshop_link_buttons:
-		UIManager.register_control(link_btn, [link_btn])
 
 
 func _build_tooltip() -> void:
@@ -452,9 +384,11 @@ func open() -> void:
 	show()
 	raise()
 	var available = _workshop.is_available()
-	_update_mode_button()
-	if _mode == "workshop" and not available:
-		_set_mode("modio")
+	if tabs.current_tab >= WORKSHOP_TAB_BASE and not available:
+		tabs.current_tab = _last_modio_tab
+		return
+	_mode = "workshop" if tabs.current_tab >= WORKSHOP_TAB_BASE else "modio"
+	account_bar.visible = _mode != "workshop"
 	if _mode == "workshop":
 		_workshop.refresh_subscriptions()
 		var workshop_index = tabs.current_tab - WORKSHOP_TAB_BASE
@@ -510,62 +444,9 @@ func _require_login() -> bool:
 	return false
 
 
-func _on_mode_button_pressed() -> void:
-	if _mode == "workshop":
-		_set_mode("modio")
-	else:
-		_set_mode("workshop")
-
-
-func _set_mode(mode: String) -> void:
-	if mode == _mode:
-		return
-	if mode == "workshop" and not _workshop.is_available():
-		return
-	_hide_tooltip()
-	_close_detail()
-	_close_collection_detail()
-	_close_collection_editor()
-	_mode = mode
-	if mode == "workshop":
-		if tabs.current_tab < WORKSHOP_TAB_BASE:
-			_last_modio_tab = tabs.current_tab
-		account_bar.visible = false
-		upload_guide_btn.visible = false
-		upload_collection_btn.visible = false
-		website_btn.text = "Steam"
-		tab_bar.visible = false
-		workshop_tab_bar.visible = true
-		_workshop.refresh_subscriptions()
-		_select_workshop_tab(WORKSHOP_TAB_EXPLORE)
-	else:
-		account_bar.visible = true
-		upload_guide_btn.visible = true
-		upload_collection_btn.visible = true
-		website_btn.text = "mod.io"
-		tab_bar.visible = true
-		workshop_tab_bar.visible = false
-		if tabs.current_tab >= WORKSHOP_TAB_BASE or tabs.current_tab != _last_modio_tab:
-			tabs.current_tab = _last_modio_tab
-		_on_tab_changed(_last_modio_tab)
-	_update_mode_button()
-
-
-func _update_mode_button() -> void:
-	var available = _workshop.is_available()
-	title_button.text = "mod.io (swap)" if _mode == "modio" else "steam (swap)"
-	title_button.disabled = _mode == "modio" and not available
-	if title_button.disabled:
-		title_button.hint_tooltip = "Steam Workshop is unavailable"
-	elif _mode == "modio":
-		title_button.hint_tooltip = "Switch to the Steam Workshop"
-	else:
-		title_button.hint_tooltip = "Switch to the mod.io workshop"
-
-
 func adjust_ui(is_mobile: bool) -> void:
 	$Layout/Sidebar.rect_min_size.x = MOBILE_SIDEBAR_WIDTH if is_mobile else SIDEBAR_WIDTH
-	$Layout/Sidebar/TitleBar.rect_min_size.y = 25 if is_mobile else 20
+	workshop_section.visible = not Global.is_mobile_device
 	account_bar.set_compact(is_mobile)
 	var contents = $Layout/Contents
 	contents.rect_min_size.x = 0 if is_mobile else CONTENT_WIDTH
@@ -586,21 +467,9 @@ func _select_workshop_tab(index: int) -> void:
 	_close_collection_editor()
 	var target = WORKSHOP_TAB_BASE + index
 	if tabs.current_tab == target:
-		_on_workshop_tab_changed(index)
+		_on_tab_changed(target)
 	else:
 		tabs.current_tab = target
-
-
-func _on_workshop_tab_changed(index: int) -> void:
-	if index < 0 or index >= workshop_views.size():
-		return
-	_hide_tooltip()
-	for i in range(workshop_tab_buttons.size()):
-		workshop_tab_buttons[i].set_pressed_no_signal(i == index)
-	if index == WORKSHOP_TAB_COLLECTIONS:
-		workshop_views[index].loaded = false
-	_refresh_workshop_tab(index)
-	_update_footer()
 
 
 func _refresh_workshop_tab(index: int) -> void:
@@ -630,11 +499,10 @@ func _load_workshop_tab(index: int, reset: bool) -> void:
 	view.generation = _workshop_token
 	view.status.text = "Loading..."
 	_update_footer()
-	if index == WORKSHOP_TAB_MY_ITEMS:
-		if view.filter == "published":
-			_workshop.request_published(view.sort, view.offset, view.generation)
-		else:
-			_workshop.request_subscribed(view.sort, view.offset, view.generation)
+	if view.subscribed_only:
+		_workshop.request_subscribed(view.sort, view.offset, view.generation, view.search, view.filter)
+	elif view.author == "mine":
+		_workshop.request_published(view.sort, view.offset, view.generation)
 	else:
 		_workshop.request_browse(view.sort, view.offset, view.generation, view.search, view.filter)
 
@@ -663,10 +531,6 @@ func _add_workshop_collection_row(view, collection: Dictionary) -> void:
 	row.connect("page_pressed", self, "_on_open_collection_page_pressed")
 	row.setup(collection)
 	row.set_page_visible(false)
-
-
-func _on_workshop_link_pressed(url: String) -> void:
-	_open_external(url)
 
 
 func _view_at(index: int):
@@ -707,9 +571,6 @@ func _reload_current(reset: bool) -> void:
 
 
 func _select_tab(index: int) -> void:
-	if _mode == "workshop":
-		_select_workshop_tab(index)
-		return
 	_close_detail()
 	_close_collection_detail()
 	_close_collection_editor()
@@ -722,22 +583,47 @@ func _select_tab(index: int) -> void:
 func _on_tab_changed(index: int) -> void:
 	if tab_buttons.empty():
 		return
-	if index >= WORKSHOP_TAB_BASE:
-		_on_workshop_tab_changed(index - WORKSHOP_TAB_BASE)
-		return
-	if index < 0 or index >= views.size():
-		return
-	_last_modio_tab = index
+	var workshop = index >= WORKSHOP_TAB_BASE
+	_mode = "workshop" if workshop else "modio"
+	account_bar.visible = not workshop
+	if not workshop:
+		_last_modio_tab = index
 	_hide_tooltip()
 	for i in range(tab_buttons.size()):
-		tab_buttons[i].set_pressed_no_signal(i == index)
+		tab_buttons[i].set_pressed_no_signal(not workshop and i == index)
+	for i in range(workshop_tab_buttons.size()):
+		workshop_tab_buttons[i].set_pressed_no_signal(workshop and i == index - WORKSHOP_TAB_BASE)
+	if workshop:
+		var windex = index - WORKSHOP_TAB_BASE
+		if windex == WORKSHOP_TAB_COLLECTIONS:
+			workshop_views[windex].loaded = false
+		_refresh_workshop_tab(windex)
+	else:
+		_refresh_tab(index)
 	_update_footer()
-	_refresh_tab(index)
 
 
 func _exit_tree() -> void:
+	if UIManager.is_connected("swiped_back", self, "_on_swiped_back"):
+		UIManager.disconnect("swiped_back", self, "_on_swiped_back")
 	if is_instance_valid(_tooltip_panel):
 		_tooltip_panel.queue_free()
+
+
+func _on_swiped_back() -> void:
+	if not visible:
+		return
+	_hide_tooltip()
+	if detail.visible:
+		_close_detail()
+		return
+	if collection_detail.visible:
+		_close_collection_detail()
+		return
+	if collection_editor.visible:
+		_close_collection_editor()
+		return
+	_on_close_clicked()
 
 
 func _on_compact_toggled(pressed: bool, _view_index: int) -> void:
@@ -853,13 +739,41 @@ func _on_author_selected(item_index: int, view_index: int) -> void:
 	var values = ["", "mine", "others"]
 	if item_index < 0 or item_index >= values.size():
 		return
-	views[view_index].author = values[item_index]
-	_reload_tab(view_index)
+	var view = _view_at(view_index)
+	if view == null:
+		return
+	if item_index > 0 and view.subscribed_only:
+		view.subscribed_only = false
+		view.subscribed_check.set_pressed_no_signal(false)
+	view.author = values[item_index]
+	_reload_index(view_index)
 
 
 func _on_subscribed_toggled(pressed: bool, view_index: int) -> void:
-	views[view_index].subscribed_only = pressed
-	_reload_tab(view_index)
+	var view = _view_at(view_index)
+	if view == null:
+		return
+	view.subscribed_only = pressed
+	if pressed and view.author != "":
+		view.author = ""
+		view.author_option.select(0)
+	if view_index >= WORKSHOP_TAB_BASE:
+		_load_workshop_tab(view_index - WORKSHOP_TAB_BASE, true)
+	else:
+		_reload_tab(view_index)
+
+
+func _on_view_upload_pressed(index: int) -> void:
+	_hide_tooltip()
+	if index >= WORKSHOP_TAB_BASE:
+		emit_signal("upload_workshop_requested")
+		return
+	if index == TAB_MODS:
+		emit_signal("upload_mod_requested")
+	elif index == TAB_COLLECTIONS:
+		emit_signal("upload_collection_requested")
+	else:
+		emit_signal("upload_guide_requested")
 
 
 func _on_prev_pressed(index: int) -> void:
@@ -948,12 +862,6 @@ func _mod_params(view) -> Dictionary:
 		params["_q"] = view.search
 	if view.filter != "":
 		params["tags"] = view.filter
-	if view.index == TAB_FEATURED:
-		var filters = _featured_filters()
-		for key in filters:
-			if key == "_sort" or key == "tags":
-				continue
-			params[key] = str(filters[key])
 	if view.timespan_set:
 		if view.timespan == "all_time":
 			params.erase("timespan")
@@ -963,23 +871,6 @@ func _mod_params(view) -> Dictionary:
 		params["timespan"] = view.timespan
 	_apply_author_filter(params, view)
 	return params
-
-
-func _featured_filters() -> Dictionary:
-	var placement = _featured_placement()
-	if placement.empty():
-		return {}
-	var filters = placement.get("filters", {})
-	if typeof(filters) != TYPE_DICTIONARY:
-		return {}
-	return filters
-
-
-func _featured_placement() -> Dictionary:
-	for placement in _placements:
-		if typeof(placement) == TYPE_DICTIONARY and bool(placement.get("enabled", false)):
-			return placement
-	return {}
 
 
 func _collection_params(view) -> Dictionary:
@@ -1196,28 +1087,15 @@ func _on_workshop_removed(item_id) -> void:
 
 func _on_workshop_library_changed(item_id) -> void:
 	var id = str(item_id)
-	var was_listed = not _rows_for(id).empty()
 	_refresh_workshop_state(id)
 	if detail.visible and detail.mod_id == id:
 		detail.set_status("Downloaded. Restart the game to load it.")
-	if not was_listed:
-		_reload_workshop_subscribed()
 
 
 func _on_workshop_subscriptions_changed() -> void:
 	for view in workshop_views:
 		for row in view.rows.values():
 			row.set_subscribed(_workshop.is_item_subscribed(row.mod_id))
-	_reload_workshop_subscribed()
-
-
-func _reload_workshop_subscribed() -> void:
-	if workshop_views.size() <= WORKSHOP_TAB_MY_ITEMS:
-		return
-	var view = workshop_views[WORKSHOP_TAB_MY_ITEMS]
-	view.loaded = false
-	if _mode == "workshop" and tabs.current_tab == WORKSHOP_TAB_BASE + WORKSHOP_TAB_MY_ITEMS:
-		_load_workshop_tab(WORKSHOP_TAB_MY_ITEMS, true)
 
 
 func _refresh_workshop_state(item_id: String) -> void:
@@ -1243,13 +1121,9 @@ func _on_game_received(parsed, _code, _binds) -> void:
 	if parsed == null or typeof(parsed) != TYPE_DICTIONARY:
 		return
 	_game_data = parsed
-	var placements = parsed.get("placements", [])
-	_placements = placements if typeof(placements) == TYPE_ARRAY else []
 	var collection_tags = parsed.get("collection_tag_options", [])
 	if typeof(collection_tags) == TYPE_ARRAY and collection_tags.size() > 0:
 		_fill_filter_options(views[TAB_COLLECTIONS], collection_tags)
-	if not _placements.empty() and tabs.current_tab == TAB_FEATURED and views[TAB_FEATURED].loaded:
-		_reload_tab(TAB_FEATURED)
 
 
 func _on_tags_received(parsed, _code, _binds) -> void:
@@ -1260,7 +1134,6 @@ func _on_tags_received(parsed, _code, _binds) -> void:
 	if typeof(groups) != TYPE_ARRAY:
 		return
 	_fill_filter_options(views[TAB_MODS], groups)
-	_fill_filter_options(views[TAB_FEATURED], groups)
 
 
 func _on_guide_tags_received(parsed, _code, _binds) -> void:
@@ -1895,9 +1768,13 @@ func _on_mod_open_pressed(mod_id: String) -> void:
 			"workshop_state": str(entry.get("state", "")),
 			"time_updated": int(entry.get("time_updated", 0)),
 		})
-		detail.set_comments_status("Steam Workshop comments are not available in-game.")
+		detail.set_comments_status("Loading comments...")
+		var owner_id = int(mod_data.get("workshop_owner", 0))
+		detail.set_own_item(owner_id != 0 and owner_id == SteamHustle.STEAM_ID)
 		_hide_browser()
 		_workshop.request_vote(int(mod_id))
+		_workshop.request_item_details(int(mod_id))
+		_workshop.request_comments(int(mod_id))
 		return
 	detail.set_signed_in(_is_logged_in())
 	detail.set_install_state(_install_state_for(mod_id))
@@ -1918,6 +1795,9 @@ func _on_detail_mod_received(parsed, code, binds) -> void:
 	detail.set_subscribed(_subscribed_ids.has(mod_id))
 	detail.set_signed_in(_is_logged_in())
 	detail.set_install_state(_install_state_for(mod_id))
+	var author = parsed.get("submitted_by", {})
+	var owner_id = int(author.get("id", 0)) if typeof(author) == TYPE_DICTIONARY else 0
+	detail.set_own_item(owner_id > 0 and owner_id == int(ModIOAuth.user_id))
 
 
 func _on_detail_comments_received(parsed, code, binds) -> void:
@@ -1939,32 +1819,17 @@ func _close_detail() -> void:
 
 func _hide_browser() -> void:
 	tabs.visible = false
-	tab_bar.visible = false
-	workshop_tab_bar.visible = false
-	footer.visible = false
+	$Layout/Sidebar/NavScroll.visible = false
 
 
 func _show_browser() -> void:
 	tabs.visible = true
-	footer.visible = true
+	$Layout/Sidebar/NavScroll.visible = true
 	if _mode == "workshop":
-		tab_bar.visible = false
-		workshop_tab_bar.visible = true
 		var index = tabs.current_tab - WORKSHOP_TAB_BASE
 		if index == WORKSHOP_TAB_COLLECTIONS:
 			workshop_views[index].loaded = false
 			_refresh_workshop_tab(index)
-	else:
-		tab_bar.visible = true
-		workshop_tab_bar.visible = false
-
-
-func _on_homepage_pressed(url: String) -> void:
-	_hide_tooltip()
-	if url == "":
-		detail.set_status("This mod has no homepage.")
-		return
-	ModIO.open_web_url(url)
 
 
 func _on_rate_pressed(mod_id: String, rating: int) -> void:
@@ -2005,6 +1870,78 @@ func _on_workshop_vote_failed(_file_id, message: String) -> void:
 		status_line(message)
 
 
+func _on_workshop_details_loaded(item_id, details: Dictionary) -> void:
+	if not detail.visible or str(detail.mod_id) != str(item_id):
+		return
+	_cache_mod(details)
+	detail.set_details(details)
+	if _mod_cache.has(str(item_id)):
+		_set_row_status(str(item_id), "")
+
+
+func _on_workshop_details_failed(item_id, message: String) -> void:
+	if detail.visible and str(detail.mod_id) == str(item_id):
+		detail.set_status(message)
+
+
+func _on_workshop_comments_loaded(item_id, comments: Array) -> void:
+	if not detail.visible or str(detail.mod_id) != str(item_id):
+		return
+	detail.set_comments(comments)
+
+
+func _on_workshop_comments_failed(item_id, message: String) -> void:
+	if not detail.visible or str(detail.mod_id) != str(item_id):
+		return
+	detail.set_comments_status("Couldn't load comments in-game.")
+
+
+func _on_edit_pressed(mod_id: String) -> void:
+	if _mode == "workshop":
+		emit_signal("upload_workshop_requested")
+		return
+	status_line("Editing published mods is not supported here. Open the mod page on mod.io instead.")
+	_on_page_pressed(mod_id)
+
+
+func _on_delete_pressed(mod_id: String) -> void:
+	var data: Dictionary = _mod_cache.get(mod_id, {})
+	var title = str(data.get("name", "this item"))
+	var confirm = ConfirmationDialog.new()
+	confirm.title = "Delete item"
+	confirm.dialog_text = "Delete \"%s\"? This cannot be undone." % title
+	confirm.connect("confirmed", self, "_on_delete_confirmed", [mod_id])
+	add_child(confirm)
+	confirm.popup_centered()
+
+
+func _on_delete_confirmed(mod_id: String) -> void:
+	if _mode == "workshop":
+		_workshop.delete_item(int(mod_id))
+		return
+	ModIO.delete_mod(int(mod_id), self, "_on_modio_delete_done", [mod_id])
+
+
+func _on_modio_delete_done(_parsed, code, binds) -> void:
+	var mod_id = str(binds[0])
+	if code != 200 and code != 201 and code != 204:
+		status_line("Couldn't delete this mod (%s)." % _http_label(code))
+		return
+	status_line("Mod deleted.")
+	_close_detail()
+	_reload_current(true)
+
+
+func _on_workshop_item_deleted(item_id) -> void:
+	status_line("Item %s deleted from Steam Workshop." % str(item_id))
+	_close_detail()
+	_reload_current(true)
+
+
+func _on_workshop_delete_failed(item_id, message: String) -> void:
+	status_line("Couldn't delete item %s: %s" % [str(item_id), message])
+
+
 func _on_rating_done(_parsed, code, binds) -> void:
 	var mod_id = str(binds[0])
 	if code != 200 and code != 201:
@@ -2038,12 +1975,14 @@ func _on_page_pressed(mod_id: String) -> void:
 	ModIO.open_web_url(url)
 
 
-func _on_website_pressed() -> void:
+func _on_modio_link_pressed() -> void:
 	_hide_tooltip()
-	if _mode == "workshop":
-		_open_external(_workshop.web_url())
-		return
 	ModIO.open_web_url(ModIO.web_url)
+
+
+func _on_steam_link_pressed() -> void:
+	_hide_tooltip()
+	_open_external(_workshop.web_url())
 
 
 func _open_external(url: String) -> void:
@@ -2063,9 +2002,6 @@ func _is_workshop_url(url: String) -> bool:
 
 func _on_upload_mod_pressed() -> void:
 	_hide_tooltip()
-	if _mode == "workshop":
-		emit_signal("upload_workshop_requested")
-		return
 	emit_signal("upload_mod_requested")
 
 

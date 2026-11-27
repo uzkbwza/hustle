@@ -12,10 +12,19 @@ signal vote_set(file_id, vote_up, result)
 signal vote_failed(file_id, message)
 signal subscriptions_changed
 signal library_changed(item_id)
+signal details_loaded(item_id, details)
+signal details_failed(item_id, message)
+signal comments_loaded(item_id, comments)
+signal comments_failed(item_id, message)
+signal item_deleted(item_id)
+signal delete_failed(item_id, message)
 
 const WORKSHOP_STORE := preload("res://modloader/modio/WorkshopStore.gd")
 
 const WORKSHOP_APP_ID := 2212330
+const COMMENTS_URL := "https://steamcommunity.com/sharedfiles/filedetails/?id=%d&l=english"
+const MAX_COMMENTS_BYTES := 4 * 1024 * 1024
+const MAX_COMMENTS := 15
 
 const QUERY_RANKED_BY_VOTE := 0
 const QUERY_RANKED_BY_PUBLICATION := 1
@@ -47,6 +56,15 @@ var _jobs := {}
 var _poll_elapsed := 0.0
 var _pending_vote_id := 0
 
+var _detail_handle := -1
+var _detail_item_id := 0
+var _detail_target = null
+var _detail_callback := ""
+var _detail_binds := []
+
+var _comment_requests := {}
+var _comment_cache := {}
+
 
 func _ready() -> void:
 	Steam.connect("ugc_query_completed", self, "_on_query_completed")
@@ -58,6 +76,8 @@ func _ready() -> void:
 		Steam.connect("item_downloaded", self, "_on_item_downloaded")
 	if Steam.has_signal("user_subscribed_items_list_changed"):
 		Steam.connect("user_subscribed_items_list_changed", self, "_on_subscriptions_changed")
+	if Steam.has_signal("item_deleted"):
+		Steam.connect("item_deleted", self, "_on_item_delete_result")
 
 
 func is_available() -> bool:
@@ -133,13 +153,17 @@ func request_browse(sort_key: String, offset: int, token: int, search: String = 
 	_start_query(handle, token)
 
 
-func request_subscribed(sort_key: String, offset: int, token: int) -> void:
+func request_subscribed(sort_key: String, offset: int, token: int, search: String = "", tag: String = "") -> void:
 	if not is_available():
 		emit_signal("browse_failed", "Steam Workshop is not available.", token)
 		return
 	var page = int(offset / PAGE_SIZE) + 1
 	var handle = Steam.createQueryUserUGCRequest(Steam.getSteamID(), LIST_SUBSCRIBED,
 		MATCH_ITEMS, _user_sort(sort_key), app_id(), app_id(), page)
+	if int(handle) > 0 and search != "":
+		Steam.setSearchText(handle, search)
+	if int(handle) > 0 and tag != "":
+		Steam.addRequiredTag(handle, tag)
 	_start_query(handle, token)
 
 
@@ -175,6 +199,9 @@ func _start_query(handle, token: int) -> void:
 
 
 func _on_query_completed(handle, result, results_returned, total_matching, _cached) -> void:
+	if int(handle) == _detail_handle:
+		_finish_detail_query(int(handle), int(result), int(results_returned))
+		return
 	if int(handle) != _query_handle:
 		return
 	var token = _query_token
@@ -224,8 +251,9 @@ func _on_subscriptions_changed(_app_id) -> void:
 	emit_signal("subscriptions_changed")
 
 
-func _read_result(index: int) -> Dictionary:
-	var result = Steam.getQueryUGCResult(_query_handle, index)
+func _read_result(index: int, handle: int = -1) -> Dictionary:
+	var query = _query_handle if handle < 0 else handle
+	var result = Steam.getQueryUGCResult(query, index)
 	if typeof(result) != TYPE_DICTIONARY or result.empty():
 		return {}
 	if int(result.get("result", 1)) != 1:
@@ -234,7 +262,7 @@ func _read_result(index: int) -> Dictionary:
 	if item_id == 0:
 		return {}
 
-	var preview_url := str(Steam.getQueryUGCPreviewURL(_query_handle, index))
+	var preview_url := str(Steam.getQueryUGCPreviewURL(query, index))
 	if preview_url == "":
 		preview_url = str(result.get("preview_url", result.get("file_url", "")))
 
@@ -289,6 +317,7 @@ func _read_result(index: int) -> Dictionary:
 		"workshop": true,
 		"workshop_time_updated": int(result.get("time_updated", 0)),
 		"workshop_author": author,
+		"workshop_owner": owner_id,
 		"workshop_votes_up": votes_up,
 		"workshop_votes_down": votes_down,
 		"workshop_installed": stored,
@@ -388,6 +417,223 @@ func _emit_progress(item_id: int) -> void:
 func _fail_job(key: String, item_id: int, message: String) -> void:
 	_jobs.erase(key)
 	emit_signal("install_failed", item_id, message)
+
+
+func request_item_details(item_id: int, target: Object = null, callback: String = "", binds: Array = []) -> void:
+	if not is_available():
+		emit_signal("details_failed", item_id, "Steam Workshop is not available.")
+		return
+	if _detail_handle > 0:
+		Steam.releaseQueryUGCRequest(_detail_handle)
+	_detail_handle = -1
+	var handle = int(Steam.createQueryUGCDetailsRequest([item_id]))
+	if handle <= 0:
+		emit_signal("details_failed", item_id, "Couldn't request item details.")
+		return
+	_detail_handle = handle
+	_detail_item_id = item_id
+	_detail_target = target
+	_detail_callback = callback
+	_detail_binds = binds
+	Steam.sendQueryUGCRequest(handle)
+
+
+func _finish_detail_query(handle: int, result: int, results_returned: int) -> void:
+	var item_id = _detail_item_id
+	var target = _detail_target
+	var callback = _detail_callback
+	var binds = _detail_binds
+	_detail_handle = -1
+	_detail_target = null
+	_detail_callback = ""
+	_detail_binds = []
+
+	if result != 1 or results_returned < 1:
+		Steam.releaseQueryUGCRequest(handle)
+		emit_signal("details_failed", item_id, "Steam returned an error (%s)." % str(result))
+		return
+
+	var details = _read_result(0, handle)
+	if details.empty():
+		Steam.releaseQueryUGCRequest(handle)
+		emit_signal("details_failed", item_id, "Couldn't read this item's details.")
+		return
+
+	var tag_names := []
+	var tag_count = int(Steam.getQueryUGCNumTags(handle, 0))
+	for i in range(tag_count):
+		var tag = str(Steam.getQueryUGCTagDisplayName(handle, 0, i)).strip_edges()
+		if tag != "":
+			tag_names.append(tag)
+	if not tag_names.empty():
+		details["tags"] = tag_names
+
+	var previews := []
+	for i in range(8):
+		var preview = Steam.getQueryUGCAdditionalPreview(handle, 0, i)
+		if typeof(preview) != TYPE_DICTIONARY or preview.empty():
+			continue
+		var url = str(preview.get("url", preview.get("video_url", "")))
+		if url == "":
+			continue
+		previews.append(url)
+	if not previews.empty():
+		details["additional_previews"] = previews
+		details["logo"] = {"thumb_320x180": previews[0], "original": previews[0]}
+
+	var stats = details.get("stats", {})
+	if typeof(stats) != TYPE_DICTIONARY:
+		stats = {}
+	stats["subscribers_total"] = _read_stat(handle, Steam.ITEM_STATISTIC_NUM_SUBSCRIPTIONS)
+	stats["favorites"] = _read_stat(handle, Steam.ITEM_STATISTIC_NUM_FAVORITES)
+	stats["unique_visitors"] = _read_stat(handle, Steam.ITEM_STATISTIC_NUM_UNIQUE_WEBSITE_VIEWS)
+	stats["comments_total"] = _read_stat(handle, Steam.ITEM_STATISTIC_NUM_COMMENTS)
+	details["stats"] = stats
+
+	Steam.releaseQueryUGCRequest(handle)
+	emit_signal("details_loaded", item_id, details)
+	if target != null and is_instance_valid(target) and callback != "":
+		target.call(callback, details, binds)
+
+
+func _read_stat(handle: int, stat_type: int) -> int:
+	var info = Steam.getQueryUGCStatistic(handle, 0, stat_type)
+	if typeof(info) != TYPE_DICTIONARY:
+		return 0
+	return int(info.get("stat_value", info.get("value", info.get("result_value", 0))))
+
+
+func request_comments(item_id: int) -> void:
+	if not is_available():
+		emit_signal("comments_failed", item_id, "Steam Workshop is not available.")
+		return
+	if _comment_cache.has(str(item_id)):
+		emit_signal("comments_loaded", item_id, _comment_cache[str(item_id)].duplicate(true))
+		return
+	for request in _comment_requests.values():
+		if int(request.get("item_id", 0)) == item_id:
+			return
+	var req = HTTPRequest.new()
+	add_child(req)
+	req.use_threads = true
+	req.timeout = 20.0
+	var key = str(item_id)
+	_comment_requests[key] = {"item_id": item_id, "req": req}
+	req.connect("request_completed", self, "_on_comments_completed", [key])
+	var err = req.request(COMMENTS_URL % item_id)
+	if err != OK:
+		_comment_requests.erase(key)
+		req.queue_free()
+		emit_signal("comments_failed", item_id, "Couldn't request comments (error %d)." % err)
+
+
+func _on_comments_completed(result, code, _headers, body, key) -> void:
+	var job = _comment_requests.get(key, {})
+	_comment_requests.erase(key)
+	var item_id = int(job.get("item_id", 0))
+	var req = job.get("req", null)
+	if req != null and is_instance_valid(req):
+		req.queue_free()
+	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
+		emit_signal("comments_failed", item_id, "Couldn't load comments (HTTP %s)." % str(code))
+		return
+	if body.size() > MAX_COMMENTS_BYTES:
+		emit_signal("comments_failed", item_id, "The comments page was too large to read.")
+		return
+	var comments = _parse_comments_html(body.get_string_from_utf8())
+	_comment_cache[key] = comments
+	emit_signal("comments_loaded", item_id, comments)
+
+
+func _parse_comments_html(html: String) -> Array:
+	var comments := []
+	var markers = html.split("class=\"commentthread_comment ", false)
+	for i in range(1, markers.size()):
+		if comments.size() >= MAX_COMMENTS:
+			break
+		var block = markers[i]
+		var author := "anonymous"
+		var author_start = block.find("commentthread_author_link")
+		if author_start >= 0:
+			var bdi_start = block.find("<bdi>", author_start)
+			var bdi_end = block.find("</bdi>", bdi_start + 5) if bdi_start >= 0 else -1
+			if bdi_start >= 0 and bdi_end > bdi_start:
+				author = _html_unescape(block.substr(bdi_start + 5, bdi_end - bdi_start - 5)).strip_edges()
+		var stamp := 0
+		var stamp_start = block.find("data-timestamp=\"", author_start if author_start >= 0 else 0)
+		if stamp_start >= 0:
+			var stamp_end = block.find("\"", stamp_start + 16)
+			if stamp_end > stamp_start:
+				stamp = int(block.substr(stamp_start + 16, stamp_end - stamp_start - 16))
+		var text := ""
+		var text_start = block.find("commentthread_comment_text")
+		if text_start >= 0:
+			var gt = block.find(">", text_start)
+			var close = block.find("</div>", gt + 1) if gt >= 0 else -1
+			if gt >= 0 and close > gt:
+				text = _strip_tags(block.substr(gt + 1, close - gt - 1))
+		text = text.strip_edges()
+		if author == "" or text == "":
+			continue
+		comments.append({"author": author, "date_added": stamp, "content": text})
+	return comments
+
+
+func _strip_tags(value: String) -> String:
+	var out := ""
+	var in_tag := false
+	for i in range(value.length()):
+		var c = value.substr(i, 1)
+		if c == "<":
+			in_tag = true
+		elif c == ">":
+			in_tag = false
+		elif not in_tag:
+			out += c
+	return _html_unescape(out).replace("\t", " ").strip_edges()
+
+
+func _html_unescape(value: String) -> String:
+	return value.replace("&nbsp;", " ").replace("&amp;", "&").replace("&lt;", "<") \
+		.replace("&gt;", ">").replace("&quot;", "\"").replace("&#39;", "'")
+
+
+func delete_item(item_id: int) -> void:
+	if not is_available():
+		emit_signal("delete_failed", item_id, "Steam Workshop is not available.")
+		return
+	Steam.deleteItem(item_id)
+
+
+func _on_item_delete_result(result, file_id) -> void:
+	if int(result) != 1:
+		emit_signal("delete_failed", int(file_id), "Steam couldn't delete this item (%s)." % str(result))
+		return
+	emit_signal("item_deleted", int(file_id))
+
+
+func get_outdated_items() -> Array:
+	var ids := []
+	if not is_available():
+		return ids
+	var subscribed = Steam.getSubscribedItems()
+	if subscribed == null:
+		return ids
+	for item in subscribed:
+		var item_id = int(item)
+		var state = int(Steam.getItemState(item_id))
+		if (state & STATE_NEEDS_UPDATE) != 0:
+			ids.append(item_id)
+		elif (state & STATE_INSTALLED) == 0 and (state & STATE_DOWNLOADING) == 0 \
+				and (state & STATE_DOWNLOAD_PENDING) == 0:
+			ids.append(item_id)
+	return ids
+
+
+func update_all() -> void:
+	for item_id in get_outdated_items():
+		Steam.downloadItem(item_id, true)
+		emit_signal("install_started", item_id, "Updating item %d" % item_id)
 
 
 func _short_text(text: String) -> String:

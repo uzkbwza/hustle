@@ -106,12 +106,6 @@ autowrap = true
 size_flags_horizontal = 3
 custom_constants/separation = 4
 
-[node name="Homepage" type="Button" parent="Scroll/Body/Actions"]
-unique_name_in_owner = true
-hint_tooltip = "Open the creator's homepage"
-size_flags_vertical = 3
-text = "Homepage"
-
 [node name="Page" type="Button" parent="Scroll/Body/Actions"]
 unique_name_in_owner = true
 rect_min_size = Vector2( 32, 24 )
@@ -156,6 +150,20 @@ custom_styles/pressed = SubResource( 2 )
 custom_styles/normal = SubResource( 2 )
 icon = SubResource( 22 )
 icon_align = 1
+
+[node name="Edit" type="Button" parent="Scroll/Body/Actions"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 32, 24 )
+hint_tooltip = "Edit this item"
+size_flags_vertical = 3
+text = "Edit"
+
+[node name="Delete" type="Button" parent="Scroll/Body/Actions"]
+unique_name_in_owner = true
+rect_min_size = Vector2( 32, 24 )
+hint_tooltip = "Delete this item"
+size_flags_vertical = 3
+text = "Delete"
 
 [node name="Tags" type="Label" parent="Scroll/Body"]
 unique_name_in_owner = true

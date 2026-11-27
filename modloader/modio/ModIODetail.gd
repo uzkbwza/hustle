@@ -2,10 +2,11 @@ extends VBoxContainer
 
 signal back_pressed
 signal collections_pressed(mod_id)
-signal homepage_pressed(url)
 signal page_pressed(mod_id)
 signal rate_pressed(mod_id, rating)
 signal subscribe_pressed(mod_id)
+signal edit_pressed(mod_id)
+signal delete_pressed(mod_id)
 
 const MODIO_IMAGE := preload("res://modloader/modio/ModIOImage.gd")
 const IMAGE_MAX_SIZE := 1280
@@ -17,12 +18,13 @@ onready var logo: TextureRect = $"%Logo"
 onready var name_label: Label = $"%Name"
 onready var meta_label: Label = $"%Meta"
 onready var summary_label: Label = $"%Summary"
-onready var homepage_btn: Button = $"%Homepage"
 onready var page_btn: Button = $"%Page"
 onready var subscribe_btn: Button = $"%Subscribe"
 onready var collections_btn: Button = $"%Collections"
 onready var like_btn: Button = $"%Like"
 onready var dislike_btn: Button = $"%Dislike"
+onready var edit_btn: Button = $"%Edit"
+onready var delete_btn: Button = $"%Delete"
 onready var tags_label: Label = $"%Tags"
 onready var description_label: Label = $"%Description"
 onready var images_title: Label = $"%ImagesTitle"
@@ -39,6 +41,7 @@ var signed_in := false
 var installed := {}
 var workshop := false
 var vote := 0
+var own_item := false
 
 var _image_queue := []
 var _image_request: HTTPRequest = null
@@ -48,12 +51,13 @@ var _image_cache := {}
 
 func _ready() -> void:
 	back_btn.connect("pressed", self, "_on_back_pressed")
-	homepage_btn.connect("pressed", self, "_on_homepage_pressed")
 	page_btn.connect("pressed", self, "_on_page_pressed")
 	subscribe_btn.connect("pressed", self, "_on_subscribe_pressed")
 	collections_btn.connect("pressed", self, "_on_collections_pressed")
 	like_btn.connect("pressed", self, "_on_like_pressed")
 	dislike_btn.connect("pressed", self, "_on_dislike_pressed")
+	edit_btn.connect("pressed", self, "_on_edit_pressed")
+	delete_btn.connect("pressed", self, "_on_delete_pressed")
 
 	_image_request = HTTPRequest.new()
 	add_child(_image_request)
@@ -67,6 +71,7 @@ func open(mod: Dictionary) -> void:
 	mod_data = mod
 	mod_id = str(mod.get("id", ""))
 	vote = 0
+	own_item = false
 	set_status("")
 	set_comments_status("Loading comments...")
 	_render()
@@ -91,7 +96,6 @@ func set_signed_in(value: bool) -> void:
 
 func set_workshop(value: bool) -> void:
 	workshop = value
-	homepage_btn.visible = not value
 	collections_btn.visible = true
 	like_btn.visible = true
 	dislike_btn.visible = true
@@ -102,6 +106,18 @@ func set_workshop(value: bool) -> void:
 func set_vote(value: int) -> void:
 	vote = value
 	_refresh_action_labels()
+
+
+func set_own_item(value: bool) -> void:
+	own_item = value
+	_refresh_action_labels()
+
+
+func set_details(details: Dictionary) -> void:
+	if str(details.get("id", "")) != mod_id:
+		return
+	mod_data = details
+	_render()
 
 
 func set_install_state(state: Dictionary) -> void:
@@ -134,7 +150,8 @@ func set_comments_status(text: String) -> void:
 
 
 func ui_elements() -> Array:
-	return [back_btn, homepage_btn, page_btn, subscribe_btn, collections_btn, like_btn, dislike_btn]
+	return [back_btn, page_btn, subscribe_btn, collections_btn, like_btn,
+		dislike_btn, edit_btn, delete_btn]
 
 
 func _render() -> void:
@@ -205,6 +222,21 @@ func _render_workshop_meta() -> void:
 	var size = int(mod_data.get("modfile", {}).get("filesize", 0))
 	if size > 0:
 		parts.append(_fmt_size(size))
+	var stats = mod_data.get("stats", {})
+	if typeof(stats) != TYPE_DICTIONARY:
+		stats = {}
+	var subscribers = int(stats.get("subscribers_total", 0))
+	if subscribers > 0:
+		parts.append(_fmt_count(subscribers) + " subscribers")
+	var favorites = int(stats.get("favorites", 0))
+	if favorites > 0:
+		parts.append(_fmt_count(favorites) + " favorites")
+	var visitors = int(stats.get("unique_visitors", 0))
+	if visitors > 0:
+		parts.append(_fmt_count(visitors) + " visitors")
+	var comments = int(stats.get("comments_total", 0))
+	if comments > 0:
+		parts.append(_fmt_count(comments) + " comments")
 	var up = int(mod_data.get("workshop_votes_up", 0))
 	var down = int(mod_data.get("workshop_votes_down", 0))
 	if up + down > 0:
@@ -263,6 +295,11 @@ func _render_images() -> void:
 	var images = media.get("images", [])
 	if typeof(images) != TYPE_ARRAY:
 		images = []
+	var extra = mod_data.get("additional_previews", [])
+	if typeof(extra) == TYPE_ARRAY and not extra.empty():
+		images = images.duplicate()
+		for url in extra:
+			images.append({"original": str(url)})
 	var count = 0
 	for image in images:
 		if typeof(image) != TYPE_DICTIONARY:
@@ -317,14 +354,14 @@ func _refresh_action_labels() -> void:
 		return
 	like_btn.modulate = Color(1, 1, 1, 1)
 	dislike_btn.modulate = Color(1, 1, 1, 1)
-	var homepage = str(mod_data.get("homepage_url", ""))
 	var profile = str(mod_data.get("profile_url", ""))
-	homepage_btn.disabled = homepage == ""
 	page_btn.disabled = profile == ""
 	subscribe_btn.disabled = mod_id == ""
 	collections_btn.disabled = mod_id == ""
 	like_btn.disabled = mod_id == ""
 	dislike_btn.disabled = mod_id == ""
+	edit_btn.visible = own_item
+	delete_btn.visible = own_item
 	subscribe_btn.icon = MODIO_IMAGE.icon("unsubscribe") if subscribed else MODIO_IMAGE.icon("subscribe")
 	if subscribed:
 		subscribe_btn.hint_tooltip = "Unsubscribe from this mod and delete the download on next launch"
@@ -340,6 +377,8 @@ func _refresh_workshop_labels() -> void:
 	collections_btn.disabled = mod_id == ""
 	like_btn.disabled = mod_id == ""
 	dislike_btn.disabled = mod_id == ""
+	edit_btn.visible = own_item
+	delete_btn.visible = own_item
 	subscribe_btn.icon = MODIO_IMAGE.icon("unsubscribe") if subscribed else MODIO_IMAGE.icon("subscribe")
 	if subscribed:
 		subscribe_btn.hint_tooltip = "Unsubscribe and remove this item on next launch"
@@ -454,10 +493,6 @@ func _on_back_pressed() -> void:
 	emit_signal("back_pressed")
 
 
-func _on_homepage_pressed() -> void:
-	emit_signal("homepage_pressed", str(mod_data.get("homepage_url", "")))
-
-
 func _on_page_pressed() -> void:
 	emit_signal("page_pressed", mod_id)
 
@@ -476,6 +511,14 @@ func _on_like_pressed() -> void:
 
 func _on_dislike_pressed() -> void:
 	emit_signal("rate_pressed", mod_id, -1)
+
+
+func _on_edit_pressed() -> void:
+	emit_signal("edit_pressed", mod_id)
+
+
+func _on_delete_pressed() -> void:
+	emit_signal("delete_pressed", mod_id)
 
 
 func _on_video_pressed(url: String) -> void:

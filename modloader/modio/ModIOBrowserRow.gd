@@ -12,7 +12,7 @@ signal thumbnail_requested(mod_id, url)
 
 const CARD_COLUMNS := 1
 const COMPACT_COLUMNS := 3
-const DRAG_CANCEL_DISTANCE := 4.0
+const DRAG_CANCEL_DISTANCE := 12.0
 const MODIO_IMAGE := preload("res://modloader/modio/ModIOImage.gd")
 
 var mod_id := ""
@@ -361,6 +361,8 @@ func cancel_press() -> void:
 
 func _on_card_gui_input(event) -> void:
 	if event is InputEventMouseButton:
+		if _press_event_id >= 0:
+			return
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				_pressed = true
@@ -375,6 +377,8 @@ func _on_card_gui_input(event) -> void:
 			if text != "":
 				emit_signal("description_clicked", mod_id, text, get_global_mouse_position())
 	elif event is InputEventMouseMotion:
+		if _press_event_id >= 0:
+			return
 		if _pressed and get_global_mouse_position().distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
 			_pressed = false
 	elif event is InputEventScreenTouch:
@@ -392,6 +396,7 @@ func _on_card_gui_input(event) -> void:
 		if _pressed and event.index == _press_event_id \
 				and event.position.distance_to(_press_pos) > DRAG_CANCEL_DISTANCE:
 			_pressed = false
+			_press_event_id = -1
 
 
 func _on_collections_pressed() -> void:

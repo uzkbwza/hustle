@@ -329,6 +329,41 @@ func delete_collection(collection_id: int, target: Object, callback: String, bin
 	_authed_raw_request(url, HTTPClient.METHOD_DELETE, PoolByteArray(), "", token, target, callback, binds)
 
 
+func delete_mod(mod_id: int, target: Object, callback: String, binds: Array = []) -> void:
+	var token = _auth_token()
+	if token == "":
+		_authed_callback(target, callback, binds)
+		return
+	var url = "%s/games/%d/mods/%d" % [get_write_base_url(), game_id, mod_id]
+	_authed_raw_request(url, HTTPClient.METHOD_DELETE, PoolByteArray(), "", token, target, callback, binds)
+
+
+func delete_guide(guide_id: int, target: Object, callback: String, binds: Array = []) -> void:
+	var token = _auth_token()
+	if token == "":
+		_authed_callback(target, callback, binds)
+		return
+	var url = "%s/games/%d/guides/%d" % [get_write_base_url(), game_id, guide_id]
+	_authed_raw_request(url, HTTPClient.METHOD_DELETE, PoolByteArray(), "", token, target, callback, binds)
+
+
+func cancel_download() -> bool:
+	if _active_download == null:
+		return false
+	var job = _active_download
+	var req = job.get("req", null)
+	if req != null and is_instance_valid(req):
+		if req.is_connected("request_completed", self, "_on_download_completed"):
+			req.disconnect("request_completed", self, "_on_download_completed")
+		req.queue_free()
+	var dest = str(job.get("dest", ""))
+	if dest != "":
+		_delete_file(dest)
+	_active_download = null
+	_pump_downloads()
+	return true
+
+
 func _auth_token() -> String:
 	return ModIOAuth.get_access_token()
 
@@ -465,7 +500,7 @@ func _pump_downloads() -> void:
 	job.req = HTTPRequest.new()
 	add_child(job.req)
 	job.req.use_threads = true
-	job.req.timeout = 120.0
+	job.req.timeout = 600.0
 	job.req.max_redirects = MAX_REDIRECTS
 	job.req.download_file = job.dest
 	job.req.connect("request_completed", self, "_on_download_completed", [job])
@@ -480,7 +515,7 @@ func _on_download_completed(result, code, _headers, _body, job) -> void:
 	if result == HTTPRequest.RESULT_SUCCESS and code == 200:
 		var size = _file_size(job.dest)
 		var too_large = size > MAX_DOWNLOAD_BYTES
-		var wrong_size = job.total_bytes > 0 and size != job.total_bytes
+		var wrong_size = job.total_bytes > 0 and size < job.total_bytes
 		if size < 0 or too_large or wrong_size:
 			_delete_file(job.dest)
 			_finish_job(job, false, "Download was incomplete")
