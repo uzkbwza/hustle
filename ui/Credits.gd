@@ -1,5 +1,6 @@
 extends PanelContainer
 
+const PRIVACY_URL := "https://ivysly.com/hustle/privacy"
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -35,3 +36,7 @@ func _on_Label3_pressed():
 
 func _on_Label_pressed():
 	$"%Labels".play()
+
+
+func _on_privacy_pressed():
+	OS.shell_open(PRIVACY_URL)

@@ -14,7 +14,6 @@ const LEGACY_CACHE_DIR := "user://community_events"
 
 const BANNER_SIZE := Vector2(112, 30)
 const HOVER_TIME := 0.15
-const SESSION_FLAG := "hustle_community_events_fetched"
 
 onready var top_label := $TopLabel
 
@@ -46,12 +45,7 @@ func _ready() -> void:
 	add_child(_img_request)
 	_img_request.connect("request_completed", self, "_on_image_received")
 
-	# Refresh from the network at most ONCE per game session — the flag lives on the
-	# scene-tree root, which outlives this node if the menu UI is ever rebuilt.
-	var root := get_tree().get_root()
-	if not root.has_meta(SESSION_FLAG):
-		root.set_meta(SESSION_FLAG, true)
-		_feed_request.request(FEED_URL)  # HTTPRequest runs off the main thread
+	_feed_request.request(FEED_URL)  # HTTPRequest runs off the main thread
 
 	# Panel visibility tracks the roadmap AND the "show community events" option.
 	var roadmap := get_node_or_null("%RoadmapContainer")

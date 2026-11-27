@@ -258,6 +258,13 @@ align = 1
 valign = 2
 autowrap = true
 
+[node name="PrivacyButton" type="Button" parent="VBoxContainer2/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 238.0
+margin_bottom = 12.0
+size_flags_horizontal = 3
+text = "Privacy Policy"
+
 [node name="Button" type="Button" parent="VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 316.0
@@ -269,3 +276,4 @@ text = "back"
 [connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer7/HBoxContainer/Label" to="." method="_on_Label_pressed"]
 [connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/HBoxContainer5/TextureButton" to="." method="_on_TextureButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/Button" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/ScrollContainer/VBoxContainer/PrivacyButton" to="." method="_on_privacy_pressed"]

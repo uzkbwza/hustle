@@ -276,6 +276,7 @@ func reset():
 		data.free()
 	if fighter_extra:
 		fighter_extra.free()
+		fighter_extra = null
 	
 	button_category_containers.clear()
 #	for container in [category_container, action_container, action_data_container]:
