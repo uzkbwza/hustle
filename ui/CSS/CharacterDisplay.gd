@@ -1,19 +1,163 @@
 extends VBoxContainer
 
 export var player_id = 1
+export var save_style = false
 
 signal style_selected(style)
 
+const STYLE_LIST_DIR := "user://lists/custom"
+const StyleListButton = preload("res://ui/CustomizationScreen/StyleListButton.gd")
+
 var selected_style = null
+var selected_list_data := {}
 var aura_particles := []
 var character_limb_data := {}
-onready var load_style_button = $"%LoadStyleButton"
-onready var style_list_button = $"%StyleListButton"
+var _style_options := []
+var _random_options := []
+onready var style_menu_button = $"%StyleMenuButton"
+onready var random_menu_button = $"%RandomMenuButton"
+onready var style_buttons = $"CenterContainer/StyleButtons"
+onready var style_menu = $"%MenuLayer/StyleMenu"
+onready var random_menu = $"%MenuLayer/RandomMenu"
+onready var style_items = $"%MenuLayer/StyleMenu/StyleScroll/StyleItems"
+onready var random_items = $"%MenuLayer/RandomMenu/RandomScroll/RandomItems"
 
 func _ready():
 	$"%PlayerLabel".text = "P1" if player_id == 1 else "P2"
 	$"%CharacterPortrait".flip_h = player_id != 1
-	$"%LoadStyleButton".connect("style_selected", self, "_on_style_selected")
+	call_deferred("_raise_style_ui")
+
+func _raise_style_ui():
+	var center = style_buttons.get_parent()
+	if center != null:
+		center.move_child(style_buttons, center.get_child_count() - 1)
+	var layer = style_menu.get_parent()
+	if layer != null:
+		move_child(layer, get_child_count() - 1)
+	style_menu_button.connect("pressed", self, "_open_style_menu")
+	random_menu_button.connect("pressed", self, "_open_random_menu")
+	if not Global.is_connected("mobile_ui_changed", self, "_on_mobile_ui_changed"):
+		Global.connect("mobile_ui_changed", self, "_on_mobile_ui_changed")
+
+func _on_mobile_ui_changed(_mobile):
+	if style_menu.visible:
+		_rebuild_style_options()
+		_place_menu(style_menu, style_items, style_menu_button)
+	elif random_menu.visible:
+		_rebuild_random_options()
+		_place_menu(random_menu, random_items, random_menu_button)
+
+func _rebuild_style_options():
+	_style_options = []
+	for child in style_items.get_children():
+		child.free()
+	_add_style_option("style: off", null, "")
+	var all = Custom.load_all_styles()
+	var all_styles = all[0]
+	var all_paths = all[1]
+	for i in range(all_styles.size()):
+		var style = all_styles[i]
+		if !Custom.can_use_style(player_id, style):
+			continue
+		_add_style_option(style.style_name, style, str(all_paths[i]))
+	style_items.rect_min_size = Vector2(0, _style_options.size() * (_menu_item_height() + 2))
+
+func _rebuild_random_options():
+	_random_options = []
+	for child in random_items.get_children():
+		child.free()
+	_add_random_option("random style: off", {})
+	var lists = FileManager.load_all_lists(STYLE_LIST_DIR)
+	for list_data in lists:
+		if list_data.get("list_name", "") == "_current_state":
+			continue
+		_add_random_option(str(list_data.get("list_name", "default")), list_data)
+	random_items.rect_min_size = Vector2(0, _random_options.size() * (_menu_item_height() + 2))
+
+func _menu_item_height() -> int:
+	return 24 if Global.mobile_ui else 14
+
+func _make_menu_button(text, parent, target, method, index):
+	var h = _menu_item_height()
+	var btn = Button.new()
+	btn.text = text
+	btn.rect_min_size = Vector2(0, h)
+	btn.rect_position = Vector2(0, index * (h + 2))
+	btn.rect_size = Vector2(max(0, parent.rect_size.x - 4), h)
+	btn.connect("pressed", target, method, [index])
+	parent.add_child(btn)
+
+func _add_style_option(text, style, path):
+	var idx = _style_options.size()
+	_style_options.append({"style": style, "path": path})
+	_make_menu_button(text, style_items, self, "_on_style_option_pressed", idx)
+
+func _add_random_option(text, list_data):
+	var idx = _random_options.size()
+	_random_options.append({"list": list_data})
+	_make_menu_button(text, random_items, self, "_on_random_option_pressed", idx)
+
+func _place_menu(menu, items, button):
+	var layer = menu.get_parent()
+	var below = button.rect_global_position + Vector2(0, button.rect_size.y + 2)
+	var local = below - layer.rect_global_position
+	var screen = get_viewport().get_visible_rect().size
+	var width = max(160.0, style_buttons.rect_size.x + 24.0)
+	var global_x = style_buttons.rect_global_position.x + style_buttons.rect_size.x * 0.5 - width * 0.5
+	local.x = clamp(global_x - layer.rect_global_position.x, -layer.rect_global_position.x, max(-layer.rect_global_position.x, screen.x - width - layer.rect_global_position.x))
+	menu.rect_position = local
+	var h = _menu_item_height()
+	var count = items.get_child_count()
+	var content_height = count * (h + 2)
+	var max_height = max(h + 2, screen.y - below.y - 10.0)
+	var scroll = items.get_parent()
+	var item_width = width - 6.0
+	if content_height > max_height:
+		item_width -= 10.0
+	scroll.rect_min_size = Vector2(width - 2.0, min(content_height, max_height))
+	items.rect_min_size = Vector2(item_width, content_height)
+	menu.rect_size = menu.get_combined_minimum_size()
+	for i in range(count):
+		var btn = items.get_child(i)
+		btn.rect_size = Vector2(item_width, h)
+		btn.rect_position = Vector2(2.0, i * (h + 2))
+
+func _open_style_menu():
+	if style_menu.visible:
+		style_menu.hide()
+		return
+	random_menu.hide()
+	_rebuild_style_options()
+	_place_menu(style_menu, style_items, style_menu_button)
+	style_menu.show()
+
+func _open_random_menu():
+	if random_menu.visible:
+		random_menu.hide()
+		return
+	style_menu.hide()
+	_rebuild_random_options()
+	_place_menu(random_menu, random_items, random_menu_button)
+	random_menu.show()
+
+func _on_style_option_pressed(index):
+	if index < 0 or index >= _style_options.size():
+		return
+	style_menu.hide()
+	var option = _style_options[index]
+	selected_list_data = {}
+	if save_style:
+		Global.save_player_data({"last_style": option["path"]})
+	_on_style_selected(option["style"])
+
+func _on_random_option_pressed(index):
+	if index < 0 or index >= _random_options.size():
+		return
+	random_menu.hide()
+	selected_list_data = _random_options[index]["list"]
+	if save_style:
+		Global.save_player_data({"last_style": ""})
+	_on_style_selected(null)
 
 func _on_style_selected(style):
 	emit_signal("style_selected", style)
@@ -195,22 +339,27 @@ func _display_aura_rotation(entry) -> float:
 	return angle
 
 func load_last_style():
-	$"%LoadStyleButton".load_last_style()
+	yield(get_tree(), "idle_frame")
+	var last_style = Global.get_player_data()["last_style"]
+	if last_style == "":
+		return
+	_rebuild_style_options()
+	for option in _style_options:
+		if option["path"] == last_style:
+			_on_style_selected(option["style"])
+			return
 
 func init():
-	$"%LoadStyleButton".player_id = player_id
 	$"%CharacterLabel".text = ""
-#	$"%CharacterPortrait".texture = null
 	set_enabled(true)
-	$"%LoadStyleButton".save_style = true
-	$"%LoadStyleButton".update_styles()
-	$"%LoadStyleButton".hide()
-	style_list_button.player_id = player_id
-	style_list_button.update_lists()
-	style_list_button.hide()
+	save_style = true
+	style_menu_button.hide()
+	random_menu_button.hide()
+	style_menu.hide()
+	random_menu.hide()
 	if !Network.multiplayer_active or player_id == Network.player_id:
-		$"%LoadStyleButton".show()
-		style_list_button.show()
+		style_menu_button.show()
+		random_menu_button.show()
 
 func load_character_data(data):
 	$"%CharacterPortrait".texture = data["portrait"]
@@ -223,13 +372,15 @@ func load_character_data(data):
 
 func set_enabled(on):
 	for child in get_children():
+		if child == style_menu or child == random_menu:
+			continue
 		child.visible = on
-		$"%LoadStyleButton".save_style = on
+	save_style = on
 
 
 func get_style_for_match(seed_value: int):
-	if style_list_button.cur_list_data != {}:
-		var picked = style_list_button.get_random_style(seed_value)
+	if !selected_list_data.empty():
+		var picked = StyleListButton.pick_from_list(selected_list_data, player_id, seed_value)
 		if picked != null:
 			return picked
 	return selected_style

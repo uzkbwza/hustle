@@ -104,16 +104,12 @@ func _ready():
 #	$"%ShowSettingsButton".connect("toggled", self, "_on_show_settings_toggled")
 	$"%QuitButton".connect("pressed", self, "quit")
 	$"%ChatButton".connect("pressed", self, "_on_chat_button_pressed")
-	if UIManager.is_connected("swiped_back", self, "quit"):
-		UIManager.disconnect("swiped_back", self, "quit")
-	UIManager.connect("swiped_back", self, "quit")
+	if UIManager.is_connected("swiped_back", self, "_on_swiped_back"):
+		UIManager.disconnect("swiped_back", self, "_on_swiped_back")
+	UIManager.connect("swiped_back", self, "_on_swiped_back")
 	Network.connect("character_selected", self, "_on_network_character_selected")
 	UIManager.register_menu(self, [
 		$"%QuitButton",$"%GameSettingsPanelContainer",
-		$"%P1Display/CenterContainer/LoadStyleButton",
-		$"%P1Display/ListCenter/StyleListButton",
-		$"%P2Display/CenterContainer/LoadStyleButton",
-		$"%P2Display/ListCenter/StyleListButton",
 	])
 	Network.connect("match_locked_in", self, "_on_network_match_locked_in")
 	if not SteamLobby.is_connected("css_packet_received", self, "_on_css_packet_received"):
@@ -123,6 +119,7 @@ func _ready():
 	searchBar = load("res://ui/CSS/BetterSearchBar.tscn").instance()
 
 	add_child(searchBar)
+	move_child(h_box_container, get_child_count() - 1)
 	# for retro compatibility reasons, copying PlayerInfo over from characters/ (5.0 onwards) to ui/ (4.10 and below)
 	if (dir.file_exists("res://characters/PlayerInfo.tscn") && !dir.file_exists("res://ui/PlayerInfo.tscn")):
 		var pi_scene = load("res://characters/PlayerInfo.tscn").instance()
@@ -163,7 +160,6 @@ func _ready():
 	else:
 		loadThread2 = Thread.new()
 		loadThread2.start(self, "load_mods", caches)
-#	load_mods()
 
 	yield(self, "mods_loaded")
 
@@ -418,7 +414,7 @@ func init(singleplayer=true):
 			$"%P2Display".load_last_style()
 		$"%GoButton".hide()
 	else:
-		$"%P2Display".load_style_button.save_style = false
+		$"%P2Display".save_style = false
 	$"%P1Display".load_last_style()
 	pressed_button = null
 	buttons = []
@@ -564,6 +560,14 @@ func _on_button_pressed(button):
 		button.set_pressed_no_signal(false)
 
 
+
+func _on_swiped_back():
+	for path in ["%P1Display/MenuLayer/StyleMenu", "%P1Display/MenuLayer/RandomMenu", "%P2Display/MenuLayer/StyleMenu", "%P2Display/MenuLayer/RandomMenu"]:
+		var menu = get_node_or_null(path)
+		if menu != null and menu.visible:
+			menu.hide()
+			return
+	quit()
 
 func quit():
 	if not visible: return
@@ -1056,7 +1060,7 @@ func _update_import_warning():
 		return
 	var joined = ",".join(keys)
 	
-	importWarningLabel.text = "[!] Broken imports: " + joined + "  --  modder, fix your .import files. user: try Options > Delete Character Cache"
+	importWarningLabel.text = "[!] Broken imports (user: try Options > Delete Character Cache / modder: fix your .import files): " + joined
 
 # this function encapsulates character selection, to be called either when a character finishes loading or when pressing a base character button
 func buffer_select(button):
